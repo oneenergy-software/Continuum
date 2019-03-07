@@ -1,0 +1,4279 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using System.Windows.Forms;
+using OSGeo.GDAL;
+using OSGeo.OGR;
+using OSGeo.OSR;
+using System.Runtime.Serialization.Formatters.Binary;
+
+namespace ContinuumNS
+{
+    [Serializable()]
+    public class TopoInfo
+    {
+        public double[,] topoElevs; // Used for plotting only [NumX, NumY]
+        public double[,] elevsForCalcs; // elevations used for calculations
+        public double[,] SR_ForCalcs; // surface roughness used for calculations
+        public double[,] DH_ForCalcs; // displacement height used for calculations
+
+        public bool gotSR; // true when surface roughness or land cover data has been loaded
+        public bool useSR; // If true then use SR in model calcs
+        public bool useSepMod; // If true then enable flow separation model
+        public bool gotTopo; // true when topo data has been loaded
+
+        public Min_Max_Num_XYs topoNumXY = new Min_Max_Num_XYs(); // holds Num X/Y All/Plot/Calcs of elevation data
+        public Min_Max_Num_XYs LC_NumXY; // holds Num X/Y All/Plot/Calcs of land cover data
+
+        public int[,] landCover; // Used for plotting only
+        public LC_SR_DH[] LC_Key;
+
+        [Serializable()]
+        public struct Min_Max_Num_XYs
+        {
+            public Dec_Type X;
+            public Dec_Type Y;
+        }
+
+        [Serializable()]
+        public struct Dec_Type
+        {
+            public Min_Max_Num all; // all data downloaded
+            public Min_Max_Num plot; // decimated for plotting
+            public Min_Max_Num calcs; // data extracted for calculations
+        }
+
+        [Serializable()]
+        public struct Min_Max_Num
+        {
+            public double min;
+            public double max;
+            public int num;
+            public double reso;
+        }
+
+        [Serializable()]
+        public struct TopoGrid
+        {
+            public double UTMX;
+            public double UTMY;
+            public double elev;
+            public Exposure smallerR_Exposure;
+            public int smallerRadius;
+        }
+
+        public struct LandCoverGrid
+        {
+            public double UTMX;
+            public double UTMY;
+            public int LC_code;
+        }
+
+        [Serializable()]
+        public struct LC_SR_DH
+        {
+            public int code;
+            public string desc;
+            public double SR;
+            public double DH;
+        }
+            
+        public struct UTM_X_Y
+        {
+            public double UTMX;
+            public double UTMY;
+        }
+
+        public struct UTM_X_Y_Shape_Num
+        {
+            public double UTMX;
+            public double UTMY;
+            public int shapeInd;
+        }
+
+        public struct Roughness_Map_Struct
+        {
+            // Used when reading .map roughness file
+            public double minX;
+            public double maxX;
+            public double minY;
+            public double maxY;
+
+            public double leftRough;
+            public double rightRough;
+
+            public int numPoints;
+            public UTM_X_Y[] points;
+
+            public bool isClosed;
+            //  Dim Is_Clockwise = Boolean
+
+        }                      
+  
+        public double[,] GetLC_ParamToPlot(string paramType)
+        {
+            // Returns param array based on selected parameter (land cover, surface roughness or displacement height)                       
+
+            int numX_Plot = LC_NumXY.X.plot.num;
+            int numY_Plot = LC_NumXY.Y.plot.num;
+
+            double[,] param = new double[numX_Plot, numY_Plot];                     
+
+            int numSR = 0;
+
+            try
+            {
+                numSR = LC_Key.Length;
+            }
+            catch 
+            {
+                MessageBox.Show("No land cover / surface roughness info entered.", "Continuum 2.2");
+                return param;
+            }
+
+            int X_Ind = 0;
+            int Y_Ind = 0;
+
+            for (int i = 0; i < numX_Plot; i++)
+            {
+                for (int j = 0; j < numY_Plot; j++)
+                {
+                    for (int k = 0; k < numSR; k++)
+                    {
+                        if (landCover[i, j] == LC_Key[k].code)
+                        {
+                            if (paramType == "Surface roughness")
+                                param[X_Ind, Y_Ind] = LC_Key[k].SR;
+                            else if (paramType == "Displacement height")
+                                param[X_Ind, Y_Ind] = LC_Key[k].DH;
+                            else
+                                param[X_Ind, Y_Ind] = LC_Key[k].code;
+
+                            break;
+                        }
+                    }
+
+                    Y_Ind = Y_Ind + 1;
+
+                    if (Y_Ind >= numY_Plot)
+                        break;
+
+                }
+                X_Ind = X_Ind + 1;
+                if (X_Ind >= numX_Plot)
+                    break;
+
+                Y_Ind = 0;
+            }
+
+            return param;
+        }
+
+        public double GetMin(double[,] param, bool ignoreZeros)
+        {
+            // Returns minimum value of two-dimensional param array
+            double thisMin = 100000;
+
+            for (int i = 0; i <= param.GetUpperBound(0); i++)
+                for (int j = 0; j <= param.GetUpperBound(1); j++)
+                    if (param[i, j] < thisMin && param[i,j] != -999 && ((ignoreZeros == true && param[i, j] != 0) || (ignoreZeros == false)))
+                        thisMin = param[i, j];
+
+            return thisMin;
+        }
+
+        public double GetMax(double[,] param)
+        {
+            //  Returns maximum value of two-dimensional param array
+            double thisMax = 0;
+
+            for (int i = 0; i <= param.GetUpperBound(0); i++)
+                for (int j = 0; j <= param.GetUpperBound(1); j++)
+                    if (param[i, j] > thisMax)
+                        thisMax = param[i, j];
+
+            return thisMax;
+        }
+
+        public double FindMin(double[] theseParams)
+        {
+            // Returns minimum value of one-dimensional theseParams array
+            double thisMin = 1000000;
+            int numParams;
+
+            try
+            {
+                numParams = theseParams.Length;
+            }
+            catch
+            {
+                numParams = 0;
+            }
+
+            for (int i = 0; i < numParams; i++)
+                if (theseParams[i] < thisMin)
+                    thisMin = theseParams[i];
+
+            return thisMin;
+        }
+
+        public double FindMax(double[] theseParams)
+        {
+            //  Returns maximum value of one-dimensional param array
+            double thisMax = -1000000;
+            int numParams;
+
+            try
+            {
+                numParams = theseParams.Length;
+            }
+            catch {
+                numParams = 0;
+            }
+
+            for (int i = 0; i < numParams; i++)
+                if (theseParams[i] > thisMax)
+                    thisMax = theseParams[i];
+
+            return thisMax;
+        }
+
+        public double FindAvg(double[] theseParams)
+        {
+            // Returns average of one-dimensional theseParams array
+            double avg = 0;
+            int numParams;
+
+            try
+            {
+                numParams = theseParams.Length;
+            }
+            catch
+            {
+                numParams = 0;
+            }
+
+            for (int i = 0; i < numParams; i++)
+                avg = avg + theseParams[i];
+
+            if (numParams > 0)
+                avg = avg / numParams;
+            else
+                avg = 0;
+
+
+            return avg;
+        }
+
+
+        public double FindSD(double[] theseParams)
+        {
+            // Returns standard deviation of one-dimensional theseParams array
+            double stDev = 0;
+            double avg = 0;
+            int numParams = 0;
+
+            try
+            {
+                numParams = theseParams.Length;
+            }
+            catch {
+                numParams = 0;
+            }
+
+            for (int i = 0; i < numParams; i++)
+            {
+                avg = avg + theseParams[i];
+                stDev = stDev + Convert.ToSingle(Math.Pow(theseParams[i], 2));
+            }
+
+            if (numParams > 0)
+            {
+                avg = avg / numParams;
+                stDev = Convert.ToSingle(Math.Pow((stDev / numParams - Math.Pow(avg, 2)), 0.5));
+            }
+
+            return stDev;
+
+        }
+
+        public int OkToReload()
+        {
+            // Returns 1 if gotTopo is false; returns 6 if gotTopo is true and user wants to load new data; returns 7 if gotTopo is true but user does not want to load new data
+            int goodToGo = 1;
+
+            if (gotTopo == true) // Already have topo data loaded, need to clear it first before loading new stuff
+                goodToGo = Convert.ToInt16(MessageBox.Show("You already have topo data loaded.  Do you want to load new data?  If you proceed, all calculated exposures, " +
+                    "models and parameters will be lost.", "Continuum 2.2", MessageBoxButtons.YesNo));
+
+            return goodToGo;
+        }
+
+        public bool LC_OkToReload(string savedFileName, Continuum continuum)
+        {
+            // If user agrees to load new LC data, it clears the calculated SRDH at mets and estimates at turbine sites and in the database
+            int goodToGo;
+            bool okBool = false;
+            int numRadii = 0;
+            NodeCollection nodeList = new NodeCollection();
+
+            if (gotSR == true) // Already have surface roughness data loaded
+            {
+                goodToGo = Convert.ToInt16(MessageBox.Show("You already have land cover data loaded.  Do you want to load new data?", "Continuum 2.2", MessageBoxButtons.YesNo));
+                if (goodToGo == 6)
+                {
+                    okBool = true;
+                    landCover = null;
+                    // Clear met SR/DH
+                    for (int met_ind = 0; met_ind < continuum.metList.ThisCount; met_ind++)
+                    {
+                        if (continuum.metList.metItem[met_ind].expo != null)
+                        {
+                            numRadii = continuum.metList.metItem[met_ind].ExposureCount;
+
+                            for (int rad_ind = 0; rad_ind < numRadii; rad_ind++)
+                            {
+                                if (continuum.metList.metItem[met_ind].expo[rad_ind].SR != null)
+                                {
+                                    continuum.metList.metItem[met_ind].expo[rad_ind].dispH = null;
+                                    continuum.metList.metItem[met_ind].expo[rad_ind].SR = null;
+                                    continuum.metList.metItem[met_ind].expo[rad_ind].SR_Dist = null;                                    
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Clear turbine SR/DH
+                    if (useSR == true)
+                    {
+                        continuum.turbineList.ClearAllWSEsts();
+                        continuum.turbineList.ClearAllGrossEsts();
+                        continuum.turbineList.ClearAllNetEsts();
+                    }
+                    
+                    for (int turb_ind = 0; turb_ind < continuum.turbineList.TurbineCount; turb_ind++)
+                    {
+                        if (continuum.turbineList.turbineEsts[turb_ind].expo != null)
+                        {
+                            numRadii = continuum.turbineList.turbineEsts[turb_ind].ExposureCount;
+
+                            for (int rad_ind = 0; rad_ind < numRadii; rad_ind++)
+                            {
+                                if (continuum.turbineList.turbineEsts[turb_ind].expo[rad_ind].SR != null)
+                                {
+                                    continuum.turbineList.turbineEsts[turb_ind].expo[rad_ind].dispH = null;
+                                    continuum.turbineList.turbineEsts[turb_ind].expo[rad_ind].SR = null;
+                                    continuum.turbineList.turbineEsts[turb_ind].expo[rad_ind].SR_Dist = null;                                    
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Clear DB node.expo SR/DH
+                    string connString = nodeList.GetDB_ConnectionString(savedFileName);                    
+                    Exposure thisExpo = new Exposure();
+
+                    try
+                    {
+                        using (var context = new Continuum_EDMContainer(connString))
+                        {
+                            var expo_db = from N in context.Expo_table select N;
+
+                            foreach (var N in expo_db)
+                            {
+                                N.SR_Array = null;
+                                N.DH_Array = null;
+                            }
+
+                            context.SaveChanges();
+                        }
+                    }
+                    catch (Exception ex) {
+                        MessageBox.Show(ex.InnerException.ToString());
+                    }
+
+
+                    // Clear DB Map_nodes that use SR/DH
+
+                }
+                else
+                    okBool = false;
+            }
+            else
+                okBool = true;
+
+            return okBool;
+        }
+
+        public double CalcElevs(double UTMX, double UTMY)
+        {
+            // Returns interpolated elevation at specified UTMX and UTMY
+            double sumDist;
+            double elev = 0;
+
+            int thisX_Ind = (int)((UTMX - topoNumXY.X.calcs.min) / topoNumXY.X.calcs.reso);
+            int thisY_Ind = (int)((UTMY - topoNumXY.Y.calcs.min) / topoNumXY.Y.calcs.reso);
+
+           // int thisX_Ind = Convert.ToInt32(Math.Truncate(Convert.ToDouble(((UTMX - topoNumXY.X.calcs.min) / topoNumXY.X.calcs.reso)))); // this is silly, do it cleaner
+           // int thisY_Ind = Convert.ToInt32(Math.Truncate(Convert.ToDouble(((UTMY - topoNumXY.Y.calcs.min) / topoNumXY.Y.calcs.reso))));
+
+            int xInd1 = thisX_Ind;
+            int xInd2 = thisX_Ind + 1;
+            int yInd1 = thisY_Ind;
+            int yInd2 = thisY_Ind + 1;
+
+            double targetEastMin = xInd1 * topoNumXY.X.calcs.reso + topoNumXY.X.calcs.min;
+            double targetEastMax = xInd2 * topoNumXY.X.calcs.reso + topoNumXY.X.calcs.min;
+            double targetNorthMin = yInd1 * topoNumXY.Y.calcs.reso + topoNumXY.Y.calcs.min;
+            double targetNorthMax = yInd2 * topoNumXY.Y.calcs.reso + topoNumXY.Y.calcs.min;
+
+            double thisElev = 0;
+
+            if (elevsForCalcs == null)
+                return elev;
+
+            double distanceSqrd = (targetEastMin - UTMX) * (targetEastMin - UTMX) + (targetNorthMin - UTMY) * (targetNorthMin - UTMY);
+            if (distanceSqrd > 0)
+            {
+                sumDist = 1 / distanceSqrd;                
+                elev = elevsForCalcs[xInd1, yInd1] / distanceSqrd;                
+            }
+            else
+            {
+                elev = elevsForCalcs[xInd1, yInd1];
+                return elev;
+            }
+                        
+            distanceSqrd = (targetEastMin - UTMX) * (targetEastMin - UTMX) + (targetNorthMax - UTMY) * (targetNorthMax - UTMY);
+            if (distanceSqrd > 0)
+            {
+                sumDist = sumDist + 1 / distanceSqrd;                
+                elev = elev + elevsForCalcs[xInd1, yInd2] / distanceSqrd;
+                
+            }
+            else
+            {
+                elev = elevsForCalcs[xInd1, yInd2];
+                return elev;
+            }
+                        
+            distanceSqrd = (targetEastMax - UTMX) * (targetEastMax - UTMX) + (targetNorthMin - UTMY) * (targetNorthMin - UTMY);
+            if (distanceSqrd > 0)
+            {
+                sumDist = sumDist + 1 / distanceSqrd;                
+                elev = elev + elevsForCalcs[xInd2, yInd1] / distanceSqrd;                
+            }
+            else
+            {
+                elev = elevsForCalcs[xInd2, yInd1];
+                return elev;
+            }
+                                    
+            distanceSqrd = (targetEastMax - UTMX) * (targetEastMax - UTMX) + (targetNorthMax - UTMY) * (targetNorthMax - UTMY);
+            if (distanceSqrd > 0)
+            {
+                sumDist = sumDist + 1 / distanceSqrd;                
+                elev = elev + elevsForCalcs[xInd2, yInd2] / distanceSqrd;
+                thisElev = elevsForCalcs[xInd2, yInd2];
+            }
+            else
+            {
+                elev = elevsForCalcs[xInd2, yInd2];
+                return elev;
+            }
+            
+            if (sumDist > 0) elev = elev / sumDist;
+
+            return elev;
+        }
+
+        public bool newNode(double UTMX, double UTMY, InvestCollection radiiList, int gridRadius)
+        {
+            // Checks the distance between the mets/turbines and edges of topo data to make sure they all fit within defined radii and returns false if UTMX and UTMY fall outside radius
+            bool nodeOk = true;
+
+            if (gotTopo == true)
+            {             
+                int numRadii = radiiList.ThisCount;
+                int maxRadius = Convert.ToInt32(Math.Min((UTMX - topoNumXY.X.calcs.min), (UTMY - topoNumXY.Y.calcs.min)));
+                maxRadius = Convert.ToInt32(Math.Min(maxRadius, (topoNumXY.X.calcs.max - UTMX)));
+                maxRadius = Convert.ToInt32(Math.Min(maxRadius, (topoNumXY.Y.calcs.max - UTMY)));
+
+                if (UTMX > topoNumXY.X.calcs.max)
+                {
+                    nodeOk = false;
+                    return nodeOk;
+                }
+                else if (UTMX < topoNumXY.X.calcs.min)
+                {
+                    nodeOk = false;
+                    return nodeOk;
+                }
+                else if (UTMY > topoNumXY.Y.calcs.max)
+                {
+                    nodeOk = false;
+                    return nodeOk;
+                }
+                else if (UTMY < topoNumXY.Y.calcs.min)
+                {
+                    nodeOk = false;
+                    return nodeOk;
+                }
+
+                for (int i = 0; i < numRadii; i++)
+                {
+                    if ((radiiList.investItem[i].radius + gridRadius) > maxRadius)
+                    {
+                        nodeOk = false;
+                        break;
+                    }
+                }
+            }                        
+
+            return nodeOk;
+        }
+          
+        public double GetDirection(double thisX, double thisY)
+        {
+            // Calculates orientation (or direction) corresponding to thisX and thisY
+
+            double direction = Convert.ToSingle(Math.Atan2(thisY, thisX) * 180 / Math.PI);
+
+            direction = 90 - direction; // moves 0 degree from east (90 degs) To north (0 degs)                                                              
+
+            if (direction < 0) direction = direction + 360;
+
+            return direction;
+        }
+
+        public int CalcDirInd(double deltaX, double deltaY, double dirBinSize)
+        {
+            // Returns wind direction sector corresponding to deltaX and deltaY
+            double direction = GetDirection(deltaX, deltaY);
+            int dirInd;
+
+            if (direction >= (360 - dirBinSize / 2) || direction <= dirBinSize / 2)
+                dirInd = 0;
+            else
+                dirInd = Convert.ToInt16(Math.Round(direction / dirBinSize, 0));
+
+            return dirInd;
+        }
+        
+        public TopoGrid GetClosestNode(double UTMX, double UTMY, string Topo_or_LC)
+        {
+            // Returns node coordinates of data point that is closest to UTMX and UTMY
+            double targetEastMin = 0;
+            double targetEastMax = 0;
+            double targetNorthMin = 0;
+            double targetNorthMax = 0;
+            TopoGrid closestNode = new TopoGrid();
+
+            int thisX_Ind = 0;
+            int thisY_Ind = 0;
+
+            int xInd1;
+            int xInd2;
+            int yInd1;
+            int yInd2;
+
+            if (Topo_or_LC == "Topography")
+            {
+                // Find four closest data points
+                thisX_Ind = Convert.ToInt32((UTMX - topoNumXY.X.all.min) / topoNumXY.X.all.reso);
+                thisY_Ind = Convert.ToInt32((UTMY - topoNumXY.Y.all.min) / topoNumXY.Y.all.reso);
+
+                xInd1 = thisX_Ind;
+                xInd2 = thisX_Ind + 1;
+                yInd1 = thisY_Ind;
+                yInd2 = thisY_Ind + 1;
+
+                targetEastMin = xInd1 * topoNumXY.X.all.reso + topoNumXY.X.all.min;
+                targetEastMax = xInd2 * topoNumXY.X.all.reso + topoNumXY.X.all.min;
+                targetNorthMin = yInd1 * topoNumXY.Y.all.reso + topoNumXY.Y.all.min;
+                targetNorthMax = yInd2 * topoNumXY.Y.all.reso + topoNumXY.Y.all.min;
+            }
+            else if (Topo_or_LC == "Land Cover")
+            {
+                // Find four closest data points
+                thisX_Ind = Convert.ToInt32((UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso);
+                thisY_Ind = Convert.ToInt32((UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso);
+
+                xInd1 = thisX_Ind;
+                xInd2 = thisX_Ind + 1;
+                yInd1 = thisY_Ind;
+                yInd2 = thisY_Ind + 1;
+
+                targetEastMin = xInd1 * LC_NumXY.X.all.reso + LC_NumXY.X.all.min;
+                targetEastMax = xInd2 * LC_NumXY.X.all.reso + LC_NumXY.X.all.min;
+                targetNorthMin = yInd1 * LC_NumXY.Y.all.reso + LC_NumXY.Y.all.min;
+                targetNorthMax = yInd2 * LC_NumXY.Y.all.reso + LC_NumXY.Y.all.min;
+
+            }
+
+            // Find closest node
+            double minDist = 1000;
+
+            // Using East Min and North Min          
+            double thisDist = CalcDistanceBetweenPoints(UTMX, UTMY, targetEastMin, targetNorthMin);
+
+            if (thisDist < minDist)
+            {
+                minDist = thisDist;
+                closestNode.UTMX = targetEastMin;
+                closestNode.UTMY = targetNorthMin;
+            }
+
+            // Using East Min and North Max         
+            thisDist = CalcDistanceBetweenPoints(UTMX, UTMY, targetEastMin, targetNorthMax);
+            if (thisDist < minDist)
+            {
+                minDist = thisDist;
+                closestNode.UTMX = targetEastMin;
+                closestNode.UTMY = targetNorthMax;
+            }
+
+            // Using East Max and North Min          
+            thisDist = CalcDistanceBetweenPoints(UTMX, UTMY, targetEastMax, targetNorthMin);
+            if (thisDist < minDist)
+            {
+                minDist = thisDist;
+                closestNode.UTMX = targetEastMax;
+                closestNode.UTMY = targetNorthMin;
+            }
+
+            // Using East Max and North Max            
+            thisDist = CalcDistanceBetweenPoints(UTMX, UTMY, targetEastMax, targetNorthMax);
+            if (thisDist < minDist)
+            {
+                minDist = thisDist;
+                closestNode.UTMX = targetEastMax;
+                closestNode.UTMY = targetNorthMax;
+            }
+
+            return closestNode;
+
+        }
+
+        public TopoGrid GetClosestNodeFixedGrid(double UTMX, double UTMY, int gridReso)
+        {
+            // Returns node on grid closest to UTMX/Y but at least 11000 meters away from edge of topo
+            // 
+            TopoGrid closestNode = new TopoGrid();
+            // need to check distance to edge of topo all
+            int minInd = (int)Math.Floor((double)(10000 / gridReso)) + 1;
+            int maxX_Ind = (int)Math.Floor((topoNumXY.X.all.max - topoNumXY.X.all.min - 10000) / gridReso);
+            int maxY_Ind = (int)Math.Floor((topoNumXY.Y.all.max - topoNumXY.Y.all.min - 10000) / gridReso);
+
+            int X_Ind = (int)Math.Round((UTMX - topoNumXY.X.all.min) / gridReso, 0);
+            int Y_Ind = (int)Math.Round((UTMY - topoNumXY.Y.all.min) / gridReso, 0);
+
+            // Check distance to min X/Y
+            if (X_Ind < minInd) X_Ind = minInd;            
+            if (Y_Ind < minInd) Y_Ind = minInd;
+
+            // Check distance to max X/Y
+            if (X_Ind > maxX_Ind) X_Ind = maxX_Ind;
+            if (Y_Ind > maxY_Ind) Y_Ind = maxY_Ind;
+
+            // Check distance to edge of map
+            double distToMin = X_Ind * gridReso;
+            if (distToMin < 10000)
+                X_Ind++;
+
+            distToMin = Y_Ind * gridReso;
+            if (distToMin < 10000)
+                Y_Ind++;
+
+            double distToMax = topoNumXY.X.all.max - (X_Ind * gridReso + topoNumXY.X.all.min);
+            if (distToMax < 10000)
+                X_Ind--;
+
+            distToMax = topoNumXY.Y.all.max - (Y_Ind * gridReso + topoNumXY.Y.all.min);
+            if (distToMax < 10000)
+                Y_Ind--;
+
+            closestNode.UTMX = X_Ind * gridReso + topoNumXY.X.all.min;
+            closestNode.UTMY = Y_Ind * gridReso + topoNumXY.Y.all.min;
+
+            return closestNode;
+        }
+
+        public double CalcP10_UW_CrosswindGrade(double UTMX, double UTMY, InvestCollection radiiList, int WD_sec, int numWD)
+        {
+            // Returns P10 upwind crosswind grade. Not used right now but will be when flow around hills algorithm is revisisted.
+            double[] UWGrade = new double[4];
+            double[] avgUWGrade = new double[6];
+            double highestUWGrade;
+            TopoGrid[] nodesCross;
+
+            double[,] thetaMin = new double[6, 4];  // i = crosswind slice index, j = 400m chunk of crosswind slope
+            double[,] thetaMax = new double[6, 4];
+            double[,] X_min = new double[6, 4];
+            double[,] X_max = new double[6, 4];
+            double[,] Y_min = new double[6, 4];
+            double[,] Y_max = new double[6, 4];                       
+
+            if (numWD == 0)
+                return 0;
+
+            double WDbin = (double)360 / numWD;            
+            int gradeInd = 0;
+            double radialDist500 = 0;
+            double radialDist300 = 0;
+            double radialDist100 = 0;
+            double WD_theta = WD_sec * (double)360 / numWD;
+
+            //   minRadius = CInt(Min_Length * 1.1 / 2 / Tan(WDbin / 2 * PI / 180)) ' multiplied by 1.1 to make first radius slightly larger than 400 m across
+            int thisRadius;
+
+            // Takes seven slices of 1000 m and calculates the average slope in 4 - 400 m windows along each slice.
+            // First slice is a radius of 0 m and increments by 500 m to 3000 m.
+            //  The average slope is calculated at each slice and the highest of the six slices is found and used as the UW crosswind grade.
+            for (int r = 0; r <= 5; r++)
+            {
+                thisRadius = (r + 1) * 500;
+                thetaMin[r, 0] = 450 - WD_theta + Convert.ToSingle(Math.Atan(500 / thisRadius) * 180 / Math.PI);
+                thetaMax[r, 0] = 450 - WD_theta + Convert.ToSingle(Math.Atan(100 / thisRadius) * 180 / Math.PI);
+
+                thetaMin[r, 1] = 450 - WD_theta + Convert.ToSingle(Math.Atan(300 / thisRadius) * 180 / Math.PI);
+                thetaMax[r, 1] = 450 - WD_theta - Convert.ToSingle(Math.Atan(100 / thisRadius) * 180 / Math.PI);
+
+                thetaMin[r, 2] = 450 - WD_theta + Convert.ToSingle(Math.Atan(100 / thisRadius) * 180 / Math.PI);
+                thetaMax[r, 2] = 450 - WD_theta - Convert.ToSingle(Math.Atan(300 / thisRadius) * 180 / Math.PI);
+
+                thetaMin[r, 3] = 450 - WD_theta - Convert.ToSingle(Math.Atan(100 / thisRadius) * 180 / Math.PI);
+                thetaMax[r, 3] = 450 - WD_theta - Convert.ToSingle(Math.Atan(500 / thisRadius) * 180 / Math.PI);
+
+                if (thetaMin[r, 0] > 360) thetaMin[r, 0] = thetaMin[r, 0] - 360;
+                if (thetaMax[r, 0] > 360) thetaMax[r, 0] = thetaMax[r, 0] - 360;
+                if (thetaMin[r, 1] > 360) thetaMin[r, 1] = thetaMin[r, 1] - 360;
+                if (thetaMax[r, 1] > 360) thetaMax[r, 1] = thetaMax[r, 1] - 360;
+                if (thetaMin[r, 2] > 360) thetaMin[r, 2] = thetaMin[r, 2] - 360;
+                if (thetaMax[r, 2] > 360) thetaMax[r, 2] = thetaMax[r, 2] - 360;
+                if (thetaMin[r, 3] > 360) thetaMin[r, 3] = thetaMin[r, 3] - 360;
+                if (thetaMax[r, 3] > 360) thetaMax[r, 3] = thetaMax[r, 3] - 360;
+
+                radialDist500 = Convert.ToSingle(Math.Pow((Math.Pow(thisRadius, 2) + Math.Pow(500, 2)), 0.5));
+                radialDist300 = Convert.ToSingle(Math.Pow((Math.Pow(thisRadius, 2) + Math.Pow(300, 2)), 0.5));
+                radialDist100 = Convert.ToSingle(Math.Pow((Math.Pow(thisRadius, 2) + Math.Pow(100, 2)), 0.5));
+
+                X_min[r, 0] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[r, 0] * Math.PI / 180)) * radialDist500);
+                X_max[r, 0] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[r, 0] * Math.PI / 180)) * radialDist100);
+
+                Y_min[r, 0] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[r, 0] * Math.PI / 180)) * radialDist500);
+                Y_max[r, 0] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[r, 0] * Math.PI / 180)) * radialDist100);
+
+                X_min[r, 1] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[r, 1] * Math.PI / 180)) * radialDist300);
+                X_max[r, 1] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[r, 1] * Math.PI / 180)) * radialDist100);
+
+                Y_min[r, 1] = UTMY + Convert.ToInt32((Math.Sin(thetaMin[r, 1] * Math.PI / 180)) * radialDist300);
+                Y_max[r, 1] = UTMY + Convert.ToInt32((Math.Sin(thetaMax[r, 1] * Math.PI / 180)) * radialDist100);
+
+                X_min[r, 2] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[r, 2] * Math.PI / 180)) * radialDist100);
+                X_max[r, 2] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[r, 2] * Math.PI / 180)) * radialDist300);
+
+                Y_min[r, 2] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[r, 2] * Math.PI / 180)) * radialDist100);
+                Y_max[r, 2] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[r, 2] * Math.PI / 180)) * radialDist300);
+
+                X_min[r, 3] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[r, 3] * Math.PI / 180)) * radialDist100);
+                X_max[r, 3] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[r, 3] * Math.PI / 180)) * radialDist500);
+
+                Y_min[r, 3] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[r, 3] * Math.PI / 180)) * radialDist100);
+                Y_max[r, 3] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[r, 3] * Math.PI / 180)) * radialDist500);
+            }
+
+            int nodeCount = 9;
+
+            for (int r = 0; r <= 5; r++)
+            {
+                gradeInd = 0;
+                for (int c = 0; c <= 3; c++)
+                {
+                    double thisX_Min;
+                    double thisX_Max;
+                    double thisY_Min;
+                    double thisY_Max;
+
+                    if (X_min[r, c] < X_max[r, c])
+                    {
+                        thisX_Min = X_min[r, c];
+                        thisX_Max = X_max[r, c];
+                    }
+                    else
+                    {
+                        thisX_Min = X_max[r, c];
+                        thisX_Max = X_min[r, c];
+                    }
+
+                    if (Y_min[r, c] < Y_max[r, c])
+                    {
+                        thisY_Min = Y_min[r, c];
+                        thisY_Max = Y_max[r, c];
+                    }
+                    else
+                    {
+                        thisY_Min = Y_max[r, c];
+                        thisY_Max = Y_min[r, c];
+                    }
+
+                    if (thisY_Max - thisY_Min < 10)
+                    {
+                        thisY_Max = thisY_Max + 40;
+                        thisY_Min = thisY_Min - 40;
+                    }
+
+                    if (thisX_Max - thisX_Min < 10)
+                    {
+                        thisX_Max = thisX_Max + 40;
+                        thisX_Min = thisX_Min - 40;
+                    }
+
+                    nodesCross = new TopoGrid[nodeCount]; // resets array
+
+                    // Calc slope between Min and Max chunk limits using 10 grid points 
+                    for (int N = 0; N <= nodeCount - 1; N++)
+                    {
+                        nodesCross[N].UTMX = X_min[r, c] + N * (X_max[r, c] - X_min[r, c]) / 9;
+                        nodesCross[N].UTMY = Y_min[r, c] + N * (Y_max[r, c] - Y_min[r, c]) / 9;
+                        nodesCross[N].elev = CalcElevs(nodesCross[N].UTMX, nodesCross[N].UTMY);
+                    }
+
+                    // now calculate average slope of terrain
+                    double Sx = 0;
+                    double Sy = 0;
+                    double Sxy = 0;
+                    double Sx2 = 0;
+
+                    for (int i = 0; i < nodeCount; i++)
+                    {
+                        double thisDist = CalcDistanceBetweenPoints(nodesCross[i].UTMX, nodesCross[i].UTMY, X_min[r, c], Y_min[r, c]);
+                        Sx = Sx + thisDist; 
+                        Sy = Sy + nodesCross[i].elev;                        
+                        Sxy = Sxy + thisDist * nodesCross[i].elev;
+                        Sx2 = Sx2 + Convert.ToSingle(Math.Pow(thisDist, 2));
+                    }
+
+                    Array.Resize(ref UWGrade, gradeInd + 1);
+                    UWGrade[gradeInd] = Math.Abs((nodeCount * Sxy - Sx * Sy) / (nodeCount * Sx2 - Sx * Sx));
+
+                    gradeInd = gradeInd + 1;
+                }
+
+                avgUWGrade[r] = (UWGrade[0] + UWGrade[1] + UWGrade[2] + UWGrade[3]) / 4;
+
+            }
+
+            highestUWGrade = 0;
+            for (int r = 0; r <= 5; r++)
+                if (avgUWGrade[r] > highestUWGrade)
+                    highestUWGrade = avgUWGrade[r];
+
+            return highestUWGrade;
+        }
+
+
+        public double CalcP10_UW_ParallelGrade(double UTMX, double UTMY, InvestCollection radiiList, int WD_sec, int numWD)
+        {
+            //  Returns P10 upwind parallel grade. Not used right now but will be when flow around hills algorithm is revisisted.
+            double[] UWGrade = new double[11];
+            double[] maxUWGrade = new double[5];
+            double avgHighestUWGrade;
+            double WD_theta;
+            TopoGrid[] nodesCross;
+
+            double[,] thetaMin = new double[5, 11]; // i = crosswind slice index, j = 500m chunk of parallel slope
+            double[,] thetaMax = new double[5, 11];
+            double[,] X_min = new double[5, 11];
+            double[,] X_max = new double[5, 11];
+            double[,] Y_min = new double[5, 11];
+            double[,] Y_max = new double[5, 11];                      
+
+            if (numWD == 0) return 0;
+
+            double WDbin = Convert.ToSingle(360.0 / numWD);
+                        
+            int gradeInd = 0;
+
+            double radialDist3000 = 0;
+            double radialDist2750 = 0;
+            double radialDist2500 = 0;
+            double radialDist2250 = 0;
+            double radialDist2000 = 0;
+            double radialDist1750 = 0;
+            double radialDist1500 = 0;
+            double radialDist1250 = 0;
+            double radialDist1000 = 0;
+            double radialDist750 = 0;
+            double radialDist500 = 0;
+            double radialDist250 = 0;
+            double radialDist0 = 0;
+
+            int[] isPositiveSlope = new int[5]; // 0 = not sure, 1 = positive, 2 = negative
+            int[] hillSlopeChangeInd = new int[5]; // Chunk index where slope changes from + to - and is more than |0.02|
+            int[] hillStartInd = new int[5]; // Chunk index where slope greater than 0.02 is first identified
+            WD_theta = Convert.ToSingle(WD_sec * 360.0 / numWD);
+            
+            // Takes five slices of 3000 m and calculates the average slope in 11 - 500 m windows along each slice.
+            // Slices are +/- 500 m and increments by 250 m.
+            //  The maximum slope is calculated at each slice and the average of the five slices' max slope is found and used as the UW parallel grade.
+            for (int d = 0; d <= 4; d++)
+            {
+                int thisDist = -500 + d * 250;
+                if (thisDist < 0)
+                {
+                    thetaMin[d, 0] = 450 - WD_theta;
+                    thetaMax[d, 0] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 500) * 180 / Math.PI);
+
+                    thetaMin[d, 1] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 250) * 180 / Math.PI);
+                    thetaMax[d, 1] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 750) * 180 / Math.PI);
+
+                    thetaMin[d, 2] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 500) * 180 / Math.PI);
+                    thetaMax[d, 2] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1000) * 180 / Math.PI);
+
+                    thetaMin[d, 3] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 750) * 180 / Math.PI);
+                    thetaMax[d, 3] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1250) * 180 / Math.PI);
+
+                    thetaMin[d, 4] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1000) * 180 / Math.PI);
+                    thetaMax[d, 4] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1500) * 180 / Math.PI);
+
+                    thetaMin[d, 5] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1250) * 180 / Math.PI);
+                    thetaMax[d, 5] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1750) * 180 / Math.PI);
+
+                    thetaMin[d, 6] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1500) * 180 / Math.PI);
+                    thetaMax[d, 6] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2000) * 180 / Math.PI);
+
+                    thetaMin[d, 7] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1750) * 180 / Math.PI);
+                    thetaMax[d, 7] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2250) * 180 / Math.PI);
+
+                    thetaMin[d, 8] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2000) * 180 / Math.PI);
+                    thetaMax[d, 8] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2500) * 180 / Math.PI);
+
+                    thetaMin[d, 9] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2250) * 180 / Math.PI);
+                    thetaMax[d, 9] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2750) * 180 / Math.PI);
+
+                    thetaMin[d, 10] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2500) * 180 / Math.PI);
+                    thetaMax[d, 10] = 450 - WD_theta + Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 3000) * 180 / Math.PI);
+
+                }
+                else
+                {
+                    thetaMin[d, 0] = 450 - WD_theta;
+                    thetaMax[d, 0] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 500) * 180 / Math.PI);
+
+                    thetaMin[d, 1] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 250) * 180 / Math.PI);
+                    thetaMax[d, 1] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 750) * 180 / Math.PI);
+
+                    thetaMin[d, 2] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 500) * 180 / Math.PI);
+                    thetaMax[d, 2] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1000) * 180 / Math.PI);
+
+                    thetaMin[d, 3] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 750) * 180 / Math.PI);
+                    thetaMax[d, 3] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1250) * 180 / Math.PI);
+
+                    thetaMin[d, 4] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1000) * 180 / Math.PI);
+                    thetaMax[d, 4] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1500) * 180 / Math.PI);
+
+                    thetaMin[d, 5] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1250) * 180 / Math.PI);
+                    thetaMax[d, 5] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1750) * 180 / Math.PI);
+
+                    thetaMin[d, 6] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1500) * 180 / Math.PI);
+                    thetaMax[d, 6] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2000) * 180 / Math.PI);
+
+                    thetaMin[d, 7] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 1750) * 180 / Math.PI);
+                    thetaMax[d, 7] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2250) * 180 / Math.PI);
+
+                    thetaMin[d, 8] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2000) * 180 / Math.PI);
+                    thetaMax[d, 8] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2500) * 180 / Math.PI);
+
+                    thetaMin[d, 9] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2250) * 180 / Math.PI);
+                    thetaMax[d, 9] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2750) * 180 / Math.PI);
+
+                    thetaMin[d, 10] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 2500) * 180 / Math.PI);
+                    thetaMax[d, 10] = 450 - WD_theta - Convert.ToSingle(Math.Atan(Math.Abs(thisDist) / 3000) * 180 / Math.PI);
+                }
+
+                if (thetaMin[d, 0] > 360) thetaMin[d, 0] = thetaMin[d, 0] - 360;
+                if (thetaMax[d, 0] > 360) thetaMax[d, 0] = thetaMax[d, 0] - 360;
+                if (thetaMin[d, 1] > 360) thetaMin[d, 1] = thetaMin[d, 1] - 360;
+                if (thetaMax[d, 1] > 360) thetaMax[d, 1] = thetaMax[d, 1] - 360;
+                if (thetaMin[d, 2] > 360) thetaMin[d, 2] = thetaMin[d, 2] - 360;
+                if (thetaMax[d, 2] > 360) thetaMax[d, 2] = thetaMax[d, 2] - 360;
+                if (thetaMin[d, 3] > 360) thetaMin[d, 3] = thetaMin[d, 3] - 360;
+                if (thetaMax[d, 3] > 360) thetaMax[d, 3] = thetaMax[d, 3] - 360;
+                if (thetaMin[d, 4] > 360) thetaMin[d, 4] = thetaMin[d, 4] - 360;
+                if (thetaMax[d, 4] > 360) thetaMax[d, 4] = thetaMax[d, 4] - 360;
+                if (thetaMin[d, 5] > 360) thetaMin[d, 5] = thetaMin[d, 5] - 360;
+                if (thetaMax[d, 5] > 360) thetaMax[d, 5] = thetaMax[d, 5] - 360;
+                if (thetaMin[d, 6] > 360) thetaMin[d, 6] = thetaMin[d, 6] - 360;
+                if (thetaMax[d, 6] > 360) thetaMax[d, 6] = thetaMax[d, 6] - 360;
+                if (thetaMin[d, 7] > 360) thetaMin[d, 7] = thetaMin[d, 7] - 360;
+                if (thetaMax[d, 7] > 360) thetaMax[d, 7] = thetaMax[d, 7] - 360;
+                if (thetaMin[d, 8] > 360) thetaMin[d, 8] = thetaMin[d, 8] - 360;
+                if (thetaMax[d, 8] > 360) thetaMax[d, 8] = thetaMax[d, 8] - 360;
+                if (thetaMin[d, 9] > 360) thetaMin[d, 9] = thetaMin[d, 9] - 360;
+                if (thetaMax[d, 9] > 360) thetaMax[d, 9] = thetaMax[d, 9] - 360;
+                if (thetaMin[d, 10] > 360) thetaMin[d, 10] = thetaMin[d, 10] - 360;
+                if (thetaMax[d, 10] > 360) thetaMax[d, 10] = thetaMax[d, 10] - 360;
+
+                radialDist0 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2)), 0.5));
+                radialDist250 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(250, 2)), 0.5));
+                radialDist500 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(500, 2)), 0.5));
+                radialDist750 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(750, 2)), 0.5));
+                radialDist1000 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1000, 2)), 0.5));
+                radialDist1250 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1250, 2)), 0.5));
+                radialDist1500 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1500, 2)), 0.5));
+                radialDist1750 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1750, 2)), 0.5));
+                radialDist2000 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2000, 2)), 0.5));
+                radialDist2250 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2250, 2)), 0.5));
+                radialDist2500 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2500, 2)), 0.5));
+                radialDist2750 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2750, 2)), 0.5));
+                radialDist3000 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(3000, 2)), 0.5));
+
+                X_min[d, 0] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 0] * Math.PI / 180)) * radialDist0);
+                X_max[d, 0] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 0] * Math.PI / 180)) * radialDist500);
+
+                Y_min[d, 0] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 0] * Math.PI / 180)) * radialDist0);
+                Y_max[d, 0] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 0] * Math.PI / 180)) * radialDist500);
+
+                X_min[d, 1] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 1] * Math.PI / 180)) * radialDist250);
+                X_max[d, 1] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 1] * Math.PI / 180)) * radialDist750);
+
+                Y_min[d, 1] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 1] * Math.PI / 180)) * radialDist250);
+                Y_max[d, 1] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 1] * Math.PI / 180)) * radialDist750);
+
+                X_min[d, 2] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 2] * Math.PI / 180)) * radialDist500);
+                X_max[d, 2] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 2] * Math.PI / 180)) * radialDist1000);
+
+                Y_min[d, 2] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 2] * Math.PI / 180)) * radialDist500);
+                Y_max[d, 2] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 2] * Math.PI / 180)) * radialDist1000);
+
+                X_min[d, 3] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 3] * Math.PI / 180)) * radialDist750);
+                X_max[d, 3] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 3] * Math.PI / 180)) * radialDist1250);
+
+                Y_min[d, 3] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 3] * Math.PI / 180)) * radialDist750);
+                Y_max[d, 3] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 3] * Math.PI / 180)) * radialDist1250);
+
+                X_min[d, 4] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 4] * Math.PI / 180)) * radialDist1000);
+                X_max[d, 4] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 4] * Math.PI / 180)) * radialDist1500);
+
+                Y_min[d, 4] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 4] * Math.PI / 180)) * radialDist1000);
+                Y_max[d, 4] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 4] * Math.PI / 180)) * radialDist1500);
+
+                X_min[d, 5] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 5] * Math.PI / 180)) * radialDist1250);
+                X_max[d, 5] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 5] * Math.PI / 180)) * radialDist1750);
+
+                Y_min[d, 5] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 5] * Math.PI / 180)) * radialDist1250);
+                Y_max[d, 5] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 5] * Math.PI / 180)) * radialDist1750);
+
+                X_min[d, 6] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 6] * Math.PI / 180)) * radialDist1500);
+                X_max[d, 6] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 6] * Math.PI / 180)) * radialDist2000);
+
+                Y_min[d, 6] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 6] * Math.PI / 180)) * radialDist1500);
+                Y_max[d, 6] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 6] * Math.PI / 180)) * radialDist2000);
+
+                X_min[d, 7] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 7] * Math.PI / 180)) * radialDist1750);
+                X_max[d, 7] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 7] * Math.PI / 180)) * radialDist2250);
+
+                Y_min[d, 7] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 7] * Math.PI / 180)) * radialDist1750);
+                Y_max[d, 7] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 7] * Math.PI / 180)) * radialDist2250);
+
+                X_min[d, 8] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 8] * Math.PI / 180)) * radialDist2000);
+                X_max[d, 8] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 8] * Math.PI / 180)) * radialDist2500);
+
+                Y_min[d, 8] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 8] * Math.PI / 180)) * radialDist2000);
+                Y_max[d, 8] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 8] * Math.PI / 180)) * radialDist2500);
+
+                X_min[d, 9] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 9] * Math.PI / 180)) * radialDist2250);
+                X_max[d, 9] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 9] * Math.PI / 180)) * radialDist2750);
+
+                Y_min[d, 9] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 9] * Math.PI / 180)) * radialDist2250);
+                Y_max[d, 9] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 9] * Math.PI / 180)) * radialDist2750);
+
+                X_min[d, 10] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 10] * Math.PI / 180)) * radialDist2500);
+                X_max[d, 10] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 10] * Math.PI / 180)) * radialDist3000);
+
+                Y_min[d, 10] = UTMY + Convert.ToSingle((Math.Sin(thetaMin[d, 10] * Math.PI / 180)) * radialDist2500);
+                Y_max[d, 10] = UTMY + Convert.ToSingle((Math.Sin(thetaMax[d, 10] * Math.PI / 180)) * radialDist3000);
+            }
+
+            int nodeCount = 10;
+
+            for (int d = 0; d <= 4; d++)
+            {
+                gradeInd = 0;
+                isPositiveSlope[d] = 0; // not sure
+
+                for (int c = 0; c <= 10; c++)
+                {
+                    double thisX_Min;
+                    double thisX_Max;
+                    double thisY_Min;
+                    double thisY_Max;
+
+                    if (X_min[d, c] < X_max[d, c])
+                    {
+                        thisX_Min = X_min[d, c];
+                        thisX_Max = X_max[d, c];
+                    }
+                    else
+                    {
+                        thisX_Min = X_max[d, c];
+                        thisX_Max = X_min[d, c];
+                    }
+
+                    if (Y_min[d, c] < Y_max[d, c])
+                    {
+                        thisY_Min = Y_min[d, c];
+                        thisY_Max = Y_max[d, c];
+                    }
+                    else
+                    {
+                        thisY_Min = Y_max[d, c];
+                        thisY_Max = Y_min[d, c];
+                    }
+
+                    if (thisY_Max - thisY_Min < 10)
+                    {
+                        thisY_Max = thisY_Max + 40;
+                        thisY_Min = thisY_Min - 40;
+                    }
+
+                    if (thisX_Max - thisX_Min < 10)
+                    {
+                        thisX_Max = thisX_Max + 40;
+                        thisX_Min = thisX_Min - 40;
+                    }
+
+                    nodesCross = new TopoGrid[nodeCount];  // resets array       
+                                                                 // Calc slope between Min and Max chunk limits using 10 grid points (spaced by 50 m)
+                    for (int N = 0; N <= nodeCount - 1; N++)
+                    {
+                        nodesCross[N].UTMX = X_min[d, c] + N * (X_max[d, c] - X_min[d, c]) / 9;
+                        nodesCross[N].UTMY = Y_min[d, c] + N * (Y_max[d, c] - Y_min[d, c]) / 9;
+                        nodesCross[N].elev = CalcElevs(nodesCross[N].UTMX, nodesCross[N].UTMY);
+                    }
+
+                    // now calculate average slope of terrain
+                    double Sx = 0;
+                    double Sy = 0;
+                    double Sxy = 0;
+                    double Sx2 = 0;
+
+                    for (int i = 0; i <= nodeCount - 1; i++)
+                    {
+                        Sx = Sx + Convert.ToSingle(Math.Pow((Math.Pow((nodesCross[i].UTMX - X_min[d, c]), 2) + Math.Pow((nodesCross[i].UTMY - Y_min[d, c]), 2)), 0.5));
+                        Sy = Sy + nodesCross[i].elev;
+                        Sxy = Sxy + Convert.ToSingle(Math.Pow((Math.Pow((nodesCross[i].UTMX - X_min[d, c]), 2) + Math.Pow((nodesCross[i].UTMY - Y_min[d, c]), 2)), 0.5) * nodesCross[i].elev);
+                        Sx2 = Sx2 + Convert.ToSingle(Math.Pow((nodesCross[i].UTMX - X_min[d, c]), 2) + Math.Pow((nodesCross[i].UTMY - Y_min[d, c]), 2));
+                    }
+
+                    Array.Resize(ref UWGrade, gradeInd + 1);
+
+                    UWGrade[gradeInd] = (nodeCount * Sxy - Sx * Sy) / (nodeCount * Sx2 - Sx * Sx);
+
+                    if (isPositiveSlope[d] == 0 && Math.Abs(UWGrade[gradeInd]) > 0.02)   // 0 = not sure, 1 = positive, 2 = negative
+                    {
+                        hillStartInd[d] = gradeInd;
+                        if (UWGrade[gradeInd] > 0)
+                            isPositiveSlope[d] = 1;
+                        else
+                            isPositiveSlope[d] = 2;
+                    }
+                    else if (isPositiveSlope[d] != 0)
+                    {
+                        if ((UWGrade[gradeInd] > 0 && isPositiveSlope[d] == 2 && Math.Abs(UWGrade[gradeInd]) > 0.02) || (UWGrade[gradeInd] < 0 && isPositiveSlope[d] == 1 &&
+                            Math.Abs(UWGrade[gradeInd]) > 0.02))
+                        {
+                            hillSlopeChangeInd[d] = gradeInd;
+                            break;
+                        }
+                    }
+
+                    gradeInd = gradeInd + 1;
+                }
+
+                if (hillSlopeChangeInd[d] == 0) hillSlopeChangeInd[d] = 10; // i.e. didn't find a change in slope
+                maxUWGrade[d] = 0;
+
+                if (isPositiveSlope[d] != 0)
+                {
+                    maxUWGrade[d] = UWGrade[hillStartInd[d]];
+                    for (int i = hillStartInd[d]; i <= hillSlopeChangeInd[d] - 1; i++)
+                        if (Math.Abs(UWGrade[i]) > Math.Abs(maxUWGrade[d])) maxUWGrade[d] = UWGrade[i];
+
+                }
+
+            }
+
+            avgHighestUWGrade = 0;            
+            double highestGrade = 0;
+            double secHighestGrade = 0;
+
+            for (int s = 0; s <= 4; s++)
+                if (Math.Abs(maxUWGrade[s]) > Math.Abs(highestGrade) && maxUWGrade[s] != 0) highestGrade = maxUWGrade[s];
+
+            for (int s = 0; s <= 4; s++)
+                if (Math.Abs(maxUWGrade[s]) > Math.Abs(secHighestGrade) && maxUWGrade[s] != highestGrade && maxUWGrade[s] != 0) secHighestGrade = maxUWGrade[s];
+
+            avgHighestUWGrade = (highestGrade + secHighestGrade) / 2;
+
+            return avgHighestUWGrade;
+        }
+
+        public Exposure CalcExposures(double UTMX, double UTMY, double elev, int radius, double exponent, int numSectors, TopoInfo topo, int numWD)
+        {
+            // Returns exposure at specified UTMX/Y and radius and exponent
+            
+            Exposure expoReturn = new Exposure();
+
+            if (numWD == 0)
+            {
+                MessageBox.Show("You need to import met files first.", "Continuum 2.2");
+                return expoReturn;
+            }
+                        
+            double dirBin = (double)360 / numWD;
+
+            double[] exposure = new double[numWD];
+            double[] exposureDist = new double[numWD];
+
+            // Find square that contains radius of interest
+            int minX_Ind = (int)Math.Round(((UTMX - radius - topo.topoNumXY.X.calcs.min) / topoNumXY.X.all.reso), 0);
+            int maxX_Ind = (int)Math.Round(((UTMX + radius - topo.topoNumXY.X.calcs.min) / topoNumXY.X.all.reso), 0);
+            int minY_Ind = (int)Math.Round(((UTMY - radius - topo.topoNumXY.Y.calcs.min) / topoNumXY.Y.all.reso), 0);
+            int maxY_Ind = (int)Math.Round(((UTMY + radius - topo.topoNumXY.Y.calcs.min) / topoNumXY.Y.all.reso), 0);
+
+            double maxDistance = Convert.ToSingle(radius * 1.414);
+
+            int stepInt;
+
+            // DEBUGGING
+          //  StreamWriter sw = new StreamWriter("C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\New DB Structure\\Testing Calcs w Diff TopoCalcs\\Elevs & DirInd MapNode1 with Met 474.csv");
+
+            if (topoNumXY.X.all.reso < 30)
+                stepInt = (int)(30 / topoNumXY.X.all.reso);
+            else
+                stepInt = 1;                       
+
+            for (int j = minX_Ind; j <= maxX_Ind; j = j + stepInt)
+            {
+                for (int k = minY_Ind; k <= maxY_Ind; k = k + stepInt)
+                {
+                    double gridUTMX = (j * topoNumXY.X.all.reso) + topo.topoNumXY.X.calcs.min;
+                    double gridUTMY = (k * topoNumXY.Y.all.reso) + topo.topoNumXY.Y.calcs.min;                                        
+
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    {
+                        double deltaZ = elev - topo.elevsForCalcs[j, k];
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                        
+
+                        if (distance <= radius && distance >= 0) // since exposures are calculated using an inverse distance, using grid point that is too close
+                            // to the site can cause singularities in the calculations. Only using grid points that are at least 10 m from the site of interest
+                        {
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            if (exponent != 1.0)
+                                distance = Math.Pow(distance, exponent);                                                     
+
+                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
+                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
+
+                     /*       if (dirInd >= 0)
+                            {
+                                sw.Write(gridUTMX + ",");
+                                sw.Write(gridUTMY + ",");
+                                sw.Write(topo.elevsForCalcs[j, k] + ",");
+                                sw.Write(dirInd + ",");
+                                sw.WriteLine();
+                            }
+*/
+                        }
+                    }
+                }
+            }
+
+     //      sw.Close();
+
+            for (int m = 0; m < numWD; m++)
+                if (exposureDist[m] != 0) exposure[m] = exposure[m] / exposureDist[m];
+
+
+            // Average exposures over specified number of sectors
+            double[] avgExposure = new double[numWD];
+
+            if (numSectors == 3)
+            {
+                avgExposure[0] = (exposure[0] + exposure[1] + exposure[numWD - 1]) / 3;
+                avgExposure[numWD - 1] = (exposure[0] + exposure[numWD - 2] + exposure[numWD - 1]) / 3;
+                for (int m = 1; m <= numWD - 2; m++)
+                    avgExposure[m] = (exposure[m - 1] + exposure[m] + exposure[m + 1]) / 3;
+            }
+            else if (numSectors == 5)
+            {
+                avgExposure[0] = (exposure[0] + exposure[1] + exposure[2] + exposure[numWD - 1] + exposure[numWD - 2]) / 5;
+                avgExposure[1] = (exposure[0] + exposure[1] + exposure[2] + exposure[3] + exposure[numWD - 1]) / 5;
+                avgExposure[numWD - 1] = (exposure[0] + exposure[1] + exposure[numWD - 3] + exposure[numWD - 2] + exposure[numWD - 1]) / 5;
+                avgExposure[numWD - 2] = (exposure[0] + exposure[numWD - 4] + exposure[numWD - 3] + exposure[numWD - 2] + exposure[numWD - 1]) / 5;
+                for (int m = 2; m <= numWD - 3; m++)
+                    avgExposure[m] = (exposure[m - 2] + exposure[m - 1] + exposure[m] + exposure[m + 1] + exposure[m + 2]) / 5;
+            }
+            else
+            {
+                for (int m = 0; m < numWD; m++)
+                    avgExposure[m] = exposure[m];
+            }
+
+            expoReturn.exponent = exponent;
+            expoReturn.numSectors = numSectors;
+            expoReturn.radius = radius;
+            expoReturn.expoDist = exposureDist;
+            expoReturn.expo = avgExposure;
+
+            return expoReturn;
+        }
+
+
+        public int GetSmallerRadius(Exposure[] expo, int radius, double exponent, int numSectors)
+        {
+            // Returns radius one level lower
+            int smallerRadius = 0;
+            int thisR;
+            int thisCount = 0;
+
+            try
+            {
+                thisCount = expo.Length;
+            }
+            catch 
+            { }
+
+            if (thisCount == 0)
+                smallerRadius = 0;
+            else
+            {
+                for (int i = 0; i < thisCount; i++)
+                {
+                    if (expo[i] == null)
+                        break;
+
+                    thisR = expo[i].radius;
+                    if (expo[i].exponent == exponent && thisR < radius && thisR > smallerRadius && expo[i].numSectors == numSectors)
+                        smallerRadius = thisR;
+
+                }
+            }
+
+            return smallerRadius;
+        }
+
+        public Exposure GetSmallerRadiusExpo(Exposure[] expo, int smaller_radius, double exponent, int numSectors)
+        {
+            // Returns exposure calculated with specified radius, exponent and numSectors
+            int thisR;
+            Exposure thisExpo = null;
+            int thisCount = 0;
+
+            try {
+                thisCount = expo.Length;
+            }
+            catch 
+            { }
+
+            for (int i = 0; i < thisCount; i++)
+            {
+                thisR = expo[i].radius;
+                if (expo[i].exponent == exponent && expo[i].radius == smaller_radius && expo[i].numSectors == numSectors)
+                {
+                    thisExpo = expo[i];
+                    break;
+                }
+            }
+
+            return thisExpo;
+        }
+
+
+        public void CalcSRDH(ref Exposure expo, double UTMX, double UTMY, int radius, double exponent, int numWD)
+        {
+            // Calculates the surface roughness and displacement height at specified UTMX/Y and updates referenced Exposure object
+            // TESTING EXPONENT = 1
+            exponent = 1;
+            
+            if (numWD == 0)
+            {
+                MessageBox.Show("You need to import met files first.", "Continuum 2.2");
+                return;
+            }                        
+                        
+            double dirBin = (double)360 / numWD;
+
+            expo.SR = new double[numWD];
+            expo.SR_Dist = new double[numWD];
+            expo.dispH = new double[numWD];
+
+            // Find square that contains radius of interest
+            int minX_Ind = Convert.ToInt16((UTMX - radius - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
+            int maxX_Ind = Convert.ToInt16((UTMX + radius - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
+            int minY_Ind = Convert.ToInt16((UTMY - radius - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso);
+            int maxY_Ind = Convert.ToInt16((UTMY + radius - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso);                      
+
+            double maxDistance = Convert.ToSingle(radius * 1.414);
+
+            for (int j = minX_Ind; j <= maxX_Ind; j++)
+            {
+                for (int k = minY_Ind; k <= maxY_Ind; k++)
+                {
+                    double gridUTMX = Convert.ToInt32((j * LC_NumXY.X.all.reso) + LC_NumXY.X.calcs.min);
+                    double gridUTMY = Convert.ToInt32((k * LC_NumXY.Y.all.reso) + LC_NumXY.Y.calcs.min);
+
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+
+                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
+                    {                        
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+
+                        if (distance <= radius && distance != 0)
+                        {
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            double thisSR = SR_ForCalcs[j, k];
+                            double This_Disp = DH_ForCalcs[j, k];
+
+                            if (thisSR > 0)
+                            {
+                                if (exponent != 1.0)
+                                    distance = (double)Math.Pow(distance, exponent);
+
+                                expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
+                                expo.dispH[dirInd] = expo.dispH[dirInd] + This_Disp / distance;
+                                expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (int m = 0; m < numWD; m++)
+            {
+                if (gotSR == true && expo.SR_Dist[m] != 0)
+                {
+                    expo.SR[m] = expo.SR[m] / expo.SR_Dist[m];
+                    expo.dispH[m] = expo.dispH[m] / expo.SR_Dist[m];
+                }
+                else if (gotSR == true)
+                {
+                    expo.SR[m] = 0;
+                    expo.dispH[m] = 0;
+                }
+            }
+        }
+
+        public void CalcSRDHwithSmallerRadius(ref Exposure expo, double UTMX, double UTMY, int radius, double exponent,
+                                                        int numSectors, int smallerRadius, Exposure smallerExposure, int numWD)
+        {
+            // Calculates the surface roughness and displacement height at specified UTMX/Y using SR/DH from smaller radius and updates referenced Exposure object 
+            // TESTING EXPONENT = 1
+            exponent = 1;
+            
+            if (numWD == 0)
+            {
+                MessageBox.Show("You need to import met files first.", "Continuum 2.2");
+                return;
+            }
+                        
+            double dirBin = (double)360 / numWD;
+            expo.SR_Dist = new double[numWD];
+            expo.SR = new double[numWD];
+            expo.dispH = new double[numWD];                     
+
+            // Find square that contains radius of interest
+            int minX_Ind = Convert.ToInt16((UTMX - radius - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
+            int maxX_Ind = Convert.ToInt16((UTMX + radius - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
+            int minY_Ind = Convert.ToInt16((UTMY - radius - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso);
+            int maxY_Ind = Convert.ToInt16((UTMY + radius - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso);
+
+            // Find inner square that fits just inside the smaller radius
+            int minX_IndInner = Convert.ToInt16((UTMX - (smallerRadius / 1.414) - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
+            int maxX_IndInner = Convert.ToInt16((UTMX + (smallerRadius / 1.414) - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
+
+            int minY_IndInner = Convert.ToInt16((UTMY - (smallerRadius / 1.414) - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso);
+            int maxY_IndInner = Convert.ToInt16((UTMY + (smallerRadius / 1.414) - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso);
+
+            double maxDistance = Convert.ToSingle(radius * 1.414);                    
+
+            // First do calcs for left side of box
+            for (int j = minX_Ind; j <= minX_IndInner; j++)
+            {
+                for (int k = minY_Ind; k <= maxY_Ind; k++)
+                {
+                    double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
+                    double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+
+                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
+                    {
+                        double thisSR = SR_ForCalcs[j, k];
+                        double thisDH = DH_ForCalcs[j, k];
+                      
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+
+                        if (distance <= radius && distance > smallerRadius && distance != 0)
+                        {
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            if (exponent != 1.0)
+                                distance = (double)Math.Pow(distance, exponent);
+
+                            expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
+                            expo.dispH[dirInd] = expo.dispH[dirInd] + thisDH / distance;
+                            expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
+
+                        }
+                    }
+                }
+            }
+
+            // Now do calcs for right side of box
+            for (int j = maxX_IndInner; j <= maxX_Ind; j++)
+            {
+                for (int k = minY_Ind; k <= maxY_Ind; k++)
+                {
+                    double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
+                    double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+
+                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
+                    {
+                        double thisSR = SR_ForCalcs[j, k];
+                        double thisDH = DH_ForCalcs[j, k];                     
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+
+                        if (distance <= radius && distance > smallerRadius && distance != 0)
+                        {
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            if (exponent != 1.0)
+                                distance = (double)Math.Pow(distance, exponent);
+
+                            expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
+                            expo.dispH[dirInd] = expo.dispH[dirInd] + thisDH / distance;
+                            expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
+
+                        }
+                    }
+                }
+            }
+
+            // Now do calcs for bottom of box
+            for (int j = minX_IndInner + 1; j <= maxX_IndInner - 1; j++)
+            {
+                for (int k = minY_Ind; k <= minY_IndInner; k++)
+                {
+                    double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
+                    double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+
+                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
+                    {
+                        double thisSR = SR_ForCalcs[j, k];
+                        double thisDH = DH_ForCalcs[j, k];
+                      
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+
+                        if (distance <= radius && distance > smallerRadius && distance != 0)
+                        {
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            if (exponent != 1.0)
+                                distance = (double)Math.Pow(distance, exponent);
+
+                            expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
+                            expo.dispH[dirInd] = expo.dispH[dirInd] + thisDH / distance;
+                            expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
+                        }
+                    }
+                }
+            }
+
+            // Now do calcs for top of box
+            for (int j = minX_IndInner + 1; j <= maxX_IndInner - 1; j++)
+            {
+                for (int k = maxY_IndInner; k <= maxY_Ind; k++)
+                {
+                    double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
+                    double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+
+                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
+                    {
+                        double thisSR = SR_ForCalcs[j, k];
+                        double thisDH = DH_ForCalcs[j, k];
+                        
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+
+                        if (distance <= radius && distance > smallerRadius && distance != 0)
+                        {
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            if (exponent != 1.0)
+                                distance = (double)Math.Pow(distance, exponent);
+
+                            expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
+                            expo.dispH[dirInd] = expo.dispH[dirInd] + thisDH / distance;
+                            expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
+
+                        }
+                    }
+                }
+            }
+
+            // Now add surface roughness and displacement height and SR_Dist from smaller radius
+            for (int m = 0; m < numWD; m++)
+            {
+                expo.SR[m] = expo.SR[m] + smallerExposure.SR[m] * smallerExposure.SR_Dist[m];
+                expo.dispH[m] = expo.dispH[m] + smallerExposure.dispH[m] * smallerExposure.SR_Dist[m];
+                expo.SR_Dist[m] = expo.SR_Dist[m] + smallerExposure.SR_Dist[m];
+            }
+
+            for (int m = 0; m < numWD; m++)
+            {
+                if (expo.SR_Dist[m] != 0)
+                {
+                    expo.SR[m] = expo.SR[m] / expo.SR_Dist[m];
+                    expo.dispH[m] = expo.dispH[m] / expo.SR_Dist[m];
+                }
+                else
+                {
+                    expo.SR[m] = 0;
+                    expo.dispH[m] = 0;
+                }
+            }
+        }
+
+        public Exposure CalcExposuresWithSmallerRadius(double UTMX, double UTMY, double elev, int radius, double exponent,
+                                                        int numSectors, int smallerRadius, Exposure smallerExposure, int numWD)
+        {
+            //  Calculates the exposure at specified UTMX/Y using exposure from smaller radius and returns Exposure object 
+            Exposure expoReturn = new Exposure();
+
+            if (numWD == 0)
+            {
+                MessageBox.Show("You need to import met files first.", "Continuum 2.2");
+                return expoReturn;
+            }
+                        
+            double dirBin = (double)360 / numWD;
+
+            double[] exposure = new double[numWD];
+            double[] exposureDist = new double[numWD];
+
+            // Find square that contains radius of interest
+            int minX_Ind = Convert.ToInt16((UTMX - radius - topoNumXY.X.calcs.min) / topoNumXY.X.all.reso);
+            int maxX_Ind = Convert.ToInt16((UTMX + radius - topoNumXY.X.calcs.min) / topoNumXY.X.all.reso);
+            int minY_Ind = Convert.ToInt16((UTMY - radius - topoNumXY.Y.calcs.min) / topoNumXY.Y.all.reso);
+            int maxY_Ind = Convert.ToInt16((UTMY + radius - topoNumXY.Y.calcs.min) / topoNumXY.Y.all.reso);
+
+            // Find inner square that fits just inside the smaller radius
+            int minX_IndInner = Convert.ToInt16((UTMX - (smallerRadius / 1.414) - topoNumXY.X.calcs.min) / topoNumXY.X.all.reso);
+            int maxX_IndInner = Convert.ToInt16((UTMX + (smallerRadius / 1.414) - topoNumXY.X.calcs.min) / topoNumXY.X.all.reso);
+
+            int minY_IndInner = Convert.ToInt16((UTMY - (smallerRadius / 1.414) - topoNumXY.Y.calcs.min) / topoNumXY.Y.all.reso);
+            int maxY_IndInner = Convert.ToInt16((UTMY + (smallerRadius / 1.414) - topoNumXY.Y.calcs.min) / topoNumXY.Y.all.reso);
+
+            double maxDistance = Convert.ToSingle(radius * 1.414);
+
+            int stepInt;
+            if (topoNumXY.X.all.reso < 30)
+                stepInt = (int)(30 / topoNumXY.X.all.reso);
+            else
+                stepInt = 1;
+
+            if (minX_Ind < 0) minX_Ind = 0;
+            if (minY_Ind < 0) minY_Ind = 0;
+
+            // Only doing calculations for square with radius of interest minus the inner square that first inside smaller radius
+
+            // First do calcs for left side of box
+            for (int j = minX_Ind; j < minX_IndInner; j = j + stepInt)
+            {
+                for (int k = minY_Ind; k <= maxY_Ind; k = k + stepInt)
+                {
+                    double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
+                    double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+
+                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    {
+                        double deltaZ = elev - elevsForCalcs[j, k];
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+
+                        if (distance <= radius && distance > smallerRadius && distance != 0)
+                        {
+                            if (exponent != 1.0)
+                                distance = Math.Pow(distance, exponent);
+
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
+                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
+                        }
+                    }
+                }
+            }
+
+            // Now do calcs for(int right side of box
+            for (int j = maxX_IndInner; j < maxX_Ind; j = j + stepInt)
+            {
+                for (int k = minY_Ind; k <= maxY_Ind; k = k + stepInt)
+                {
+                    double  gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
+                    double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+
+                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    {
+                        double deltaZ = elev - elevsForCalcs[j, k];
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+
+                        if (distance <= radius && distance > smallerRadius && distance != 0)
+                        {
+                            if (exponent != 1.0)
+                                distance = Math.Pow(distance, exponent);
+
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
+                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
+                        }
+                    }
+                }
+            }
+
+            // Now do calcs for bottom of box
+            for (int j = minX_IndInner + 1; j < maxX_IndInner - 1; j = j + stepInt)  // no Single-dipping
+            {
+                for (int k = minY_Ind; k <= minY_IndInner; k = k + stepInt)
+                {
+                    double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
+                    double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+
+                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    {
+                        double deltaZ = elev - elevsForCalcs[j, k];
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+
+                        if (distance <= radius && distance > smallerRadius && distance != 0)
+                        {
+                            if (exponent != 1.0)
+                                distance = Math.Pow(distance, exponent);
+
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
+                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
+                        }
+                    }
+                }
+            }
+
+            // Now do calcs for(int top of box
+            for (int j = minX_IndInner + 1; j < maxX_IndInner - 1; j = j + stepInt)
+            {
+                for (int k = maxY_IndInner; k <= maxY_Ind; k = k + stepInt)
+                {
+                    double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
+                    double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
+                    double deltaX = gridUTMX - UTMX;
+                    double deltaY = gridUTMY - UTMY;
+
+                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    {
+                        double deltaZ = elev - elevsForCalcs[j, k];
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+
+                        if (distance <= radius && distance > smallerRadius && distance != 0)
+                        {
+                            if (exponent != 1.0)
+                                distance = (double)Math.Pow(distance, exponent);
+
+                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
+                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
+                        }
+                    }
+                }
+            }
+
+            // Now add Expo && ExpoDist from smaller radius
+            for (int m = 0; m <= numWD - 1; m++)
+            {
+                exposure[m] = exposure[m] + smallerExposure.expo[m] * smallerExposure.expoDist[m];
+                exposureDist[m] = exposureDist[m] + smallerExposure.expoDist[m];
+            }
+
+            for (int m = 0; m <= numWD - 1; m++)
+                if (exposureDist[m] != 0)
+                    exposure[m] = exposure[m] / exposureDist[m];
+            
+            expoReturn.exponent = exponent;
+            expoReturn.numSectors = numSectors;
+            expoReturn.radius = radius;
+            expoReturn.expoDist = exposureDist;
+            expoReturn.expo = exposure;
+
+            return expoReturn;
+
+        }       
+
+        public void ClearXY_Info(ref Min_Max_Num_XYs thisXY_Info)
+        {
+            // Clears the topo and LC All/Plot/Calcs X/Y Min/Max/Num/reso values
+
+            thisXY_Info.X.all.min = 0;
+            thisXY_Info.X.all.max = 0;
+            thisXY_Info.X.all.num = 0;
+            thisXY_Info.X.all.reso = 0;
+
+            thisXY_Info.Y.all.min = 0;
+            thisXY_Info.Y.all.max = 0;
+            thisXY_Info.Y.all.num = 0;
+            thisXY_Info.Y.all.reso = 0;
+
+            thisXY_Info.X.calcs.min = 0;
+            thisXY_Info.X.calcs.max = 0;
+            thisXY_Info.X.calcs.num = 0;
+            thisXY_Info.X.calcs.reso = 0;
+
+            thisXY_Info.Y.calcs.min = 0;
+            thisXY_Info.Y.calcs.max = 0;
+            thisXY_Info.Y.calcs.num = 0;
+            thisXY_Info.Y.calcs.reso = 0;
+
+            thisXY_Info.X.plot.min = 0;
+            thisXY_Info.X.plot.max = 0;
+            thisXY_Info.X.plot.num = 0;
+            thisXY_Info.X.plot.reso = 0;
+
+            thisXY_Info.Y.plot.min = 0;
+            thisXY_Info.Y.plot.max = 0;
+            thisXY_Info.Y.plot.num = 0;
+            thisXY_Info.Y.plot.reso = 0;
+        }
+
+        public void ClearAll(ref Continuum continuum)
+        {
+            //Resets TopoInfo object
+            ClearXY_Info(ref topoNumXY);
+            ClearXY_Info(ref LC_NumXY);
+
+            gotTopo = false;
+            gotSR = false;
+            useSR = false;
+            topoElevs = null;
+            elevsForCalcs = null;
+            SR_ForCalcs = null;
+            DH_ForCalcs = null;
+            landCover = null;
+
+            continuum.turbineList.ClearAllCalcs();
+            continuum.ChangesMade();
+
+            Update update = new Update();
+            update.TopoMap(continuum);
+            update.ClearMapsPlotsAndTables(continuum);
+            update.ClearStats(continuum);
+
+        }
+
+
+        public void DecimateForPlot(string Topo_or_LC)
+        {
+            // if more than 2,000,000 data points, the topo/LC data is decimated for the plot on Input and Advanced tab
+            int decInd = 1;
+
+            if (Topo_or_LC == "topo")
+            {
+                topoNumXY.X.plot.num = topoElevs.GetUpperBound(0);
+                topoNumXY.Y.plot.num = topoElevs.GetUpperBound(1);
+                topoNumXY.X.plot.min = topoNumXY.X.all.min;
+                topoNumXY.X.plot.max = topoNumXY.X.all.max;
+                topoNumXY.Y.plot.min = topoNumXY.Y.all.min;
+                topoNumXY.Y.plot.max = topoNumXY.Y.all.max;
+
+                int numX_Before = topoNumXY.X.plot.num;
+                int numY_Before = topoNumXY.Y.plot.num;
+
+                int totalPoints = topoElevs.Length;
+                int maxPoints = 2000000;
+
+                if (totalPoints > maxPoints) {
+                    // need to decimate for plotting or won't have enough memory
+                    decInd = decInd + 1;
+                    totalPoints = numX_Before / decInd * numY_Before / decInd;
+
+                    while (totalPoints > maxPoints) {
+                        decInd = decInd + 1;
+                        totalPoints = numX_Before / decInd * numY_Before / decInd;
+                    }
+
+                    topoNumXY.X.plot.num = numX_Before / decInd;
+                    topoNumXY.Y.plot.num = numY_Before / decInd;
+                }
+
+                double[,] topoElevsDec = new double[topoNumXY.X.plot.num, topoNumXY.Y.plot.num];
+                topoNumXY.X.plot.reso = topoNumXY.X.all.reso * decInd;
+                topoNumXY.Y.plot.reso = topoNumXY.Y.all.reso * decInd;
+
+                int X_Ind = 0;
+                int Y_Ind = 0;
+
+                for (int i = 0; i < numX_Before; i = i + decInd)
+                {
+                    for (int j = 0; j < numY_Before; j = j + decInd)
+                    {
+                        topoElevsDec[X_Ind, Y_Ind] = topoElevs[i, j];
+
+                        Y_Ind = Y_Ind + 1;
+                        if (Y_Ind >= topoNumXY.Y.plot.num) break;
+
+                    }
+
+                    X_Ind = X_Ind + 1;
+                    if (X_Ind >= topoNumXY.X.plot.num) break;
+
+                    Y_Ind = 0;
+                }
+
+                topoElevs = topoElevsDec;
+            }
+            else {
+                
+                LC_NumXY.X.plot.num = landCover.GetUpperBound(0);
+                LC_NumXY.Y.plot.num = landCover.GetUpperBound(1);
+                LC_NumXY.X.plot.min = LC_NumXY.X.all.min;
+                LC_NumXY.X.plot.max = LC_NumXY.X.all.max;
+                LC_NumXY.Y.plot.min = LC_NumXY.Y.all.min;
+                LC_NumXY.Y.plot.max = LC_NumXY.Y.all.max;
+
+                int numX_Before = LC_NumXY.X.plot.num;
+                int numY_Before = LC_NumXY.Y.plot.num;
+
+                int totalPoints = landCover.Length;
+                int maxPoints = 2000000;
+
+                if (totalPoints > maxPoints)
+                {
+                    // need to decimate for plotting or won't have enough memory
+                    decInd = decInd + 1;
+                    totalPoints = numX_Before / decInd * numY_Before / decInd;
+
+                    while (totalPoints > maxPoints)
+                    {
+                        decInd = decInd + 1;
+                        totalPoints = numX_Before / decInd * numY_Before / decInd;
+                    }
+
+                    LC_NumXY.X.plot.num = numX_Before / decInd;
+                    LC_NumXY.Y.plot.num = numY_Before / decInd;
+                }
+
+                int[,] landCoverDec = new int[LC_NumXY.X.plot.num, LC_NumXY.Y.plot.num];
+                LC_NumXY.X.plot.reso = LC_NumXY.X.all.reso * decInd;
+                LC_NumXY.Y.plot.reso = LC_NumXY.Y.all.reso * decInd;
+
+                int X_Ind = 0;
+                int Y_Ind = 0;
+
+                for (int i = 0; i < numX_Before; i = i + decInd)
+                {
+                    for (int j = 0; j < numY_Before; j = j + decInd)
+                    {
+                        landCoverDec[X_Ind, Y_Ind] = landCover[i, j];
+
+                        Y_Ind = Y_Ind + 1;
+                        if (Y_Ind >= LC_NumXY.Y.plot.num) break;
+
+                    }
+
+                    X_Ind = X_Ind + 1;
+                    if (X_Ind >= LC_NumXY.X.plot.num) break;
+
+                    Y_Ind = 0;
+                }
+
+                landCover = landCoverDec;
+            }
+        }               
+  
+        public void GetMinMaxUTM_forCalcs(Continuum thisInst, Map thisMap, bool allNodesInDB)
+        { 
+            // Calculates the min and max UTMX and UTMY needed for calculations. thisMap should be null if a map is not being generated.
+
+            Min_Max_Num_XYs bounds = new Min_Max_Num_XYs();
+            bounds.X.calcs.min = 10000000;
+            bounds.X.calcs.max = 0;
+            bounds.Y.calcs.min = 10000000;
+            bounds.Y.calcs.max = 0;
+            bounds.X.calcs.reso = bounds.X.all.reso;
+            bounds.Y.calcs.reso = bounds.Y.all.reso;
+
+            // Find the min / max UTM X/Y of met sites
+            if (thisInst.metList.ThisCount > 0)
+            {
+                for (int i = 0; i < thisInst.metList.ThisCount; i++)
+                {
+                    Met thisMet = thisInst.metList.metItem[i];
+                    if (thisMet.UTMX < bounds.X.calcs.min) bounds.X.calcs.min = thisMet.UTMX;
+                    if (thisMet.UTMX > bounds.X.calcs.max) bounds.X.calcs.max = thisMet.UTMX;
+                    if (thisMet.UTMY < bounds.Y.calcs.min) bounds.Y.calcs.min = thisMet.UTMY;
+                    if (thisMet.UTMY > bounds.Y.calcs.max) bounds.Y.calcs.max = thisMet.UTMY;
+                }
+            }
+
+            // Find the min / max UTM X/Y of turbine sites
+            if (thisInst.turbineList.TurbineCount > 0 && thisMap == null) // only consider turbine locations if a map is not being generated
+            {
+                for (int i = 0; i < thisInst.turbineList.TurbineCount; i++)
+                {
+                    Turbine thisTurbine = thisInst.turbineList.turbineEsts[i];
+                    if (thisTurbine.UTMX < bounds.X.calcs.min) bounds.X.calcs.min = thisTurbine.UTMX;
+                    if (thisTurbine.UTMX > bounds.X.calcs.max) bounds.X.calcs.max = thisTurbine.UTMX;
+                    if (thisTurbine.UTMY < bounds.Y.calcs.min) bounds.Y.calcs.min = thisTurbine.UTMY;
+                    if (thisTurbine.UTMY > bounds.Y.calcs.max) bounds.Y.calcs.max = thisTurbine.UTMY;
+                }
+            }
+
+            // Find the min / max UTM X/Y of map
+            if (thisMap != null)
+            {
+                if (thisMap.minUTMX < bounds.X.calcs.min) bounds.X.calcs.min = thisMap.minUTMX;
+                if ((thisMap.minUTMX + thisMap.numX * thisMap.reso) > bounds.X.calcs.max) bounds.X.calcs.max = (thisMap.minUTMX + thisMap.numX * thisMap.reso);
+                if (thisMap.minUTMY < bounds.Y.calcs.min) bounds.Y.calcs.min = thisMap.minUTMY;
+                if ((thisMap.minUTMY + thisMap.numY * thisMap.reso) > bounds.Y.calcs.max) bounds.Y.calcs.max = (thisMap.minUTMY + thisMap.numY * thisMap.reso);
+            }
+
+            // Find min/max UTMX/Y stored in database if allNodesInDB is true
+            if (allNodesInDB == true)
+            {
+                Min_Max_Num_XYs DB_MinMax = GetMinMaxXY_InDB(thisInst);
+                if (DB_MinMax.X.all.min < bounds.X.calcs.min) bounds.X.calcs.min = DB_MinMax.X.all.min;
+                if (DB_MinMax.X.all.max > bounds.X.calcs.max) bounds.X.calcs.max = DB_MinMax.X.all.max;
+                if (DB_MinMax.Y.all.min < bounds.Y.calcs.min) bounds.Y.calcs.min = DB_MinMax.Y.all.min;
+                if (DB_MinMax.Y.all.max > bounds.Y.calcs.max) bounds.Y.calcs.max = DB_MinMax.Y.all.max;
+            }
+
+            Grid_Info gridStat = new Grid_Info();
+            int gridRadius = gridStat.gridRadius;
+            int maxRadius = thisInst.radiiList.GetMaxRadius();                     
+
+            // Adding an additional 4000 m for path of nodes to be able to curve out
+            bounds.X.calcs.min = bounds.X.calcs.min - maxRadius - gridRadius - 4000; 
+            bounds.Y.calcs.min = bounds.Y.calcs.min - maxRadius - gridRadius - 4000;
+            bounds.X.calcs.max = bounds.X.calcs.max + maxRadius + gridRadius + 4000;
+            bounds.Y.calcs.max = bounds.Y.calcs.max + maxRadius + gridRadius + 4000;
+                       
+            // Make sure the bounds are within topo bounds and assign to topo Calcs
+            if (bounds.X.calcs.min < topoNumXY.X.all.min) bounds.X.calcs.min = topoNumXY.X.all.min;
+            topoNumXY.X.calcs.min = bounds.X.calcs.min;
+
+            if (bounds.X.calcs.max > topoNumXY.X.all.max) bounds.X.calcs.max = topoNumXY.X.all.max;
+            topoNumXY.X.calcs.max = bounds.X.calcs.max;
+
+            if (bounds.Y.calcs.min < topoNumXY.Y.all.min) bounds.Y.calcs.min = topoNumXY.Y.all.min;
+            topoNumXY.Y.calcs.min = bounds.Y.calcs.min;
+
+            if (bounds.Y.calcs.max > topoNumXY.Y.all.max) bounds.Y.calcs.max = topoNumXY.Y.all.max;
+            topoNumXY.Y.calcs.max = bounds.Y.calcs.max;
+
+            topoNumXY.X.calcs.reso = topoNumXY.X.all.reso;
+            topoNumXY.Y.calcs.reso = topoNumXY.Y.all.reso;
+
+            if (gotSR == true)
+            {
+                LC_NumXY.X.calcs.min = bounds.X.calcs.min;
+                LC_NumXY.Y.calcs.min = bounds.Y.calcs.min;
+                LC_NumXY.X.calcs.max = bounds.X.calcs.max;
+                LC_NumXY.Y.calcs.max = bounds.Y.calcs.max;
+                LC_NumXY.X.calcs.reso = LC_NumXY.X.all.reso;
+                LC_NumXY.Y.calcs.reso = LC_NumXY.Y.all.reso;
+            }
+
+            TopoGrid minXY = new TopoGrid();
+            TopoGrid maxXY = new TopoGrid();
+
+            // Min / Max UTM for topography data
+            minXY = GetClosestNode(topoNumXY.X.calcs.min, topoNumXY.Y.calcs.min, "Topography");
+            topoNumXY.X.calcs.min = minXY.UTMX;
+            topoNumXY.Y.calcs.min = minXY.UTMY;
+
+            if (topoNumXY.X.calcs.min < topoNumXY.X.all.min) topoNumXY.X.calcs.min = topoNumXY.X.all.min;
+            if (topoNumXY.Y.calcs.min < topoNumXY.Y.all.min) topoNumXY.Y.calcs.min = topoNumXY.Y.all.min;
+
+            maxXY = GetClosestNode(topoNumXY.X.calcs.max, topoNumXY.Y.calcs.max, "Topography");
+
+            topoNumXY.X.calcs.max = maxXY.UTMX;
+            topoNumXY.Y.calcs.max = maxXY.UTMY;
+
+            if (topoNumXY.X.calcs.max > topoNumXY.X.all.max) topoNumXY.X.calcs.max = topoNumXY.X.all.max;
+            if (topoNumXY.Y.calcs.max > topoNumXY.Y.all.max) topoNumXY.Y.calcs.max = topoNumXY.Y.all.max;
+
+            topoNumXY.X.calcs.num = (int)((topoNumXY.X.calcs.max - topoNumXY.X.calcs.min) / topoNumXY.X.calcs.reso + 1);
+            topoNumXY.Y.calcs.num = (int)((topoNumXY.Y.calcs.max - topoNumXY.Y.calcs.min) / topoNumXY.Y.calcs.reso + 1);
+
+            if (gotSR == true)
+            {
+                // Min / Max UTM for(int  land cover data
+                minXY = GetClosestNode(LC_NumXY.X.calcs.min, LC_NumXY.Y.calcs.min, "Land Cover");
+                LC_NumXY.X.calcs.min = minXY.UTMX;
+                LC_NumXY.Y.calcs.min = minXY.UTMY;
+
+                if (LC_NumXY.X.calcs.min < LC_NumXY.X.all.min) LC_NumXY.X.calcs.min = LC_NumXY.X.all.min;
+                if (LC_NumXY.Y.calcs.min < LC_NumXY.Y.all.min) LC_NumXY.Y.calcs.min = LC_NumXY.Y.all.min;
+
+                maxXY = GetClosestNode(LC_NumXY.X.calcs.max, LC_NumXY.Y.calcs.max, "Land Cover");
+                LC_NumXY.X.calcs.max = maxXY.UTMX;
+                LC_NumXY.Y.calcs.max = maxXY.UTMY;
+
+                if (LC_NumXY.X.calcs.max > LC_NumXY.X.all.max) LC_NumXY.X.calcs.max = LC_NumXY.X.all.max;
+                if (LC_NumXY.Y.calcs.max > LC_NumXY.Y.all.max) LC_NumXY.Y.calcs.max = LC_NumXY.Y.all.max;
+
+                LC_NumXY.X.calcs.num = (int)((LC_NumXY.X.calcs.max - LC_NumXY.X.calcs.min) / LC_NumXY.X.calcs.reso + 1);
+                LC_NumXY.Y.calcs.num = (int)((LC_NumXY.Y.calcs.max - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.calcs.reso + 1);
+            }
+            
+        }
+
+        public Min_Max_Num_XYs GetMinMaxXY_InDB(Continuum thisInst)
+        {
+            Min_Max_Num_XYs theseMinMax = new Min_Max_Num_XYs();
+            NodeCollection nodeList = new NodeCollection();
+            string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
+
+            try
+            {
+                using (var context = new Continuum_EDMContainer(connString))
+                {
+                    var node_db = from N in context.Node_table.Include("expo") select N;
+
+                    foreach (var N in node_db)
+                    {
+                        if (theseMinMax.X.all.min == 0 || N.UTMX < theseMinMax.X.all.min)
+                            theseMinMax.X.all.min = N.UTMX;
+
+                        if (theseMinMax.X.all.max == 0 || N.UTMX > theseMinMax.X.all.max)
+                            theseMinMax.X.all.max = N.UTMX;
+
+                        if (theseMinMax.Y.all.min == 0 || N.UTMY < theseMinMax.Y.all.min)
+                            theseMinMax.Y.all.min = N.UTMY;
+
+                        if (theseMinMax.Y.all.max == 0 || N.UTMY < theseMinMax.Y.all.max)
+                            theseMinMax.Y.all.max = N.UTMY;
+                        
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                return theseMinMax;
+            }        
+
+            return theseMinMax;
+        }
+           
+        public void GetElevsAndSRDH_ForCalcs(Continuum thisInst, Map thisMap, bool allNodesInDB)
+
+        {
+            // Retrieves elevations from database and gets surface roughness and displacement height for calcs using LC key
+            if (gotTopo == true && thisInst.metList.ThisCount > 0)
+            {                
+                GetMinMaxUTM_forCalcs(thisInst, thisMap, allNodesInDB);                
+
+                NodeCollection nodeList = new NodeCollection();                
+                string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
+
+                topoNumXY.X.calcs.num = Convert.ToInt32((topoNumXY.X.calcs.max - topoNumXY.X.calcs.min) / topoNumXY.X.all.reso) + 1;
+                topoNumXY.Y.calcs.num = Convert.ToInt32((topoNumXY.Y.calcs.max - topoNumXY.Y.calcs.min) / topoNumXY.Y.all.reso) + 1;
+                topoNumXY.X.calcs.reso = topoNumXY.X.all.reso;
+                topoNumXY.Y.calcs.reso = topoNumXY.Y.all.reso;
+
+                if (gotSR == true)
+                {
+                    LC_NumXY.X.calcs.num = Convert.ToInt32((LC_NumXY.X.calcs.max - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso) + 1;
+                    LC_NumXY.Y.calcs.num = Convert.ToInt32((LC_NumXY.Y.calcs.max - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso) + 1;
+                    LC_NumXY.X.calcs.reso = LC_NumXY.X.all.reso;
+                    LC_NumXY.Y.calcs.reso = LC_NumXY.Y.all.reso;
+                }
+
+                if (topoNumXY.X.calcs.num < 0 || topoNumXY.Y.calcs.num < 0 || LC_NumXY.X.calcs.num < 0 || LC_NumXY.Y.calcs.num < 0)
+                {
+                    MessageBox.Show("Error reading in data. Check that the UTM datum for the elevation and land cover/surface roughness are the same.", "Continuum 2.2");
+                    return;
+                }
+
+                elevsForCalcs = new double[topoNumXY.X.calcs.num, topoNumXY.Y.calcs.num];                
+                BinaryFormatter bin = new BinaryFormatter();
+                // First grab elevation data
+                try
+                {
+                    using (var ctx = new Continuum_EDMContainer(connString))
+                    {  
+                        int minX_Id = (int)Math.Round(((topoNumXY.X.calcs.min - topoNumXY.X.all.min) / topoNumXY.X.all.reso), 0) + 1; // Id starts at 1
+                        int maxX_Id = (int)Math.Round(((topoNumXY.X.calcs.max - topoNumXY.X.all.min) / topoNumXY.X.all.reso), 0) + 1;
+                                                
+                        var topoDB_Query = from N in ctx.Topo_table where N.Id >= minX_Id && N.Id <= maxX_Id select N;
+                            
+                        foreach (var N in topoDB_Query)
+                        {
+                            MemoryStream MS1 = new MemoryStream(N.Elevs);                            
+                            float[] theseElevs = (float[])bin.Deserialize(MS1);
+                            
+                            int X_IndAll = N.Id - 1;
+                            int X_IndCalcs = X_IndAll + (int)Math.Round(((topoNumXY.X.all.min - topoNumXY.X.calcs.min) / topoNumXY.X.all.reso),0);
+                            int Y_IndStart = (int)Math.Round((topoNumXY.Y.calcs.min - topoNumXY.Y.all.min) / topoNumXY.Y.all.reso,0);
+                            int Y_IndStop = (int)Math.Round((topoNumXY.Y.calcs.max - topoNumXY.Y.all.min) / topoNumXY.Y.all.reso, 0);
+
+                            for (int j = Y_IndStart; j <= Y_IndStop; j++)
+                            {
+                                int Y_IndAll = j;
+                                int Y_IndCalcs = Y_IndAll + (int)Math.Round((topoNumXY.Y.all.min - topoNumXY.Y.calcs.min) / topoNumXY.Y.all.reso, 0);
+
+                                elevsForCalcs[X_IndCalcs, Y_IndCalcs] = theseElevs[j];
+                            }
+
+                        }
+                        
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                    return;
+                }
+
+                // DEBUGGING
+                /*         StreamWriter sw = new StreamWriter("C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\RR Calcs debugging\\Elevs_for_Calcs_Mets_475_3350_no_turbs.csv");
+                         for (int i = 0; i < elevsForCalcs.GetUpperBound(0); i++)
+                             for (int j = 0; j < elevsForCalcs.GetUpperBound(1); j++)
+                             {
+                                 double thisX = topoNumXY.X.calcs.min + i * topoNumXY.X.calcs.reso;
+                                 double thisY = topoNumXY.Y.calcs.min + j * topoNumXY.Y.calcs.reso;
+                                 sw.Write(thisX + ",");
+                                 sw.Write(thisY + ",");
+                                 sw.Write(elevsForCalcs[i, j]);
+                                 sw.WriteLine();
+                             }
+
+                         sw.Close();
+                         */
+                if (gotSR == true)
+                {   
+                    SR_ForCalcs = new double[LC_NumXY.X.calcs.num, LC_NumXY.Y.calcs.num];
+                    DH_ForCalcs = new double[LC_NumXY.X.calcs.num, LC_NumXY.Y.calcs.num];
+                    int[,] landCoverForCalcs = new int[LC_NumXY.X.calcs.num, LC_NumXY.Y.calcs.num];
+                    
+                    // Grab land cover data from DB
+                    try
+                    {
+                        using (var ctx = new Continuum_EDMContainer(connString))
+                        {
+                            int minX_Id = (int)Math.Round(((LC_NumXY.X.calcs.min - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso),0) + 1;
+                            int maxX_Id = (int)Math.Round(((LC_NumXY.X.calcs.max - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso),0) + 1;                                                      
+
+                            var landCoverDB_Query = from N in ctx.LandCover_table where N.Id >= minX_Id && N.Id <= maxX_Id select N;
+
+                            foreach (var N in landCoverDB_Query)
+                            {
+                                MemoryStream MS1 = new MemoryStream(N.LandCover);
+                                int[] these_LCs = (int[])bin.Deserialize(MS1);
+
+                                int X_IndAll = N.Id - 1;
+                                int X_IndCalcs = X_IndAll + (int)Math.Round(((LC_NumXY.X.all.min - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso),0);
+                                int Y_IndStart = (int)Math.Round((LC_NumXY.Y.calcs.min - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso, 0);
+                                int Y_IndStop = (int)Math.Round((LC_NumXY.Y.calcs.max - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso, 0);
+
+                                for (int j = Y_IndStart; j <= Y_IndStop; j++)
+                                {
+                                    int Y_IndAll = j;
+                                    int Y_IndCalcs = Y_IndAll + (int)Math.Round((LC_NumXY.Y.all.min - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso, 0);                                                                      
+
+                                    landCoverForCalcs[X_IndCalcs, Y_IndCalcs] = these_LCs[j];
+                                    
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                        return;
+                    }
+                    
+                    // Fill Surface roughness and displacement height arrays
+                    int numSR = 0;
+
+                    try
+                    {
+                        numSR = LC_Key.Length;
+                    }
+                    catch 
+                    {
+                        numSR = 0;
+                    }
+
+                    for (int i = 0; i < LC_NumXY.X.calcs.num; i++)
+                    {
+                        for (int j = 0; j < LC_NumXY.Y.calcs.num; j++)
+                        {
+                            for (int k = 0; k < numSR; k++)
+                            {
+                                if (landCoverForCalcs[i, j] == LC_Key[k].code)
+                                {                                    
+                                    SR_ForCalcs[i, j] = LC_Key[k].SR;
+                                    DH_ForCalcs[i, j] = LC_Key[k].DH;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        public int GetLC_Code(double UTMX, double UTMY)
+        {
+            int thisLC_Code = 0;
+
+            int X_Ind = (int)((UTMX - LC_NumXY.X.plot.min) / LC_NumXY.X.plot.reso);
+            int Y_Ind = (int)((UTMY - LC_NumXY.Y.plot.min) / LC_NumXY.Y.plot.reso);
+
+            if (X_Ind >= 0 && X_Ind < LC_NumXY.X.plot.num && Y_Ind >= 0 && Y_Ind < LC_NumXY.Y.plot.num)
+                thisLC_Code = landCover[X_Ind, Y_Ind];
+
+            return thisLC_Code;
+        }
+
+        public bool ReadGeoTiffTopo(string wholePath, Continuum thisInst)
+        {            
+            // Reads topography data = a GeoTif(f file
+            GdalConfiguration.ConfigureGdal();
+            Gdal.AllRegister();            
+            Dataset GDAL_obj;
+                        
+            try {
+                GDAL_obj = Gdal.Open(wholePath, Access.GA_ReadOnly);
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.ToString());
+                MessageBox.Show("Unable to open file. Make sure that it's not open in another program.", "Continuum 2.2");
+                return false;
+            }
+
+            int width = GDAL_obj.RasterXSize;
+            int height = GDAL_obj.RasterYSize;
+
+            topoNumXY.X.all.num = width;
+            topoNumXY.Y.all.num = height;
+
+            double[] geoTrans = new double[6];
+
+            string projection = GDAL_obj.GetProjection();
+            GDAL_obj.GetGeoTransform(geoTrans);
+
+            double minX = geoTrans[0];
+            double minY = geoTrans[3] + width * geoTrans[4] + height * geoTrans[5];
+            double X_Reso = geoTrans[1];
+            double Y_Reso = -geoTrans[5];
+            double maxX = minX + X_Reso * (width - 1);
+            double maxY = minY + Y_Reso * (height - 1);
+
+            SpatialReference src = new SpatialReference(projection);
+            string datumString = thisInst.UTM_conversions.GetDatumString(thisInst.UTM_conversions.savedDatumIndex);
+
+            if (datumString == "NAD83/WGS84")
+            {
+                datumString = "NAD83";
+            }
+            else if (datumString == "NAD27/Clarke 1866")
+                datumString = "NAD27";
+
+            int zoneNumber = thisInst.UTM_conversions.UTMZoneNumber;
+            
+            int isNorth = 0; // If point is in southern hemisphere
+            if (thisInst.UTM_conversions.hemisphere == "Northern")
+                isNorth = 1; // If point is in northern hemisphere
+
+            SpatialReference dst = new SpatialReference("");
+            dst.SetProjCS("UTM Proj");  
+            dst.SetWellKnownGeogCS(datumString);
+            dst.SetUTM(zoneNumber, isNorth);
+
+            double[] UTM_Point = new double[3];
+            CoordinateTransformation ct = new CoordinateTransformation(src, dst);
+
+            UTM_Point[0] = minX;
+            UTM_Point[1] = minY;
+            ct.TransformPoint(UTM_Point);
+            double UTMX_Min = UTM_Point[0];
+            double UTMY_Min = UTM_Point[1];
+
+            UTM_Point[0] = maxX;
+            UTM_Point[1] = maxY;
+            ct.TransformPoint(UTM_Point);
+            double UTMX_Max = UTM_Point[0];
+            double UTMY_Max = UTM_Point[1];
+
+            bool goodToGo = CheckNewTopo(UTMX_Min, UTMY_Min, UTMX_Max, UTMY_Max, thisInst.UTM_conversions);
+            if (goodToGo == false)
+                return goodToGo;
+
+            // Figure out grid resolution
+
+            if (X_Reso > 1) { // in meters
+                topoNumXY.X.all.reso = X_Reso;
+                topoNumXY.Y.all.reso = Y_Reso;
+            }
+            else  // in lat/long so convert to UTM to find x and y resolution
+            {
+                UTM_conversion.UTM_coords thisMinXY = thisInst.UTM_conversions.LLtoUTM(minY, minX);
+                UTM_conversion.UTM_coords minPlus1 = thisInst.UTM_conversions.LLtoUTM(minY, minX + X_Reso);
+                double xres = (minPlus1.UTMEasting - thisMinXY.UTMEasting);
+                                
+                minPlus1 = thisInst.UTM_conversions.LLtoUTM(minY + Y_Reso, minX);
+                double yres = (minPlus1.UTMNorthing - thisMinXY.UTMNorthing);
+
+                UTM_conversion.UTM_coords thisMaxXY = thisInst.UTM_conversions.LLtoUTM(maxY, maxX);
+                UTM_conversion.UTM_coords maxMinus1 = thisInst.UTM_conversions.LLtoUTM(maxY, maxX - X_Reso);
+                double xres2 = (thisMaxXY.UTMEasting - maxMinus1.UTMEasting);
+                                
+                maxMinus1 = thisInst.UTM_conversions.LLtoUTM(maxY - Y_Reso, maxX);
+                double yres2 = (thisMaxXY.UTMNorthing - maxMinus1.UTMNorthing);
+
+                topoNumXY.X.all.reso = (xres + xres2) / 2;
+                topoNumXY.Y.all.reso = (yres + yres2) / 2;
+            }
+
+            Band GD_Raster = GDAL_obj.GetRasterBand(1);
+
+            double[] buff = new double[width * height];        
+            var rasterData = GD_Raster.ReadRaster(0, 0, width, height, buff, width, height, 0, 0);
+
+            // Create array of TopoGrid containing raw GeoTiff data
+            TopoGrid[] rawGeoTiff = new TopoGrid[width * height];
+
+            double new_MinX = 0;
+            double new_MinY = 0;
+            double new_MaxX = 0;
+            double new_MaxY = 0;
+                        
+            int X_Ind = 0;
+            int Y_Ind = height - 1;                        
+
+            // Fill in rawGeoTiff array
+            for (int i = 0; i <= width * height - 1; i++)
+            {
+                double origX = minX + X_Ind * X_Reso;
+                double origY = minY + Y_Ind * Y_Reso;
+                UTM_Point[0] = origX;
+                UTM_Point[1] = origY;
+
+                ct.TransformPoint(UTM_Point);
+                rawGeoTiff[i].UTMX = UTM_Point[0];
+                rawGeoTiff[i].UTMY = UTM_Point[1];
+                rawGeoTiff[i].elev = buff[i];                               
+
+                if (i == 0) {
+                    new_MinX = UTM_Point[0];
+                    new_MaxX = UTM_Point[0];
+                }
+                else if (UTM_Point[0] < new_MinX) 
+                    new_MinX = UTM_Point[0];
+                else if (UTM_Point[0] > new_MaxX) 
+                    new_MaxX = UTM_Point[0];
+
+                if (i == 0) {
+                    new_MinY = UTM_Point[1];
+                    new_MaxY = UTM_Point[1];
+                }
+                else if (UTM_Point[1] < new_MinY) 
+                    new_MinY = UTM_Point[1];
+                else if (UTM_Point[1] > new_MaxY) 
+                    new_MaxY = UTM_Point[1];
+
+                if (X_Ind < width - 1)
+                    X_Ind = X_Ind + 1;
+                else {
+                    X_Ind = 0;
+                    Y_Ind = Y_Ind - 1;
+                }
+            }
+                        
+            int newWidth = Convert.ToInt16((new_MaxX - new_MinX) / topoNumXY.X.all.reso) + 1;
+            int newHeight = Convert.ToInt16((new_MaxY - new_MinY) / topoNumXY.Y.all.reso) + 1;
+
+            double[,] Proj_Elev = new double[newWidth, newHeight];          
+            CoordinateTransformation ct_to_LL = new CoordinateTransformation(dst, src);             
+
+            // Fill in Proj_Elevs by interpolating Raw GeoTiff data to create a uniform grid
+            for (int i = 0; i < newWidth; i++)
+            {
+                for (int j = 0; j < newHeight; j++)
+                {
+                    double thisX = new_MinX + i * topoNumXY.X.all.reso;
+                    double thisY = new_MinY + j * topoNumXY.Y.all.reso;
+                    double Interp_Elev = -999;                                       
+
+                    UTM_Point[0] = thisX; // convert desired UTMX/Y to lat/long
+                    UTM_Point[1] = thisY; 
+                    ct_to_LL.TransformPoint(UTM_Point);
+
+                    double longX = UTM_Point[0];
+                    double latY = UTM_Point[1];
+
+                    if (longX >= minX && longX <= maxX && latY >= minY && latY <= maxY)
+                    {
+                        int X_IndMin = (int)Math.Floor((longX - minX) / X_Reso);
+                        int X_IndMax = X_IndMin + 1;                        
+
+                        int Y_IndMin = (int)Math.Floor((maxY - latY) / Y_Reso);
+                        int Y_IndMax = Y_IndMin + 1;                       
+
+                        int index1 = Y_IndMin * width + X_IndMin;
+                        int index2 = Y_IndMax * width + X_IndMin;
+                        int index3 = Y_IndMax * width + X_IndMax;
+                        int index4 = Y_IndMin * width + X_IndMax;
+
+                        if (index1 > 0 && index1 < rawGeoTiff.Length && index2 > 0 && index2 < rawGeoTiff.Length
+                            && index3 > 0 && index3 < rawGeoTiff.Length && index4 > 0 && index4 < rawGeoTiff.Length) // didn't find four closest points
+                        {
+                            double dist1 = CalcDistanceBetweenPoints(rawGeoTiff[index1].UTMX, rawGeoTiff[index1].UTMY, thisX, thisY);
+                            double dist2 = CalcDistanceBetweenPoints(rawGeoTiff[index2].UTMX, rawGeoTiff[index2].UTMY, thisX, thisY);
+                            double dist3 = CalcDistanceBetweenPoints(rawGeoTiff[index3].UTMX, rawGeoTiff[index3].UTMY, thisX, thisY);
+                            double dist4 = CalcDistanceBetweenPoints(rawGeoTiff[index4].UTMX, rawGeoTiff[index4].UTMY, thisX, thisY);
+
+                            if (dist1 == 0)
+                                Interp_Elev = rawGeoTiff[index1].elev;
+                            else if (dist2 == 0)
+                                Interp_Elev = rawGeoTiff[index2].elev;
+                            else if (dist3 == 0)
+                                Interp_Elev = rawGeoTiff[index3].elev;
+                            else if (dist4 == 0)
+                                Interp_Elev = rawGeoTiff[index4].elev;
+                            else
+                                Interp_Elev = (double)((rawGeoTiff[index1].elev / dist1 + rawGeoTiff[index2].elev / dist2 + rawGeoTiff[index3].elev / dist3 + rawGeoTiff[index4].elev / dist4)
+                                    / (1 / dist1 + 1 / dist2 + 1 / dist3 + 1 / dist4));
+                        }
+                    }                
+                    Proj_Elev[i, j] = Interp_Elev;         
+                    
+                }
+            }
+
+            topoNumXY.X.all.num = newWidth;
+            topoNumXY.X.all.min = new_MinX;
+            topoNumXY.X.all.max = new_MinX + (newWidth - 1) * topoNumXY.X.all.reso;
+            topoNumXY.Y.all.num = newHeight;
+            topoNumXY.Y.all.min = new_MinY;
+            topoNumXY.Y.all.max = new_MinY + (newHeight - 1) * topoNumXY.Y.all.reso;
+            topoElevs = Proj_Elev;
+
+            return goodToGo;
+        }
+           
+
+        public void Read_SHP_Roughness(string wholePath, UTM_conversion UTM)
+        {
+            // NOT WORKING YET...
+
+        //    Dataset GDAL_obj = new Dataset();
+        //    Datasource GDAL_source = new Datasource();
+            Ogr.RegisterAll();
+
+            // Dim drv = OSGeo.OGR.Driver = Ogr.GetDriverByName("ESRI Shapefile")
+
+            try
+            {
+       //         GDAL_source = Ogr.Open(wholePath, 0);
+            }
+            catch  {
+                MessageBox.Show("Unable to open file. Make sure that it//s not open in another program.", "Continuum 2.2");
+                return;
+            }
+
+            //Layer This_Layer = GDAL_source.GetLayerByIndex(0);
+            Envelope Envelope = new Envelope();
+           // This_Layer.GetExtent(Envelope, 0);
+
+            int width = Convert.ToInt32((Envelope.MaxX - Envelope.MinX) / 30);
+            int height = Convert.ToInt32((Envelope.MaxY - Envelope.MinY) / 30);
+
+            double[] argin = new double[6] { Envelope.MinX, 30, 0, Envelope.MaxY, 0, -30 };
+            int[] bandlist = new int[1];
+
+            Gdal.AllRegister();
+          //  int Feature_Count = 0;
+        //    This_Layer.GetFeatureCount(Feature_Count);
+
+       //     string FID_cols = This_Layer.GetFIDColumn();
+       //     string FeaturesRead = This_Layer.GetFeaturesRead();
+       //     FeatureDefn This_Defn = This_Layer.GetLayerDefn;
+       //     int Ref_Count = This_Layer.GetRefCount;
+       //     Feature This_Feature = This_Layer.GetFeature(0);
+       //     string This_field = This_Feature.GetFieldAsString(0);
+        //    int Field_Count = This_Feature.GetFieldCount();
+
+      //      string[] rasterizeOptions = new string[2] { "ATTRIBUTE=" + "roughness" };
+
+
+       //     double[] burnValues = new double() { 10.0 };
+       //     Gdal.RasterizeLayer(GDAL_obj, 1, bandlist, This_Layer, IntPtr.Zero, IntPtr.Zero, 1, burnValues, rasterizeOptions, new Gdal.GDALProgressFuncDelegate(AddressOf ProgressFunc), "Raster conversion");
+            //    Gdal.R=terizeLayer(myDat=et, 1, bandlist, Layer, IntPtr.Zero, IntPtr.Zero, 1, burnValues, r=terizeOptions, new Gdal.GDALProgressFuncDelegate(ProgressFunc), "R=ter conversion");  
+
+            //  //Gdal.R=terizeLayer(myDat=et, 1, bandlist, layer, IntPtr.Zero, IntPtr.Zero, 1, burnValues, null, null, null); // To burn the given burn values instead of feature attributes  
+            //    Gdal.R=terizeLayer(myDat=et, 1, bandlist, Layer, IntPtr.Zero, IntPtr.Zero, 1, burnValues, r=terizeOptions, new Gdal.GDALProgressFuncDelegate(ProgressFunc), "R=ter conversion");  
+
+
+            LC_NumXY.X.all.num = width;
+            LC_NumXY.Y.all.num = height;
+
+            double[] geoTrans = new double[6];
+
+       //     string projection = GDAL_obj.GetProjection();
+       //     GDAL_obj.GetGeoTransform(geoTrans);
+
+            double LC_MinX = geoTrans[0];
+            double LC_MinY = geoTrans[3] + width * geoTrans[4] + height * geoTrans[5];
+            double LC_X_Reso = geoTrans[1];
+            double LC_Y_Reso = -geoTrans[5];
+
+        }
+
+        public bool ReadGeoTiffLandCover(string wholePath, Continuum thisInst)
+        {
+            //  Reads land cover data = a GeoTif(f file
+            GdalConfiguration.ConfigureGdal();
+            Gdal.AllRegister();
+            Dataset GDAL_obj;
+
+            try
+            {
+                GDAL_obj = Gdal.Open(wholePath, Access.GA_ReadOnly);
+            }
+            catch {
+                MessageBox.Show("Unable to open file. Make sure that it's not open in another program.", "Continuum 2.2");
+                return false;
+            }
+            
+            int width = GDAL_obj.RasterXSize;
+            int height = GDAL_obj.RasterYSize;
+
+            LC_NumXY.X.all.num = width;
+            LC_NumXY.Y.all.num = height;
+
+            double[] geoTrans = new double[6];
+
+            string projection = GDAL_obj.GetProjection();
+            GDAL_obj.GetGeoTransform(geoTrans);
+
+            double LC_MinX = (double)geoTrans[0];
+            double LC_MinY = (double)geoTrans[3] + width * (double)geoTrans[4] + height * (double)geoTrans[5];
+            double LC_X_Reso = (double)geoTrans[1];
+            double LC_Y_Reso = -(double)geoTrans[5];
+            double LC_MaxX = LC_MinX + LC_X_Reso * (width - 1);
+            double LC_MaxY = LC_MinY + LC_Y_Reso * (height - 1);
+                        
+            SpatialReference src = new SpatialReference(projection);
+            string datumString = thisInst.UTM_conversions.GetDatumString(thisInst.UTM_conversions.savedDatumIndex);
+            if (datumString == "" || datumString == "NAD83/WGS84")
+                datumString = "WGS84";
+            else if (datumString == "NAD27/Clarke 1866")
+                datumString = "NAD27";
+
+            int zoneNumber = thisInst.UTM_conversions.UTMZoneNumber;
+            
+            int isNorth = 0; //point is in southern hemisphere
+            if (thisInst.UTM_conversions.hemisphere == "Northern")
+                isNorth = 1; //point is in northern hemisphere
+
+            SpatialReference dst = new SpatialReference("");
+            dst.SetProjCS("UTM Proj");
+            dst.SetWellKnownGeogCS(datumString);
+            dst.SetUTM(zoneNumber, isNorth);
+
+            // Compare Min/Max X/Y to loaded topo, if any
+            CoordinateTransformation ct = new CoordinateTransformation(src, dst);
+            double[] UTM_Point = new double[3];
+
+            UTM_Point[0] = LC_MinX;
+            UTM_Point[1] = LC_MinY;
+            ct.TransformPoint(UTM_Point);
+            double UTMX_Min = UTM_Point[0];
+            double UTMY_Min = UTM_Point[1];
+
+            UTM_Point[0] = LC_MaxX;
+            UTM_Point[1] = LC_MaxY;
+            ct.TransformPoint(UTM_Point);
+            double UTMX_Max = UTM_Point[0];
+            double UTMY_Max = UTM_Point[1];
+
+            bool goodToGo = CheckNewLandCover(UTMX_Min, UTMY_Min, UTMX_Max, UTMY_Max, thisInst.UTM_conversions);
+            if (goodToGo == false)
+                return goodToGo;
+
+            // Figure out grid resolution
+            if (LC_X_Reso > 1) { // in meters
+                LC_NumXY.X.all.reso = LC_X_Reso;
+                LC_NumXY.Y.all.reso = LC_Y_Reso;
+            }
+            else {
+                UTM_conversion.UTM_coords thisMinXY = thisInst.UTM_conversions.LLtoUTM(LC_MinY, LC_MinX);
+                UTM_conversion.UTM_coords minPlus1 = thisInst.UTM_conversions.LLtoUTM(LC_MinY, LC_MinX + LC_X_Reso);
+                double xres = (minPlus1.UTMEasting - thisMinXY.UTMEasting);
+
+                minPlus1 = thisInst.UTM_conversions.LLtoUTM(LC_MinY + LC_Y_Reso, LC_MinX);
+                double yres = (minPlus1.UTMNorthing - thisMinXY.UTMNorthing);
+
+                UTM_conversion.UTM_coords thisMaxXY = thisInst.UTM_conversions.LLtoUTM(LC_MaxY, LC_MaxX);
+                UTM_conversion.UTM_coords maxMinus1 = thisInst.UTM_conversions.LLtoUTM(LC_MaxY, LC_MaxX - LC_X_Reso);
+                double xres2 = (thisMaxXY.UTMEasting - maxMinus1.UTMEasting);
+
+                maxMinus1 = thisInst.UTM_conversions.LLtoUTM(LC_MaxY - LC_Y_Reso, LC_MaxX);
+                double yres2 = (thisMaxXY.UTMNorthing - maxMinus1.UTMNorthing);
+
+                LC_NumXY.X.all.reso = (xres + xres2) / 2;
+                LC_NumXY.Y.all.reso = (yres + yres2) / 2;
+            }
+
+            int[] buff = new int[width * height];
+            Band GD_Raster = GDAL_obj.GetRasterBand(1);            
+            GD_Raster.GetRasterCategoryNames();
+
+            var rasterData = GD_Raster.ReadRaster(0, 0, width, height, buff, width, height, 0, 0);
+
+            // Create array of TopoGrid containing raw GeoTiff data
+            LandCoverGrid[] rawGeoTiff = new LandCoverGrid[width * height];
+
+            double newLC_MinX = 0;
+            double newLC_MinY = 0;
+            double newLC_MaxX = 0;
+            double newLC_MaxY = 0;                     
+            
+            int X_Ind = 0;
+            bool LC_Code_In_Key = false;
+            int Y_Ind = height - 1;
+
+            // Fill in rawGeoTiff array
+            for (int i = 0; i < width * height; i++)
+            {
+                double origX = LC_MinX + X_Ind * LC_X_Reso;
+                double origY = LC_MinY + Y_Ind * LC_Y_Reso;
+                UTM_Point[0] = origX;
+                UTM_Point[1] = origY;
+
+                ct.TransformPoint(UTM_Point);
+                rawGeoTiff[i].UTMX = UTM_Point[0];
+                rawGeoTiff[i].UTMY = UTM_Point[1];
+                rawGeoTiff[i].LC_code = buff[i];
+
+                if (i == 0)
+                {
+                    newLC_MinX = UTM_Point[0];
+                    newLC_MaxX = UTM_Point[0];
+                }
+                else if (UTM_Point[0] < newLC_MinX)
+                    newLC_MinX = UTM_Point[0];
+                else if (UTM_Point[0] > newLC_MaxX)
+                    newLC_MaxX = UTM_Point[0];
+
+                if (i == 0)
+                {
+                    newLC_MinY = UTM_Point[1];
+                    newLC_MaxY = UTM_Point[1];
+                }
+                else if (UTM_Point[1] < newLC_MinY)
+                    newLC_MinY = UTM_Point[1];
+                else if (UTM_Point[1] > newLC_MaxY)
+                    newLC_MaxY = UTM_Point[1];
+
+                if (buff[i] >= 0)
+                {
+                    LC_Code_In_Key = CheckKeyForLC_Code(buff[i]);
+
+                    if (LC_Code_In_Key == false)
+                    {
+                        MessageBox.Show("Read in land cover code that is not defined in the selected key. Land Cover Code: " + buff[i].ToString());
+                        return false;
+                    }                                        
+                }
+
+                if (X_Ind <= width - 2)
+                    X_Ind = X_Ind + 1;
+                else {
+                    X_Ind = 0;
+                    Y_Ind = Y_Ind - 1;
+                }
+            }
+
+            int newWidth = Convert.ToInt16((newLC_MaxX - newLC_MinX) / LC_NumXY.X.all.reso + 1);
+            int newHeight = Convert.ToInt16((newLC_MaxY - newLC_MinY) / LC_NumXY.Y.all.reso + 1);
+
+            int[,] projLandCover = new int[newWidth, newHeight];
+
+            CoordinateTransformation ct_to_LL = new CoordinateTransformation(dst, src);
+
+            // Fill in projLandCover by finding closest Raw GeoTiff data to create a uniform grid
+            for (int i = 0; i < newWidth; i++)
+            {
+                for (int j = 0; j < newHeight; j++)
+                {
+                    double thisX = newLC_MinX + i * LC_NumXY.X.all.reso;
+                    double thisY = newLC_MinY + j * LC_NumXY.Y.all.reso;
+                    int closestLC = -999;
+
+                    UTM_Point[0] = thisX; // convert desired UTMX/Y to lat/long
+                    UTM_Point[1] = thisY;
+                    ct_to_LL.TransformPoint(UTM_Point);
+
+                    double longX = UTM_Point[0];
+                    double latY = UTM_Point[1];
+
+                    if (longX >= LC_MinX && longX <= LC_MaxX && latY >= LC_MinY && latY <= LC_MaxY)
+                    {
+                        int X_IndMin = (int)Math.Floor((longX - LC_MinX) / LC_X_Reso);
+                        int X_IndMax = X_IndMin + 1;
+
+                        int Y_IndMin = (int)Math.Floor((LC_MaxY - latY) / LC_Y_Reso);
+                        int Y_IndMax = Y_IndMin + 1;
+
+                        int index1 = Y_IndMin * width + X_IndMin;
+                        int index2 = Y_IndMax * width + X_IndMin;
+                        int index3 = Y_IndMax * width + X_IndMax;
+                        int index4 = Y_IndMin * width + X_IndMax;
+
+                        if (index1 > 0 && index1 < rawGeoTiff.Length && index2 > 0 && index2 < rawGeoTiff.Length
+                            && index3 > 0 && index3 < rawGeoTiff.Length && index4 > 0 && index4 < rawGeoTiff.Length) // didn't find four closest points
+                        {
+                            double dist1 = CalcDistanceBetweenPoints(rawGeoTiff[index1].UTMX, rawGeoTiff[index1].UTMY, thisX, thisY);
+                            double dist2 = CalcDistanceBetweenPoints(rawGeoTiff[index2].UTMX, rawGeoTiff[index2].UTMY, thisX, thisY);
+                            double dist3 = CalcDistanceBetweenPoints(rawGeoTiff[index3].UTMX, rawGeoTiff[index3].UTMY, thisX, thisY);
+                            double dist4 = CalcDistanceBetweenPoints(rawGeoTiff[index4].UTMX, rawGeoTiff[index4].UTMY, thisX, thisY);
+
+                            if (dist1 <= dist2 && dist1 <= dist3 && dist1 <= dist4)
+                                closestLC = rawGeoTiff[index1].LC_code;
+                            else if (dist2 <= dist1 && dist2 <= dist3 && dist2 <= dist4)
+                                closestLC = rawGeoTiff[index2].LC_code;
+                            else if (dist3 <= dist1 && dist3 <= dist2 && dist3 <= dist4)
+                                closestLC = rawGeoTiff[index3].LC_code;
+                            else if (dist4 <= dist1 && dist4 <= dist2 && dist4 <= dist3)
+                                closestLC = rawGeoTiff[index4].LC_code;                                                                                       
+                            
+                        }
+                    }
+                    projLandCover[i, j] = closestLC;
+
+                }
+            }
+
+            LC_NumXY.X.all.min = newLC_MinX;
+            LC_NumXY.X.all.num = newWidth;
+            LC_NumXY.X.all.max = newLC_MinX + (newWidth - 1) * LC_NumXY.X.all.reso;
+            LC_NumXY.Y.all.min = newLC_MinY;
+            LC_NumXY.Y.all.num = newHeight;
+            LC_NumXY.Y.all.max = newLC_MinY + (newHeight - 1) * LC_NumXY.Y.all.reso;
+            landCover = projLandCover;
+
+            gotSR = true;
+            useSR = true;
+
+            return goodToGo;
+        }
+
+        public bool CheckNewLandCover(double minX, double minY, double maxX, double maxY, UTM_conversion UTM_Settings)
+        {
+            bool goodToGo = true;
+            int maxDist = 3000; // is this too small?
+
+            if (gotTopo == false)
+                goodToGo = true;
+            else
+            {
+                if ((minX - topoNumXY.X.all.min) > maxDist)
+                {
+                    goodToGo = false;
+                    MessageBox.Show("Land cover data set does not cover the same area as the topography data. topo min UTMX = " + Math.Round(topoNumXY.X.all.min, 0)
+                        + ". Land Cover min UTMX = " + Math.Round(minX, 0) + " (UTM Zone = " + UTM_Settings.UTMZoneNumber + ") The max difference between the two is " 
+                        + maxDist + " m. Cancelling land cover import.");
+                }
+                else if ((minY - topoNumXY.Y.all.min) > maxDist)
+                {
+                    goodToGo = false;
+                    MessageBox.Show("Land cover data set does not cover the same area as the topography data. topo min UTMY = " + Math.Round(topoNumXY.Y.all.min, 0)
+                        + ". Land Cover min UTMY = " + Math.Round(minY, 0) + " (UTM Zone = " + UTM_Settings.UTMZoneNumber + ") The max difference between the two is " 
+                        + maxDist + " m. Cancelling land cover import.");
+                }
+                else if ((topoNumXY.X.all.max - maxX) > maxDist)
+                {
+                    goodToGo = false;
+                    MessageBox.Show("Land cover data set does not cover the same area as the topography data. topo max UTMX = " + Math.Round(topoNumXY.X.all.max, 0)
+                        + ". Land Cover max UTMX = " + Math.Round(maxX, 0) + ". The max difference between the two is " + maxDist + " m. Cancelling land cover import.");
+                }
+                else if ((topoNumXY.Y.all.max - maxY) > maxDist)
+                {
+                    goodToGo = false;
+                    MessageBox.Show("Land cover data set does not cover the same area as the topography data. topo max UTMY = " + Math.Round(topoNumXY.Y.all.max, 0)
+                        + ". Land Cover max UTMY = " + Math.Round(maxY, 0) + ". The max difference between the two is " + maxDist + " m. Cancelling land cover import.");
+                }
+            }
+
+
+            return goodToGo;
+        }
+
+        public bool CheckNewTopo(double minX, double minY, double maxX, double maxY, UTM_conversion UTM_Settings)
+        {
+            bool goodToGo = true;
+            int maxDist = 3000; // is this too small?
+
+            if (gotSR == false)
+                goodToGo = true;
+            else
+            {
+                if ((LC_NumXY.X.all.min - minX) > maxDist)
+                {
+                    goodToGo = false;
+                    MessageBox.Show("Topography data set does not cover the same area as the land cover data. LC min UTMX = " + Math.Round(LC_NumXY.X.all.min, 0)
+                        + ". topo min UTMX = " + Math.Round(minX, 0) + "(UTM Zone = " + UTM_Settings.UTMZoneNumber + ") The max difference between the two is " 
+                        + maxDist + " m. Cancelling topography import.");
+                }
+                else if ((LC_NumXY.Y.all.min - minY) > maxDist)
+                {
+                    goodToGo = false;
+                    MessageBox.Show("Topography data set does not cover the same area as the land cover data. LC min UTMY = " + Math.Round(LC_NumXY.Y.all.min, 0)
+                        + ". topo min UTMY = " + Math.Round(minY, 0) + "(UTM Zone = " + UTM_Settings.UTMZoneNumber + ") The max difference between the two is " 
+                        + maxDist + " m. Cancelling topography import.");
+                }
+                else if ((maxX - LC_NumXY.X.all.max) > maxDist)
+                {
+                    goodToGo = false;
+                    MessageBox.Show("Topography data set does not cover the same area as the land cover data. LC max UTMX = " + Math.Round(LC_NumXY.X.all.max, 0)
+                        + ". topo max UTMX = " + Math.Round(maxX, 0) + "(UTM Zone = " + UTM_Settings.UTMZoneNumber + ") The max difference between the two is " 
+                        + maxDist + " m. Cancelling topography import.");
+                }
+                else if ((maxY - LC_NumXY.Y.all.max) > maxDist)
+                {
+                    goodToGo = false;
+                    MessageBox.Show("Topography data set does not cover the same area as the land cover data. LC max UTMY = " + Math.Round(LC_NumXY.Y.all.max, 0)
+                        + ". topo max UTMY = " + Math.Round(maxY, 0) + "(UTM Zone = " + UTM_Settings.UTMZoneNumber + ") The max difference between the two is " 
+                        + maxDist + " m. Cancelling topography import.");
+                }
+            }
+
+            return goodToGo;
+        }
+
+        public bool CheckKeyForLC_Code(int This_LC_Code)
+        {
+            // returns true if( This_LC_Code is defined in the Land cover key
+            bool LC_in_Key = false;
+
+            if (LC_Key != null)
+            {
+                for (int i = 0; i < LC_Key.Length; i++)
+                    if (This_LC_Code == LC_Key[i].code)
+                    {
+                        LC_in_Key = true;
+                        break;
+                    }
+            }
+
+            return LC_in_Key;
+        }
+
+        public void SetUS_NLCD_Key()
+        {
+            // Sets the land cover key to be USGS National Land Cover data
+            // Land cover type = defined by USGS:
+            // Code	Description	roughness length
+            //11	Open Water	0.0002
+            //12	Perennial Ice/Snow	0.0024
+            //31	Barren Bare Rock/Sand/Clay	0.005
+            //71	Grassland/Herbaceous	0.03
+            //72	Sedge/Herbaceous	0.03
+            //73 Lichens 0.03
+            //74 Moss 0.03
+            //81	P=ture/Hay	0.03
+            //21 Developed Open Space 0.2
+            //51: Dwarf Shrubland 0.2
+            //52: Shrub/scrub 0.2
+            //82	Row Crops	0.25
+            //22	Developed Low-intensity residential	0.4
+            //95	Emergent Herbaceous Wetlands	0.4
+            //90	Woody Wetlands	0.5
+            //23	Developed Med-intensity residential.	0.8
+            //41	Deciduous for(int est	1
+            //43	Mixed for(int est	1.1
+            //42	Evergreen for(int est	1.2
+            //24	Developed High-intensity residential	1.6
+
+            //11	Open Water	0
+            //12	Perennial Ice/Snow	0
+            //31	Barren Bare Rock/Sand/Clay	0
+            //71	Gr=sland/Herbaceous	0.1
+            //72	Sedge/Herbaceous	0.3
+            //73 Lichens 0.1
+            //74 Moss 0.1
+            //81	P=ture/Hay	0.1
+            //21 Developed Open Space 0.7
+            //51:Dwarf Shrubland 0.1
+            //52:Shrub/scrub 1.3
+            //82	Row Crops	1.3
+            //22	Developed Low-intensity residential	1.3
+            //95	Emergent Herbaceous Wetlands	0.7
+            //90	Woody Wetlands	3.3
+            //23	Developed Med-intensity residential.	3.3
+            //41	Deciduous for(int est	16.7
+            //43	Mixed for(int est	16.7
+            //42	Evergreen for(int est	13.3
+            //24	Developed High-intensity residential	13.3
+
+            LC_Key = new LC_SR_DH[20];
+            LC_Key[0].code = 11;
+            LC_Key[0].desc = "Open Water";
+            LC_Key[0].SR = 0.0002f;
+            LC_Key[0].DH = 0;
+
+            LC_Key[1].code = 12;
+            LC_Key[1].desc = "Perennial Ice/Snow";
+            LC_Key[1].SR = 0.0024f;
+            LC_Key[1].DH = 0;
+
+            LC_Key[2].code = 31;
+            LC_Key[2].desc = "Barren Bare Rock/Sand/Clay";
+            LC_Key[2].SR = 0.005f;
+            LC_Key[2].DH = 0f;
+
+            LC_Key[3].code = 71;
+            LC_Key[3].desc = "Grassland/Herbaceous";
+            LC_Key[3].SR = 0.03f;
+            LC_Key[3].DH = 0.1f;
+
+            LC_Key[4].code = 72;
+            LC_Key[4].desc = "Sedge/Herbaceous";
+            LC_Key[4].SR = 0.03f;
+            LC_Key[4].DH = 0.3f;
+
+            LC_Key[5].code = 73;
+            LC_Key[5].desc = "Lichens";
+            LC_Key[5].SR = 0.03f;
+            LC_Key[5].DH = 0.1f;
+
+            LC_Key[6].code = 74;
+            LC_Key[6].desc = "Moss";
+            LC_Key[6].SR = 0.03f;
+            LC_Key[6].DH = 0.1f;
+
+            LC_Key[7].code = 81;
+            LC_Key[7].desc = "Pasture/Hay";
+            LC_Key[7].SR = 0.03f;
+            LC_Key[7].DH = 0.1f;
+
+            LC_Key[8].code = 21;
+            LC_Key[8].desc = "Developed Open Space";
+            LC_Key[8].SR = 0.2f;
+            LC_Key[8].DH = 0.7f;
+
+            LC_Key[9].code = 51;
+            LC_Key[9].desc = "Dwarf Shrubland";
+            LC_Key[9].SR = 0.2f;
+            LC_Key[9].DH = 0.1f;
+
+            LC_Key[10].code = 52;
+            LC_Key[10].desc = "Shrub/scrub";
+            LC_Key[10].SR = 0.2f;
+            LC_Key[10].DH = 1.3f;
+
+            LC_Key[11].code = 82;
+            LC_Key[11].desc = "Row Crops";
+            LC_Key[11].SR = 0.25f;
+            LC_Key[11].DH = 1.3f;
+
+            LC_Key[12].code = 22;
+            LC_Key[12].desc = "Developed Low-intensity residential";
+            LC_Key[12].SR = 0.4f;
+            LC_Key[12].DH = 1.3f;
+
+            LC_Key[13].code = 95;
+            LC_Key[13].desc = "Emergent Herbaceous Wetlands";
+            LC_Key[13].SR = 0.4f;
+            LC_Key[13].DH = 0.7f;
+
+            LC_Key[14].code = 90;
+            LC_Key[14].desc = "Woody Wetlands";
+            LC_Key[14].SR = 0.5f;
+            LC_Key[14].DH = 3.3f;
+
+            LC_Key[15].code = 23;
+            LC_Key[15].desc = "Developed Med-intensity residential";
+            LC_Key[15].SR = 0.8f;
+            LC_Key[15].DH = 3.3f;
+
+            LC_Key[16].code = 41;
+            LC_Key[16].desc = "Deciduous forest";
+            LC_Key[16].SR = 1f;
+            LC_Key[16].DH = 16.7f;
+
+            LC_Key[17].code = 43;
+            LC_Key[17].desc = "Mixed forest";
+            LC_Key[17].SR = 1.1f;
+            LC_Key[17].DH = 16.7f;
+
+            LC_Key[18].code = 42;
+            LC_Key[18].desc = "Evergreen forest";
+            LC_Key[18].SR = 1.2f;
+            LC_Key[18].DH = 13.3f;
+
+            LC_Key[19].code = 24;
+            LC_Key[19].desc = "Developed High-intensity residential";
+            LC_Key[19].SR = 1.6f;
+            LC_Key[19].DH = 13.3f;
+
+        }
+
+        public bool LC_IsDefaultNLCD(LC_SR_DH[] thisLC_Key)
+        {
+            // returns true if( Land Cover key is the USGS NLCD
+            bool isNLCD = true;
+
+            int numCodes = 0;
+            try
+            {
+                numCodes = thisLC_Key.Length;
+            }
+            catch {
+                numCodes = 0;
+                isNLCD = false;
+            }
+            
+            if (numCodes == 20)
+            {
+                TopoInfo topoNLCD_Key = new TopoInfo();
+                topoNLCD_Key.SetUS_NLCD_Key();
+
+                for (int i = 0; i < numCodes; i++)
+                    if (topoNLCD_Key.LC_Key[i].code != thisLC_Key[i].code || (topoNLCD_Key.LC_Key[i].code == thisLC_Key[i].code && (topoNLCD_Key.LC_Key[i].SR != thisLC_Key[i].SR
+                        || topoNLCD_Key.LC_Key[i].DH != thisLC_Key[i].DH)))
+                    {
+                        isNLCD = false;
+                        break;
+                    }
+            }
+            else
+                isNLCD = false;
+
+            return isNLCD;
+
+        }
+
+        public bool LC_IsDefaultNALC(LC_SR_DH[] thisLC_Key)
+        {
+            // returns true if( Land Cover key is North America Land Cover data
+            bool isNALC = true;
+
+            int numCodes = 0;
+            try
+            {
+                numCodes = thisLC_Key.Length;
+            }
+            catch  {
+                numCodes = 0;
+                isNALC = false;
+            }
+
+            if (numCodes == 19)
+            {
+                TopoInfo topoNALC_Key = new TopoInfo();
+                topoNALC_Key.SetNA_LC_Key();
+
+                for (int i = 0; i < numCodes; i++)
+                    if (topoNALC_Key.LC_Key[i].code != thisLC_Key[i].code || (topoNALC_Key.LC_Key[i].code == thisLC_Key[i].code && (topoNALC_Key.LC_Key[i].SR != thisLC_Key[i].SR
+                            || topoNALC_Key.LC_Key[i].DH != thisLC_Key[i].DH)))
+                    {
+                        isNALC = false;
+                        break;
+                    }
+            }
+            else
+                isNALC = false;
+
+            return isNALC;
+
+        }
+
+        public bool LC_IsDefaultEU_Corine(LC_SR_DH[] thisLC_Key)
+        {
+            //   returns true if( Land Cover key is EU Corine 2006 Land Cover data
+
+            bool isEU_LC = true;
+
+            int numCodes = 0;
+            try
+            {
+                numCodes = thisLC_Key.Length;
+            }
+            catch {
+                numCodes = 0;
+                isEU_LC = false;
+            }
+
+            if (numCodes == 44)
+            {
+                TopoInfo topoEU_Key = new TopoInfo();
+                topoEU_Key.SetEU_Corine_LC_Key();
+
+                for (int i = 0; i < numCodes; i++)
+                    if (topoEU_Key.LC_Key[i].code != thisLC_Key[i].code || (topoEU_Key.LC_Key[i].code == thisLC_Key[i].code && (topoEU_Key.LC_Key[i].SR != thisLC_Key[i].SR
+                            || topoEU_Key.LC_Key[i].DH != thisLC_Key[i].DH)))
+                    {
+                        isEU_LC = false;
+                        break;
+                    }
+            }
+
+            else
+                isEU_LC = false;
+
+            return isEU_LC;
+
+        }
+
+        public void SetNA_LC_Key()
+        {
+            //  Sets the land cover key to be North America Land Cover DB
+            // Code	Description	roughness length
+            
+            LC_Key = new LC_SR_DH[19];
+            LC_Key[0].code = 1;
+            LC_Key[0].desc = "Temperate or sub-polar needleleaf forest";
+            LC_Key[0].SR = 1.2f;
+            LC_Key[0].DH = 13.33f;
+
+            LC_Key[1].code = 2;
+            LC_Key[1].desc = "Sub-polar taiga needleleaf forest";
+            LC_Key[1].SR = 1.2f;
+            LC_Key[1].DH = 13.33f;
+
+            LC_Key[2].code = 3;
+            LC_Key[2].desc = "Tropical or sub-tropical broadleaf evergreen forest";
+            LC_Key[2].SR = 1.2f;
+            LC_Key[2].DH = 13.33f;
+
+            LC_Key[3].code = 4;
+            LC_Key[3].desc = "Tropical or sub-tropical broadleaf deciduous forest";
+            LC_Key[3].SR = 1f;
+            LC_Key[3].DH = 16.67f;
+
+            LC_Key[4].code = 5;
+            LC_Key[4].desc = "Temperate or sub-polar broadleaf deciduous forest";
+            LC_Key[4].SR = 1f;
+            LC_Key[4].DH = 16.67f;
+
+            LC_Key[5].code = 6;
+            LC_Key[5].desc = "Mixed forest";
+            LC_Key[5].SR = 1.1f;
+            LC_Key[5].DH = 16.67f;
+
+            LC_Key[6].code = 7;
+            LC_Key[6].desc = "Tropical or sub-tropical shrubland";
+            LC_Key[6].SR = 0.2f;
+            LC_Key[6].DH = 1.33f;
+
+            LC_Key[7].code = 8;
+            LC_Key[7].desc = "Temperate or Sub-polar shrubland";
+            LC_Key[7].SR = 0.2f;
+            LC_Key[7].DH = 1.33f;
+
+            LC_Key[8].code = 9;
+            LC_Key[8].desc = "Tropical or Sub-tropical grassland";
+            LC_Key[8].SR = 0.03f;
+            LC_Key[8].DH = 0.13f;
+
+            LC_Key[9].code = 10;
+            LC_Key[9].desc = "Temperate or Sub-polar grassland";
+            LC_Key[9].SR = 0.03f;
+            LC_Key[9].DH = 0.13f;
+
+            LC_Key[10].code = 11;
+            LC_Key[10].desc = "Sub-polar or polar shrubland-lichen-moss";
+            LC_Key[10].SR = 0.03f;
+            LC_Key[10].DH = 0.07f;
+
+            LC_Key[11].code = 12;
+            LC_Key[11].desc = "Sub-polar or polar grassland-lichen-moss";
+            LC_Key[11].SR = 0.03f;
+            LC_Key[11].DH = 0.07f;
+
+            LC_Key[12].code = 13;
+            LC_Key[12].desc = "Sub-polar or polar barren-lichen-moss";
+            LC_Key[12].SR = 0.03f;
+            LC_Key[12].DH = 0.07f;
+
+            LC_Key[13].code = 14;
+            LC_Key[13].desc = "Wetland";
+            LC_Key[13].SR = 0.5f;
+            LC_Key[13].DH = 3.33f;
+
+            LC_Key[14].code = 15;
+            LC_Key[14].desc = "Cropland";
+            LC_Key[14].SR = 0.25f;
+            LC_Key[14].DH = 1.33f;
+
+            LC_Key[15].code = 16;
+            LC_Key[15].desc = "Barren land";
+            LC_Key[15].SR = 0.005f;
+            LC_Key[15].DH = 0.0f;
+
+            LC_Key[16].code = 17;
+            LC_Key[16].desc = "Urban and built-up";
+            LC_Key[16].SR = 1.6f;
+            LC_Key[16].DH = 13.3f;
+
+            LC_Key[17].code = 18;
+            LC_Key[17].desc = "Water";
+            LC_Key[17].SR = 0.0002f;
+            LC_Key[17].DH = 0.0f;
+
+            LC_Key[18].code = 19;
+            LC_Key[18].desc = "Snow and ice";
+            LC_Key[18].SR = 0.0024f;
+            LC_Key[18].DH = 0.0f;
+
+        }
+
+        public void SetEU_Corine_LC_Key()
+        {
+            //   Sets the land cover key to be EU Corine 2006 Land Cover DB
+            // Code	Description	roughness length
+            
+            LC_Key = new LC_SR_DH[44];
+            LC_Key[0].code = 1;
+            LC_Key[0].desc = "Continuous urban fabric";
+            LC_Key[0].SR = 0.8f;
+            LC_Key[0].DH = 3.3f;
+
+            LC_Key[1].code = 2;
+            LC_Key[1].desc = "Discontinuous urban fabric";
+            LC_Key[1].SR = 0.4f;
+            LC_Key[1].DH = 1.3f;
+
+            LC_Key[2].code = 3;
+            LC_Key[2].desc = "Industrial as commercial units";
+            LC_Key[2].SR = 1.6f;
+            LC_Key[2].DH = 13.3f;
+
+            LC_Key[3].code = 4;
+            LC_Key[3].desc = "Road and rail networks and associated land";
+            LC_Key[3].SR = 0.4f;
+            LC_Key[3].DH = 1.3f;
+
+            LC_Key[4].code = 5;
+            LC_Key[4].desc = "Port areas";
+            LC_Key[4].SR = 1.6f;
+            LC_Key[4].DH = 13.3f;
+
+            LC_Key[5].code = 6;
+            LC_Key[5].desc = "Airports";
+            LC_Key[5].SR = 1.6f;
+            LC_Key[5].DH = 13.3f;
+
+            LC_Key[6].code = 7;
+            LC_Key[6].desc = "Mineral extraction sites";
+            LC_Key[6].SR = 1.6f;
+            LC_Key[6].DH = 13.3f;
+
+            LC_Key[7].code = 8;
+            LC_Key[7].desc = "Dump sites";
+            LC_Key[7].SR = 0.4f;
+            LC_Key[7].DH = 1.3f;
+
+            LC_Key[8].code = 9;
+            LC_Key[8].desc = "Construction sites";
+            LC_Key[8].SR = 1.6f;
+            LC_Key[8].DH = 13.3f;
+
+            LC_Key[9].code = 10;
+            LC_Key[9].desc = "green urban areas";
+            LC_Key[9].SR = 0.8f;
+            LC_Key[9].DH = 3.3f;
+
+            LC_Key[10].code = 11;
+            LC_Key[10].desc = "Sport and leisure facilities";
+            LC_Key[10].SR = 1.6f;
+            LC_Key[10].DH = 13.3f;
+
+            LC_Key[11].code = 12;
+            LC_Key[11].desc = "Non-irrigated arable land";
+            LC_Key[11].SR = 0.2f;
+            LC_Key[11].DH = 0.1f;
+
+            LC_Key[12].code = 13;
+            LC_Key[12].desc = "Permanently irrigated land";
+            LC_Key[12].SR = 0.03f;
+            LC_Key[12].DH = 0.1f;
+
+            LC_Key[13].code = 14;
+            LC_Key[13].desc = "Rice fields";
+            LC_Key[13].SR = 0.25f;
+            LC_Key[13].DH = 1.3f;
+
+            LC_Key[14].code = 15;
+            LC_Key[14].desc = "Vineyards";
+            LC_Key[14].SR = 0.25f;
+            LC_Key[14].DH = 1.3f;
+
+            LC_Key[15].code = 16;
+            LC_Key[15].desc = "Fruit trees and berry plantations";
+            LC_Key[15].SR = 0.25f;
+            LC_Key[15].DH = 1.3f;
+
+            LC_Key[16].code = 17;
+            LC_Key[16].desc = "Olive groves";
+            LC_Key[16].SR = 0.25f;
+            LC_Key[16].DH = 1.3f;
+
+            LC_Key[17].code = 18;
+            LC_Key[17].desc = "Pastures";
+            LC_Key[17].SR = 0.03f;
+            LC_Key[17].DH = 0.1f;
+
+            LC_Key[18].code = 19;
+            LC_Key[18].desc = "Annual crops associated with permanent crops";
+            LC_Key[18].SR = 0.25f;
+            LC_Key[18].DH = 1.3f;
+
+            LC_Key[19].code = 20;
+            LC_Key[19].desc = "Complex cultivation patterns";
+            LC_Key[19].SR = 0.25f;
+            LC_Key[19].DH = 1.3f;
+
+            LC_Key[20].code = 21;
+            LC_Key[20].desc = "Land principally occupied by agriculture, with signif[icant are= of natural vegetation";
+            LC_Key[20].SR = 0.25f;
+            LC_Key[20].DH = 1.3f;
+
+            LC_Key[21].code = 22;
+            LC_Key[21].desc = "Agro-forestry areas";
+            LC_Key[21].SR = 0.4f;
+            LC_Key[21].DH = 0.7f;
+
+            LC_Key[22].code = 23;
+            LC_Key[22].desc = "Broad-leaved forest";
+            LC_Key[22].SR = 1f;
+            LC_Key[22].DH = 16.7f;
+
+            LC_Key[23].code = 24;
+            LC_Key[23].desc = "Coniferous forest";
+            LC_Key[23].SR = 1f;
+            LC_Key[23].DH = 16.7f;
+
+            LC_Key[24].code = 25;
+            LC_Key[24].desc = "Mixed forest";
+            LC_Key[24].SR = 1.1f;
+            LC_Key[24].DH = 16.7f;
+
+            LC_Key[25].code = 26;
+            LC_Key[25].desc = "Natural grasslands";
+            LC_Key[25].SR = 0.03f;
+            LC_Key[25].DH = 0.1f;
+
+            LC_Key[26].code = 27;
+            LC_Key[26].desc = "Moors and heathland";
+            LC_Key[26].SR = 0.03f;
+            LC_Key[26].DH = 0.1f;
+
+            LC_Key[27].code = 28;
+            LC_Key[27].desc = "Sclerophyllous vegetation";
+            LC_Key[27].SR = 0.03f;
+            LC_Key[27].DH = 0.1f;
+
+            LC_Key[28].code = 29;
+            LC_Key[28].desc = "Transitional woodland-shrub";
+            LC_Key[28].SR = 0.5f;
+            LC_Key[28].DH = 3.3f;
+
+            LC_Key[29].code = 30;
+            LC_Key[29].desc = "Beaches, dunes, sands";
+            LC_Key[29].SR = 0.005f;
+            LC_Key[29].DH = 0f;
+
+            LC_Key[30].code = 31;
+            LC_Key[30].desc = "Bare rocks";
+            LC_Key[30].SR = 0.005f;
+            LC_Key[30].DH = 0f;
+
+            LC_Key[31].code = 32;
+            LC_Key[31].desc = "Sparsely vegetated areas";
+            LC_Key[31].SR = 0.2f;
+            LC_Key[31].DH = 0.1f;
+
+            LC_Key[32].code = 33;
+            LC_Key[32].desc = "Burnt areas";
+            LC_Key[32].SR = 0.005f;
+            LC_Key[32].DH = 0f;
+
+            LC_Key[33].code = 34;
+            LC_Key[33].desc = "Glaciers and perpetual snow";
+            LC_Key[33].SR = 0.0024f;
+            LC_Key[33].DH = 0f;
+
+            LC_Key[34].code = 35;
+            LC_Key[34].desc = "Inland marshes";
+            LC_Key[34].SR = 0.03f;
+            LC_Key[34].DH = 0.1f;
+
+            LC_Key[35].code = 36;
+            LC_Key[35].desc = "Peat bogs";
+            LC_Key[35].SR = 0.03f;
+            LC_Key[35].DH = 0.1f;
+
+            LC_Key[36].code = 37;
+            LC_Key[36].desc = "Salt marshes";
+            LC_Key[36].SR = 0.03f;
+            LC_Key[36].DH = 0.1f;
+
+            LC_Key[37].code = 38;
+            LC_Key[37].desc = "Salines";
+            LC_Key[37].SR = 0.03f;
+            LC_Key[37].DH = 0.1f;
+
+            LC_Key[38].code = 39;
+            LC_Key[38].desc = "Intertidal flats";
+            LC_Key[38].SR = 0.03f;
+            LC_Key[38].DH = 0.1f;
+
+            LC_Key[39].code = 40;
+            LC_Key[39].desc = "Water courses";
+            LC_Key[39].SR = 0.0002f;
+            LC_Key[39].DH = 0f;
+
+            LC_Key[40].code = 41;
+            LC_Key[40].desc = "Water bodies";
+            LC_Key[40].SR = 0.0002f;
+            LC_Key[40].DH = 0f;
+
+            LC_Key[41].code = 42;
+            LC_Key[41].desc = "Coastal lagoons";
+            LC_Key[41].SR = 0.0002f;
+            LC_Key[41].DH = 0f;
+
+            LC_Key[42].code = 43;
+            LC_Key[42].desc = "Estuaries";
+            LC_Key[42].SR = 0.0002f;
+            LC_Key[42].DH = 0f;
+
+            LC_Key[43].code = 44;
+            LC_Key[43].desc = "Sea and ocean";
+            LC_Key[43].SR = 0.0002f;
+            LC_Key[43].DH = 0f;
+
+        }
+
+        void ReadWaspRoughnessMap(Continuum thisInst)
+        {
+            // Calls Background Worker to read in roughness .map file
+            if (thisInst.ofdImportMap.ShowDialog() == DialogResult.OK) {
+
+                string wholePath = thisInst.ofdImportMap.FileName;
+                thisInst.SetDefaultFolderLocations(wholePath);
+
+                BackgroundWork.Vars_for_BW varsForBW = new BackgroundWork.Vars_for_BW();
+                varsForBW.thisInst = thisInst;
+                varsForBW.Filename = wholePath;
+
+                thisInst.BW_worker = new BackgroundWork();
+                thisInst.BW_worker.Call_BW_WAsP_Map(varsForBW);
+
+            }
+
+        }
+              
+
+        public Roughness_Map_Struct[] OrderShapesBySize(Roughness_Map_Struct[] shapes)
+        {
+            //   Reads in Roughness_Map_Structs() and returns shapes ordered by number of points (small to large)
+
+            int numShapes = 0;
+            try
+            {
+                numShapes = shapes.Length;
+            }
+            catch {
+                return shapes;
+            }
+
+            Roughness_Map_Struct[] orderedShapes = new Roughness_Map_Struct[numShapes];
+
+            int minSize = 2;
+            int ordInd = 0;
+
+            while (ordInd <= numShapes - 1)
+            {
+                for (int i = 0; i < numShapes; i++)
+                    if (shapes[i].numPoints == minSize)
+                    {
+                        orderedShapes[ordInd] = shapes[i];
+                        ordInd = ordInd + 1;
+                    }
+
+                minSize = minSize + 1;
+            }
+
+            return orderedShapes;
+
+        }
+
+        public void FindShapeMinMaxAndIsClosed(ref Roughness_Map_Struct thisShape)
+        {
+            // Finds min/max X/Y of shape and determines whether it is a line || a closed contour 
+            double thisX_Min = 10000000;
+            double thisX_Max = 0;
+            double thisY_Min = 10000000;
+            double thisY_Max = 0;                        
+
+            for (int j = 0; j < thisShape.numPoints; j++)
+            {
+                if (thisShape.points[j].UTMX < thisX_Min) thisX_Min = thisShape.points[j].UTMX;
+                if (thisShape.points[j].UTMX > thisX_Max) thisX_Max = thisShape.points[j].UTMX;
+                if (thisShape.points[j].UTMY < thisY_Min) thisY_Min = thisShape.points[j].UTMY;
+                if (thisShape.points[j].UTMY > thisY_Max) thisY_Max = thisShape.points[j].UTMY;
+
+            }
+
+            // Polygon is not closed if( the first and l=t point are not the same
+
+            if (thisShape.points[0].UTMX != thisShape.points[thisShape.numPoints - 1].UTMX || thisShape.points[0].UTMY != thisShape.points[thisShape.numPoints - 1].UTMY)
+                thisShape.isClosed = false;
+
+            thisShape.minX = thisX_Min;
+            thisShape.maxX = thisX_Max;
+            thisShape.minY = thisY_Min;
+            thisShape.maxY = thisY_Max;
+
+        }
+
+
+        public void CreateLC_KeyUsingMAP_Shapes(Roughness_Map_Struct[] theseShapes)
+        {
+            // Reads in shape objects from a .MAP contour file and creates a land cover key b=ed on the roughness values contained in the file
+            // And =signs a default displacement height to each land cover code
+
+            // reset the LC_Key            
+            LC_Key = new LC_SR_DH[1];
+            int LC_count = 0;
+            bool isNewLeftRough = false;
+            bool isNewRightRough = false;
+
+            if (theseShapes == null)
+                return;
+
+            for (int i = 0; i < theseShapes.Length; i++)
+            {
+                isNewLeftRough = true;
+                isNewRightRough = true;
+
+                for (int j = 0; j < LC_count; j++)
+                {
+                    if (LC_Key[j].SR == theseShapes[i].leftRough) isNewLeftRough = false;
+                    if (LC_Key[j].SR == theseShapes[i].rightRough) isNewRightRough = false;
+                }
+
+                if (isNewLeftRough == true)
+                {
+                    Array.Resize(ref LC_Key, LC_count + 1);
+
+                    LC_Key[LC_count].code = LC_count + 1;
+                    LC_Key[LC_count].desc = ".Map roughness " + (LC_count + 1);
+                    LC_Key[LC_count].SR = theseShapes[i].leftRough;
+                    LC_Key[LC_count].DH = GetDefaultDispHeight(LC_Key[LC_count].SR);
+                    LC_count = LC_count + 1;
+                }
+
+                if (isNewRightRough == true)
+                {
+                    Array.Resize(ref LC_Key, LC_count + 1);
+                    LC_Key[LC_count].code = LC_count + 1;
+                    LC_Key[LC_count].desc = ".Map roughness " + (LC_count + 1);
+                    LC_Key[LC_count].SR = theseShapes[i].rightRough;
+                    LC_Key[LC_count].DH = GetDefaultDispHeight(LC_Key[LC_count].SR);
+                    LC_count = LC_count + 1;
+                }
+            }
+
+        }
+
+        public bool DoesThisY_CrossAnotherLine(Roughness_Map_Struct thisShape, int pointInd, double Y_interp, double thisX, double thisY)
+        {
+            // returns true if( there is another line between thisY and Y_interp
+            bool crossesLine = false;
+            double X1 = 0;
+            double X2 = 0;
+            double Y1 = 0;
+            double Y2 = 0;
+            double Y_int_prime = 0;
+            double diffY_Int = thisY - Y_interp;
+            double diffY_IntPrime = 0;
+
+            for (int i = 0; i <= thisShape.numPoints - 2; i++)
+            {
+                if (i != pointInd)
+                { // ignore the line that you//re currently working with
+                    X1 = thisShape.points[i].UTMX;
+                    Y1 = thisShape.points[i].UTMY;
+
+                    X2 = thisShape.points[i + 1].UTMX;
+                    Y2 = thisShape.points[i + 1].UTMY;
+
+                    if (thisX > X1 && thisX < X2)
+                    { // thisX falls in range of this other line
+                      // calculate Y_interp between point and this other line
+
+                        if (thisX != X1 & thisX != X2 && X1 != X2)
+                            Y_int_prime = Y1 + (thisX - X1) * (Y2 - Y1) / (X2 - X1);
+                        else if (thisX == X1)
+                            Y_int_prime = Y1;
+                        else if (thisX == X2)
+                            Y_int_prime = Y2;
+                        else
+                            Y_int_prime = thisY;
+
+                        diffY_IntPrime = thisY - Y_int_prime;
+
+                        if ((thisY < Y_interp && diffY_IntPrime < 0 && diffY_IntPrime > diffY_Int) ||
+                          (thisY > Y_interp && diffY_IntPrime > 0 && diffY_IntPrime < diffY_Int))
+                        {
+                            crossesLine = true;
+                            break;
+
+                        }
+
+                    }
+                }
+            }
+
+            return crossesLine;
+        }
+
+
+        public bool IsOutsideOneOfBounds(int thisX, int thisY, int minX, int maxX, int minY, int maxY)
+        {
+            // returns true if( data point is outside either the X || the Y bounds
+            bool isOutside = false;
+
+            if ((thisX < minX || thisX > maxX) || (thisY < minY || thisY > maxY))
+                isOutside = true;
+
+            return isOutside;
+
+        }
+
+        public double GetY_Interp(double thisX, double thisY, double X_1, double X_2, double Y_1, double Y_2)
+        {
+            // Finds interpolated Y value at thisX value 
+            double Y_interp = 0;
+            
+            if (thisX != X_1 && thisX != X_2 && X_1 != X_2)
+                Y_interp = Y_1 + (thisX - X_1) * (Y_2 - Y_1) / (X_2 - X_1);
+            else if (thisX == X_1)
+                Y_interp = Y_1;
+            else if (thisX == X_2)
+                Y_interp = Y_2;
+            else
+                Y_interp = thisY;
+
+
+            return Y_interp;
+        }
+
+        public bool Is_Left_or_Right(double thisX, double thisY, double X_1, double X_2, double Y_1, double Y_2)
+        {
+            // returns true is thisX/thisY is left of line and false if( on right
+            bool isLeft = true;
+            double deltaX = X_2 - X_1;
+            double deltaY = Y_2 - Y_1;
+            double Y_interp = GetY_Interp(thisX, thisY, X_1, X_2, Y_1, Y_2);
+
+            if (deltaX == 0)
+            { // vertical line
+
+                if (Y_2 > Y_1)
+                {
+                    if (thisX < X_1)
+                        isLeft = true;
+                    else
+                        isLeft = false;
+                }
+                else
+                {
+                    if (thisX > X_1)
+                        isLeft = true;
+                    else
+                        isLeft = false;
+                }
+            }
+            else if (deltaY == 0)
+            { // horizontal line
+
+                if (X_2 > X_1)
+                {
+                    if (thisY > Y_1)
+                        isLeft = true;
+                    else
+                        isLeft = false;
+                }
+                else
+                {
+                    if (thisY < Y_1)
+                        isLeft = true;
+                    else
+                        isLeft = false;
+                }
+            }
+            else if (deltaX != 0 || deltaY != 0)
+            {
+                if (deltaX >= 0 && deltaY >= 0)
+                { // First quadrant
+
+                    if (thisY > Y_interp)
+                        isLeft = true;
+                    else
+                        isLeft = false;
+                }
+                else if (deltaX <= 0 && deltaY >= 0)
+                { // Second quad
+
+                    if (thisY > Y_interp)
+                        isLeft = false;
+                    else
+                        isLeft = true;
+                }
+                else if (deltaX <= 0 && deltaY <= 0)
+                { // Third quad
+
+                    if (thisY > Y_interp)
+                        isLeft = false;
+                    else
+                        isLeft = true;
+                }
+                else if (deltaX >= 0 && deltaY <= 0)
+                { // Fourth
+
+                    if (thisY > Y_interp)
+                        isLeft = true;
+                    else
+                        isLeft = false;
+                }
+            }
+
+            return isLeft;
+
+        }
+
+        public void AssignLC_CodesToShapeContours(Roughness_Map_Struct[] theseShapes)
+        {
+            // Traces each contour/line of each shape in theseShapes() array and assigns left/right Land cover code to +/- 90m from contour/line
+
+            double Y_interp = 0;
+
+            int X_IndMin = 0;
+            int X_IndMax = 0;
+            int Y_IndMin = 0;
+            int Y_IndMax = 0;
+
+            TopoInfo.UTM_X_Y gridPoint = new TopoInfo.UTM_X_Y();
+            TopoInfo.UTM_X_Y nextPoint = new TopoInfo.UTM_X_Y();
+            TopoInfo.UTM_X_Y lastPoint = new TopoInfo.UTM_X_Y();
+            TopoInfo.UTM_X_Y startPoint = new TopoInfo.UTM_X_Y();
+            TopoInfo.UTM_X_Y endPoint = new TopoInfo.UTM_X_Y();
+
+            int leftLC = 1;
+            int rightLC = 1;
+            bool isLeft = false;
+            bool nextIsLeft = false;
+
+            double angleLastToPt1 = 0;
+            double anglePt1toPt2 = 0;
+            double anglePt2ToNext = 0;
+            double angleDiff = 0;
+
+            if ((theseShapes == null) || (LC_Key == null))
+                return;
+
+            for (int shpInd = 0; shpInd <= theseShapes.Length - 1; shpInd++)
+            {
+                for (int ptInd = 0; ptInd <= theseShapes[shpInd].numPoints - 2; ptInd++)
+                {
+                    startPoint.UTMX = theseShapes[shpInd].points[ptInd].UTMX;
+                    startPoint.UTMY = theseShapes[shpInd].points[ptInd].UTMY;
+
+                    endPoint.UTMX = theseShapes[shpInd].points[ptInd + 1].UTMX;
+                    endPoint.UTMY = theseShapes[shpInd].points[ptInd + 1].UTMY;
+
+                    anglePt1toPt2 = Convert.ToSingle(Math.Atan2((endPoint.UTMY - startPoint.UTMY), (endPoint.UTMX - startPoint.UTMX)) * 180 / Math.PI);
+                    if (anglePt1toPt2 < 0) anglePt1toPt2 = anglePt1toPt2 + 360;
+
+                    if (ptInd < theseShapes[shpInd].numPoints - 2)
+                    {
+                        nextPoint.UTMX = theseShapes[shpInd].points[ptInd + 2].UTMX;
+                        nextPoint.UTMY = theseShapes[shpInd].points[ptInd + 2].UTMY;
+                    }
+                    else if (theseShapes[shpInd].isClosed == true) {
+                        nextPoint.UTMX = theseShapes[shpInd].points[1].UTMX;
+                        nextPoint.UTMY = theseShapes[shpInd].points[1].UTMY;
+                    }
+                    else {
+                        nextPoint.UTMX = 0;
+                        nextPoint.UTMY = 0;
+                    }
+
+                    if (nextPoint.UTMX != 0)
+                        anglePt2ToNext = Convert.ToSingle(Math.Atan2((nextPoint.UTMY - endPoint.UTMY), (nextPoint.UTMX - endPoint.UTMX)) * 180 / Math.PI);
+                    else
+                        anglePt2ToNext = 0;
+
+                    if (anglePt2ToNext < 0) anglePt2ToNext = anglePt2ToNext + 360;
+
+                    if (ptInd > 0) {
+                        lastPoint.UTMX = theseShapes[shpInd].points[ptInd - 1].UTMX;
+                        lastPoint.UTMY = theseShapes[shpInd].points[ptInd - 1].UTMY;
+                    }
+                    else if (theseShapes[shpInd].isClosed == true) {
+                        lastPoint.UTMX = theseShapes[shpInd].points[theseShapes[shpInd].numPoints - 2].UTMX;
+                        lastPoint.UTMY = theseShapes[shpInd].points[theseShapes[shpInd].numPoints - 2].UTMY;
+                    }
+                    else {
+                        lastPoint.UTMX = 0;
+                        lastPoint.UTMY = 0;
+                    }
+
+                    if (lastPoint.UTMX != 0)
+                        angleLastToPt1 = Convert.ToSingle(Math.Atan2((startPoint.UTMY - lastPoint.UTMY), (startPoint.UTMX - lastPoint.UTMX)) * 180 / Math.PI);
+                    else
+                        angleLastToPt1 = 0;
+
+                    if (angleLastToPt1 < 0) angleLastToPt1 = angleLastToPt1 + 360;
+
+                    // Define min/max X and Y to define bounding box to fill with LC codes
+                    X_IndMin = (int)Math.Round((startPoint.UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso, 0); // Start of line
+                    X_IndMax = (int)Math.Round((endPoint.UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso, 0); // End of line
+
+                    if (X_IndMin > X_IndMax)
+                    {
+                        int tempX = X_IndMin;
+                        X_IndMin = X_IndMax;
+                        X_IndMax = tempX;
+                    }
+
+                    int X_ind_min_box = X_IndMin - 2;
+                    if (X_ind_min_box < 0) X_ind_min_box = 0;
+
+                    int X_ind_max_box = X_IndMax + 2;
+                    if (X_ind_max_box > LC_NumXY.X.all.num - 1) X_ind_max_box = LC_NumXY.X.all.num - 1;
+                    //
+                    Y_IndMin = (int)Math.Round((startPoint.UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso, 0);
+                    Y_IndMax = (int)Math.Round((endPoint.UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso, 0);
+
+                    if (Y_IndMin > Y_IndMax)
+                    {
+                        int tempY = Y_IndMin;
+                        Y_IndMin = Y_IndMax;
+                        Y_IndMax = tempY;
+                    }
+
+                    int Y_ind_min_box = Y_IndMin - 2;
+                    if (Y_ind_min_box < 0) Y_ind_min_box = 0;
+
+                    int Y_ind_max_box = Y_IndMax + 2;
+                    if (Y_ind_max_box > LC_NumXY.Y.all.num - 1) Y_ind_max_box = LC_NumXY.Y.all.num - 1;
+
+                    for (int LC_ind = 0; LC_ind <= LC_Key.Length - 1; LC_ind++)
+                    {
+                        if (LC_Key[LC_ind].SR == theseShapes[shpInd].leftRough) leftLC = LC_Key[LC_ind].code;
+                        if (LC_Key[LC_ind].SR == theseShapes[shpInd].rightRough) rightLC = LC_Key[LC_ind].code;
+                    }
+
+                    for (int X_Ind = X_ind_min_box; X_Ind <= X_ind_max_box; X_Ind++)
+                    {
+                        for (int Y_Ind = Y_ind_min_box; Y_Ind <= Y_ind_max_box; Y_Ind++)
+                        {
+                            gridPoint.UTMX = LC_NumXY.X.all.min + X_Ind * LC_NumXY.X.all.reso;
+                            gridPoint.UTMY = LC_NumXY.Y.all.min + Y_Ind * LC_NumXY.Y.all.reso;                                                       
+
+                            // Check to see if there is another line between thisY and Y_interp
+                            // if there is else don't assign a LC code
+                            Y_interp = GetY_Interp(gridPoint.UTMX, gridPoint.UTMY, startPoint.UTMX, endPoint.UTMX, startPoint.UTMY, endPoint.UTMY);
+                            bool crossesAnother = DoesThisY_CrossAnotherLine(theseShapes[shpInd], ptInd, Y_interp, gridPoint.UTMX, gridPoint.UTMY);
+                            bool outsideOneBound = IsOutsideOneOfBounds(X_Ind, Y_Ind, X_IndMin, X_IndMax, Y_IndMin, Y_IndMax);                                                     
+
+                            if (landCover[X_Ind, Y_Ind] == 0 && Math.Abs(gridPoint.UTMY - Y_interp) < 90 && crossesAnother == false)
+                            {
+                                isLeft = Is_Left_or_Right(gridPoint.UTMX, gridPoint.UTMY, startPoint.UTMX, endPoint.UTMX, startPoint.UTMY, endPoint.UTMY);
+
+                                if (outsideOneBound == true)
+                                {
+                                    // if( grid point is outside the min/max X/Y of line segment then check either the last or point to figure out what LC code to assign
+                                    // calc distance to each end of line
+                                    double distToStart = CalcDistanceBetweenPoints(gridPoint.UTMX, gridPoint.UTMY, startPoint.UTMX, startPoint.UTMY);
+                                    double distToEnd = CalcDistanceBetweenPoints(gridPoint.UTMX, gridPoint.UTMY, endPoint.UTMX, endPoint.UTMY);
+
+                                    // figure out if( grid point is closer to start or end of line, then figure out if the grid point is expected to be on the
+                                    // left or right side of the last or line 
+                                    // Calculate change in angle between line and either last || } point
+                                    if (distToStart < distToEnd && lastPoint.UTMX != 0)
+                                    { // closer to start of line
+                                        nextIsLeft = Is_Left_or_Right(gridPoint.UTMX, gridPoint.UTMY, lastPoint.UTMX, startPoint.UTMX, lastPoint.UTMY, startPoint.UTMY);
+                                        angleDiff = anglePt1toPt2 - angleLastToPt1;
+                                    }
+                                    else if (distToEnd < distToStart && nextPoint.UTMX != 0)
+                                    {
+                                        nextIsLeft = Is_Left_or_Right(gridPoint.UTMX, gridPoint.UTMY, endPoint.UTMX, nextPoint.UTMX, endPoint.UTMY, nextPoint.UTMY);
+                                        angleDiff = anglePt2ToNext - anglePt1toPt2;
+                                    }
+                                    else
+                                    {
+                                        // either at start || end of unclosed polygon so don//t =sign anything.Set nextIsLeft to opposite of isLeft
+                                        if (isLeft == true)
+                                            nextIsLeft = false;
+                                        else
+                                            nextIsLeft = true;
+
+                                    }
+
+                                    // make sure that angle Difference is +/- 180 degrees
+                                    if (angleDiff > 180) angleDiff = angleDiff - 360;
+                                    if (angleDiff < -180) angleDiff = angleDiff + 360;
+
+                                    // check to see if( this line and } (or Last) both expect grid point to be on left || right of line
+                                    if (isLeft == nextIsLeft)
+                                    {
+                                        if (isLeft == true)
+                                            landCover[X_Ind, Y_Ind] = leftLC;
+                                        else
+                                            landCover[X_Ind, Y_Ind] = rightLC;
+                                    }
+                                    else if (isLeft == true && angleDiff < 0)  // if( this line expects point to be on left but either Last || } line expects it to be on the right 
+                                        landCover[X_Ind, Y_Ind] = leftLC;   //BUT angle_Diff < 0 (the line is turning clockwise) ) { ignore Last || } line and =sign left LC code
+                                    else if (isLeft == false && angleDiff > 0)  // if( this line expects point to be on right but Last || } line expects it to be on left 
+                                        landCover[X_Ind, Y_Ind] = rightLC; // BUT angle Diff > 0 (line is turning counter-clockwise) ) { ignore Last || } line and =sign right LC code
+                                }
+                                else
+                                {
+
+                                    if (isLeft == true)
+                                        landCover[X_Ind, Y_Ind] = leftLC;
+                                    else
+                                        landCover[X_Ind, Y_Ind] = rightLC;
+                                }
+                            }                        
+
+                        }
+                    }
+                }
+            }
+        }
+
+        public void FillInLC_Array()
+        {
+            // This is called after the void routine 'AssignLC_CodesToShapeContours' has been called
+            // Fills in the landCover array with land cover codes based on the LC codes that were assigned to the left and right of each line
+
+            int thisInd = 0;
+            int nextLC = 0;
+            int lastLC = 0;
+
+            // first move along rows and read from bottom-up of each column
+            for (int i = 0; i < LC_NumXY.X.all.num; i++)
+            {
+                for (int j = 0; j < LC_NumXY.Y.all.num; j++)
+                {
+                    if (landCover[i, j] == 0 && j == 0)
+                    { // At start of column, move up unti LC code is not a zero                                              
+
+                        thisInd = j;
+                        nextLC = landCover[i, thisInd];
+
+                        while (nextLC == 0 && thisInd < LC_NumXY.Y.all.num - 1)
+                        {
+                            thisInd = thisInd + 1;
+                            nextLC = landCover[i, thisInd];
+                        }
+
+                        if (nextLC != 0)
+                        { // fill in LC codes with from start of column up to where the first LC code was found
+                            for (int Y_Ind = j; Y_Ind <= thisInd - 1; Y_Ind++)
+                                landCover[i, Y_Ind] = nextLC;
+                        }
+
+                        // move 'j' index up to where the first LC code w= found
+                        j = thisInd;
+                    }
+                    else if (landCover[i, j] == 0 && j > 0)
+                    { // not at start of column but empty landCover entry next
+                        lastLC = landCover[i, j - 1];
+                        thisInd = j;
+                        nextLC = landCover[i, thisInd];
+
+                        while (nextLC == 0 && thisInd < LC_NumXY.Y.all.num - 1) // fill in landCover codes with //lastLC// until a non-empty landCover entry { is found
+                        {
+                            landCover[i, thisInd] = lastLC;
+                            thisInd = thisInd + 1;
+                            nextLC = landCover[i, thisInd];
+                        }
+
+                        if (thisInd == LC_NumXY.Y.all.num - 1 && landCover[i, thisInd] == 0)
+                            landCover[i, thisInd] = lastLC;
+
+                        j = thisInd;
+
+                    }
+
+                }
+
+            }
+
+            // now move along columns and read rows from left-right
+            for (int j = 0; j < LC_NumXY.Y.all.num; j++)
+            {
+                for (int i = 0; i < LC_NumXY.X.all.num; i++)
+                {                    
+
+                    if (landCover[i, j] == 0 && i == 0)
+                    { // At start of row, move to right unti LC code is not a zero
+                        thisInd = i;
+                        nextLC = landCover[thisInd, j];
+
+                        while (nextLC == 0 && thisInd < LC_NumXY.X.all.num - 1)
+                        {
+                            thisInd = thisInd + 1;
+                            nextLC = landCover[thisInd, j];
+                        }
+
+                        for (int X_Ind = i; X_Ind < thisInd; X_Ind++)  // fill in LC codes with from start of row up to where the first LC code was found
+                            landCover[X_Ind, j] = nextLC;
+
+                        i = thisInd; // move 'i' up to where first LC code was found
+                    }
+                    else if (landCover[i, j] == 0 && i > 0)
+                    {
+                        thisInd = i;
+                        lastLC = landCover[i - 1, j];
+                        nextLC = landCover[thisInd, j];
+                        
+                        while (nextLC == 0 && thisInd < LC_NumXY.X.all.num - 1)
+                        { // fill in landCover codes with //lastLC// until a non-empty landCover entry { is found
+                            landCover[thisInd, j] = lastLC;
+                            thisInd = thisInd + 1;
+                            nextLC = landCover[thisInd, j];
+                        }
+
+
+                        if (thisInd == LC_NumXY.X.all.num - 1 && landCover[thisInd, j] == 0)
+                            landCover[thisInd, j] = lastLC;
+
+                        i = thisInd; // move //i// up to where } LC code w= found
+
+                    }
+                }
+            }
+
+            // Fill in along columns one more time to get anything that w= missed
+            for (int i = 0; i < LC_NumXY.X.all.num; i++)
+            {
+                for (int j = 0; j < LC_NumXY.Y.all.num; j++)
+                {                    
+
+                    if (landCover[i, j] == 0 && j == 0)
+                    { // At start of column, move up unti LC code is not a zero
+
+                        thisInd = j;
+                        nextLC = landCover[i, thisInd];
+
+                        while (nextLC == 0 && thisInd < LC_NumXY.Y.all.num - 1)
+                        {
+                            thisInd = thisInd + 1;
+                            nextLC = landCover[i, thisInd];
+                        }
+
+                        if (nextLC != 0)  // fill in LC codes with from start of column up to where the first LC code was found
+                            for (int Y_Ind = j; Y_Ind <= thisInd - 1; Y_Ind++)
+                                landCover[i, Y_Ind] = nextLC;
+
+                        // move 'j' index up to where the first LC code was found
+                        j = thisInd;
+                    }
+                    else if (landCover[i, j] == 0 && j > 0)
+                    { // not at start of column but empty landCover entry {
+                        lastLC = landCover[i, j - 1];
+                        thisInd = j;
+                        nextLC = landCover[i, thisInd];
+
+                        while (nextLC == 0 && thisInd < LC_NumXY.Y.all.num - 1)
+                        { // fill in landCover codes with 'lastLC' until a non-empty landCover entry is found
+                            landCover[i, thisInd] = lastLC;
+                            thisInd = thisInd + 1;
+                            nextLC = landCover[i, thisInd];
+                        }
+
+                        if (thisInd == LC_NumXY.Y.all.num - 1 && landCover[i, thisInd] == 0)
+                            landCover[i, thisInd] = lastLC;
+
+
+                        j = thisInd;
+                    }
+                }
+            }
+        }
+
+
+        public double CalcDistanceBetweenPoints(double X_1, double Y_1, double X_2, double Y_2)
+        {
+            // returns distance between two points
+           // double thisDist = Convert.ToSingle(Math.Pow((Math.Pow((X_1 - X_2), 2) + Math.Pow((Y_1 - Y_2), 2)), 0.5));
+           // double thisDist = Convert.ToSingle(Math.Pow(((X_1 - X_2) * (X_1 - X_2) + (Y_1 - Y_2) * (Y_1 - Y_2)), 0.5));
+            double thisDist = Math.Sqrt((X_1 - X_2) * (X_1 - X_2) + (Y_1 - Y_2) * (Y_1 - Y_2));
+            return thisDist;
+        }             
+
+        public double GetDefaultDispHeight(double thisSR)
+        {
+            // returns the default displacement height =sociated with thisSR
+            double defaultDH = 0;
+
+            if (thisSR < 0.02)
+                defaultDH = 0;
+            else if (thisSR < 0.25)
+                defaultDH = 0.1f;
+            else if (thisSR < 0.5)
+                defaultDH = 1.3f;
+            else if (thisSR < 0.8)
+                defaultDH = 2;
+            else if (thisSR < 1)
+                defaultDH = 3.3f;
+            else
+                defaultDH = 16.7f;
+
+            return defaultDH;
+
+        }
+        
+    }
+    
+}
