@@ -38,17 +38,20 @@
             // Label2
             // 
             this.Label2.AutoSize = true;
-            this.Label2.Location = new System.Drawing.Point(23, 52);
+            this.Label2.Location = new System.Drawing.Point(25, 49);
+            this.Label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Label2.Name = "Label2";
-            this.Label2.Size = new System.Drawing.Size(61, 13);
+            this.Label2.Size = new System.Drawing.Size(69, 18);
             this.Label2.TabIndex = 7;
             this.Label2.Text = "Select one:";
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(276, 43);
+            this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOK.Location = new System.Drawing.Point(343, 49);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(96, 31);
+            this.btnOK.Size = new System.Drawing.Size(110, 43);
             this.btnOK.TabIndex = 6;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -60,30 +63,34 @@
             this.cbo_Lats_UTMs.Items.AddRange(new object[] {
             "Lats/Longs",
             "UTM coords"});
-            this.cbo_Lats_UTMs.Location = new System.Drawing.Point(87, 49);
+            this.cbo_Lats_UTMs.Location = new System.Drawing.Point(110, 45);
+            this.cbo_Lats_UTMs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cbo_Lats_UTMs.Name = "cbo_Lats_UTMs";
-            this.cbo_Lats_UTMs.Size = new System.Drawing.Size(145, 21);
+            this.cbo_Lats_UTMs.Size = new System.Drawing.Size(192, 26);
             this.cbo_Lats_UTMs.TabIndex = 5;
             // 
             // Label1
             // 
             this.Label1.AutoSize = true;
-            this.Label1.Location = new System.Drawing.Point(23, 16);
+            this.Label1.Location = new System.Drawing.Point(23, 18);
+            this.Label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Label1.Name = "Label1";
-            this.Label1.Size = new System.Drawing.Size(349, 13);
+            this.Label1.Size = new System.Drawing.Size(441, 18);
             this.Label1.TabIndex = 4;
             this.Label1.Text = "Would you like the turbine coordinates in Lat/Long or UTM coordinates?";
             // 
             // Export_Degs_or_UTM
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(394, 90);
+            this.ClientSize = new System.Drawing.Size(482, 112);
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.cbo_Lats_UTMs);
             this.Controls.Add(this.Label1);
+            this.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Export_Degs_or_UTM";
             this.ResumeLayout(false);
             this.PerformLayout();

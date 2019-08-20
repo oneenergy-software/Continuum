@@ -30,14 +30,27 @@ namespace ContinuumNS
 
             if (thisInst.topo.useSR)
             {
-                txtMap_LC_used.Text = "roughness model used";
+                txtMap_LC_used.Text = "Roughness model used";
                 txtMap_LC_used.BackColor = Color.MediumSeaGreen;
             }
             else
             {
-                txtMap_LC_used.Text = "roughness model NOT used";
+                txtMap_LC_used.Text = "Roughness model NOT used";
                 txtMap_LC_used.BackColor = Color.LightCoral;
             }
+
+            thisInst.metList.AreAllMetsMCPd();
+            if (thisInst.metList.allMCPd)
+            {
+                txtisMCPdGenMap.Text = "MCP'd Met data used";
+                txtisMCPdGenMap.BackColor = Color.MediumOrchid;
+            }
+            else
+            {
+                txtisMCPdGenMap.Text = "Meas Met data used";
+                txtisMCPdGenMap.BackColor = Color.LightCoral;
+            }
+
         }
 
         public int minUTMX;   // Minimum UTM X coordinate
@@ -58,6 +71,7 @@ namespace ContinuumNS
         Met[] metsUsed;
         Model[] models; // Wind flow model parameters
         Continuum thisInst;
+        bool useTimeSeries;
 
 
         private void btnCancel_Click(object sender, EventArgs e) {
@@ -118,7 +132,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid grid resolution.", "Continuum 2.3");
+                MessageBox.Show("Invalid grid resolution.", "Continuum 3");
                 txtMapReso.Text = gridReso.ToString();
                 return;
             }
@@ -141,7 +155,7 @@ namespace ContinuumNS
         
         private void GetMapSettings()
         {            
-            double height = thisInst.metList.metItem[0].height;
+            double height = thisInst.modeledHeight;
             
             try
             {
@@ -149,24 +163,12 @@ namespace ContinuumNS
             }
             catch 
             {
-                MessageBox.Show("Select parameter to map.", "Continuum 2.3");
+                MessageBox.Show("Select parameter to map.", "Continuum 3");
                 return;
-            }
-
-            int modelInd = 0;
-
-            try
-            {
-                modelInd = cbo_GenMap_UWDW_mod.SelectedIndex;
-            }
-            catch 
-            {
-                MessageBox.Show("Select default or site-calibrated model to use.", "Continuum 2.3");
-                return;
-            }
+            }                        
 
             bool isCalibrated = false;
-            if (modelInd == 1)
+            if (thisInst.metList.ThisCount > 1)
                 isCalibrated = true;
 
             Map thisMap = null;
@@ -188,7 +190,7 @@ namespace ContinuumNS
                 }
                 catch 
                 {
-                    MessageBox.Show("No power Curves imported.  Cannot create map of Gross AEP.", "Continuum 2.3");
+                    MessageBox.Show("No power Curves imported.  Cannot create map of Gross AEP.", "Continuum 3");
                     return;
                 }
                 mapName = "Gross AEP with " + powerCurve;
@@ -271,8 +273,14 @@ namespace ContinuumNS
                     }
                 }
             }
-                        
-            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, isCalibrated);
+
+            if (cboUseTimeSeries.SelectedItem.ToString() == "Use Time Series")
+                useTimeSeries = true;
+            else
+                useTimeSeries = false;
+            
+            if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || useTimeSeries == false)
+                models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, isCalibrated, Met.TOD.All, Met.Season.All, thisInst.modeledHeight,false);                     
             
         }
                 
@@ -298,7 +306,7 @@ namespace ContinuumNS
             int numTurbines = thisInst.turbineList.TurbineCount;
 
             if (numTurbines == 0) {
-                MessageBox.Show("No Turbine sites have been loaded.", "Continuum 2.3");
+                MessageBox.Show("No Turbine sites have been loaded.", "Continuum 3");
                 return;
             }
 
@@ -392,7 +400,7 @@ namespace ContinuumNS
                 minUTMX = Convert.ToInt32(txtMinUTMX.Text);
                 if (minUTMX < minUTMX_Limit)
                 {
-                    MessageBox.Show("Entered Min UTMX is less than minimum allowed value. Resetting to minimum.", "Continuum 2.3");
+                    MessageBox.Show("Entered Min UTMX is less than minimum allowed value. Resetting to minimum.", "Continuum 3");
                     minUTMX = minUTMX_Limit;
                 }
 
@@ -413,7 +421,7 @@ namespace ContinuumNS
                 maxUTMX = Convert.ToInt32(txtMaxUTMX.Text);
                 if (maxUTMX > maxUTMX_Limit)
                 {
-                    MessageBox.Show("Entered Max UTMX is more than maximum allowed value. Resetting to maximum.", "Continuum 2.3");
+                    MessageBox.Show("Entered Max UTMX is more than maximum allowed value. Resetting to maximum.", "Continuum 3");
                     maxUTMX = maxUTMX_Limit;
                 }
 
@@ -433,7 +441,7 @@ namespace ContinuumNS
                 minUTMY = Convert.ToInt32(txtMinUTMY.Text);
                 if (minUTMY < minUTMY_Limit)
                 {
-                    MessageBox.Show("Entered Min UTMY is less than minimum allowed value. Resetting to minimum.", "Continuum 2.3");
+                    MessageBox.Show("Entered Min UTMY is less than minimum allowed value. Resetting to minimum.", "Continuum 3");
                     minUTMY = minUTMY_Limit;
                 }
 
@@ -453,7 +461,7 @@ namespace ContinuumNS
                 maxUTMY = Convert.ToInt32(txtMaxUTMY.Text);
                 if (maxUTMY > maxUTMY_Limit)
                 {
-                    MessageBox.Show("Entered Max UTMY is more than maximum allowed value. Resetting to maximum.", "Continuum 2.3");
+                    MessageBox.Show("Entered Max UTMY is more than maximum allowed value. Resetting to maximum.", "Continuum 3");
                     maxUTMY = maxUTMY_Limit;
                 }
 
@@ -466,7 +474,7 @@ namespace ContinuumNS
         private void btnGenMap_Click(object sender, EventArgs e)
         {
             GetMapSettings();
-            thisInst.mapList.AddMap(mapName, minUTMX, minUTMY, gridReso, numX, numY, whatToMap, powerCurve, thisInst, false, null, metsUsed, models);
+            thisInst.mapList.AddMap(mapName, minUTMX, minUTMY, gridReso, numX, numY, whatToMap, powerCurve, thisInst, false, new Wake_Model(), metsUsed, models, useTimeSeries);
             Close();
         }
     }

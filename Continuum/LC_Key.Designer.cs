@@ -45,15 +45,16 @@
             // Label1
             // 
             this.Label1.AutoSize = true;
-            this.Label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Label1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label1.Location = new System.Drawing.Point(21, 21);
             this.Label1.Name = "Label1";
-            this.Label1.Size = new System.Drawing.Size(122, 20);
+            this.Label1.Size = new System.Drawing.Size(129, 18);
             this.Label1.TabIndex = 13;
             this.Label1.Text = "Land Cover key:";
             // 
             // cboLC_Key
             // 
+            this.cboLC_Key.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboLC_Key.FormattingEnabled = true;
             this.cboLC_Key.Items.AddRange(new object[] {
             "US NLCD",
@@ -62,14 +63,14 @@
             "User-Defined"});
             this.cboLC_Key.Location = new System.Drawing.Point(20, 48);
             this.cboLC_Key.Name = "cboLC_Key";
-            this.cboLC_Key.Size = new System.Drawing.Size(194, 21);
+            this.cboLC_Key.Size = new System.Drawing.Size(194, 26);
             this.cboLC_Key.TabIndex = 12;
             this.cboLC_Key.Text = "US NLCD";
             this.cboLC_Key.SelectedIndexChanged += new System.EventHandler(this.cboLC_Key_SelectedIndexChanged);
             // 
             // btnModKey
             // 
-            this.btnModKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnModKey.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnModKey.Location = new System.Drawing.Point(230, 16);
             this.btnModKey.Margin = new System.Windows.Forms.Padding(2);
             this.btnModKey.Name = "btnModKey";
@@ -81,7 +82,7 @@
             // 
             // btnNewKey
             // 
-            this.btnNewKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNewKey.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNewKey.Location = new System.Drawing.Point(352, 16);
             this.btnNewKey.Margin = new System.Windows.Forms.Padding(2);
             this.btnNewKey.Name = "btnNewKey";
@@ -93,7 +94,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancel.Location = new System.Drawing.Point(352, 425);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2);
             this.btnCancel.Name = "btnCancel";
@@ -105,13 +106,13 @@
             // 
             // btnOK
             // 
-            this.btnOK.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOK.Location = new System.Drawing.Point(230, 425);
             this.btnOK.Margin = new System.Windows.Forms.Padding(2);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(109, 39);
             this.btnOK.TabIndex = 8;
-            this.btnOK.Text = "Ok";
+            this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
@@ -122,6 +123,7 @@
             this.ColumnHeader2,
             this.ColumnHeader3,
             this.ColumnHeader4});
+            this.lstLC_SR_DH.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstLC_SR_DH.FullRowSelect = true;
             this.lstLC_SR_DH.Location = new System.Drawing.Point(20, 88);
             this.lstLC_SR_DH.Margin = new System.Windows.Forms.Padding(2);
@@ -144,7 +146,7 @@
             // 
             // ColumnHeader3
             // 
-            this.ColumnHeader3.Text = "Surface roughness, m";
+            this.ColumnHeader3.Text = "Surface Roughness, m";
             this.ColumnHeader3.Width = 156;
             // 
             // ColumnHeader4

@@ -29,23 +29,23 @@ namespace ContinuumNS
             // Opens the Mod_LC_Key form with the selected land cover code, description, SR, and DH for the user to edit. 
 
             if (lstLC_SR_DH.SelectedItems.Count == 0) {
-                MessageBox.Show("Select a land cover code to modify.", "Continuum 2.3");
+                MessageBox.Show("Select a land cover code to modify.", "Continuum 3");
                 return;
             }
 
-            TopoInfo.LC_SR_DH This_LC = new TopoInfo.LC_SR_DH();
+            TopoInfo.LC_SR_DH thisLC = new TopoInfo.LC_SR_DH();
 
-            This_LC.code = Convert.ToInt16(lstLC_SR_DH.SelectedItems[0].Text);
-            This_LC.desc = lstLC_SR_DH.SelectedItems[0].SubItems[1].Text;
-            This_LC.SR = Convert.ToSingle(lstLC_SR_DH.SelectedItems[0].SubItems[2].Text);
-            This_LC.DH = Convert.ToSingle(lstLC_SR_DH.SelectedItems[0].SubItems[3].Text);
+            thisLC.code = Convert.ToInt16(lstLC_SR_DH.SelectedItems[0].Text);
+            thisLC.desc = lstLC_SR_DH.SelectedItems[0].SubItems[1].Text;
+            thisLC.SR = Convert.ToSingle(lstLC_SR_DH.SelectedItems[0].SubItems[2].Text);
+            thisLC.DH = Convert.ToSingle(lstLC_SR_DH.SelectedItems[0].SubItems[3].Text);
 
-            Mod_LC_Key This_Mod = new Mod_LC_Key(thisInst, this);
+            Mod_LC_Key thisMod = new Mod_LC_Key(thisInst, this);
 
-            This_Mod.txtCode.Text = This_LC.code.ToString();
-            This_Mod.txtDesc.Text = This_LC.desc;
-            This_Mod.txtSR.Text = Math.Round(This_LC.SR,3).ToString();
-            This_Mod.txtDH.Text = Math.Round(This_LC.DH, 1).ToString();
+            thisMod.txtCode.Text = thisLC.code.ToString();
+            thisMod.txtDesc.Text = thisLC.desc;
+            thisMod.txtSR.Text = Math.Round(thisLC.SR,3).ToString();
+            thisMod.txtDH.Text = Math.Round(thisLC.DH, 1).ToString();
 
             if (cboLC_Key.SelectedIndex == 0)
                 thisInst.topo.SetUS_NLCD_Key();
@@ -54,8 +54,8 @@ namespace ContinuumNS
             else if (cboLC_Key.SelectedIndex == 2)
                 thisInst.topo.SetEU_Corine_LC_Key();
 
-            This_Mod.ShowDialog();
-            LC_Key_New = This_Mod.thisLC_Key.LC_Key_New;
+            thisMod.ShowDialog();
+            LC_Key_New = thisMod.thisLC_Key.LC_Key_New;
         }
 
         private void btnNewKey_Click(object sender, EventArgs e)
@@ -64,7 +64,7 @@ namespace ContinuumNS
             if (thisInst.ofdLC_Key.ShowDialog() == DialogResult.OK) {
                               
                 string wholePath = thisInst.ofdLC_Key.FileName;
-                int Ind = wholePath.LastIndexOf('\\');
+                int ind = wholePath.LastIndexOf('\\');
 
                 StreamReader sr = new StreamReader(wholePath);
                 
@@ -72,7 +72,7 @@ namespace ContinuumNS
                 //  MyReader.TrimWhiteSpace = true
 
                 string[] fileRow;
-                TopoInfo.LC_SR_DH[] New_LC_Key = null;
+                TopoInfo.LC_SR_DH[] newLC_Key = null;
                 int LC_Count = 0;
 
                 while (sr.EndOfStream == false)
@@ -82,17 +82,17 @@ namespace ContinuumNS
 
                     if (fileRow.Length == 4)
                     {
-                        Array.Resize(ref New_LC_Key, LC_Count + 1);
-                        New_LC_Key[LC_Count] = new TopoInfo.LC_SR_DH();
+                        Array.Resize(ref newLC_Key, LC_Count + 1);
+                        newLC_Key[LC_Count] = new TopoInfo.LC_SR_DH();
 
                         try {
-                            New_LC_Key[LC_Count].code = Convert.ToInt16(fileRow[0]);
-                            New_LC_Key[LC_Count].desc = fileRow[1];
-                            New_LC_Key[LC_Count].SR = Convert.ToSingle(fileRow[2]);
-                            New_LC_Key[LC_Count].DH = Convert.ToSingle(fileRow[3]);
+                            newLC_Key[LC_Count].code = Convert.ToInt16(fileRow[0]);
+                            newLC_Key[LC_Count].desc = fileRow[1];
+                            newLC_Key[LC_Count].SR = Convert.ToSingle(fileRow[2]);
+                            newLC_Key[LC_Count].DH = Convert.ToSingle(fileRow[3]);
                         }
                         catch {
-                            MessageBox.Show("Error reading land cover key. Format of file should be: Code, Description, Surface roughness, Displacement height.", "Continuum 2.3");
+                            MessageBox.Show("Error reading land cover key. Format of file should be: Code, Description, Surface roughness, Displacement height.", "Continuum 3");
                             sr.Close();
                             return;
                         }
@@ -100,7 +100,7 @@ namespace ContinuumNS
                         LC_Count++;
                     }
                     else {
-                        MessageBox.Show("Error reading in the land cover key at line: " + LC_Count + "The format should be Code, Description, Surface roughness, Displacement height.", "Continuum 2.3");
+                        MessageBox.Show("Error reading in the land cover key at line: " + LC_Count + "The format should be Code, Description, Surface roughness, Displacement height.", "Continuum 3");
                         sr.Close();
                         return;
                     }
@@ -108,7 +108,7 @@ namespace ContinuumNS
 
                 sr.Close();
 
-                LC_Key_New = New_LC_Key;
+                LC_Key_New = newLC_Key;
                 thisInst.Populate_LC_Key_Form(this);
             }
         }
@@ -192,12 +192,11 @@ namespace ContinuumNS
             
         }
 
-
         private void btnOK_Click(object sender, EventArgs e)
         {
 
             // if the LC key was changed and calcs have been done already then clears UWDW + Round Robin models, turbine WS/AEP ests gross/net, and all 
-            // maps and recalculates SR/DH at Mets, Turbines, Node (TO DO: WHAT ABOUT MAP NODES??) 
+            // maps and recalculates SR/DH at Mets, Turbines, Nodes in DB 
             NodeCollection nodeList = new NodeCollection();
             Update updateThe = new Update();
 
@@ -206,7 +205,7 @@ namespace ContinuumNS
 
                 if (thisInst.modelList.ModelCount > 1 || thisInst.mapList.ThisCount > 0) {
                     Good_to_go = MessageBox.Show("Changing the Land Cover key will reset the analysis file and delete all generated estimates and maps. Do you want to continue?", 
-                        "Continuum 2.3", MessageBoxButtons.YesNo);
+                        "Continuum 3", MessageBoxButtons.YesNo);
                 }
 
                 if (Good_to_go == DialogResult.Yes)
@@ -248,26 +247,26 @@ namespace ContinuumNS
         public bool Orig_and_New_LC_Same()
         {
             // Returns true if LC_Key_Orig and LC_Key_New are the same
-            bool Same_Key = true;
+            bool sameKey = true;
 
             try {
 
                 if (LC_Key_Orig.Length != LC_Key_New.Length)
-                    Same_Key = false;
+                    sameKey = false;
                 else {
                     for (int i = 0; i <= LC_Key_Orig.Length - 1; i++) {
                         if (LC_Key_Orig[i].SR != LC_Key_New[i].SR || LC_Key_Orig[i].DH != LC_Key_New[i].DH || LC_Key_Orig[i].code != LC_Key_New[i].code) {
-                            Same_Key = false;
+                            sameKey = false;
                             break;
                         }
                     }
                 }
             }
             catch {
-                Same_Key = false;
+                sameKey = false;
             }
 
-            return Same_Key;
+            return sameKey;
         }
         
         public void Read_Orig_and_New(TopoInfo.LC_SR_DH[] thisLC_Key)

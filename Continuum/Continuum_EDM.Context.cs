@@ -18,5 +18,9 @@ namespace ContinuumNS
         public DbSet<GridStat_table> GridStat_table { get; set; }        
         public DbSet<Topo_table> Topo_table { get; set; }
         public DbSet<LandCover_table> LandCover_table { get; set; }
+        public DbSet<Anem_table> Anem_table { get; set; }
+        public DbSet<Vane_table> Vane_table { get; set; }
+        public DbSet<Temp_table> Temp_table { get; set; }
+        public DbSet<MERRA_Node_table> MERRA_Node_table { get; set; }
     }
 }

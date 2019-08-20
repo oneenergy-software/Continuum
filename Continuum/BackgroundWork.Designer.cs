@@ -43,6 +43,10 @@
             this.BackgroundWorker_WAsP_Map = new System.ComponentModel.BackgroundWorker();
             this.lblprogbar = new System.Windows.Forms.Label();
             this.BackgroundWorker_Node_SR_Recalc = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_MERRA = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_IceThrow = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_Shadow = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_Exceed = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // progbar
@@ -56,6 +60,7 @@
             // btnCancel
             // 
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancel.Location = new System.Drawing.Point(526, 89);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(81, 28);
@@ -145,10 +150,10 @@
             // lblprogbar
             // 
             this.lblprogbar.AutoSize = true;
-            this.lblprogbar.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblprogbar.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblprogbar.Location = new System.Drawing.Point(22, 16);
             this.lblprogbar.Name = "lblprogbar";
-            this.lblprogbar.Size = new System.Drawing.Size(0, 18);
+            this.lblprogbar.Size = new System.Drawing.Size(0, 22);
             this.lblprogbar.TabIndex = 4;
             this.lblprogbar.UseWaitCursor = true;
             // 
@@ -160,7 +165,39 @@
             this.BackgroundWorker_Node_SR_Recalc.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_Node_SR_Recalc_ProgressChanged);
             this.BackgroundWorker_Node_SR_Recalc.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_Node_SR_Recalc_RunWorkerCompleted);
             // 
-            // Background_work
+            // BackgroundWorker_MERRA
+            // 
+            this.BackgroundWorker_MERRA.WorkerReportsProgress = true;
+            this.BackgroundWorker_MERRA.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_MERRA.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_MERRA_DoWork);
+            this.BackgroundWorker_MERRA.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_MERRA_ProgressChanged);
+            this.BackgroundWorker_MERRA.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_MERRA_RunWorkerCompleted);
+            // 
+            // BackgroundWorker_IceThrow
+            // 
+            this.BackgroundWorker_IceThrow.WorkerReportsProgress = true;
+            this.BackgroundWorker_IceThrow.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_IceThrow.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_IceThrow_DoWork);
+            this.BackgroundWorker_IceThrow.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_IceThrow_ProgressChanged);
+            this.BackgroundWorker_IceThrow.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_IceThrow_RunWorkerCompleted);
+            // 
+            // BackgroundWorker_Shadow
+            // 
+            this.BackgroundWorker_Shadow.WorkerReportsProgress = true;
+            this.BackgroundWorker_Shadow.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_Shadow.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_Shadow_DoWork);
+            this.BackgroundWorker_Shadow.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_Shadow_ProgressChanged);
+            this.BackgroundWorker_Shadow.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_Shadow_RunWorkerCompleted);
+            // 
+            // BackgroundWorker_Exceed
+            // 
+            this.BackgroundWorker_Exceed.WorkerReportsProgress = true;
+            this.BackgroundWorker_Exceed.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_Exceed.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_Exceed_DoWork);
+            this.BackgroundWorker_Exceed.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_Exceed_ProgressChanged);
+            this.BackgroundWorker_Exceed.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_Exceed_RunWorkerCompleted);
+            // 
+            // BackgroundWork
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -169,11 +206,11 @@
             this.Controls.Add(this.progbar);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Background_work";
-            this.UseWaitCursor = true;
+            this.Name = "BackgroundWork";
+            this.UseWaitCursor = true;            
             this.ResumeLayout(false);
             this.PerformLayout();
-
+         //   this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(BackgroundWorker_Closed);
         }
 
         #endregion
@@ -192,5 +229,9 @@
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_WAsP_Map;
         private System.Windows.Forms.Label lblprogbar;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_Node_SR_Recalc;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_MERRA;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_IceThrow;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_Shadow;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_Exceed;
     }
 }

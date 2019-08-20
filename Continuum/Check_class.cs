@@ -12,20 +12,15 @@ namespace ContinuumNS
         public bool NewTurbOrMet(Continuum thisInst, string metname, double UTMX, double UTMY, bool showMsg)
         {
             // Checks the distance between the mets/turbines and edges of topo data to make sure they all fit within defined radii. Returns false if outside bounds.
-            bool inputMet = true;
+            bool goodToGo = true;
 
-            if (thisInst.topo.gotTopo == true) {                                
-                string goodToGo = CheckLocation(thisInst.topo, UTMX, UTMY, thisInst.radiiList.GetMaxRadius());
+            if (thisInst.topo.gotTopo)                               
+                goodToGo = TopoCheck(thisInst.topo, UTMX, UTMY, metname, "Plot"); 
 
-                if (goodToGo != "Good to go")
-                {
-                    if (showMsg == true)
-                        MessageBox.Show(goodToGo);
-                    inputMet = false;
-                }                             
-
-            }
-            return inputMet;
+            if (thisInst.topo.gotSR)
+                goodToGo = LandCoverCheck(thisInst.topo, UTMX, UTMY, metname, "Plot");         
+                      
+            return goodToGo;
 
         }
 
@@ -38,7 +33,7 @@ namespace ContinuumNS
             for (int i = 0; i < numMets; i++) { 
                 if (metList.metItem[i].name == turbineName) {
                     inputTurbine = false;
-                    MessageBox.Show("There is a met with the same name as turbine site: " + turbineName + ".  There cannot be a turbine and met site with the same name.",  "Continuum 2.3");
+                    MessageBox.Show("There is a met with the same name as turbine site: " + turbineName + ".  There cannot be a turbine and met site with the same name.",  "Continuum 3");
                 break;
                 }
             }
@@ -55,7 +50,7 @@ namespace ContinuumNS
             for (int i = 0; i < numTurbines; i++) { 
                 if (turbineList.turbineEsts[i].name == metName) {
                     inputMet = false;
-                    MessageBox.Show("There is a turbine with the same name as met site: " + metName + ".  There cannot be a turbine and met site with the same name.", "Continuum 2.3");
+                    MessageBox.Show("There is a turbine with the same name as met site: " + metName + ".  There cannot be a turbine and met site with the same name.", "Continuum 3");
                     break;
                 }
             }
@@ -76,10 +71,18 @@ namespace ContinuumNS
 
             for (int i = 0; i < thisInst.metList.ThisCount; i++) { 
                 if (thisInst.metList.metItem[i].name == metName ) {
-                        MessageBox.Show("A met of the same name has already been imported.", "Continuum 2.3");
+                        MessageBox.Show("A met of the same name has already been imported.", "Continuum 3");
                         TAB_ok = false;
                         return TAB_ok;
                 }
+            }
+
+            if (thisInst.metList.ThisCount > 0 && (thisInst.metList.WS_FirstInt != WS_FirstInt || thisInst.metList.WS_IntSize != WS_IntSize))
+            {
+                MessageBox.Show("WS intervals in this TAB file don't line up with intervals of other mets. " +
+                    "Expecting first WS = " + Math.Round(WS_FirstInt, 1).ToString() + " and WS interval = " + Math.Round(WS_IntSize, 1).ToString());
+                TAB_ok = false;
+                return TAB_ok;
             }
 
             for (int i = 0; i < numWD; i++) {
@@ -100,14 +103,7 @@ namespace ContinuumNS
                 MessageBox.Show("Error reading in TAB file :" + metName + ".  Wind Rose must add to 100");
                 TAB_ok = false;
             }
-
-            // Check the WS distribution first interval and WS bin and make sure the same as the other mets
-            for (int i = 0; i < thisInst.metList.ThisCount; i++) { 
-                if (thisInst.metList.metItem[i].WS_FirstInt!= WS_FirstInt || thisInst.metList.metItem[i].WS_IntSize!= WS_IntSize) {
-                        MessageBox.Show("Error reading in TAB file: " + metName + " WS distribution bins and bin size must be the same as the other mets currently loaded.");
-                        TAB_ok = false;
-                }
-            }
+                        
 
             // Check the WS distribution first interval and WS bin and make sure the same as the power curves (if any)
             for (int i = 0; i < thisInst.turbineList.PowerCurveCount; i++) {
@@ -132,103 +128,259 @@ namespace ContinuumNS
 
             return TAB_ok;
         }
-
-        public bool NewTopoOrLC(double minUTMX, double maxUTMX, double minUTMY, double maxUTMY, Continuum thisInst)
+               
+        
+        public bool TopoCheck(TopoInfo topo, double UTMX, double UTMY, string siteName, string allOrPlot)
         {
-            // Returns true if topo and/or land cover data covers the existing mets and turbines
-            bool inputTopo = true;
+            // Check elev at 8 points +/- 12000 m from UTMX/Y. If elev = -999, return false
+
+            bool goodToGo = true;
+            int maxDist = 12000;
+            double X_Loc = 0;
+            double Y_Loc = 0;
                         
-            int numMets = thisInst.metList.ThisCount;
-            int numTurbines = thisInst.turbineList.TurbineCount;
+            int[] indices = topo.GetXYIndices("Topo", UTMX, UTMY, allOrPlot); // Site location
             
-            // Check that all existing mets and turbines fall within bounds
-            for (int i = 0; i < numMets; i++) {
-                double UTMX = thisInst.metList.metItem[i].UTMX;
-                double UTMY = thisInst.metList.metItem[i].UTMY;
-                string thisName = thisInst.metList.metItem[i].name;
-                string goodToGo = CheckLocation(thisInst.topo, UTMX, UTMY, thisInst.radiiList.GetMaxRadius() + 2000);
-
-                if (goodToGo != "Good to go")
-                {
-                    MessageBox.Show("Met site: " + thisName + " falls outside the bounds of the topographic data that you are trying to load. " + goodToGo +
-                           " Either delete this met site or update your XYZ file.", "Continuum 2.3");
-                    inputTopo = false;
-                }
+            // Check that there is topography data
+            if (indices[0] == -999 && indices[1] == -999)
+            {
+                MessageBox.Show("Topography data not loaded.", "Continuum 3");
+                return goodToGo = false;
             }
 
-            for (int i = 0; i < numTurbines; i++) {
-                double UTMX = thisInst.turbineList.turbineEsts[i].UTMX;
-                double UTMY = thisInst.turbineList.turbineEsts[i].UTMY;
-                string thisName = thisInst.turbineList.turbineEsts[i].name;
-                string goodToGo = CheckLocation(thisInst.topo, UTMX, UTMY, thisInst.radiiList.GetMaxRadius() + 2000);
-
-                if (goodToGo != "Good to go")
-                {
-                    MessageBox.Show("Turbine site: " + thisName + " falls outside the bounds of the topographic data that you are trying to load. " + goodToGo +
-                           " Either delete this turbine site or update your XYZ file.", "Continuum 2.3");
-                    inputTopo = false;
+            for (int i = 0; i <= 8; i++)
+            {
+                if (i == 0) // North
+                {                    
+                    X_Loc = UTMX;
+                    Y_Loc = UTMY + maxDist;
                 }
-            }          
+                else if (i == 1) // Northeast
+                {                    
+                    X_Loc = UTMX + maxDist * 0.7071;
+                    Y_Loc = UTMY + maxDist * 0.7071;
+                }
+                else if (i == 2) // East
+                {                    
+                    X_Loc = UTMX + maxDist;
+                    Y_Loc = UTMY;
+                }
+                else if (i == 3) // Southeast
+                {                    
+                    X_Loc = UTMX + maxDist * 0.7071;
+                    Y_Loc = UTMY - maxDist * 0.7071;
+                }
+                else if (i == 4) // South
+                {                    
+                    X_Loc = UTMX;
+                    Y_Loc = UTMY - maxDist;
+                }
+                else if (i == 5) // Southwest
+                {                    
+                    X_Loc = UTMX - maxDist * 0.7071;
+                    Y_Loc = UTMY - maxDist * 0.7071;
+                }
+                else if (i == 6) // West
+                {                    
+                    X_Loc = UTMX - maxDist;
+                    Y_Loc = UTMY;
+                }
+                else if (i == 7) // Northwest
+                {                    
+                    X_Loc = UTMX - maxDist * 0.7071;
+                    Y_Loc = UTMY + maxDist * 0.7071;
+                }
 
-            return inputTopo;
+                indices = topo.GetXYIndices("Topo", X_Loc, Y_Loc, allOrPlot); 
 
-        }               
+                if (allOrPlot == "All")
+                {
+                    if (indices[0] < 0 || indices[0] >= topo.topoNumXY.X.all.num || indices[1] < 0 || indices[1] >= topo.topoNumXY.Y.all.num)
+                    {
+                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
+                        return goodToGo = false;
+                    }
+                }
+                else
+                {
+                    if (indices[0] < 0 || indices[0] >= topo.topoNumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.topoNumXY.Y.plot.num)
+                    {
+                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
+                        return goodToGo = false;
+                    }                    
+                }
 
-        public string CheckLocation (TopoInfo topo, double newX, double newY, int maxRadius) 
+                if (topo.topoElevs[indices[0], indices[1]] == -999)
+                {
+                    MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
+                    return goodToGo = false;
+                }
+
+            }
+
+            return goodToGo;
+
+        }
+
+        public bool LandCoverCheck(TopoInfo topo, double UTMX, double UTMY, string siteName, string allOrPlot)
         {
-            // Calculate distance to each side of topo and land cover map. Make sure they are more than maxRadius.
-            string isWithinBounds = "Good to go";
-            double thisDist;
+            // Check land cover at 8 points +/- 12000 m from UTMX/Y. If land cover = -999 or if outside range, return false
+
+            bool goodToGo = true;
+            int maxDist = 12000;
+            double X_Loc = 0;
+            double Y_Loc = 0;
             
-            // Check Topography 
-            if (topo.topoNumXY.X.all.reso != 0) // (Can't check gotTopo since it won't be set when this is called)
+            int[] indices = topo.GetXYIndices("Land Cover", UTMX, UTMY, allOrPlot); // Site location
+
+            // Check that there is topography data
+            if (indices[0] == -999 && indices[1] == -999)
             {
-                // South
-                thisDist = topo.CalcDistanceBetweenPoints(newX, topo.topoNumXY.Y.all.min, newX, newY);
-                if (thisDist < maxRadius)
-                    isWithinBounds = "Too close to south edge of topography map. distance = " + Math.Round(thisDist,0).ToString();
-
-                // North
-                thisDist = topo.CalcDistanceBetweenPoints(newX, topo.topoNumXY.Y.all.max, newX, newY);
-                if (thisDist < maxRadius)
-                    isWithinBounds = "Too close to north edge of topography map. distance = " + Math.Round(thisDist, 0).ToString();
-
-                // West
-                thisDist = topo.CalcDistanceBetweenPoints(topo.topoNumXY.X.all.min, newY, newX, newY);
-                if (thisDist < maxRadius)
-                    isWithinBounds = "Too close to west edge of topography map. distance = " + Math.Round(thisDist, 0).ToString();
-
-                // East
-                thisDist = topo.CalcDistanceBetweenPoints(topo.topoNumXY.X.all.max, newY, newX, newY);
-                if (thisDist < maxRadius)
-                    isWithinBounds = "Too close to east edge of topography map. distance = " + Math.Round(thisDist, 0).ToString();
+                MessageBox.Show("Land Cover data not loaded.", "Continuum 3");
+                return goodToGo = false;
             }
 
-            // Check Land Cover 
-            if (topo.LC_NumXY.X.all.reso != 0)
+            for (int i = 0; i <= 8; i++)
             {
-                // South
-                thisDist = topo.CalcDistanceBetweenPoints(newX, topo.LC_NumXY.Y.all.min, newX, newY);
-                if (thisDist < maxRadius)
-                    isWithinBounds = "Too close to south edge of land cover/roughness map. distance = " + Math.Round(thisDist, 0).ToString();
+                if (i == 0) // North
+                {                    
+                    X_Loc = UTMX;
+                    Y_Loc = UTMY + maxDist;
+                }
+                else if (i == 1) // Northeast
+                {                    
+                    X_Loc = UTMX + maxDist * 0.7071;
+                    Y_Loc = UTMY + maxDist * 0.7071;
+                }
+                else if (i == 2) // East
+                {                   
+                    X_Loc = UTMX + maxDist;
+                    Y_Loc = UTMY;
+                }
+                else if (i == 3) // Southeast
+                {                   
+                    X_Loc = UTMX + maxDist * 0.7071;
+                    Y_Loc = UTMY - maxDist * 0.7071;
+                }
+                else if (i == 4) // South
+                {                    
+                    X_Loc = UTMX;
+                    Y_Loc = UTMY - maxDist;
+                }
+                else if (i == 5) // Southwest
+                {                    
+                    X_Loc = UTMX - maxDist * 0.7071;
+                    Y_Loc = UTMY - maxDist * 0.7071;
+                }
+                else if (i == 6) // West
+                {                   
+                    X_Loc = UTMX - maxDist;
+                    Y_Loc = UTMY;
+                }
+                else if (i == 7) // Northwest
+                {                    
+                    X_Loc = UTMX - maxDist * 0.7071;
+                    Y_Loc = UTMY + maxDist * 0.7071;
+                }
 
-                // North
-                thisDist = topo.CalcDistanceBetweenPoints(newX, topo.LC_NumXY.Y.all.max, newX, newY);
-                if (thisDist < maxRadius)
-                    isWithinBounds = "Too close to north edge of land cover/roughness map. distance = " + Math.Round(thisDist, 0).ToString();
+                indices = topo.GetXYIndices("Land Cover", X_Loc, Y_Loc, allOrPlot); // Northeast of site
 
-                // West
-                thisDist = topo.CalcDistanceBetweenPoints(topo.LC_NumXY.X.all.min, newY, newX, newY);
-                if (thisDist < maxRadius)
-                    isWithinBounds = "Too close to west edge of land cover/roughness map. distance = " + Math.Round(thisDist, 0).ToString();
+                if (allOrPlot == "All")
+                {
+                    if (indices[0] < 0 || indices[0] >= topo.LC_NumXY.X.all.num || indices[1] < 0 || indices[1] >= topo.LC_NumXY.Y.all.num)
+                    {
+                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
+                        return goodToGo = false;
+                    }
+                }
+                else
+                {
+                    if (indices[0] < 0 || indices[0] >= topo.LC_NumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.LC_NumXY.Y.plot.num)
+                    {
+                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
+                        return goodToGo = false;
+                    }
+                }
 
-                // East
-                thisDist = topo.CalcDistanceBetweenPoints(topo.LC_NumXY.X.all.max, newY, newX, newY);
-                if (thisDist < maxRadius)
-                    isWithinBounds = "Too close to east edge of land cover/roughness map. distance = " + Math.Round(thisDist, 0).ToString();
+                if (topo.landCover[indices[0], indices[1]] == -999)
+                {
+                    MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
+                    return goodToGo = false;
+                }
             }
 
-            return isWithinBounds;
+            return goodToGo;
+
+        }
+
+        public bool NewTopo(TopoInfo topo, MetCollection metList, TurbineCollection turbList, string allOrPlot)
+        {
+            // Go through each met and turbine site and check elev at 8 points +/- 12000 m. If elev = -999, return false
+            
+            bool goodToGo = true;
+            
+            for (int i = 0; i < metList.ThisCount; i++)            
+                goodToGo = TopoCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name, allOrPlot); 
+            
+            for (int i = 0; i < turbList.TurbineCount; i++)
+                goodToGo = TopoCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name, allOrPlot); 
+
+            return goodToGo;
+
+        }
+
+        public bool NewLandCover(TopoInfo topo, MetCollection metList, TurbineCollection turbList, string allOrPlot)
+        {
+            // Go through each met and turbine site and check land cover at 8 points +/- 12000 m. If elev = -999, return false
+
+            bool goodToGo = true;
+
+            for (int i = 0; i < metList.ThisCount; i++)
+                goodToGo = LandCoverCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name, allOrPlot);
+
+            for (int i = 0; i < turbList.TurbineCount; i++)
+                goodToGo = LandCoverCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name, allOrPlot);
+
+            return goodToGo;
+
+        }
+
+        public bool CheckBinsAndMatrixSettings(Continuum thisInst)
+        {
+            // Checks the Method of Bins and Matrix settings. Returns true if valid. Shows error message if not.
+            bool goodToGo = true;
+
+            if (thisInst.Get_MCP_Method() == "Method of Bins" || thisInst.Get_MCP_Method() == "Matrix")
+            {
+                if (thisInst.metList.mcpWS_BinWidth < 0.1 || thisInst.metList.mcpWS_BinWidth > 2)
+                {
+                    MessageBox.Show("Invalid wind speed bin width. Enter a value between 0.1 and 2.", "Continuum 3.0");
+                    return goodToGo = false;
+                }
+
+            }
+            else if (thisInst.Get_MCP_Method() == "Matrix")
+            {
+                if (thisInst.metList.mcpMatrixWgt < 0 || thisInst.metList.mcpMatrixWgt > 10)
+                {
+                    MessageBox.Show("Invalid matrix weight. Enter a value between 0 and 10.", "Continuum 3.0");
+                    return goodToGo = false;
+                }
+                else if (thisInst.metList.mcpLastWS_Wgt < 0 || thisInst.metList.mcpLastWS_Wgt > 10)
+                {
+                    MessageBox.Show("Invalid last wind speed weight. Enter a value between 0 and 10.", "Continuum 3.0");
+                    return goodToGo = false;
+                }
+                else if (thisInst.metList.mcpMatrixWgt == 0 && thisInst.metList.mcpLastWS_Wgt == 0)
+                {
+                    MessageBox.Show("Both Matrix weights cannot be zero.", "Continuum 3.0");
+                    return goodToGo = false;
+                }
+            }
+
+
+
+            return goodToGo;
         }
 
     }

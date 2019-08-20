@@ -34,7 +34,7 @@ namespace ContinuumNS
                 thisCode = Convert.ToInt16(txtCode.Text);
             }
             catch  {
-                MessageBox.Show("Invalid land cover code.", "Continuum 2.3");
+                MessageBox.Show("Invalid land cover code.", "Continuum 3");
                 return;
             }
 
@@ -42,7 +42,7 @@ namespace ContinuumNS
                 newDesc = txtDesc.Text;
             }
             catch  {
-                MessageBox.Show("Invalid land cover description.", "Continuum 2.3");
+                MessageBox.Show("Invalid land cover description.", "Continuum 3");
                 return;
             }
 
@@ -50,7 +50,7 @@ namespace ContinuumNS
                 newSR = Convert.ToSingle(txtSR.Text);
             }
             catch  {
-                MessageBox.Show("Invalid surface roughness.", "Continuum 2.3");
+                MessageBox.Show("Invalid surface roughness.", "Continuum 3");
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace ContinuumNS
                 newDH = Convert.ToSingle(txtDH.Text);
             }
             catch  {
-                MessageBox.Show("Invalid displacement height.", "Continuum 2.3");
+                MessageBox.Show("Invalid displacement height.", "Continuum 3");
                 return;
             }
 

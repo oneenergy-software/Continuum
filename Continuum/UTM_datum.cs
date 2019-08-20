@@ -25,12 +25,24 @@ namespace ContinuumNS
             {
                 datumInd = cbo_Datums.SelectedIndex;
             }
-            catch (Exception ex) {
-                MessageBox.Show("Please select a datum to use.", "Continuum 2.3");
+            catch {
+                MessageBox.Show("Please select a datum to use.", "Continuum 3");
                 return;
             }
 
-            this.Close();
+            string hemisphere = "";
+
+            try
+            {
+                hemisphere = cboNorthOrSouth.SelectedItem.ToString();
+            }
+            catch
+            {
+                MessageBox.Show("Please select either northern or southern hemisphere.", "Continuum 3");
+                return;
+            }
+
+            Close();
         }
 
         

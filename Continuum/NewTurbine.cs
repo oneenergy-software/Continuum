@@ -42,7 +42,7 @@ namespace ContinuumNS
             }
             catch 
             {
-                MessageBox.Show("Invalid entry for turbine name", "Continuum 2.3");
+                MessageBox.Show("Invalid entry for turbine name", "Continuum 3");
                 return;
             }
 
@@ -52,7 +52,7 @@ namespace ContinuumNS
             }
             catch 
             {
-                MessageBox.Show("Invalid entry for easting", "Continuum 2.3");
+                MessageBox.Show("Invalid entry for easting", "Continuum 3");
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid entry for northing", "Continuum 2.3");
+                MessageBox.Show("Invalid entry for northing", "Continuum 3");
                 return;
             }
 
@@ -77,43 +77,17 @@ namespace ContinuumNS
 
             if (name == "" || UTMX == 0 || UTMY == 0)
             {
-                MessageBox.Show("Need valid entries for all fields", "Continuum 2.3");
+                MessageBox.Show("Need valid entries for all fields", "Continuum 3");
                 return;
             }
             else
             {
-
                 inputTurbine = check.NewTurbOrMet(thisInst, name, UTMX, UTMY, true);
                 if (inputTurbine == true) thisInst.turbineList.AddTurbine(name, UTMX, UTMY, stringNum);
-                Update UpdateThis = new Update();
-
-                if (thisInst.turbineList.turbineCalcsDone == true)
-                {
-                    BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
-                    
-
-                    if (thisInst.metList.ThisCount > 0)
-                    {
-                        argsForBW.thisInst = thisInst;
-                        argsForBW.thisWakeModel = null;
-                        argsForBW.isCalibrated = false;
-
-                        // Call background worker to run calculations
-                        thisInst.BW_worker = new BackgroundWork();
-                        thisInst.BW_worker.Call_BW_TurbCalcs(argsForBW);
-                    }
-                    else
-                    {
-                        UpdateThis.TurbineList(thisInst);
-                        thisInst.ChangesMade();
-                    }                   
-
-                }
-                else
-                {                    
-                    UpdateThis.TurbineList(thisInst);
-                    thisInst.ChangesMade();
-                }
+                
+                thisInst.updateThe.AllTABs(thisInst);                    
+                thisInst.ChangesMade();
+                
                 Close();
             }
         }

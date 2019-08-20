@@ -28,6 +28,13 @@ namespace ContinuumNS
             public string expoOrRough;  // specifies whether refers to exposure model or surface roughness model "Expo" or "SRDH"
         }
 
+        public struct ModelWeights
+        {
+            public Met met;
+            public Model model;
+            public double weight;
+        }
+
         public int ModelCount
         {
             get { if (models == null)
@@ -75,7 +82,7 @@ namespace ContinuumNS
                             newModel[0, j] = models[i, j];
                     }
                     else if (models[i, 0].isImported) {
-                        for (int j = 0; j <= RadiiCount - 1; j++)                        
+                        for (int j = 0; j < RadiiCount; j++)                        
                             newModel[1, j] = models[i, j];                            
                         
                     }
@@ -170,9 +177,11 @@ namespace ContinuumNS
                 for (int i = 0; i <= numRadii - 1; i++)
                 {
                     model[i] = new Model();
+                    model[i].timeOfDay = Met.TOD.All;
+                    model[i].season = Met.Season.All;
                     model[i].SizeArrays(numWD);
 
-                    model[i].setDefaultModelCoeffs(numWD);
+                    model[i].SetDefaultModelCoeffs(numWD);
                     model[i].SetDefaultLimits();
                     model[i].radius = thisInst.radiiList.investItem[i].radius;
                     model[i].metsUsed = metsUsed;
@@ -262,11 +271,12 @@ namespace ContinuumNS
             return theseWeights;
         }
 
-        public double[,] GetWS_EstWeights(Met[] predictorMets, Nodes targetNode, Model[] models, double[] windRose)
+        public ModelWeights[] GetWS_EstWeights(Met[] predictorMets, Nodes targetNode, Model[] models, double[] windRose, InvestCollection radiiList)
         {
-            // Calculates and returns wind speed estimates weights at a target site for each predictor met and each models() 
+            // Calculates and returns wind speed estimates weights at a target site for each predictor met and each models and TOD/Season
             int numPredMets = predictorMets.Length;
-            double[,] weights = new double[1, 1];
+            ModelWeights[] weights = new ModelWeights[0];
+          //  double[,] weights = new double[1, 1];
             int slopeFactor = 1;
             
             double minRMS = 1000;
@@ -298,9 +308,13 @@ namespace ContinuumNS
 
             if (numPredMets > 1)
             {
-                weights = new double[numPredMets, models.Length];
-                for (int radiusIndex = 0; radiusIndex < models.Length; radiusIndex++)
+                weights = new ModelWeights[numPredMets * models.Length];
+                int weightsInd = 0;
+             //   weights = new double[numPredMets, models.Length];
+                for (int modelIndex = 0; modelIndex < models.Length; modelIndex++)
                 {
+                    int radius = models[modelIndex].radius;
+                    int radiusIndex = radiiList.GetRadiusInd(radius);
                     double DW_Diff = 0;
                     double UW_Diff = 0;
                     // Calculates average difference in P10 exposure between predictor met and target site (weighted by wind rose) and finds weight where higher weight
@@ -319,13 +333,16 @@ namespace ContinuumNS
                         sumUWDW_Diff = sumUWDW_Diff + DW_Diff + UW_Diff;
                     }
 
-                    if (models[radiusIndex].isCalibrated == true && minRMS != maxRMS)
-                        RMS_Weight = slope * modelsRMS[radiusIndex] + intercept;
+                    if (models[modelIndex].isCalibrated == true && minRMS != maxRMS)
+                        RMS_Weight = slope * modelsRMS[modelIndex] + intercept;
                     else
                         RMS_Weight = 1;
 
                     for (int i = 0; i <= numPredMets - 1; i++)
                     {
+                        weights[weightsInd].met = predictorMets[i];
+                        weights[weightsInd].model = models[modelIndex];
+
                         DW_Diff = 0;
                         UW_Diff = 0;
 
@@ -337,29 +354,58 @@ namespace ContinuumNS
 
                         if (sumUWDW_Diff > 0)
                         {
-                            weights[i, radiusIndex] = 1 - slopeFactor * (DW_Diff + UW_Diff) / sumUWDW_Diff;
-                            if (weights[i, radiusIndex] < 0)
-                                weights[i, radiusIndex] = 0;
+                            weights[weightsInd].weight = 1 - slopeFactor * (DW_Diff + UW_Diff) / sumUWDW_Diff;
+                            if (weights[weightsInd].weight < 0)
+                                weights[weightsInd].weight = 0;
                         }
                         else
-                            weights[i, radiusIndex] = 1;
+                            weights[weightsInd].weight = 1;
 
-                        if (models[radiusIndex].isCalibrated == true) weights[i, radiusIndex] = weights[i, radiusIndex] * RMS_Weight;
+                        if (models[modelIndex].isCalibrated == true) weights[weightsInd].weight = weights[weightsInd].weight * RMS_Weight;
+
+                        if (models[modelIndex].timeOfDay != Met.TOD.All)
+                            weights[weightsInd].weight = weights[weightsInd].weight * 0.5; // Day/Night conditions modeled so divide this weight by 2
+
+                        if (models[modelIndex].season != Met.Season.All)
+                            weights[weightsInd].weight = weights[weightsInd].weight * 0.25; // Four seasonal conditions modeled so divide this weight by 4
+
+                        weightsInd++;
                     }
                 }
             }
             else if (numPredMets == 1)
             {                
-                weights = new double[numPredMets, models.Length];
+                weights = new ModelWeights[models.Length];
                 for (int i = 0; i < models.Length; i++)
-                    weights[0, i] = 1;
+                {
+                    weights[i].met = predictorMets[0];
+                    weights[i].model = models[i];
+                    weights[i].weight = 1;
+                }
+                    
 
             }
 
             return weights;
         }
 
-        public bool IterationAlreadyDone(Continuum thisInst, string[] metsUsed, int minRadius, int maxRadius)
+        public double GetWeightForMetAndModel(ModelWeights[] modelWeights, Met thisMet, Model thisModel)
+        {
+         //   double weight = 0;
+            
+            if (modelWeights == null)
+                return 0;
+
+            int numWeights = modelWeights.Length;
+
+            for (int i = 0; i < numWeights; i++)
+                if (modelWeights[i].met.name == thisMet.name && IsSameModel(modelWeights[i].model, thisModel))                
+                    return modelWeights[i].weight;                                   
+
+            return 0;
+        }
+
+        public bool IterationAlreadyDone(Continuum thisInst, string[] metsUsed, int minRadius, int maxRadius, Met.TOD thisTOD, Met.Season thisSeason)
         {
             //  Returns false if site-calibration hasn//t been performed yet
             bool alreadyDone = false;
@@ -370,7 +416,7 @@ namespace ContinuumNS
                 sameMets = thisInst.metList.sameMets(metsUsed, models[i, 0].metsUsed);
 
                 if (sameMets == true && models[i, 0].radius == minRadius && models[i, RadiiCount - 1].radius == maxRadius && 
-                    models[i, 0].isCalibrated == true ) {
+                    models[i, 0].isCalibrated == true && thisTOD == models[i, 0].timeOfDay & thisSeason == models[i, 0].season) {
                     alreadyDone = true;
                     break;
                 }
@@ -396,8 +442,9 @@ namespace ContinuumNS
 
             return importedInd;
         }
-
-        public Model[] GetModels(Continuum thisInst, string[] metsUsed, int minRadius, int maxRadius, bool isCalibrated)
+                
+        public Model[] GetModels(Continuum thisInst, string[] metsUsed, int minRadius, int maxRadius, bool isCalibrated, Met.TOD thisTOD, Met.Season thisSeason
+            , double thisHeight, bool createIfNeeded)
         {
             // Returns models with specified mets, radius range and site-calibrated vs. default
             Model[] thisModel = new Model[RadiiCount];
@@ -406,7 +453,7 @@ namespace ContinuumNS
             for (int i = 0; i < ModelCount; i++)
             {
                 sameMets = thisInst.metList.sameMets(metsUsed, models[i, 0].metsUsed);
-                if (sameMets == true && isCalibrated == models[i, 0].isCalibrated)
+                if (sameMets == true && isCalibrated == models[i, 0].isCalibrated && thisTOD == models[i, 0].timeOfDay & thisSeason == models[i, 0].season & thisHeight == models[i, 0].height)
                 {
                     for (int j = 0; j < RadiiCount; j++)
                         thisModel[j] = models[i, j];
@@ -422,13 +469,13 @@ namespace ContinuumNS
                 }
             }
 
-            if (thisModel[0] == null && metsUsed.Length > 1)
+            if (thisModel[0] == null && metsUsed.Length > 1 && createIfNeeded)
             {
-                CreateModel(metsUsed, thisInst);
+                CreateModel(metsUsed, thisInst, thisTOD, thisSeason, thisHeight);
                 for (int i = 0; i < ModelCount; i++)
                 {
                     sameMets = thisInst.metList.sameMets(metsUsed, models[i, 0].metsUsed);
-                    if (sameMets == true && isCalibrated == models[i, 0].isCalibrated)
+                    if (sameMets == true && isCalibrated == models[i, 0].isCalibrated && thisTOD == models[i, 0].timeOfDay & thisSeason == models[i, 0].season)
                     {
                         for (int j = 0; j < RadiiCount; j++)
                             thisModel[j] = models[i, j];
@@ -436,6 +483,10 @@ namespace ContinuumNS
                         break;
                     }
                 }
+            }
+            else if (thisModel[0] == null && metsUsed.Length == 1)
+            {
+                
             }
                 
 
@@ -465,7 +516,8 @@ namespace ContinuumNS
                 {
                     try
                     {
-                        if (isSameMets == true && model1.downhill_A[WD] == model2.downhill_A[WD] && model1.downhill_B[WD] == model2.downhill_B[WD] && model1.uphill_A[WD] == model2.uphill_A[WD] && model1.radius == model2.radius
+                        if (model1.height == model2.height && model1.timeOfDay == model2.timeOfDay && model1.season == model2.season && isSameMets == true 
+                            && model1.downhill_A[WD] == model2.downhill_A[WD] && model1.downhill_B[WD] == model2.downhill_B[WD] && model1.uphill_A[WD] == model2.uphill_A[WD] && model1.radius == model2.radius
                             && model1.uphill_B[WD] == model2.uphill_B[WD] && model1.UW_crit[WD] == model2.UW_crit[WD] && model1.spdUp_A[WD] == model2.spdUp_A[WD] && model1.spdUp_B[WD] == model2.spdUp_B[WD]
                             && model1.DH_Stab_A[WD] == model2.DH_Stab_A[WD] && model1.UH_Stab_A[WD] == model2.UH_Stab_A[WD] && model1.SU_Stab_A[WD] == model2.SU_Stab_A[WD] && model1.stabB[WD] == model2.stabB[WD]
                             && model1.isCalibrated == model2.isCalibrated && model1.isImported == model2.isImported ||
@@ -519,7 +571,7 @@ namespace ContinuumNS
             return sameMetSites;
         }
 
-        public void FindSiteCalibratedModels(Continuum thisInst)
+        public void FindSiteCalibratedModels(Continuum thisInst, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
         {
             // With specified model settings and met list, finds site-calibrated model for each radius of investigation
            
@@ -529,7 +581,7 @@ namespace ContinuumNS
                     
             // Check to see if met exposures and cross-predictions have all been calculated
             if (thisInst.metList.ThisCount > 1)
-                CreateModel(thisInst.metList.GetMetsUsed(), thisInst);                               
+                CreateModel(thisInst.metList.GetMetsUsed(), thisInst, thisTOD, thisSeason, thisHeight);                               
             
         }        
 
@@ -544,7 +596,7 @@ namespace ContinuumNS
             string[] theseParams;
             bool useSR = false;
             bool usesFlowSep = false;
-            StreamReader sr = new StreamReader("C:\\");
+            StreamReader sr;
 
             if (thisInst.ofdImportCoeffs.ShowDialog() == DialogResult.OK)
             {
@@ -568,11 +620,11 @@ namespace ContinuumNS
 
                     int firstParanth = thisString.IndexOf("(");
                     int lastParenth = thisString.IndexOf(")");
-                    string[] theseMets = thisString.Substring(firstParanth + 2, lastParenth - firstParanth - 1).Split(Convert.ToChar(" "));
+                    string[] theseMets = thisString.Substring(firstParanth + 1, lastParenth - firstParanth - 1).Split(Convert.ToChar(" "));
 
                     Model defaultModel = new Model();
                     defaultModel.SizeArrays(15); // it's okay that we're hardcoding numWD = 15 here since we're just doing this to set the default coefficients.The array is resized.
-                    defaultModel.setDefaultModelCoeffs(15);
+                    defaultModel.SetDefaultModelCoeffs(15);
 
                     for (int i = 0; i < numRadii; i++)
                     {
@@ -587,7 +639,8 @@ namespace ContinuumNS
                         thisString = sr.ReadLine(); // RMS heading
 
                         thisString = sr.ReadLine(); // RMS error
-                        importModel[i].RMS_WS_Est = Convert.ToSingle(thisString.Substring(1, thisString.Length - 1)) / 100;
+                        string thisStr = thisString.Substring(0, thisString.Length - 1);
+                        importModel[i].RMS_WS_Est = Convert.ToSingle(thisString.Substring(0, thisString.Length - 1)) / 100;
 
                         thisString = sr.ReadLine(); // Model Headings
 
@@ -597,7 +650,7 @@ namespace ContinuumNS
                         {
                             if (theseHeaders[head_ind] == "DH Stability_A")
                                 useSR = true;
-                            else if (theseHeaders[head_ind] == "sep_A_DW")
+                            else if (theseHeaders[head_ind] == "Sep_A_DW")
                                 usesFlowSep = true;
                         }
 
@@ -628,7 +681,7 @@ namespace ContinuumNS
                                 Array.Resize(ref importModel[i].sepCrit, WD_Ind + 1);
                                 Array.Resize(ref importModel[i].Sep_crit_WS, WD_Ind + 1);
 
-                                importModel[i].RMS_Sect_WS_Est[WD_Ind] = Convert.ToSingle(theseParams[1].Substring(2, theseParams[1].Length - 4)) / 100;
+                                importModel[i].RMS_Sect_WS_Est[WD_Ind] = Convert.ToSingle(theseParams[1].Substring(0, theseParams[1].Length - 1)) / 100;
                                 importModel[i].downhill_A[WD_Ind] = Convert.ToSingle(theseParams[2]);
                                 importModel[i].downhill_B[WD_Ind] = Convert.ToSingle(theseParams[3]);
                                 importModel[i].uphill_A[WD_Ind] = Convert.ToSingle(theseParams[4]);
@@ -688,12 +741,14 @@ namespace ContinuumNS
                         // Check to see if the same length  wind rose entered
                         if (thisInst.metList.ThisCount > 0) {
                             if (thisInst.metList.numWD != WD_Ind) {
-                                MessageBox.Show("The imported model h a different number of WD sectors than the entered met site. Check your inputs.", "Continuum 2.2");
+                                MessageBox.Show("The imported model has a different number of WD sectors than the entered met site. Check your inputs.", "Continuum 2.2");
                                 sr.Close();
                                 return;
                             }
                         }
-                        
+
+                        thisInst.metList.numWD = WD_Ind;
+                        thisInst.updateThe.WindDirectionToDisplay(thisInst);                        
 
                     }
                 }
@@ -703,44 +758,14 @@ namespace ContinuumNS
                 }
 
                 sr.Close();
-
-                // if ( no mets have been added yet then default model doesn//t exist so create it now
-                Model[] model = new Model[numRadii];
-                bool haveDefault = false;
-                int defaultInd = 0;
-
-                for (int i = 0; i < ModelCount; i++) { 
-                    if (models[i, 0].isCalibrated) {
-                        haveDefault = true;
-                        defaultInd = i;
-                        break;
-                    }
-                }
-
-                if (haveDefault == false)
-                {
-                    // Create default model if doesn't exist
-                    for (int i = 0; i < numRadii; i++) {
-                        model[i] = new Model();
-                        model[i].SizeArrays(thisInst.metList.numWD);
-
-                        model[i].setDefaultModelCoeffs(thisInst.metList.numWD);
-                        model[i].SetDefaultLimits();
-                        model[i].radius = thisInst.radiiList.investItem[i].radius;
-                        model[i].metsUsed = thisInst.metList.GetMetsUsed();
-                        model[i].isCalibrated = true;
-                    }
-
-                    // Create new UWDW model in UWDW collection
-                    AddModel(model);
-                }
-
+                
                 AddModel(importModel);
+                thisInst.updateThe.AdvancedTAB(thisInst);
                 
             }
         }
 
-        public Model[] CreateModel(string[] metsUsed, Continuum thisInst)
+        public Model[] CreateModel(string[] metsUsed, Continuum thisInst, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
         {
             // Creates and returns site-calibrated models using specified mets and model settings
             int numPairs = thisInst.metPairList.PairCount;
@@ -753,14 +778,8 @@ namespace ContinuumNS
 
             int numMets = metsUsed.Length;
 
-            int numWD;
-            try {
-                numWD = thisInst.metList.metItem[0].sectorWS_Ratio.Length;
-            }
-            catch { 
-                return null;
-            }
-
+            int numWD = thisInst.metList.numWD;
+            
             int WS_PredInd = 0;
             Model[] models;
             bool modelAlreadyCreated = false;
@@ -777,11 +796,13 @@ namespace ContinuumNS
                         models[i].SizeArrays(numWD);
                         thisRadius = thisInst.radiiList.investItem[i].radius;
                         models[i].SetDefaultLimits();
-
+                        models[i].timeOfDay = thisTOD;
+                        models[i].season = thisSeason;
+                        models[i].height = thisHeight;
                         models[i].radius = thisRadius;
                         models[i].metsUsed = metsUsed;
 
-                        models[i].setDefaultModelCoeffs(numWD); // DW A and B, UW A and B, UW slope
+                        models[i].SetDefaultModelCoeffs(numWD); // DW A and B, UW A and B, UW slope
                         models[i].isCalibrated = false;
                     }
                     AddModel(models);
@@ -818,19 +839,21 @@ namespace ContinuumNS
                         models[i].SizeArrays(numWD);
                         thisRadius = thisInst.radiiList.investItem[i].radius;
                         models[i].SetDefaultLimits();
-
+                        models[i].timeOfDay = thisTOD;
+                        models[i].season = thisSeason;
+                        models[i].height = thisHeight;
                         models[i].radius = thisRadius;
                         models[i].metsUsed = metsUsed;
 
-                        models[i].setDefaultModelCoeffs(numWD); // DW A and B, UW A and B, UW slope
+                        models[i].SetDefaultModelCoeffs(numWD); // DW A and B, UW A and B, UW slope
                         models[i].isCalibrated = false;
                     }
                 }
                 else
-                    models = GetModels(thisInst, metsUsed, minRadius, maxRadius, true);
+                    models = GetModels(thisInst, metsUsed, minRadius, maxRadius, true, thisTOD, thisSeason, thisHeight, false);
             }
             else {
-                modelAlreadyCreated = IterationAlreadyDone(thisInst, metsUsed, minRadius, maxRadius);
+                modelAlreadyCreated = IterationAlreadyDone(thisInst, metsUsed, minRadius, maxRadius, thisTOD, thisSeason);
 
                 if (modelAlreadyCreated == false)
                 {
@@ -842,9 +865,12 @@ namespace ContinuumNS
                         models[i].SizeArrays(numWD);
                         thisRadius = thisInst.radiiList.investItem[i].radius;
                         models[i].SetDefaultLimits();
+                        models[i].timeOfDay = thisTOD;
+                        models[i].season = thisSeason;
+                        models[i].height = thisHeight;
                         models[i].radius = thisRadius;
                         models[i].metsUsed = metsUsed;
-                        models[i].setDefaultModelCoeffs(numWD); // DW A and B, UW A and B, UW slope
+                        models[i].SetDefaultModelCoeffs(numWD); // DW A and B, UW A and B, UW slope
                         models[i].isCalibrated = true;
                     }
 
@@ -875,20 +901,21 @@ namespace ContinuumNS
                             thisInst.metPairList.metPairs[j].DoMetCrossPred(WS_PredInd, radiusIndex, thisInst);
                     }
 
-                    FindModelBounds(ref models, thisInst.metPairList, thisInst.radiiList); // finds P10 Expo Min/Max
+               //     FindModelBounds(ref models, thisInst.metPairList, thisInst.radiiList); // finds P10 Expo Min/Max
                     // Calculate RMS with UW&DW models
                     CalcRMS_Overall_and_Sectorwise(ref models, thisInst);
                 }
 
                 else
-                    models = GetModels(thisInst, metsUsed, minRadius, maxRadius, true);                
+                    models = GetModels(thisInst, metsUsed, minRadius, maxRadius, true, thisTOD, thisSeason, thisHeight, false);                
             }
 
             return models;
         }
 
     
-    public double GetTotalWS(Coeff_Delta_WS[] coeffsDelta) {
+        public double GetTotalWS(Coeff_Delta_WS[] coeffsDelta)
+        {
             //  Calculates and returns the total change in wind speed
             double totalWS = 0;
             int numCoeffs = 0;
@@ -901,9 +928,346 @@ namespace ContinuumNS
                 totalWS = coeffsDelta[numCoeffs - 1].deltaWS_Expo;
 
             return totalWS;
-    }
+        }
 
-        public WS_Est_Struct DoWS_Estimate(Met startMet, Nodes endNode, Nodes[] pathOfNodes, int radiusIndex, Model thisModel, Continuum thisInst)
+        public double DoWS_EstimateOneWDTimeSeries(double startWS, int WD_Ind, Met startMet, Nodes endNode, Nodes[] pathOfNodes, Model thisModel, Continuum thisInst)
+        {
+            // Performs wind speed estimate along path of nodes using specified model in one wind direction sector (WD_Ind)
+            double thisWS_Est = 0;
+
+            // Calculates wind speed from Met 1 to Met 2 along path of nodes 
+            int numNodes = 0;
+            int nodeInd = 0;
+            //  double UW_CW_Grade = 0;
+            //  double UW_PL_Grade = 0;
+
+            double avgUW = 0;
+            double avgDW = 0;
+            double avgP10DW = 0;
+            double avgP10UW = 0;
+
+            double UW_1 = 0; // UW exposure at met or node 1
+            double DW_1 = 0;
+            double UW_2 = 0;
+            double DW_2 = 0;
+
+            double WS_1 = 0; // WS at met or node 1
+
+            double UW_SR_1 = 0; // UW surface roughness at met or node 1
+            double DW_SR_1 = 0;
+            double UW_SR_2 = 0;
+            double DW_SR_2 = 0;
+
+            double UW_DH_1 = 0; // UW displacement height at met or node 1
+            double DW_DH_1 = 0;
+            double UW_DH_2 = 0;
+            double DW_DH_2 = 0;
+
+            Coeff_Delta_WS[] coeffsDelta;
+            double deltaWS_UWExpo = 0; // change in wind speed due to change in UW exposure
+            double deltaWS_DWExpo = 0; // change in wind speed due to change in DW exposure
+            double deltaWS_UW_SR = 0; // change in wind speed due to change in UW surface roughness and displacement height
+            double deltaWS_DW_SR = 0; // change in wind speed due to change in DW surface roughness and displacement height
+
+            double UW_Stab_Corr_1 = 0;
+            double UW_Stab_Corr_2 = 0;
+            double DW_Stab_Corr_1 = 0;
+            double DW_Stab_Corr_2 = 0;
+
+            NodeCollection nodeList = new NodeCollection();
+            Nodes thisNode;
+            Nodes node1;
+            Nodes node2;
+            NodeCollection.Node_UTMs nodeUTM1 = new NodeCollection.Node_UTMs();
+            nodeUTM1.UTMX = startMet.UTMX;
+            nodeUTM1.UTMY = startMet.UTMY;
+            NodeCollection.Node_UTMs nodeUTM2 = new NodeCollection.Node_UTMs();
+
+            int numRadii = RadiiCount;
+            int numWD = thisInst.metList.numWD;
+            int radInd = thisInst.radiiList.GetRadiusInd(thisModel.radius);
+
+            NodeCollection.Sep_Nodes[] flowSepNodes = new NodeCollection.Sep_Nodes[2];
+
+            if (pathOfNodes != null)
+                numNodes = pathOfNodes.Length;                     
+                                            
+            double sectorWS = startWS;
+
+            if (numNodes > 0)
+            {
+                double[] WS_AtNodes = new double[numNodes];
+                thisNode = pathOfNodes[0];
+                double[] nodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, thisNode.UTMX, thisNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                nodeUTM2.UTMX = thisNode.UTMX;
+                nodeUTM2.UTMY = thisNode.UTMY;
+                                
+                // Met to first node                    
+                avgP10DW = (startMet.gridStats.stats[radInd].P10_DW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
+                avgP10UW = (startMet.gridStats.stats[radInd].P10_UW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
+
+                UW_1 = startMet.expo[radInd].GetWgtAvg(startMet.GetWS_WD_Dist(thisInst.modeledHeight, thisModel.timeOfDay, thisModel.season).windRose, WD_Ind, "UW", "Expo");
+                UW_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "Expo");
+                avgUW = (UW_1 + UW_2) / 2;
+
+                // to be used in flow around  vs. flow over hill algorithm
+                //      UW_CW_Grade = (startMet.expo[radiusIndex].UW_P10CrossGrade[WD_Ind] + thisNode.expo[radiusIndex].UW_P10CrossGrade[WD_Ind]) / 2;
+                //      UW_PL_Grade = (startMet.expo[radiusIndex].UW_ParallelGrade[WD_Ind] + thisNode.expo[radiusIndex].UW_ParallelGrade[WD_Ind]) / 2;
+
+                WS_1 = sectorWS;
+                Met.WSWD_Dist startMetDist = startMet.GetWS_WD_Dist(thisInst.modeledHeight, thisModel.timeOfDay, thisModel.season);
+
+                if (thisInst.topo.gotSR == true)
+                {
+                    UW_SR_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "UW", "SR");
+                    UW_SR_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "SR");
+                    UW_DH_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "UW", "DH");
+                    UW_DH_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "DH");
+
+                    DW_SR_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "DW", "SR");
+                    DW_SR_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "SR");
+                    DW_DH_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "DW", "DH");
+                    DW_DH_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "DH");
+                }
+
+                DW_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "DW", "Expo");
+                DW_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "Expo");
+
+                avgDW = (DW_1 + DW_2) / 2;
+
+                if (thisInst.topo.useSepMod == true) flowSepNodes = nodeList.GetSepNodes1and2(startMet.flowSepNodes, thisNode.flowSepNodes, WD_Ind);
+
+                coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes,
+                                                        thisNode.flowSepNodes, WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                deltaWS_UWExpo = GetTotalWS(coeffsDelta);
+                coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                deltaWS_DWExpo = GetTotalWS(coeffsDelta);
+
+                if (thisInst.topo.gotSR == true)
+                {
+                    UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
+                    UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                    deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
+
+                    DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
+                    DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                    deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
+                }
+
+                // Avg WS Estimate at first node
+                if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
+                    WS_AtNodes[0] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                else
+                    WS_AtNodes[0] = 0.05f; // no negative wind speed estimates!                    
+
+
+                // Now do estimates up to met2
+                WS_1 = WS_AtNodes[0];
+                nodeInd = 0;
+                while (nodeInd + 1 < numNodes)
+                {
+                    node1 = pathOfNodes[nodeInd];
+                    nodeUTM1.UTMX = pathOfNodes[nodeInd].UTMX;
+                    nodeUTM1.UTMY = pathOfNodes[nodeInd].UTMY;
+                    double[] node1WindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, node1.UTMX, node1.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+
+                    node2 = pathOfNodes[nodeInd + 1];
+                    nodeUTM2.UTMX = pathOfNodes[nodeInd + 1].UTMX;
+                    nodeUTM2.UTMY = pathOfNodes[nodeInd + 1].UTMY;
+                    double[] node2WindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, node2.UTMX, node2.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                                        
+                    avgP10DW = (node1.gridStats.stats[radInd].P10_DW[WD_Ind] + node2.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
+                    avgP10UW = (node1.gridStats.stats[radInd].P10_UW[WD_Ind] + node2.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
+
+                    // for flow around vs. flow over hill algorithm
+                    //      UW_CW_Grade = (node1.expo[radInd].UW_P10CrossGrade[WD_Ind] + node2.expo[radInd].UW_P10CrossGrade[WD_Ind]) / 2;
+                    //      UW_PL_Grade = (node1.expo[radInd].UW_ParallelGrade[WD_Ind] + node2.expo[radInd].UW_ParallelGrade[WD_Ind]) / 2;
+
+                    UW_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "UW", "Expo");
+                    UW_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "UW", "Expo");
+
+                    avgUW = (UW_1 + UW_2) / 2;
+                                        
+                    if (thisInst.topo.gotSR == true)
+                    {
+                        UW_SR_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "UW", "SR");
+                        UW_SR_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "UW", "SR");
+                        UW_DH_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "UW", "DH");
+                        UW_DH_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "UW", "DH");
+
+                        DW_SR_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "DW", "SR");
+                        DW_SR_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "DW", "SR");
+                        DW_DH_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "DW", "DH");
+                        DW_DH_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "DW", "DH");
+                    }
+
+                    DW_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "DW", "Expo");
+                    DW_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "DW", "Expo");
+
+                    avgDW = (DW_1 + DW_2) / 2;
+
+                    if (thisInst.topo.useSepMod == true) flowSepNodes = nodeList.GetSepNodes1and2(node1.flowSepNodes, node2.flowSepNodes, WD_Ind);
+
+                    coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, node1.flowSepNodes, node2.flowSepNodes,
+                                                        WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                    deltaWS_UWExpo = GetTotalWS(coeffsDelta);
+                    coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                    deltaWS_DWExpo = GetTotalWS(coeffsDelta);
+
+                    if (thisInst.topo.gotSR == true)
+                    {
+                        UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
+                        UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                        deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
+
+                        DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
+                        DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                        deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
+                    }
+
+                    if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
+                        WS_AtNodes[nodeInd + 1] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                    else
+                        WS_AtNodes[nodeInd + 1] = 0.05f; // no negative wind speed estimates!
+
+                    WS_1 = WS_AtNodes[nodeInd + 1];
+                    nodeInd++;
+                }
+
+                // lastNode to End Node
+                thisNode = pathOfNodes[nodeInd];
+                nodeUTM1.UTMX = pathOfNodes[nodeInd].UTMX;
+                nodeUTM1.UTMY = pathOfNodes[nodeInd].UTMY;
+
+                nodeUTM2.UTMX = endNode.UTMX;
+                nodeUTM2.UTMY = endNode.UTMY;
+
+                nodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, thisNode.UTMX, thisNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                double[] endNodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, endNode.UTMX, endNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                                                
+                avgP10DW = (endNode.gridStats.stats[radInd].P10_DW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
+                avgP10UW = (endNode.gridStats.stats[radInd].P10_UW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
+
+                //     UW_CW_Grade = (thisNode.expo[radInd].UW_P10CrossGrade[WD_Ind] + endNode.expo[radInd].UW_P10CrossGrade[WD_Ind]) / 2;
+                //     UW_PL_Grade = (thisNode.expo[radInd].UW_ParallelGrade[WD_Ind] + endNode.expo[radInd].UW_ParallelGrade[WD_Ind]) / 2;
+
+                UW_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "Expo");
+                UW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "Expo");
+
+                avgUW = (UW_1 + UW_2) / 2;
+                                    
+                if (thisInst.topo.gotSR == true)
+                {
+                    UW_SR_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "SR");
+                    UW_SR_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "SR");
+                    UW_DH_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "DH");
+                    UW_DH_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "DH");
+
+                    DW_SR_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "SR");
+                    DW_SR_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "SR");
+                    DW_DH_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "DH");
+                    DW_DH_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "DH");
+                }
+
+                DW_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "Expo");
+                DW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "Expo");
+
+                avgDW = (DW_1 + DW_2) / 2;
+
+                if (thisInst.topo.useSepMod == true) flowSepNodes = nodeList.GetSepNodes1and2(thisNode.flowSepNodes, endNode.flowSepNodes, WD_Ind);
+
+                coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, thisNode.flowSepNodes, endNode.flowSepNodes,
+                                                    WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                deltaWS_UWExpo = GetTotalWS(coeffsDelta);
+                coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                deltaWS_DWExpo = GetTotalWS(coeffsDelta);
+
+                if (thisInst.topo.gotSR == true)
+                {
+                    UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
+                    UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                    deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
+
+                    DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
+                    DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                    deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
+                }
+
+                if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
+                    thisWS_Est = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                else
+                    thisWS_Est = 0.05f;
+                                
+            }
+            else
+            {
+                // No nodes so just one step from Met 1 to Target
+                WS_1 = sectorWS;
+
+                double[] startWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, startMet.UTMX, startMet.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                double[] endNodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, endNode.UTMX, endNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                                
+                nodeUTM2.UTMX = endNode.UTMX;
+                nodeUTM2.UTMY = endNode.UTMY;
+                                
+                avgP10DW = (startMet.gridStats.stats[radInd].P10_DW[WD_Ind] + endNode.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
+                avgP10UW = (startMet.gridStats.stats[radInd].P10_UW[WD_Ind] + endNode.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
+
+                //     UW_CW_Grade = (endNode.expo[radInd].UW_P10CrossGrade[WD_Ind] + startMet.expo[radInd].UW_P10CrossGrade[WD_Ind]) / 2;
+                //     UW_PL_Grade = (endNode.expo[radInd].UW_ParallelGrade[WD_Ind] + startMet.expo[radInd].UW_ParallelGrade[WD_Ind]) / 2;
+
+                UW_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "UW", "Expo");
+                UW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "Expo");
+                avgUW = (UW_1 + UW_2) / 2;
+                                    
+                if (thisInst.topo.gotSR == true)
+                {
+                    UW_SR_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "UW", "SR");
+                    UW_SR_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "SR");
+                    UW_DH_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "UW", "DH");
+                    UW_DH_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "DH");
+
+                    DW_SR_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "DW", "SR");
+                    DW_SR_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "SR");
+                    DW_DH_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "DW", "DH");
+                    DW_DH_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "DH");
+                }
+
+                DW_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "DW", "Expo");
+                DW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "Expo");
+
+                avgDW = (DW_1 + DW_2) / 2;
+
+                if (thisInst.topo.useSepMod == true) flowSepNodes = nodeList.GetSepNodes1and2(startMet.flowSepNodes, endNode.flowSepNodes, WD_Ind);
+
+                coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes, endNode.flowSepNodes,
+                                                    WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                deltaWS_UWExpo = GetTotalWS(coeffsDelta);
+                coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                deltaWS_DWExpo = GetTotalWS(coeffsDelta);
+
+                if (thisInst.topo.gotSR == true)
+                {
+                    UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
+                    UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                    deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
+
+                    DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
+                    DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                    deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
+                }
+
+                if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
+                    thisWS_Est = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                else
+                    thisWS_Est = 0.05f;                            
+
+            }
+            
+            return thisWS_Est;
+        }
+
+        public WS_Est_Struct DoWS_Estimate(Met startMet, Nodes endNode, Nodes[] pathOfNodes, Model thisModel, Continuum thisInst)
         {
             // Performs wind speed estimate along path of nodes using specified model
             WS_Est_Struct WS_Est_Return = new WS_Est_Struct();
@@ -957,7 +1321,8 @@ namespace ContinuumNS
             NodeCollection.Node_UTMs nodeUTM2 = new NodeCollection.Node_UTMs();
                         
             int numRadii = RadiiCount;
-            int numWD = thisInst.metList.metItem[0].windRose.Length;
+            int numWD = thisInst.metList.numWD;
+            int radInd = thisInst.radiiList.GetRadiusInd(thisModel.radius);
 
             NodeCollection.Sep_Nodes[] flowSepNodes = new NodeCollection.Sep_Nodes[2];
 
@@ -967,28 +1332,28 @@ namespace ContinuumNS
             WS_Est_Return.sectorWS = new double[numWD];
             double[] sectorWS = new double[numWD];
             double[] WS_Equiv;
+            Met.WSWD_Dist startMetDist = startMet.GetWS_WD_Dist(thisInst.modeledHeight, thisModel.timeOfDay, thisModel.season);
 
             for (int WD = 0; WD < numWD; WD++)
-                sectorWS[WD] = startMet.WS * startMet.sectorWS_Ratio[WD];
+                sectorWS[WD] = startMetDist.WS * startMetDist.sectorWS_Ratio[WD];
             
             if (numNodes > 0)
             {
                 WS_Est_Return.sectorWS_AtNodes = new double[numNodes, numWD];
                 thisNode = pathOfNodes[0];
+                double[] nodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, thisNode.UTMX, thisNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
                 nodeUTM2.UTMX = thisNode.UTMX;
                 nodeUTM2.UTMY = thisNode.UTMY;
-                WS_Equiv = GetWS_Equiv(startMet.windRose, thisNode.windRose, sectorWS);
+                WS_Equiv = GetWS_Equiv(startMetDist.windRose, nodeWindRose, sectorWS);
 
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                 {
-                    // Met to first node
-                    if (thisNode.windRose == null) thisNode.windRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, thisNode.UTMX, thisNode.UTMY);
+                    // Met to first node                    
+                    avgP10DW = (startMet.gridStats.stats[radInd].P10_DW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
+                    avgP10UW = (startMet.gridStats.stats[radInd].P10_UW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
 
-                    avgP10DW = (startMet.gridStats.stats[radiusIndex].P10_DW[WD_Ind] + thisNode.gridStats.stats[radiusIndex].P10_DW[WD_Ind]) / 2;
-                    avgP10UW = (startMet.gridStats.stats[radiusIndex].P10_UW[WD_Ind] + thisNode.gridStats.stats[radiusIndex].P10_UW[WD_Ind]) / 2;
-
-                    UW_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "UW", "Expo");
-                    UW_2 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "UW", "Expo");
+                    UW_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "UW", "Expo");
+                    UW_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "Expo");
                     avgUW = (UW_1 + UW_2) / 2;
 
                     // to be used in flow around  vs. flow over hill algorithm
@@ -998,25 +1363,25 @@ namespace ContinuumNS
                     WS_1 = WS_Equiv[WD_Ind];
 
                     if (thisInst.topo.gotSR == true) {
-                        UW_SR_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "UW", "SR");
-                        UW_SR_2 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "UW", "SR");
-                        UW_DH_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "UW", "DH");
-                        UW_DH_2 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "UW", "DH");
+                        UW_SR_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "UW", "SR");
+                        UW_SR_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "SR");
+                        UW_DH_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "UW", "DH");
+                        UW_DH_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "DH");
 
-                        DW_SR_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "DW", "SR");
-                        DW_SR_2 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "DW", "SR");
-                        DW_DH_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "DW", "DH");
-                        DW_DH_2 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "DW", "DH");
+                        DW_SR_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "DW", "SR");
+                        DW_SR_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "SR");
+                        DW_DH_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "DW", "DH");
+                        DW_DH_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "DH");
                     }
 
-                    DW_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "DW", "Expo");
-                    DW_2 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "DW", "Expo");
+                    DW_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "DW", "Expo");
+                    DW_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "Expo");
 
                     avgDW = (DW_1 + DW_2) / 2;
 
                     if (thisInst.topo.useSepMod == true) flowSepNodes = nodeList.GetSepNodes1and2(startMet.flowSepNodes, thisNode.flowSepNodes, WD_Ind);
 
-                    coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radiusIndex, startMet.flowSepNodes,
+                    coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes,
                                                            thisNode.flowSepNodes, WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
                     deltaWS_UWExpo = GetTotalWS(coeffsDelta);
                     coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
@@ -1025,11 +1390,11 @@ namespace ContinuumNS
                     if (thisInst.topo.gotSR == true) {
                         UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
                         UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
-                        deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, startMet.height, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
+                        deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
                         DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
                         DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
-                        deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMet.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
+                        deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
                     // Avg WS Estimate at first node
@@ -1046,55 +1411,54 @@ namespace ContinuumNS
                     node1 = pathOfNodes[nodeInd];
                     nodeUTM1.UTMX = pathOfNodes[nodeInd].UTMX;
                     nodeUTM1.UTMY = pathOfNodes[nodeInd].UTMY;
-
+                    double[] node1WindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, node1.UTMX, node1.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                    
                     node2 = pathOfNodes[nodeInd + 1];
                     nodeUTM2.UTMX = pathOfNodes[nodeInd + 1].UTMX;
                     nodeUTM2.UTMY = pathOfNodes[nodeInd + 1].UTMY;
-
-                    if (node1.windRose == null) node1.windRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, node1.UTMX, node1.UTMY);
-                    if (node2.windRose == null) node2.windRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, node2.UTMX, node2.UTMY);
-
+                    double[] node2WindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, node2.UTMX, node2.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                                 
                     for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++)
                         sectorWS[WD_Ind] = WS_Est_Return.sectorWS_AtNodes[nodeInd, WD_Ind];
 
-                    WS_Equiv = GetWS_Equiv(node1.windRose, node2.windRose, sectorWS);
+                    WS_Equiv = GetWS_Equiv(node1WindRose, node2WindRose, sectorWS);
 
                     for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                     {
-                        avgP10DW = (node1.gridStats.stats[radiusIndex].P10_DW[WD_Ind] + node2.gridStats.stats[radiusIndex].P10_DW[WD_Ind]) / 2;
-                        avgP10UW = (node1.gridStats.stats[radiusIndex].P10_UW[WD_Ind] + node2.gridStats.stats[radiusIndex].P10_UW[WD_Ind]) / 2;
+                        avgP10DW = (node1.gridStats.stats[radInd].P10_DW[WD_Ind] + node2.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
+                        avgP10UW = (node1.gridStats.stats[radInd].P10_UW[WD_Ind] + node2.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
 
                         // for flow around vs. flow over hill algorithm
-                  //      UW_CW_Grade = (node1.expo[radiusIndex].UW_P10CrossGrade[WD_Ind] + node2.expo[radiusIndex].UW_P10CrossGrade[WD_Ind]) / 2;
-                  //      UW_PL_Grade = (node1.expo[radiusIndex].UW_ParallelGrade[WD_Ind] + node2.expo[radiusIndex].UW_ParallelGrade[WD_Ind]) / 2;
+                  //      UW_CW_Grade = (node1.expo[radInd].UW_P10CrossGrade[WD_Ind] + node2.expo[radInd].UW_P10CrossGrade[WD_Ind]) / 2;
+                  //      UW_PL_Grade = (node1.expo[radInd].UW_ParallelGrade[WD_Ind] + node2.expo[radInd].UW_ParallelGrade[WD_Ind]) / 2;
 
-                        UW_1 = node1.expo[radiusIndex].GetWgtAvg(node1.windRose, WD_Ind, "UW", "Expo");
-                        UW_2 = node2.expo[radiusIndex].GetWgtAvg(node2.windRose, WD_Ind, "UW", "Expo");
+                        UW_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "UW", "Expo");
+                        UW_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "UW", "Expo");
 
                         avgUW = (UW_1 + UW_2) / 2;
 
                         WS_1 = WS_Equiv[WD_Ind];
 
                         if (thisInst.topo.gotSR == true) {
-                            UW_SR_1 = node1.expo[radiusIndex].GetWgtAvg(node1.windRose, WD_Ind, "UW", "SR");
-                            UW_SR_2 = node2.expo[radiusIndex].GetWgtAvg(node2.windRose, WD_Ind, "UW", "SR");
-                            UW_DH_1 = node1.expo[radiusIndex].GetWgtAvg(node1.windRose, WD_Ind, "UW", "DH");
-                            UW_DH_2 = node2.expo[radiusIndex].GetWgtAvg(node2.windRose, WD_Ind, "UW", "DH");
+                            UW_SR_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "UW", "SR");
+                            UW_SR_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "UW", "SR");
+                            UW_DH_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "UW", "DH");
+                            UW_DH_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "UW", "DH");
 
-                            DW_SR_1 = node1.expo[radiusIndex].GetWgtAvg(node1.windRose, WD_Ind, "DW", "SR");
-                            DW_SR_2 = node2.expo[radiusIndex].GetWgtAvg(node2.windRose, WD_Ind, "DW", "SR");
-                            DW_DH_1 = node1.expo[radiusIndex].GetWgtAvg(node1.windRose, WD_Ind, "DW", "DH");
-                            DW_DH_2 = node2.expo[radiusIndex].GetWgtAvg(node2.windRose, WD_Ind, "DW", "DH");
+                            DW_SR_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "DW", "SR");
+                            DW_SR_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "DW", "SR");
+                            DW_DH_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "DW", "DH");
+                            DW_DH_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "DW", "DH");
                         }
 
-                        DW_1 = node1.expo[radiusIndex].GetWgtAvg(node1.windRose, WD_Ind, "DW", "Expo");
-                        DW_2 = node2.expo[radiusIndex].GetWgtAvg(node2.windRose, WD_Ind, "DW", "Expo");
+                        DW_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "DW", "Expo");
+                        DW_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "DW", "Expo");
 
                         avgDW = (DW_1 + DW_2) / 2;
 
                         if (thisInst.topo.useSepMod == true) flowSepNodes = nodeList.GetSepNodes1and2(node1.flowSepNodes, node2.flowSepNodes, WD_Ind);
 
-                        coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radiusIndex, node1.flowSepNodes, node2.flowSepNodes,
+                        coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, node1.flowSepNodes, node2.flowSepNodes,
                                                             WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
                         deltaWS_UWExpo = GetTotalWS(coeffsDelta);
                         coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
@@ -1103,11 +1467,11 @@ namespace ContinuumNS
                         if (thisInst.topo.gotSR == true) {
                             UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
                             UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
-                            deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, startMet.height, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
+                            deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
                             DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
                             DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
-                            deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMet.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
+                            deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                         }
 
                         if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
@@ -1129,21 +1493,23 @@ namespace ContinuumNS
 
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                     sectorWS[WD_Ind] = WS_Est_Return.sectorWS_AtNodes[nodeInd, WD_Ind];
+                
+                nodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, thisNode.UTMX, thisNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                double[] endNodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, endNode.UTMX, endNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
 
-                WS_Equiv = GetWS_Equiv(thisNode.windRose, endNode.windRose, sectorWS);
-
-                if (thisNode.windRose == null) thisNode.windRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, thisNode.UTMX, thisNode.UTMY);
+                WS_Equiv = GetWS_Equiv(nodeWindRose, endNodeWindRose, sectorWS);
+                               
 
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                 {
-                    avgP10DW = (endNode.gridStats.stats[radiusIndex].P10_DW[WD_Ind] + thisNode.gridStats.stats[radiusIndex].P10_DW[WD_Ind]) / 2;
-                    avgP10UW = (endNode.gridStats.stats[radiusIndex].P10_UW[WD_Ind] + thisNode.gridStats.stats[radiusIndex].P10_UW[WD_Ind]) / 2;
+                    avgP10DW = (endNode.gridStats.stats[radInd].P10_DW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
+                    avgP10UW = (endNode.gridStats.stats[radInd].P10_UW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
 
-               //     UW_CW_Grade = (thisNode.expo[radiusIndex].UW_P10CrossGrade[WD_Ind] + endNode.expo[radiusIndex].UW_P10CrossGrade[WD_Ind]) / 2;
-               //     UW_PL_Grade = (thisNode.expo[radiusIndex].UW_ParallelGrade[WD_Ind] + endNode.expo[radiusIndex].UW_ParallelGrade[WD_Ind]) / 2;
+               //     UW_CW_Grade = (thisNode.expo[radInd].UW_P10CrossGrade[WD_Ind] + endNode.expo[radInd].UW_P10CrossGrade[WD_Ind]) / 2;
+               //     UW_PL_Grade = (thisNode.expo[radInd].UW_ParallelGrade[WD_Ind] + endNode.expo[radInd].UW_ParallelGrade[WD_Ind]) / 2;
 
-                    UW_1 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "UW", "Expo");
-                    UW_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "UW", "Expo");
+                    UW_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "Expo");
+                    UW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "Expo");
 
                     avgUW = (UW_1 + UW_2) / 2;
 
@@ -1151,25 +1517,25 @@ namespace ContinuumNS
 
                     if (thisInst.topo.gotSR == true)
                     {
-                        UW_SR_1 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "UW", "SR");
-                        UW_SR_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "UW", "SR");
-                        UW_DH_1 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "UW", "DH");
-                        UW_DH_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "UW", "DH");
+                        UW_SR_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "SR");
+                        UW_SR_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "SR");
+                        UW_DH_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "DH");
+                        UW_DH_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "DH");
 
-                        DW_SR_1 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "DW", "SR");
-                        DW_SR_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "DW", "SR");
-                        DW_DH_1 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "DW", "DH");
-                        DW_DH_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "DW", "DH");
+                        DW_SR_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "SR");
+                        DW_SR_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "SR");
+                        DW_DH_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "DH");
+                        DW_DH_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "DH");
                     }
 
-                    DW_1 = thisNode.expo[radiusIndex].GetWgtAvg(thisNode.windRose, WD_Ind, "DW", "Expo");
-                    DW_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "DW", "Expo");
+                    DW_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "Expo");
+                    DW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "Expo");
 
                     avgDW = (DW_1 + DW_2) / 2;
 
                     if (thisInst.topo.useSepMod == true) flowSepNodes = nodeList.GetSepNodes1and2(thisNode.flowSepNodes, endNode.flowSepNodes, WD_Ind);
 
-                    coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radiusIndex, thisNode.flowSepNodes, endNode.flowSepNodes,
+                    coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, thisNode.flowSepNodes, endNode.flowSepNodes,
                                                         WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
                     deltaWS_UWExpo = GetTotalWS(coeffsDelta);
                     coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
@@ -1179,11 +1545,11 @@ namespace ContinuumNS
                     {
                         UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
                         UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
-                        deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, startMet.height, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
+                        deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
                         DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
                         DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
-                        deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMet.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
+                        deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
                     if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
@@ -1195,44 +1561,47 @@ namespace ContinuumNS
             }
             else {
                 // No nodes so just one step from Met 1 to Target
-                WS_Equiv = GetWS_Equiv(startMet.windRose, endNode.windRose, sectorWS);
+                double[]  startWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, startMet.UTMX, startMet.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+                double[] endNodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, endNode.UTMX, endNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
+
+                WS_Equiv = GetWS_Equiv(startWindRose, endNodeWindRose, sectorWS);
                 nodeUTM2.UTMX = endNode.UTMX;
                 nodeUTM2.UTMY = endNode.UTMY;
 
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                 {
-                    avgP10DW = (startMet.gridStats.stats[radiusIndex].P10_DW[WD_Ind] + endNode.gridStats.stats[radiusIndex].P10_DW[WD_Ind]) / 2;
-                    avgP10UW = (startMet.gridStats.stats[radiusIndex].P10_UW[WD_Ind] + endNode.gridStats.stats[radiusIndex].P10_UW[WD_Ind]) / 2;
+                    avgP10DW = (startMet.gridStats.stats[radInd].P10_DW[WD_Ind] + endNode.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
+                    avgP10UW = (startMet.gridStats.stats[radInd].P10_UW[WD_Ind] + endNode.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
 
-               //     UW_CW_Grade = (endNode.expo[radiusIndex].UW_P10CrossGrade[WD_Ind] + startMet.expo[radiusIndex].UW_P10CrossGrade[WD_Ind]) / 2;
-               //     UW_PL_Grade = (endNode.expo[radiusIndex].UW_ParallelGrade[WD_Ind] + startMet.expo[radiusIndex].UW_ParallelGrade[WD_Ind]) / 2;
+               //     UW_CW_Grade = (endNode.expo[radInd].UW_P10CrossGrade[WD_Ind] + startMet.expo[radInd].UW_P10CrossGrade[WD_Ind]) / 2;
+               //     UW_PL_Grade = (endNode.expo[radInd].UW_ParallelGrade[WD_Ind] + startMet.expo[radInd].UW_ParallelGrade[WD_Ind]) / 2;
 
-                    UW_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "UW", "Expo");
-                    UW_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "UW", "Expo");
+                    UW_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "UW", "Expo");
+                    UW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "Expo");
                     avgUW = (UW_1 + UW_2) / 2;
 
                     WS_1 = WS_Equiv[WD_Ind];
 
                     if (thisInst.topo.gotSR == true) {
-                        UW_SR_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "UW", "SR");
-                        UW_SR_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "UW", "SR");
-                        UW_DH_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "UW", "DH");
-                        UW_DH_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "UW", "DH");
+                        UW_SR_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "UW", "SR");
+                        UW_SR_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "SR");
+                        UW_DH_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "UW", "DH");
+                        UW_DH_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "DH");
 
-                        DW_SR_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "DW", "SR");
-                        DW_SR_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "DW", "SR");
-                        DW_DH_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "DW", "DH");
-                        DW_DH_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "DW", "DH");
+                        DW_SR_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "DW", "SR");
+                        DW_SR_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "SR");
+                        DW_DH_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "DW", "DH");
+                        DW_DH_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "DH");
                     }
 
-                    DW_1 = startMet.expo[radiusIndex].GetWgtAvg(startMet.windRose, WD_Ind, "DW", "Expo");
-                    DW_2 = endNode.expo[radiusIndex].GetWgtAvg(endNode.windRose, WD_Ind, "DW", "Expo");
+                    DW_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "DW", "Expo");
+                    DW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "Expo");
 
                     avgDW = (DW_1 + DW_2) / 2;
 
                     if (thisInst.topo.useSepMod == true) flowSepNodes = nodeList.GetSepNodes1and2(startMet.flowSepNodes, endNode.flowSepNodes, WD_Ind);
 
-                    coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radiusIndex, startMet.flowSepNodes, endNode.flowSepNodes, 
+                    coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes, endNode.flowSepNodes, 
                                                         WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
                     deltaWS_UWExpo = GetTotalWS(coeffsDelta);
                     coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
@@ -1242,11 +1611,11 @@ namespace ContinuumNS
                     {
                         UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
                         UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
-                        deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, startMet.height, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
+                        deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
                         DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
                         DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
-                        deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMet.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
+                        deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
                     if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
@@ -1306,7 +1675,7 @@ namespace ContinuumNS
 
         }
         */
-        public void FindModelBounds(ref Model[] models, MetPairCollection metPairList, InvestCollection radiiList)
+   /*     public void FindModelBounds(ref Model[] models, MetPairCollection metPairList, InvestCollection radiiList)
         {
             //  Finds the model bounds (i.e. min/max P10 exposure) for each radius, WD, and flow type. Saves the met site with min/max P10 expo for each model type.  
             
@@ -1398,6 +1767,7 @@ namespace ContinuumNS
             }
 
         }
+        */
 
         public void CalcRMS_Overall_and_Sectorwise(ref Model[] models, Continuum thisInst)
         {
@@ -2328,6 +2698,742 @@ namespace ContinuumNS
                 Is_In_Limits = false;
 
             return Is_In_Limits;
+        }
+
+        public Model[] GetAllModels(Continuum thisInst, string[] metsUsed)
+        {
+            // Finds and returns all models that use 
+            Model[] models = new Model[0];
+
+            int numTOD = thisInst.metList.numTOD;
+            int numSeason = thisInst.metList.numSeason;
+            Met.TOD thisTOD = new Met.TOD();
+            Met.Season thisSeason = new Met.Season();
+            int thisInd = 0;
+
+            bool isCalibrated = false;
+            if (metsUsed.Length > 1)
+                isCalibrated = true;
+
+            for (int tod = 0; tod < numTOD; tod++)
+                for (int seas = 0; seas < numSeason; seas++)
+                {
+                    if (numTOD == 1)
+                        thisTOD = Met.TOD.All;
+                    else if (tod == 0)
+                        thisTOD = Met.TOD.Day;
+                    else
+                        thisTOD = Met.TOD.Night;
+
+                    if (numSeason == 1)
+                        thisSeason = Met.Season.All;
+                    else if (seas == 0)
+                        thisSeason = Met.Season.Winter;
+                    else if (seas == 1)
+                        thisSeason = Met.Season.Spring;
+                    else if (seas == 2)
+                        thisSeason = Met.Season.Summer;
+                    else if (seas == 3)
+                        thisSeason = Met.Season.Fall;
+                                        
+                    Model[] theseModels = thisInst.modelList.GetModels(thisInst, metsUsed, 4000, 10000, isCalibrated, thisTOD, thisSeason, thisInst.modeledHeight, true);
+                    Array.Resize(ref models, models.Length + theseModels.Length);
+                    for (int i = 0; i < theseModels.Length; i++)
+                        models[thisInd + i] = theseModels[i];
+
+                    thisInd = thisInd + theseModels.Length;
+
+                }
+
+            return models;
+        }                
+
+        public struct MetLTEsts
+        {
+            public MCP.Site_data[] estWS;
+        }
+
+        public struct Models
+        {
+            public Model[] modelsByRad;
+        }
+
+        public struct PathsOfNodes
+        {
+            public Nodes[] path;
+            public Model model;
+            public Met met;
+        }
+
+        [Serializable]
+        public struct TimeSeries
+        {
+            public DateTime dateTime;
+            public double freeStreamWS;
+            public double wakedWS;
+            public double WD;
+            public double grossEnergy;
+            public double netEnergy;
+        }
+
+        public Models[] GetAllModelsUsed(Continuum thisInst)
+        {
+            Models[] models = new Models[1]; // Models struct holds array of Model called modelsByRad (one for each radius)
+            int numModels = 1; // there will be at least one model (i.e. if default model is used)
+            int numTODs = thisInst.metList.numTOD;
+            int numSeasons = thisInst.metList.numSeason;
+            string[] metsUsed = thisInst.metList.GetMetsUsed();
+            bool isCalibrated = false;
+            if (thisInst.metList.ThisCount > 1)
+                isCalibrated = true;
+
+            if (isCalibrated == true)
+            {
+                numModels = numTODs * numSeasons;
+                models = new Models[numModels];
+            }
+
+            // Gets models for all seasons/TOD if not using calibrated model otherwise gets models for each season/TOD
+            if (isCalibrated == false)
+                models[0].modelsByRad = thisInst.modelList.GetModels(thisInst, metsUsed, thisInst.radiiList.investItem[0].radius, thisInst.radiiList.GetMaxRadius(),
+                    isCalibrated, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            else
+            {
+                int ind = 0;
+                for (int t = 0; t < numTODs; t++)
+                    for (int s = 0; s < numSeasons; s++)
+                    {
+                        Met.TOD thisTOD;
+                        if (numTODs == 1)
+                            thisTOD = Met.TOD.All;
+                        else
+                            thisTOD = (Met.TOD)t;
+
+                        Met.Season thisSeason;
+                        if (numSeasons == 1)
+                            thisSeason = Met.Season.All;
+                        else
+                            thisSeason = (Met.Season)s;
+
+                        models[ind].modelsByRad = thisInst.modelList.GetModels(thisInst, metsUsed, thisInst.radiiList.investItem[0].radius, thisInst.radiiList.GetMaxRadius(),
+                    isCalibrated, thisTOD, thisSeason, thisInst.modeledHeight, false);
+
+                        ind++;
+                    }
+            }
+
+            return models;
+        }
+
+        public TimeSeries[] GenerateTimeSeries(Continuum thisInst, string[] metsUsed, Nodes targetNode, bool isCalibrated, TurbineCollection.PowerCurve powerCurve,
+            Wake_Model wakeModel, WakeCollection.WakeLossCoeffs[] wakeCoeffs, string MCP_Method)
+        {
+            // Generates a time series of either gross/net wind speed/energy.
+            // Uses seasonal and TOD models and LT estimates at each met site to estimate wind speed 
+            // These are combined using WS weights.
+            // Returns time series array
+
+            TimeSeries[] thisTS = new TimeSeries[0];
+            int numMets = metsUsed.Length;
+
+            if (metsUsed == null || (isCalibrated == true && numMets == 1))
+                return thisTS;
+
+            if (numMets == 0)
+                return thisTS;
+
+            if (thisInst.topo.elevsForCalcs == null)
+                thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
+
+            // Size time series array to same length at met's long-term estimates
+            int TS_Length = thisInst.merraList.GetLTRefLength(thisInst);
+            Array.Resize(ref thisTS, TS_Length);
+
+            // Get LT Estimates at each met used in model. Save in MetLTEsts struct which holds an array of MCP.Site_Data struct           
+            MetLTEsts[] metLT_Ests = new MetLTEsts[numMets];
+
+            for (int i = 0; i < numMets; i++)
+            {
+                for (int j = 0; j < thisInst.metList.ThisCount; j++)
+                    if (metsUsed[i] == thisInst.metList.metItem[j].name)
+                    {
+                        if (thisInst.metList.metItem[j].mcp.LT_WS_Ests.Length == 0)
+                            thisInst.metList.metItem[j].mcp.LT_WS_Ests = thisInst.metList.metItem[j].mcp.GenerateLT_WS_TS(thisInst, thisInst.metList.metItem[j], MCP_Method);
+
+                        metLT_Ests[i].estWS = thisInst.metList.metItem[j].mcp.LT_WS_Ests;
+                    }                 
+                     
+            }
+
+            // Get all models used. Only get seasonal and TOD models if isCalibrated is true
+            int numTODs = thisInst.metList.metItem[0].mcp.numTODs;
+            int numSeasons = thisInst.metList.metItem[0].mcp.numSeasons;
+
+            // Get all models used
+            Models[] models = GetAllModelsUsed(thisInst);
+
+            if (models == null) return thisTS;
+            int numModels = models.Length;
+
+            // Get WS Weights for each model
+            ModelWeights[] weights = new ModelCollection.ModelWeights[0]; // ModelWeights struct holds predictor met, model, and weight
+            NodeCollection nodeList = new NodeCollection();
+            
+            int numRad = thisInst.radiiList.ThisCount;
+
+            for (int i = 0; i < numModels; i++)
+            {
+                ModelCollection.ModelWeights[] theseWeights = thisInst.modelList.GetWS_EstWeights(thisInst.metList.GetMets(metsUsed, null), targetNode,
+                    models[i].modelsByRad, thisInst.metList.GetAvgWindRoseMetsUsed(metsUsed, models[i].modelsByRad[0].timeOfDay, models[0].modelsByRad[0].season, thisInst.modeledHeight), thisInst.radiiList);
+
+                int oldSize = weights.Length;
+                int newSize = weights.Length + theseWeights.Length;
+
+                Array.Resize(ref weights, newSize);
+
+                for (int j = 0; j < theseWeights.Length; j++)
+                    weights[oldSize + j] = theseWeights[j];
+
+            }
+
+            // Get Paths of Nodes between turbine and each met for each model
+            int numPaths = numMets * numModels * numRad;
+            PathsOfNodes[] pathsOfNodes = new PathsOfNodes[numPaths];
+            int pathInd = 0;
+
+            for (int metInd = 0; metInd < numMets; metInd++)
+                for (int modelInd = 0; modelInd < numModels; modelInd++)
+                    for (int radInd = 0; radInd < numRad; radInd++)
+                    {
+                        pathsOfNodes[pathInd].met = thisInst.metList.GetMet(metsUsed[metInd]);
+                        pathsOfNodes[pathInd].model = models[modelInd].modelsByRad[radInd];
+                        Nodes metNode = nodeList.GetMetNode(pathsOfNodes[pathInd].met);
+                        pathsOfNodes[pathInd].path = nodeList.FindPathOfNodes(metNode, targetNode, pathsOfNodes[pathInd].model, thisInst);
+                        pathInd++;
+                    }
+
+            // Figure out which met is closest (for wind direction)
+            int closestMetInd = 0;
+            double closestDist = 1000000;
+            Met_Data_Filter metDataFilter = new Met_Data_Filter();
+            int numWD = thisInst.metList.numWD;
+
+            for (int m = 0; m < numMets; m++)
+            {
+                Met thisMet = thisInst.metList.GetMet(metsUsed[m]);
+                double thisDist = thisInst.topo.CalcDistanceBetweenPoints(targetNode.UTMX, targetNode.UTMY, thisMet.UTMX, thisMet.UTMY);
+
+                if (thisDist < closestDist)
+                {
+                    closestDist = thisDist;
+                    closestMetInd = m;
+                }
+            }
+
+            // Figure out time series interval
+            int timeInt = 1; // number of hours per time interval
+
+            if (metLT_Ests[0].estWS.Length < 2)
+                return thisTS;
+
+            TimeSpan timeSpan = metLT_Ests[0].estWS[1].thisDate - metLT_Ests[0].estWS[0].thisDate;
+            timeInt = timeSpan.Hours;
+
+            // For each time interval and for each predicting met and each model (radius), get path of nodes and do wind speed estimate along nodes
+            // Then combine wind speed estimates using weights to form average wind speed
+                        
+            List<int> integerList = Enumerable.Range(0, TS_Length).ToList();
+            Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
+            {
+
+                //    for (int i = 0; i < TS_Length; i++)
+                //{
+                DateTime dateTime = metLT_Ests[0].estWS[i].thisDate;
+                Met.TOD thisTOD = thisInst.metList.GetTOD(dateTime);
+                Met.Season season = thisInst.metList.GetSeason(dateTime);
+                double thisAvg = 0;
+                double sumWeights = 0;
+                double thisWD = metLT_Ests[closestMetInd].estWS[i].thisWD;
+                int thisWD_Ind = metDataFilter.GetWD_Ind(thisWD, numWD);
+
+                for (int m = 0; m < numMets; m++)
+                {
+                    Met thisMet = thisInst.metList.GetMet(metsUsed[m]);
+
+                    for (int r = 0; r < numRad; r++)
+                    {
+                        Model thisModel = GetSeasonalModels(models, thisTOD, season, isCalibrated, r, numRad);
+                        Nodes[] thisPath = GetPathNodesForMetAndModel(pathsOfNodes, thisMet, thisModel, thisInst);
+                        double thisEst = thisInst.modelList.DoWS_EstimateOneWDTimeSeries(metLT_Ests[m].estWS[i].thisWS, thisWD_Ind, thisMet, targetNode, thisPath, thisModel, thisInst);
+                        double thisWeight = GetWeightForMetAndModel(weights, thisMet, thisModel);
+                        thisAvg = thisAvg + thisWeight * thisEst;
+                        sumWeights = sumWeights + thisWeight;
+                    }
+                }
+
+                if (sumWeights > 0)
+                    thisAvg = thisAvg / sumWeights;
+
+                thisTS[i].dateTime = metLT_Ests[closestMetInd].estWS[i].thisDate;
+                thisTS[i].WD = metLT_Ests[closestMetInd].estWS[i].thisWD;
+                thisTS[i].freeStreamWS = thisAvg;
+
+                if (powerCurve.name != null)
+                    thisTS[i].grossEnergy = thisInst.turbineList.GetInterpPowerOrThrust(thisTS[i].freeStreamWS, powerCurve, "Power") * timeInt;
+
+                if (wakeModel != null)
+                {
+                    double[] wakedValues = thisInst.wakeModelList.CalcNetEnergyTimeSeries(wakeCoeffs, targetNode.UTMX, targetNode.UTMY, thisAvg, thisInst, wakeModel, thisTS[i].WD, thisTS[i].grossEnergy, timeInt);
+
+                    thisTS[i].wakedWS = wakedValues[0];
+                    thisTS[i].netEnergy = wakedValues[1] * thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+                }
+
+            });
+
+            return thisTS;
+        }
+
+        public Model GetSeasonalModels(Models[] models, Met.TOD thisTOD, Met.Season thisSeason, bool isCalibrated, int radInd, int numRad)
+        {
+           // Finds and returns model with specified settings
+
+            for (int i = 0; i < models.Length; i++)
+                if (isCalibrated == false || (models[i].modelsByRad[0].timeOfDay == thisTOD && models[i].modelsByRad[0].season == thisSeason))
+                    return models[i].modelsByRad[radInd];
+
+            return new Model();
+        }
+
+        public Nodes[] GetPathNodesForMetAndModel(PathsOfNodes[] thesePaths, Met thisMet, Model thisModel, Continuum thisInst)
+        {
+         //   Nodes[] pathNodes = new Nodes[0];
+         //   ModelCollection modelList = new ModelCollection();
+
+            if (thesePaths == null)
+                return new Nodes[0];
+
+            for (int i = 0; i < thesePaths.Length; i++)
+                if (thesePaths[i].met.name == thisMet.name && thisInst.modelList.IsSameModel(thisModel, thesePaths[i].model))                
+                    return thesePaths[i].path;                                   
+
+            return new Nodes[0];
+        }
+
+        public Met.WSWD_Dist CalcWSWD_Dist(TimeSeries[] thisTS, Continuum thisInst, string wakedOrFreestream)
+        {
+            // Calculates and returns WSWD distribution formed from TimeSeries data using either free-stream or waked wind speed. Flags are: Waked and Freestream
+            //  Doesn't filter for season or TOD, just generates dist based on all TimeSeries data
+            Met.WSWD_Dist thisDist = new Met.WSWD_Dist();
+            thisDist.season = Met.Season.All;
+            thisDist.timeOfDay = Met.TOD.All;
+            thisDist.height = thisInst.modeledHeight;
+            thisDist.WS_Dist = new double[thisInst.metList.numWS]; // All distributions add up to 1.0
+            thisDist.windRose = new double[thisInst.metList.numWD];
+            thisDist.sectorWS_Ratio = new double[thisInst.metList.numWD];
+            thisDist.sectorWS_Dist = new double[thisInst.metList.numWD, thisInst.metList.numWS];
+
+            MCP mcp = new MCP(); // For Get_WS_ind and Get_WD_ind functions
+            mcp.New_MCP(true, true, thisInst);
+
+            if (thisInst.metList.ThisCount == 0) return thisDist;
+            double WS_FirstInt = thisInst.metList.WS_FirstInt; // for creating distributions
+            double WS_IntSize = thisInst.metList.WS_IntSize;
+
+            if (thisTS == null)
+                return thisDist;
+
+            for (int i = 0; i < thisTS.Length; i++)
+            {
+                double thisWS = 0;
+
+                if (wakedOrFreestream == "Freestream")
+                    thisWS = thisTS[i].freeStreamWS;
+                else if (wakedOrFreestream == "Waked")
+                    thisWS = thisTS[i].wakedWS;
+                else
+                {
+                    MessageBox.Show("Invalid flag in CalcWSWD_Dist");
+                    return thisDist;
+                }
+
+                int WS_ind = mcp.Get_WS_ind(thisWS, 1);
+                int WD_ind = mcp.Get_WD_ind(thisTS[i].WD);
+
+                if (WS_ind >= thisInst.metList.numWS) WS_ind = thisInst.metList.numWS - 1;
+
+                thisDist.windRose[WD_ind]++;
+                thisDist.WS_Dist[WS_ind]++;
+                thisDist.sectorWS_Dist[WD_ind, WS_ind]++;
+            }
+
+            if (thisTS.Length > 0)
+                for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
+                    thisDist.WS_Dist[WS_ind] = thisDist.WS_Dist[WS_ind] / thisTS.Length;
+
+            // Calculate wind speed overall and sectorwise distributions
+            double sumWD = 0;
+            for (int i = 0; i < thisInst.metList.numWD; i++)
+                sumWD = sumWD + thisDist.windRose[i];
+
+            for (int i = 0; i < thisInst.metList.numWD; i++)
+                thisDist.windRose[i] = thisDist.windRose[i] / sumWD;
+
+            for (int WD_ind = 0; WD_ind < thisInst.metList.numWD; WD_ind++)
+            {
+                double sumWS = 0;
+                for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
+                    sumWS = sumWS + thisDist.sectorWS_Dist[WD_ind, WS_ind];
+
+                for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
+                    thisDist.sectorWS_Dist[WD_ind, WS_ind] = thisDist.sectorWS_Dist[WD_ind, WS_ind] / sumWS;
+            }
+
+            double sumDist = 0;
+            double[] sumSectorDist = new double[thisInst.metList.numWD];
+
+            // Calculate sectorwise and overall wind speeds
+            for (int i = 0; i < thisInst.metList.numWS; i++)
+            {
+                thisDist.WS = thisDist.WS + thisDist.WS_Dist[i] * (WS_FirstInt + i * WS_IntSize - WS_IntSize / 2);
+                sumDist = sumDist + thisDist.WS_Dist[i];
+
+                for (int j = 0; j < thisInst.metList.numWD; j++)
+                {
+                    thisDist.sectorWS_Ratio[j] = thisDist.sectorWS_Ratio[j] + thisDist.sectorWS_Dist[j, i] * (WS_FirstInt + i * WS_IntSize - WS_IntSize / 2);
+                    sumSectorDist[j] = sumSectorDist[j] + thisDist.sectorWS_Dist[j, i];
+                }
+            }
+
+            if (sumDist > 0)
+                thisDist.WS = thisDist.WS / sumDist;
+
+            for (int i = 0; i < thisInst.metList.numWD; i++)
+            {
+                if (sumSectorDist[i] > 0)
+                    thisDist.sectorWS_Ratio[i] = thisDist.sectorWS_Ratio[i] / sumSectorDist[i] / thisDist.WS;
+            }
+
+            return thisDist;
+        }
+
+        public void CalcGrossAEP_AndMonthlyEnergy(ref Turbine.Gross_Energy_Est grossEst, ModelCollection.TimeSeries[] thisTS, Continuum thisInst)
+        {
+            // Calculates LT Gross AEP, LT CF, sectorwise energy, and monthly values
+
+            if (thisTS == null) return;
+            if (thisTS.Length < 1) return;
+
+            int TS_Length = thisTS.Length;
+            TimeSpan timeSpan = thisTS[1].dateTime - thisTS[0].dateTime;
+            int timeInt = timeSpan.Hours;
+
+            // Start on first hour on first of month
+            int TS_Ind = 0;
+            int thisDay = thisTS[TS_Ind].dateTime.Day;
+            int thisHour = thisTS[TS_Ind].dateTime.Hour;
+            MERRA merra = new MERRA(); // Using some functions from this class (i.e. Get_Num_Days_in_Month)
+            MCP mcp = new MCP(); // Created to use GetWD_Ind function
+            mcp.numWD = thisInst.metList.numWD;
+
+            while (thisDay != 1 && thisHour != 0)
+            {
+                TS_Ind++;
+                thisDay = thisTS[TS_Ind].dateTime.Day;
+                thisHour = thisTS[TS_Ind].dateTime.Hour;
+            }
+
+            int lastMonth = thisTS[TS_Ind].dateTime.Month;
+            int lastYear = thisTS[TS_Ind].dateTime.Year;
+
+            double LT_AEP = 0;
+            int yearCount = 0;
+            double thisAEP = 0;
+            double[] LT_SectorEnergy = new double[thisInst.metList.numWD];
+            double[] thisSectorEnergy = new double[thisInst.metList.numWD];
+            grossEst.sectorEnergy = new double[thisInst.metList.numWD];
+
+            double monthEnergy = 0;
+            int monthInd = 0;
+
+            //   int numDaysInMonth = merra.Get_Num_Days_in_Month(lastMonth, lastYear);
+            //  int numMonthlyInts = numDaysInMonth * timeInt * 24;
+            Array.Resize(ref grossEst.monthlyVals, 1);
+
+            // Calculates gross energy production for every year which is used to find the LT average gross AEP
+            // Also calculates the monthly energy production for each month in the time series
+            // And calculates the average LT sectorwise energy production
+            for (int t = TS_Ind; t < TS_Length; t++)
+            {
+                int month = thisTS[t].dateTime.Month;
+                int year = thisTS[t].dateTime.Year;
+                int WD_ind = mcp.Get_WD_ind(thisTS[t].WD);
+
+                if (year == lastYear)
+                {
+                    thisAEP = thisAEP + thisTS[t].grossEnergy;
+                    thisSectorEnergy[WD_ind] = thisSectorEnergy[WD_ind] + thisTS[t].grossEnergy;
+                }
+                else
+                {
+                    LT_AEP = LT_AEP + thisAEP;
+                    for (int WD = 0; WD < thisInst.metList.numWD; WD++)
+                        LT_SectorEnergy[WD] = LT_SectorEnergy[WD] + thisSectorEnergy[WD];
+
+                    yearCount++;
+                    thisAEP = thisTS[t].grossEnergy;                
+                    thisSectorEnergy = new double[thisInst.metList.numWD];
+                    thisSectorEnergy[WD_ind] = thisTS[t].grossEnergy;
+                }
+
+                if (month == lastMonth && year == lastYear)
+                {
+                    monthEnergy = monthEnergy + thisTS[t].grossEnergy;
+                }
+                else
+                {
+                    grossEst.monthlyVals[monthInd].month = lastMonth;
+                    grossEst.monthlyVals[monthInd].year = lastYear;
+                    grossEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
+
+                    monthEnergy = thisTS[t].grossEnergy;
+                    monthInd++;
+
+                    lastMonth = month;
+                    lastYear = year;
+
+                    Array.Resize(ref grossEst.monthlyVals, monthInd + 1);
+                }
+
+            }
+
+            // Add last year and last month of last year
+            if (thisTS[thisTS.Length - 1].dateTime.Month == 12 && thisTS[thisTS.Length - 1].dateTime.Day == 31) // have another full year to add
+            {
+                LT_AEP = LT_AEP + thisAEP;
+                for (int WD = 0; WD < thisInst.metList.numWD; WD++)
+                    LT_SectorEnergy[WD] = LT_SectorEnergy[WD] + thisSectorEnergy[WD];
+
+                yearCount++;
+
+                grossEst.monthlyVals[monthInd].month = lastMonth;
+                grossEst.monthlyVals[monthInd].year = lastYear;
+                grossEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
+            }
+
+            if (yearCount > 0)
+            {
+                grossEst.AEP = LT_AEP / yearCount / 1000; // Save in MWh
+
+                for (int i = 0; i < thisInst.metList.numWD; i++)
+                    grossEst.sectorEnergy[i] = LT_SectorEnergy[i] / yearCount / 1000; // save in MWh
+            }
+
+            grossEst.CF = grossEst.AEP / (grossEst.powerCurve.ratedPower * 8.76);
+                       
+
+        }
+
+        public void CalcNetAEP_AndMonthlyEnergy(ref Turbine.Net_Energy_Est netEst, ModelCollection.TimeSeries[] thisTS, Continuum thisInst, Wake_Model wakeModel)
+        {
+            // Calculates LT Gross AEP, LT CF, sectorwise energy, and monthly values
+
+            if (thisTS == null) return;
+            if (thisTS.Length < 1) return;
+
+            int TS_Length = thisTS.Length;
+            TimeSpan timeSpan = thisTS[1].dateTime - thisTS[0].dateTime;
+            int timeInt = timeSpan.Hours;
+
+            // Start on first hour on first of month
+            int TS_Ind = 0;
+            int thisDay = thisTS[TS_Ind].dateTime.Day;
+            int thisHour = thisTS[TS_Ind].dateTime.Hour;
+            MERRA merra = new MERRA(); // Using some functions from this class (i.e. Get_Num_Days_in_Month)
+            MCP mcp = new MCP(); // Created to use Get_WD_Ind function
+            mcp.numWD = thisInst.metList.numWD;
+
+            while (thisDay != 1 && thisHour != 0)
+            {
+                TS_Ind++;
+                thisDay = thisTS[TS_Ind].dateTime.Day;
+                thisHour = thisTS[TS_Ind].dateTime.Hour;
+            }
+
+            int lastMonth = thisTS[TS_Ind].dateTime.Month;
+            int lastYear = thisTS[TS_Ind].dateTime.Year;
+
+            double LT_AEP = 0;
+            int yearCount = 0;
+            double thisAEP = 0;
+            double[] LT_SectorEnergy = new double[thisInst.metList.numWD];
+            double[] thisSectorEnergy = new double[thisInst.metList.numWD];
+            netEst.sectorEnergy = new double[thisInst.metList.numWD];
+
+            double monthEnergy = 0;
+            int monthInd = 0;
+
+            //   int numDaysInMonth = merra.Get_Num_Days_in_Month(lastMonth, lastYear);
+            //   int numMonthlyInts = numDaysInMonth * timeInt;
+            Array.Resize(ref netEst.monthlyVals, 1);
+
+            for (int t = TS_Ind; t < TS_Length; t++)
+            {
+                int month = thisTS[t].dateTime.Month;
+                int year = thisTS[t].dateTime.Year;
+                int WD_ind = mcp.Get_WD_ind(thisTS[t].WD);
+
+                if (year == lastYear)
+                {
+                    thisAEP = thisAEP + thisTS[t].netEnergy;
+                    thisSectorEnergy[WD_ind] = thisSectorEnergy[WD_ind] + thisTS[t].netEnergy;
+                }
+                else
+                {
+                    LT_AEP = LT_AEP + thisAEP;
+                    for (int WD = 0; WD < thisInst.metList.numWD; WD++)
+                        LT_SectorEnergy[WD] = LT_SectorEnergy[WD] + thisSectorEnergy[WD];
+
+                    yearCount++;
+                    thisAEP = thisTS[t].netEnergy;
+                    thisSectorEnergy = new double[thisInst.metList.numWD];
+                }
+
+                if (month == lastMonth && year == lastYear)
+                {
+                    monthEnergy = monthEnergy + thisTS[t].netEnergy;
+                }
+                else
+                {
+                    netEst.monthlyVals[monthInd].month = lastMonth;
+                    netEst.monthlyVals[monthInd].year = lastYear;
+                    netEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
+
+                    monthEnergy = thisTS[t].netEnergy;
+                    monthInd++;
+
+                    lastMonth = month;
+                    lastYear = year;
+
+                    Array.Resize(ref netEst.monthlyVals, monthInd + 1);
+                }
+
+            }
+
+            // Add last year and last month of last year
+            if (thisTS[thisTS.Length - 1].dateTime.Month == 12 && thisTS[thisTS.Length - 1].dateTime.Day == 31) // have another full year to add
+            {
+                LT_AEP = LT_AEP + thisAEP;
+                for (int WD = 0; WD < thisInst.metList.numWD; WD++)
+                    LT_SectorEnergy[WD] = LT_SectorEnergy[WD] + thisSectorEnergy[WD];
+
+                yearCount++;
+
+                netEst.monthlyVals[monthInd].month = lastMonth;
+                netEst.monthlyVals[monthInd].year = lastYear;
+                netEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
+            }
+
+            if (yearCount > 0)
+            {
+                netEst.AEP = LT_AEP / yearCount / 1000; // Save in MWh
+
+                for (int i = 0; i < thisInst.metList.numWD; i++)
+                    netEst.sectorEnergy[i] = LT_SectorEnergy[i] / yearCount / 1000; // Save in MWh
+            }
+
+            netEst.CF = netEst.AEP / (netEst.wakeModel.powerCurve.ratedPower * 8.76);
+
+        }
+
+        public bool HaveRequiredModels(MetCollection metList)
+        {
+            bool haveModels = false;
+            bool isCalibrated = false;
+            if (metList.ThisCount > 1) isCalibrated = true;
+
+            if (metList.numTOD == 1 && metList.numSeason == 1)
+            {                
+                for (int i = 0; i < ModelCount; i++)
+                    if (models[i, 0].season == Met.Season.All && models[i, 0].timeOfDay == Met.TOD.All && models[i, 0].isCalibrated == isCalibrated)
+                        haveModels = true;
+
+            }
+            else if (metList.numTOD == 2 && metList.numSeason == 1)
+            {
+                bool gotDay = false;
+                bool gotNight = false;
+
+                for (int i = 0; i < ModelCount; i++)
+                {
+                    if (models[i, 0].season == Met.Season.All && models[i, 0].timeOfDay == Met.TOD.Day && models[i, 0].isCalibrated == isCalibrated)
+                        gotDay = true;
+                    else if (models[i, 0].season == Met.Season.All && models[i, 0].timeOfDay == Met.TOD.Night && models[i, 0].isCalibrated == isCalibrated)
+                        gotNight = true;
+                }
+
+                if (gotDay == true && gotNight == true)
+                    haveModels = true;
+            }
+            else if (metList.numTOD == 1 & metList.numSeason == 4)
+            {
+                bool gotWinter = false;
+                bool gotSpring = false;
+                bool gotSummer = false;
+                bool gotFall = false;
+
+                for (int i = 0; i < ModelCount; i++)
+                {
+                    if (models[i, 0].season == Met.Season.Winter && models[i, 0].timeOfDay == Met.TOD.All && models[i, 0].isCalibrated == isCalibrated)
+                        gotWinter = true;
+                    else if (models[i, 0].season == Met.Season.Spring && models[i, 0].timeOfDay == Met.TOD.All && models[i, 0].isCalibrated == isCalibrated)
+                        gotSpring = true;
+                    else if (models[i, 0].season == Met.Season.Summer && models[i, 0].timeOfDay == Met.TOD.All && models[i, 0].isCalibrated == isCalibrated)
+                        gotSummer = true;
+                    else if (models[i, 0].season == Met.Season.Fall && models[i, 0].timeOfDay == Met.TOD.All && models[i, 0].isCalibrated == isCalibrated)
+                        gotFall = true;
+                }
+
+                if (gotWinter && gotSpring && gotSummer && gotFall)
+                    haveModels = true;
+            }
+            else if (metList.numTOD == 2 && metList.numSeason == 4)
+            {
+                bool gotWinterDay = false;
+                bool gotWinterNight = false;
+                bool gotSpringDay = false;
+                bool gotSpringNight = false;
+                bool gotSummerDay = false;
+                bool gotSummerNight = false;
+                bool gotFallDay = false;
+                bool gotFallNight = false;
+
+                for (int i = 0; i < ModelCount; i++)
+                {
+                    if (models[i, 0].season == Met.Season.Winter && models[i, 0].timeOfDay == Met.TOD.Day && models[i, 0].isCalibrated == isCalibrated)
+                        gotWinterDay = true;
+                    else if (models[i, 0].season == Met.Season.Winter && models[i, 0].timeOfDay == Met.TOD.Night && models[i, 0].isCalibrated == isCalibrated)
+                        gotWinterNight = true;
+                    else if (models[i, 0].season == Met.Season.Spring && models[i, 0].timeOfDay == Met.TOD.Day && models[i, 0].isCalibrated == isCalibrated)
+                        gotSpringDay = true;
+                    else if (models[i, 0].season == Met.Season.Spring && models[i, 0].timeOfDay == Met.TOD.Night && models[i, 0].isCalibrated == isCalibrated)
+                        gotSpringNight = true;
+                    else if (models[i, 0].season == Met.Season.Summer && models[i, 0].timeOfDay == Met.TOD.Day && models[i, 0].isCalibrated == isCalibrated)
+                        gotSummerDay = true;
+                    else if (models[i, 0].season == Met.Season.Summer && models[i, 0].timeOfDay == Met.TOD.Night && models[i, 0].isCalibrated == isCalibrated)
+                        gotSummerNight = true;
+                    else if (models[i, 0].season == Met.Season.Fall && models[i, 0].timeOfDay == Met.TOD.Day && models[i, 0].isCalibrated == isCalibrated)
+                        gotFallDay = true;
+                    else if (models[i, 0].season == Met.Season.Fall && models[i, 0].timeOfDay == Met.TOD.Night && models[i, 0].isCalibrated == isCalibrated)
+                        gotFallNight = true;
+                }
+
+                if (gotWinterDay && gotWinterNight && gotSpringDay && gotSpringNight && gotSummerDay && gotSummerNight && gotFallDay && gotFallNight)
+                    haveModels = true;
+            }
+
+
+            return haveModels;
         }
 
     }

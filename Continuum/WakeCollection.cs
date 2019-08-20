@@ -109,6 +109,12 @@ namespace ContinuumNS
             wakeGridMaps = null;
         }
 
+        public void ClearWakeMaps()
+        {
+            // Clears all wake maps
+            wakeGridMaps = null;
+        }
+
         public bool IsSameWakeModel(Wake_Model wakeModel1, Wake_Model wakeModel2)
         {
             // Returns true if two wake models are identical
@@ -117,22 +123,22 @@ namespace ContinuumNS
             if (wakeModel1 == null && wakeModel2 == null)
                 return true;
 
-            if (wakeModel1 == null || wakeModel2 == null)
-                return isSame;
+            if ((wakeModel1 == null && wakeModel2 != null) || (wakeModel1 != null && wakeModel2 == null))
+                return false;
         
-        if (wakeModel1.ambTI == wakeModel2.ambTI && wakeModel1.horizWakeExp == wakeModel2.horizWakeExp && wakeModel1.wakeModelType == wakeModel2.wakeModelType && 
-            wakeModel1.powerCurve.name == wakeModel2.powerCurve.name && wakeModel1.comboMethod == wakeModel2.comboMethod && wakeModel1.wakeRechargeRate == wakeModel2.wakeRechargeRate)
-            {
-                if (wakeModel1.wakeModelType == 1)
+            if (wakeModel1.ambTI == wakeModel2.ambTI && wakeModel1.horizWakeExp == wakeModel2.horizWakeExp && wakeModel1.wakeModelType == wakeModel2.wakeModelType && 
+                wakeModel1.powerCurve.name == wakeModel2.powerCurve.name && wakeModel1.comboMethod == wakeModel2.comboMethod && wakeModel1.wakeRechargeRate == wakeModel2.wakeRechargeRate)
                 {
-                    if (wakeModel1.DW_Spacing == wakeModel2.DW_Spacing && wakeModel1.CW_Spacing == wakeModel2.CW_Spacing && wakeModel1.ambRough == wakeModel2.ambRough)
+                    if (wakeModel1.wakeModelType == 1)
+                    {
+                        if (wakeModel1.DW_Spacing == wakeModel2.DW_Spacing && wakeModel1.CW_Spacing == wakeModel2.CW_Spacing && wakeModel1.ambRough == wakeModel2.ambRough)
+                            isSame = true;
+                    }
+                    else
                         isSame = true;
                 }
-                else
-                    isSame = true;
-            }
 
-            return isSame;
+                return isSame;
         }
 
         public bool IsSameWakeGrid(WakeGridMap wakeGrid1, WakeGridMap wakeGrid2)
@@ -360,7 +366,7 @@ namespace ContinuumNS
             else if (modelType == 1)
                 modelName = "DAWM Eddy Viscosity";
             else if (modelType == 2)
-                modelName = "Continuum";
+                modelName = "Jensen";
 
             return modelName;
         }
@@ -380,6 +386,21 @@ namespace ContinuumNS
                 }
             }
 
+            return thisWakeModel;
+        }
+
+        public Wake_Model GetWakeModelFromString(string wakeModelString)
+        {
+            // Returns wake model with same string
+            Wake_Model thisWakeModel = null;
+
+            for (int i = 0; i < NumWakeModels; i++)
+            {
+                string thisModelString = CreateWakeModelString(wakeModels[i]);
+                if (thisModelString == wakeModelString)
+                    thisWakeModel = wakeModels[i];
+            }
+            
             return thisWakeModel;
         }
 
@@ -540,7 +561,7 @@ namespace ContinuumNS
             int numMapsToDelete = mapnames.Length;
             int newCount = NumWakeGridMaps - numMapsToDelete;
 
-            if (newCount == 0)
+            if (newCount <= 0)
                 wakeGridMaps = null;
             else
             {
@@ -619,9 +640,9 @@ namespace ContinuumNS
 
             // Now remove Net estimates from turbine list that used this wake model
             for (int i = 0; i < turbineList.TurbineCount; i++) {
-                turbineList.turbineEsts[i].RemoveAvgWS_byWakeModel(thisWakeModel, this);
+                turbineList.turbineEsts[i].ClearNetEstsFromAvgWS(thisWakeModel, this);
                 turbineList.turbineEsts[i].RemoveNetAEP_byWakeModel(thisWakeModel, this);
-            }
+            }                       
 
             // Remove all maps that used this wake model            
             for (int i = 0; i < mapList.ThisCount; i++)
@@ -647,6 +668,11 @@ namespace ContinuumNS
                     if (wakeModels[i].powerCurve.name != powerCurve) {
                         tempList[tempIndex] = wakeModels[i];
                         tempIndex++;
+                    }
+                    else
+                    {
+                        for (int j = 0; j < turbineList.TurbineCount; j++)
+                            turbineList.turbineEsts[j].ClearNetEstsFromAvgWS(wakeModels[i], this);
                     }
                 }
 
@@ -681,8 +707,7 @@ namespace ContinuumNS
             }
 
             // Now remove Net estimates from turbine list that used this power curve
-            for (int i = 0; i < turbineList.TurbineCount; i++) {
-                turbineList.turbineEsts[i].RemoveAvgWS_byPowerCurve(powerCurve);
+            for (int i = 0; i < turbineList.TurbineCount; i++) {                                
                 turbineList.turbineEsts[i].RemoveNetAEP_byPowerCurve(powerCurve);
             }
 
@@ -720,8 +745,10 @@ namespace ContinuumNS
                 wakeString = "Eddy Visc., ";
             else if (thisWakeModel.wakeModelType == 1)
                 wakeString = "DAWM, ";
+            else if (thisWakeModel.wakeModelType == 2)
+                wakeString = "Jensen, ";
 
-            wakeString = wakeString + thisWakeModel.powerCurve.name.Substring(1, 10).Trim();
+            wakeString = wakeString + thisWakeModel.powerCurve.name.Substring(0, 10).Trim();
 
             wakeString = wakeString + ", Exp.: " + Math.Round(thisWakeModel.horizWakeExp, 1) + " degs,";
             wakeString = wakeString + " TI: " + Math.Round(thisWakeModel.ambTI, 1) + " %, ";
@@ -734,7 +761,7 @@ namespace ContinuumNS
             return wakeString;
         }
 
-        public double[] CalcWakeProfileFit(double[] velDeficit, double[] X_LengthRD)
+        public double[] CalcWakeProfileFit(double[] velDeficit, double[] R_RD)
         {
             // Fits a 4th order polynomial to velocity deficit profile for each X_LengthRD (distance downwind of turbine) and returns 4th order poly coefficients
             int numParams = 4;
@@ -755,13 +782,13 @@ namespace ContinuumNS
                 sumYX[0] = sumYX[0] + velDeficit[i];
 
                 for (int j = 1; j <= numParams; j++) {
-                    timesX = timesX * X_LengthRD[i];
+                    timesX = timesX * R_RD[i];
                     sumX[j] = sumX[j] + timesX;
                     sumYX[j] = sumYX[j] + velDeficit[i] * timesX;
                 }
 
                 for (int j = numParams + 1; j <= numParams * 2; j++) {
-                    timesX = timesX * X_LengthRD[i];
+                    timesX = timesX * R_RD[i];
                     sumX[j] = sumX[j] + timesX;
                 }
             }
@@ -826,20 +853,13 @@ namespace ContinuumNS
             int numWakeCoeffs = 0;
             double[,] velDef;
             double freeStream;
-            int numWS;
+            int numWS = metList.numWS;
             double WS_bin_width;
             double WS_dist_first;
-
-            try {
-                numWS = metList.metItem[0].WS_Dist.Length;
-            }
-            catch {
-                return wakeCoeffs;
-            }
-
+            
             if (metList.ThisCount > 0) {
-                WS_bin_width = metList.metItem[0].WS_IntSize;
-                WS_dist_first = metList.metItem[0].WS_FirstInt;
+                WS_bin_width = metList.WS_IntSize;
+                WS_dist_first = metList.WS_FirstInt;
             }
             else {
                 return wakeCoeffs;
@@ -848,11 +868,11 @@ namespace ContinuumNS
             for (int WS_ind = 0; WS_ind < numWS; WS_ind++)
             {
                 freeStream = WS_dist_first + WS_ind * WS_bin_width - WS_bin_width / 2;
-                if (freeStream > 0 && thisWakeModel.powerCurve.power[WS_ind] > 0) {
+                if (freeStream > 0 && freeStream >= thisWakeModel.powerCurve.cutInWS && freeStream <= thisWakeModel.powerCurve.cutOutWS) {
                     if (minDistance / thisWakeModel.powerCurve.RD < 2)
                         minDistance = (int)thisWakeModel.powerCurve.RD * 2;
 
-                    velDef = CalcWS_DeficitEddyViscosityGrid((int)Math.Round(minDistance / thisWakeModel.powerCurve.RD,0), (int)Math.Round(maxDistance / thisWakeModel.powerCurve.RD,0), 0.1f, 0.025f, freeStream, thisWakeModel, metList);
+                    velDef = CalcWS_DeficitEddyViscosityGrid((int)Math.Round(minDistance / thisWakeModel.powerCurve.RD,0), (int)Math.Round(maxDistance / thisWakeModel.powerCurve.RD,0), 0.1, 0.025, freeStream, thisWakeModel, metList);
 
                     double[] R_RD = new double[21];  
 
@@ -881,6 +901,7 @@ namespace ContinuumNS
                         wakeCoeffs[numWakeCoeffs].X_LengthRD = (minDistance + i * thisWakeModel.powerCurve.RD * 0.1) / thisWakeModel.powerCurve.RD;
 
                         numWakeCoeffs++;
+                                                
                     }
                 }
             }
@@ -888,10 +909,233 @@ namespace ContinuumNS
             return wakeCoeffs;
 
         }
-        
+
+        public double[] CalcNetEnergyTimeSeries(WakeLossCoeffs[] wakeCoeffs, double thisX, double thisY, double freeStream,  
+                                         Continuum thisInst, Wake_Model thisWakeModel, double WD, double grossEnergy, int timeInt)
+        // Calculates and returns waked WS and net energy for time series estimates. Time int is in time interval in hours.
+        // Finds distance to all UW turbines and wake widths and calculates wind speed deficit. Combines wind speed deficits of all UW turbines based on combo method.
+        {
+            double[] wakedResults = new double[2]; // 0 = Waked WS, 1 = Net Energy 
+            double netEnergy = 0;
+            double wakedWS = 0;
+            int numUW_turbs;
+            int numWD = thisInst.metList.numWD;
+            
+            double WS_bin_width;
+            double WS_dist_first;
+
+            int freeStreamInt = (int)Math.Round(freeStream, 0);
+
+            if (thisInst.metList.ThisCount > 0)
+            {
+                WS_bin_width = thisInst.metList.WS_IntSize;
+                WS_dist_first = thisInst.metList.WS_FirstInt;
+            }
+            else
+                return wakedResults;
+                       
+            double DAWM_Def = 0;
+            
+            Turbine[] UW_turbs = FindAllUW_Turbines(WD, thisX, thisY, thisInst.turbineList);
+
+            if (UW_turbs == null)
+                numUW_turbs = 0;
+            else
+                numUW_turbs = UW_turbs.Length;
+
+            // If there is at least one upwind turbine, calculate wake loss
+            if (numUW_turbs > 0)
+            {
+                double[] WS_Deficit = new double[numUW_turbs];
+
+                double thrustCoeff = thisInst.turbineList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Thrust");
+                double power = thisInst.turbineList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Power");
+
+                // Ainslie's initial deficit
+                double initVelDef = (thrustCoeff - 0.05 - (16 * thrustCoeff - 0.5) * thisWakeModel.ambTI / 1000);
+                if (initVelDef < 0) initVelDef = 0.0001f;
+
+                double initWakeWidth = Math.Pow((3.56 * thrustCoeff) / (8 * initVelDef * (1 - 0.5 * initVelDef)), 0.5); // Full width of wake
+                initWakeWidth = initWakeWidth / 2; // Half width of wake (which is what is modeled)
+
+                if (freeStream > 0 && power > 0)
+                {
+                    for (int UW_turb_ind = 0; UW_turb_ind < numUW_turbs; UW_turb_ind++)
+                    {
+                        double[] DW_andLatDists = CalcDownwindAndLateralDistanceFromUW_Turb(UW_turbs[UW_turb_ind].UTMX, UW_turbs[UW_turb_ind].UTMY, thisX, thisY, thisWakeModel.powerCurve.RD, WD);
+                        double DW_Dist = DW_andLatDists[0];
+                        double latDist = DW_andLatDists[1];
+
+                        double wakeWidth = CalcWakeWidth(initWakeWidth, thisWakeModel, DW_Dist);
+                        double R_ind = latDist / wakeWidth / 2; // Divided by 2 since R_ind = 0 to 0.5 (modeling half of wake)
+
+                        if (DW_Dist > 2 && latDist < wakeWidth)
+                        {
+                            if (thisWakeModel.wakeModelType == 0)
+                            { // Eddy Viscosity Wake Model" 
+                                for (int coeffInd = 0; coeffInd <= wakeCoeffs.Length - 1; coeffInd++)
+                                {
+                                    if (DW_Dist >= 2 && Math.Abs(DW_Dist - wakeCoeffs[coeffInd].X_LengthRD) <= 0.05 && wakeCoeffs[coeffInd].freeStream == freeStreamInt)
+                                    {
+                                        WS_Deficit[UW_turb_ind] = wakeCoeffs[coeffInd].linCoeff1 * Math.Pow(R_ind, 4) + wakeCoeffs[coeffInd].linCoeff2 * Math.Pow(R_ind, 3)
+                                                + wakeCoeffs[coeffInd].linCoeff3 * Math.Pow(R_ind, 2) + wakeCoeffs[coeffInd].linCoeff4 * (R_ind) + wakeCoeffs[coeffInd].linRegInt;
+
+                                        if (WS_Deficit[UW_turb_ind] < 0) WS_Deficit[UW_turb_ind] = 0;
+                                        break;
+                                    }
+                                }
+                            }
+                            else if (thisWakeModel.wakeModelType == 1)
+                            { // "Eddy Viscosity (Deep Array Wind Model)" 
+                              // Calculate Eddy viscosity and Deep Array Wake Model and use the maximum deficit
+                                for (int coeffInd = 0; coeffInd <= wakeCoeffs.Length - 1; coeffInd++)
+                                {
+                                    if ((Math.Abs(DW_Dist - wakeCoeffs[coeffInd].X_LengthRD) <= 0.1) && wakeCoeffs[coeffInd].freeStream == freeStreamInt)
+                                    {
+                                        WS_Deficit[UW_turb_ind] = wakeCoeffs[coeffInd].linCoeff1 * Math.Pow(R_ind, 4) + wakeCoeffs[coeffInd].linCoeff2 * Math.Pow(R_ind, 3)
+                                            + wakeCoeffs[coeffInd].linCoeff3 * Math.Pow(R_ind, 2) + wakeCoeffs[coeffInd].linCoeff4 * R_ind + wakeCoeffs[coeffInd].linRegInt;
+
+                                        break;
+                                    }
+                                }
+
+                                DAWM_Def = Calc_DAWM_Deficit(UW_turbs, thisX, thisY, WD, freeStream, thisWakeModel, thisInst.metList, thisInst.modeledHeight);
+                            }
+                            else if (thisWakeModel.wakeModelType == 2)
+                            {
+                                WS_Deficit[UW_turb_ind] = 1 - (1 - Math.Sqrt(1 - thrustCoeff) / Math.Pow(1 + 2 * thisWakeModel.wakeDecayConst * DW_Dist, 2));
+                            }
+                        }
+                    }
+                    
+                    // Now need to combine WS_Deficit
+                    double avgWS_Def = 0;
+                    double linearWS_Def = 0;
+                    double RSS_WS_Def = 0;
+                    double maxWS_Def = 0;
+                    double geoWS_Def = 0;
+
+                    if (thisWakeModel.comboMethod == "Linear" || thisWakeModel.comboMethod == "Avg Lin&RSS" || thisWakeModel.comboMethod == "Avg Lin&Max" ||
+                    thisWakeModel.comboMethod == "Avg Lin&Geo")
+                    {
+                        // Using a linear approach which is the sum of the velocity deficits
+                        linearWS_Def = 0;
+                        for (int UW_turb_ind = 0; UW_turb_ind < numUW_turbs; UW_turb_ind++)                        
+                            if (WS_Deficit[UW_turb_ind] > 0)                            
+                                linearWS_Def = linearWS_Def + WS_Deficit[UW_turb_ind];                                                   
+
+                        if (linearWS_Def > 1)
+                            linearWS_Def = 1;
+                    }
+
+                    if (thisWakeModel.comboMethod == "RSS" || thisWakeModel.comboMethod == "Avg Lin&RSS" || thisWakeModel.comboMethod == "Avg RSS&Max" ||
+                        thisWakeModel.comboMethod == "Avg RSS&Geo")
+                    {
+                        // Using a Root Sum Square to find overal velocity deficit
+                        RSS_WS_Def = 0;
+                        for (int UW_turb_ind = 0; UW_turb_ind < numUW_turbs; UW_turb_ind++)                        
+                            if (WS_Deficit[UW_turb_ind] > 0)
+                                RSS_WS_Def = RSS_WS_Def + Math.Pow(WS_Deficit[UW_turb_ind], 2);
+                        
+                        if (RSS_WS_Def > 0)
+                            RSS_WS_Def = Math.Pow(RSS_WS_Def, 0.5);
+
+                    }
+
+                    if (thisWakeModel.comboMethod == "Max" || thisWakeModel.comboMethod == "Avg Lin&Max" || thisWakeModel.comboMethod == "Avg RSS&Max" ||
+                    thisWakeModel.comboMethod == "Avg Max&Geo")
+                    {
+                        // Find Max velocity deficit
+                        maxWS_Def = 0;
+                        for (int UW_turb_ind = 0; UW_turb_ind < numUW_turbs; UW_turb_ind++)
+                            if (WS_Deficit[UW_turb_ind] > maxWS_Def)
+                                maxWS_Def = WS_Deficit[UW_turb_ind];
+
+                    }
+
+                    if (thisWakeModel.comboMethod == "Geometric" || thisWakeModel.comboMethod == "Avg Lin&Geo" || thisWakeModel.comboMethod == "Avg RSS&Geo" ||
+                    thisWakeModel.comboMethod == "Avg Max&Geo")
+                    {
+
+                        // Find Geometric avg velocity deficit
+                        geoWS_Def = 1;
+                        int geoCount = 0;
+                        for (int UW_turb_ind = 0; UW_turb_ind < numUW_turbs; UW_turb_ind++)
+                        {
+                            if (WS_Deficit[UW_turb_ind] > 0)
+                            {
+                                geoWS_Def = geoWS_Def * (1 - WS_Deficit[UW_turb_ind]);
+                                geoCount++;
+                            }
+                        }
+
+                        if (geoCount > 0)
+                            geoWS_Def = 1 - Math.Pow(geoWS_Def, (1 / geoCount));
+                        else
+                            geoWS_Def = 0;
+
+                    }
+
+                    if (thisWakeModel.comboMethod == "Linear")
+                        avgWS_Def = linearWS_Def;
+                    else if (thisWakeModel.comboMethod == "RSS")
+                        avgWS_Def = RSS_WS_Def;
+                    else if (thisWakeModel.comboMethod == "Max")
+                        avgWS_Def = maxWS_Def;
+                    else if (thisWakeModel.comboMethod == "Geometric")
+                        avgWS_Def = geoWS_Def;
+                    else if (thisWakeModel.comboMethod == "Avg Lin&RSS")
+                        avgWS_Def = (linearWS_Def + RSS_WS_Def) / 2;
+                    else if (thisWakeModel.comboMethod == "Avg Lin&Max")
+                        avgWS_Def = (linearWS_Def + maxWS_Def) / 2;
+                    else if (thisWakeModel.comboMethod == "Avg Lin&Geo")
+                        avgWS_Def = (linearWS_Def + geoWS_Def) / 2;
+                    else if (thisWakeModel.comboMethod == "Avg RSS&Max")
+                        avgWS_Def = (RSS_WS_Def + maxWS_Def) / 2;
+                    else if (thisWakeModel.comboMethod == "Avg RSS&Geo")
+                        avgWS_Def = (RSS_WS_Def + geoWS_Def) / 2;
+                    else if (thisWakeModel.comboMethod == "Avg Max&Geo")
+                        avgWS_Def = (maxWS_Def + geoWS_Def) / 2;
+
+                    if (thisWakeModel.wakeModelType == 1)
+                    { // compare DAWM deficit to Eddy Viscosity deficit and take the max
+                        if (avgWS_Def < DAWM_Def)
+                        {
+                            avgWS_Def = DAWM_Def;
+                        }
+                    }
+                    if (avgWS_Def >= freeStream)
+                        wakedWS = 0.01f;
+                    else
+                        wakedWS = freeStream * (1 - avgWS_Def);
+
+                    if (wakedWS == 0)
+                        wakedWS = 0.05; // no zero wind speeds
+
+                    power = thisInst.turbineList.GetInterpPowerOrThrust(wakedWS, thisWakeModel.powerCurve, "Power");
+                }
+                
+                netEnergy = power * timeInt;
+            }
+
+            else
+            {
+                // No turbines creating wakes
+                wakedWS = freeStream;
+                netEnergy = grossEnergy;
+
+            }                        
+
+            wakedResults[0] = wakedWS;
+            wakedResults[1] = netEnergy;
+
+            return wakedResults;
+
+        }
+
         public WakeCalcResults CalcWakeLosses(WakeLossCoeffs[] wakeCoeffs, double thisX, double thisY, double[,] freeSectorWS_Dist, double grossAEP, double[] grossAEPSect,
-                                         Continuum thisInst, Wake_Model thisWakeModel)
-        // for (int each WD sector, finds distance to all UW turbines and wake widths and calculates wind speed deficit. Combines wind speed deficits of all UW turbines based on combo method.
+                                         Continuum thisInst, Wake_Model thisWakeModel, double[] windRose)
+        // for each WD sector, finds distance to all UW turbines and wake widths and calculates wind speed deficit. Combines wind speed deficits of all UW turbines based on combo method.
         {
             WakeCalcResults wakeResults = new WakeCalcResults();
             
@@ -904,8 +1148,8 @@ namespace ContinuumNS
             double WS_dist_first;
 
             if (thisInst.metList.ThisCount > 0) {
-                WS_bin_width = thisInst.metList.metItem[0].WS_IntSize;
-                WS_dist_first = thisInst.metList.metItem[0].WS_FirstInt;
+                WS_bin_width = thisInst.metList.WS_IntSize;
+                WS_dist_first = thisInst.metList.WS_FirstInt;
             }
             else
                 return wakeResults;
@@ -937,7 +1181,7 @@ namespace ContinuumNS
                         for (int WS_ind = 0; WS_ind < numWS; WS_ind++)
                         {
                             double freeStream = WS_dist_first + WS_ind * WS_bin_width - WS_bin_width / 2;
-                            double thrustCoeff = thisWakeModel.powerCurve.thrustCoeff[WS_ind];
+                            double thrustCoeff = thisInst.turbineList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Thrust");
 
                             // Ainslie's initial deficit
                             double initVelDef = (thrustCoeff - 0.05 - (16 * thrustCoeff - 0.5) * thisWakeModel.ambTI / 1000);
@@ -946,7 +1190,9 @@ namespace ContinuumNS
                             double initWakeWidth = Math.Pow((3.56 * thrustCoeff) / (8 * initVelDef * (1 - 0.5 * initVelDef)), 0.5); // Full width of wake
                             initWakeWidth = initWakeWidth / 2; // Half width of wake (which is what is modeled)
 
-                            if (freeStream > 0 && thisWakeModel.powerCurve.power[WS_ind] > 0)
+                            double thisPower = thisInst.turbineList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Power");
+
+                            if (freeStream > 0 && thisPower > 0)
                             {
                                 for (int UW_turb_ind = 0; UW_turb_ind < numUW_turbs; UW_turb_ind++)
                                 {
@@ -957,12 +1203,12 @@ namespace ContinuumNS
                                     double wakeWidth = CalcWakeWidth(initWakeWidth, thisWakeModel, DW_Dist);
                                     double R_ind = latDist / wakeWidth / 2; // Divided by 2 since R_ind = 0 to 0.5 (modeling half of wake)
 
-                                    if (DW_Dist > 2 && latDist < wakeWidth) {
+                                    if (DW_Dist > 0.2 && latDist < wakeWidth) {
                                         if (thisWakeModel.wakeModelType == 0)
                                         { // Eddy Viscosity Wake Model" 
                                             for (int coeffInd = 0; coeffInd <= wakeCoeffs.Length - 1; coeffInd++)
                                             {
-                                                if (DW_Dist >= 2 && Math.Abs(DW_Dist - wakeCoeffs[coeffInd].X_LengthRD) <= 0.05 && wakeCoeffs[coeffInd].freeStream == freeStream)
+                                                if (DW_Dist >= 0.2 && Math.Abs(DW_Dist - wakeCoeffs[coeffInd].X_LengthRD) <= 0.05 && wakeCoeffs[coeffInd].freeStream == freeStream)
                                                 {
                                                     WS_Deficit[UW_turb_ind] = wakeCoeffs[coeffInd].linCoeff1 * Math.Pow(R_ind, 4) + wakeCoeffs[coeffInd].linCoeff2 * Math.Pow(R_ind, 3)
                                                          + wakeCoeffs[coeffInd].linCoeff3 * Math.Pow(R_ind, 2) + wakeCoeffs[coeffInd].linCoeff4 * (R_ind) + wakeCoeffs[coeffInd].linRegInt;
@@ -986,11 +1232,11 @@ namespace ContinuumNS
                                                 }
                                             }
 
-                                            DAWM_Def = Calc_DAWM_Deficit(UW_turbs, thisX, thisY, subWD, freeStream, thisWakeModel, thisInst.metList);
+                                            DAWM_Def = Calc_DAWM_Deficit(UW_turbs, thisX, thisY, subWD, freeStream, thisWakeModel, thisInst.metList, thisInst.modeledHeight);
                                         }
                                         else if (thisWakeModel.wakeModelType == 2)
                                         {
-                                            // TO DO Continuum Wake Model
+                                            WS_Deficit[UW_turb_ind] = 1 - (1 - Math.Sqrt(1 - thrustCoeff) / Math.Pow(1 + 2 * thisWakeModel.wakeDecayConst * DW_Dist, 2));
                                         }
                                     }
 
@@ -1102,7 +1348,7 @@ namespace ContinuumNS
                         for (int i = 0; i < numWS; i++)
                             thisDist[i] = freeSectorWS_Dist[WD_Ind, i];
 
-                        double[] WS_DistWaked = InterpolateFindWakedDist(wakedDistWS, thisDist, thisInst.metList, thisWakeModel);
+                        double[] WS_DistWaked = InterpolateFindWakedDist(wakedDistWS, thisDist, thisInst.metList);
 
                         for (int i = 0; i < numWS; i++)
                             avgWakedDist[i] = avgWakedDist[i] + WS_DistWaked[i];
@@ -1124,24 +1370,26 @@ namespace ContinuumNS
             // Now calculate Waked overall WS dist, sector WS and overall avg WS
 
             wakeResults.sectorWakedWS = CalcAvgSectorWaked(wakeResults.sectorDist, thisInst.metList);
-            wakeResults.WS_Dist = CalcAvgWakedWS_Dists(wakeResults.sectorDist, thisInst.metList, thisInst.metList.GetAvgWindRose());
+            wakeResults.WS_Dist = CalcAvgWakedWS_Dists(wakeResults.sectorDist, thisInst.metList, windRose);
             wakeResults.wakedWS = CalcAvgWakedWS(wakeResults.WS_Dist, thisInst.metList);
 
-            wakeResults.netEnergy = CalcNetEnergy(thisWakeModel, wakeResults.WS_Dist);
-            wakeResults.sectorNetEnergy = CalcNetSectEnergy(thisWakeModel, wakeResults.sectorDist, thisInst.metList.GetAvgWindRose());
-            wakeResults.sectorWakeLoss = CalcThisSectWakeLoss(thisWakeModel, wakeResults.sectorNetEnergy, grossAEPSect);
-            wakeResults.wakeLoss = CalcThisWakeLoss(thisWakeModel, wakeResults.netEnergy, grossAEP);
+            double otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+
+            wakeResults.netEnergy = CalcNetEnergy(thisWakeModel, wakeResults.WS_Dist, thisInst, otherLoss);
+            wakeResults.sectorNetEnergy = CalcNetSectEnergy(thisWakeModel, wakeResults.sectorDist, windRose, thisInst, otherLoss);            
+            wakeResults.sectorWakeLoss = CalcThisSectWakeLoss(thisWakeModel, wakeResults.sectorNetEnergy, grossAEPSect, otherLoss);
+            wakeResults.wakeLoss = CalcThisWakeLoss(thisWakeModel, wakeResults.netEnergy, grossAEP, otherLoss);
 
             return wakeResults;
 
         }       
 
-        public double CalcNetEnergy(Wake_Model thisWakeModel, double[] WS_Dist)
+        public double CalcNetEnergy(Wake_Model thisWakeModel, double[] WS_Dist, Continuum thisInst, double otherLoss)
         {
-            // Calculates and returns P50 net annual energy production 
+            // Calculates and returns P50 net annual energy production (wake and other losses included)
             int numWS = 0;
             TurbineCollection.PowerCurve thisPowerCurve = thisWakeModel.powerCurve;
-
+            
             try {
                 numWS = WS_Dist.Length;
             }
@@ -1153,18 +1401,20 @@ namespace ContinuumNS
             double sumWS = 0;
 
             for (int k = 0; k < numWS; k++) {
-                P50_AEP = P50_AEP + WS_Dist[k] * thisPowerCurve.power[k];
+                double thisWS = thisInst.metList.GetWS_atWS_Ind(k);
+                double thisPower = thisInst.turbineList.GetInterpPowerOrThrust(thisWS, thisWakeModel.powerCurve, "Power");
+                P50_AEP = P50_AEP + WS_Dist[k] * thisPower;
                 sumWS = sumWS + WS_Dist[k];
             }
 
-            P50_AEP = P50_AEP / sumWS * 365 * 24 / 1000;
+            P50_AEP = otherLoss * P50_AEP / sumWS * 365 * 24 / 1000;
 
             return P50_AEP;
         }
 
-        public double[] CalcNetSectEnergy(Wake_Model thisWakeModel, double[,] sectorWS_Dist, double[] windRose)
+        public double[] CalcNetSectEnergy(Wake_Model thisWakeModel, double[,] sectorWS_Dist, double[] windRose, Continuum thisInst, double otherLoss)
         {
-            // Calculates and returns P50 net AEP by wind direction sector
+            // Calculates and returns P50 net AEP by wind direction sector (wake and other losses included)
             int numWS = 0;
             int numWD = 0;
             TurbineCollection.PowerCurve thisPowerCurve = thisWakeModel.powerCurve;
@@ -1185,30 +1435,32 @@ namespace ContinuumNS
 
             double[] P50_AEP = new double[numWD];
             double sumWS = 0;
-
+            
             for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++) {
                 sumWS = 0;
                 for (int k = 0; k <= numWS - 1; k++) {
-                    P50_AEP[WD_Ind] = P50_AEP[WD_Ind] + sectorWS_Dist[WD_Ind, k] * thisPowerCurve.power[k];
+                    double thisWS = thisInst.metList.GetWS_atWS_Ind(k);
+                    double thisPower = thisInst.turbineList.GetInterpPowerOrThrust(thisWS, thisPowerCurve, "Power");
+                    P50_AEP[WD_Ind] = P50_AEP[WD_Ind] + sectorWS_Dist[WD_Ind, k] * thisPower;
                     sumWS = sumWS + sectorWS_Dist[WD_Ind, k];
                 }
-                P50_AEP[WD_Ind] = P50_AEP[WD_Ind] / sumWS * 365 * 24 * windRose[WD_Ind] / 1000;
+                P50_AEP[WD_Ind] = otherLoss * P50_AEP[WD_Ind] / sumWS * 365 * 24 * windRose[WD_Ind] / 1000;                
             }
 
             return P50_AEP;
         }
 
-        public double CalcThisWakeLoss(Wake_Model thisWakeModel, double P50_AEP, double grossAEP)
+        public double CalcThisWakeLoss(Wake_Model thisWakeModel, double P50_AEP, double grossAEP, double otherLoss)
         {
             // Calculates and returns the wake loss (%)
-            double wakeLoss = 1 - P50_AEP / grossAEP;
+            double wakeLoss = 1 - P50_AEP / otherLoss / grossAEP;
 
             if (wakeLoss < 0) wakeLoss = 0;
 
             return wakeLoss;
         }
 
-        public double[] CalcThisSectWakeLoss(Wake_Model thisWakeModel, double[] P50_AEP, double[] grossAEP)
+        public double[] CalcThisSectWakeLoss(Wake_Model thisWakeModel, double[] P50_AEP, double[] grossAEP, double otherLoss)
         {
             // Calculates and returns sectorwise wake loss
             double[] wakeLoss = null;
@@ -1223,7 +1475,7 @@ namespace ContinuumNS
             }
 
             for (int i = 0; i <= numWD - 1; i++) {
-                wakeLoss[i] = 1 - P50_AEP[i] / grossAEP[i];
+                wakeLoss[i] = 1 - (P50_AEP[i] / otherLoss) / grossAEP[i];
                 if (wakeLoss[i] < 0) wakeLoss[i] = 0;
             }
 
@@ -1240,8 +1492,8 @@ namespace ContinuumNS
             double WS_Int;
 
             try {
-                WS_First = metList.metItem[0].WS_FirstInt;
-                WS_Int = metList.metItem[0].WS_IntSize;
+                WS_First = metList.WS_FirstInt;
+                WS_Int = metList.WS_IntSize;
             }
             catch {
                 return null;
@@ -1304,7 +1556,7 @@ namespace ContinuumNS
                     thisFreq = thisFreq + sectorWS_Dist[j, i] * windRose[j];
                     sumRose = sumRose + windRose[j];
                 }
-                WS_Dist[i] = thisFreq / sumRose / 1000;
+                WS_Dist[i] = thisFreq / sumRose;
             }
 
             return WS_Dist;
@@ -1318,8 +1570,8 @@ namespace ContinuumNS
             double WS_Int = 0;
 
             try {
-                WS_First = metList.metItem[0].WS_FirstInt;
-                WS_Int = metList.metItem[0].WS_IntSize;
+                WS_First = metList.WS_FirstInt;
+                WS_Int = metList.WS_IntSize;
             }
             catch  {
                 return 0;
@@ -1344,110 +1596,80 @@ namespace ContinuumNS
             return thisWS;
         }
 
-        public double[] InterpolateFindWakedDist(double[] wakedDistWS, double[] unwakedDist, MetCollection metList, Wake_Model thisWakeModel)
+        public double[] InterpolateFindWakedDist(double[] wakedDistWS, double[] unwakedDist, MetCollection metList)
         {
             // Takes wake deficit distribution for each wind speed and calculates and returns resulting wind speed distribution
 
-            int numWS = 0;
-            int avgWS_Ind = 0;
-            int Num_Avg_WS = 0;
+            int numWS = 0;            
             double WS_int = 0;
             double WS_first = 0;
-            double[] Interp_Dist = null;
+            double[] interpDist = null;
 
             try {
                 numWS = wakedDistWS.Length;
             }
             catch  {
-                return Interp_Dist;
+                return interpDist;
             }
 
             try {
-                WS_int = metList.metItem[0].WS_IntSize;
-                WS_first = metList.metItem[0].WS_FirstInt;
+                WS_int = metList.WS_IntSize;
+                WS_first = metList.WS_FirstInt;
             }
             catch  {
-                return Interp_Dist;
+                return interpDist;
             }
-
-            int Min_ind = 0;
-            int Max_ind = 0; ;
+                        
             double thisWS = 0;
-
-            Interp_Dist = new double[numWS];
+            interpDist = new double[numWS];
 
             for (int i = 0; i < numWS; i++) {
                 thisWS = WS_first + WS_int * i - WS_int / 2;
-
-                // Find index with closest wind speed lower than this WS in waked WS list
-
-                //  for (int wake_ind = 0 To numWS - 2
-                // if ( wakedDistWS(wake_ind) <= thisWS && wakedDistWS(wake_ind + 1) > thisWS ) {
-                // Min_ind = wake_ind
-                // Max_ind = wake_ind + 1
-                // break;
-                // }
-                // }
-
-                //  if ( Min_ind = Max_ind ) {
-                // Min_ind = numWS - 2
-                // Max_ind = numWS - 1
-                // }
-
-                //  Interp_Dist[i] = (thisWS - wakedDistWS(Min_ind)) / (wakedDistWS(Max_ind) - wakedDistWS(Min_ind)) * (unwakedDist(Max_ind) - 
-                // unwakedDist(Min_ind)) + unwakedDist(Min_ind)
-
+                                
                 // Loop through wakedDistWS and find all with same WS at thisWS
                 for (int j = 0; j <= numWS - 1; j++) {
                     if (thisWS > (wakedDistWS[j] - WS_int / 2) && thisWS < (wakedDistWS[j] + WS_int / 2))
-                        Interp_Dist[i] = Interp_Dist[i] + unwakedDist[j];                     
+                        interpDist[i] = interpDist[i] + unwakedDist[j];                     
                 }
             }
 
-            // Normalize to sum to 1000.0
+            // Normalize to sum to 1.000
             double distSum = 0;
             for (int i = 0; i < numWS; i++)
-                distSum = distSum + Interp_Dist[i];
+                distSum = distSum + interpDist[i];
 
             for (int i = 0; i < numWS; i++)
-                Interp_Dist[i] = Interp_Dist[i] / distSum * 1000;
+                interpDist[i] = interpDist[i] / distSum;
 
-            return Interp_Dist;
+            return interpDist;
 
         }
 
-        public double CalcEquivRoughness(MetCollection metList, double freeStream, Wake_Model thisWakeModel)
+        public double CalcEquivRoughness(MetCollection metList, double freeStream, Wake_Model thisWakeModel, double hubHeight)
         {
-            // Calculate and return //equivalent// roughness used in DAWM   
+            // Calculate and return "equivalent" roughness used in DAWM   
             double WS_First = 0;
             double WS_Int = 0;
-            int numWS = 0;
+            int numWS = metList.numWS;
             double thrustCoeff = 0;            
-            double hubHeight = 0;
-
+            
             double DW_Spacing = thisWakeModel.DW_Spacing;
             double CW_Spacing = thisWakeModel.CW_Spacing;
-            double z0 = thisWakeModel.ambRough;
+            double z0 = thisWakeModel.ambRough;                     
 
             try {
-                numWS = thisWakeModel.powerCurve.thrustCoeff.Length;
+                WS_First = metList.WS_FirstInt;
+                WS_Int = metList.WS_IntSize;                
             }
             catch  {
                 return 0;
             }
 
-            try {
-                WS_First = metList.metItem[0].WS_FirstInt;
-                WS_Int = metList.metItem[0].WS_IntSize;
-                hubHeight = metList.metItem[0].height;
-            }
-            catch  {
-                return 0;
-            }
-
+            TurbineCollection turbList = new TurbineCollection();
+            
             for (int i = 0; i < numWS; i++) { 
                 if (freeStream == WS_First + i * WS_Int - WS_Int / 2) {
-                    thrustCoeff = thisWakeModel.powerCurve.thrustCoeff[i];
+                    thrustCoeff = turbList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Thrust");
                     break;
                 }
             }
@@ -1459,7 +1681,7 @@ namespace ContinuumNS
         }
 
         public double Calc_IBL_H1(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector,
-                                    double equivRough, MetCollection metList, double freeStream)
+                                    double equivRough, MetCollection metList, double freeStream, double hubHeight)
         {
             // Used in DAWM, this is the height of the first internal boundary layer (IBL) calculated based on distance, distributed thrust coeff,
             // and turbine roughness. Initial IBL height equal to top of rotor
@@ -1474,15 +1696,7 @@ namespace ContinuumNS
             int waked_X_Length = 0;
             int waked_R_Length = 0;
 
-            double RD = thisWakeModel.powerCurve.RD;
-
-            double hubHeight = 0;
-            try {
-                hubHeight = metList.metItem[0].height;
-            }
-            catch {
-                return 0;
-            }
+            double RD = thisWakeModel.powerCurve.RD;                        
 
             double thisTheta = WD_sector - ((Math.Atan2(UW_turb.UTMY, UW_turb.UTMX)) * 180 / Math.PI);
             UW_X_Length = (int)(Math.Pow(Math.Pow(UW_turb.UTMX, 2) + Math.Pow(UW_turb.UTMY, 2), 0.5) * Math.Cos(thisTheta * Math.PI / 180));
@@ -1536,7 +1750,7 @@ namespace ContinuumNS
         }
 
         public double Calc_IBL_H1_New(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector,
-                                    double equivRough, MetCollection metList, double freeStream)
+                                    double equivRough, MetCollection metList, double freeStream, double hubHeight)
         {
             // Used in DAWM, this is the height of the first internal boundary layer (IBL) calculated based on distance, distributed thrust coeff,
             // and turbine roughness. Initial IBL height equal to top of rotor
@@ -1544,17 +1758,7 @@ namespace ContinuumNS
             double H1 = 0;
             WD_sector = 90 - WD_sector;                       
 
-            double RD = thisWakeModel.powerCurve.RD;
-
-            double hubHeight = 0;
-            try
-            {
-                hubHeight = metList.metItem[0].height;
-            }
-            catch 
-            {
-                return 0;
-            }
+            double RD = thisWakeModel.powerCurve.RD;                        
 
             double[] DW_andLatDists = CalcDownwindAndLateralDistanceFromUW_Turb(UW_turb.UTMX, UW_turb.UTMY, UTMX, UTMY, RD, WD_sector);            
             double DW_Dist = DW_andLatDists[0]; 
@@ -1593,7 +1797,7 @@ namespace ContinuumNS
                         counter++;
                     }
 
-                    H1 = H1 + hubHeight + RD / 2; // where did this come from?
+                    H1 = H1 + hubHeight + RD / 2; 
                 }
             }
             return H1;
@@ -1621,7 +1825,7 @@ namespace ContinuumNS
         }
 
         public double Calc_IBL_H2(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector,
-                                MetCollection metList, double freeStream)
+                                MetCollection metList, double freeStream, double hubHeight)
         {
             // Used in DAWM, this is the height of the second internal boundary layer (IBL) calculated based on distance and ambient (background) roughness.
             // Initial IBL height equal to bottom of rotor
@@ -1642,30 +1846,15 @@ namespace ContinuumNS
             double WS_Int = 0;
 
             try {
-                WS_First = metList.metItem[0].WS_FirstInt;
-                WS_Int = metList.metItem[0].WS_IntSize;
+                WS_First = metList.WS_FirstInt;
+                WS_Int = metList.WS_IntSize;
             }
             catch  {
                 return 0;
             }
 
-            int numWS = 0;
-            double thrustCoeff = 0;
-            double hubHeight = 0;
-            try {
-                hubHeight = metList.metItem[0].height;
-            }
-            catch  {
-                return 0;
-            }
-
-            try {
-                numWS = thisWakeModel.powerCurve.thrustCoeff.Length;
-            }
-            catch
-            {
-                return 0;
-            }
+            int numWS = metList.numWS;
+            double thrustCoeff = 0;                                   
             
             for (int i = 0; i < numWS; i++) { 
                 if (freeStream == WS_First + i * WS_Int - WS_Int / 2)
@@ -1726,7 +1915,7 @@ namespace ContinuumNS
         }
 
         public double Calc_IBL_H2_NEW(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector,
-                                MetCollection metList, double freeStream)
+                                MetCollection metList, double freeStream, double hubHeight)
         {
             // Used in DAWM, this is the height of the second internal boundary layer (IBL) calculated based on distance and ambient (background) roughness.
             // Initial IBL height equal to bottom of rotor
@@ -1741,40 +1930,23 @@ namespace ContinuumNS
 
             try
             {
-                WS_First = metList.metItem[0].WS_FirstInt;
-                WS_Int = metList.metItem[0].WS_IntSize;
+                WS_First = metList.WS_FirstInt;
+                WS_Int = metList.WS_IntSize;
             }
             catch 
             {
                 return 0;
             }
 
-            int numWS = 0;
+            int numWS = metList.numWS;
             double thrustCoeff = 0;
-            double hubHeight = 0;
-            try
-            {
-                hubHeight = metList.metItem[0].height;
-            }
-            catch 
-            {
-                return 0;
-            }
-
-            try
-            {
-                numWS = thisWakeModel.powerCurve.thrustCoeff.Length;
-            }
-            catch 
-            {
-                return 0;
-            }
+            TurbineCollection turbList = new TurbineCollection();
 
             for (int i = 0; i < numWS; i++)
             {
                 if (freeStream == WS_First + i * WS_Int - WS_Int / 2)
                 {
-                    thrustCoeff = thisWakeModel.powerCurve.thrustCoeff[i];
+                    thrustCoeff = turbList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Thrust");
                     break;
                 }
             }
@@ -1823,12 +1995,12 @@ namespace ContinuumNS
             return H2;
         }
 
-        public double Calc_DAWM_Deficit(Turbine[] UW_turbs, double UTMX, double UTMY, double WD_sector, double freeStream, Wake_Model thisWakeModel, MetCollection metList)
+        public double Calc_DAWM_Deficit(Turbine[] UW_turbs, double UTMX, double UTMY, double WD_sector, double freeStream, Wake_Model thisWakeModel, MetCollection metList, double hubHeight)
         {
             // Calculate and return the wind speed deficit based on DAWM
             double velDeficit = 0;
             double equivRough = 0;
-            double hubHeight = 0;
+           
             double IBL_H1 = 0;
             double IBL_H2 = 1000000;
             int numUW_turbs = 0;
@@ -1839,21 +2011,14 @@ namespace ContinuumNS
             }
             catch {
                 return velDeficit;
-            }
+            }                      
 
-            try {
-                hubHeight = metList.metItem[0].height;
-            }
-            catch  {
-                return 0;
-            }
-
-            equivRough = CalcEquivRoughness(metList, freeStream, thisWakeModel);
+            equivRough = CalcEquivRoughness(metList, freeStream, thisWakeModel, hubHeight);
 
             // Find the maximum IBL H1 and the minimum IBL H2 (greater than hub height)
             for (int i = 0; i < numUW_turbs; i++) {
-                double This_H1 = Calc_IBL_H1_New(UW_turbs[i], UTMX, UTMY, thisWakeModel, WD_sector, equivRough, metList, freeStream);
-                double This_H2 = Calc_IBL_H2_NEW(UW_turbs[i], UTMX, UTMY, thisWakeModel, WD_sector, metList, freeStream);
+                double This_H1 = Calc_IBL_H1_New(UW_turbs[i], UTMX, UTMY, thisWakeModel, WD_sector, equivRough, metList, freeStream, hubHeight);
+                double This_H2 = Calc_IBL_H2_NEW(UW_turbs[i], UTMX, UTMY, thisWakeModel, WD_sector, metList, freeStream, hubHeight);
 
                 if (This_H1 > IBL_H1)
                     IBL_H1 = This_H1;
@@ -1885,8 +2050,8 @@ namespace ContinuumNS
             double WS_Int = 0;
 
             try {
-                WS_First = metList.metItem[0].WS_FirstInt;
-                WS_Int = metList.metItem[0].WS_IntSize;
+                WS_First = metList.WS_FirstInt;
+                WS_Int = metList.WS_IntSize;
             }
             catch {
                 return velDeficit;
@@ -1908,6 +2073,9 @@ namespace ContinuumNS
                     break;
                 }
             }
+
+            TurbineCollection turbList = new TurbineCollection();
+            thrustCoeff = turbList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Thrust");
 
             int Num_Rs;
             double initWakeWidth;
@@ -2153,6 +2321,18 @@ namespace ContinuumNS
             }
 
             return UW_Turbines;
+        }
+
+        public bool HaveWakeModelWithThisCrv(TurbineCollection.PowerCurve powerCurve)
+        {
+            // Checks to see if there is a defined wake loss model that uses specified power curve
+            bool haveModelWithCrv = false;
+
+            for (int i = 0; i < NumWakeModels; i++)
+                if (wakeModels[i].powerCurve.name == powerCurve.name)
+                    haveModelWithCrv = true;
+
+            return haveModelWithCrv;
         }
     }
 }

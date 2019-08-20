@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeoTimeZone;
+using TimeZoneConverter;
 
 namespace ContinuumNS
 {
@@ -36,8 +38,9 @@ namespace ContinuumNS
         {
             public double equatorialRadius;
             public double eccentricitySquared;
-        }       
+        }
 
+        [Serializable()]
         public struct UTM_coords
         {
             public int UTMZoneNumber;
@@ -343,6 +346,18 @@ namespace ContinuumNS
             theseLL.longitude = longOrigin + theseLL.longitude * rad2deg;
 
             return theseLL;
+        }
+
+        public int GetUTC_Offset(double thisLat, double thisLong)
+        {           
+
+            string ianaTimeZone = TimeZoneLookup.GetTimeZone(thisLat, thisLong).Result;
+            string windowsTimeZone = TimeZoneConverter.TZConvert.IanaToWindows(ianaTimeZone);
+
+            TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(windowsTimeZone);
+            int offset = timeZoneInfo.BaseUtcOffset.Hours;
+                        
+            return offset;
         }
     }
 }

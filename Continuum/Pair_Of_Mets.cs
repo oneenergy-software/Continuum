@@ -126,15 +126,17 @@ namespace ContinuumNS
             Model thisModel = WS_Pred[crossPredInd, radiusIndex].model;
 
             // From Met 1 to Met 2
+            Met.WSWD_Dist met1Dist = met1.GetWS_WD_Dist(thisInst.modeledHeight, thisModel.timeOfDay, thisModel.season);
+            Met.WSWD_Dist met2Dist = met2.GetWS_WD_Dist(thisInst.modeledHeight, thisModel.timeOfDay, thisModel.season);
             endNode = nodeList.GetMetNode(met2);
 
-            WS_EstStr = thisInst.modelList.DoWS_Estimate(met1, endNode, WS_Pred[crossPredInd, radiusIndex].nodePath, radiusIndex, thisModel, thisInst);
+            WS_EstStr = thisInst.modelList.DoWS_Estimate(met1, endNode, WS_Pred[crossPredInd, radiusIndex].nodePath, thisModel, thisInst);
                 // Get sectorwise wind speed and % error (for Met 1 predicting Met 2)
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
                 WS_Pred[crossPredInd, radiusIndex].sectorWS_Ests[0, WD_Ind] = WS_EstStr.sectorWS[WD_Ind];
-                WS_Pred[crossPredInd, radiusIndex].percErrSector[0, WD_Ind] = (WS_EstStr.sectorWS[WD_Ind] - met2.WS * met2.sectorWS_Ratio[WD_Ind])
-                                                                            / (met2.WS * met2.sectorWS_Ratio[WD_Ind]);
+                WS_Pred[crossPredInd, radiusIndex].percErrSector[0, WD_Ind] = (WS_EstStr.sectorWS[WD_Ind] - met2Dist.WS * met2Dist.sectorWS_Ratio[WD_Ind])
+                                                                            / (met2Dist.WS * met2Dist.sectorWS_Ratio[WD_Ind]);
             }
 
             WS_Pred[crossPredInd, radiusIndex].nodeSectorWS_Ests1to2 = WS_EstStr.sectorWS_AtNodes;
@@ -146,10 +148,12 @@ namespace ContinuumNS
             {
                 avgWS = 0;
                 WR_count = 0;
+                Nodes thisNode = WS_Pred[crossPredInd, radiusIndex].nodePath[nodeInd];
+                double[] nodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, thisNode.UTMX, thisNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
 
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++) {
-                    avgWS = avgWS + WS_Pred[crossPredInd, radiusIndex].nodePath[nodeInd].windRose[WD_Ind] * WS_Pred[crossPredInd, radiusIndex].nodeSectorWS_Ests1to2[nodeInd, WD_Ind];
-                    WR_count = WR_count + WS_Pred[crossPredInd, radiusIndex].nodePath[nodeInd].windRose[WD_Ind];
+                    avgWS = avgWS + nodeWindRose[WD_Ind] * WS_Pred[crossPredInd, radiusIndex].nodeSectorWS_Ests1to2[nodeInd, WD_Ind];
+                    WR_count = WR_count + nodeWindRose[WD_Ind];
                 }
 
                 WS_Pred[crossPredInd, radiusIndex].nodeWS_Ests1to2[nodeInd] = avgWS / WR_count;
@@ -160,14 +164,14 @@ namespace ContinuumNS
             WR_count = 0;
 
             for (int WD = 0; WD < numWD; WD++) {
-                avgWS = avgWS + WS_Pred[crossPredInd, radiusIndex].sectorWS_Ests[0, WD] * met2.windRose[WD];
-                WR_count = WR_count + met2.windRose[WD];
+                avgWS = avgWS + WS_Pred[crossPredInd, radiusIndex].sectorWS_Ests[0, WD] * met2Dist.windRose[WD];
+                WR_count = WR_count + met2Dist.windRose[WD];
             }
 
             // Calculate avg WS estimate and overall error at met2
             avgWS = avgWS / WR_count;
             WS_Pred[crossPredInd, radiusIndex].WS_Ests[0] = avgWS;
-            WS_Pred[crossPredInd, radiusIndex].percErr[0] = (avgWS - met2.WS) / met2.WS;
+            WS_Pred[crossPredInd, radiusIndex].percErr[0] = (avgWS - met2Dist.WS) / met2Dist.WS;
 
             // From Met 2 to Met 1
             endNode = nodeList.GetMetNode(met1);
@@ -181,13 +185,13 @@ namespace ContinuumNS
                 pathOfNodes[i] = WS_Pred[crossPredInd, radiusIndex].nodePath[numNodes - 1 - i];
 
             // Do WS Est for Met 2 predicting Met 1
-            WS_EstStr = thisInst.modelList.DoWS_Estimate(met2, endNode, pathOfNodes, radiusIndex, thisModel, thisInst);
+            WS_EstStr = thisInst.modelList.DoWS_Estimate(met2, endNode, pathOfNodes, thisModel, thisInst);
         
             // Get sectorwise wind speed and % error (for Met 1 predicting Met 2)
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++) {
                 WS_Pred[crossPredInd, radiusIndex].sectorWS_Ests[1, WD_Ind] = WS_EstStr.sectorWS[WD_Ind];
-                WS_Pred[crossPredInd, radiusIndex].percErrSector[1, WD_Ind] = (WS_EstStr.sectorWS[WD_Ind] - met1.WS * met1.sectorWS_Ratio[WD_Ind])
-                                                                            / (met1.WS * met1.sectorWS_Ratio[WD_Ind]);
+                WS_Pred[crossPredInd, radiusIndex].percErrSector[1, WD_Ind] = (WS_EstStr.sectorWS[WD_Ind] - met1Dist.WS * met1Dist.sectorWS_Ratio[WD_Ind])
+                                                                            / (met1Dist.WS * met1Dist.sectorWS_Ratio[WD_Ind]);
             }
 
             WS_Pred[crossPredInd, radiusIndex].nodeSectorWS_Ests2to1 = WS_EstStr.sectorWS_AtNodes;
@@ -197,10 +201,12 @@ namespace ContinuumNS
             for (int nodeInd = 0; nodeInd < numNodes; nodeInd++) {
                 avgWS = 0;
                 WR_count = 0;
+                Nodes thisNode = pathOfNodes[nodeInd];
+                double[] nodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, thisNode.UTMX, thisNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
 
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++) {
-                    avgWS = avgWS + pathOfNodes[nodeInd].windRose[WD_Ind] * WS_Pred[crossPredInd, radiusIndex].nodeSectorWS_Ests2to1[nodeInd, WD_Ind];
-                    WR_count = WR_count + pathOfNodes[nodeInd].windRose[WD_Ind];
+                    avgWS = avgWS + nodeWindRose[WD_Ind] * WS_Pred[crossPredInd, radiusIndex].nodeSectorWS_Ests2to1[nodeInd, WD_Ind];
+                    WR_count = WR_count + nodeWindRose[WD_Ind];
                 }
 
                 WS_Pred[crossPredInd, radiusIndex].nodeWS_Ests2to1[nodeInd] = avgWS / WR_count;
@@ -209,14 +215,14 @@ namespace ContinuumNS
             avgWS = 0;
             WR_count = 0;
             for (int WD = 0; WD < numWD; WD++) {
-                avgWS = avgWS + WS_Pred[crossPredInd, radiusIndex].sectorWS_Ests[1, WD] * met1.windRose[WD];
-                WR_count = WR_count + met1.windRose[WD];
+                avgWS = avgWS + WS_Pred[crossPredInd, radiusIndex].sectorWS_Ests[1, WD] * met1Dist.windRose[WD];
+                WR_count = WR_count + met1Dist.windRose[WD];
             }
 
             // Calculate avg WS estimate and overall error at met1
             avgWS = avgWS / WR_count;
             WS_Pred[crossPredInd, radiusIndex].WS_Ests[1] = avgWS;
-            WS_Pred[crossPredInd, radiusIndex].percErr[1] = (avgWS - met1.WS) / met1.WS;
+            WS_Pred[crossPredInd, radiusIndex].percErr[1] = (avgWS - met1Dist.WS) / met1Dist.WS;
 
         }
 

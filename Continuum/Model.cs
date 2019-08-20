@@ -9,6 +9,10 @@ namespace ContinuumNS
     [Serializable()]
     public class Model
     {
+        public Met.TOD timeOfDay; // enum: All / Day / Night
+        public Met.Season season; // enum: All / Winter / Spring / Summer / Fall
+        public double height;
+
         public double[] downhill_A;  // 'A' coefficient of Downhill power law of each WD sector model
         public double[] downhill_B;  // 'B' coefficient of Downhill power law of each WD sector model
 
@@ -49,7 +53,7 @@ namespace ContinuumNS
         public double[] maxP10ExpoPosUW;
         public double[] maxP10ExpoNegUW;
 */
-        public ModelBounds[] downhillBounds;
+     //   public ModelBounds[] downhillBounds;
         public ModelBounds[] uphillBounds;
         public ModelBounds[] spdUpBounds;
 
@@ -93,11 +97,11 @@ namespace ContinuumNS
             if (P10_Expo < 0) P10_Expo = Math.Abs(P10_Expo);
 
             if (flowType == "Turbulent")  // Flow separates
-                DW_Coeff = -sep_A_DW[WD_sec] * (double)Math.Pow(P10_Expo, sep_B_DW[WD_sec]);
+                DW_Coeff = -sep_A_DW[WD_sec] * Math.Pow(P10_Expo, sep_B_DW[WD_sec]);
             else if (flowType == "Downhill")
-                DW_Coeff = downhill_A[WD_sec] * (double)Math.Pow(P10_Expo, downhill_B[WD_sec]);
+                DW_Coeff = downhill_A[WD_sec] * Math.Pow(P10_Expo, downhill_B[WD_sec]);
             else if (flowType == "Uphill" || flowType == "Valley")
-                DW_Coeff = uphill_A[WD_sec] * (double)Math.Pow(P10_Expo, uphill_B[WD_sec]);
+                DW_Coeff = uphill_A[WD_sec] * Math.Pow(P10_Expo, uphill_B[WD_sec]);
 
             if (DW_Coeff > 0.18)
                 DW_Coeff = 0.18f;
@@ -153,7 +157,7 @@ namespace ContinuumNS
                                               //  calculated in function: GetDeltaWS_TurbulentZone
             else if (flowType == "Downhill")
             { // Downhill flow: Negative UW and Positive DW exposure
-                UW_Coeff = downhill_A[WD_sec] * (double)Math.Pow(P10_Expo, downhill_B[WD_sec]);
+                UW_Coeff = downhill_A[WD_sec] * Math.Pow(P10_Expo, downhill_B[WD_sec]);
 
                 if (UW_Coeff > 0.18)
                     UW_Coeff = 0.18f;
@@ -168,17 +172,17 @@ namespace ContinuumNS
                 if (flowType == "SpdUp")
                 { // Positive UW expo, UW < UW critical Induced Speed-Up, positive coeff
                     // Based on //simple approx of speed-up over hill', linear function between change in WS and hill slope until reach //crit' slope
-                    UW_Coeff = spdUp_A[WD_sec] * (double)Math.Pow(P10_Expo, spdUp_B[WD_sec]);
+                    UW_Coeff = spdUp_A[WD_sec] * Math.Pow(P10_Expo, spdUp_B[WD_sec]);
                     if (UW_Coeff > 0.18) UW_Coeff = 0.18f;
                 }
                 else if (flowType == "Uphill")
                 { // Positive UW expo, UW > UW critical, Uphill flow, negative coeff
-                    UW_Coeff = -uphill_A[WD_sec] * (double)Math.Pow(P10_Expo, uphill_B[WD_sec]);
+                    UW_Coeff = -uphill_A[WD_sec] * Math.Pow(P10_Expo, uphill_B[WD_sec]);
                     if (UW_Coeff < -0.18) UW_Coeff = -0.18f;
                 }
                 else if (flowType == "Valley")
                 { // Positive coeff:  valley gets steeper, wind speed decreases further, UW expo becomes more negative so delta WS = m_uw (>0) * delta_UW (<0)
-                    UW_Coeff = uphill_A[WD_sec] * (double)Math.Pow(P10_Expo, uphill_B[WD_sec]);
+                    UW_Coeff = uphill_A[WD_sec] * Math.Pow(P10_Expo, uphill_B[WD_sec]);
                     if (UW_Coeff > 0.18) UW_Coeff = 0.18f;
                 }
 
@@ -214,20 +218,24 @@ namespace ContinuumNS
         {
             //  Calculates and returns overall UW critical
             double overallUWCrit = 0;
-            int numWD = windRose.Length;
-            double sumRose = 0;
-            
-            for (int WD = 0; WD < numWD; WD++)
-            {
-                if (UW_crit[WD] != 4 && UW_crit[WD] != 500)
-                {
-                    overallUWCrit = overallUWCrit + UW_crit[WD] * windRose[WD];
-                    sumRose = sumRose + windRose[WD];
-                }
-            }
 
-            if (sumRose > 0)
-                overallUWCrit = overallUWCrit / sumRose;
+            if (windRose != null)
+            {
+                int numWD = windRose.Length;
+                double sumRose = 0;
+
+                for (int WD = 0; WD < numWD; WD++)
+                {
+                    if (UW_crit[WD] != 4 && UW_crit[WD] != 500)
+                    {
+                        overallUWCrit = overallUWCrit + UW_crit[WD] * windRose[WD];
+                        sumRose = sumRose + windRose[WD];
+                    }
+                }
+
+                if (sumRose > 0)
+                    overallUWCrit = overallUWCrit / sumRose;
+            }
 
             return overallUWCrit;
 
@@ -371,7 +379,7 @@ namespace ContinuumNS
         }
 
 
-        public void setDefaultModelCoeffs(int numWD)
+        public void SetDefaultModelCoeffs(int numWD)
         {
             // Sets the model coefficients to default values
             for (int i = 0; i < numWD; i++)
@@ -404,8 +412,8 @@ namespace ContinuumNS
                 sepCrit[i] = 250f;
                 Sep_crit_WS[i] = 4f;
 
-                downhillBounds[i].min = -999f;
-                downhillBounds[i].max = -999f;                
+          //      downhillBounds[i].min = -999f;
+          //      downhillBounds[i].max = -999f;                
                 uphillBounds[i].min = -999f;
                 uphillBounds[i].max = -999f;
                 spdUpBounds[i].min = -999f;
@@ -456,7 +464,7 @@ namespace ContinuumNS
             sepCrit = new double[numWD];
             Sep_crit_WS = new double[numWD];
 
-            downhillBounds = new ModelBounds[numWD];
+         //   downhillBounds = new ModelBounds[numWD];
             uphillBounds = new ModelBounds[numWD];
             spdUpBounds = new ModelBounds[numWD];               
 
@@ -523,8 +531,9 @@ namespace ContinuumNS
             return isWithinLimits;
         }
 */
-        public double GetUncertaintyEstimate(Continuum thisInst, double P10_UW, double P10_DW, double UW, double DW, int WD_Ind)
+    /*    public double GetUncertaintyEstimate(Continuum thisInst, double P10_UW, double P10_DW, double UW, double DW, int WD_Ind, Met.TOD thisTOD, Met.Season thisSeason, double height)
         {
+            // Not used in COntinuum 3. Using Round Robin error as uncertainty.
             // Estimates and returns uncertainty of sectorwise wind speed estimate for site with specified P10Expo and UW/DW exposure 
             
             double thisUncert = 0;
@@ -574,11 +583,12 @@ namespace ContinuumNS
 
                     string[] metsOmitMin = thisInst.metList.GetMetsExceptThoseInList(omitMet);
                     Met[] metsOmitMinObj = thisInst.metList.GetMets(metsUsed, omitMet);
-                    Model[] modelsOmitMin = thisInst.modelList.GetModels(thisInst, metsOmitMin, radius, radius, true);
+                    Model[] modelsOmitMin = thisInst.modelList.GetModels(thisInst, metsOmitMin, radius, radius, true, thisTOD, thisSeason, height);
 
                     NodeCollection nodeList = new NodeCollection();
                     Nodes omitMetNode = nodeList.GetMetNode(thisBound[WD_Ind].metMinP10);
-                    double[,] thisWgts = thisInst.modelList.GetWS_EstWeights(metsOmitMinObj, omitMetNode, modelsOmitMin, thisInst.metList.GetAvgWindRoseMetsUsed(metsOmitMin));
+                    ModelCollection.ModelWeights[] thisWgts = thisInst.modelList.GetWS_EstWeights(metsOmitMinObj, omitMetNode, modelsOmitMin, 
+                        thisInst.metList.GetAvgWindRoseMetsUsed(metsOmitMin, thisTOD, thisSeason, height));
                     double thisEst = 0;
                     double sumWgt = 0;
 
@@ -597,12 +607,15 @@ namespace ContinuumNS
                             }
                         }
 
-                        ModelCollection.WS_Est_Struct thisWS_Est = thisInst.modelList.DoWS_Estimate(metsOmitMinObj[i], omitMetNode, pathOfNodes, radiusInd, this, thisInst);
-                        thisEst = thisEst + thisWS_Est.sectorWS[WD_Ind] * thisWgts[i, 0];
-                        sumWgt = sumWgt + thisWgts[i, 0];
+                        ModelCollection.WS_Est_Struct thisWS_Est = thisInst.modelList.DoWS_Estimate(metsOmitMinObj[i], omitMetNode, pathOfNodes, this, thisInst);
+                        Met thisMet = thisInst.metList.GetMet(metsOmitMin[i]);
+                        double weight = thisInst.modelList.GetWeightForMetAndModel(thisWgts, thisMet, this);
+                        thisEst = thisEst + thisWS_Est.sectorWS[WD_Ind] * weight;
+                        sumWgt = sumWgt + weight;
                     }
 
-                    double actualSectorWS = thisBound[WD_Ind].metMinP10.sectorWS_Ratio[WD_Ind] * thisBound[WD_Ind].metMinP10.WS;
+                    Met.WSWD_Dist thisDist = thisBound[WD_Ind].metMinP10.GetWS_WD_Dist(height, thisTOD, thisSeason);
+                    double actualSectorWS = thisDist.sectorWS_Ratio[WD_Ind] * thisDist.WS;
 
                     if (sumWgt > 0)
                         eachUncert[UW_or_DW] = Math.Abs((thisEst / sumWgt - actualSectorWS) / actualSectorWS);
@@ -613,12 +626,13 @@ namespace ContinuumNS
                     string[] omitMet = new string[1];
                     omitMet[0] = thisBound[WD_Ind].metMaxP10.name;
                     string[] metsOmitMax = thisInst.metList.GetMetsExceptThoseInList(omitMet);
-                    Model[] modelsOmitMax = thisInst.modelList.GetModels(thisInst, metsOmitMax, radius, radius, true);
+                    Model[] modelsOmitMax = thisInst.modelList.GetModels(thisInst, metsOmitMax, radius, radius, true, thisTOD, thisSeason, height);
 
                     NodeCollection nodeList = new NodeCollection();
                     Nodes omitMetNode = nodeList.GetMetNode(thisBound[WD_Ind].metMaxP10);
                     Met[] metsOmitMaxObj = thisInst.metList.GetMets(metsUsed, omitMet);
-                    double[,] thisWgts = thisInst.modelList.GetWS_EstWeights(metsOmitMaxObj, omitMetNode, modelsOmitMax, thisInst.metList.GetAvgWindRoseMetsUsed(metsOmitMax));
+                    ModelCollection.ModelWeights[] thisWgts = thisInst.modelList.GetWS_EstWeights(metsOmitMaxObj, omitMetNode, modelsOmitMax, 
+                        thisInst.metList.GetAvgWindRoseMetsUsed(metsOmitMax, thisTOD, thisSeason, height));
                     double thisEst = 0;
                     double sumWgt = 0;
 
@@ -639,12 +653,14 @@ namespace ContinuumNS
                             }
                         }
 
-                        ModelCollection.WS_Est_Struct thisWS_Est = thisInst.modelList.DoWS_Estimate(metsOmitMaxObj[i], omitMetNode, pathOfNodes, radiusInd, this, thisInst);
-                        thisEst = thisEst + thisWS_Est.sectorWS[WD_Ind] * thisWgts[i, radiusInd];
-                        sumWgt = sumWgt + thisWgts[i, radiusInd];
+                        ModelCollection.WS_Est_Struct thisWS_Est = thisInst.modelList.DoWS_Estimate(metsOmitMaxObj[i], omitMetNode, pathOfNodes, this, thisInst);
+                        double weight = thisInst.modelList.GetWeightForMetAndModel(thisWgts, metsOmitMaxObj[i], this);
+                        thisEst = thisEst + thisWS_Est.sectorWS[WD_Ind] * weight;
+                        sumWgt = sumWgt + weight;
                     }
 
-                    double actualSectorWS = thisBound[WD_Ind].metMaxP10.sectorWS_Ratio[WD_Ind] * thisBound[WD_Ind].metMaxP10.WS;
+                    Met.WSWD_Dist thisDist = thisBound[WD_Ind].metMaxP10.GetWS_WD_Dist(height, thisTOD, thisSeason);
+                    double actualSectorWS = thisDist.sectorWS_Ratio[WD_Ind] * thisDist.WS;
 
                     if (sumWgt > 0)
                         eachUncert[UW_or_DW] = Math.Abs((thisEst / sumWgt - actualSectorWS) / actualSectorWS);
@@ -660,6 +676,7 @@ namespace ContinuumNS
                                           
             return thisUncert;
         }
+        */
 
         public bool IsMetUsedInModel(string metName)
         {

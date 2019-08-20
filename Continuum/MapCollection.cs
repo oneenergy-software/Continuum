@@ -24,7 +24,7 @@ namespace ContinuumNS
         }
 
         public void AddMap(string mapname, int minUTMX, int minUTMY, int reso, int numX, int numY, int whatToMap, string powerCurve, Continuum thisInst, bool isWaked,
-                           Wake_Model wakeModel, Met[] metsUsed, Model[] models)
+                           Wake_Model wakeModel, Met[] metsUsed, Model[] models, bool useTimeSeries)
         {
             // Adds a map to the collection and calls Background_worker to start map calculations
             int thisCount = ThisCount;
@@ -49,6 +49,7 @@ namespace ContinuumNS
             thisMap.model = models;
             thisMap.useSR = thisInst.topo.useSR;
             thisMap.useFlowSep = thisInst.topo.useSepMod;
+            thisMap.useTimeSeries = useTimeSeries;
 
             string metsUsedStr = thisInst.metList.CreateMetString(metsUsedName, true);
 
@@ -60,7 +61,8 @@ namespace ContinuumNS
             if (existingInd == -999)
             {
                 // First check that the model doesn//t already exist
-                bool mapAlreadyCreated = CheckForDuplicate(mapname, metsUsedName, minUTMX, minUTMY, numX, numY, reso, whatToMap, powerCurve, thisInst.topo.useSR, thisInst.topo.useSepMod, wakeModel);
+                bool mapAlreadyCreated = CheckForDuplicate(mapname, metsUsedName, minUTMX, minUTMY, numX, numY, reso, whatToMap, powerCurve, thisInst.topo.useSR, 
+                    thisInst.topo.useSepMod, wakeModel, useTimeSeries);
                 if (mapAlreadyCreated == true)
                     return;
 
@@ -71,6 +73,7 @@ namespace ContinuumNS
             BackgroundWork.Vars_for_Gen_Map args = new BackgroundWork.Vars_for_Gen_Map();
             args.thisInst = thisInst;
             args.thisMap = thisMap;
+            args.MCP_Method = thisInst.Get_MCP_Method();
 
             try {
                 thisInst.BW_worker = new BackgroundWork();
@@ -212,7 +215,7 @@ namespace ContinuumNS
         }
 
         public bool CheckForDuplicate(string mapname, string[] metsUsed, double minUTMX, double minUTMY, int numX, int numY, int reso,
-                                            int whatToMap, string powerCurve, bool useSR, bool useSepModel, Wake_Model thisWakeModel)
+                                            int whatToMap, string powerCurve, bool useSR, bool useSepModel, Wake_Model thisWakeModel, bool useTimeSeries)
         {
             // Checks to see if map has already been created. Returns false if has not been created.
             bool alreadyExists = false;
@@ -224,9 +227,10 @@ namespace ContinuumNS
                     if (mapItem[i].minUTMX == minUTMX && mapItem[i].minUTMY == minUTMY && mapItem[i].numX == numX
                         && mapItem[i].numY == numY && mapItem[i].reso == reso && mapItem[i].modelType == whatToMap
                         && metList.sameMets(metsUsed, mapItem[i].metsUsed) && mapItem[i].powerCurve == powerCurve && mapItem[i].useSR == useSR
-                        && mapItem[i].useFlowSep == useSepModel && wakeList.IsSameWakeModel(mapItem[i].wakeModel, thisWakeModel)) {
+                        && mapItem[i].useFlowSep == useSepModel && wakeList.IsSameWakeModel(mapItem[i].wakeModel, thisWakeModel) 
+                        && mapItem[i].useTimeSeries == useTimeSeries) {
 
-                        MessageBox.Show("An identical map has already been created.", "Continuum 2.3");
+                        MessageBox.Show("An identical map has already been created.", "Continuum 3");
                         alreadyExists = true;
                         break;
                     }
@@ -250,7 +254,7 @@ namespace ContinuumNS
                     if (mapItem[i].isComplete == false && mapItem[i].minUTMX == thisMap.minUTMX && mapItem[i].minUTMY == thisMap.minUTMY && mapItem[i].numX == thisMap.numX
                         && mapItem[i].numY == thisMap.numY && mapItem[i].reso == thisMap.reso && mapItem[i].modelType == thisMap.modelType
                         && metList.sameMets(thisMap.metsUsed, mapItem[i].metsUsed) && mapItem[i].powerCurve == thisMap.powerCurve && mapItem[i].useSR == thisMap.useSR
-                        && mapItem[i].useFlowSep == thisMap.useFlowSep && wakeList.IsSameWakeModel(mapItem[i].wakeModel, thisMap.wakeModel))
+                        && mapItem[i].useFlowSep == thisMap.useFlowSep && wakeList.IsSameWakeModel(mapItem[i].wakeModel, thisMap.wakeModel) && mapItem[i].useTimeSeries == thisMap.useTimeSeries)
                     {
 
                         mapInd = i;

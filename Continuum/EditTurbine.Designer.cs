@@ -42,54 +42,61 @@
             // lblUTMY
             // 
             this.lblUTMY.AutoSize = true;
-            this.lblUTMY.Location = new System.Drawing.Point(42, 74);
+            this.lblUTMY.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUTMY.Location = new System.Drawing.Point(42, 93);
             this.lblUTMY.Name = "lblUTMY";
-            this.lblUTMY.Size = new System.Drawing.Size(47, 13);
+            this.lblUTMY.Size = new System.Drawing.Size(70, 22);
             this.lblUTMY.TabIndex = 27;
             this.lblUTMY.Text = "UTM Y :";
             // 
             // txtUTMY
             // 
-            this.txtUTMY.Location = new System.Drawing.Point(95, 71);
+            this.txtUTMY.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtUTMY.Location = new System.Drawing.Point(133, 90);
             this.txtUTMY.Name = "txtUTMY";
-            this.txtUTMY.Size = new System.Drawing.Size(100, 20);
+            this.txtUTMY.Size = new System.Drawing.Size(100, 29);
             this.txtUTMY.TabIndex = 26;
             // 
             // lblUTMX
             // 
             this.lblUTMX.AutoSize = true;
-            this.lblUTMX.Location = new System.Drawing.Point(42, 44);
+            this.lblUTMX.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblUTMX.Location = new System.Drawing.Point(42, 53);
             this.lblUTMX.Name = "lblUTMX";
-            this.lblUTMX.Size = new System.Drawing.Size(47, 13);
+            this.lblUTMX.Size = new System.Drawing.Size(69, 22);
             this.lblUTMX.TabIndex = 25;
             this.lblUTMX.Text = "UTM X :";
             // 
             // txtUTMX
             // 
-            this.txtUTMX.Location = new System.Drawing.Point(95, 43);
+            this.txtUTMX.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtUTMX.Location = new System.Drawing.Point(133, 52);
             this.txtUTMX.Name = "txtUTMX";
-            this.txtUTMX.Size = new System.Drawing.Size(100, 20);
+            this.txtUTMX.Size = new System.Drawing.Size(100, 29);
             this.txtUTMX.TabIndex = 24;
             // 
             // txtName
             // 
-            this.txtName.Location = new System.Drawing.Point(95, 15);
+            this.txtName.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtName.Location = new System.Drawing.Point(133, 15);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(100, 20);
+            this.txtName.Size = new System.Drawing.Size(100, 29);
             this.txtName.TabIndex = 23;
             // 
             // lblName
             // 
             this.lblName.AutoSize = true;
+            this.lblName.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblName.Location = new System.Drawing.Point(15, 18);
             this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(80, 13);
+            this.lblName.Size = new System.Drawing.Size(116, 22);
             this.lblName.TabIndex = 22;
             this.lblName.Text = "Turbine Name :";
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(243, 62);
+            this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Location = new System.Drawing.Point(246, 82);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(97, 37);
             this.btnCancel.TabIndex = 21;
@@ -99,7 +106,8 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(243, 18);
+            this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOK.Location = new System.Drawing.Point(246, 37);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(97, 38);
             this.btnOK.TabIndex = 20;
@@ -111,7 +119,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(355, 114);
+            this.ClientSize = new System.Drawing.Size(355, 146);
             this.Controls.Add(this.lblUTMY);
             this.Controls.Add(this.txtUTMY);
             this.Controls.Add(this.lblUTMX);
@@ -122,7 +130,6 @@
             this.Controls.Add(this.btnOK);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditTurbine";
-            this.Text = "Edit Turbine";
             this.ResumeLayout(false);
             this.PerformLayout();
 

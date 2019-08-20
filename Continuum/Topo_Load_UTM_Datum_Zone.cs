@@ -27,7 +27,7 @@ namespace ContinuumNS
                 datumInd = cbo_Datums.SelectedIndex;
             }
             catch {
-                MessageBox.Show("Please select a datum to use.", "Continuum 2.3");
+                MessageBox.Show("Please select a datum to use.", "Continuum 3");
                 return;
             }
 
@@ -36,7 +36,7 @@ namespace ContinuumNS
                 zoneNumber = Convert.ToInt16(cboUTMZone.SelectedItem.ToString());
             }
             catch {
-                MessageBox.Show("Please select the UTM Zone number.", "Continuum 2.3");
+                MessageBox.Show("Please select the UTM Zone number.", "Continuum 3");
                 return;
             }                       
 

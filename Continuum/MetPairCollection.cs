@@ -115,6 +115,66 @@ namespace ContinuumNS
             }
         }
 
+        public Pair_Of_Mets GetPair_Of_Mets(Met met1, Met met2)
+        {
+            Pair_Of_Mets thisPair = new Pair_Of_Mets();
+
+            for (int i = 0; i < PairCount; i++)
+                if ((metPairs[i].met1.name == met1.name && metPairs[i].met2.name == met2.name) ||
+                    (metPairs[i].met1.name == met2.name && metPairs[i].met2.name == met1.name))
+                    thisPair = metPairs[i];
+
+            return thisPair;
+        }
+
+        public RR_WS_Ests GetRoundRobinEst(int numMetsInModel, Continuum thisInst, string MCP_Method)
+        {
+            // Finds and returns RR_WS_Ests object with Round Robin analysis results using numMets
+            RR_WS_Ests thisRR = new RR_WS_Ests();
+
+            for (int i = 0; i < RoundRobinCount; i++)
+            {
+                if (roundRobinEsts[i].metSubSize == numMetsInModel)
+                {
+                    thisRR = roundRobinEsts[i];
+                    break;
+                }
+            }
+            
+            if (thisRR.RMS_All == 0 && thisInst.metList.ThisCount > numMetsInModel)
+            {
+                int numModels = GetNumModelsForRoundRobin(thisInst.metList.ThisCount, numMetsInModel);
+                string[,] metsForModels = GetAllCombos(thisInst.metList.GetMetsUsed(), thisInst.metList.ThisCount, numMetsInModel, numModels);
+                RR_funct_obj[] RR_obj_coll = new RR_funct_obj[0];
+
+                for (int i = 0; i <= numModels - 1; i++)
+                {
+                    string[] metsForThisModel = new string[numMetsInModel];
+
+                    for (int j = 0; j <= numMetsInModel - 1; j++)
+                        metsForThisModel[j] = metsForModels[j, i];                                       
+
+                    RR_funct_obj thisRR_obj = DoRR_Calc(metsForThisModel, thisInst, thisInst.metList.GetMetsUsed(), MCP_Method);
+                    Array.Resize(ref RR_obj_coll, i + 1);
+                    RR_obj_coll[i] = thisRR_obj;
+                                        
+                }
+
+                AddRoundRobinEst(RR_obj_coll, thisInst.metList.GetMetsUsed(), numMetsInModel, metsForModels, true, thisInst.metList);
+            }
+
+            for (int i = 0; i < RoundRobinCount; i++)
+            {
+                if (roundRobinEsts[i].metSubSize == numMetsInModel)
+                {
+                    thisRR = roundRobinEsts[i];
+                    break;
+                }
+            }
+
+            return thisRR;
+        }
+
         public bool RR_DoneAlready(bool isWS_Weighted, bool isCalibrated, string[] metsUsed, int metSubSize, MetCollection metList)
         {
             // Returns false if Round Robin has already been calculated
@@ -210,11 +270,13 @@ namespace ContinuumNS
                     models[i] = new Model();
                     models[i].SizeArrays(numWD);
 
-                    models[i].setDefaultModelCoeffs(numWD);
+                    models[i].SetDefaultModelCoeffs(numWD);
                     models[i].SetDefaultLimits();
                     models[i].radius = thisInst.radiiList.investItem[i].radius;
                     models[i].metsUsed = thisInst.metList.GetMetsUsed();
                     models[i].isCalibrated = false;
+                    models[i].season = Met.Season.All;
+                    models[i].timeOfDay = Met.TOD.All;
                 }
 
                 // Add new models to Model collection
@@ -279,14 +341,15 @@ namespace ContinuumNS
             double UW_Expo = 0;
             double DW_Expo = 0;
                         
-            int numMetsUsed = thisModel.metsUsed.Length;
+            int numMetsUsed = thisModel.metsUsed.Length;           
             
             for (int i = 0; i < numMetsUsed; i++)
             {
                 Met thisMet = metList.GetMet(thisModel.metsUsed[i]);
+                Met.WSWD_Dist thisDist = thisMet.GetWS_WD_Dist(thisModel.height, thisModel.timeOfDay, thisModel.season);
 
-                UW_Expo = thisMet.expo[radiusIndex].GetOverallValue(thisMet.windRose, "Expo", "UW");
-                DW_Expo = thisMet.expo[radiusIndex].GetOverallValue(thisMet.windRose, "Expo", "DW");
+                UW_Expo = thisMet.expo[radiusIndex].GetOverallValue(thisDist.windRose, "Expo", "UW");
+                DW_Expo = thisMet.expo[radiusIndex].GetOverallValue(thisDist.windRose, "Expo", "DW");
 
                 theseMinMax.avgP10Expo = theseMinMax.avgP10Expo + Math.Max(thisMet.gridStats.GetOverallP10(windRose, radiusIndex, "UW"), thisMet.gridStats.GetOverallP10(windRose, radiusIndex, "DW"));
                 if (UW_Expo < theseMinMax.minUW_Expo)
@@ -303,11 +366,11 @@ namespace ContinuumNS
 
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                 {
-                    if (thisMet.WS * thisMet.sectorWS_Ratio[WD_Ind] < theseMinMax.minWS_WD[WD_Ind])
-                        theseMinMax.minWS_WD[WD_Ind] = thisMet.WS * thisMet.sectorWS_Ratio[WD_Ind];
+                    if (thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind] < theseMinMax.minWS_WD[WD_Ind])
+                        theseMinMax.minWS_WD[WD_Ind] = thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind];
 
-                    if (thisMet.WS * thisMet.sectorWS_Ratio[WD_Ind] > theseMinMax.maxWS_WD[WD_Ind])
-                        theseMinMax.maxWS_WD[WD_Ind] = thisMet.WS * thisMet.sectorWS_Ratio[WD_Ind];
+                    if (thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind] > theseMinMax.maxWS_WD[WD_Ind])
+                        theseMinMax.maxWS_WD[WD_Ind] = thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind];
 
                     theseMinMax.avgP10ExpoWD[WD_Ind] = theseMinMax.avgP10ExpoWD[WD_Ind] + Math.Max(thisMet.gridStats.stats[radiusIndex].P10_UW[WD_Ind], thisMet.gridStats.stats[radiusIndex].P10_DW[WD_Ind]);
 
@@ -329,9 +392,12 @@ namespace ContinuumNS
             theseMinMax.avgP10Expo = theseMinMax.avgP10Expo / numMetsUsed;
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
+            {
                 theseMinMax.avgP10ExpoWD[WD_Ind] = theseMinMax.avgP10ExpoWD[WD_Ind] / numMetsUsed;
+                if (theseMinMax.avgP10ExpoWD[WD_Ind] < 1) theseMinMax.avgP10ExpoWD[WD_Ind] = 1;
+            }
             
-            if (theseMinMax.avgP10Expo < 0) theseMinMax.avgP10Expo = 1;
+            if (theseMinMax.avgP10Expo < 1) theseMinMax.avgP10Expo = 1;
 
         }
 
@@ -350,7 +416,7 @@ namespace ContinuumNS
          
             Model origModel = new Model();
             origModel.SizeArrays(numWD);
-            origModel.setDefaultModelCoeffs(numWD);
+            origModel.SetDefaultModelCoeffs(numWD);
                        
             if (valInt == 0) return;
             valInt = Math.Round(valInt, 3);
@@ -359,12 +425,15 @@ namespace ContinuumNS
                      
             double val1MinRMS = 0;
             double val2MinRMS = 0;
-            double midVal1 = 0;
+            double midVal1 = 0; // Taking this out for 3.0 to be consistent with 2.3
             double midVal2 = 0;
-            int midInt = Convert.ToInt16((((maxVal - minVal) / valInt) + 1) / 2);
+            int midInt = Convert.ToInt16((((maxVal - minVal) / valInt) + 1) / 2) - 1;
+
+            if (midInt < 0) midInt = 0;
+
             int counter = 0;
 
-            for (double thisVal = minVal; thisVal <= maxVal; thisVal = thisVal + valInt)
+            for (double thisVal = minVal; thisVal <= maxVal; thisVal = Math.Round(thisVal + valInt,3))
             {
                 if (iterType == "Downhill A")
                 {
@@ -374,14 +443,14 @@ namespace ContinuumNS
                 }
                 else if (iterType == "Downhill B")
                 {
-                    double avgCoeff = adjModel.DH_A_Adj[WD_Ind] * origModel.downhill_A[WD_Ind] * Math.Pow(avgP10ExpoWD[WD_Ind], (adjModel.DH_B_Adj[WD_Ind] * origModel.downhill_B[WD_Ind]));
+                    double avgCoeff = adjModel.DH_A_Adj[WD_Ind] * origModel.downhill_A[WD_Ind] * Math.Pow(avgP10ExpoWD[WD_Ind], (adjModel.DH_B_Adj[WD_Ind] * origModel.downhill_B[WD_Ind])); // Coeff using previous A & B. Keeping coeff const at avg P10 expo
                     adjModel.DH_B_Adj[WD_Ind] = thisVal;
                     adjModel.DH_A_Adj[WD_Ind] = avgCoeff / origModel.downhill_A[WD_Ind] / (Math.Pow(avgP10ExpoWD[WD_Ind], (origModel.downhill_B[WD_Ind] * adjModel.DH_B_Adj[WD_Ind])));
                     if (counter == midInt)
                     {
                         midVal1 = adjModel.DH_A_Adj[WD_Ind];
                         midVal2 = adjModel.DH_B_Adj[WD_Ind];
-                    }
+                    } 
                 }
                 else if (iterType == "Uphill A")
                 {
@@ -398,7 +467,7 @@ namespace ContinuumNS
                     {
                         midVal1 = adjModel.UH_A_Adj[WD_Ind];
                         midVal2 = adjModel.UH_B_Adj[WD_Ind];
-                    }
+                    } 
                 }
                 else if (iterType == "UW Critical")
                 {
@@ -421,7 +490,7 @@ namespace ContinuumNS
                     {
                         midVal1 = adjModel.SU_A_Adj[WD_Ind];
                         midVal2 = adjModel.SU_B_Adj[WD_Ind];
-                    }
+                    } 
                 }
                 else if (iterType == "DH Stability")
                 {
@@ -438,8 +507,8 @@ namespace ContinuumNS
                 else if (iterType == "SU Stability")
                 {
                     adjModel.SU_Stab_A[WD_Ind] = thisVal;
-                    if (counter == midInt)
-                        midVal1 = adjModel.SU_Stab_A[WD_Ind];
+                  //  if (counter == midInt)
+                  //      midVal1 = adjModel.SU_Stab_A[WD_Ind];
                 }
                 else if (iterType == "Stability B")
                 {
@@ -458,11 +527,11 @@ namespace ContinuumNS
                     double avgCoeff = adjModel.sepA_DW_Adj[WD_Ind] * origModel.sep_A_DW[WD_Ind] * Math.Pow(avgP10ExpoWD[WD_Ind], (adjModel.sepB_DW_Adj[WD_Ind] * origModel.sep_B_DW[WD_Ind]));
                     adjModel.sepB_DW_Adj[WD_Ind] = thisVal;
                     adjModel.sepA_DW_Adj[WD_Ind] = avgCoeff / origModel.sep_A_DW[WD_Ind] / (Math.Pow(avgP10ExpoWD[WD_Ind], (origModel.sep_B_DW[WD_Ind] * adjModel.sepB_DW_Adj[WD_Ind])));
-                    if (counter == midInt)
-                    {
-                        midVal1 = adjModel.sepA_DW_Adj[WD_Ind];
-                        midVal2 = adjModel.sepB_DW_Adj[WD_Ind];
-                    }
+                       if (counter == midInt)
+                       {
+                           midVal1 = adjModel.sepA_DW_Adj[WD_Ind];
+                           midVal2 = adjModel.sepB_DW_Adj[WD_Ind];
+                       } 
                 }
                 else if (iterType == "Turb WS factor")
                 {
@@ -480,7 +549,7 @@ namespace ContinuumNS
                 {
                     adjModel.sepCritWS[WD_Ind] = thisVal;
                     if (counter == midInt)
-                        midVal1 = adjModel.sepCritWS[WD_Ind];
+                       midVal1 = adjModel.sepCritWS[WD_Ind];
                 }
 
                 double overallRMS_err = SweepGetRMSWithAdjModel(ref model, adjModel, thisInst); // The model is modified in this function. Overall RMS error is not used for finding best value
@@ -490,8 +559,7 @@ namespace ContinuumNS
                     errorChanged = true;
 
                 if (RMS_Err < minError)
-                {        
-
+                {
                     if (iterType == "Downhill A")
                         val1MinRMS = adjModel.DH_A_Adj[WD_Ind];
                     else if (iterType == "Downhill B")
@@ -561,40 +629,54 @@ namespace ContinuumNS
             }
             else if (iterType == "Sep Crit WS")
                 adjModel.sepCritWS[WD_Ind] = val1MinRMS;
-            else if (iterType == "Downhill A")                 
-                adjModel.DH_A_Adj[WD_Ind] = val1MinRMS;            
-            else if (iterType == "Downhill B") {                
+            else if (iterType == "Downhill A")
+                adjModel.DH_A_Adj[WD_Ind] = val1MinRMS;
+            else if (iterType == "Downhill B")
+            {
                 adjModel.DH_A_Adj[WD_Ind] = val1MinRMS;
                 adjModel.DH_B_Adj[WD_Ind] = val2MinRMS;
             }
-            else if (iterType == "Uphill A")              
-                adjModel.UH_A_Adj[WD_Ind] = val1MinRMS;            
-            else if (iterType == "Uphill B") {                
+            else if (iterType == "Uphill A")
+                adjModel.UH_A_Adj[WD_Ind] = val1MinRMS;
+            else if (iterType == "Uphill B")
+            {
                 adjModel.UH_A_Adj[WD_Ind] = val1MinRMS;
                 adjModel.UH_B_Adj[WD_Ind] = val2MinRMS;
             }
-            else if (iterType == "SpdUp A")                
-                adjModel.SU_A_Adj[WD_Ind] = val1MinRMS;            
-            else if (iterType == "SpdUp B") {                
+            else if (iterType == "SpdUp A")
+                adjModel.SU_A_Adj[WD_Ind] = val1MinRMS;
+            else if (iterType == "SpdUp B")
+            {
                 adjModel.SU_A_Adj[WD_Ind] = val1MinRMS;
                 adjModel.SU_B_Adj[WD_Ind] = val2MinRMS;
             }
-            else if (iterType == "Sep DW A")                
-                adjModel.sepA_DW_Adj[WD_Ind] = val1MinRMS;            
-            else if (iterType == "Sep DW B") {                
+            else if (iterType == "Sep DW A")
+                adjModel.sepA_DW_Adj[WD_Ind] = val1MinRMS;
+            else if (iterType == "Sep DW B")
+            {
                 adjModel.sepA_DW_Adj[WD_Ind] = val1MinRMS;
                 adjModel.sepB_DW_Adj[WD_Ind] = val2MinRMS;
             }
             else if (iterType == "Turb WS factor")
                 adjModel.turbWS_Fact[WD_Ind] = val1MinRMS;
-            else if (iterType == "DH Stability")                
+            else if (iterType == "DH Stability")
+            {
+                if (val1MinRMS == maxVal)
+                    val1MinRMS = 5;
                 adjModel.DH_Stab_A[WD_Ind] = val1MinRMS;
-            
-            else if (iterType == "UH Stability")                 
+            }
+            else if (iterType == "UH Stability")
+            {
+                if (val1MinRMS == maxVal)
+                    val1MinRMS = 5;
                 adjModel.UH_Stab_A[WD_Ind] = val1MinRMS;
-            
-            else if (iterType == "SU Stability")               
+            }
+            else if (iterType == "SU Stability")
+            {
+                if (val1MinRMS == maxVal)
+                    val1MinRMS = 5;
                 adjModel.SU_Stab_A[WD_Ind] = val1MinRMS;
+            }
             
         }
          
@@ -637,10 +719,11 @@ namespace ContinuumNS
                     {
                         if (metList.metItem[i].name == thisModel.metsUsed[j])
                         {
+                            Met.WSWD_Dist thisDist = metList.metItem[i].GetWS_WD_Dist(thisModel.height, thisModel.timeOfDay, thisModel.season);
                             UW_DW_array[WS_ind, 0] = 1;
-                            UW_DW_array[WS_ind, 1] = metList.metItem[i].expo[radiusIndex].GetOverallValue(metList.metItem[i].windRose, "Expo", "UW");
-                            UW_DW_array[WS_ind, 2] = metList.metItem[i].expo[radiusIndex].GetOverallValue(metList.metItem[i].windRose, "Expo", "DW");
-                            WS_array[WS_ind] = metList.metItem[i].WS;
+                            UW_DW_array[WS_ind, 1] = metList.metItem[i].expo[radiusIndex].GetOverallValue(thisDist.windRose, "Expo", "UW");
+                            UW_DW_array[WS_ind, 2] = metList.metItem[i].expo[radiusIndex].GetOverallValue(thisDist.windRose, "Expo", "DW");
+                            WS_array[WS_ind] = thisDist.WS;
                             WS_ind++;
                             break;
                         }
@@ -738,29 +821,17 @@ namespace ContinuumNS
         {
             // Using coarse step sizes and broad ranges, this function: 
             // Sweeps downhill, uphill and speed-up //A coeffs// (which modifies the magnitude of the coeffs) and UW_crit
-            // if ( surface roughness model is used, sweeps UH/DH/SU stability exponents
-            // if ( flow separation model is used, sweeps critical UWDW, turbulent //A// coeff and turbulent zone WS factor (which affects the wind speed in the turbulent zone downwind of point of separation)
+            // if surface roughness model is used, sweeps UH/DH/SU stability exponents
+            // if flow separation model is used, sweeps critical UWDW, turbulent //A// coeff and turbulent zone WS factor (which affects the wind speed in the turbulent zone downwind of point of separation)
             // && finds coeffs that yield the lowest cross-prediction error and stores them as Model_Adj object
 
             double overallRMS_err;
             double RMS_Err;
-            int numWD = thisInst.metList.metItem[0].windRose.Length;
+            int numWD = thisInst.metList.numWD;
 
             // Coarse sweep
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
-            { 
-                if (thisInst.topo.useSR == true)
-                {
-                    // 9) Sweep Stability factor for downhill flow 
-                    Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "DH Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
-
-                    // 10) Sweep Stability factor for uphill flow 
-                    Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "UH Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
-
-                    // 9) Sweep Stability factor for speed-up flow 
-                    Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "SU Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
-                }
-
+            {             
                 if (thisInst.topo.useSepMod == true) {
                     // 2) Sweep Flow Separation Crit
                     double sepLowLim = Math.Max(thisModel.minSumUWDW, theseMinMax.minSumUWDW_ExpoWD[WD_Ind] - theseMinMax.minSumUWDW_ExpoWD[WD_Ind] * 0.1);
@@ -773,10 +844,10 @@ namespace ContinuumNS
                 }
 
                 // 3) Downhill flow
-                Sweep_a_Param(thisInst, 0.2f, 2, 0.2f, WD_Ind, "Downhill A", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+                Sweep_a_Param(thisInst, 0.65f, 1.5, 0.2f, WD_Ind, "Downhill A", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
                 // 4) Uphill flow
-                Sweep_a_Param(thisInst, 0.2f, 2, 0.2f, WD_Ind, "Uphill A", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+                Sweep_a_Param(thisInst, 0.65f, 1.5, 0.2f, WD_Ind, "Uphill A", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
                 // 1) Sweep UW Crit
                 double UW_LowLim = Convert.ToSingle(Math.Max(1, theseMinMax.minUW_ExpoWD[WD_Ind] - theseMinMax.minUW_ExpoWD[WD_Ind] * 0.1));
@@ -786,6 +857,18 @@ namespace ContinuumNS
 
                 // 5) Sweep UW Spd-up A 
                 Sweep_a_Param(thisInst, 0.65f, 1.5f, 0.2f, WD_Ind, "SpdUp A", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                if (thisInst.topo.useSR == true)
+                {
+                    // 9) Sweep Stability factor for downhill flow 
+                    Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "DH Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                    // 10) Sweep Stability factor for uphill flow 
+                    Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "UH Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                    // 9) Sweep Stability factor for speed-up flow 
+                    Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "SU Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+                }
 
                 if (thisInst.topo.useSepMod == true && thisAdjModel.sepCrit[WD_Ind] != 1000)
                 {
@@ -834,40 +917,14 @@ namespace ContinuumNS
             double upperLim;
             double overallRMS_err;
             double RMS_Err;
-            int numWD = thisInst.metList.metItem[0].windRose.Length;
+            int numWD = thisInst.metList.numWD;
             Model origModel = new Model();
             origModel.SetDefaultLimits();
             origModel.SizeArrays(numWD);
-            origModel.setDefaultModelCoeffs(numWD);
+            origModel.SetDefaultModelCoeffs(numWD);
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
-            {
-                if (thisInst.topo.useSR == true)
-                {
-                    // 9) Sweep Stability factor for downhill flow
-                    lowLim = thisAdjModel.DH_Stab_A[WD_Ind] - 1;
-                    if (lowLim < 0) lowLim = 0;
-
-                    upperLim = thisAdjModel.DH_Stab_A[WD_Ind] + 1;
-                    Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 5, WD_Ind, "DH Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, 
-                        theseMinMax.avgP10ExpoWD, theseInitParams);
-
-                    // 10) Sweep Stability factor for uphill flow 
-                    lowLim = thisAdjModel.UH_Stab_A[WD_Ind] - 1;
-                    if (lowLim < 0) lowLim = 0;
-                    upperLim = thisAdjModel.UH_Stab_A[WD_Ind] + 1;
-                    Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 5, WD_Ind, "UH Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, 
-                        theseMinMax.avgP10ExpoWD, theseInitParams);
-
-                    // 11) Sweep Stability factor for speed-up flow 
-                    lowLim = thisAdjModel.SU_Stab_A[WD_Ind] - 1;
-                    if (lowLim < 0) lowLim = 0;
-                    upperLim = thisAdjModel.SU_Stab_A[WD_Ind] + 1;
-                    Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 5, WD_Ind, "SU Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, 
-                        theseMinMax.avgP10ExpoWD, theseInitParams);
-
-                }
-
+            {            
                 // 1) Sweep UW Crit
 
                 lowLim = 0.7f * thisAdjModel.UW_Crit[WD_Ind];
@@ -911,6 +968,32 @@ namespace ContinuumNS
                 lowLim = 0.77f * thisAdjModel.SU_A_Adj[WD_Ind] / theseInitParams.SU * origModel.spdUp_A[WD_Ind] * (Math.Pow(theseMinMax.avgP10ExpoWD[WD_Ind], (origModel.spdUp_B[WD_Ind] * thisAdjModel.SU_B_Adj[WD_Ind])));
                 upperLim = 1.3f * thisAdjModel.SU_A_Adj[WD_Ind] / theseInitParams.SU * origModel.spdUp_A[WD_Ind] * (Math.Pow(theseMinMax.avgP10ExpoWD[WD_Ind], (origModel.spdUp_B[WD_Ind] * thisAdjModel.SU_B_Adj[WD_Ind])));
                 Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 8, WD_Ind, "SpdUp A", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                if (thisInst.topo.useSR == true)
+                {
+                    // 9) Sweep Stability factor for downhill flow
+                    lowLim = thisAdjModel.DH_Stab_A[WD_Ind] - 1;
+                    if (lowLim < 0) lowLim = 0;
+
+                    upperLim = thisAdjModel.DH_Stab_A[WD_Ind] + 1;
+                    Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 5, WD_Ind, "DH Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD,
+                        theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                    // 10) Sweep Stability factor for uphill flow 
+                    lowLim = thisAdjModel.UH_Stab_A[WD_Ind] - 1;
+                    if (lowLim < 0) lowLim = 0;
+                    upperLim = thisAdjModel.UH_Stab_A[WD_Ind] + 1;
+                    Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 5, WD_Ind, "UH Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD,
+                        theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                    // 11) Sweep Stability factor for speed-up flow 
+                    lowLim = thisAdjModel.SU_Stab_A[WD_Ind] - 1;
+                    if (lowLim < 0) lowLim = 0;
+                    upperLim = thisAdjModel.SU_Stab_A[WD_Ind] + 1;
+                    Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 5, WD_Ind, "SU Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD,
+                        theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                }
 
                 if (thisInst.topo.useSepMod == true && thisAdjModel.sepCrit[WD_Ind] != 1000) {
                     // 6) Sweep Flow Separation Crit WS
@@ -979,7 +1062,7 @@ namespace ContinuumNS
         {
             // Finds site-calibrated model by sweeping parameters and finding model that minimizes cross-prediction error          
                         
-            double[] windRose = thisInst.metList.GetAvgWindRoseMetsUsed(thisModel.metsUsed);
+            double[] windRose = thisInst.metList.GetAvgWindRoseMetsUsed(thisModel.metsUsed, thisModel.timeOfDay, thisModel.season, thisModel.height);
             MetCollection metList = thisInst.metList;
             ModelCollection modelList = thisInst.modelList;            
             NodeCollection nodeList = new NodeCollection();
@@ -996,7 +1079,7 @@ namespace ContinuumNS
             InitMinMaxExpos(ref theseMinMax, numWD);
 
             thisModel.SizeArrays(numWD);
-            thisModel.setDefaultModelCoeffs(numWD);
+            thisModel.SetDefaultModelCoeffs(numWD);
 
             Calc_MinMax_Expos(ref theseMinMax, windRose, radiusIndex, metList, thisModel); // finds min/max UW expo (used to initialize UW crit), min/max sum of UWDW (used in flow separation model), avg P10 expo and min/max WS
 
@@ -1008,7 +1091,7 @@ namespace ContinuumNS
 
             Model origModel = new Model();
             origModel.SizeArrays(numWD);
-            origModel.setDefaultModelCoeffs(numWD);            
+            origModel.SetDefaultModelCoeffs(numWD);            
 
             double overallRMS_err = SweepGetRMSWithAdjModel(ref thisModel, thisAdjModel, thisInst);
 
@@ -1021,7 +1104,7 @@ namespace ContinuumNS
             {
                 // 1) First modify Downhill flow
 
-                // for (int each B step, find A_adj so that coeff at Avg P10 Expo = Init_mdw
+                // for each B step, find A_adj so that coeff at Avg P10 Expo = Init_mdw
                 Sweep_a_Param(thisInst, 0, 1.4f, 0.2f, WD_Ind, "Downhill B", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
                 // 2) Now modify Uphill flow
@@ -1372,7 +1455,7 @@ namespace ContinuumNS
             NodeCollection nodeList = new NodeCollection();            
             Model defaultModel = new Model();
             defaultModel.SizeArrays(numWD);
-            defaultModel.setDefaultModelCoeffs(numWD);
+            defaultModel.SetDefaultModelCoeffs(numWD);
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
@@ -1453,7 +1536,7 @@ namespace ContinuumNS
             double UW2 = 0;
             double DW1 = 0;
             double DW2 = 0;
-
+            
             if (PairCount == 0) 
                 return null;            
                         
@@ -1490,6 +1573,8 @@ namespace ContinuumNS
                     double thisP10UW = 0;
                     double thisP10 = 0;
                     NodeCollection.Sep_Nodes[] flowSep = new NodeCollection.Sep_Nodes[1];
+                    Met.WSWD_Dist met1Dist = metPairs[i].met1.GetWS_WD_Dist(model.height, model.timeOfDay, model.season);
+                    Met.WSWD_Dist met2Dist = metPairs[i].met2.GetWS_WD_Dist(model.height, model.timeOfDay, model.season);
 
                     if (WD_sec < numWD)
                     {
@@ -1503,7 +1588,7 @@ namespace ContinuumNS
                             else
                                 thisP10 = thisP10UW;
 
-                            WS1 = metPairs[i].met1.WS * metPairs[i].met1.sectorWS_Ratio[WD_sec];
+                            WS1 = met1Dist.WS * met1Dist.sectorWS_Ratio[WD_sec];
                             UW1 = metPairs[i].met1.expo[radiusIndex].expo[WD_sec];
                             UW2 = thisWS_Est.nodePath[0].expo[radiusIndex].expo[WD_sec];
                             DW1 = metPairs[i].met1.expo[radiusIndex].GetDW_Param(WD_sec, "Expo");
@@ -1630,7 +1715,7 @@ namespace ContinuumNS
 
                             UW1 = metPairs[i].met1.expo[radiusIndex].expo[WD_sec];
                             UW2 = metPairs[i].met2.expo[radiusIndex].expo[WD_sec];
-                            WS1 = metPairs[i].met1.WS * metPairs[i].met1.sectorWS_Ratio[WD_sec];
+                            WS1 = met1Dist.WS * met1Dist.sectorWS_Ratio[WD_sec];
                             DW1 = metPairs[i].met1.expo[radiusIndex].GetDW_Param(WD_sec, "Expo");
                             DW2 = metPairs[i].met2.expo[radiusIndex].GetDW_Param(WD_sec, "Expo");
 
@@ -1675,7 +1760,7 @@ namespace ContinuumNS
 
                                 UW1 = metPairs[i].met1.expo[radiusIndex].expo[WD];
                                 UW2 = thisWS_Est.nodePath[0].expo[radiusIndex].expo[WD];
-                                WS1 = metPairs[i].met1.WS * metPairs[i].met1.sectorWS_Ratio[WD];
+                                WS1 = met1Dist.WS * met1Dist.sectorWS_Ratio[WD];
                                 DW1 = metPairs[i].met1.expo[radiusIndex].GetDW_Param(WD, "Expo");
                                 DW2 = thisWS_Est.nodePath[0].expo[radiusIndex].GetDW_Param(WD, "Expo");
 
@@ -1762,7 +1847,7 @@ namespace ContinuumNS
 
                                 UW1 = metPairs[i].met2.expo[radiusIndex].expo[WD];
                                 UW2 = thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].expo[radiusIndex].expo[WD];
-                                WS1 = metPairs[i].met2.WS * metPairs[i].met2.sectorWS_Ratio[WD];
+                                WS1 = met2Dist.WS * met2Dist.sectorWS_Ratio[WD];
                                 DW1 = metPairs[i].met2.expo[radiusIndex].GetDW_Param(WD, "Expo");
                                 DW2 = thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].expo[radiusIndex].GetDW_Param(WD, "Expo");
 
@@ -1805,7 +1890,7 @@ namespace ContinuumNS
 
                                 UW1 = metPairs[i].met1.expo[radiusIndex].expo[WD];
                                 UW2 = metPairs[i].met2.expo[radiusIndex].expo[WD];
-                                WS1 = metPairs[i].met1.WS * metPairs[i].met1.sectorWS_Ratio[WD];
+                                WS1 = met1Dist.WS * met1Dist.sectorWS_Ratio[WD];
                                 DW1 = metPairs[i].met1.expo[radiusIndex].GetDW_Param(WD, "Expo");
                                 DW2 = metPairs[i].met2.expo[radiusIndex].GetDW_Param(WD, "Expo");
 
@@ -2119,7 +2204,7 @@ namespace ContinuumNS
                 for (int j = 0; j < numToPredict; j++)
                 {
                     theseAvgWS[j, i].predictee = thisRR_Obj[i].omittedMets[j].name;
-                    theseAvgWS[j, i].avgWS = thisRR_Obj[i].omittedMets[j].avgWS_Est[0].WS;
+                    theseAvgWS[j, i].avgWS = thisRR_Obj[i].omittedMets[j].avgWS_Est[0].freeStream.WS;
                     theseAvgWS[j, i].estError = thisRR_Obj[i].errsAtOmittedMets[j];
                     theseAvgWS[j, i].WS_Count = thisRR_Obj[i].omittedMets[j].WSEst_Count;
                 }                    
@@ -2141,7 +2226,7 @@ namespace ContinuumNS
         }              
          
 
-        public RR_funct_obj DoRR_Calc(string[] theseMetsInModel, Continuum thisInst, string[] metsUsed)
+        public RR_funct_obj DoRR_Calc(string[] theseMetsInModel, Continuum thisInst, string[] metsUsed, string MCP_Method)
         {
             // Does one RR calc: One set of mets out of bigger set. Gets (or creates) UWDW models to use then uses them to estimate at all mets not included in set
             // Conducts Round Robin calculations using sub-set of mets. metsUsed is list of all mets in Continuum model and theseMetsInModel is list of subset of mets which
@@ -2155,7 +2240,7 @@ namespace ContinuumNS
             thisRR_FuncObj.errsAtOmittedMets = new double[numMetsToPredict];
             thisRR_FuncObj.actualWS_AtMets = new double[numMetsToPredict];
 
-            thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
+            thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);                              
 
          //   thisRR_FuncObj.avgWS = new Avg_Est[numMetsToPredict];
             Met[] metObjsForModel = thisInst.metList.GetMets(theseMetsInModel, null);
@@ -2181,26 +2266,40 @@ namespace ContinuumNS
                     thisRR_FuncObj.omittedMets[predMetInd].UTMX = thisInst.metList.metItem[m].UTMX;
                     thisRR_FuncObj.omittedMets[predMetInd].UTMY = thisInst.metList.metItem[m].UTMY;
                     thisRR_FuncObj.omittedMets[predMetInd].elev = thisInst.metList.metItem[m].elev;
-                    thisRR_FuncObj.omittedMets[predMetInd].windRose = thisInst.metList.GetInterpolatedWindRose(theseMetsInModel, thisInst.metList.metItem[m].UTMX, thisInst.metList.metItem[m].UTMY);
 
                     thisRR_FuncObj.omittedMets[predMetInd].expo = thisInst.metList.metItem[m].expo;
                     thisRR_FuncObj.omittedMets[predMetInd].gridStats = thisInst.metList.metItem[m].gridStats;
-                    
-                    thisRR_FuncObj.actualWS_AtMets[predMetInd] = thisInst.metList.metItem[m].WS;
+                    Met.WSWD_Dist thisDist = thisInst.metList.metItem[m].GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+                    thisRR_FuncObj.actualWS_AtMets[predMetInd] = thisDist.WS;
 
                 //    thisRR_FuncObj.avgWS[predMetInd].predictee = thisInst.metList.metItem[m].Name;
                     predMetInd++;
                 }
             }
 
-            Model[] theseModels = thisInst.modelList.CreateModel(theseMetsInModel, thisInst); // creates UWDW models
-            thisRR_FuncObj.models = theseModels;
+            // Create models using TOD and Season bins
+            thisRR_FuncObj.models = thisInst.modelList.GetAllModels(thisInst, theseMetsInModel);
 
             for (int i = 0; i < numMetsToPredict; i++)
             {
-                thisRR_FuncObj.omittedMets[i].DoTurbineCalcs(null, thisInst, theseModels);
-                thisRR_FuncObj.omittedMets[i].GenerateAvgWS(thisInst, theseModels);
-                double thisErr = (thisRR_FuncObj.omittedMets[i].avgWS_Est[0].WS - thisRR_FuncObj.actualWS_AtMets[i]) / thisRR_FuncObj.actualWS_AtMets[i];
+              //  if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || thisInst.turbineList.genTimeSeries == false)
+             //   {
+                    thisRR_FuncObj.omittedMets[i].DoTurbineCalcs(thisInst, thisRR_FuncObj.models);
+                    double[] windRose = thisInst.metList.GetInterpolatedWindRose(theseMetsInModel, thisRR_FuncObj.omittedMets[i].UTMX, thisRR_FuncObj.omittedMets[i].UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
+                    thisRR_FuncObj.omittedMets[i].GenerateAvgWSFromTABs(thisInst, thisRR_FuncObj.models, windRose, true);
+             //   }
+             /*   else
+                { // Time Series model
+                    Nodes targetNode = nodeList.GetTurbNode(thisRR_FuncObj.omittedMets[i]);
+                    bool isCalibrated = false;
+                    if (theseMetsInModel.Length > 1)
+                        isCalibrated = true;
+                    ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, theseMetsInModel, targetNode, isCalibrated,
+                        new TurbineCollection.PowerCurve(), new Wake_Model(), null, MCP_Method);
+                    thisRR_FuncObj.omittedMets[i].GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), isCalibrated, false, MCP_Method, true); // Creates and adds new Avg_Est based on time series data
+                    
+                }*/
+                double thisErr = (thisRR_FuncObj.omittedMets[i].avgWS_Est[0].freeStream.WS - thisRR_FuncObj.actualWS_AtMets[i]) / thisRR_FuncObj.actualWS_AtMets[i];
                 thisRR_FuncObj.errsAtOmittedMets[i] = thisErr;
             }          
 
@@ -2224,6 +2323,27 @@ namespace ContinuumNS
             RMS_All = Math.Pow((RMS_All / numModels), 0.5);
             roundRobinEsts[RR_ind].RMS_All = RMS_All;
 
+        }
+
+        public int GetNumModelsForRoundRobin(int numMets, int numMetsInModel)
+        {
+            int numModels = 1;
+
+            double N_fact = 1;
+
+            for (int i = numMets; i >= 1; i--)
+                N_fact = N_fact * i;
+
+            double K_fact = 1;
+            for (int j = numMetsInModel; j >= 1; j--)
+                K_fact = K_fact * j;
+
+            double N_minus_k_fact = 1;
+            for (int j = (numMets - numMetsInModel); j >= 1; j--)
+                N_minus_k_fact = N_minus_k_fact * j;
+
+            numModels = (int)(N_fact / (K_fact * N_minus_k_fact));
+            return numModels;
         }
         
     }

@@ -51,9 +51,10 @@
             this.chkBulkSRDH.AutoSize = true;
             this.chkBulkSRDH.Checked = true;
             this.chkBulkSRDH.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBulkSRDH.Location = new System.Drawing.Point(21, 268);
+            this.chkBulkSRDH.Location = new System.Drawing.Point(22, 329);
+            this.chkBulkSRDH.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkBulkSRDH.Name = "chkBulkSRDH";
-            this.chkBulkSRDH.Size = new System.Drawing.Size(140, 30);
+            this.chkBulkSRDH.Size = new System.Drawing.Size(176, 40);
             this.chkBulkSRDH.TabIndex = 29;
             this.chkBulkSRDH.Text = "Export Bulk Upwind and\r\nDownwind SR && DH";
             this.chkBulkSRDH.UseVisualStyleBackColor = true;
@@ -63,9 +64,10 @@
             this.chkSectorSRDH.AutoSize = true;
             this.chkSectorSRDH.Checked = true;
             this.chkSectorSRDH.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkSectorSRDH.Location = new System.Drawing.Point(21, 232);
+            this.chkSectorSRDH.Location = new System.Drawing.Point(22, 283);
+            this.chkSectorSRDH.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkSectorSRDH.Name = "chkSectorSRDH";
-            this.chkSectorSRDH.Size = new System.Drawing.Size(154, 30);
+            this.chkSectorSRDH.Size = new System.Drawing.Size(185, 40);
             this.chkSectorSRDH.TabIndex = 28;
             this.chkSectorSRDH.Text = "Export Sectorwise Surface \r\nRoughness && Disp. height";
             this.chkSectorSRDH.UseVisualStyleBackColor = true;
@@ -75,9 +77,10 @@
             this.chkBulkExpos.AutoSize = true;
             this.chkBulkExpos.Checked = true;
             this.chkBulkExpos.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBulkExpos.Location = new System.Drawing.Point(21, 196);
+            this.chkBulkExpos.Location = new System.Drawing.Point(22, 239);
+            this.chkBulkExpos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkBulkExpos.Name = "chkBulkExpos";
-            this.chkBulkExpos.Size = new System.Drawing.Size(140, 30);
+            this.chkBulkExpos.Size = new System.Drawing.Size(176, 40);
             this.chkBulkExpos.TabIndex = 27;
             this.chkBulkExpos.Text = "Export Bulk Upwind and\r\nDownwind Exposures";
             this.chkBulkExpos.UseVisualStyleBackColor = true;
@@ -87,9 +90,10 @@
             this.chkSector.AutoSize = true;
             this.chkSector.Checked = true;
             this.chkSector.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkSector.Location = new System.Drawing.Point(22, 160);
+            this.chkSector.Location = new System.Drawing.Point(23, 196);
+            this.chkSector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkSector.Name = "chkSector";
-            this.chkSector.Size = new System.Drawing.Size(114, 30);
+            this.chkSector.Size = new System.Drawing.Size(138, 40);
             this.chkSector.TabIndex = 26;
             this.chkSector.Text = "Export Sectorwise \r\nExposures";
             this.chkSector.UseVisualStyleBackColor = true;
@@ -99,17 +103,20 @@
             this.chkMets.CheckOnClick = true;
             this.chkMets.FormattingEnabled = true;
             this.chkMets.HorizontalScrollbar = true;
-            this.chkMets.Location = new System.Drawing.Point(299, 59);
+            this.chkMets.Location = new System.Drawing.Point(377, 64);
+            this.chkMets.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkMets.Name = "chkMets";
-            this.chkMets.Size = new System.Drawing.Size(102, 124);
+            this.chkMets.Size = new System.Drawing.Size(135, 164);
             this.chkMets.TabIndex = 25;
             // 
             // lblMets
             // 
             this.lblMets.AutoSize = true;
-            this.lblMets.Location = new System.Drawing.Point(320, 43);
+            this.lblMets.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMets.Location = new System.Drawing.Point(385, 41);
+            this.lblMets.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMets.Name = "lblMets";
-            this.lblMets.Size = new System.Drawing.Size(51, 13);
+            this.lblMets.Size = new System.Drawing.Size(72, 18);
             this.lblMets.TabIndex = 24;
             this.lblMets.Text = "Met Sites";
             // 
@@ -118,9 +125,10 @@
             this.chkboxAllMets.AutoSize = true;
             this.chkboxAllMets.Checked = true;
             this.chkboxAllMets.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkboxAllMets.Location = new System.Drawing.Point(311, 23);
+            this.chkboxAllMets.Location = new System.Drawing.Point(393, 14);
+            this.chkboxAllMets.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkboxAllMets.Name = "chkboxAllMets";
-            this.chkboxAllMets.Size = new System.Drawing.Size(84, 17);
+            this.chkboxAllMets.Size = new System.Drawing.Size(102, 22);
             this.chkboxAllMets.TabIndex = 23;
             this.chkboxAllMets.Text = "All Met Sites";
             this.chkboxAllMets.UseVisualStyleBackColor = true;
@@ -129,9 +137,11 @@
             // lblTurbs
             // 
             this.lblTurbs.AutoSize = true;
-            this.lblTurbs.Location = new System.Drawing.Point(184, 43);
+            this.lblTurbs.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTurbs.Location = new System.Drawing.Point(223, 41);
+            this.lblTurbs.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTurbs.Name = "lblTurbs";
-            this.lblTurbs.Size = new System.Drawing.Size(69, 13);
+            this.lblTurbs.Size = new System.Drawing.Size(97, 18);
             this.lblTurbs.TabIndex = 22;
             this.lblTurbs.Text = "Turbine Sites";
             // 
@@ -140,9 +150,10 @@
             this.chkTurbs.CheckOnClick = true;
             this.chkTurbs.FormattingEnabled = true;
             this.chkTurbs.HorizontalScrollbar = true;
-            this.chkTurbs.Location = new System.Drawing.Point(181, 59);
+            this.chkTurbs.Location = new System.Drawing.Point(219, 64);
+            this.chkTurbs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkTurbs.Name = "chkTurbs";
-            this.chkTurbs.Size = new System.Drawing.Size(96, 214);
+            this.chkTurbs.Size = new System.Drawing.Size(127, 284);
             this.chkTurbs.TabIndex = 21;
             // 
             // chkboxAllTurbs
@@ -150,9 +161,10 @@
             this.chkboxAllTurbs.AutoSize = true;
             this.chkboxAllTurbs.Checked = true;
             this.chkboxAllTurbs.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkboxAllTurbs.Location = new System.Drawing.Point(181, 23);
+            this.chkboxAllTurbs.Location = new System.Drawing.Point(219, 14);
+            this.chkboxAllTurbs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkboxAllTurbs.Name = "chkboxAllTurbs";
-            this.chkboxAllTurbs.Size = new System.Drawing.Size(102, 17);
+            this.chkboxAllTurbs.Size = new System.Drawing.Size(126, 22);
             this.chkboxAllTurbs.TabIndex = 20;
             this.chkboxAllTurbs.Text = "All Turbine Sites";
             this.chkboxAllTurbs.UseVisualStyleBackColor = true;
@@ -163,9 +175,10 @@
             this.chkboxAllRadii.AutoSize = true;
             this.chkboxAllRadii.Checked = true;
             this.chkboxAllRadii.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkboxAllRadii.Location = new System.Drawing.Point(21, 13);
+            this.chkboxAllRadii.Location = new System.Drawing.Point(22, 14);
+            this.chkboxAllRadii.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkboxAllRadii.Name = "chkboxAllRadii";
-            this.chkboxAllRadii.Size = new System.Drawing.Size(64, 17);
+            this.chkboxAllRadii.Size = new System.Drawing.Size(80, 22);
             this.chkboxAllRadii.TabIndex = 19;
             this.chkboxAllRadii.Text = "All Radii";
             this.chkboxAllRadii.UseVisualStyleBackColor = true;
@@ -173,9 +186,11 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(299, 235);
+            this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Location = new System.Drawing.Point(377, 307);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(102, 33);
+            this.btnCancel.Size = new System.Drawing.Size(136, 46);
             this.btnCancel.TabIndex = 18;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -183,9 +198,11 @@
             // 
             // btnExport
             // 
-            this.btnExport.Location = new System.Drawing.Point(299, 196);
+            this.btnExport.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExport.Location = new System.Drawing.Point(377, 253);
+            this.btnExport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(102, 33);
+            this.btnExport.Size = new System.Drawing.Size(136, 46);
             this.btnExport.TabIndex = 17;
             this.btnExport.Text = "Export";
             this.btnExport.UseVisualStyleBackColor = true;
@@ -194,27 +211,30 @@
             // lblSelectRadii
             // 
             this.lblSelectRadii.AutoSize = true;
-            this.lblSelectRadii.Location = new System.Drawing.Point(30, 43);
+            this.lblSelectRadii.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSelectRadii.Location = new System.Drawing.Point(18, 41);
+            this.lblSelectRadii.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSelectRadii.Name = "lblSelectRadii";
-            this.lblSelectRadii.Size = new System.Drawing.Size(120, 13);
+            this.lblSelectRadii.Size = new System.Drawing.Size(170, 18);
             this.lblSelectRadii.TabIndex = 16;
-            this.lblSelectRadii.Text = "radius of Investigations";
+            this.lblSelectRadii.Text = "Radius of Investigation";
             // 
             // chkRadii
             // 
             this.chkRadii.CheckOnClick = true;
             this.chkRadii.FormattingEnabled = true;
             this.chkRadii.HorizontalScrollbar = true;
-            this.chkRadii.Location = new System.Drawing.Point(33, 59);
+            this.chkRadii.Location = new System.Drawing.Point(22, 64);
+            this.chkRadii.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkRadii.Name = "chkRadii";
-            this.chkRadii.Size = new System.Drawing.Size(126, 94);
+            this.chkRadii.Size = new System.Drawing.Size(167, 124);
             this.chkRadii.TabIndex = 15;
             // 
             // Expo_Export
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(423, 310);
+            this.ClientSize = new System.Drawing.Size(531, 389);
             this.Controls.Add(this.chkBulkSRDH);
             this.Controls.Add(this.chkSectorSRDH);
             this.Controls.Add(this.chkBulkExpos);
@@ -230,9 +250,10 @@
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.lblSelectRadii);
             this.Controls.Add(this.chkRadii);
+            this.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Expo_Export";
-            this.Text = "Export Exposure & roughness Values";
             this.ResumeLayout(false);
             this.PerformLayout();
 

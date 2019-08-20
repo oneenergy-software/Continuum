@@ -30,13 +30,25 @@ namespace ContinuumNS
 
             if (thisInst.topo.useSR)
             {
-                txtLC_Used.Text = "roughness model used";
+                txtLC_Used.Text = "Roughness model used";
                 txtLC_Used.BackColor = Color.MediumSeaGreen;
             }
             else
             {
-                txtLC_Used.Text = "roughness model NOT used";
+                txtLC_Used.Text = "Roughness model NOT used";
                 txtLC_Used.BackColor = Color.LightCoral;
+            }
+
+            thisInst.metList.AreAllMetsMCPd();
+            if (thisInst.metList.allMCPd)
+            {
+                txtisMCPGenWakeMap.Text = "MCP'd Met data used";
+                txtisMCPGenWakeMap.BackColor = Color.MediumOrchid;
+            }
+            else
+            {
+                txtisMCPGenWakeMap.Text = "Meas. Met data used";
+                txtisMCPGenWakeMap.BackColor = Color.LightCoral;
             }
 
             chkMetsToUse.Items.Clear(); // Met list on Wake model dialog
@@ -50,24 +62,7 @@ namespace ContinuumNS
                     thisMet = thisInst.metList.metItem[j];                    
                     chkMetsToUse.Items.Add(thisMet.name, true);
                 }
-            }
-
-            cboUWDW.Items.Clear();
-            cboUWDW.Text = "";                        
-            cboUWDW.Items.Add("Default Model");
-
-            if (thisInst.modelList.ModelCount > 1)
-            {
-                if (thisInst.modelList.models[1,0].isImported == false)
-                    cboUWDW.Items.Add("Site-Calibated Model");
-                else
-                    cboUWDW.Items.Add("Imported Model");
-            }
-
-            if (cboUWDW.Items.Count > 1)
-                cboUWDW.SelectedIndex = 1;
-            else if (cboUWDW.Items.Count > 0)
-                cboUWDW.SelectedIndex = 0;
+            }                       
 
         }
 
@@ -90,6 +85,7 @@ namespace ContinuumNS
 
         Model[] models; // Wind flow model parameters
         Wake_Model thisWakeModel = null;
+        bool useTimeSeries; 
 
         Continuum thisInst;
 
@@ -152,7 +148,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid grid resolution.", "Continuum 2.3");
+                MessageBox.Show("Invalid grid resolution.", "Continuum 3");
                 txtMapReso.Text = gridReso.ToString();
                 return;
             }
@@ -179,9 +175,8 @@ namespace ContinuumNS
             // Check which model is selected (i.e. site-calibrated or default model)
             bool isCalibrated = false;
             whatToMap = 5; // default model
-            int modelInd = cboUWDW.SelectedIndex;
-
-            if (modelInd == 1)
+            
+            if (thisInst.metList.ThisCount > 1)
             {
                 isCalibrated = true;
                 whatToMap = 3; // site-calibrated model
@@ -195,7 +190,7 @@ namespace ContinuumNS
             }
             catch 
             {
-                MessageBox.Show("Select a wake model to use.", "Continuum 2.3");
+                MessageBox.Show("Select a wake model to use.", "Continuum 3");
             }
 
             // Get mets to use in map generation
@@ -214,9 +209,19 @@ namespace ContinuumNS
                 }
             }
 
-            // Get wind flow models
-            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisInst.radiiList.investItem[0].radius, thisInst.radiiList.investItem[3].radius, isCalibrated);
-                                          
+            if (cboUseTimeSeries.SelectedItem.ToString() == "Use Time Series")
+                useTimeSeries = true;
+            else
+                useTimeSeries = false;
+
+            // Get wind flow models            
+            if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || useTimeSeries == false)
+                models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisInst.radiiList.investItem[0].radius, thisInst.radiiList.investItem[3].radius,
+                    isCalibrated, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            else
+                models = thisInst.modelList.GetAllModels(thisInst, thisInst.metList.GetMetsUsed());
+                
+            
             int Waked_map_ind = 0;
 
             for (int j = 0; j < thisInst.mapList.ThisCount; j++)
@@ -225,8 +230,9 @@ namespace ContinuumNS
                     Waked_map_ind++;
             }
 
-            mapName = "Waked Map " + (Waked_map_ind + 1);                
-                            
+            mapName = "Waked Map " + (Waked_map_ind + 1);
+
+            
         }
 
         private void btnGenMap_Click(object sender, EventArgs e)
@@ -241,7 +247,7 @@ namespace ContinuumNS
                 thisInst.wakeModelList.AddWakeGridMap(mapName, minUTMX, minUTMY, numX, numY, gridReso, thisWakeModel);
 
             thisInst.mapList.AddMap(mapName, minUTMX, minUTMY, gridReso, numX, numY, whatToMap, thisWakeModel.powerCurve.name,
-                                thisInst, true, thisWakeModel, metsUsed, models);            
+                                thisInst, true, thisWakeModel, metsUsed, models, useTimeSeries);            
 
             Close();
         }
@@ -260,7 +266,7 @@ namespace ContinuumNS
 
             if (numTurbines == 0)
             {
-                MessageBox.Show("No Turbine sites have been loaded.", "Continuum 2.3");
+                MessageBox.Show("No Turbine sites have been loaded.", "Continuum 3");
                 return;
             }
 
@@ -329,7 +335,7 @@ namespace ContinuumNS
                 minUTMX = Convert.ToInt32(txtMinUTMX.Text);
                 if (minUTMX < minUTMX_Limit)
                 {
-                    MessageBox.Show("Entered Min UTMX is less than minimum allowed value. Resetting to minimum.", "Continuum 2.3");
+                    MessageBox.Show("Entered Min UTMX is less than minimum allowed value. Resetting to minimum.", "Continuum 3");
                     minUTMX = minUTMX_Limit;
                 }
 
@@ -350,7 +356,7 @@ namespace ContinuumNS
                 maxUTMX = Convert.ToInt32(txtMaxUTMX.Text);
                 if (maxUTMX > maxUTMX_Limit)
                 {
-                    MessageBox.Show("Entered Max UTMX is more than maximum allowed value. Resetting to maximum.", "Continuum 2.3");
+                    MessageBox.Show("Entered Max UTMX is more than maximum allowed value. Resetting to maximum.", "Continuum 3");
                     maxUTMX = maxUTMX_Limit;
                 }
 
@@ -370,7 +376,7 @@ namespace ContinuumNS
                 minUTMY = Convert.ToInt32(txtMinUTMY.Text);
                 if (minUTMY < minUTMY_Limit)
                 {
-                    MessageBox.Show("Entered Min UTMY is less than minimum allowed value. Resetting to minimum.", "Continuum 2.3");
+                    MessageBox.Show("Entered Min UTMY is less than minimum allowed value. Resetting to minimum.", "Continuum 3");
                     minUTMY = minUTMY_Limit;
                 }
 
@@ -390,7 +396,7 @@ namespace ContinuumNS
                 maxUTMY = Convert.ToInt32(txtMaxUTMY.Text);
                 if (maxUTMY > maxUTMY_Limit)
                 {
-                    MessageBox.Show("Entered Max UTMY is more than maximum allowed value. Resetting to maximum.", "Continuum 2.3");
+                    MessageBox.Show("Entered Max UTMY is more than maximum allowed value. Resetting to maximum.", "Continuum 3");
                     maxUTMY = maxUTMY_Limit;
                 }
 

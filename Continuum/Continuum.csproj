@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -38,6 +38,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Continuum.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -53,7 +55,7 @@
     </StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Continuum icon Hi Res.ico</ApplicationIcon>
+    <ApplicationIcon>iconlogoalts__1__S3C_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -62,15 +64,21 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="gdalconst_csharp, Version=1.0.5387.28601, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.1.11.1\lib\net40\gdalconst_csharp.dll</HintPath>
+    <Reference Include="gdalconst_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\packages\GDAL.2.4.2\lib\net40\gdalconst_csharp.dll</HintPath>
     </Reference>
-    <Reference Include="gdal_csharp, Version=1.0.5387.28601, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.1.11.1\lib\net40\gdal_csharp.dll</HintPath>
+    <Reference Include="gdal_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\packages\GDAL.2.4.2\lib\net40\gdal_csharp.dll</HintPath>
+    </Reference>
+    <Reference Include="GeoTimeZone, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e20ab7d0d9479841, processorArchitecture=MSIL">
+      <HintPath>..\packages\GeoTimeZone.4.0.0\lib\net461\GeoTimeZone.dll</HintPath>
     </Reference>
     <Reference Include="LogicNP.CryptoLicensing, Version=11.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2015\LogicNP.CryptoLicensing.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.4.8.1\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Nevron.Chart, Version=18.1.11.12, Culture=neutral, PublicKeyToken=2961c51bb98125d2, processorArchitecture=MSIL">
@@ -93,15 +101,19 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Nevron.System\v4.0_18.1.11.12__6a987feae5e496fd\Nevron.System.dll</HintPath>
     </Reference>
-    <Reference Include="ogr_csharp, Version=1.0.5387.28600, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.1.11.1\lib\net40\ogr_csharp.dll</HintPath>
+    <Reference Include="ogr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\packages\GDAL.2.4.2\lib\net40\ogr_csharp.dll</HintPath>
     </Reference>
-    <Reference Include="osr_csharp, Version=1.0.5387.28600, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
-      <HintPath>..\packages\GDAL.1.11.1\lib\net40\osr_csharp.dll</HintPath>
+    <Reference Include="osr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
+      <HintPath>..\packages\GDAL.2.4.2\lib\net40\osr_csharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -113,6 +125,12 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="TimeZoneConverter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=e20ab7d0d9479841, processorArchitecture=MSIL">
+      <HintPath>..\packages\TimeZoneConverter.3.2.0\lib\net461\TimeZoneConverter.dll</HintPath>
+    </Reference>
+    <Reference Include="TimeZoneDb, Version=1.0.15.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TimeZoneDb.1.0.15\lib\net45\TimeZoneDb.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutContinuum.cs">
@@ -121,6 +139,25 @@
     <Compile Include="AboutContinuum.Designer.cs">
       <DependentUpon>AboutContinuum.cs</DependentUpon>
     </Compile>
+    <Compile Include="AddPFCurve.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddPFCurve.designer.cs">
+      <DependentUpon>AddPFCurve.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Add_Exceedance.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Add_Exceedance.designer.cs">
+      <DependentUpon>Add_Exceedance.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Add_Mode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Add_Mode.designer.cs">
+      <DependentUpon>Add_Mode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Anem_table.cs" />
     <Compile Include="BackgroundWork.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,7 +171,15 @@
     <Compile Include="Continuum.Designer.cs">
       <DependentUpon>Continuum.cs</DependentUpon>
     </Compile>
+    <Compile Include="GdalConfiguration.cs" />
+    <Compile Include="GenHeaders.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GenHeaders.designer.cs">
+      <DependentUpon>GenHeaders.cs</DependentUpon>
+    </Compile>
     <Compile Include="Continuum_EDM.Context.cs" />
+    <Compile Include="Exceedance.cs" />
     <Compile Include="EditTurbine.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -156,7 +201,12 @@
       <DependentUpon>Expo_Export.cs</DependentUpon>
     </Compile>
     <Compile Include="Expo_table.cs" />
-    <Compile Include="GdalConfiguration.cs" />
+    <Compile Include="Filter_Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Filter_Settings.designer.cs">
+      <DependentUpon>Filter_Settings.cs</DependentUpon>
+    </Compile>
     <Compile Include="GenMap.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,6 +227,14 @@
     </Compile>
     <Compile Include="GridStat_table.cs" />
     <Compile Include="Grid_Info.cs" />
+    <Compile Include="MCP_ValidSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MCP_ValidSettings.Designer.cs">
+      <DependentUpon>MCP_ValidSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MERRA_Node_table.cs" />
+    <Compile Include="SiteSuitability.cs" />
     <Compile Include="InvestCollection.cs" />
     <Compile Include="Invest_Params.cs" />
     <Compile Include="LC_Key.cs">
@@ -185,18 +243,15 @@
     <Compile Include="LC_Key.Designer.cs">
       <DependentUpon>LC_Key.cs</DependentUpon>
     </Compile>
-    <Compile Include="Losses.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Losses.Designer.cs">
-      <DependentUpon>Losses.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Loss_factors.cs" />
+    <Compile Include="MERRA.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MapCollection.cs" />
+    <Compile Include="MCP.cs" />
+    <Compile Include="MERRACollection.cs" />
     <Compile Include="Met.cs" />
     <Compile Include="MetCollection.cs" />
     <Compile Include="MetPairCollection.cs" />
+    <Compile Include="Met_Data_Filter.cs" />
     <Compile Include="Mod_LC_Key.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -213,14 +268,14 @@
     <Compile Include="Nodes.cs" />
     <Compile Include="Node_table.cs" />
     <Compile Include="Pair_Of_Mets.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Registration_key.cs">
+    <Compile Include="Pick_a_Height.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Registration_key.Designer.cs">
-      <DependentUpon>Registration_key.cs</DependentUpon>
+    <Compile Include="Pick_a_Height.designer.cs">
+      <DependentUpon>Pick_a_Height.cs</DependentUpon>
     </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roughness_File_Format.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -228,25 +283,15 @@
       <DependentUpon>Roughness_File_Format.cs</DependentUpon>
     </Compile>
     <Compile Include="Saved_Parameters.cs" />
-    <Compile Include="Select_UTM_zone.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Select_UTM_zone.Designer.cs">
-      <DependentUpon>Select_UTM_zone.cs</DependentUpon>
-    </Compile>
     <Compile Include="SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SplashScreen.Designer.cs">
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Stats.cs" />
+    <Compile Include="Temp_table.cs" />
     <Compile Include="TopoInfo.cs" />
-    <Compile Include="Topo_Buffer_Warning.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Topo_Buffer_Warning.Designer.cs">
-      <DependentUpon>Topo_Buffer_Warning.cs</DependentUpon>
-    </Compile>
     <Compile Include="Topo_Load_UTM_Datum_Zone.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -267,11 +312,21 @@
     </Compile>
     <Compile Include="Model.cs" />
     <Compile Include="ModelCollection.cs" />
+    <Compile Include="Vane_table.cs" />
     <Compile Include="WakeCollection.cs" />
     <Compile Include="Wake_Model.cs" />
     <EmbeddedResource Include="AboutContinuum.resx">
       <DependentUpon>AboutContinuum.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddPFCurve.resx">
+      <DependentUpon>AddPFCurve.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Add_Exceedance.resx">
+      <DependentUpon>Add_Exceedance.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Add_Mode.resx">
+      <DependentUpon>Add_Mode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BackgroundWork.resx">
       <DependentUpon>BackgroundWork.cs</DependentUpon>
@@ -280,6 +335,9 @@
     <EmbeddedResource Include="Continuum.resx">
       <DependentUpon>Continuum.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GenHeaders.resx">
+      <DependentUpon>GenHeaders.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EditTurbine.resx">
       <DependentUpon>EditTurbine.cs</DependentUpon>
@@ -292,6 +350,9 @@
     <EmbeddedResource Include="Expo_Export.resx">
       <DependentUpon>Expo_Export.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Filter_Settings.resx">
+      <DependentUpon>Filter_Settings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GenMap.resx">
       <DependentUpon>GenMap.cs</DependentUpon>
@@ -306,14 +367,17 @@
     <EmbeddedResource Include="LC_Key.resx">
       <DependentUpon>LC_Key.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Losses.resx">
-      <DependentUpon>Losses.cs</DependentUpon>
+    <EmbeddedResource Include="MCP_ValidSettings.resx">
+      <DependentUpon>MCP_ValidSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mod_LC_Key.resx">
       <DependentUpon>Mod_LC_Key.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewTurbine.resx">
       <DependentUpon>NewTurbine.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pick_a_Height.resx">
+      <DependentUpon>Pick_a_Height.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -326,20 +390,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Registration_key.resx">
-      <DependentUpon>Registration_key.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Roughness_File_Format.resx">
       <DependentUpon>Roughness_File_Format.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Select_UTM_zone.resx">
-      <DependentUpon>Select_UTM_zone.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Topo_Buffer_Warning.resx">
-      <DependentUpon>Topo_Buffer_Warning.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Topo_Load_UTM_Datum_Zone.resx">
       <DependentUpon>Topo_Load_UTM_Datum_Zone.cs</DependentUpon>
@@ -363,7 +418,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Continuum icon Hi Res.ico" />
-    <Content Include="GdalConfiguration.vb" />
+    <Content Include="iconlogoalts__1__S3C_icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -377,12 +432,15 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets" Condition="Exists('..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets')" />
+  <Import Project="..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets" Condition="Exists('..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GDAL.Native.1.11.1\build\net40\GDAL.Native.targets'))" />
+    <Error Condition="!Exists('..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets'))" />
   </Target>
 </Project>

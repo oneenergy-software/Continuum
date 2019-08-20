@@ -7,20 +7,36 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Continuum", "Continuum\Cont
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Continuum_Tests", "Continuum_Tests\Continuum_Tests.csproj", "{CE649637-1655-42DA-A6F1-68416F09073F}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Continuum_Setup", "Continuum_Setup\Continuum_Setup.vdproj", "{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CCF3FE40-1BAE-43EA-88B0-8226DE400DA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CCF3FE40-1BAE-43EA-88B0-8226DE400DA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCF3FE40-1BAE-43EA-88B0-8226DE400DA7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CCF3FE40-1BAE-43EA-88B0-8226DE400DA7}.Debug|x86.Build.0 = Debug|Any CPU
 		{CCF3FE40-1BAE-43EA-88B0-8226DE400DA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCF3FE40-1BAE-43EA-88B0-8226DE400DA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCF3FE40-1BAE-43EA-88B0-8226DE400DA7}.Release|x86.ActiveCfg = Release|Any CPU
+		{CCF3FE40-1BAE-43EA-88B0-8226DE400DA7}.Release|x86.Build.0 = Release|Any CPU
 		{CE649637-1655-42DA-A6F1-68416F09073F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE649637-1655-42DA-A6F1-68416F09073F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE649637-1655-42DA-A6F1-68416F09073F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE649637-1655-42DA-A6F1-68416F09073F}.Debug|x86.Build.0 = Debug|Any CPU
 		{CE649637-1655-42DA-A6F1-68416F09073F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE649637-1655-42DA-A6F1-68416F09073F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE649637-1655-42DA-A6F1-68416F09073F}.Release|x86.ActiveCfg = Release|Any CPU
+		{CE649637-1655-42DA-A6F1-68416F09073F}.Release|x86.Build.0 = Release|Any CPU
+		{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}.Debug|Any CPU.ActiveCfg = Debug
+		{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}.Debug|x86.ActiveCfg = Debug
+		{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}.Release|Any CPU.ActiveCfg = Release
+		{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

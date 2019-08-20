@@ -13,8 +13,7 @@ namespace ContinuumNS
         public double UTMY;
         public double elev;
         public Exposure[] expo;
-        public Grid_Info gridStats;
-        public double[] windRose;
+        public Grid_Info gridStats;     
         public NodeCollection.Sep_Nodes[] flowSepNodes;
 
         // Properties
@@ -75,9 +74,9 @@ namespace ContinuumNS
 
         }
 
-        public double CalcAvgWS(double[] sectorWS)
+        public double CalcAvgWS(double[] sectorWS, double[] windRose)
         {
-            // Calculates and returns average wind speed weighted by Nodes// wind rose
+            // Calculates and returns average wind speed weighted by Nodes' wind rose
             double avgWS = 0;
             int numWD = 0;
 
@@ -198,7 +197,7 @@ namespace ContinuumNS
             
         }
 
-        public void GetFlowSepNodes(NodeCollection nodeList, Continuum thisInst, Nodes[] newNodes)
+        public void GetFlowSepNodes(NodeCollection nodeList, Continuum thisInst, Nodes[] newNodes, double[] windRose)
         {
             // Gets nodes for upwind flow separation model
             int numWD = 0;
@@ -210,7 +209,7 @@ namespace ContinuumNS
                 return;
             }
 
-            flowSepNodes = nodeList.FindAllFlowSeps(this, thisInst, numWD, ref newNodes);
+            flowSepNodes = nodeList.FindAllFlowSeps(this, thisInst, numWD);
             
         }
             

@@ -8,7 +8,7 @@ namespace ContinuumNS
 {
     public partial class LandCover_table
     {
-        public int Id { get; set; }
+        public int Id { get; set; } // Each entry represents land cover data along a given UTMX. The land cover min value is used to find Id for each UTMX      
         public byte[] LandCover { get; set; }        
     }
 }

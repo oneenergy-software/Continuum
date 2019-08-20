@@ -107,12 +107,12 @@ namespace ContinuumNS
             bool bulkSRDH_Out = false;
 
             if (numRadii == 0) {
-                MessageBox.Show("You need to select at least one radius and exponent to export.", "Continuum 2.3");
+                MessageBox.Show("You need to select at least one radius and exponent to export.", "Continuum 3");
                 return;
             }
 
             if (numMets == 0 && numTurbs == 0) {
-                MessageBox.Show("You have to select at least one met or turbine site to export.", "Continuum 2.3");
+                MessageBox.Show("You have to select at least one met or turbine site to export.", "Continuum 3");
                 return;
             }
 

@@ -165,6 +165,7 @@
             "60"});
             this.cboUTMZone.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cboUTMZone.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboUTMZone.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboUTMZone.FormattingEnabled = true;
             this.cboUTMZone.Items.AddRange(new object[] {
             "-60",
@@ -288,36 +289,38 @@
             "59",
             "60",
             ""});
-            this.cboUTMZone.Location = new System.Drawing.Point(83, 69);
+            this.cboUTMZone.Location = new System.Drawing.Point(101, 70);
             this.cboUTMZone.MaxDropDownItems = 11;
             this.cboUTMZone.Name = "cboUTMZone";
-            this.cboUTMZone.Size = new System.Drawing.Size(70, 21);
+            this.cboUTMZone.Size = new System.Drawing.Size(70, 26);
             this.cboUTMZone.TabIndex = 20;
             // 
             // Label3
             // 
             this.Label3.AutoSize = true;
-            this.Label3.Location = new System.Drawing.Point(15, 72);
+            this.Label3.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Label3.Location = new System.Drawing.Point(13, 75);
             this.Label3.Name = "Label3";
-            this.Label3.Size = new System.Drawing.Size(62, 13);
+            this.Label3.Size = new System.Drawing.Size(74, 18);
             this.Label3.TabIndex = 18;
             this.Label3.Text = "UTM Zone:";
             // 
             // Label1
             // 
             this.Label1.AutoSize = true;
-            this.Label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Label1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label1.Location = new System.Drawing.Point(14, 8);
             this.Label1.Name = "Label1";
-            this.Label1.Size = new System.Drawing.Size(200, 18);
+            this.Label1.Size = new System.Drawing.Size(314, 18);
             this.Label1.TabIndex = 17;
-            this.Label1.Text = "Select UTM Datum and Zone";
+            this.Label1.Text = "Select UTM Datum, Zone, and Hemisphere";
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(236, 96);
+            this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Location = new System.Drawing.Point(270, 107);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.Size = new System.Drawing.Size(75, 34);
             this.btnCancel.TabIndex = 16;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -325,9 +328,10 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(236, 67);
+            this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOK.Location = new System.Drawing.Point(270, 67);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.Size = new System.Drawing.Size(75, 34);
             this.btnOK.TabIndex = 15;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -336,9 +340,10 @@
             // Label2
             // 
             this.Label2.AutoSize = true;
+            this.Label2.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label2.Location = new System.Drawing.Point(14, 38);
             this.Label2.Name = "Label2";
-            this.Label2.Size = new System.Drawing.Size(41, 13);
+            this.Label2.Size = new System.Drawing.Size(52, 18);
             this.Label2.TabIndex = 14;
             this.Label2.Text = "Datum:";
             // 
@@ -358,6 +363,7 @@
             "Everest 1830 (South Asia)"});
             this.cbo_Datums.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cbo_Datums.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cbo_Datums.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbo_Datums.FormattingEnabled = true;
             this.cbo_Datums.Items.AddRange(new object[] {
             "NAD83/WGS84 (Global)",
@@ -371,20 +377,21 @@
             "Airy 1830 (Great Britain)",
             "Bessel 1841 (Central Europe, Chile, Indonesia)",
             "Everest 1830 (South Asia)"});
-            this.cbo_Datums.Location = new System.Drawing.Point(65, 35);
+            this.cbo_Datums.Location = new System.Drawing.Point(72, 35);
             this.cbo_Datums.MaxDropDownItems = 11;
             this.cbo_Datums.Name = "cbo_Datums";
-            this.cbo_Datums.Size = new System.Drawing.Size(280, 21);
+            this.cbo_Datums.Size = new System.Drawing.Size(280, 26);
             this.cbo_Datums.TabIndex = 13;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(15, 106);
+            this.label4.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(13, 105);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(66, 13);
+            this.label4.Size = new System.Drawing.Size(83, 18);
             this.label4.TabIndex = 21;
-            this.label4.Text = "hemisphere:";
+            this.label4.Text = "Hemisphere:";
             // 
             // cboNorthOrSouth
             // 
@@ -511,21 +518,22 @@
             "60"});
             this.cboNorthOrSouth.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cboNorthOrSouth.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboNorthOrSouth.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboNorthOrSouth.FormattingEnabled = true;
             this.cboNorthOrSouth.Items.AddRange(new object[] {
             "Northern",
             "Southern"});
-            this.cboNorthOrSouth.Location = new System.Drawing.Point(83, 98);
+            this.cboNorthOrSouth.Location = new System.Drawing.Point(102, 102);
             this.cboNorthOrSouth.MaxDropDownItems = 11;
             this.cboNorthOrSouth.Name = "cboNorthOrSouth";
-            this.cboNorthOrSouth.Size = new System.Drawing.Size(131, 21);
+            this.cboNorthOrSouth.Size = new System.Drawing.Size(131, 26);
             this.cboNorthOrSouth.TabIndex = 22;
             // 
             // Topo_Load_UTM_Datum_Zone
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(358, 127);
+            this.ClientSize = new System.Drawing.Size(370, 147);
             this.Controls.Add(this.cboNorthOrSouth);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.cboUTMZone);
@@ -537,7 +545,6 @@
             this.Controls.Add(this.cbo_Datums);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Topo_Load_UTM_Datum_Zone";
-            this.Text = "Specify UTM Datum and Zone";
             this.ResumeLayout(false);
             this.PerformLayout();
 

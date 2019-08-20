@@ -10,16 +10,18 @@ using System.Windows.Forms;
 
 namespace ContinuumNS
 {
-    public partial class Topo_Buffer_Warning : Form
+    public partial class Filter_Settings : Form
     {
-        public Topo_Buffer_Warning()
+        public Filter_Settings()
         {
             InitializeComponent();
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void btnClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
+
+        
     }
 }

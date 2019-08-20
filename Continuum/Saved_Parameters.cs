@@ -25,6 +25,8 @@ namespace ContinuumNS
 
         public string savedFileName;
         public string pathName;
+        public string topoFileName;
+        public string landCoverFileName;
         
         public void ClearAll()
         {

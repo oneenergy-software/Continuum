@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Continuum 2.3")]
+[assembly: AssemblyTitle("Continuum 3")]
 [assembly: AssemblyDescription("Continuum Wind Flow Modeling Software")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("One Energy Enterprises LLC")]

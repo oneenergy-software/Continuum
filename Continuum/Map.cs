@@ -28,6 +28,7 @@ namespace ContinuumNS
         public Wake_Model wakeModel;   // Wake model used if it is a wake map
         public bool useSR;  // true if surface roughness model is used
         public bool useFlowSep;  // true if flow separation model is used
+        public bool useTimeSeries; // true if each map node is estimated using GenerateTimeSeries
         
         [Serializable()] public struct mapNode {
             public double UTMX;
@@ -57,7 +58,7 @@ namespace ContinuumNS
         [Serializable()] public struct WS_Ests
         { 
             public string predictorMetName;  // Predictor Met name
-            public NodeCollection.Node_UTMs[] pathOfNodesUTMs; // just the UTM coords of path of nodes (other info is retrieved from DB when needed)
+            public Nodes[] pathOfNodes; // path of nodes between map node and predictor met
             public int radius;   // radius used in UWDW model
             public double WS;  // Estimated wind speed
             public double WS_weight;  // Wind speed weight (calculated based on similarity in terrain and met cross-predictions error of UWDW model)
@@ -75,18 +76,19 @@ namespace ContinuumNS
         }
 
         public void DoMapCalcs(ref mapNode thisMapNode, Continuum thisInst, NodeCollection nodeList, NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets,
-                                mapNode[] allMapNodesInX, ref Nodes[] lastAllNodesInPath, string isCalibrated)
+                                string isCalibrated)
         {
             // This sub-routine performs all necessary calculations for referenced mapNode. 
             // First, the grid statistics are calculated. Then a path of nodes from each predictor met to the map node are found
             // It looks at near-by map nodes and turbine sites and uses existing path of nodes if available.
             // then it estimates the wind speed along the path of nodes for each predictor met and each model and creates WS_Ests()
+            // USING OVERALL TAB FILES
 
             MetCollection metList = thisInst.metList;
             MapCollection mapList = thisInst.mapList;
             TopoInfo topo = thisInst.topo;
             MetPairCollection metPairList = thisInst.metPairList;
-            Nodes[] newNodes = null;  // Collect new nodes and add to DB after calcs finished
+            
             int numMetsUsed = metsUsed.Length;            
             int numRadii = thisInst.radiiList.ThisCount;
                         
@@ -95,6 +97,7 @@ namespace ContinuumNS
             // For each met and each radius of investigation (i.e. each Continuum model), generate wind speed estimate at map node. 
             for (int j = 0; j < numMetsUsed; j++)
             {
+                Met.WSWD_Dist thisDist = theseMets[j].GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
                 for (int r = 0; r < numRadii; r++)
                 {
                     int thisRadius = thisInst.radiiList.investItem[r].radius;
@@ -104,39 +107,18 @@ namespace ContinuumNS
                     AddWS_Estimate(ref thisMapNode, ref newWS_Est);
                     int WS_Est_ind = thisMapNode.WS_Estimates.Length - 1;
                     // Check to see if elevation and exposure difference b/w met and turbine is within allowed limits 
-                    bool isWithinModelLimit = thisInst.modelList.IsWithinModelLimit(theseMets[j].gridStats, theseMets[j].elev, thisMapNode.gridStats, thisMapNode.elev, r, theseMets[j].windRose);
+                    bool isWithinModelLimit = thisInst.modelList.IsWithinModelLimit(theseMets[j].gridStats, theseMets[j].elev, thisMapNode.gridStats, thisMapNode.elev, r, thisDist.windRose);
                                         
-                    if (isWithinModelLimit == true)
-                    {
+              //      if (isWithinModelLimit == true) // Disabling this feature in 3.0
+              //      {
                         Nodes targetNode = nodeList.GetMapAsNode(thisMapNode);
                         Nodes startNode = nodeList.GetMetNode(theseMets[j]);
 
-                        Nodes[]  pathOfNodes = nodeList.FindPathOfNodes(startNode, targetNode, model[r], thisInst, ref newNodes, ref lastAllNodesInPath);
-                        
-                        int pathLength = 0;
-                        if (pathOfNodes != null)
-                            pathLength = pathOfNodes.Length;
+                        thisMapNode.WS_Estimates[WS_Est_ind].pathOfNodes = nodeList.FindPathOfNodes(startNode, targetNode, model[r], thisInst);                                               
+                        thisMapNode.WS_Estimates[WS_Est_ind].radius = model[r].radius;
+                        DoWS_EstAlongNodes(thisInst, ref thisMapNode, WS_Est_ind);                                                                    
 
-                        if (pathLength == 201) // It couldn't find a good path
-                            pathOfNodes = null;
-                        else
-                        {
-                            if (pathLength > 0)
-                            {
-                                NodeCollection.Node_UTMs[] pathUTMs = new NodeCollection.Node_UTMs[pathOfNodes.Length];
-                                for (int m = 0; m < pathOfNodes.Length; m++)
-                                {
-                                    pathUTMs[m].UTMX = pathOfNodes[m].UTMX;
-                                    pathUTMs[m].UTMY = pathOfNodes[m].UTMY;
-                                }
-                                thisMapNode.WS_Estimates[WS_Est_ind].pathOfNodesUTMs = pathUTMs;
-                            }
-
-                            thisMapNode.WS_Estimates[WS_Est_ind].radius = model[r].radius;
-                            DoWS_EstAlongNodes(thisInst, ref thisMapNode, WS_Est_ind, pathOfNodes, ref lastAllNodesInPath);
-                        }                                              
-
-                    }
+              //      }
                 }
             }  
         }
@@ -145,7 +127,7 @@ namespace ContinuumNS
             {
             // Using calculated wake profile polynomials (i.e. wakeLossCoeffs), calculates the wake losses and net energy at the map node
             WakeCollection.WakeCalcResults wakeResults = thisInst.wakeModelList.CalcWakeLosses(wakeLossCoeffs, thisMapNode.UTMX, thisMapNode.UTMY, 
-                thisMapNode.sectDist, thisMapNode.grossAEP, thisMapNode.sectorGross, thisInst, thisWakeModel);
+                thisMapNode.sectDist, thisMapNode.grossAEP, thisMapNode.sectorGross, thisInst, thisWakeModel, thisMapNode.windRose);
 
             thisMapNode.isWaked = true;
             thisMapNode.avgWS_Est = wakeResults.wakedWS;
@@ -163,6 +145,7 @@ namespace ContinuumNS
             {
             // Combines all of the wind speed estimates formed by each predictor met and each site-calibrated UWDW model to form overall 
             // average wind speed estimate (including sectorwise WS) at map node
+            // FOR OVERALL MODELS
             double avgWS = 0;
             double avgWeight = 0;
             
@@ -170,12 +153,12 @@ namespace ContinuumNS
             MetCollection metList = thisInst.metList;
             ModelCollection modelList = thisInst.modelList;
             InvestCollection radiiList = thisInst.radiiList;
-            double[] windRose = metList.GetAvgWindRose();
+            
             int numRadii = thisInst.radiiList.ThisCount;
-            int numWD = windRose.Length;
+            int numWD = thisInst.metList.numWD;
             thisMapNode.sectorWS = new double[numWD];
 
-            double[,] indivMetWeights = null;
+            ModelCollection.ModelWeights[] indivMetWeights = null;
                     
             Model[] models;
             int predMetInd = 0;
@@ -193,11 +176,13 @@ namespace ContinuumNS
                 }
             }
             // public modelType  int // 0 = UW map, 1 = DW map, 2 = WS map (using best UWDW), 3 = Gross AEP map(using best UWDW), 4 = WS map(using default UWDW), 5 = Gross AEP map(using default UWDW)
-            models = modelList.GetModels(thisInst, metList.GetMetsUsed(), radiiList.investItem[0].radius, radiiList.GetMaxRadius(), thisMapNode.isCalibrated);
             
+            models = modelList.GetModels(thisInst, metList.GetMetsUsed(), radiiList.investItem[0].radius, radiiList.GetMaxRadius(), thisMapNode.isCalibrated, 
+                Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+                       
             NodeCollection nodeList = new NodeCollection();
             Nodes mapNode = nodeList.GetMapAsNode(thisMapNode);
-            indivMetWeights = modelList.GetWS_EstWeights(predMets, mapNode, models, metList.GetAvgWindRose());
+            indivMetWeights = modelList.GetWS_EstWeights(predMets, mapNode, models, metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All), thisInst.radiiList);
 
             for (int r = 0; r < numRadii; r++)
             { 
@@ -214,11 +199,14 @@ namespace ContinuumNS
 
                     if (isMetUsed == true && thisMapNode.WS_Estimates[j].radius == radiiList.investItem[r].radius && thisMapNode.WS_Estimates[j].elevDiffTooBig == false 
                         && thisMapNode.WS_Estimates[j].expoDiffTooBig == false && thisMapNode.WS_Estimates[j].WS!= 0 ) {
-                        avgWS = avgWS + thisMapNode.WS_Estimates[j].WS * indivMetWeights[predMetInd, r];
-                        thisMapNode.WS_Estimates[j].WS_weight = indivMetWeights[predMetInd, r];
-                        avgWeight = avgWeight + indivMetWeights[predMetInd, r];
+
+                        Met thisMet = thisInst.metList.GetMet(thisMapNode.WS_Estimates[j].predictorMetName);
+                        double weight = thisInst.modelList.GetWeightForMetAndModel(indivMetWeights, thisMet, models[r]);
+                        avgWS = avgWS + thisMapNode.WS_Estimates[j].WS * weight;
+                        thisMapNode.WS_Estimates[j].WS_weight = weight;
+                        avgWeight = avgWeight + weight;
                         for (int WD = 0; WD < numWD; WD++)
-                            sectorWS[WD] = sectorWS[WD] + thisMapNode.WS_Estimates[j].sectorWS[WD] * indivMetWeights[predMetInd, r];                        
+                            sectorWS[WD] = sectorWS[WD] + thisMapNode.WS_Estimates[j].sectorWS[WD] * weight;                        
                     }
 
                 }
@@ -234,18 +222,19 @@ namespace ContinuumNS
             }
         }
 
-        public void CalcWS_DistAtMapNode(ref mapNode thisMapNode, MetCollection metList, int numWD)
+        public void CalcWS_DistAtMapNode(ref mapNode thisMapNode, MetCollection metList, int numWD, double height)
         {
             // Calculates overall and sectorwise wind speed distribution for map node
+            // FOR OVERALL MODELS
             string[] metsUsed = metList.GetMetsUsed();
 
-            int numWS = metList.metItem[0].WS_Dist.Length;
+            int numWS = metList.numWS;
             thisMapNode.sectDist = new double[numWD, numWS];
 
             for (int WD = 0; WD < numWD; WD++) {
-                double[] WS_Dist = metList.CalcWS_DistForTurbOrMap(metsUsed, thisMapNode.sectorWS[WD], WD);
+                double[] WS_Dist = metList.CalcWS_DistForTurbOrMap(metsUsed, thisMapNode.sectorWS[WD], WD, Met.TOD.All, Met.Season.All, height);
                 for (int WS = 0; WS < numWS; WS++)
-                    thisMapNode.sectDist[WD, WS] = WS_Dist[WS] * 1000;
+                    thisMapNode.sectDist[WD, WS] = WS_Dist[WS];
                 
             }
 
@@ -263,9 +252,11 @@ namespace ContinuumNS
 
             thisMapNode.grossAEP = 0;
             for (int k = 0; k < numWS; k++) {
-                thisMapNode.grossAEP = thisMapNode.grossAEP + thisMapNode.WS_Dist[k] * thisPowerCurve.power[k];
+                double thisWS = metList.GetWS_atWS_Ind(k);
+                double thisPower = turbineList.GetInterpPowerOrThrust(thisWS, thisPowerCurve, "Power");
+                thisMapNode.grossAEP = thisMapNode.grossAEP + thisMapNode.WS_Dist[k] * thisPower;
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
-                    thisMapNode.sectorGross[WD_Ind] = thisMapNode.sectorGross[WD_Ind] + thisMapNode.sectDist[WD_Ind, k] / 1000 * thisPowerCurve.power[k];                
+                    thisMapNode.sectorGross[WD_Ind] = thisMapNode.sectorGross[WD_Ind] + thisMapNode.sectDist[WD_Ind, k] * thisPower;                
             }
 
             thisMapNode.grossAEP = thisMapNode.grossAEP * 365 * 24 / 1000;
@@ -274,9 +265,10 @@ namespace ContinuumNS
 
         }
 
-        public void DoWS_EstAlongNodes(Continuum thisInst, ref mapNode thisMapNode, int WS_Est_Ind, Nodes[] pathOfNodes, ref Nodes[] lastAllNodesInPath)
+        public void DoWS_EstAlongNodes(Continuum thisInst, ref mapNode thisMapNode, int WS_Est_Ind)
         {
-            // Calculates wind speed from Met to Map node along path of nodes             
+            // Calculates wind speed from Met to Map node along path of nodes     
+            // FOR OVERALL MODEL CALCS        
             InvestCollection radiiList = thisInst.radiiList;
             ModelCollection modelList = thisInst.modelList;
             NodeCollection nodeList = new NodeCollection();
@@ -297,13 +289,12 @@ namespace ContinuumNS
             }
 
             // 0 = UW map, 1 = DW map, 2 = WS map (using best UWDW), 3 = Gross AEP map (using best UWDW), 4 = WS map (using default UWDW), 5 = Gross AEP map (using default UWDW)
-            Model[] models = modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisRadius, thisRadius, thisMapNode.isCalibrated);
-            Model thisModel = models[0];
-            
-            if (pathOfNodes == null) pathOfNodes = nodeList.GetPathOfNodes(thisMapNode.WS_Estimates[WS_Est_Ind].pathOfNodesUTMs,thisInst, ref lastAllNodesInPath);
+            Model[] models = modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisRadius, thisRadius, thisMapNode.isCalibrated, Met.TOD.All, 
+                Met.Season.All, thisInst.modeledHeight, false);
+            Model thisModel = models[radiusIndex];                       
 
             Nodes endNode = nodeList.GetMapAsNode(thisMapNode);
-            ModelCollection.WS_Est_Struct WS_EstStr = modelList.DoWS_Estimate(thisMet, endNode, pathOfNodes, radiusIndex, thisModel, thisInst);
+            ModelCollection.WS_Est_Struct WS_EstStr = modelList.DoWS_Estimate(thisMet, endNode, thisMapNode.WS_Estimates[WS_Est_Ind].pathOfNodes, thisModel, thisInst);
 
             thisMapNode.WS_Estimates[WS_Est_Ind].sectorWS = WS_EstStr.sectorWS;
 
@@ -484,8 +475,8 @@ namespace ContinuumNS
 
                 thisMapNode.expo = new Exposure[expoCount + 1];
 
-                for (int j = 0; j < insertInd; j++) // this code is here because when the array is resized, it erases the previous entries
-                    thisMapNode.expo[j] = existingExpos[j]; // there//s probably a better way to do this...
+                for (int j = 0; j < insertInd; j++) 
+                    thisMapNode.expo[j] = existingExpos[j]; 
 
                 thisMapNode.expo[insertInd] = new Exposure();
                 thisMapNode.expo[insertInd].radius = radius;
@@ -616,7 +607,7 @@ namespace ContinuumNS
             return max;
         }
 
-        public void GetFlowSepNodes(ref mapNode thisMapNode, Continuum thisInst, NodeCollection nodeList, Nodes[] newNodes)
+        public void GetFlowSepNodes(ref mapNode thisMapNode, Continuum thisInst)
         {
             // Gets the flow separation nodes for map node (if flow separation model is used)
             int numWD = 0;
@@ -627,9 +618,10 @@ namespace ContinuumNS
                 return;
             }
 
+            NodeCollection nodeList = new NodeCollection();
             Nodes thisNode = nodeList.GetMapAsNode(thisMapNode);
 
-            thisMapNode.flowSepNodes = nodeList.FindAllFlowSeps(thisNode, thisInst, numWD, ref newNodes);
+            thisMapNode.flowSepNodes = nodeList.FindAllFlowSeps(thisNode, thisInst, numWD);
 
         }
 

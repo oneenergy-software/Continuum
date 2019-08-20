@@ -26,7 +26,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Please select either Lats/Longs or UTM coordinates from drop-down box.", "Continuum 2.3");
+                MessageBox.Show("Please select either Lats/Longs or UTM coordinates from drop-down box.", "Continuum 3");
                 return;
             }
 

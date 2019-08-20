@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MathNet.Numerics;
 
 namespace ContinuumNS
 {
@@ -17,37 +18,40 @@ namespace ContinuumNS
         public int stringNum; // Turbine string number (either imported or found in turbineList.AssignStringNumber)
         public Exposure[] expo; // Exposure and SRDH at turbine site
         public Grid_Info gridStats = new Grid_Info(); // Terrain complexity
-        public double[] windRose; // Interpolated wind rose based on distance from met sites
         public WS_Ests[] WS_Estimate; // Wind speed estimates: One for each predictor met and each UWDW model (4 radii)
         public Avg_Est[] avgWS_Est; // Combination of WS_Estimate() to form overall average and sectorwise wind speed estimates
         public Gross_Energy_Est[] grossAEP; // Gross Energy Estimates: One for each power curve entered and for default and site-calibrated model
-        public Net_Energy_Est[] netAEP; // Net Energy Estimates: One for each power curve entered and for default and site-calibrated model
+        public Net_Energy_Est[] netAEP; // Net Energy Estimates: One for each power curve entered and for default and site-calibrated model DOES NOT INCLUDE OTHER LOSSES
+                                            // Other losses are applied to Waked Turb List, Net Exports
         public NodeCollection.Sep_Nodes[] flowSepNodes; // If flow separation model enabled, nodes where flow separation will occur surrounding turbine
-
+        
         [Serializable()] public struct Avg_Est
         {
-            public double WS;
-            
-            public double uncert;
-            public double[] WS_Dist;
-            public double weibull_A;
-            public double weibull_k;
-            public double[] sectorWS;   // Overall Sectorwise WS estimate at turbine
-            public double[,] sectorWS_Dist;   // i = Sector num, j = WS interval
-            public double[] sectWeibull_A;   // Sector num
-            public double[] sectWeibull_k;   // Sector num
-            public bool isWaked;   // false = Free-stream, gross; true = Waked, net
-            public Wake_Model wakeModel;            
-            public bool usesSRDH;
-            public bool usesFlowSep;
-            public bool isImported;
-            public bool isCalibrated; // true if default model (i.e. not site-calibrated model) was used to create estimate
+            public EstWS_Data freeStream;
+            public EstWS_Data waked;           
+            public double uncert;           
+            public bool isImported;            
+            public bool haveGrossTS; // true if gross energy TS has been calculated
+            public bool haveNetTS; // true if net energy TS has been calculated
+            public TurbineCollection.PowerCurve powerCurve;
+            public Wake_Model wakeModel;
+            public MonthlyWS_Vals[] FS_MonthlyVals; // freestream average and distribution of WS by month 
+            public MonthlyWS_Vals[] wakedMonthlyVals; // freestream average and distribution of WS by month 
+            public double[] alpha; // directional average power law shear exponent, alpha
+            public TurbIntensity TI; // ambient, representative, and effective TI
+            public ModelCollection.TimeSeries[] timeSeries; // array of time series data (Timestamp, WS, Gross, Net). Clears on save. Is regenerated when needed.
+        }
 
+        [Serializable()] public struct TurbIntensity
+        {
+            public double[] TI; // directional turbulence intensity
+            public double[] repTI; // representative turbulence intensity
+            public double[] effectiveTI; // Effective TI
         }
 
         [Serializable()] public struct WS_Ests {
             public string predictorMetName;
-            public NodeCollection.Node_UTMs[] pathOfNodesUTMs;
+            public Nodes[] pathOfNodes;
             public double[] WS_at_nodes;
             public double[,] sectorWS_at_nodes;   // i = Node num j = WD sector
             public double[] sectorWS;   // Sectorwise WS estimates at turbine
@@ -69,6 +73,7 @@ namespace ContinuumNS
             public bool isCalibrated; // true if default model (i.e. not site-calibrated model) was used to create estimate
             public bool useSRDH;
             public bool usesFlowSep;
+            public MonthlyEnergyVals[] monthlyVals; // Gross energy by month 
         }
 
         [Serializable()] public struct Net_Energy_Est {
@@ -83,6 +88,33 @@ namespace ContinuumNS
             public bool isCalibrated; // true if default model (i.e. not site-calibrated model) was used to create estimate
             public bool useSRDH;
             public bool usesFlowSep;
+            public MonthlyEnergyVals[] monthlyVals; // Net energy by month 
+        }
+
+        [Serializable()] public struct MonthlyWS_Vals
+        {
+            public int month;
+            public int year;
+            public double avgWS;
+            public Met.WSWD_Dist WS_Dist; // Gross wind speed / wind direction distribution            
+        }
+
+        [Serializable()] public struct MonthlyEnergyVals
+        {
+            public int month;
+            public int year;
+            public double energyProd; // Energy Production over month, MWh           
+
+        }
+
+        [Serializable()] public struct EstWS_Data
+        {
+            public double WS;     
+            public double[] WS_Dist;            
+            public MetCollection.Weibull_params weibullParams;
+            public double[] sectorWS;   // Overall Sectorwise WS estimate at turbine
+            public double[,] sectorWS_Dist;   // i = Sector num, j = WS interval    
+            public double[] windRose;
         }
 
         public int ExposureCount {
@@ -161,7 +193,7 @@ namespace ContinuumNS
         {
             //  Returns false if surface roughness & displacement height have already been calculated            
             bool isNew = true;
-            
+
             for (int i = 0; i < ExposureCount; i++)
             {
                 if (expo[i].exponent == exponent && expo[i].radius == radius && expo[i].numSectors == numSectors && expo[i].SR != null && expo[i].dispH != null)
@@ -169,7 +201,7 @@ namespace ContinuumNS
                     //MsgBox("caught it" & exponent & " " & radius)
                     isNew = false;
                     break;
-                }                
+                }
             }
 
             return isNew;
@@ -184,12 +216,20 @@ namespace ContinuumNS
             {
                 if (avgWS_Est[i].wakeModel != null)
                 {
-                    if (avgWS_Est[i].isWaked && avgWS_Est[i].isCalibrated == isCalibrated && avgWS_Est[i].usesSRDH == useSR && avgWS_Est[i].usesFlowSep == useFlowSep
-                        && WakeList.IsSameWakeModel(avgWS_Est[i].wakeModel, thisWakeModel))
+                    if (WakeList.IsSameWakeModel(avgWS_Est[i].wakeModel, thisWakeModel))
                     {
                         estsExist = true;
                         break;
                     }
+                }                
+            }
+
+            for (int i = 0; i < NetAEP_Count; i++)
+            {
+                if (WakeList.IsSameWakeModel(netAEP[i].wakeModel, thisWakeModel))
+                {
+                    estsExist = true;
+                    break;
                 }
             }
 
@@ -274,15 +314,30 @@ namespace ContinuumNS
             //  Add Avg_Est to  list
             int newCount = AvgWSEst_Count;
 
-            if (WSEst_Count > 0)
+            if (AvgWSEst_Count > 0)
             {
                 Array.Resize(ref avgWS_Est, newCount + 1);
                 avgWS_Est[newCount] = newAvgEst;
+                avgWS_Est[newCount].freeStream = avgWS_Est[0].freeStream;                
             }
             else {
                 avgWS_Est = new Avg_Est[1];
                 avgWS_Est[0] = newAvgEst;
             }
+        }
+
+        public void AddGrossEstTimeSeries(Gross_Energy_Est thisGross)
+        {
+            int newCount = GrossAEP_Count;
+            Array.Resize(ref grossAEP, newCount + 1);
+            grossAEP[newCount] = thisGross;
+        }
+
+        public void AddNetEstTimeSeries(Net_Energy_Est thisNet)
+        {
+            int newCount = NetAEP_Count;
+            Array.Resize(ref netAEP, newCount + 1);
+            netAEP[newCount] = thisNet;
         }
 
         public void AddGrossAEP(Continuum thisInst, TurbineCollection.PowerCurve ThisPowerCurve, double P50_AEP, double P50_CF, double P90_AEP,
@@ -368,7 +423,7 @@ namespace ContinuumNS
                 Array.Resize(ref netAEP, newCount + 1);
                 netAEP[newCount].wakeModel = thisWakeModel;
                 netAEP[newCount].AEP = P50_AEP;
-                netAEP[newCount].CF = P50_CF;                
+                netAEP[newCount].CF = P50_CF;
                 netAEP[newCount].P99 = P99_AEP;
                 netAEP[newCount].P90 = P90_AEP;
                 netAEP[newCount].isCalibrated = isCalibrated;
@@ -398,16 +453,23 @@ namespace ContinuumNS
             return thisWS_Est;
         }
 
-        public Avg_Est GetAvgWS_Est(bool isCalibrated, Wake_Model thisWakeModel)
+        public Avg_Est GetAvgWS_Est(Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
         {
             // Returns wind speed estimate at specified radius, using specified met and model
             Avg_Est thisAvgWS_Est = new Avg_Est();
             ModelCollection modelList = new ModelCollection();
             WakeCollection wakeList = new WakeCollection();
+            bool blankWake = false;
+
+            if (thisWakeModel == null)
+                blankWake = true;
+            else if (thisWakeModel.powerCurve.name == null)
+                blankWake = true;
 
             for (int i = 0; i < AvgWSEst_Count; i++)
             {
-                if (avgWS_Est[i].isCalibrated == isCalibrated && wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel))
+                if ((blankWake == true || wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel)) 
+                    && (powerCurve.name == null || powerCurve.name == avgWS_Est[i].powerCurve.name))
                 {
                     thisAvgWS_Est = avgWS_Est[i];
                     break;
@@ -417,14 +479,14 @@ namespace ContinuumNS
             return thisAvgWS_Est;
         }
 
-        public Gross_Energy_Est GetGrossEnergyEst(bool isCalibrated)
+        public Gross_Energy_Est GetGrossEnergyEst(bool isCalibrated, TurbineCollection.PowerCurve powerCurve)
         {
             // Returns wind speed estimate at specified radius, using specified met and model
             Gross_Energy_Est thisGrossEst = new Gross_Energy_Est();
-                        
+
             for (int i = 0; i < GrossAEP_Count; i++)
             {
-                if (grossAEP[i].isCalibrated == isCalibrated)
+                if (grossAEP[i].isCalibrated == isCalibrated && grossAEP[i].powerCurve.name == powerCurve.name)
                 {
                     thisGrossEst = grossAEP[i];
                     break;
@@ -453,30 +515,43 @@ namespace ContinuumNS
             return thisNetEst;
         }
 
-        public double GetAvgOrSectorWS_Est(bool isCalibrated, Wake_Model thisWakeModel, int WD_Ind, string WS_WeibA_WeibK)
+        public double GetAvgOrSectorWS_Est(bool isCalibrated, Wake_Model thisWakeModel, int WD_Ind, string WS_WeibA_WeibK, TurbineCollection.PowerCurve powerCurve)
         {
-            // Gets average WS or weibull A or weibull K estimate of specified model (default or site-calibratied) and for specified WD 
-            
+            // Gets average WS or weibull A or weibull K estimate of specified model and for specified WD 
+
             double thisValue = 0;
             WakeCollection wakeList = new WakeCollection();
 
-            if (WSEst_Count == 0)
+            if (AvgWSEst_Count == 0)
                 return thisValue;
 
-            int numWD = WS_Estimate[0].sectorWS.Length;
+            int numWD = avgWS_Est[0].freeStream.sectorWS.Length;
+            bool isFreestream = false;
 
+            if (thisWakeModel == null)
+                isFreestream = true;
+            else if (thisWakeModel.powerCurve.name == null)
+                isFreestream = true;
+
+            EstWS_Data thisEst = new EstWS_Data();
+            
             for (int i = 0; i < AvgWSEst_Count; i++)
             {
-                if ((avgWS_Est[i].isCalibrated == isCalibrated && wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel)) || AvgWSEst_Count == 1)
+                if ((thisWakeModel == null || wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel)) && (powerCurve.name == null || avgWS_Est[i].powerCurve.name == powerCurve.name))
                 {
+                    if (isFreestream)
+                        thisEst = avgWS_Est[i].freeStream;
+                    else
+                        thisEst = avgWS_Est[i].waked;
+
                     if (WD_Ind == numWD)
                     {
                         if (WS_WeibA_WeibK == "WS")
-                            thisValue = avgWS_Est[i].WS;
+                            thisValue = thisEst.WS;
                         else if (WS_WeibA_WeibK == "WeibA")
-                            thisValue = avgWS_Est[i].weibull_A;
+                            thisValue = thisEst.weibullParams.overall_A;
                         else if (WS_WeibA_WeibK == "WeibK")
-                            thisValue = avgWS_Est[i].weibull_k;
+                            thisValue = thisEst.weibullParams.overall_k;
                         else
                         {
                             MessageBox.Show("Invalid WS_WeibA_WeibK flag: " + WS_WeibA_WeibK);
@@ -486,17 +561,17 @@ namespace ContinuumNS
                     else
                     {
                         if (WS_WeibA_WeibK == "WS")
-                            thisValue = avgWS_Est[i].sectorWS[WD_Ind];
+                            thisValue = thisEst.sectorWS[WD_Ind];
                         else if (WS_WeibA_WeibK == "WeibA")
-                            thisValue = avgWS_Est[i].sectWeibull_A[WD_Ind];
+                            thisValue = thisEst.weibullParams.sector_A[WD_Ind];
                         else if (WS_WeibA_WeibK == "WeibK")
-                            thisValue = avgWS_Est[i].sectWeibull_k[WD_Ind];
+                            thisValue = thisEst.weibullParams.sector_k[WD_Ind];
                         else
                         {
                             MessageBox.Show("Invalid WS_WeibA_WeibK flag: " + WS_WeibA_WeibK);
                             return thisValue;
                         }
-                    }                        
+                    }
 
                     break;
                 }
@@ -504,7 +579,7 @@ namespace ContinuumNS
 
             return thisValue;
         }
-                
+
 
         public double GetGrossAEP(string powerCurve, bool isCalibrated, int WD_Ind)
         {
@@ -517,7 +592,7 @@ namespace ContinuumNS
                 try {
                     numWD = grossAEP[i].sectorEnergy.Length;
                 }
-                catch  {
+                catch {
                     return thisAEP;
                 }
 
@@ -562,13 +637,13 @@ namespace ContinuumNS
                 if (netAEP[i].isCalibrated == isCalibrated && wakeList.IsSameWakeModel(thisWakeModel, netAEP[i].wakeModel))
                 {
                     if (WD_Ind == numWD)
-                     // overall AEP
-                        thisAEP = netAEP[i].AEP; 
-                    else                    
-                        thisAEP = netAEP[i].sectorEnergy[WD_Ind];                        
+                        // overall AEP
+                        thisAEP = netAEP[i].AEP;
+                    else
+                        thisAEP = netAEP[i].sectorEnergy[WD_Ind];
 
                     break;
-                }                
+                }
             }
 
             return thisAEP;
@@ -587,21 +662,21 @@ namespace ContinuumNS
                 {
                     numWD = netAEP[i].sectorEnergy.Length;
                 }
-                catch 
+                catch
                 {
                     return This_CF;
                 }
 
                 if (wakeList.IsSameWakeModel(netAEP[i].wakeModel, thisWakeModel) && netAEP[i].isCalibrated == isCalibrated)
-                {                    
+                {
                     if (WD_Ind == numWD)
                     { // overall CF
-                        This_CF = netAEP[i].CF;                        
+                        This_CF = netAEP[i].CF;
                     }
                     else
                     {
                         TurbineCollection turbineList = new TurbineCollection();
-                        This_CF = turbineList.CalcCapacityFactor(netAEP[i].sectorEnergy[WD_Ind], thisWakeModel.powerCurve.ratedPower) * numWD;                        
+                        This_CF = turbineList.CalcCapacityFactor(netAEP[i].sectorEnergy[WD_Ind], thisWakeModel.powerCurve.ratedPower) * numWD;
                     }
                     break;
                 }
@@ -622,17 +697,17 @@ namespace ContinuumNS
                 try {
                     numWD = netAEP[i].sectorEnergy.Length;
                 }
-                catch  {
+                catch {
                     return thisWakeLoss;
                 }
 
                 if (wakeList.IsSameWakeModel(netAEP[i].wakeModel, thisWakeModel) && netAEP[i].isCalibrated == isCalibrated)
-                { 
+                {
                     if (WD_Ind == numWD)
                         thisWakeLoss = netAEP[i].wakeLoss;
                     else
-                        thisWakeLoss = netAEP[i].sectorWakeLoss[WD_Ind];                       
-                    
+                        thisWakeLoss = netAEP[i].sectorWakeLoss[WD_Ind];
+
                     break;
                 }
             }
@@ -643,19 +718,11 @@ namespace ContinuumNS
         public void GetFlowSepNodes(Continuum thisInst)
         {
             // Finds all flow separation nodes (used in flow sep. model)
-            int numWD;
+            int numWD = thisInst.metList.numWD;
             NodeCollection nodeList = new NodeCollection();
-
-            try {
-                numWD = windRose.Length;
-            }
-            catch  { 
-                return;
-            }
-
+                     
             Nodes thisNode = nodeList.GetTurbNode(this);
-            Nodes[] blankNodes = null;
-            flowSepNodes = nodeList.FindAllFlowSeps(thisNode, thisInst, numWD, ref blankNodes);
+            flowSepNodes = nodeList.FindAllFlowSeps(thisNode, thisInst, numWD);
 
         }
 
@@ -681,7 +748,7 @@ namespace ContinuumNS
                 WS_Estimate = tempList;
             }
             else
-                WS_Estimate = null;           
+                WS_Estimate = null;
 
         }
 
@@ -706,7 +773,7 @@ namespace ContinuumNS
             }
             else
                 WS_Estimate = null;
-            
+
         }
 
         public void RemoveAvgWS(int avgWS_index)
@@ -731,83 +798,44 @@ namespace ContinuumNS
                 avgWS_Est = tempList;
             }
             else
-                avgWS_Est = null;           
+                avgWS_Est = null;
 
         }
 
-        public void RemoveAvgWS_byWakeModel(Wake_Model thisWakeModel, WakeCollection wakeList)
+        public void ClearNetEstsFromAvgWS(Wake_Model thisWakeModel, WakeCollection wakeList) // ClearNetEstsFromAvgWS
         {
-            //  Removes avgWS with specified wake loss model
-            int newCount = 0;
+            //  Clears waked WS and net energy time series ests from avgWS with specified wake loss model and sets haveNetTS to false.
 
-            for (int i = 0; i <= AvgWSEst_Count - 1; i++)
-                if (avgWS_Est[i].isWaked == false || (avgWS_Est[i].isWaked == true && wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel) == false))
-                    newCount++;
-
-            if (newCount > 0)
-            {
-                Avg_Est[] tempList = new Avg_Est[newCount];
-                int tempindex = 0;
-
-                for (int i = 0; i <= AvgWSEst_Count - 1; i++)
+            for (int i = 0; i < AvgWSEst_Count; i++)
+                if (wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel))
                 {
-                    if (avgWS_Est[i].isWaked == false || (avgWS_Est[i].isWaked == true && wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel) == false))
-                    {
-                        tempList[tempindex] = avgWS_Est[i];
-                        tempindex++;
-                    }
-                }
-
-                avgWS_Est = tempList;
-            }
-            else
-                avgWS_Est = null;            
-
-        }
-
-        public void RemoveAvgWS_byPowerCurve(string powerCurveName)
-        {
-            //  Removes avgWS with specified power curve
-            int newCount = 0;
-
-            for (int i = 0; i <= AvgWSEst_Count - 1; i++)
-            {
-                if (avgWS_Est[i].isWaked == true)
-                {
-                    if (avgWS_Est[i].wakeModel.powerCurve.name != powerCurveName)
-                        newCount++;
-                }
-                else
-                    newCount++;
-                    
-            }
-
-            if (newCount > 0)
-            {
-                Avg_Est[] tempList = new Avg_Est[newCount];
-                int tempindex = 0;
-
-                for (int i = 0; i <= AvgWSEst_Count - 1; i++)
-                {
-                    if (avgWS_Est[i].isWaked == true)
-                    {
-                        if (avgWS_Est[i].wakeModel.powerCurve.name != powerCurveName)
+                    if (avgWS_Est[i].timeSeries != null)
+                        for (int n = 0; n < avgWS_Est[i].timeSeries.Length; n++)
                         {
-                            tempList[tempindex] = avgWS_Est[i];
-                            tempindex++;
+                            avgWS_Est[i].timeSeries[n].wakedWS = 0;
+                            avgWS_Est[i].timeSeries[n].netEnergy = 0;
                         }
-                    }
-                    else
-                    {
-                        tempList[tempindex] = avgWS_Est[i];
-                        tempindex++;
-                    }
+                    avgWS_Est[i].haveNetTS = false;
+                    avgWS_Est[i].wakeModel = null;
                 }
 
-                avgWS_Est = tempList;
-            }
-            else
-                avgWS_Est = null;            
+
+        }
+
+        public void ClearGrossEstsFromAvgWS(string powerCurveName)
+        {
+            //  Clears gross energy time series ests from avgWS with specified power curve and sets haveGrossTS to false.
+
+            for (int i = 0; i < AvgWSEst_Count; i++)
+                if (avgWS_Est[i].powerCurve.name == powerCurveName)
+                {
+                    if (avgWS_Est[i].timeSeries != null)
+                        for (int n = 0; n < avgWS_Est[i].timeSeries.Length; n++)                        
+                            avgWS_Est[i].timeSeries[n].grossEnergy = 0;                            
+                        
+                    avgWS_Est[i].haveGrossTS = false;
+                    avgWS_Est[i].powerCurve.Clear();
+                }
 
         }
 
@@ -837,7 +865,7 @@ namespace ContinuumNS
                 netAEP = tempList;
             }
             else
-                netAEP = null;            
+                netAEP = null;
 
         }
 
@@ -867,7 +895,7 @@ namespace ContinuumNS
                 netAEP = tempList;
             }
             else
-                netAEP = null;            
+                netAEP = null;
 
         }
 
@@ -893,7 +921,7 @@ namespace ContinuumNS
                 grossAEP = tempList;
             }
             else
-                grossAEP = null;            
+                grossAEP = null;
 
         }
 
@@ -919,7 +947,7 @@ namespace ContinuumNS
                 netAEP = tempList;
             }
             else
-                netAEP = null;            
+                netAEP = null;
 
         }
 
@@ -934,150 +962,103 @@ namespace ContinuumNS
             grossAEP = null;
             netAEP = null;
             flowSepNodes = null;
-        }              
+        }
 
         public void CalcTurbineWakeLosses(Continuum thisInst, WakeCollection.WakeLossCoeffs[] wakeCoeffs, Wake_Model thisWakeModel, bool isCalibrated)
         {
             // Calculates wake losses at turbine site and creates net energy estimates
             WakeCollection.WakeCalcResults wakeResults = new WakeCollection.WakeCalcResults();
 
-            int avgWS_index = 0;            
             bool foundAvgEst = false;
-
-            for (int i = 0; i <= AvgWSEst_Count - 1; i++)
-            { 
-                if (avgWS_Est[i].isWaked == true) {
-                    if (thisInst.wakeModelList.IsSameWakeModel(avgWS_Est[i].wakeModel, thisWakeModel) && avgWS_Est[i].isCalibrated == isCalibrated && avgWS_Est[i].usesSRDH == thisInst.topo.useSR 
-                        && avgWS_Est[i].usesFlowSep == thisInst.topo.useSepMod) {
-                        avgWS_index = i;
-                        foundAvgEst = true;
-                        break;
-                    }
+            int avgWS_index = 0;
+            // Check to see if need to create one or if one exists with only WS
+            for (int j = 0; j < AvgWSEst_Count; j++)
+            {
+                if (avgWS_Est[j].wakeModel == null || thisInst.wakeModelList.IsSameWakeModel(thisWakeModel, avgWS_Est[j].wakeModel))
+                {
+                    avgWS_index = j;
+                    foundAvgEst = true;
+                    break;
                 }
             }
 
-            int freeStreamAvgIndex = 0;
-            for (int i = 0; i <= AvgWSEst_Count - 1; i++)
-                if (avgWS_Est[i].isWaked == false && avgWS_Est[i].isCalibrated == isCalibrated && avgWS_Est[i].usesSRDH == thisInst.topo.useSR && avgWS_Est[i].usesFlowSep == thisInst.topo.useSepMod)
-                    freeStreamAvgIndex = i;               
-            
             if (foundAvgEst == false)
             { // need to create one
-                Turbine.Avg_Est newAvgEst = new Turbine.Avg_Est();
-                newAvgEst.isCalibrated = isCalibrated;
-                newAvgEst.isWaked = true;
-                newAvgEst.wakeModel = thisWakeModel;
-                newAvgEst.usesSRDH = thisInst.topo.useSR;
-                newAvgEst.usesFlowSep = thisInst.topo.useSepMod;
+                Avg_Est newAvgEst = new Avg_Est();
                 AddAvgWS_Estimate(newAvgEst);
+                avgWS_index = AvgWSEst_Count - 1;
             }
 
-            for (int i = 0; i <= AvgWSEst_Count - 1; i++)
-            { 
-                if (avgWS_Est[i].isWaked == true) {
-                    if (thisInst.wakeModelList.IsSameWakeModel(avgWS_Est[i].wakeModel, thisWakeModel) && avgWS_Est[i].isCalibrated == isCalibrated && avgWS_Est[i].usesSRDH == thisInst.topo.useSR 
-                        && avgWS_Est[i].usesFlowSep == thisInst.topo.useSepMod) {
-                        avgWS_index = i;
-                        foundAvgEst = true;
-                        break;
-                    }
-                }
-            }
+            Gross_Energy_Est grossEst = GetGrossEnergyEst(isCalibrated, thisWakeModel.powerCurve);
 
-            int grossIndex = 0;
+            AddNetAEP(thisWakeModel, 0, 0, 0, 0, isCalibrated, 0, null, thisInst.topo.useSR, thisInst.topo.useSepMod);
+            int netEstInd = NetAEP_Count - 1;
+            
+            avgWS_Est[avgWS_index].wakeModel = thisWakeModel;
 
-            for (int i = 0; i <= GrossAEP_Count - 1; i++)
-                if (grossAEP[i].powerCurve.name == thisWakeModel.powerCurve.name && grossAEP[i].isCalibrated == isCalibrated && grossAEP[i].useSRDH == thisInst.topo.useSR
-                    && grossAEP[i].usesFlowSep == thisInst.topo.useSepMod) {
-                    grossIndex = i;
-                    break;
-                }
+            wakeResults = thisInst.wakeModelList.CalcWakeLosses(wakeCoeffs, UTMX, UTMY, avgWS_Est[avgWS_index].freeStream.sectorWS_Dist, grossEst.AEP, grossEst.sectorEnergy,
+                                                     thisInst, avgWS_Est[avgWS_index].wakeModel, avgWS_Est[avgWS_index].freeStream.windRose);
+                       
+            
+            avgWS_Est[avgWS_index].waked.WS = wakeResults.wakedWS;
+            avgWS_Est[avgWS_index].waked.WS_Dist = wakeResults.WS_Dist;
+            avgWS_Est[avgWS_index].waked.sectorWS_Dist = wakeResults.sectorDist;
+            avgWS_Est[avgWS_index].waked.sectorWS = wakeResults.sectorWakedWS;
+            avgWS_Est[avgWS_index].powerCurve = thisWakeModel.powerCurve;
+            
+            netAEP[netEstInd].AEP = wakeResults.netEnergy;
+            netAEP[netEstInd].sectorEnergy = wakeResults.sectorNetEnergy;
 
-            int netIndex = 0;
-            bool foundNet = false;
+            for (int WD = 0; WD <= netAEP[netEstInd].sectorEnergy.Length - 1; WD++)
+                netAEP[netEstInd].sectorEnergy[WD] = netAEP[netEstInd].sectorEnergy[WD];
 
-            for (int i = 0; i <= NetAEP_Count - 1; i++)
-                if (thisInst.wakeModelList.IsSameWakeModel(netAEP[i].wakeModel, thisWakeModel) && netAEP[i].isCalibrated == isCalibrated && netAEP[i].useSRDH == thisInst.topo.useSR 
-                    && netAEP[i].usesFlowSep == thisInst.topo.useSepMod) {
-                    netIndex = i;
-                    foundNet = true;
-                    break;
-                }
-
-            if (foundNet == false)
-                AddNetAEP(thisWakeModel, 0, 0, 0, 0, isCalibrated, 0, null, thisInst.topo.useSR, thisInst.topo.useSepMod);            
-
-            for (int i = 0; i <= NetAEP_Count - 1; i++)
-                if (thisInst.wakeModelList.IsSameWakeModel(netAEP[i].wakeModel, thisWakeModel) && netAEP[i].isCalibrated == isCalibrated && netAEP[i].useSRDH == thisInst.topo.useSR 
-                    && netAEP[i].usesFlowSep == thisInst.topo.useSepMod) {
-                    netIndex = i;
-                    break;
-                }
-
-            wakeResults = thisInst.wakeModelList.CalcWakeLosses(wakeCoeffs, UTMX, UTMY, avgWS_Est[freeStreamAvgIndex].sectorWS_Dist, grossAEP[grossIndex].AEP, grossAEP[grossIndex].sectorEnergy,
-                                                     thisInst, avgWS_Est[avgWS_index].wakeModel);
-
-            double Total_Other_Loss = thisInst.otherLosses.Get_Total_Losses();
-
-            avgWS_Est[avgWS_index].WS = wakeResults.wakedWS;
-            avgWS_Est[avgWS_index].WS_Dist = wakeResults.WS_Dist;
-            avgWS_Est[avgWS_index].sectorWS_Dist = wakeResults.sectorDist;
-            avgWS_Est[avgWS_index].sectorWS = wakeResults.sectorWakedWS;
-
-            netAEP[netIndex].AEP = wakeResults.netEnergy * (1 - Total_Other_Loss);
-            netAEP[netIndex].sectorEnergy = wakeResults.sectorNetEnergy;
-
-            for (int WD = 0; WD <= netAEP[netIndex].sectorEnergy.Length - 1; WD++)
-                netAEP[netIndex].sectorEnergy[WD] = netAEP[netIndex].sectorEnergy[WD] * (1 - Total_Other_Loss);
-
-            netAEP[netIndex].wakeLoss = wakeResults.wakeLoss;
-            netAEP[netIndex].sectorWakeLoss = wakeResults.sectorWakeLoss;
-            netAEP[netIndex].CF = thisInst.turbineList.CalcCapacityFactor(netAEP[netIndex].AEP, thisWakeModel.powerCurve.ratedPower);
+            netAEP[netEstInd].wakeLoss = wakeResults.wakeLoss;
+            netAEP[netEstInd].sectorWakeLoss = wakeResults.sectorWakeLoss;
+            netAEP[netEstInd].CF = thisInst.turbineList.CalcCapacityFactor(netAEP[netEstInd].AEP, thisWakeModel.powerCurve.ratedPower);
 
             // Calculate weibull params          
-            MetCollection.Weibull_params This_weibull = thisInst.metList.CalcWeibullParams(avgWS_Est[avgWS_index].WS_Dist, avgWS_Est[avgWS_index].sectorWS_Dist, avgWS_Est[avgWS_index].WS);
+            MetCollection.Weibull_params This_weibull = thisInst.metList.CalcWeibullParams(avgWS_Est[avgWS_index].waked.WS_Dist, avgWS_Est[avgWS_index].waked.sectorWS_Dist, avgWS_Est[avgWS_index].waked.WS);
 
-            avgWS_Est[avgWS_index].weibull_A = This_weibull.overall_A;
-            avgWS_Est[avgWS_index].weibull_k = This_weibull.overall_k;
-            avgWS_Est[avgWS_index].sectWeibull_A = This_weibull.sector_A;
-            avgWS_Est[avgWS_index].sectWeibull_k = This_weibull.sector_k;
+            avgWS_Est[avgWS_index].waked.weibullParams.overall_A = This_weibull.overall_A;
+            avgWS_Est[avgWS_index].waked.weibullParams.overall_k = This_weibull.overall_k;
+            avgWS_Est[avgWS_index].waked.weibullParams.sector_A = This_weibull.sector_A;
+            avgWS_Est[avgWS_index].waked.weibullParams.sector_k = This_weibull.sector_k;
 
         }
 
-        public void DoTurbineCalcs(Nodes[] allNodesInPaths, Continuum thisInst, Model[] models)
+        public void DoTurbineCalcs(Continuum thisInst, Model[] models)
         {
-            // Does grid stat at turbine location then for each predictor met and each model (i.e. 4 Radii) finds a path of nodes to
-            //  turbine site, does wind speed estimate along nodes using specified model and creates WS_Estimates()                                   
-                      
-            // Calculate grid statistics at turbine site
-            if (gridStats.stats == null)            
-                gridStats.GetGridArrayAndCalcStats(UTMX, UTMY, thisInst);
+            // For each predictor met and each model (i.e. 4 Radii) finds a path of nodes to
+            //  turbine site, does wind speed estimate along nodes using specified model and 
+            // creates WS_Ests() for each met and each model                                  
 
             // Find path of nodes in between mets and turbines. 
             NodeCollection nodeList = new NodeCollection();
-            Nodes[] pathOfNodes = null;
-            NodeCollection.Node_UTMs[] pathOfCoords = null;
+            
             int numWD = thisInst.metList.numWD;
-            Nodes[] newNodes = null;
-            Nodes[] blankNodes = null; 
                                     
-            if (models[0] == null)
+            if (models == null)
                 return;
 
+            int numModels = models.Length;
+
             Met[] metsToUse = thisInst.metList.GetMets(models[0].metsUsed, null);
+            double[] windRose = thisInst.metList.GetInterpolatedWindRose(models[0].metsUsed, UTMX, UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
 
             for (int j = 0; j < metsToUse.Length; j++)
             {
-                Met thisMet = metsToUse[j];                                             
-
-                for (int r = 0; r < thisInst.radiiList.ThisCount; r++)
+                Met thisMet = metsToUse[j];
+                
+                for (int m = 0; m < numModels; m++)
                 {
-                    // Check to see if already have this UW&DW estimate calculated
+                    Met.WSWD_Dist thisDist = thisMet.GetWS_WD_Dist(thisInst.modeledHeight, models[m].timeOfDay, models[m].season);
+
+                    // Check to see if already have this model estimate calculated
                     bool alreadyCalc = false;
                     for (int n = 0; n < WSEst_Count; n++)
-                    { 
+                    {
                         if (WS_Estimate[n].model != null) {
-                            if (thisInst.modelList.IsSameModel(WS_Estimate[n].model, models[r]) && thisMet.name == WS_Estimate[n].predictorMetName) {
+                            if (thisInst.modelList.IsSameModel(WS_Estimate[n].model, models[m]) && thisMet.name == WS_Estimate[n].predictorMetName) {
                                 alreadyCalc = true;
                                 break;
                             }
@@ -1087,80 +1068,35 @@ namespace ContinuumNS
                     if (alreadyCalc == false)
                     {
                         // Check to see if there is a WS_Estimate for this met and radius that has been cleared // don't think that this can happen...
-                        int thisRadius = thisInst.radiiList.investItem[r].radius;
                         
                         Turbine.WS_Ests newWS_Est = new Turbine.WS_Ests();
                         newWS_Est.predictorMetName = thisMet.name;
-                        newWS_Est.model = models[r];
-                        newWS_Est.radius = thisRadius;
+                        newWS_Est.model = models[m];
+                        newWS_Est.radius = models[m].radius;
+                        int radInd = thisInst.radiiList.GetRadiusInd(models[m].radius);
 
                         // Check to see if elevation difference b/w met and turbine is within limits
-                        bool isWithinLimits = thisInst.modelList.IsWithinModelLimit(gridStats, elev, thisMet.gridStats, thisMet.elev, r, thisMet.windRose);
+                        bool isWithinLimits = thisInst.modelList.IsWithinModelLimit(gridStats, elev, thisMet.gridStats, thisMet.elev, radInd, thisDist.windRose);
                         AddWS_Estimate(newWS_Est);
 
                         if (isWithinLimits)
                         {
-                            // Search WS_estimates already created to see if a path of nodes to that met has already been found
-                            bool gotNodes = false;
-                            for (int m = 0; m < WSEst_Count; m++) {
-                                if (thisMet.name == WS_Estimate[m].predictorMetName && WS_Estimate[m].radius == thisRadius
-                                    && WS_Estimate[m].pathOfNodesUTMs != null) {
-                                    pathOfCoords = WS_Estimate[m].pathOfNodesUTMs;
-                                    gotNodes = true;
-                                    break;
-                                }
-                            }
-
-                            if (gotNodes == false) {                           
-
-                                Nodes targetNode = nodeList.GetTurbNode(this);
-                                Nodes startNode = nodeList.GetMetNode(thisMet);
-
-                                pathOfNodes = nodeList.FindPathOfNodes(startNode, targetNode, models[r], thisInst, ref newNodes, ref blankNodes);
-                            }
-                            else
-                            {
-                                // found path of coords
-                                if (pathOfCoords.Length > 0)
-                                {
-                                    pathOfNodes = new Nodes[pathOfCoords.Length];
-
-                                    if (allNodesInPaths != null)
-                                        pathOfNodes = GetPathFromList(pathOfCoords, allNodesInPaths, thisInst);
-                                    else
-                                        pathOfNodes = nodeList.GetPathOfNodes(pathOfCoords, thisInst, ref blankNodes);
-
-                                }
-                                else
-                                    pathOfNodes = new Nodes[0];
-
-                            }
-
                             int WS_Est_ind = WSEst_Count - 1;
+                            Nodes targetNode = nodeList.GetTurbNode(this);
+                            Nodes startNode = nodeList.GetMetNode(thisMet);
 
-                            if (pathOfNodes != null)
-                            {
-                                if (pathOfNodes.Length == 200)
-                                    pathOfNodes = null;
+                            WS_Estimate[WS_Est_ind].pathOfNodes = nodeList.FindPathOfNodes(startNode, targetNode, models[m], thisInst);
+                            WS_Estimate[WS_Est_ind].radius = models[m].radius;
+                            WS_Ests thisEst = DoWS_EstAlongNodes(thisMet, models[m], WS_Estimate[WS_Est_ind].pathOfNodes, thisInst, windRose);
+                            WS_Estimate[WS_Est_ind].sectorWS = thisEst.sectorWS;
+                            WS_Estimate[WS_Est_ind].sectorWS_at_nodes = thisEst.sectorWS_at_nodes;
+                            WS_Estimate[WS_Est_ind].WS = thisEst.WS;
+                            WS_Estimate[WS_Est_ind].WS_at_nodes = thisEst.WS_at_nodes;                           
 
-                                pathOfCoords = new NodeCollection.Node_UTMs[pathOfNodes.Length];
-                                for (int m = 0; m <= pathOfNodes.Length - 1; m++)
-                                {
-                                    pathOfCoords[m].UTMX = pathOfNodes[m].UTMX;
-                                    pathOfCoords[m].UTMY = pathOfNodes[m].UTMY;
-                                }
-
-                                WS_Estimate[WS_Est_ind].pathOfNodesUTMs = pathOfCoords;
-                                WS_Estimate[WS_Est_ind].radius = models[r].radius;
-                                DoWS_EstAlongNodes(WS_Est_ind, r, pathOfNodes, thisInst);
-                            }
                         }
-                    }                        
+                    }
                 }
             }
-
-            if (newNodes != null)
-                nodeList.AddNodes(newNodes, thisInst.savedParams.savedFileName);            
 
         }
 
@@ -1180,13 +1116,13 @@ namespace ContinuumNS
             if (pathToMetUTM == null)
                 numNodes = 0;
             else
-                numNodes = pathToMetUTM.Length;                       
+                numNodes = pathToMetUTM.Length;
 
             if (numNodes > 0 && numAllNodes > 0)
             {
                 pathToMet = new Nodes[numNodes];
                 double thisUTMX;
-                double thisUTMY; 
+                double thisUTMY;
 
                 for (int nodeIndex = 0; nodeIndex <= numNodes - 1; nodeIndex++)
                 {
@@ -1194,7 +1130,7 @@ namespace ContinuumNS
                     thisUTMY = pathToMetUTM[nodeIndex].UTMY;
 
                     for (int allNodeIndex = 0; allNodeIndex <= numAllNodes - 1; allNodeIndex++)
-                    { 
+                    {
                         if (thisUTMX == allNodesInPath[allNodeIndex].UTMX && thisUTMY == allNodesInPath[allNodeIndex].UTMY) {
                             pathToMet[nodeIndex] = allNodesInPath[allNodeIndex];
                             break;
@@ -1203,8 +1139,8 @@ namespace ContinuumNS
 
                     Nodes[] blank = null;
                     if (pathToMet[nodeIndex] == null) {
-                        pathToMet[nodeIndex] = nodeList.GetANode(thisUTMX, thisUTMY, thisInst, ref blank, null);
-                        if (thisInst.topo.useSepMod == true) pathToMet[nodeIndex].GetFlowSepNodes(nodeList, thisInst, null);
+                        pathToMet[nodeIndex] = nodeList.GetANode(thisUTMX, thisUTMY, thisInst);
+                        if (thisInst.topo.useSepMod == true) pathToMet[nodeIndex].GetFlowSepNodes(nodeList, thisInst, null, thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All));
                     }
 
                 }
@@ -1216,58 +1152,162 @@ namespace ContinuumNS
             return pathToMet;
         }
 
-        public void DoWS_EstAlongNodes(int WS_EstIndex, int radiusIndex, Nodes[] pathOfNodes, Continuum thisInst)
+        public WS_Ests DoWS_EstAlongNodes(Met predMet, Model model, Nodes[] pathOfNodes, Continuum thisInst, double[] windRose)
         {
             //  Performs wind speed estimate along path of nodes from Met to turbine using specified model and predictor met
-            if (thisInst.metList.ThisCount == 0) return;
-            Met thisMet = null;
+            //  Returns WS_Ests
+            WS_Ests thisWS_Est = new WS_Ests();
+
+            if (thisInst.metList.ThisCount == 0)
+                return thisWS_Est;
+
             NodeCollection nodeList = new NodeCollection();
 
-            for (int i = 0; i < thisInst.metList.ThisCount; i++) { 
-                if (thisInst.metList.metItem[i].name == WS_Estimate[WS_EstIndex].predictorMetName) {
-                    thisMet = thisInst.metList.metItem[i];
-                    break;
-                }
-            }                      
-                        
             int numWD = thisInst.metList.numWD;
             int numNodes = 0;
             if (pathOfNodes != null) numNodes = pathOfNodes.Length;
 
-            WS_Estimate[WS_EstIndex].sectorWS = new double[numWD];
+            thisWS_Est.sectorWS = new double[numWD];
             Nodes endNode = nodeList.GetTurbNode(this);
-            ModelCollection.WS_Est_Struct WS_EstStr = thisInst.modelList.DoWS_Estimate(thisMet, endNode, pathOfNodes, radiusIndex, WS_Estimate[WS_EstIndex].model, thisInst);
+            ModelCollection.WS_Est_Struct WS_EstStr = thisInst.modelList.DoWS_Estimate(predMet, endNode, pathOfNodes, model, thisInst);
 
             if (numNodes > 0) {
-                WS_Estimate[WS_EstIndex].WS_at_nodes = new double[numNodes];
-                WS_Estimate[WS_EstIndex].sectorWS_at_nodes = new double[numNodes, numWD];
+                thisWS_Est.WS_at_nodes = new double[numNodes];
+                thisWS_Est.sectorWS_at_nodes = new double[numNodes, numWD];
             }
 
-            WS_Estimate[WS_EstIndex].sectorWS = WS_EstStr.sectorWS;
+            thisWS_Est.sectorWS = WS_EstStr.sectorWS;
 
             for (int nodeIndex = 0; nodeIndex <= numNodes - 1; nodeIndex++)
                 for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++)
-                    WS_Estimate[WS_EstIndex].sectorWS_at_nodes[nodeIndex, WD_Ind] = WS_EstStr.sectorWS_AtNodes[nodeIndex, WD_Ind];               
-            
+                    thisWS_Est.sectorWS_at_nodes[nodeIndex, WD_Ind] = WS_EstStr.sectorWS_AtNodes[nodeIndex, WD_Ind];
+
             if (numNodes > 0)
             {
                 for (int nodeIndex = 0; nodeIndex < numNodes; nodeIndex++)
                 {
-                    WS_Estimate[WS_EstIndex].WS_at_nodes[nodeIndex] = 0;
+                    thisWS_Est.WS_at_nodes[nodeIndex] = 0;
                     for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++)
-                        WS_Estimate[WS_EstIndex].WS_at_nodes[nodeIndex] = WS_Estimate[WS_EstIndex].WS_at_nodes[nodeIndex] + WS_Estimate[WS_EstIndex].sectorWS_at_nodes[nodeIndex, WD_Ind] * windRose[WD_Ind];                    
+                        thisWS_Est.WS_at_nodes[nodeIndex] = thisWS_Est.WS_at_nodes[nodeIndex] + thisWS_Est.sectorWS_at_nodes[nodeIndex, WD_Ind] * windRose[WD_Ind];
                 }
             }
 
-            WS_Estimate[WS_EstIndex].WS = 0;
-            for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++)
-                WS_Estimate[WS_EstIndex].WS = WS_Estimate[WS_EstIndex].WS + WS_Estimate[WS_EstIndex].sectorWS[WD_Ind] * windRose[WD_Ind];            
+            thisWS_Est.WS = 0;
+            for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
+                thisWS_Est.WS = thisWS_Est.WS + thisWS_Est.sectorWS[WD_Ind] * windRose[WD_Ind];
+
+            return thisWS_Est;
+        }
+
+        public void GenerateAvgWSTimeSeries(ModelCollection.TimeSeries[] thisTS, Continuum thisInst, Wake_Model wakeModel, bool isCalibrated, bool isImported,
+            string MCP_Method, bool forRoundRobin, TurbineCollection.PowerCurve powerCurve)
+        {
+            // Creates and adds new Avg_Est based on time series data
+            // If forRoundRobin is true then doesn't assign uncertainty
+
+            if (thisTS.Length == 0)
+                return;
+
+            int numWD = thisInst.metList.numWD;
+            int avgWS_index = 0;
+            bool foundAvgEst = false;
+            bool isWaked = true;
+            if (wakeModel.powerCurve.ratedPower == 0)
+                isWaked = false;
+
+            // Calculate WSWD distribution          
+
+            Met.WSWD_Dist freeStreamDist = thisInst.modelList.CalcWSWD_Dist(thisTS, thisInst, "Freestream");
+            Met.WSWD_Dist wakedDist = thisInst.modelList.CalcWSWD_Dist(thisTS, thisInst, "Waked");
+            
+            // Get wind speed uncertainty
+            MetPairCollection.RR_WS_Ests uncert = new MetPairCollection.RR_WS_Ests();
+            if (thisInst.metList.ThisCount > 1 && forRoundRobin == false)
+                uncert = thisInst.metPairList.GetRoundRobinEst(thisInst.metList.ThisCount - 1, thisInst, MCP_Method);
+            else if (thisInst.metList.ThisCount == 1 && forRoundRobin == false)
+                uncert.RMS_All = GetDefaultUncertainty(freeStreamDist.windRose);
+
+            foundAvgEst = false;
+            // Check to see if need to create one or if one exists with only WS
+            for (int j = 0; j < AvgWSEst_Count; j++)
+            {
+                if (avgWS_Est[j].isImported == isImported && avgWS_Est[j].haveGrossTS == false && avgWS_Est[j].haveNetTS == false)
+                {
+                    avgWS_index = j;
+                    foundAvgEst = true;
+                    break;
+                }
+            }
+
+            if (foundAvgEst == false)
+            { // need to create one
+                Avg_Est newAvgEst = new Avg_Est();
+                AddAvgWS_Estimate(newAvgEst);
+                avgWS_index = AvgWSEst_Count - 1;
+            }
+
+            avgWS_Est[avgWS_index].isImported = isImported;
+            avgWS_Est[avgWS_index].wakeModel = wakeModel;
+            avgWS_Est[avgWS_index].powerCurve = powerCurve;
+                         
+            avgWS_Est[avgWS_index].freeStream.WS = freeStreamDist.WS;
+            avgWS_Est[avgWS_index].freeStream.WS_Dist = freeStreamDist.WS_Dist;
+            avgWS_Est[avgWS_index].freeStream.windRose = freeStreamDist.windRose;
+            avgWS_Est[avgWS_index].freeStream.sectorWS_Dist = freeStreamDist.sectorWS_Dist;
+            avgWS_Est[avgWS_index].freeStream.sectorWS = new double[numWD];
+
+            for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
+                avgWS_Est[avgWS_index].freeStream.sectorWS[WD_Ind] = freeStreamDist.sectorWS_Ratio[WD_Ind] * freeStreamDist.WS;
+
+            // Calculate weibull params  
+            avgWS_Est[avgWS_index].freeStream.weibullParams = thisInst.metList.CalcWeibullParams(avgWS_Est[avgWS_index].freeStream.WS_Dist, avgWS_Est[avgWS_index].freeStream.sectorWS_Dist,
+                                                                            avgWS_Est[avgWS_index].freeStream.WS);
+
+            
+            if (isWaked)
+            {
+                avgWS_Est[avgWS_index].waked.WS = wakedDist.WS;
+                avgWS_Est[avgWS_index].waked.WS_Dist = wakedDist.WS_Dist;
+                avgWS_Est[avgWS_index].waked.windRose = wakedDist.windRose;
+                avgWS_Est[avgWS_index].waked.sectorWS_Dist = wakedDist.sectorWS_Dist;
+                avgWS_Est[avgWS_index].waked.sectorWS = new double[numWD];
+
+                for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
+                    avgWS_Est[avgWS_index].waked.sectorWS[WD_Ind] = wakedDist.sectorWS_Ratio[WD_Ind] * wakedDist.WS;
+
+                // Calculate weibull params  
+                avgWS_Est[avgWS_index].waked.weibullParams = thisInst.metList.CalcWeibullParams(avgWS_Est[avgWS_index].waked.WS_Dist, avgWS_Est[avgWS_index].waked.sectorWS_Dist,
+                                                                                avgWS_Est[avgWS_index].waked.WS);
+            }
+
+            avgWS_Est[avgWS_index].timeSeries = thisTS;
+            avgWS_Est[avgWS_index].uncert = uncert.RMS_All;           
+
+            avgWS_Est[avgWS_index].FS_MonthlyVals = CalcMonthlyWS_Values(thisTS, thisInst, "Freestream");
+
+            if (isWaked)
+                avgWS_Est[avgWS_index].wakedMonthlyVals = CalcMonthlyWS_Values(thisTS, thisInst, "Waked");
+
+            if (avgWS_Est[avgWS_index].timeSeries != null)
+            {
+                if (avgWS_Est[avgWS_index].timeSeries[0].grossEnergy != 0)
+                    avgWS_Est[avgWS_index].haveGrossTS = true;
+                else
+                    avgWS_Est[avgWS_index].haveGrossTS = false;
+
+                if (avgWS_Est[avgWS_index].timeSeries[0].netEnergy != 0)
+                    avgWS_Est[avgWS_index].haveNetTS = true;
+                else
+                    avgWS_Est[avgWS_index].haveNetTS = false;
+            }
 
         }
 
-        public void GenerateAvgWS(Continuum thisInst, Model[] models)
+        public void GenerateAvgWSFromTABs(Continuum thisInst, Model[] models, double[] windRose, bool forRoundRobin)
         {
+            // Combines WS_Ests (i.e. estimates at turbine site for each predicting met and each model) to form Avg_Est
             // Calculates Avg WS, uncertainty AEP, weibull params for each turbine for either site-calibrated or default model
+            // FOR TAB FILES ONLY (not time series)
             if (thisInst.metList.ThisCount == 0) return;
 
             double avgWS = 0;
@@ -1280,58 +1320,48 @@ namespace ContinuumNS
 
             string[] metsUsed = models[0].metsUsed;
             NodeCollection nodeList = new NodeCollection();
-                                  
-            Met[] predictingMets = thisInst.metList.GetMets(metsUsed, null);  
+
+            Met[] predictingMets = thisInst.metList.GetMets(metsUsed, null);
             Met predictingMet = null;
             int predictingMetIndex = 0;
-              
+
             Nodes turbineNode = nodeList.GetTurbNode(this);
-            double[,] indivMetWeights = thisInst.modelList.GetWS_EstWeights(predictingMets, turbineNode, models, thisInst.metList.GetAvgWindRoseMetsUsed(metsUsed));
-
-            for (int r = 0; r < thisInst.radiiList.ThisCount; r++)
+            ModelCollection.ModelWeights[] indivMetWeights = thisInst.modelList.GetWS_EstWeights(predictingMets, turbineNode, models, 
+                thisInst.metList.GetAvgWindRoseMetsUsed(metsUsed, Met.TOD.All, Met.Season.All, thisInst.modeledHeight), thisInst.radiiList);
+                        
+            for (int j = 0; j < WSEst_Count; j++)
             {
-                for (int j = 0; j < WSEst_Count; j++)
+                for (int k = 0; k < thisInst.metList.ThisCount; k++)
                 {
-                    for (int k = 0; k < thisInst.metList.ThisCount; k++)
+                    if (thisInst.metList.metItem[k].name == WS_Estimate[j].predictorMetName)
                     {
-                        if (thisInst.metList.metItem[k].name == WS_Estimate[j].predictorMetName)
-                        {
-                            predictingMet = thisInst.metList.metItem[k];
-                            break;
-                        }
+                        predictingMet = thisInst.metList.metItem[k];
+                        break;
                     }
+                }                                
 
-                    for (int k = 0; k < metsUsed.Length; k++)
+                if (WS_Estimate[j].elevDiffTooBig == false && WS_Estimate[j].expoDiffTooBig == false && WS_Estimate[j].WS != 0)
                     {
-                        if (metsUsed[k] == predictingMet.name)
-                        {
-                            predictingMetIndex = k;
-                            break;
-                        }
-                    }
-
-                    if (thisInst.modelList.IsSameModel(WS_Estimate[j].model, models[r]) == true && WS_Estimate[j].elevDiffTooBig == false &&
-                        WS_Estimate[j].expoDiffTooBig == false && WS_Estimate[j].WS != 0)
-                    {
-                        avgWS = avgWS + WS_Estimate[j].WS * indivMetWeights[predictingMetIndex, r];
-                        WS_Estimate[j].WS_weight = indivMetWeights[predictingMetIndex, r];
-                        avgWeight = avgWeight + indivMetWeights[predictingMetIndex, r];
+                        double modelWeight = thisInst.modelList.GetWeightForMetAndModel(indivMetWeights, predictingMet, WS_Estimate[j].model);
+                        avgWS = avgWS + WS_Estimate[j].WS * modelWeight;
+                        WS_Estimate[j].WS_weight = modelWeight;
+                        avgWeight = avgWeight + modelWeight;
 
                         for (int WD = 0; WD <= numWD - 1; WD++)
-                            avgSectorWS[WD] = avgSectorWS[WD] + WS_Estimate[j].sectorWS[WD] * indivMetWeights[predictingMetIndex, r];
+                            avgSectorWS[WD] = avgSectorWS[WD] + WS_Estimate[j].sectorWS[WD] * modelWeight;
 
                     }
-                }
+                
             }
-          
+
             int avgWS_index = 0;
             bool foundAvgEst = false;
-                     
+
             foundAvgEst = false;
             // Check to see if need to create one or if one exists
             for (int j = 0; j < AvgWSEst_Count; j++)
             {
-                if (avgWS_Est[j].isCalibrated == models[0].isCalibrated && avgWS_Est[j].isImported == models[0].isImported)
+                if (avgWS_Est[j].isImported == models[0].isImported)
                 {
                     avgWS_index = j;
                     foundAvgEst = true;
@@ -1341,64 +1371,75 @@ namespace ContinuumNS
 
             if (foundAvgEst == false)
             { // need to create one
-                Avg_Est newAvgEst = new Avg_Est();
-                newAvgEst.isCalibrated = models[0].isCalibrated;                        
+                Avg_Est newAvgEst = new Avg_Est();                
+                newAvgEst.isImported = models[0].isImported;                
                 AddAvgWS_Estimate(newAvgEst);
-            }
+                avgWS_index = AvgWSEst_Count - 1;
+                
+                avgWS_Est[avgWS_index].freeStream.windRose = windRose;
 
-            for (int j = 0; j < AvgWSEst_Count; j++)
-            {
-                if (avgWS_Est[j].isCalibrated == models[0].isCalibrated && avgWS_Est[j].isImported == models[0].isImported)
+                MetPairCollection.RR_WS_Ests uncert = new MetPairCollection.RR_WS_Ests();
+                if (thisInst.metList.ThisCount > 1 && forRoundRobin == false)
+                    uncert = thisInst.metPairList.GetRoundRobinEst(thisInst.metList.ThisCount - 1, thisInst, null);
+                else if (thisInst.metList.ThisCount == 1 && forRoundRobin == false)
+                    uncert.RMS_All = GetDefaultUncertainty(avgWS_Est[avgWS_index].freeStream.windRose);
+
+                avgWS_Est[avgWS_index].freeStream.WS = 0;
+                avgWS_Est[avgWS_index].uncert = uncert.RMS_All;
+                avgWS_Est[avgWS_index].freeStream.sectorWS = new double[numWD];
+
+                if (avgWeight != 0)
                 {
-                    avgWS_index = j;
-                    foundAvgEst = true;
-                    break;
+                    avgWS_Est[avgWS_index].freeStream.WS = avgWS / avgWeight;
+
+                    for (int WD = 0; WD <= numWD - 1; WD++)
+                        avgWS_Est[avgWS_index].freeStream.sectorWS[WD] = avgSectorWS[WD] / avgWeight;
+
                 }
+
+                int numWS = thisInst.metList.numWS;
+                avgWS_Est[avgWS_index].freeStream.sectorWS_Dist = new double[numWD, numWS];
+
+                for (int WD = 0; WD < numWD; WD++)
+                {
+                    double[] WS_Dist = thisInst.metList.CalcWS_DistForTurbOrMap(metsUsed, avgWS_Est[avgWS_index].freeStream.sectorWS[WD], WD, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
+
+                    for (int WS = 0; WS < numWS; WS++)
+                        avgWS_Est[avgWS_index].freeStream.sectorWS_Dist[WD, WS] = WS_Dist[WS];
+
+                }
+
+                // instead of forming WS_Dist from overall WS, use sectorWS distributions (as is done in net energy calcs) 10/10/2016
+                avgWS_Est[avgWS_index].freeStream.WS_Dist = thisInst.metList.CalcOverallWS_Dist(avgWS_Est[avgWS_index].freeStream.sectorWS_Dist, windRose);
+
+                // Calculate weibull params
+                avgWS_Est[avgWS_index].freeStream.weibullParams = thisInst.metList.CalcWeibullParams(avgWS_Est[avgWS_index].freeStream.WS_Dist, avgWS_Est[avgWS_index].freeStream.sectorWS_Dist,
+                                                                                avgWS_Est[avgWS_index].freeStream.WS);
+                                
             }
-
-            avgWS_Est[avgWS_index].WS = 0;
-            avgWS_Est[avgWS_index].uncert = GetErrorEst(thisInst);
-            avgWS_Est[avgWS_index].sectorWS = new double[numWD];
-
-            if (avgWeight != 0)
-            {
-                avgWS_Est[avgWS_index].WS = avgWS / avgWeight;
-
-                for (int WD = 0; WD <= numWD - 1; WD++)
-                    avgWS_Est[avgWS_index].sectorWS[WD] = avgSectorWS[WD] / avgWeight;
-
-            }
-
-            int numWS = thisInst.metList.metItem[0].WS_Dist.Length;
-            avgWS_Est[avgWS_index].sectorWS_Dist = new double[numWD, numWS];
-
-            for (int WD = 0; WD < numWD; WD++)
-            {
-                double[] WS_Dist = thisInst.metList.CalcWS_DistForTurbOrMap(metsUsed, avgWS_Est[avgWS_index].sectorWS[WD], WD);
-
-                for (int WS = 0; WS < numWS; WS++)
-                    avgWS_Est[avgWS_index].sectorWS_Dist[WD, WS] = WS_Dist[WS] * 1000;
-
-            }
-
-            // instead of forming WS_Dist from overall WS, use sectorWS distributions (as is done in net energy calcs) 10/10/2016
-            avgWS_Est[avgWS_index].WS_Dist = thisInst.metList.CalcOverallWS_Dist(avgWS_Est[avgWS_index].sectorWS_Dist, windRose);
-
-            // Calculate weibull params
-            MetCollection.Weibull_params thisWeibull = thisInst.metList.CalcWeibullParams(avgWS_Est[avgWS_index].WS_Dist, avgWS_Est[avgWS_index].sectorWS_Dist,
-                                                                            avgWS_Est[avgWS_index].WS);
-
-            avgWS_Est[avgWS_index].weibull_A = thisWeibull.overall_A;
-            avgWS_Est[avgWS_index].weibull_k = thisWeibull.overall_k;
-            avgWS_Est[avgWS_index].sectWeibull_A = thisWeibull.sector_A;
-            avgWS_Est[avgWS_index].sectWeibull_k = thisWeibull.sector_k;
-            avgWS_Est[avgWS_index].usesSRDH = thisInst.topo.useSR;
-            avgWS_Est[avgWS_index].usesFlowSep = thisInst.topo.useSepMod;
-          
         }
 
-        public double GetErrorEst(Continuum thisInst)
+        public double GetDefaultUncertainty(double[] windRose)
         {
+            // Calculates and returns default estimated uncertainty. Based on results of single met study using Continuum 1. Needs to be revisited.
+            double overallUncert = 0;
+                        
+            double adjFact = 1.2f; // what is this based on?
+            // these errors are based on overall WS errors.
+            if (gridStats.GetOverallP10(windRose, 0, "DW") < 15)
+                overallUncert = 0.0167f * adjFact;
+            else if (gridStats.GetOverallP10(windRose, 0, "DW") < 85)
+                overallUncert = 0.021f * adjFact;
+            else
+                overallUncert = 0.03f * adjFact;
+
+            return overallUncert;
+            
+        }
+
+  /*      public double GetErrorEst(Continuum thisInst, double[] windRose)
+        {
+            // Generates uncertainty estimate at turbine site. Based on annual TAB files (i.e. not time series model)
             double overallUncert = 0;
             bool isImported = false;
             if (thisInst.modelList.models.GetUpperBound(0) > 0) // has default and at least one other model (i.e. either imported or site-calibrated
@@ -1437,7 +1478,7 @@ namespace ContinuumNS
                         for (int j = 0; j < numWD; j++)
                         {
                             double thisUncert = thisModel.GetUncertaintyEstimate(thisInst, gridStats.stats[i].P10_UW[j], gridStats.stats[i].P10_DW[j],
-                                expo[i].expo[j], expo[i].GetDW_Param(j, "Expo"), j);
+                                expo[i].expo[j], expo[i].GetDW_Param(j, "Expo"), j, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
                             modelUncert = modelUncert + thisUncert * windRose[j];
                         }
 
@@ -1451,6 +1492,584 @@ namespace ContinuumNS
             }
 
             return overallUncert;
+        }
+        */
+               
+
+        public double GetWeightForMetAndModel(ModelCollection.ModelWeights[] weights, Met thisMet, Model thisModel)
+        {
+            double thisWeight = 0;
+
+            if (weights == null)
+                return thisWeight;
+
+            int numWeights = weights.Length;
+            ModelCollection modelList = new ModelCollection();
+
+            for (int i = 0; i < numWeights; i++)
+                if (weights[i].met.name == thisMet.name && modelList.IsSameModel(weights[i].model, thisModel))
+                {
+                    thisWeight = weights[i].weight;
+                    break;
+                }
+
+            return thisWeight;
+        }     
+
+        public MonthlyWS_Vals[] CalcMonthlyWS_Values(ModelCollection.TimeSeries[] thisTS, Continuum thisInst, string wakedOrFreestream)
+        {
+            // Calculate and returns mean monthls values using either waked or freestream wind speed values
+            MonthlyWS_Vals[] monthlyWS_Vals = new MonthlyWS_Vals[0];
+
+            if (thisTS == null) return monthlyWS_Vals;
+                        
+            int TS_Length = thisTS.Length;
+            if (TS_Length <= 1) return monthlyWS_Vals;
+
+            // Figure out time interval (in hours)
+            TimeSpan timeSpan = thisTS[1].dateTime - thisTS[0].dateTime;
+            int timeInt = timeSpan.Hours;
+
+            // Start on first hour on first of month
+            int TS_Ind = 0;
+            int thisDay = thisTS[TS_Ind].dateTime.Day;
+            int thisHour = thisTS[TS_Ind].dateTime.Hour;
+            MERRA merra = new MERRA(); // Using some functions from this class (i.e. Get_Num_Days_in_Month)
+
+            while (thisDay != 1 && thisHour != 0)
+            {
+                TS_Ind++;
+                thisDay = thisTS[TS_Ind].dateTime.Day;
+                thisHour = thisTS[TS_Ind].dateTime.Hour;
+            }
+
+            int lastMonth = thisTS[TS_Ind].dateTime.Month;
+            int lastYear = thisTS[TS_Ind].dateTime.Year;
+
+            double avgWS = 0;
+            int WS_count = 0;
+            int numDaysInMonth = merra.Get_Num_Days_in_Month(lastMonth, lastYear);
+            int numMonthlyInts = numDaysInMonth * timeInt * 24;
+            ModelCollection.TimeSeries[] monthlyTS = new ModelCollection.TimeSeries[numMonthlyInts];
+            int monthlyInd = 0;
+            int Ind = 0;
+            
+            for (int t = TS_Ind; t < TS_Length; t++)
+            {
+                int month = thisTS[t].dateTime.Month;
+                int year = thisTS[t].dateTime.Year;
+
+                if (month == lastMonth && year == lastYear)
+                {
+                    double thisWS = 0;
+
+                    if (wakedOrFreestream == "Waked")
+                        thisWS = thisTS[t].wakedWS;
+                    else if (wakedOrFreestream == "Freestream")
+                        thisWS = thisTS[t].freeStreamWS;
+                    else
+                    {
+                        MessageBox.Show("Invalid flag in CalcMonthlyWS_Values");
+                        return monthlyWS_Vals;
+                    }
+                    
+                    avgWS = avgWS + thisWS;
+                    WS_count++;
+                    monthlyTS[Ind].dateTime = thisTS[t].dateTime;
+
+                    if (wakedOrFreestream == "Waked")
+                        monthlyTS[Ind].wakedWS = thisWS;
+                    else
+                        monthlyTS[Ind].freeStreamWS = thisWS;
+
+                    monthlyTS[Ind].WD = thisTS[t].WD;
+                    Ind++;
+                }
+                else
+                {
+                    // Resize Monthly time series in case have some empty  entries
+                    Array.Resize(ref monthlyTS, Ind);
+                    // Calculate WSWD distribution for month
+                    Array.Resize(ref monthlyWS_Vals, monthlyInd + 1);
+
+                    if (WS_count > 0)
+                        avgWS = avgWS / WS_count;
+
+                    monthlyWS_Vals[monthlyInd].year = lastYear;
+                    monthlyWS_Vals[monthlyInd].month = lastMonth;
+                    monthlyWS_Vals[monthlyInd].avgWS = avgWS;
+                    monthlyWS_Vals[monthlyInd].WS_Dist = thisInst.modelList.CalcWSWD_Dist(monthlyTS, thisInst, wakedOrFreestream);
+                    monthlyInd++;
+
+                    numDaysInMonth = merra.Get_Num_Days_in_Month(month, year);
+                    numMonthlyInts = numDaysInMonth * timeInt * 24;
+                    Array.Clear(monthlyTS, 0, monthlyTS.Length);
+                    Array.Resize(ref monthlyTS, numMonthlyInts);
+                    Ind = 0;
+                    avgWS = 0;
+                    WS_count = 0;
+                    monthlyTS[Ind].dateTime = thisTS[t].dateTime;
+
+                    if (wakedOrFreestream == "Waked")
+                        monthlyTS[Ind].wakedWS = thisTS[t].wakedWS;
+                    else
+                        monthlyTS[Ind].freeStreamWS = thisTS[t].freeStreamWS;
+
+                    monthlyTS[Ind].WD = thisTS[t].WD;
+                    lastMonth = month;
+                    lastYear = year;
+                    Ind++;
+                }
+
+            }
+
+            // Resize Monthly time series in case have some empty  entries
+            Array.Resize(ref monthlyTS, Ind);
+            // Calculate WSWD distribution for month
+            Array.Resize(ref monthlyWS_Vals, monthlyInd + 1);
+
+            if (WS_count > 0)
+                avgWS = avgWS / WS_count;
+
+            monthlyWS_Vals[monthlyInd].year = lastYear;
+            monthlyWS_Vals[monthlyInd].month = lastMonth;
+            monthlyWS_Vals[monthlyInd].avgWS = avgWS;
+            monthlyWS_Vals[monthlyInd].WS_Dist = thisInst.modelList.CalcWSWD_Dist(monthlyTS, thisInst, wakedOrFreestream);
+            monthlyInd++;
+
+            return monthlyWS_Vals;
+
+        }
+           
+
+        public void CalcGrossAEPFromTimeSeries(Continuum thisInst, bool isCalibrated, ModelCollection.TimeSeries[] thisTS, TurbineCollection.PowerCurve powerCurve)
+        {
+            // Calculates and adds gross energy estimate based on energy production time series
+            if (thisInst.metList.numWD == 0) return;
+            int numWD = thisInst.metList.numWD;
+            int numWS = thisInst.metList.numWS;                                          
+                        
+            bool alreadyCalc = false;
+                
+            double[] P50_AEP_Sect = new double[numWD];
+            // Check to see if energy calc already done
+            alreadyCalc = false;
+            for (int k = 0; k < GrossAEP_Count; k++)
+            {
+                if (grossAEP[k].powerCurve.name == powerCurve.name && grossAEP[k].isCalibrated == isCalibrated)
+                {
+                    alreadyCalc = true;
+                    break;
+                }
+            }
+
+            Avg_Est avgEst = GetAvgWS_Est(new Wake_Model(), powerCurve);
+            EstWS_Data estData = avgEst.freeStream;
+
+            if (alreadyCalc == false)
+            {
+
+                Gross_Energy_Est thisGross = new Gross_Energy_Est();
+                thisGross.powerCurve = powerCurve;
+                thisGross.isCalibrated = isCalibrated;
+                thisGross.useSRDH = thisInst.topo.useSR;
+                thisGross.usesFlowSep = thisInst.topo.useSepMod;
+                thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, thisTS, thisInst); // calculates long-term AEP, sectorwise energy, and monthly values
+
+                // P90 and P99 estimates
+                double[,] sectorDist = new double[numWD, numWS];
+
+                for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
+                {
+                    double P90_WS = estData.sectorWS[WD_Ind] - estData.sectorWS[WD_Ind] * 0.0128155f;
+                    double[] WS_Dist = thisInst.metList.CalcWS_DistForTurbOrMap(thisInst.metList.GetMetsUsed(), P90_WS, WD_Ind, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
+                    for (int WS_ind = 0; WS_ind <= numWS - 1; WS_ind++)
+                        sectorDist[WD_Ind, WS_ind] = WS_Dist[WS_ind];
+                }
+
+                double[] P90_Dist = thisInst.metList.CalcOverallWS_Dist(sectorDist, thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All));
+
+                for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
+                {
+                    double P99_WS = estData.sectorWS[WD_Ind] - estData.sectorWS[WD_Ind] * 0.02326f;
+                    double[] WS_Dist = thisInst.metList.CalcWS_DistForTurbOrMap(thisInst.metList.GetMetsUsed(), P99_WS, WD_Ind, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
+                    for (int WS_ind = 0; WS_ind <= numWS - 1; WS_ind++)
+                        sectorDist[WD_Ind, WS_ind] = WS_Dist[WS_ind];
+                }
+
+                double[] P99_Dist = thisInst.metList.CalcOverallWS_Dist(sectorDist, thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All));
+
+                double P90_AEP = thisInst.turbineList.CalcAndReturnGrossAEP(P90_Dist, thisInst.metList, powerCurve.name);
+                double P99_AEP = thisInst.turbineList.CalcAndReturnGrossAEP(P99_Dist, thisInst.metList, powerCurve.name);
+                
+                thisGross.P90 = P90_AEP;
+                thisGross.P99 = P99_AEP;
+
+                AddGrossEstTimeSeries(thisGross);
+            }               
+        }               
+
+        public void CalcNetAEPFromTimeSeries(Continuum thisInst, bool isCalibrated, ModelCollection.TimeSeries[] thisTS, TurbineCollection.PowerCurve powerCurve, Wake_Model wakeModel)
+        {
+            // Calculates and adds net energy estimate based on energy production time series
+            if (thisInst.metList.numWD == 0) return;
+            int numWD = thisInst.metList.numWD;
+            int numWS = thisInst.metList.numWS;
+
+         //   if (thisInst.modelList.ModelCount <= 1 && isCalibrated == false)
+         //       return;
+
+            bool alreadyCalc = false;
+
+            double[] P50_AEP_Sect = new double[numWD];
+            // Check to see if energy calc already done
+            alreadyCalc = false;
+            for (int k = 0; k < NetAEP_Count; k++)
+            {
+                if (thisInst.wakeModelList.IsSameWakeModel(netAEP[k].wakeModel, wakeModel) && netAEP[k].isCalibrated == isCalibrated)
+                {
+                    alreadyCalc = true;
+                    break;
+                }
+            }                        
+
+            if (alreadyCalc == false)
+            {
+                Net_Energy_Est thisNet = new Net_Energy_Est();
+                thisNet.wakeModel = wakeModel;
+                thisNet.isCalibrated = isCalibrated;
+                thisNet.useSRDH = thisInst.topo.useSR;
+                thisNet.usesFlowSep = thisInst.topo.useSepMod;
+                
+                Gross_Energy_Est thisGross = GetGrossEnergyEst(isCalibrated, powerCurve);
+                thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst, wakeModel); // calculates long-term AEP, sectorwise energy, and monthly values
+
+                double otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+                thisNet.sectorWakeLoss = thisInst.wakeModelList.CalcThisSectWakeLoss(wakeModel, thisNet.sectorEnergy, thisGross.sectorEnergy, otherLoss);
+                thisNet.wakeLoss = thisInst.wakeModelList.CalcThisWakeLoss(wakeModel, thisNet.AEP, thisGross.AEP, otherLoss);
+
+                AddNetEstTimeSeries(thisNet);
+            }
+        }
+
+        public double CalcYearlyValue(int thisYear, string thisParam, bool isCalibrated, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
+        {
+            // Calculates and returns annual value (wind speed, net AEP, wake loss)
+            double thisAnnual = 0;
+            double sumAnnual = 0;
+            MERRA thisMERRA = new MERRA(); // For Get_Num_Days_in_Month function
+
+            bool isWaked = true;
+            if (thisWakeModel == null)
+                isWaked = false;
+            else if (thisWakeModel.powerCurve.name == null)
+                isWaked = false;
+
+            if (thisParam == "Avg WS")
+            {
+                if (AvgWSEst_Count == 0)
+                    return thisAnnual;
+                else
+                {
+                    Avg_Est thisAvgEst = GetAvgWS_Est(thisWakeModel, powerCurve);
+                    MonthlyWS_Vals[] thisMonthly;
+
+                    if (isWaked == false)
+                        thisMonthly = thisAvgEst.FS_MonthlyVals;
+                    else
+                        thisMonthly = thisAvgEst.wakedMonthlyVals;
+
+                    if (thisMonthly == null)
+                        return thisAnnual;
+
+                    for (int i = 0; i < thisMonthly.Length; i++)
+                    {
+                        if (thisMonthly[i].year == thisYear)
+                        {
+                            int numDays = thisMERRA.Get_Num_Days_in_Month(thisMonthly[i].month, thisMonthly[i].year);
+                            thisAnnual = thisAnnual + thisMonthly[i].avgWS * numDays;
+                            sumAnnual = sumAnnual + numDays;
+                        }
+                    }
+
+                    if (sumAnnual > 0)
+                        thisAnnual = thisAnnual / sumAnnual;
+
+                }
+            }
+            else if (thisParam == "Gross AEP")
+            {
+                if (GrossAEP_Count == 0)
+                    return thisAnnual;
+                else
+                {
+                    Gross_Energy_Est thisGrossEst = GetGrossEnergyEst(isCalibrated, powerCurve);
+
+                    if (thisGrossEst.monthlyVals == null)
+                        return thisAnnual;
+
+                    for (int i = 0; i < thisGrossEst.monthlyVals.Length; i++)                    
+                        if (thisGrossEst.monthlyVals[i].year == thisYear)                                                   
+                            thisAnnual = thisAnnual + thisGrossEst.monthlyVals[i].energyProd; 
+                }
+            }
+            else if (thisParam == "Net AEP")
+            {
+                if (NetAEP_Count == 0)
+                    return thisAnnual;
+                else
+                {
+                    Net_Energy_Est thisNetEst = GetNetEnergyEst(isCalibrated, thisWakeModel);
+
+                    if (thisNetEst.monthlyVals == null)
+                        return thisAnnual;
+
+                    for (int i = 0; i < thisNetEst.monthlyVals.Length; i++)
+                        if (thisNetEst.monthlyVals[i].year == thisYear)
+                            thisAnnual = thisAnnual + thisNetEst.monthlyVals[i].energyProd;
+                }
+            }
+            
+            return thisAnnual;
+        }
+
+        public double CalcLT_MonthlyValue(string thisParam, int thisMonth, bool isCalibrated, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
+        {
+            // Calculates and returns long-term monthly value (wind speed, gross AEP, net AEP, wake loss)
+            double thisLT_Value = 0;
+            int thisCount = 0;
+
+            bool isWaked = true;
+            if (thisWakeModel == null)
+                isWaked = false;
+            else if (thisWakeModel.powerCurve.name == null)
+                isWaked = false;
+
+            if (thisParam == "Avg WS")
+            {
+                Avg_Est thisAvgEst = GetAvgWS_Est(thisWakeModel, powerCurve);
+                MonthlyWS_Vals[] thisMonthly = null;
+
+                if (isWaked)
+                    thisMonthly = thisAvgEst.wakedMonthlyVals;
+                else
+                    thisMonthly = thisAvgEst.FS_MonthlyVals;
+
+                if (thisMonthly == null)
+                    return thisLT_Value;
+                else
+                {
+                    for(int i = 0; i < thisMonthly.Length; i++)
+                    {
+                        if (thisMonthly[i].month == thisMonth)
+                        {
+                            thisLT_Value = thisLT_Value + thisMonthly[i].avgWS;
+                            thisCount++;
+                        }
+                    }
+                }
+            }
+            else if (thisParam == "Gross AEP")
+            {
+                Gross_Energy_Est thisGrossEst = GetGrossEnergyEst(isCalibrated, powerCurve);
+                if (thisGrossEst.monthlyVals == null)
+                    return thisLT_Value;
+                else
+                {
+                    for (int i = 0; i < thisGrossEst.monthlyVals.Length; i++)
+                    {
+                        if (thisGrossEst.monthlyVals[i].month == thisMonth)
+                        {
+                            thisLT_Value = thisLT_Value + thisGrossEst.monthlyVals[i].energyProd;
+                            thisCount++;
+                        }
+                    }
+                }
+            }
+            else if (thisParam == "Net AEP")
+            {
+                Net_Energy_Est thisNetEst = GetNetEnergyEst(isCalibrated, thisWakeModel);
+                if (thisNetEst.monthlyVals == null)
+                    return thisLT_Value;
+                else
+                {
+                    for (int i = 0; i < thisNetEst.monthlyVals.Length; i++)
+                    {
+                        if (thisNetEst.monthlyVals[i].month == thisMonth)
+                        {
+                            thisLT_Value = thisLT_Value + thisNetEst.monthlyVals[i].energyProd;
+                            thisCount++;
+                        }
+                    }
+                }
+            }
+            else if (thisParam == "Wake Loss")
+            {
+                Gross_Energy_Est thisGrossEst = GetGrossEnergyEst(isCalibrated, powerCurve);
+                Net_Energy_Est thisNetEst = GetNetEnergyEst(isCalibrated, thisWakeModel);
+
+                if (thisNetEst.monthlyVals == null)
+                    return thisLT_Value;
+                else
+                {
+                    for (int i = 0; i < thisNetEst.monthlyVals.Length; i++)
+                    {
+                        if (thisNetEst.monthlyVals[i].month == thisMonth)
+                        {
+                            thisLT_Value = thisLT_Value + (thisGrossEst.monthlyVals[i].energyProd - thisNetEst.monthlyVals[i].energyProd) / thisGrossEst.monthlyVals[i].energyProd;
+                            thisCount++;
+                        }
+                    }
+                }
+            }
+
+            if (thisCount > 0)
+                thisLT_Value = thisLT_Value / thisCount;
+
+            return thisLT_Value;
+        }
+
+        public double CalcWakedStDev(double thisX, double thisY, TurbineCollection.PowerCurve powerCurve, double ambSD, double avgWS, Continuum thisInst)
+        {
+            // Calculates and returns the waked wind speed standard deviation used in Effective TI calculations
+            double wakedSD = 0;
+            double cT = thisInst.turbineList.GetInterpPowerOrThrust(avgWS, powerCurve, "Thrust");
+            double dist = thisInst.topo.CalcDistanceBetweenPoints(thisX, thisY, UTMX, UTMY) / powerCurve.RD;                       
+
+            if (cT != 0)
+                wakedSD = Math.Pow((Math.Pow(avgWS ,2)/ (Math.Pow(1.5 + 0.8 * dist / Math.Pow(cT, 0.5), 2)) + Math.Pow(ambSD, 2)), 0.5);
+            
+            return wakedSD;
+        }
+
+        public double[] CalcEffectiveTI(Met thisMet, double wohler, Continuum thisInst, TurbineCollection.PowerCurve powerCurve, int WD_Ind)
+        {
+            // Calculates and returns effective TI at turbine site using ambient TI measured at met site
+            double[] effectiveTI = new double[thisInst.metList.numWS];
+            double[,] probWake = thisInst.turbineList.CalcProbOfWakeForEffectiveTI(thisInst, UTMX, UTMY, powerCurve);
+                      
+            for (int i = 0; i < thisInst.metList.numWS; i++)
+            {
+                if (WD_Ind != thisInst.metList.numWD) // get TI for specfic WD
+                {
+                    if (i >= powerCurve.cutInWS && i <= powerCurve.cutOutWS)
+                    {
+                        double sumWakedProb = 0;
+                        double sumAmbProb = 0;
+
+                        // Sum up probability of wake and waked induced TI
+                        for (int j = 0; j < thisInst.turbineList.TurbineCount; j++)
+                        {
+                            if (thisInst.turbineList.turbineEsts[j].name != name)
+                            {
+                                double wakedSD = CalcWakedStDev(thisInst.turbineList.turbineEsts[j].UTMX, thisInst.turbineList.turbineEsts[j].UTMY, powerCurve,
+                                    thisMet.turbulence.p90SD[i, WD_Ind], thisMet.turbulence.avgWS[i, WD_Ind], thisInst);
+                                sumWakedProb = sumWakedProb + probWake[j, WD_Ind] * Math.Pow(wakedSD, wohler);
+                                sumAmbProb = sumAmbProb + probWake[j, WD_Ind];
+                            }
+                        }
+
+                        effectiveTI[i] = Math.Pow((1 - sumAmbProb) * Math.Pow(thisMet.turbulence.p90SD[i, WD_Ind], wohler) + sumWakedProb, (1 / wohler));
+
+                        if (thisMet.turbulence.avgWS[i, WD_Ind] > 0)
+                            effectiveTI[i] = effectiveTI[i] / thisMet.turbulence.avgWS[i, WD_Ind];
+                        else
+                            effectiveTI[i] = 0;
+                    }
+                    else
+                    {
+                        if (thisMet.turbulence.avgWS[i, WD_Ind] > 0)
+                            effectiveTI[i] = thisMet.turbulence.p90SD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind];
+                        else
+                            effectiveTI[i] = 0;
+                    }
+                }
+                else // get TI for overall WD
+                {
+                    double sectorEffTI = 0;
+                    int sumCount = 0;
+
+                    if (i > powerCurve.cutInWS && i < powerCurve.cutOutWS)
+                    { 
+                        for (int WD = 0; WD < thisInst.metList.numWD; WD++)
+                        {
+                            double sumWakedProb = 0;
+                            double sumAmbProb = 0;
+
+                            if (thisMet.turbulence.avgWS[i, WD] > 0)
+                            {
+                                for (int j = 0; j < thisInst.turbineList.TurbineCount; j++)
+                                {
+                                    if (thisInst.turbineList.turbineEsts[j].name != name)
+                                    {
+                                        double wakedSD = CalcWakedStDev(thisInst.turbineList.turbineEsts[j].UTMX, thisInst.turbineList.turbineEsts[j].UTMY, powerCurve,
+                                            thisMet.turbulence.p90SD[i, WD], thisMet.turbulence.avgWS[i, WD], thisInst);
+                                        sumWakedProb = sumWakedProb + probWake[j, WD] * Math.Pow(wakedSD, wohler);
+                                        sumAmbProb = sumAmbProb + probWake[j, WD];
+                                    }
+                                }
+
+                                if (thisMet.turbulence.count[i, WD] > 2)
+                                {
+                                    sumCount = sumCount + thisMet.turbulence.count[i, WD];
+                                    sectorEffTI = Math.Pow((1 - sumAmbProb) * Math.Pow(thisMet.turbulence.p90SD[i, WD], wohler) + sumWakedProb, (1 / wohler));
+
+                                    if (thisMet.turbulence.avgWS[i, WD] > 0)
+                                        sectorEffTI = sectorEffTI / thisMet.turbulence.avgWS[i, WD];
+
+                                    effectiveTI[i] = effectiveTI[i] + sectorEffTI * thisMet.turbulence.count[i, WD];
+                                }
+                            }
+                        }                        
+                    }
+                    else
+                    {
+                        for (int WD = 0; WD < thisInst.metList.numWD; WD++)
+                        {
+                            if (thisMet.turbulence.avgWS[i, WD] > 0 && thisMet.turbulence.p90SD[i, WD] > 0)
+                            {
+                                effectiveTI[i] = effectiveTI[i] + thisMet.turbulence.p90SD[i, WD] / thisMet.turbulence.avgWS[i, WD] * thisMet.turbulence.count[i, WD];
+                                sumCount = sumCount + thisMet.turbulence.count[i, WD];
+                            }                            
+                        }                        
+                    }
+
+                    if (sumCount > 0)
+                        effectiveTI[i] = effectiveTI[i] / sumCount;
+                }
+
+            }
+
+
+            return effectiveTI;
+        }
+
+        public bool HaveTS_Estimate(string estType, bool isCalibrated, Wake_Model wakeModel, TurbineCollection.PowerCurve powerCurve)
+        {
+            // Checks to see if time series estimates have already been generated. Returns true if they have been.
+            bool haveEst = false;
+
+            if (estType == "WS")
+            {
+               if (AvgWSEst_Count > 0)
+                    return haveEst = true;                
+            }
+            else if (estType == "Gross")
+            {
+                for (int i = 0; i < AvgWSEst_Count; i++)
+                    if (avgWS_Est[i].powerCurve.name == powerCurve.name)
+                        return haveEst = true;
+            }
+            else if (estType == "Net")
+            {
+                WakeCollection wakeList = new WakeCollection();
+
+                for (int i = 0; i < AvgWSEst_Count; i++)
+                    if (wakeList.IsSameWakeModel(avgWS_Est[i].wakeModel, wakeModel))
+                        return haveEst = true;
+            }
+            
+            return haveEst;
         }
     }
 }

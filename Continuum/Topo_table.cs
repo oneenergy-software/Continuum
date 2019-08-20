@@ -8,9 +8,7 @@ namespace ContinuumNS
 {
     public partial class Topo_table
     {
-        public int Id { get; set; }
-      //  public double elev { get; set; }
-      //  public double UTMX { get; set; }
-        public byte[] Elevs { get; set; }
+        public int Id { get; set; } // Each entry represents topo data along a given UTMX. The topo min value is used to find Id for each UTMX      
+        public byte[] Elevs { get; set; }   
     }
 }

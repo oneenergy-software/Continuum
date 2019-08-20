@@ -30,32 +30,26 @@ namespace ContinuumNS
 
             if (thisInst.topo.useSR)
             {
-                txtLC_Used.Text = "roughness model used";
+                txtLC_Used.Text = "Roughness model used";
                 txtLC_Used.BackColor = Color.MediumSeaGreen;
             }
             else
             {
-                txtLC_Used.Text = "roughness model NOT used";
+                txtLC_Used.Text = "Roughness model NOT used";
                 txtLC_Used.BackColor = Color.LightCoral;
             }
 
-            cboUWDW.Items.Clear();
-            cboUWDW.Text = "";
-                                                
-            cboUWDW.Items.Add("Default Model");                
-            
-            if (thisInst.modelList.ModelCount > 1)
+            thisInst.metList.AreAllMetsMCPd();
+            if (thisInst.metList.allMCPd)
             {
-                if (thisInst.modelList.models[1,0].isImported == false) 
-                    cboUWDW.Items.Add("Site-Calibated Model"); 
-                else                                      
-                    cboUWDW.Items.Add("Imported Model");  
+                txtisMCPWakeModel.Text = "MCP'd Met data used";
+                txtisMCPWakeModel.BackColor = Color.MediumOrchid;
             }
-
-            if (cboUWDW.Items.Count > 1)                            
-                cboUWDW.SelectedIndex = 1;               
-            else if (cboUWDW.Items.Count > 0)                           
-                cboUWDW.SelectedIndex = 0;
+            else
+            {
+                txtisMCPWakeModel.Text = "Meas. Met data used";
+                txtisMCPWakeModel.BackColor = Color.LightCoral;
+            }
 
             cboPowerCrvs.Items.Clear();
 
@@ -74,8 +68,7 @@ namespace ContinuumNS
         private void btnGenMap_Click(object sender, EventArgs e)
         {
             // Reads wake loss model settings from form and adds wake model to list and calls background_worker to conduct turbine calcs                     
-            
-            bool isCalibrated = GetIsCalibrated();
+                        
             int wakeModelType = ReadWakeModelType();
             double horizExp = ReadHorizExp();
             TurbineCollection.PowerCurve thisPowerCurve = GetPowerCurve();
@@ -94,6 +87,10 @@ namespace ContinuumNS
                 CW_Spacing = ReadCW_Spacing();
                 ambRough = ReadAmbRough();
             }
+
+            bool isCalibrated = false;
+            if (thisInst.metList.ThisCount > 1)
+                isCalibrated = true;
 
             // Check to see if wake model has been added        
             bool wakeModelExists = thisInst.wakeModelList.WakeModelExists(wakeModelType, horizExp, avgTI, thisPowerCurve.name, DW_Spacing, CW_Spacing, ambRough, wakeCombo, WRR, WRR_Exp);
@@ -126,7 +123,7 @@ namespace ContinuumNS
             if (thisInst.turbineList.TurbineCount > 0) {
                 if (thisInst.turbineList.turbineEsts[0].EstsExistForWakeModel(thisInst.wakeModelList.wakeModels[wakeModelInd], isCalibrated, thisInst.wakeModelList, thisInst.topo.useSR,
                     thisInst.topo.useSepMod)) {
-                    MessageBox.Show("Wake losses have already been calculated with this model and settings.", "Continuum 2.3");
+                    MessageBox.Show("Wake losses have already been calculated with this model and settings.", "Continuum 3");
                     return;
                 }
             }
@@ -141,9 +138,9 @@ namespace ContinuumNS
                 BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
 
                 if (thisInst.metList.ThisCount > 0) {
-                    argsForBW.thisInst = thisInst;
-                    argsForBW.isCalibrated = isCalibrated;
+                    argsForBW.thisInst = thisInst;                    
                     argsForBW.thisWakeModel = thisInst.wakeModelList.wakeModels[wakeModelInd];
+                    argsForBW.MCP_Method = thisInst.Get_MCP_Method();
 
                     // Call background worker to run calculations
                     thisInst.BW_worker = new BackgroundWork();
@@ -158,18 +155,7 @@ namespace ContinuumNS
             }
 
             Close();
-        }
-
-        public bool GetIsCalibrated()
-        {
-            bool isCalibrated = false;
-
-            int modelInd = cboUWDW.SelectedIndex;
-            if (modelInd == 1)
-                isCalibrated = true;
-
-            return isCalibrated;
-        }
+        }               
 
         public TurbineCollection.PowerCurve GetPowerCurve()
         {
@@ -179,7 +165,7 @@ namespace ContinuumNS
 
             try {
                 if (cboPowerCrvs.SelectedItem.ToString() == "No power Curves Imported") {
-                    MessageBox.Show("Import a power curve to calculate wake losses. On Gross Energy Estimates tab, click Import power Curve", "Continuum 2.3");
+                    MessageBox.Show("Import a power curve to calculate wake losses. On Gross Energy Estimates tab, click Import power Curve", "Continuum 3");
                     return thisPowerCurve;
                 }
                 powerCurve = cboPowerCrvs.SelectedItem.ToString();
@@ -335,7 +321,7 @@ namespace ContinuumNS
                     modelType = 0;
                 else if (wakeModel == "Eddy Viscosity (Deep Array Wind Model)")
                     modelType = 1;
-                else if (wakeModel == "Continuum Wake Model")
+                else if (wakeModel == "Jensen Model")
                     modelType = 2;
             }
             catch {

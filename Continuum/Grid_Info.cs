@@ -1,4 +1,10 @@
-﻿using System;
+﻿////////////////////////////////////////////////////////////////////////////////////////////////////
+// file:	Grid_Info.cs
+//
+// summary:	Implements the grid information class
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,20 +15,49 @@ using System.IO;
 
 namespace ContinuumNS
 {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>   (Serializable) information about the grid. </summary>
+    ///
+    /// <remarks>   OEE, 7/15/2019. </remarks>
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
     [Serializable()]
     public class Grid_Info
     {
-        public int gridRadius = 750; // radius of investigation to use in grid statistics (terrain complexity) calculation
-        public int reso = 250; // Grid resolution to use in grid statistics
-        public Grid_Avg_SD[] stats; // Terrain complexity statistics
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// radius of investigation to use in grid statistics (terrain complexity) calculation.
+        /// </summary>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public int gridRadius = 750;
+        /// <summary>   Grid resolution to use in grid statistics. </summary>
+        public int reso = 250;
+        /// <summary>   Terrain complexity statistics. </summary>
+        public Grid_Avg_SD[] stats;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   (Serializable) a grid average sd. </summary>
+        ///
+        /// <remarks>   OEE, 7/15/2019. </remarks>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [Serializable()]
         public struct Grid_Avg_SD
         {
+            /// <summary>   The radius. </summary>
             public int radius;
+            /// <summary>   The 10 uw. </summary>
             public double[] P10_UW;
+            /// <summary>   The 10 double-word. </summary>
             public double[] P10_DW;
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets the number of stats. </summary>
+        ///
+        /// <value> The number of stats. </value>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public int StatCount
         {
@@ -31,6 +66,16 @@ namespace ContinuumNS
                   else
                     return stats.Length; }
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Adds the statistics. </summary>
+        ///
+        /// <remarks>   OEE, 7/15/2019. </remarks>
+        ///
+        /// <param name="radius">   The radius. </param>
+        /// <param name="P10_UW">   The 10 uw. </param>
+        /// <param name="P10_DW">   The 10 double-word. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public void AddStats(int radius, double[] P10_UW, double[] P10_DW)
         {
@@ -74,6 +119,16 @@ namespace ContinuumNS
             }
 
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Searches for the first sectors for grid. </summary>
+        ///
+        /// <remarks>   OEE, 7/15/2019. </remarks>
+        ///
+        /// <param name="windRose"> The wind rose. </param>
+        ///
+        /// <returns>   The found sectors for grid. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public bool[] FindSectorsForGrid(double[] windRose)
         {
@@ -125,6 +180,18 @@ namespace ContinuumNS
             return sectorsToUse;
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets grid array. </summary>
+        ///
+        /// <remarks>   OEE, 7/15/2019. </remarks>
+        ///
+        /// <param name="UTMX">     The utmx. </param>
+        /// <param name="UTMY">     The utmy. </param>
+        /// <param name="thisInst"> this instance. </param>
+        ///
+        /// <returns>   An array of topo grid. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         public TopoInfo.TopoGrid[] GetGridArray(double UTMX, double UTMY, Continuum thisInst) // returns array of grid points surrounding met/node
         {
             // Defines grid surrounding UTMX and UTMY and returns array of TopoInfo.TopoGrid structs for each grid point in defined area               
@@ -151,7 +218,7 @@ namespace ContinuumNS
 
             double dirBinSize = 0;
             
-            double[] windRose = thisInst.metList.GetAvgWindRose();
+            double[] windRose = thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
             try {
                 dirBinSize = (double)360 / windRose.Length;
             }
@@ -188,6 +255,17 @@ namespace ContinuumNS
             return gridArray;
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets overall p 10. </summary>
+        ///
+        /// <remarks>   OEE, 7/15/2019. </remarks>
+        ///
+        /// <param name="windRose">     The wind rose. </param>
+        /// <param name="radiusIndex">  Zero-based index of the radius. </param>
+        /// <param name="UW_or_DW">     The uw or double-word. </param>
+        ///
+        /// <returns>   The overall p 10. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public double GetOverallP10(double[] windRose, int radiusIndex, string UW_or_DW)
         {
@@ -206,6 +284,18 @@ namespace ContinuumNS
             return overallP10;
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Query if this object is new grid point. </summary>
+        ///
+        /// <remarks>   OEE, 7/15/2019. </remarks>
+        ///
+        /// <param name="UTMX">             The utmx. </param>
+        /// <param name="UTMY">             The utmy. </param>
+        /// <param name="thisRadius">       this radius. </param>
+        /// <param name="savedFileName">    Filename of the saved file. </param>
+        ///
+        /// <returns>   True if new grid point, false if not. </returns>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public bool IsNewGridPoint(int UTMX, int UTMY, int thisRadius, string savedFileName)
         {
@@ -232,7 +322,16 @@ namespace ContinuumNS
 
             return isNew;
         }     
-                 
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Adds the nodes database to 'savedFileName'. </summary>
+        ///
+        /// <remarks>   OEE, 7/15/2019. </remarks>
+        ///
+        /// <param name="theseNodes">       The these nodes. </param>
+        /// <param name="savedFileName">    Filename of the saved file. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         public void AddNodesDB(Node_table[] theseNodes, string savedFileName)
         { 
             // Adds calculated exposures to database
@@ -257,7 +356,20 @@ namespace ContinuumNS
             }
         }       
 
-        public void CalcGridStats(int radiusInd, ref TopoInfo.TopoGrid[] gridArray, ref Node_table[] allNodesForDB, Nodes[] nodesFromDB, Continuum thisInst)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Calculates the grid statistics. </summary>
+        ///
+        /// <remarks>   OEE, 7/15/2019. </remarks>
+        ///
+        /// <param name="radiusInd">        The radius ind. </param>
+        /// <param name="gridArray">        [in,out] Array of grids. </param>
+        /// <param name="allNodesForDB">    [in,out] all nodes for database. </param>
+        /// <param name="nodesFromDB">      The nodes from database. </param>
+        /// <param name="thisInst">         this instance. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public void CalcGridStats(int radiusInd, ref TopoInfo.TopoGrid[] gridArray, ref Node_table[] allNodesForDB, Nodes[] nodesFromDB, Continuum thisInst,
+            bool isTest, string outFilename)
         {
             // Calculates P10 UW and P10 DW exposure in each WD sector for specified radius 
             Grid_Avg_SD thisStats = new Grid_Avg_SD();
@@ -391,12 +503,33 @@ namespace ContinuumNS
             thisStats.P10_UW = new double[numWD];
             thisStats.P10_DW = new double[numWD];
 
+            StreamWriter wrUW = null;
+            StreamWriter wrDW = null;
+
+            if (isTest)
+            {
+                wrUW = new StreamWriter(outFilename + " Grid UW Expo.csv");
+                wrDW = new StreamWriter(outFilename + " Grid DW Expo.csv");
+            }
+
             for (int WD = 0; WD < numWD; WD++)
             {
                 for (int j = 0; j < gridCount; j++)
                 {
                     thisGridUW[j] = gridUW[j, WD];
                     thisGridDW[j] = gridDW[j, WD];
+
+                    if (isTest)
+                    {
+                        wrUW.Write(gridUW[j, WD] + ",");
+                        wrDW.Write(gridDW[j, WD] + ",");
+                    }
+                }
+
+                if (isTest)
+                {
+                    wrUW.WriteLine();
+                    wrDW.WriteLine();
                 }
 
                 Array.Sort(thisGridUW);
@@ -412,7 +545,23 @@ namespace ContinuumNS
 
             Array.Resize(ref stats, radiusInd + 1);
             stats[radiusInd] = thisStats;
+
+            if (isTest)
+            {
+                wrUW.Close();
+                wrDW.Close();
+            }
         }                
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>   Gets grid array and calculate statistics. </summary>
+        ///
+        /// <remarks>   OEE, 7/15/2019. </remarks>
+        ///
+        /// <param name="UTMX">     The utmx. </param>
+        /// <param name="UTMY">     The utmy. </param>
+        /// <param name="thisInst"> this instance. </param>
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public void GetGridArrayAndCalcStats(double UTMX, double UTMY, Continuum thisInst)
         {
@@ -450,7 +599,7 @@ namespace ContinuumNS
             stats = new Grid_Info.Grid_Avg_SD[thisInst.radiiList.ThisCount];
             // Calculate grid statistics (i.e. P10 UW and P10 DW exposure) for each radius 
             for (int r = 0; r <= thisInst.radiiList.ThisCount - 1; r++)
-                CalcGridStats(r, ref gridArray, ref allNodesForDB, nodesFromDB, thisInst);
+                CalcGridStats(r, ref gridArray, ref allNodesForDB, nodesFromDB, thisInst, false, "");
 
             // Add newly calculated exposures to database
             if (allNodesForDB != null)

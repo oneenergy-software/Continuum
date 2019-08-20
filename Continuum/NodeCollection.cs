@@ -171,7 +171,7 @@ namespace ContinuumNS
 
         }
 
-        public void AddOrUpdateNodeGridStat(Nodes nodeToUpdate, string savedFileName)
+        public void AddNodeOrUpdateNodeGridStat(Nodes nodeToUpdate, string savedFileName)
         {
             // Finds a node in database and updates exposure, SRDH and grid stats
             string connString = GetDB_ConnectionString(savedFileName);
@@ -240,8 +240,7 @@ namespace ContinuumNS
             metNode.UTMY = thisMet.UTMY;
             metNode.elev = thisMet.elev;
             metNode.gridStats = thisMet.gridStats;
-            metNode.expo = thisMet.expo;
-            metNode.windRose = thisMet.windRose;
+            metNode.expo = thisMet.expo;            
             metNode.flowSepNodes = thisMet.flowSepNodes;
 
             return metNode;
@@ -255,8 +254,7 @@ namespace ContinuumNS
             turbNode.UTMY = thisTurb.UTMY;
             turbNode.elev = thisTurb.elev;
             turbNode.gridStats = thisTurb.gridStats;
-            turbNode.expo = thisTurb.expo;
-            turbNode.windRose = thisTurb.windRose;
+            turbNode.expo = thisTurb.expo;            
             turbNode.flowSepNodes = thisTurb.flowSepNodes;
 
             return turbNode;
@@ -270,46 +268,19 @@ namespace ContinuumNS
             mapNode.UTMY = thisMapNode.UTMY;
             mapNode.elev = thisMapNode.elev;
             mapNode.gridStats = thisMapNode.gridStats;
-            mapNode.expo = thisMapNode.expo;
-            mapNode.windRose = thisMapNode.windRose;
+            mapNode.expo = thisMapNode.expo;           
             mapNode.flowSepNodes = thisMapNode.flowSepNodes;
 
             return mapNode;
         }
 
-        public Nodes GetANode(double UTMX, double UTMY, Continuum thisInst, ref Nodes[] lastAllNodesInPath, Nodes[] newNodes)
+        public Nodes GetANode(double UTMX, double UTMY, Continuum thisInst)
         {
             // Searches database for node with specified UTMX/Y and returns it
             Nodes newNode = new Nodes();
             newNode.gridStats = new Grid_Info();
             int numRadii = 0;
             int numWD = thisInst.metList.numWD;
-            
-            // First see if it's already in the list
-            int numNew = 0;
-            if (newNodes != null) numNew = newNodes.Length;
-
-            for (int i = 0; i < numNew; i++)
-            {
-                if (newNodes[i].UTMX == UTMX && newNodes[i].UTMY == UTMY)
-                {
-                    newNode = newNodes[i];
-                    return newNode;
-                }
-            }
-
-            int numLast = 0;
-
-            if (lastAllNodesInPath != null) numLast = lastAllNodesInPath.Length;
-
-            for (int i = 0; i < numLast; i++)
-            {
-                if (lastAllNodesInPath[i].UTMX == UTMX && lastAllNodesInPath[i].UTMY == UTMY)
-                {
-                    newNode = lastAllNodesInPath[i];
-                    return newNode;
-                }
-            }
 
             string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);
             
@@ -435,9 +406,7 @@ namespace ContinuumNS
 
             string[] metsUsed = new string[thisInst.metList.ThisCount];
             for (int i = 0; i < thisInst.metList.ThisCount; i++)
-                metsUsed[i] = thisInst.metList.metItem[i].name;
-
-            newNode.windRose = thisInst.metList.GetInterpolatedWindRose(metsUsed, newNode.UTMX, newNode.UTMY);
+                metsUsed[i] = thisInst.metList.metItem[i].name;                       
 
             return newNode;
         }
@@ -540,9 +509,8 @@ namespace ContinuumNS
                                     MS.Close();
                                 }
 
-                            }                                                       
-
-                            nodesFromDB[newNodeCount].windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), nodesFromDB[newNodeCount].UTMX, nodesFromDB[newNodeCount].UTMY);
+                            }                                                      
+                                                        
                         }
                         newNodeCount++;
                     }
@@ -654,9 +622,9 @@ namespace ContinuumNS
 
         }
 
-        public Nodes[] GetPathOfNodes(Node_UTMs[] pathOfNodesUTMs, Continuum thisInst, ref Nodes[] lastNodesInList)
+        public Nodes[] GetPathOfNodesFromUTMs(Node_UTMs[] pathOfNodesUTMs, Continuum thisInst)
         {
-            // Returns path of nodes
+            // Returns path of nodes using path of UTM coords
             Nodes[] pathOfNodes = null;
             int numWD = thisInst.metList.numWD;
             
@@ -670,7 +638,7 @@ namespace ContinuumNS
                 using (var context = new Continuum_EDMContainer(connString)) {
                     for (int nodeInd = 0; nodeInd < numNodes; nodeInd++) {
                         Array.Resize(ref pathOfNodes, nodeInd + 1);
-                        pathOfNodes[nodeInd] = GetANode(pathOfNodesUTMs[nodeInd].UTMX, pathOfNodesUTMs[nodeInd].UTMY, thisInst, ref lastNodesInList, null);
+                        pathOfNodes[nodeInd] = GetANode(pathOfNodesUTMs[nodeInd].UTMX, pathOfNodesUTMs[nodeInd].UTMY, thisInst);
                     }
                 }
             }
@@ -690,15 +658,14 @@ namespace ContinuumNS
                                 pathOfNodes[nodeInd].expo[i].exponent, numWD);
                     }                    
                 }
-
-                pathOfNodes[nodeInd].windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), pathOfNodes[nodeInd].UTMX, pathOfNodes[nodeInd].UTMY);
+                                
             }
 
             return pathOfNodes;
         }
                
 
-        public Nodes[] FindPathOfNodes(Nodes startNode, Nodes endNode, Model model, Continuum thisInst, ref Nodes[] newNodes, ref Nodes[] lastAllNodesInPath)
+        public Nodes[] FindPathOfNodes(Nodes startNode, Nodes endNode, Model model, Continuum thisInst)
         {  // Finds and returns a path of nodes between start and end node
             Nodes[] nodePath1to2 = null;
                        
@@ -709,7 +676,7 @@ namespace ContinuumNS
             double maxDir = 100;
 
             int numMets = thisInst.metList.ThisCount;
-            double[] windRose = thisInst.metList.GetAvgWindRose();
+            double[] windRose = thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, model.timeOfDay, model.season);
             int radiusIndex = thisInst.radiiList.GetRadiusInd(model.radius);
 
             bool foundNode = false;
@@ -783,7 +750,7 @@ namespace ContinuumNS
                         minDir = minMaxDir[0];
                         maxDir = minMaxDir[1];
 
-                        nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7), ref lastAllNodesInPath, ref newNodes, false);
+                        nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7), false);
 
                         if (nextNode.UTMX == 0 && nextNode.UTMY == 0)
                             foundNode = false;
@@ -800,8 +767,8 @@ namespace ContinuumNS
                         { // found next node to use
                             if (thisInst.topo.useSepMod == true && nextNode.expo != null)
                             {
-                                Model thisModel = new Model();
-                                nextNode.flowSepNodes = FindAllFlowSeps(nextNode, thisInst, nextNode.windRose.Length, ref newNodes);
+                                Model thisModel = new Model();                                
+                                nextNode.flowSepNodes = FindAllFlowSeps(nextNode, thisInst, thisInst.metList.numWD);
                             }
 
                             startInd++;
@@ -877,7 +844,7 @@ namespace ContinuumNS
                             minDir = minMaxDir[0];
                             maxDir = minMaxDir[1];
 
-                            nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7), ref lastAllNodesInPath, ref newNodes, false);
+                            nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7), false);
 
                             if (nextNode.UTMX == 0 && nextNode.UTMY == 0)
                                 foundNode = false;
@@ -893,7 +860,7 @@ namespace ContinuumNS
                             if (foundNode = true && ((isTerrainSame == true && isElevClose == true) || radiusStep < 500))
                             { // found next node to use
                                 if (thisInst.topo.useSepMod == true && nextNode.expo != null)
-                                    nextNode.flowSepNodes = FindAllFlowSeps(nextNode, thisInst, nextNode.windRose.Length, ref newNodes);
+                                    nextNode.flowSepNodes = FindAllFlowSeps(nextNode, thisInst, thisInst.metList.numWD);
 
                                 endInd++;
                                 Array.Resize(ref nodesFromEnd, endInd + 1);
@@ -1260,8 +1227,7 @@ namespace ContinuumNS
 
         }
 
-        public Nodes FindNodeInSectorHighSpot(Continuum thisInst, Nodes startNode, double minDir, double maxDir, int radiusStep, int minRadius, 
-            ref Nodes[] lastAllNodesInPath, ref Nodes[] newNodes, bool isFS_Node)
+        public Nodes FindNodeInSectorHighSpot(Continuum thisInst, Nodes startNode, double minDir, double maxDir, int radiusStep, int minRadius, bool isFS_Node)
         {
             // Searches and returns node in high spot within min/max WD and min/max radius
             Nodes highNode = new Nodes();
@@ -1372,39 +1338,29 @@ namespace ContinuumNS
             // First check to see if it has already been calculated
             bool foundHighNode = false;
 
-            thisNode = GetANode(highNode.UTMX, highNode.UTMY, thisInst, ref lastAllNodesInPath, newNodes);
+            if (highNode.UTMX != 0 && highNode.UTMY != 0)
+            {
+                thisNode = GetANode(highNode.UTMX, highNode.UTMY, thisInst);
 
-            if (thisNode.UTMX == highNode.UTMX && thisNode.UTMY == highNode.UTMY) {
-                foundHighNode = true;
-                highNode = thisNode;
-                if (highNode.gridStats.StatCount == 0)
+                if (thisNode.UTMX == highNode.UTMX && thisNode.UTMY == highNode.UTMY)
+                {
+                    foundHighNode = true;
+                    highNode = thisNode;
+                    if (highNode.gridStats.StatCount == 0)
+                    {
+                        highNode.gridStats = new Grid_Info();
+                        highNode.CalcGridStatsAndExposures(thisInst);
+                        AddNodeOrUpdateNodeGridStat(highNode, thisInst.savedParams.savedFileName);
+                    }
+
+                }
+
+                if (foundHighNode == false && highNode.UTMX != 0 && highNode.UTMY != 0)
                 {
                     highNode.gridStats = new Grid_Info();
                     highNode.CalcGridStatsAndExposures(thisInst);
-                    highNode.windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), highNode.UTMX, highNode.UTMY);
-                    AddOrUpdateNodeGridStat(highNode, thisInst.savedParams.savedFileName);
+                    AddNodeOrUpdateNodeGridStat(highNode, thisInst.savedParams.savedFileName);
                 }
-
-            }
-
-            if (foundHighNode == false && highNode.UTMX != 0 && highNode.UTMY != 0)
-            {
-                highNode.gridStats = new Grid_Info();                
-                highNode.CalcGridStatsAndExposures(thisInst);
-                highNode.windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), highNode.UTMX, highNode.UTMY);                
-                AddOrUpdateNodeGridStat(highNode, thisInst.savedParams.savedFileName);
-
-          /*      int numNewNodes;
-
-                try {
-                    numNewNodes = newNodes.Length;
-                }
-                catch (Exception ex) {
-                    numNewNodes = 0;
-                }
-
-                Array.Resize(ref newNodes, numNewNodes + 1);
-                newNodes[numNewNodes] = highNode;  */
             }
 
             return highNode;
@@ -1454,7 +1410,7 @@ namespace ContinuumNS
         }
 
 
-        public Sep_Nodes[] FindAllFlowSeps(Nodes thisNode, Continuum thisInst, int numWD, ref Nodes[] newNodes)
+        public Sep_Nodes[] FindAllFlowSeps(Nodes thisNode, Continuum thisInst, int numWD)
         {
 
             // Returns Flow_sep nodes for every WD where UW is < 0 and DW > 0 
@@ -1489,7 +1445,7 @@ namespace ContinuumNS
                     if (maxDir > 360) maxDir = maxDir - 360;
                     Nodes[] blankNodes = null;
 
-                    highNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, 5000, 0, ref blankNodes, ref newNodes, true);
+                    highNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, 5000, 0, true);
                     sumUWDW = Math.Abs(highNode.expo[3].expo[WD]) + highNode.expo[0].GetDW_Param(WD, "Expo");
                     Array.Resize(ref flowSepNodes, numSepNodes + 1);
 
@@ -1502,7 +1458,8 @@ namespace ContinuumNS
 
                     if (distToSep > turbZoneLength)
                     { // outside of turbulent zone
-                        endZoneNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, (int)((distToSep - turbZoneLength) * 1.1), (int)((distToSep - turbZoneLength) * 0.9), ref blankNodes, ref newNodes, true);
+                        endZoneNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, (int)((distToSep - turbZoneLength) * 1.1), 
+                            (int)((distToSep - turbZoneLength) * 0.9), true);
                         flowSepNodes[numSepNodes].turbEndNode = endZoneNode;
 
                         if (endZoneNode.UTMX == 0)                          
@@ -1635,6 +1592,29 @@ namespace ContinuumNS
             }
 
             return isLow;
+        }
+
+        public void ClearExposGridStatsFromDB(Continuum thisInst)
+        {
+            // Clears all exposure and grid stat calculations from database. Called when the number of WD bins is changed on the MCP tab
+
+            string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);
+
+            try
+            {
+                using (var ctx = new Continuum_EDMContainer(connString))
+                {                    
+                    ctx.Database.ExecuteSqlCommand("DELETE FROM GridStat_table");
+                    ctx.Database.ExecuteSqlCommand("DELETE FROM Expo_table");
+                    ctx.Database.ExecuteSqlCommand("DELETE FROM Node_table");
+
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
     }
