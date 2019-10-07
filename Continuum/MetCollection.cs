@@ -189,14 +189,15 @@ namespace ContinuumNS
             metItem[newCount].name = metName;
             metItem[newCount].UTMX = UTMX;
             metItem[newCount].UTMY = UTMY;
-            
+
+            numWD = metWindRose.Length;
+            numWS = sectorWS_Dist.GetUpperBound(1) + 1;
+
             metItem[newCount].AddWSWD_DistFromTAB(Met.TOD.All, Met.Season.All, height, sectorWS_Dist, metWindRose);
             
             metItem[newCount].CalcAvgWS(thisInst);
             metItem[newCount].CalcSectorWS_Ratios(thisInst);
-
-            numWD = metWindRose.Length;
-            numWS = sectorWS_Dist.GetUpperBound(1) + 1;
+                       
 
         }
 
@@ -278,7 +279,7 @@ namespace ContinuumNS
                     foreach (var N in temp_db)
                         context.Temp_table.Remove(N);
 
-                    context.SaveChanges();
+                    context.SaveChanges();                    
                 }                
             }
             catch (Exception ex)
@@ -341,11 +342,11 @@ namespace ContinuumNS
 
         public void CalcMetExposures(int metInd, int radiusIndex, Continuum thisInst)
         {
-            // Calculates exposure and SRDH at met site (if not already calculated)
-            int expoInd = 0;
+            // Calculates exposure and SRDH at met site (if not already calculated)            
             int numSectors = 1;
 
             // First find elevation
+            
             if (metItem[metInd].elev == 0) metItem[metInd].elev = thisInst.topo.CalcElevs(metItem[metInd].UTMX, metItem[metInd].UTMY);
             
             int thisRadius = thisInst.radiiList.investItem[radiusIndex].radius;
@@ -359,33 +360,24 @@ namespace ContinuumNS
             if (isNew == true)
             {
                 metItem[metInd].AddExposure(thisRadius, thisExponent, numSectors);
-                // Now calculate exposures, (have to find where the R and exp was entered in the list)
-                for (int k = 0; k < metItem[metInd].ExposureCount; k++)
-                {
-                    if (metItem[metInd].expo[k].radius == thisRadius && metItem[metInd].expo[k].exponent == thisExponent && metItem[metInd].expo[k].numSectors == numSectors)
-                    {
-                        expoInd = k;
-                        break;
-                    }
-                }
 
                 // Check to see if an exposure with a smaller radii has been calculated
                 int smallerRadius = thisInst.topo.GetSmallerRadius(metItem[metInd].expo, thisRadius, thisExponent, numSectors);
 
                 if (smallerRadius == 0 || numSectors > 1)
-                { // when sector avg is used, can//t add on to exposure calcs...so gotta do it the long way
-                    metItem[metInd].expo[expoInd] = thisInst.topo.CalcExposures(thisX, thisY, metItem[metInd].elev, thisRadius, thisExponent, numSectors, thisInst.topo, numWD);
+                { // when sector avg is used, can't add on to exposure calcs...so gotta do it the long way
+                    metItem[metInd].expo[radiusIndex] = thisInst.topo.CalcExposures(thisX, thisY, metItem[metInd].elev, thisRadius, thisExponent, numSectors, thisInst.topo, numWD);
                     if (thisInst.topo.gotSR == true)
-                        thisInst.topo.CalcSRDH(ref metItem[metInd].expo[expoInd], thisX, thisY, thisRadius, thisExponent, numWD);
+                        thisInst.topo.CalcSRDH(ref metItem[metInd].expo[radiusIndex], thisX, thisY, thisRadius, thisExponent, numWD);
                 }
                 else
                 {
-                    Exposure smallerExposure = thisInst.topo.GetSmallerRadiusExpo(metItem[metInd].expo, smallerRadius, metItem[metInd].expo[expoInd].exponent, numSectors);
+                    Exposure smallerExposure = thisInst.topo.GetSmallerRadiusExpo(metItem[metInd].expo, smallerRadius, metItem[metInd].expo[radiusIndex].exponent, numSectors);
 
-                    metItem[metInd].expo[expoInd] = thisInst.topo.CalcExposuresWithSmallerRadius(thisX, thisY, metItem[metInd].elev, thisRadius, thisExponent, numSectors, smallerRadius, smallerExposure, numWD);
+                    metItem[metInd].expo[radiusIndex] = thisInst.topo.CalcExposuresWithSmallerRadius(thisX, thisY, metItem[metInd].elev, thisRadius, thisExponent, numSectors, smallerRadius, smallerExposure, numWD);
 
                     if (thisInst.topo.gotSR == true)
-                        thisInst.topo.CalcSRDHwithSmallerRadius(ref metItem[metInd].expo[expoInd], thisX, thisY, thisRadius, thisExponent, numSectors, smallerRadius, smallerExposure, numWD);
+                        thisInst.topo.CalcSRDHwithSmallerRadius(ref metItem[metInd].expo[radiusIndex], thisX, thisY, thisRadius, thisExponent, numSectors, smallerRadius, smallerExposure, numWD);
                     
                 }
             }
@@ -393,55 +385,35 @@ namespace ContinuumNS
             if (IsNewSRDH == true)
             {
                 if (thisInst.topo.gotSR == true)
-                {
-                    for (int k = 0; k < metItem[metInd].ExposureCount; k++)
-                    {
-                        if (metItem[metInd].expo[k].radius == thisRadius && metItem[metInd].expo[k].exponent == thisExponent)
-                        {
-                            expoInd = k;
-                            break;
-                        }
-                    }
-
+                {   
                     // Check to see if an exposure with a smaller radii has been calculated
                     int smallerRadius = thisInst.topo.GetSmallerRadius(metItem[metInd].expo, thisRadius, thisExponent, numSectors);
 
                     if (smallerRadius == 0)
-                        thisInst.topo.CalcSRDH(ref metItem[metInd].expo[expoInd], thisX, thisY, thisRadius, thisExponent, numWD);
+                        thisInst.topo.CalcSRDH(ref metItem[metInd].expo[radiusIndex], thisX, thisY, thisRadius, thisExponent, numWD);
                     else {
-                        Exposure smallerExposure = thisInst.topo.GetSmallerRadiusExpo(metItem[metInd].expo, smallerRadius, metItem[metInd].expo[expoInd].exponent, numSectors);
-                        thisInst.topo.CalcSRDHwithSmallerRadius(ref metItem[metInd].expo[expoInd], thisX, thisY, thisRadius, thisExponent, numSectors, smallerRadius, smallerExposure, numWD);
+                        Exposure smallerExposure = thisInst.topo.GetSmallerRadiusExpo(metItem[metInd].expo, smallerRadius, metItem[metInd].expo[radiusIndex].exponent, numSectors);
+                        thisInst.topo.CalcSRDHwithSmallerRadius(ref metItem[metInd].expo[radiusIndex], thisX, thisY, thisRadius, thisExponent, numSectors, smallerRadius, smallerExposure, numWD);
                     }
 
-                }
-                else {
-                    // Not a new exposure but still updates the bulk UW and DW with updated WR
-                    for (int k = 0; k < metItem[metInd].ExposureCount; k++)
-                    {
-                        if (metItem[metInd].expo[k].radius == thisInst.radiiList.investItem[radiusIndex].radius && metItem[metInd].expo[k].exponent == thisInst.radiiList.investItem[radiusIndex].exponent
-                            && metItem[metInd].expo[k].numSectors == numSectors)
-                        {
-                            expoInd = k;
-                            break;
-                        }
-                    }
-                }
+                }                
             }
 
-            if (metItem[metInd].expo[expoInd].UW_P10CrossGrade == null)
+            // Upwind parallel and crosswind P10 grades by direction sector. Not currently used. Intended for use in 'flow around hills' model
+            if (metItem[metInd].expo[radiusIndex].UW_P10CrossGrade == null)
             {
                 // Calc P10 UW Crosswind Grade
                 
-                metItem[metInd].expo[expoInd].UW_P10CrossGrade = new double[numWD];
-                metItem[metInd].expo[expoInd].UW_ParallelGrade = new double[numWD];
+                metItem[metInd].expo[radiusIndex].UW_P10CrossGrade = new double[numWD];
+                metItem[metInd].expo[radiusIndex].UW_ParallelGrade = new double[numWD];
 
                 for (int r = 0; r < numWD; r++)
                 {
                     double UW_CW_Grade = thisInst.topo.CalcP10_UW_CrosswindGrade(metItem[metInd].UTMX, metItem[metInd].UTMY, thisInst.radiiList, r, numWD);
                     double UW_PL_Grade = thisInst.topo.CalcP10_UW_ParallelGrade(metItem[metInd].UTMX, metItem[metInd].UTMY, thisInst.radiiList, r, numWD);
 
-                    metItem[metInd].expo[expoInd].UW_P10CrossGrade[r] = UW_CW_Grade;
-                    metItem[metInd].expo[expoInd].UW_ParallelGrade[r] = UW_PL_Grade;
+                    metItem[metInd].expo[radiusIndex].UW_P10CrossGrade[r] = UW_CW_Grade;
+                    metItem[metInd].expo[radiusIndex].UW_ParallelGrade[r] = UW_PL_Grade;
                 }
             }
         }
@@ -629,7 +601,7 @@ namespace ContinuumNS
 
         public double[] CalcWS_DistForTurbOrMap(string[] metsUsed, double avgWS, int WD_Ind, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
         {
-            // Calculates and returns sectorwise WS distribution by combining wind speed distributions from metsUsed such that avgWS is reached
+            // Calculates and returns a WS distribution by combining wind speed distributions from the metsUsed with calculated weights. Weights are adjusted until avgWS is matched
             // if avgWS is within range of met avg wind speeds, use weighted average of all mets where weights are altered until avgWS is reached
             // if avgWS is outside range of met WS then it uses the met with either the highest or lowest WS and adjusts WS dist until avgWS is reached
             
@@ -639,15 +611,15 @@ namespace ContinuumNS
             int numMetsUsed = metsUsed.Length;
             Met[] metsForDist = GetMets(metsUsed, null);
                         
-            double calcWS = 0;            
-            double avgWeightSum = 0;
+            double calcWS = 0;  // Average wind speed of estimated wind speed distribution          
+            double avgWeightSum = 0; // Sum of WS distribution (used to find mean WS) 
             
-            Met[] minMaxWS_Mets = GetMetsWithMinMaxWS(metsUsed, WD_Ind, thisTOD, thisSeason, thisHeight);
+            Met[] minMaxWS_Mets = GetMetsWithMinMaxWS(metsUsed, WD_Ind, thisTOD, thisSeason, thisHeight); // 0: Met with minimum WS; 1: Met with maximum WS
             Met.WSWD_Dist[] minMaxWS_MetsDists = new Met.WSWD_Dist[2];
             minMaxWS_MetsDists[0] = minMaxWS_Mets[0].GetWS_WD_Dist(thisHeight, thisTOD, thisSeason);
             minMaxWS_MetsDists[1] = minMaxWS_Mets[1].GetWS_WD_Dist(thisHeight, thisTOD, thisSeason);
 
-            double[] minMaxWS = new double[2];
+            double[] minMaxWS = new double[2]; // Average wind speeds of mets with min/max WS
             
             if (WD_Ind == numWD)
             {
@@ -671,6 +643,7 @@ namespace ContinuumNS
                 double[] weightSum = new double[numWS];
                 double[] metWeights = new double[numMetsUsed];
 
+                // First, combine all met WS distributions using met weights = 1
                 for (int i = 0; i < numMetsUsed; i++)
                 {
                     Met.WSWD_Dist thisDist = metsForDist[i].GetWS_WD_Dist(thisHeight, thisTOD, thisSeason);
@@ -723,29 +696,22 @@ namespace ContinuumNS
                         lastWeight = metWeights[i];
                         if (metWeights[i] == 0) metWeights[i] = 0.001f;
 
-                        if (WD_Ind == numWD && ((WS_diff < 0 && thisDist.WS < avgWS) || (WS_diff > 0 && thisDist.WS > avgWS)))
+                        double metWS = 0;
+                        if (WD_Ind == numWD)
+                            metWS = thisDist.WS;
+                        else
+                            metWS = thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind];
+
+                        if ((WS_diff < 0 && metWS < avgWS) || (WS_diff > 0 && metWS > avgWS))
                         { // reduce met weight
-                            metWeights[i] = metWeights[i] - metWeights[i] * Math.Abs(WS_diff) * (1 - Math.Abs((avgWS - thisDist.WS) / avgWS));
+                            metWeights[i] = metWeights[i] - metWeights[i] * Math.Abs(WS_diff) * (1 - Math.Abs((avgWS - metWS) / avgWS));
                             if (metWeights[i] > lastWeight) metWeights[i] = 0;
                         }
-                        else if (WD_Ind == numWD && ((WS_diff > 0 && thisDist.WS < avgWS) || (WS_diff < 0 && thisDist.WS > avgWS)))
-                        { // increase met weight
-                            double This_Part = Math.Abs(WS_diff) * (1 - Math.Abs((avgWS - thisDist.WS) / avgWS));
-                            metWeights[i] = metWeights[i] + metWeights[i] * Math.Abs(WS_diff) * (1 - Math.Abs((avgWS - thisDist.WS) / avgWS));
+                        else if ((WS_diff > 0 && metWS < avgWS) || (WS_diff < 0 && metWS > avgWS))
+                        { // increase met weight                            
+                            metWeights[i] = metWeights[i] + metWeights[i] * Math.Abs(WS_diff) * (1 - Math.Abs((avgWS - metWS) / avgWS));
                             if (metWeights[i] < lastWeight) metWeights[i] = 0;
-                        }
-                        else if ((WD_Ind != numWD) && (WS_diff < 0 && thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind] < avgWS) ||
-                       (WS_diff > 0 && thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind] > avgWS))
-                        { // reduce met weight
-                            metWeights[i] = metWeights[i] - metWeights[i] * Math.Abs(WS_diff) * (1 - Math.Abs((avgWS - (thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind])) / avgWS));
-                            if (metWeights[i] > lastWeight) metWeights[i] = 0;
-                        }
-                        else if ((WD_Ind != numWD) && (WS_diff > 0 && thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind] < avgWS) ||
-                        (WS_diff < 0 && thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind] > avgWS))
-                        { // increase met weight
-                            metWeights[i] = metWeights[i] + metWeights[i] * Math.Abs(WS_diff) * (1 - Math.Abs((avgWS - (thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind])) / avgWS));
-                            if (metWeights[i] < lastWeight) metWeights[i] = 0;
-                        }
+                        }                        
 
                         if (metWeights[i] < 0) metWeights[i] = 0.001f;
 
@@ -1343,7 +1309,7 @@ namespace ContinuumNS
                         context.Database.ExecuteSqlCommand("TRUNCATE TABLE Anem_table");
                         context.Database.ExecuteSqlCommand("TRUNCATE TABLE Vane_table");
                         context.Database.ExecuteSqlCommand("TRUNCATE TABLE Temp_table");
-                        context.SaveChanges();
+                        context.SaveChanges();                        
                     }
                 }
                 catch (Exception ex)
@@ -2525,7 +2491,7 @@ namespace ContinuumNS
             thisMet.mcp.targetData = thisMet.mcp.GetTargetData(thisInst.modeledHeight, thisMet);
 
        //     thisMet.metData.FindStartEndDatesWithMaxRecovery();            
-            thisMet.mcp.FindConcurrentData(false, thisMet.metData.startDate, thisMet.metData.endDate);
+            thisMet.mcp.FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate);
             
             if (thisMet.mcp.gotConc == true)
                 thisMet.mcp.DoMCP(thisMet.mcp.concStart, thisMet.mcp.concEnd, true, MCP_method, thisInst, thisMet);                                   

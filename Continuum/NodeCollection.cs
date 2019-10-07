@@ -35,6 +35,9 @@ namespace ContinuumNS
             public Nodes[] pathOfNodes;
         }
 
+        /// <summary>
+        /// Holds min/max X/Y values
+        /// </summary>
         public struct MinMax_XY
         {
             public double minX;
@@ -161,7 +164,7 @@ namespace ContinuumNS
             try {
                 using (var context = new Continuum_EDMContainer(connString)) {
                     context.Node_table.AddRange(newNodesDB);
-                    context.SaveChanges();
+                    context.SaveChanges();                    
                 }
             }
             catch (Exception ex) {
@@ -220,8 +223,9 @@ namespace ContinuumNS
                             }
                         }
 
-                        context.SaveChanges();
+                        context.SaveChanges();                        
                     }
+                    
                 }
             }            
             catch (Exception ex)
@@ -260,9 +264,11 @@ namespace ContinuumNS
             return turbNode;
         }
 
-        public Nodes GetMapAsNode(Map.mapNode thisMapNode)
-        {
-            // Returns a node with map node expos, stats, flow sep nodes
+        /// <summary>
+        /// Returns a node with map node exposure, grid stats (P10 exposures), and flow separation nodes (if flow sep. model used)
+        /// </summary>
+        public Nodes GetMapAsNode(Map.MapNode thisMapNode)
+        {            
             Nodes mapNode = new Nodes();
             mapNode.UTMX = thisMapNode.UTMX;
             mapNode.UTMY = thisMapNode.UTMY;
@@ -561,18 +567,20 @@ namespace ContinuumNS
             return nodesFromDB;
         }
 
+        /// <summary>
+        /// Recalculates surface roughness and displacement height for all nodes in the database with new land cover key
+        /// This function is not called. It was copied to BackgroundWorker in order to have a responsive progress bar 
+        /// </summary>
+        /// <param name="thisInst"></param>
         public void ReCalcNodeSRDH(Continuum thisInst)
-        {
-            // Recalculates surface roughness and displacement height with new land cover key
-            
+        {                        
             int numWD = thisInst.metList.numWD;
             if (numWD == 0) return;
             
             Nodes nodeFromDB = new Nodes();
             string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);
             MessageBox.Show(thisInst.savedParams.savedFileName + "," + "ReCalcNodeSRDH");
-            BinaryFormatter bin = new BinaryFormatter();
-
+            
             try {
                 using (var context = new Continuum_EDMContainer(connString)) {
                     var node_db = from N in context.Node_table.Include("expo") select N;
@@ -587,17 +595,29 @@ namespace ContinuumNS
 
                         for (int i = 0; i < numExpo; i++)
                         {
-                            nodeFromDB.expo[i] = new Exposure(); // needed?
+                            nodeFromDB.expo[i] = new Exposure();
                             nodeFromDB.expo[i].radius = N.expo.ElementAt(i).radius;
                             nodeFromDB.expo[i].exponent = N.expo.ElementAt(i).exponent;
+                            int numSectors = 1;
+                            int smallerRadius = thisInst.topo.GetSmallerRadius(nodeFromDB.expo, nodeFromDB.expo[i].radius, nodeFromDB.expo[i].exponent, numSectors);
 
-                            // Recalc SR / DH
-                            if (thisInst.topo.gotSR == true)
-                                thisInst.topo.CalcSRDH(ref nodeFromDB.expo[i], nodeFromDB.UTMX, nodeFromDB.UTMY, nodeFromDB.expo[i].radius, nodeFromDB.expo[i].exponent, numWD);
+                            if (smallerRadius == 0 || numSectors > 1)
+                            { // when sector avg is used, can//t add on to exposure calcs...so gotta do it the long way
+                                if (thisInst.topo.gotSR == true)
+                                    thisInst.topo.CalcSRDH(ref nodeFromDB.expo[i], nodeFromDB.UTMX, nodeFromDB.UTMY, nodeFromDB.expo[i].radius, nodeFromDB.expo[i].exponent, thisInst.metList.numWD);
+                            }
+                            else
+                            {
+                                Exposure smallerExpo = thisInst.topo.GetSmallerRadiusExpo(nodeFromDB.expo, smallerRadius, nodeFromDB.expo[i].exponent, numSectors);
+                                if (thisInst.topo.gotSR == true)
+                                    thisInst.topo.CalcSRDHwithSmallerRadius(ref nodeFromDB.expo[i], nodeFromDB.UTMX, nodeFromDB.UTMY, nodeFromDB.expo[i].radius, nodeFromDB.expo[i].exponent, numSectors, smallerRadius, smallerExpo, thisInst.metList.numWD);
+
+                            }
 
                             // Write back to expo_db
                             MemoryStream MS7 = new MemoryStream();
                             MemoryStream MS8 = new MemoryStream();
+                            BinaryFormatter bin = new BinaryFormatter();
 
                             if (nodeFromDB.expo[i].SR != null)
                             {
@@ -605,14 +625,15 @@ namespace ContinuumNS
                                 N.expo.ElementAt(i).SR_Array = MS7.ToArray();
                             }
 
-                            if (nodeFromDB.expo[i].dispH != null) {
+                            if (nodeFromDB.expo[i].dispH != null)
+                            {
                                 bin.Serialize(MS8, nodeFromDB.expo[i].dispH);
                                 N.expo.ElementAt(i).DH_Array = MS8.ToArray();
                             }
                         }
                     }
                                         
-                    context.SaveChanges(); // Save DB
+                    context.SaveChanges(); // Save DB                    
                 }
             }
             catch (Exception ex) {
@@ -663,10 +684,17 @@ namespace ContinuumNS
 
             return pathOfNodes;
         }
-               
 
+        /// <summary>
+        /// Finds and returns a path of nodes between start and end node
+        /// </summary>
+        /// <param name="startNode"></param>
+        /// <param name="endNode"></param>
+        /// <param name="model"></param>
+        /// <param name="thisInst"></param>
+        /// <returns></returns>
         public Nodes[] FindPathOfNodes(Nodes startNode, Nodes endNode, Model model, Continuum thisInst)
-        {  // Finds and returns a path of nodes between start and end node
+        {  
             Nodes[] nodePath1to2 = null;
                        
             bool madeItToTarget = false;
@@ -746,11 +774,11 @@ namespace ContinuumNS
                         if (startInd > 0)
                             lastNode = nodesFromStart[startInd - 1];
 
-                        double[] minMaxDir = GetWD_MinGrade(startNode, targetNode, lastNode, radiusStep, thisInst.topo, thisInst.radiiList, startNode.gridStats.gridRadius);
-                        minDir = minMaxDir[0];
-                        maxDir = minMaxDir[1];
+                        double minSlopeDir = GetWD_MinGrade(startNode, targetNode, radiusStep, thisInst.topo);
+                        minDir = minSlopeDir - 30;
+                        maxDir = minSlopeDir + 30;
 
-                        nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7), false);
+                        nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7));
 
                         if (nextNode.UTMX == 0 && nextNode.UTMY == 0)
                             foundNode = false;
@@ -840,11 +868,11 @@ namespace ContinuumNS
                             if (endInd > 0)
                                 lastNode = nodesFromEnd[endInd - 1];
 
-                            double[] minMaxDir = GetWD_MinGrade(startNode, targetNode, lastNode, radiusStep, thisInst.topo, thisInst.radiiList, startNode.gridStats.gridRadius);
-                            minDir = minMaxDir[0];
-                            maxDir = minMaxDir[1];
+                            double minSlopeDir = GetWD_MinGrade(startNode, targetNode, radiusStep, thisInst.topo);
+                            minDir = minSlopeDir - 30;
+                            maxDir = minSlopeDir + 30;
 
-                            nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7), false);
+                            nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7));
 
                             if (nextNode.UTMX == 0 && nextNode.UTMY == 0)
                                 foundNode = false;
@@ -907,254 +935,96 @@ namespace ContinuumNS
 
         }
 
-        public double[] GetWD_MinGrade(Nodes startNode, Nodes targetNode, Nodes lastNode, int radInv, TopoInfo topo,
-                                            InvestCollection radiiList, int gridRadius)
+        /// <summary>
+        /// Calculates the average slope of terrain from the start node to the target node within specified radius
+        /// and returns the WD sector with minimum grade
+        /// </summary>
+        /// <param name="startNode"></param>
+        /// <param name="targetNode"></param>        
+        /// <param name="topo"></param>   
+        /// <param name="maxRadius"></param>
+        /// <returns></returns>
+        public double GetWD_MinGrade(Nodes startNode, Nodes targetNode, int maxRadius, TopoInfo topo)
         {
-            // Calculates the average slope of terrain and returns the WD sector with min grade
-            double[] minMaxWD = new double[2];
-            bool posGrade;
-
-            double[] dirSecLims = new double[3];
-
+          
+            bool posGrade; // If true then looking for minimum positive grade   
             if (targetNode.elev > startNode.elev)
                 posGrade = true;
             else
                 posGrade = false;
 
-            double orientStartToTarget = topo.GetDirection(targetNode.UTMX - startNode.UTMX, targetNode.UTMY - startNode.UTMY);
-            //    Dim Orient_Start_to_last  double = topo.GetDirection(lastNode.UTMX - startNode.UTMX, lastNode.UTMY - startNode.UTMY)
-
-            //    Dim orientStartToTarget  double = Calc_Orient(startNode, targetNode)
-            //    Dim Orient_Start_to_last  double = Calc_Orient(startNode, lastNode)
-
-            double minDirSec = orientStartToTarget - 45; // changing from +/- 90 to +/- 45 06/24/16
+            double orientStartToTarget = topo.GetDirection(targetNode.UTMX - startNode.UTMX, targetNode.UTMY - startNode.UTMY);            
+            double minDirSec = orientStartToTarget - 45; 
             double maxDirSec = orientStartToTarget + 45;
 
-            if (minDirSec < 0) minDirSec = minDirSec + 360;
-            if (maxDirSec > 360) maxDirSec = maxDirSec - 360;
+            int radiusReso = 100; // Radius step size
+            int dirStep = 2; // Direction step size
 
-            for (int i = 0; i <= 2; i++)
-            {
-                dirSecLims[i] = minDirSec + 30 * (i + 1);
-                if (dirSecLims[i] > 360) dirSecLims[i] = dirSecLims[i] - 360;
-            }
-
-            //   Dim Min_Dir_Sec_Last  double = Orient_Start_to_last - 67.5
-            //    Dim Max_Dir_Sec_Last  double = Orient_Start_to_last + 67.5
-
-            //    if ( Min_Dir_Sec_Last < 0 ) { Min_Dir_Sec_Last = Min_Dir_Sec_Last + 360
-            //   if ( Max_Dir_Sec_Last > 360 ) { Max_Dir_Sec_Last = Max_Dir_Sec_Last - 360
-
-            double minX = startNode.UTMX - radInv;
-            double minY = startNode.UTMY - radInv;
-            double maxX = startNode.UTMX + radInv;
-            double maxY = startNode.UTMY + radInv;
-
-            TopoInfo.TopoGrid minGrid = topo.GetClosestNode(minX, minY, "Topography");
-            minX = (int)minGrid.UTMX;
-            minY = (int)minGrid.UTMY;
-            TopoInfo.TopoGrid maxGrid = topo.GetClosestNode(maxX, maxY, "Topography");
-            maxX = (int)maxGrid.UTMX;
-            maxY = (int)maxGrid.UTMY;
-
-            int reso = 100;
-
-            double thisDist = 0;
-            double thisOrient = 0;
+            Check_class check = new Check_class();
             Nodes thisNode = new Nodes();
-            bool orientOk = false;
-            int dirSecInd = 0;
+            double minPosSlope = 1000;
+            double minPosSlopeDir = 1000;
+            double minNegSlope = 1000;
+            double minNegSlopeDir = 1000;
 
-            double rise = 0;
-            double runLength = 0;
-            double[] dirSecAvg = new double[3];
-            int[] dirSecCount = new int[3];
-            bool nodeOk = false;
-
-            for (double i = minX; i <= maxX; i = i + reso)
+            // Loop through direction and through radius
+            for (double i = minDirSec; i <= maxDirSec; i = i + dirStep)
             {
-                for (double j = minY; j <= maxY; j = j + reso)
+                double avgSlope = 0;
+                int count = 0;
+
+                for (double j = radiusReso; j <= maxRadius; j = j + radiusReso)
                 {
-                    thisNode.UTMX = i;
-                    thisNode.UTMY = j;
-                    nodeOk = topo.newNode(i, j, radiiList, gridRadius);
-                    if (nodeOk == true)
-                    {                   
-                        thisNode.elev = topo.CalcElevs(i, j);
+                    thisNode.UTMX = startNode.UTMX + j * Math.Cos((90 - i) * Math.PI / 180);
+                    thisNode.UTMY = startNode.UTMY + j * Math.Sin((90 - i) * Math.PI / 180); 
 
-                        thisDist = topo.CalcDistanceBetweenPoints(thisNode.UTMX, thisNode.UTMY, startNode.UTMX, startNode.UTMY);
-                        thisOrient = topo.GetDirection(thisNode.UTMX - startNode.UTMX, thisNode.UTMY - startNode.UTMY);
-                        //  thisOrient = Calc_Orient(startNode, thisNode)
-                        orientOk = true;
+                    int nodeOk = check.NewNodeCheck(topo, thisNode.UTMX, thisNode.UTMY, 0); // Min distance is zero since we just need an elevation at this location
 
-                        // Check that node is within target direction sectors
-                        if (minDirSec < maxDirSec)
-                        {
-                            if (thisOrient < minDirSec || thisOrient > maxDirSec)
-                                orientOk = false;
-                        }
-                        else
-                        {
-                            if (thisOrient < minDirSec && thisOrient > maxDirSec)
-                                orientOk = false;
-                        }
-
-                        //  if ( IsNothing(lastNode.expo) = false ) {
-                        // Check that node is outside direction sector towards last node (so it doesn//t go back the way it came)
-                        //   if ( Min_Dir_Sec_Last < Max_Dir_Sec_Last ) {
-                        //   if ( thisOrient > Min_Dir_Sec_Last && thisOrient < Max_Dir_Sec_Last ) { orientOk = false
-                        //else {
-                        //    if ( thisOrient > Min_Dir_Sec_Last || thisOrient < Max_Dir_Sec_Last ) { orientOk = false
-                        //}
-                        //}
-
-                        if (orientOk == true && thisDist < radInv)
-                        {
-                            // find direction sector ind
-                            if (maxDirSec > minDirSec || thisOrient > minDirSec)
-                            {
-                                if (minDirSec + 30 > 360)
-                                    dirSecInd = 0;
-                                else
-                                {
-                                    for (int m = 0; m <= 2; m++)
-                                    {
-                                        if (thisOrient < dirSecLims[m])
-                                        {
-                                            dirSecInd = m;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            { // maxDirSec < minDirSec && thisOrient < maxDirSec
-                                for (int m = 2; m >= 0; m--)
-                                {
-                                    if ((thisOrient > dirSecLims[m] && m != 2) || dirSecLims[m] > 180)
-                                    {
-                                        dirSecInd = m + 1;
-                                        break;
-                                    }
-                                }
-
-                            }
-
-                            rise = thisNode.elev - startNode.elev;
-                            runLength = thisDist;
-
-                            if (runLength > 0)
-                            {
-                                dirSecAvg[dirSecInd] = dirSecAvg[dirSecInd] + 100 * (rise / runLength);
-                                dirSecCount[dirSecInd] = dirSecCount[dirSecInd] + 1;
-                            }
-
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-            int countPos = 0;
-            int countNeg = 0;
-            double minGrade = 1000;
-            int minGradeInd = 0;
-
-            for (int i = 0; i <= 2; i++)
-            {
-                if (dirSecCount[i] > 50)
-                {
-                    dirSecAvg[i] = dirSecAvg[i] / dirSecCount[i];
-                    if (dirSecAvg[i] > 0) countPos++;
-                    if (dirSecAvg[i] < 0) countNeg++;
-                }
-            }
-
-            if (posGrade == true)
-            {
-                minGrade = 1000;
-                if (countPos > 0)
-                {
-                    for (int i = 0; i <= 2; i++)
+                    if (nodeOk == 100)
                     {
-                        if (dirSecAvg[i] > 0 && dirSecAvg[i] < minGrade)
+                        thisNode.elev = topo.CalcElevs(thisNode.UTMX, thisNode.UTMY); 
+                        double rise = thisNode.elev - startNode.elev;
+                        double runLength = topo.CalcDistanceBetweenPoints(thisNode.UTMX, thisNode.UTMY, startNode.UTMX, startNode.UTMY);
+
+                        if (runLength > 0)
                         {
-                            minGrade = dirSecAvg[i];
-                            minGradeInd = i;
-                            if (dirSecLims[i] - 30 < 0)
-                                minMaxWD[0] = dirSecLims[i] - 30 + 360;
-                            else
-                                minMaxWD[0] = dirSecLims[i] - 30;
-
-                            minMaxWD[1] = dirSecLims[i];
+                            avgSlope = avgSlope + 100 * (rise / runLength);
+                            count++;
                         }
-
                     }
                 }
-                else { // no positive grade sectors so take least negative
-                    for (int i = 0; i <= 2; i++)
-                    {
-                        if (Math.Abs(dirSecAvg[i]) != 0 && Math.Abs(dirSecAvg[i]) < minGrade)
-                        {
-                            minGrade = Math.Abs(dirSecAvg[i]);
-                            minGradeInd = i;
 
-                            if (dirSecLims[i] - 30 < 0)
-                                minMaxWD[0] = dirSecLims[i] - 30 + 360;
-                            else
-                                minMaxWD[0] = dirSecLims[i] - 30;
-
-                            minMaxWD[1] = dirSecLims[i];
-                        }
-
-                    }
-                }
-            }
-            else {
-                minGrade = -1000;
-
-                if (countNeg > 0)
+                if (count > 0)
                 {
-                    for (int i = 0; i <= 2; i++)
+                    avgSlope = avgSlope / count;
+
+                    if (avgSlope < 0) // negative slope
                     {
-                        if (Math.Abs(dirSecAvg[i]) > 0 && dirSecAvg[i] < 0 && dirSecAvg[i] > minGrade)
+                        if (Math.Abs(avgSlope) < Math.Abs(minNegSlope))
                         {
-                            minGrade = dirSecAvg[i];
-                            minGradeInd = i;
-                            if (dirSecLims[i] - 30 < 0)
-                                minMaxWD[0] = dirSecLims[i] - 30 + 360;
-                            else
-                                minMaxWD[0] = dirSecLims[i] - 30;
-
-                            minMaxWD[1] = dirSecLims[i];
-                        }
-
+                            minNegSlope = avgSlope;
+                            minNegSlopeDir = i;
+                        }                        
                     }
-                }
-                else { // no negative grade sectors so take least positive
-                    minGrade = 1000;
-
-                    for (int i = 0; i <= 2; i++)
+                    else // positive slope
                     {
-                        if (Math.Abs(dirSecAvg[i]) > 0 && Math.Abs(dirSecAvg[i]) < minGrade)
+                        if (avgSlope < minPosSlope)
                         {
-                            minGrade = Math.Abs(dirSecAvg[i]);
-                            minGradeInd = i;
-                            if (dirSecLims[i] - 30 < 0)
-                                minMaxWD[0] = dirSecLims[i] - 30 + 360;
-                            else
-                                minMaxWD[0] = dirSecLims[i] - 30;
-
-                            minMaxWD[1] = dirSecLims[i];
+                            minPosSlope = avgSlope;
+                            minPosSlopeDir = i;
                         }
                     }
                 }
             }
 
-            return minMaxWD;
+            if (posGrade == true && minPosSlope != 1000)
+                return minPosSlopeDir;
+            else if (posGrade == true && minPosSlope == 1000)
+                return minNegSlopeDir;
+            else if (posGrade == false && minNegSlope != 1000)
+                return minNegSlopeDir;
+            else // if (posGrade == false && minNegSlope == 1000)
+                return minPosSlopeDir;            
         }
 
 
@@ -1166,173 +1036,143 @@ namespace ContinuumNS
         }
 
 
-        public MinMax_XY GetMinMax_X_Y(Nodes startNode, double minDir, double maxDir, int radiusStep, TopoInfo topo)
-        {
-            // Returns min and max UTMX/Y of search area with specified min/max WD sector and radius
-            MinMax_XY thisMinMax_XY = new MinMax_XY();
+        /*       public MinMax_XY GetMinMax_X_Y(Nodes startNode, double minDir, double maxDir, int radiusStep, TopoInfo topo)
+               {
+                   // Returns min and max UTMX/Y of search area with specified min/max WD sector and radius
+                   MinMax_XY thisMinMax_XY = new MinMax_XY();
 
-            if (minDir >= 0 && minDir < 180)
-                thisMinMax_XY.minX = startNode.UTMX + radiusStep * (double)Math.Abs(Math.Cos((minDir + 90) * Math.PI / 180));
-            else
-                thisMinMax_XY.minX = startNode.UTMX - radiusStep * (double)Math.Abs(Math.Cos((minDir + 90) * Math.PI / 180));                   
-            
-            if (minDir >= 90 && minDir < 270)
-                thisMinMax_XY.minY = startNode.UTMY - radiusStep * (double)Math.Abs(Math.Sin((minDir + 90) * Math.PI / 180));
-            else
-                thisMinMax_XY.minY = startNode.UTMY + radiusStep * (double)Math.Abs(Math.Sin((minDir + 90) * Math.PI / 180));
+                   if (minDir >= 0 && minDir < 180)
+                       thisMinMax_XY.minX = startNode.UTMX + radiusStep * Math.Abs(Math.Cos((minDir + 90) * Math.PI / 180));
+                   else
+                       thisMinMax_XY.minX = startNode.UTMX - radiusStep * Math.Abs(Math.Cos((minDir + 90) * Math.PI / 180));                   
 
-            if (maxDir >= 0 && maxDir < 180)
-                thisMinMax_XY.maxX = startNode.UTMX + radiusStep * (double)Math.Abs(Math.Cos((maxDir + 90) * Math.PI / 180));
-            else
-                thisMinMax_XY.maxX = startNode.UTMX - radiusStep * (double)Math.Abs(Math.Cos((maxDir + 90) * Math.PI / 180));
+                   if (minDir >= 90 && minDir < 270)
+                       thisMinMax_XY.minY = startNode.UTMY - radiusStep * Math.Abs(Math.Sin((minDir + 90) * Math.PI / 180));
+                   else
+                       thisMinMax_XY.minY = startNode.UTMY + radiusStep * Math.Abs(Math.Sin((minDir + 90) * Math.PI / 180));
 
-            if (maxDir >= 90 && maxDir < 270)
-                thisMinMax_XY.maxY = startNode.UTMY - radiusStep * (double)Math.Abs(Math.Sin((maxDir + 90) * Math.PI / 180));
-            else
-                thisMinMax_XY.maxY = startNode.UTMY + radiusStep * (double)Math.Abs(Math.Sin((maxDir + 90) * Math.PI / 180));
+                   if (maxDir >= 0 && maxDir < 180)
+                       thisMinMax_XY.maxX = startNode.UTMX + radiusStep * Math.Abs(Math.Cos((maxDir + 90) * Math.PI / 180));
+                   else
+                       thisMinMax_XY.maxX = startNode.UTMX - radiusStep * Math.Abs(Math.Cos((maxDir + 90) * Math.PI / 180));
 
-            if (thisMinMax_XY.minX > thisMinMax_XY.maxX)
-            {
-                double tempX = thisMinMax_XY.minX;
-                thisMinMax_XY.minX = thisMinMax_XY.maxX;
-                thisMinMax_XY.maxX = tempX;
-            }
+                   if (maxDir >= 90 && maxDir < 270)
+                       thisMinMax_XY.maxY = startNode.UTMY - radiusStep * Math.Abs(Math.Sin((maxDir + 90) * Math.PI / 180));
+                   else
+                       thisMinMax_XY.maxY = startNode.UTMY + radiusStep * Math.Abs(Math.Sin((maxDir + 90) * Math.PI / 180));
 
-            if (thisMinMax_XY.minX < startNode.UTMX && thisMinMax_XY.maxX < startNode.UTMX)
-                thisMinMax_XY.maxX = startNode.UTMX;
-            else if (thisMinMax_XY.minX > startNode.UTMX && thisMinMax_XY.maxX > startNode.UTMX)
-                thisMinMax_XY.minX = startNode.UTMX;
+                   if (thisMinMax_XY.minX > thisMinMax_XY.maxX)
+                   {
+                       double tempX = thisMinMax_XY.minX;
+                       thisMinMax_XY.minX = thisMinMax_XY.maxX;
+                       thisMinMax_XY.maxX = tempX;
+                   }
 
-            if (thisMinMax_XY.minY > thisMinMax_XY.maxY)
-            {
-                double tempY = thisMinMax_XY.minY;
-                thisMinMax_XY.minY = thisMinMax_XY.maxY;
-                thisMinMax_XY.maxY = tempY;
-            }
+                   if (thisMinMax_XY.minX < startNode.UTMX && thisMinMax_XY.maxX < startNode.UTMX)
+                       thisMinMax_XY.maxX = startNode.UTMX;
+                   else if (thisMinMax_XY.minX > startNode.UTMX && thisMinMax_XY.maxX > startNode.UTMX)
+                       thisMinMax_XY.minX = startNode.UTMX;
 
-            if (thisMinMax_XY.minY < startNode.UTMY && thisMinMax_XY.maxY < startNode.UTMY)
-                thisMinMax_XY.maxY = startNode.UTMY;
-            else if (thisMinMax_XY.minY > startNode.UTMY && thisMinMax_XY.maxY > startNode.UTMY)
-                thisMinMax_XY.minY = startNode.UTMY;
+                   if (thisMinMax_XY.minY > thisMinMax_XY.maxY)
+                   {
+                       double tempY = thisMinMax_XY.minY;
+                       thisMinMax_XY.minY = thisMinMax_XY.maxY;
+                       thisMinMax_XY.maxY = tempY;
+                   }
 
-            TopoInfo.TopoGrid minXY = topo.GetClosestNode(thisMinMax_XY.minX, thisMinMax_XY.minY, "Topography");
-            thisMinMax_XY.minX = (int)minXY.UTMX;
-            thisMinMax_XY.minY = (int)minXY.UTMY;
+                   if (thisMinMax_XY.minY < startNode.UTMY && thisMinMax_XY.maxY < startNode.UTMY)
+                       thisMinMax_XY.maxY = startNode.UTMY;
+                   else if (thisMinMax_XY.minY > startNode.UTMY && thisMinMax_XY.maxY > startNode.UTMY)
+                       thisMinMax_XY.minY = startNode.UTMY;
 
-            TopoInfo.TopoGrid maxXY = topo.GetClosestNode(thisMinMax_XY.maxX, thisMinMax_XY.maxY, "Topography");
-            thisMinMax_XY.maxX = (int)maxXY.UTMX;
-            thisMinMax_XY.maxY = (int)maxXY.UTMY;
+                   TopoInfo.TopoGrid minXY = topo.GetClosestNode(thisMinMax_XY.minX, thisMinMax_XY.minY, "Topography");
+                   thisMinMax_XY.minX = (int)minXY.UTMX;
+                   thisMinMax_XY.minY = (int)minXY.UTMY;
 
-            return thisMinMax_XY;
+                   TopoInfo.TopoGrid maxXY = topo.GetClosestNode(thisMinMax_XY.maxX, thisMinMax_XY.maxY, "Topography");
+                   thisMinMax_XY.maxX = (int)maxXY.UTMX;
+                   thisMinMax_XY.maxY = (int)maxXY.UTMY;
 
-        }
+                   return thisMinMax_XY;
 
-        public Nodes FindNodeInSectorHighSpot(Continuum thisInst, Nodes startNode, double minDir, double maxDir, int radiusStep, int minRadius, bool isFS_Node)
-        {
-            // Searches and returns node in high spot within min/max WD and min/max radius
+               }
+
+               /// <summary>
+               /// 
+               /// </summary>
+               /// <param name="startNode"></param>
+               /// <param name="minDir"></param>
+               /// <param name="maxDir"></param>
+               /// <param name="radiusStep"></param>
+               /// <param name="topo"></param>
+               /// <returns></returns>
+               public MinMax_XY GetMinMax_X_Y_NEW(Nodes startNode, double minDir, double maxDir, int radiusStep, TopoInfo topo)
+               {
+                   // Returns min and max UTMX/Y of search area with specified min/max WD sector and radius
+                   MinMax_XY thisMinMax_XY = new MinMax_XY();
+
+                   thisMinMax_XY.minX = startNode.UTMX + radiusStep * Math.Cos((90 - minDir) * Math.PI / 180);            
+                   thisMinMax_XY.minY = startNode.UTMY + radiusStep * Math.Sin((90 - minDir) * Math.PI / 180);
+
+                   thisMinMax_XY.maxX = startNode.UTMX + radiusStep * Math.Cos((90 - maxDir) * Math.PI / 180);            
+                   thisMinMax_XY.maxY = startNode.UTMY + radiusStep * Math.Sin((90 - maxDir) * Math.PI / 180);
+
+                   TopoInfo.TopoGrid minXY = topo.GetClosestNodeFixedGrid(thisMinMax_XY.minX, thisMinMax_XY.minY, 250, 12000);
+                   thisMinMax_XY.minX = (int)minXY.UTMX;
+                   thisMinMax_XY.minY = (int)minXY.UTMY;
+
+                   TopoInfo.TopoGrid maxXY = topo.GetClosestNodeFixedGrid(thisMinMax_XY.maxX, thisMinMax_XY.maxY, 250, 12000);
+                   thisMinMax_XY.maxX = (int)maxXY.UTMX;
+                   thisMinMax_XY.maxY = (int)maxXY.UTMY;
+
+                   return thisMinMax_XY;
+
+               }
+       */
+        /// <summary>
+        /// Finds and returns a node with highest elvation within min/max WD and min/max radius
+        /// </summary>
+        /// <param name="thisInst"></param>
+        /// <param name="startNode"></param>
+        /// <param name="minDir"></param>
+        /// <param name="maxDir"></param>
+        /// <param name="maxRadius"></param>
+        /// <param name="minRadius"></param>        
+        /// <returns></returns>
+        public Nodes FindNodeInSectorHighSpot(Continuum thisInst, Nodes startNode, double minDir, double maxDir, int maxRadius, int minRadius)
+        {             
             Nodes highNode = new Nodes();
             Nodes thisNode = new Nodes();
-            MinMax_XY thisMinMax_XY = GetMinMax_X_Y(startNode, minDir, maxDir, radiusStep, thisInst.topo);
-
+      
             int reso = 250;
-            TopoInfo.TopoGrid minXY = thisInst.topo.GetClosestNodeFixedGrid(thisMinMax_XY.minX, thisMinMax_XY.minY, reso);
-            thisMinMax_XY.minX = minXY.UTMX;
-            thisMinMax_XY.minY = minXY.UTMY;
+            
+            // Adjust maxDir if it is less than minDir (i.e. if it crosses over 0 degs)
+            if (maxDir < minDir) maxDir = maxDir + 360; 
 
-            TopoInfo.TopoGrid maxXY = thisInst.topo.GetClosestNodeFixedGrid(thisMinMax_XY.maxX, thisMinMax_XY.maxY, reso);
-            thisMinMax_XY.maxX = maxXY.UTMX;
-            thisMinMax_XY.maxY = maxXY.UTMY;
-
-            for (double i = thisMinMax_XY.minX; i <= thisMinMax_XY.maxX; i = i + reso)
+            // Do polar coordinate sweep and find node at each angle and radius. Find node with highest elevation            
+            for (double i = minDir; i <= maxDir; i++)
             {
-                for (double j = thisMinMax_XY.minY; j <= thisMinMax_XY.maxY; j = j + reso)
+                for (double j = minRadius; j <= maxRadius; j = j + reso)
                 {
-                    thisNode.UTMX = i;
-                    thisNode.UTMY = j;                   
+                    thisNode.UTMX = startNode.UTMX + j * Math.Cos((90 - i) * Math.PI / 180);
+                    thisNode.UTMY = startNode.UTMY + j * Math.Sin((90 - i) * Math.PI / 180);
 
-                    bool orientOk = true;
-                    //   thisOrient = Calc_Orient(startNode, thisNode)
-                    double thisOrient = thisInst.topo.GetDirection(thisNode.UTMX - startNode.UTMX, thisNode.UTMY - startNode.UTMY);
+                    // Find closest nodes on fixed grid
+                    TopoInfo.TopoGrid closestNode = thisInst.topo.GetClosestNodeFixedGrid(thisNode.UTMX, thisNode.UTMY, 250, 12000);
+                    thisNode.UTMX = closestNode.UTMX;
+                    thisNode.UTMY = closestNode.UTMY;                                       
 
-                    if (maxDir > minDir && (thisOrient < minDir || thisOrient > maxDir))
-                        orientOk = false;
-                    else if (maxDir < minDir && thisOrient > maxDir && thisOrient < minDir)
-                        orientOk = false;
+                    thisNode.elev = thisInst.topo.CalcElevs(thisNode.UTMX, thisNode.UTMY);
 
-                    if (orientOk == true) {
-                        bool nodeOk = thisInst.topo.newNode(thisNode.UTMX, thisNode.UTMY, thisInst.radiiList, startNode.gridStats.gridRadius);
-                        double thisDist = Calc_Dist(startNode, thisNode);
-
-                        if (nodeOk == true && thisDist < radiusStep && thisDist > minRadius)
-                        {                            
-                            thisNode.elev = thisInst.topo.CalcElevs(thisNode.UTMX, thisNode.UTMY);
-
-                            if (highNode == null || thisNode.elev > highNode.elev)
-                            {
-                                highNode.UTMX = thisNode.UTMX;
-                                highNode.UTMY = thisNode.UTMY;
-                                highNode.elev = thisNode.elev;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // if ( no high nodes were found that fell in specified sector then look in adjacent sectors
-            int loopCount = 0;
-
-            if (highNode.UTMX == 0 && highNode.UTMY == 0)
-            {
-                while (highNode.UTMX == 0 && loopCount < 200)
-                {
-                    minDir = minDir - 22.5f;
-                    maxDir = maxDir + 22.5f;
-
-                    if (minDir < 0) minDir = minDir + 360;
-                    if (maxDir > 360) maxDir = maxDir - 360;
-                    thisMinMax_XY = GetMinMax_X_Y(startNode, minDir, maxDir, radiusStep, thisInst.topo);
-
-                    for (double i = thisMinMax_XY.minX; i <= thisMinMax_XY.maxX; i = i + reso)
+                    if (highNode == null || thisNode.elev > highNode.elev)
                     {
-                        for (double j = thisMinMax_XY.minY; j <= thisMinMax_XY.maxY; j = j + reso)
-                        {
-                            thisNode.UTMX = i;
-                            thisNode.UTMY = j;                            
-
-                            bool orientOk = true;                            
-                            double thisOrient = thisInst.topo.GetDirection(thisNode.UTMX - startNode.UTMX, thisNode.UTMY - startNode.UTMY);
-
-                            if (maxDir > minDir && (thisOrient < minDir || thisOrient > maxDir))
-                                orientOk = false;
-                            else if (maxDir < minDir && thisOrient > maxDir && thisOrient < minDir)
-                                orientOk = false;
-
-                            if (orientOk == true)
-                            {
-                                bool nodeOk = thisInst.topo.newNode(thisNode.UTMX, thisNode.UTMY, thisInst.radiiList, startNode.gridStats.gridRadius);
-                                double thisDist = Calc_Dist(startNode, thisNode);
-
-                                if (nodeOk == true && thisDist < radiusStep && thisDist > radiusStep / 2)
-                                {                                    
-                                    thisNode.elev = thisInst.topo.CalcElevs(thisNode.UTMX, thisNode.UTMY);
-
-                                    if (highNode == null || thisNode.elev > highNode.elev)
-                                    {
-                                        highNode.UTMX = thisNode.UTMX;
-                                        highNode.UTMY = thisNode.UTMY;
-                                        highNode.elev = thisNode.elev;
-                                    }
-                                }
-                            }
-                        }
+                        highNode.UTMX = thisNode.UTMX;
+                        highNode.UTMY = thisNode.UTMY;
+                        highNode.elev = thisNode.elev;
                     }
-
-                    if (minDir == 0 && maxDir == 360) // it couldn//t find a node so exit while loop
-                        break;
-
-                    loopCount++;
+                    
                 }
-            }
+            }                     
 
             // Do exposure and grid stat calculations at high node
             // First check to see if it has already been calculated
@@ -1352,7 +1192,6 @@ namespace ContinuumNS
                         highNode.CalcGridStatsAndExposures(thisInst);
                         AddNodeOrUpdateNodeGridStat(highNode, thisInst.savedParams.savedFileName);
                     }
-
                 }
 
                 if (foundHighNode == false && highNode.UTMX != 0 && highNode.UTMY != 0)
@@ -1445,7 +1284,7 @@ namespace ContinuumNS
                     if (maxDir > 360) maxDir = maxDir - 360;
                     Nodes[] blankNodes = null;
 
-                    highNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, 5000, 0, true);
+                    highNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, 5000, 0);
                     sumUWDW = Math.Abs(highNode.expo[3].expo[WD]) + highNode.expo[0].GetDW_Param(WD, "Expo");
                     Array.Resize(ref flowSepNodes, numSepNodes + 1);
 
@@ -1459,7 +1298,7 @@ namespace ContinuumNS
                     if (distToSep > turbZoneLength)
                     { // outside of turbulent zone
                         endZoneNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, (int)((distToSep - turbZoneLength) * 1.1), 
-                            (int)((distToSep - turbZoneLength) * 0.9), true);
+                            (int)((distToSep - turbZoneLength) * 0.9));
                         flowSepNodes[numSepNodes].turbEndNode = endZoneNode;
 
                         if (endZoneNode.UTMX == 0)                          
@@ -1608,7 +1447,7 @@ namespace ContinuumNS
                     ctx.Database.ExecuteSqlCommand("DELETE FROM Expo_table");
                     ctx.Database.ExecuteSqlCommand("DELETE FROM Node_table");
 
-                    ctx.SaveChanges();
+                    ctx.SaveChanges();                    
                 }
             }
             catch (Exception ex)

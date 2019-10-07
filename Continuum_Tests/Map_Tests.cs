@@ -22,7 +22,7 @@ namespace Continuum_Tests
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
             Map New_Map = new Map();
-            Map.mapNode New_Map_Node = new Map.mapNode();
+            Map.MapNode New_Map_Node = new Map.MapNode();
             Met[] metsUsed = thisInst.metList.GetMets(thisInst.metList.GetMetsUsed(), null);
             Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
 

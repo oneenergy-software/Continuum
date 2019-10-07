@@ -22,9 +22,9 @@ namespace Continuum_Tests
             Stats thisStats = new Stats();
             DateTime Start = Convert.ToDateTime("10/1/2008 12:00:00 AM");
             DateTime End = Convert.ToDateTime("10/31/2008 11:00:00 PM");
-
+            // NEEDS TO BE UPDATED. CalcAvgWS no longer filters on WS
             // Test 1
-            double This_Avg = thisStats.CalcAvgWS(thisMCP.targetData, 6, 7, Start, End, 90, 270, Met.TOD.All, Met.Season.All, thisMCP);
+            double This_Avg = thisStats.CalcAvgWS(thisMCP.targetData, Start, End, 90, 270, Met.TOD.All, Met.Season.All, thisInst.metList);
             Assert.AreEqual(This_Avg, 6.49889, 0.001, "Wrong Avg WS");
 
             // Test 2
@@ -32,7 +32,7 @@ namespace Continuum_Tests
             End = Convert.ToDateTime("2/13/2009 1:00:00 PM");
             thisMCP.numTODs = 2;
 
-            This_Avg = thisStats.CalcAvgWS(thisMCP.targetData, 5, 10, Start, End, 210, 300, Met.TOD.All, Met.Season.All, thisMCP);
+            This_Avg = thisStats.CalcAvgWS(thisMCP.targetData, Start, End, 210, 300, Met.TOD.All, Met.Season.All, thisInst.metList);
             Assert.AreEqual(This_Avg, 6.783322, 0.001, "Wrong Avg WS");
 
             thisInst.Close();
@@ -56,7 +56,7 @@ namespace Continuum_Tests
             Stats thisStats = new Stats();
 
             // Test 1
-            int thisCount = thisStats.Get_Data_Count(thisMCP.refData, Start, End, 7, Met.TOD.All, Met.Season.All, thisMCP, false);
+            int thisCount = thisStats.GetDataCount(thisMCP.refData, Start, End, 7, Met.TOD.All, Met.Season.All, thisInst.metList, false);
             Assert.AreEqual(thisCount, 45, 0, "Wrong data count");
 
             thisMCP.numWD = 4;
@@ -67,7 +67,7 @@ namespace Continuum_Tests
             End = Convert.ToDateTime("12/31/2015 12:00:00 AM");
 
             // Test 2
-            thisCount = thisStats.Get_Data_Count(thisMCP.refData, Start, End, 0, Met.TOD.All, Met.Season.All, thisMCP, false);
+            thisCount = thisStats.GetDataCount(thisMCP.refData, Start, End, 0, Met.TOD.All, Met.Season.All, thisInst.metList, false);
             Assert.AreEqual(thisCount, 14114, 0, "Wrong data count");
 
             thisInst.Close();
@@ -92,7 +92,7 @@ namespace Continuum_Tests
 
             Stats These_Stats = new Stats();
 
-            double This_Var = These_Stats.Calc_Variance(values);
+            double This_Var = These_Stats.CalcVariance(values);
             Assert.AreEqual(This_Var, 565.507, 0.001, "Wrong Variance");
 
         }
@@ -129,13 +129,13 @@ namespace Continuum_Tests
             Y_Values[11] = 5.89f;
 
             Stats These_Stats = new Stats();
-            double This_Cov = These_Stats.Calc_Covariance(X_Values, Y_Values);
+            double This_Cov = These_Stats.CalcCovariance(X_Values, Y_Values);
             Assert.AreEqual(This_Cov, 11.93237, 0.001, "Wrong co-variance");
 
         }
 
         [TestMethod]
-        public void Calc_R_sqr()
+        public void CalcR_Sqr()
         {
             double[] X_Values = new double[12];
             X_Values[0] = 0.54f;
@@ -166,10 +166,10 @@ namespace Continuum_Tests
             Y_Values[11] = 5.89f;
 
             Stats These_Stats = new Stats();
-            double Var_X = These_Stats.Calc_Variance(X_Values);
-            double Var_Y = These_Stats.Calc_Variance(Y_Values);
-            double This_Cov = These_Stats.Calc_Covariance(X_Values, Y_Values);
-            double This_Rsq = These_Stats.Calc_R_sqr((float)This_Cov, (float)Var_X, (float)Var_Y);
+            double Var_X = These_Stats.CalcVariance(X_Values);
+            double Var_Y = These_Stats.CalcVariance(Y_Values);
+            double This_Cov = These_Stats.CalcCovariance(X_Values, Y_Values);
+            double This_Rsq = These_Stats.CalcR_Sqr((float)This_Cov, (float)Var_X, (float)Var_Y);
 
             Assert.AreEqual(This_Rsq, 0.00392, 0.0001, "Wrong R sq");
         }
@@ -182,7 +182,7 @@ namespace Continuum_Tests
             double Slope = 1.0943f;
 
             Stats These_Stats = new Stats();
-            double This_Int = These_Stats.Calc_Intercept(Y, Slope, X);
+            double This_Int = These_Stats.CalcIntercept(Y, Slope, X);
 
             Assert.AreEqual(This_Int, -1.7758, 0.001, "Wrong Intercept");
 

@@ -379,8 +379,8 @@ namespace ContinuumNS
             for (int i = 0; i < NumWakeModels; i++)
             { 
                 if ( wakeModels[i].wakeModelType == wakeModelType && wakeModels[i].ambTI == ambTI && wakeModels[i].horizWakeExp == horizExp && wakeModels[i].DW_Spacing == DW_Spacing && 
-                    wakeModels[i].powerCurve.name == powerCurveName && wakeModels[i].CW_Spacing == CW_Spacing && wakeModels[i].ambRough == ambRough && wakeModels[i].comboMethod == comboMethod && 
-                    wakeModels[i].wakeRechargeRate == wakeRechargeRate ) {
+                    wakeModels[i].powerCurve.name == powerCurveName && wakeModels[i].CW_Spacing == CW_Spacing && Math.Round(wakeModels[i].ambRough, 4) == Math.Round(ambRough, 4)
+                    && wakeModels[i].comboMethod == comboMethod) {
                     thisWakeModel = wakeModels[i];
                     break;
                 }
@@ -457,7 +457,7 @@ namespace ContinuumNS
         }
 
         public bool WakeModelExists(int wakeModelType, double horizExp, double ambTI, string powerCurveName, double DW_Spacing, double CW_Spacing,
-                                          double ambRough, string Wake_Combo, double wakeRechargeRate, double wakeRechargeExp)
+                                          double ambRough, string Wake_Combo)
         {
             // Returns true a wake model with same specified parameters already exists
             bool existsAlready = false;
@@ -465,8 +465,7 @@ namespace ContinuumNS
             for (int i = 0; i < NumWakeModels; i++)
             { 
                 if (wakeModels[i].wakeModelType == wakeModelType && wakeModels[i].horizWakeExp == horizExp && wakeModels[i].ambTI == ambTI && 
-                    wakeModels[i].powerCurve.name == powerCurveName && wakeModels[i].comboMethod == Wake_Combo && wakeModels[i].wakeRechargeRate == wakeRechargeRate && 
-                    wakeModels[i].wakeRechargeExp == wakeRechargeExp)
+                    wakeModels[i].powerCurve.name == powerCurveName && wakeModels[i].comboMethod == Wake_Combo)
                 {
                     if (wakeModels[i].wakeModelType == 1)
                     {
@@ -488,7 +487,7 @@ namespace ContinuumNS
         }
 
         public void AddWakeModel(int wakeModelType, double horizExp, double ambTI, TurbineCollection.PowerCurve powerCurve,
-                                  double DW_Spacing, double CW_Spacing, double ambRough, string combo, double wakeRechargeRate, double wakeRechargeExp)
+                                  double DW_Spacing, double CW_Spacing, double ambRough, string combo)
         {
             // Add wake model to list
             int numExistingModels = NumWakeModels;
@@ -500,8 +499,8 @@ namespace ContinuumNS
             wakeModels[numExistingModels].ambTI = ambTI;
             wakeModels[numExistingModels].powerCurve = powerCurve;
             wakeModels[numExistingModels].comboMethod = combo;
-            wakeModels[numExistingModels].wakeRechargeRate = wakeRechargeRate;
-            wakeModels[numExistingModels].wakeRechargeExp = wakeRechargeExp;
+         //   wakeModels[numExistingModels].wakeRechargeRate = wakeRechargeRate;
+         //   wakeModels[numExistingModels].wakeRechargeExp = wakeRechargeExp;
 
             if (wakeModelType == 1)
             { // DAWM
@@ -718,7 +717,7 @@ namespace ContinuumNS
             
         }
 
-        public void PopulateWakeGrid(Map.mapNode mapNode, int wakeGridInd)
+        public void PopulateWakeGrid(Map.MapNode mapNode, int wakeGridInd)
         {
             // Populates wake grid with calculated wind speed, wake loss, and energy production 
             int xind = (int)(mapNode.UTMX - wakeGridMaps[wakeGridInd].minUTMX) / wakeGridMaps[wakeGridInd].wakeGridReso;
@@ -1256,7 +1255,7 @@ namespace ContinuumNS
                                     linearWS_Def = 0;
                                     for (int UW_turb_ind = 0; UW_turb_ind < numUW_turbs; UW_turb_ind++) {
                                         if (WS_Deficit[UW_turb_ind] > 0) {
-                                            linearWS_Def = linearWS_Def + WS_Deficit[UW_turb_ind];
+                                            linearWS_Def = linearWS_Def + WS_Deficit[UW_turb_ind];                                            
                                         }
                                     }
                                 }
@@ -1327,6 +1326,9 @@ namespace ContinuumNS
                                     avgWS_Def = (maxWS_Def + geoWS_Def) / 2;
 
                                 if (thisWakeModel.wakeModelType == 1) { // compare DAWM deficit to Eddy Viscosity deficit and take the max
+                                    if (avgWS_Def != 0 || DAWM_Def != 0)
+                                        avgWS_Def = avgWS_Def;
+
                                     if (avgWS_Def < DAWM_Def) {
                                         avgWS_Def = DAWM_Def;
                                     }

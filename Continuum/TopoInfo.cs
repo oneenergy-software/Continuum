@@ -596,7 +596,7 @@ namespace ContinuumNS
                                 N.DH_Array = null;
                             }
 
-                            context.SaveChanges();
+                            context.SaveChanges();                            
                         }
                     }
                     catch (Exception ex) {
@@ -722,7 +722,7 @@ namespace ContinuumNS
         /// <returns>   True if it succeeds, false if it fails. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public bool newNode(double UTMX, double UTMY, InvestCollection radiiList, int gridRadius)
+  /*      public bool newNode(double UTMX, double UTMY, InvestCollection radiiList, int gridRadius)
         {
             // Checks the distance between the mets/turbines and edges of topo data to make sure they all fit within defined radii and returns false if UTMX and UTMY fall outside radius
             bool nodeOk = true;
@@ -767,7 +767,7 @@ namespace ContinuumNS
 
             return nodeOk;
         }
-
+*/
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Gets a direction. </summary>
         ///
@@ -814,6 +814,7 @@ namespace ContinuumNS
                 dirInd = 0;
             else
                 dirInd = Convert.ToInt16(Math.Round(direction / dirBinSize, 0));
+                        
 
             return dirInd;
         }
@@ -925,59 +926,72 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets closest node fixed grid. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">     The utmx. </param>
-        /// <param name="UTMY">     The utmy. </param>
-        /// <param name="gridReso"> The grid reso. </param>
-        ///
-        /// <returns>   The closest node fixed grid. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public TopoGrid GetClosestNodeFixedGrid(double UTMX, double UTMY, int gridReso)
-        {
-            // Returns node on grid closest to UTMX/Y but at least 11000 meters away from edge of topo
-            // 
+        /// <summary>   Returns a node on grid closest to UTMX/Y but a minimum distance away from edge of topo. </summary>        
+        public TopoGrid GetClosestNodeFixedGrid(double UTMX, double UTMY, int gridReso, int minDist)
+        {            
             TopoGrid closestNode = new TopoGrid();
-            // need to check distance to edge of topo all
-            int minInd = (int)Math.Floor((double)(10000 / gridReso)) + 1;
-            int maxX_Ind = (int)Math.Floor((topoNumXY.X.all.max - topoNumXY.X.all.min - 10000) / gridReso);
-            int maxY_Ind = (int)Math.Floor((topoNumXY.Y.all.max - topoNumXY.Y.all.min - 10000) / gridReso);
-
+                        
             int X_Ind = (int)Math.Round((UTMX - topoNumXY.X.all.min) / gridReso, 0);
             int Y_Ind = (int)Math.Round((UTMY - topoNumXY.Y.all.min) / gridReso, 0);
 
-            // Check distance to min X/Y
-            if (X_Ind < minInd) X_Ind = minInd;            
-            if (Y_Ind < minInd) Y_Ind = minInd;
+            double xFixed = topoNumXY.X.all.min + X_Ind * gridReso;
+            double yFixed = topoNumXY.Y.all.min + Y_Ind * gridReso;
 
-            // Check distance to max X/Y
-            if (X_Ind > maxX_Ind) X_Ind = maxX_Ind;
-            if (Y_Ind > maxY_Ind) Y_Ind = maxY_Ind;
+            // Check that location has elevation
+            Check_class check = new Check_class();
+            int goodToGo = check.NewNodeCheck(this, xFixed, yFixed, minDist);
 
-            // Check distance to edge of map
-            double distToMin = X_Ind * gridReso;
-            if (distToMin < 10000)
-                X_Ind++;
+            if (goodToGo == 100)
+            {
+                closestNode.UTMX = X_Ind * gridReso + topoNumXY.X.all.min;
+                closestNode.UTMY = Y_Ind * gridReso + topoNumXY.Y.all.min;
+            }
+            else if (goodToGo != -999)
+            {
+                while (goodToGo != 100)
+                {
+                    if (goodToGo == 0) // too far north
+                        Y_Ind--;
+                    else if (goodToGo == 1) // too far northeast
+                    {
+                        X_Ind--;
+                        Y_Ind--;
+                    }
+                    else if (goodToGo == 2) // too far east                    
+                        X_Ind--;
+                    else if (goodToGo == 3) // too far southeast
+                    {
+                        X_Ind--;
+                        Y_Ind++;
+                    }
+                    else if (goodToGo == 4) // too far south
+                        Y_Ind++;
+                    else if (goodToGo == 5) // too far southwest
+                    {
+                        X_Ind++;
+                        Y_Ind++;
+                    }
+                    else if (goodToGo == 6) // too far west
+                        X_Ind++;
+                    else if (goodToGo == 7) // too far northwest
+                    {
+                        X_Ind++;
+                        Y_Ind--;
+                    }
 
-            distToMin = Y_Ind * gridReso;
-            if (distToMin < 10000)
-                Y_Ind++;
+                    xFixed = topoNumXY.X.all.min + X_Ind * gridReso;
+                    yFixed = topoNumXY.Y.all.min + Y_Ind * gridReso;
 
-            double distToMax = topoNumXY.X.all.max - (X_Ind * gridReso + topoNumXY.X.all.min);
-            if (distToMax < 10000)
-                X_Ind--;
+                    if (yFixed < 4000000)
+                        yFixed = yFixed;
 
-            distToMax = topoNumXY.Y.all.max - (Y_Ind * gridReso + topoNumXY.Y.all.min);
-            if (distToMax < 10000)
-                Y_Ind--;
+                    goodToGo = check.NewNodeCheck(this, xFixed, yFixed, minDist);
+                }
 
-            closestNode.UTMX = X_Ind * gridReso + topoNumXY.X.all.min;
-            closestNode.UTMY = Y_Ind * gridReso + topoNumXY.Y.all.min;
-
+                closestNode.UTMX = X_Ind * gridReso + topoNumXY.X.all.min;
+                closestNode.UTMY = Y_Ind * gridReso + topoNumXY.Y.all.min;
+            }
+            
             return closestNode;
         }
 
@@ -1593,6 +1607,10 @@ namespace ContinuumNS
                     if (deltaX < maxDistance && deltaY < maxDistance)
                     {
                         double deltaZ = elev - topo.elevsForCalcs[j, k];
+                        double thisElev = topo.elevsForCalcs[j, k];
+                        if (deltaZ > 100)
+                            deltaZ = deltaZ;
+
                         double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                        
 
                         if (distance <= radius && distance >= 0) // since exposures are calculated using an inverse distance, using grid point that is too close
@@ -2896,7 +2914,7 @@ namespace ContinuumNS
 
         public bool ReadGeoTiffTopo(string wholePath, Continuum thisInst)
         {            
-            // Reads topography data = a GeoTif(f file
+            // Reads topography data = a GeoTiff file
             GdalConfiguration.ConfigureGdal();
             Gdal.AllRegister();            
             Dataset GDAL_obj;
@@ -3455,8 +3473,7 @@ namespace ContinuumNS
             LC_NumXY.Y.all.num = newHeight;
             LC_NumXY.Y.all.max = newLC_MinY + (newHeight - 1) * LC_NumXY.Y.all.reso;
             landCover = projLandCover;
-
-            gotSR = true;
+                        
             useSR = true;
 
             return true;

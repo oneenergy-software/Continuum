@@ -57,10 +57,12 @@ namespace ContinuumNS
         /// <summary>   Calculated (estimated) datasets. </summary>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary>   All calculated shear alpha exponents and vane closest to modeled height (no WS) </summary>
+        /// <summary>   All calculated shear alpha exponents and wind direction data from vane closest to 
+        ///             80 m (no WS). Used to generate alpha table and plot, not used for extrapolating </summary>
         public Est_Alpha[] alpha = new Est_Alpha[0];
                 
-        /// <summary> Shear Power law alpha datasets with WS and WD. One is created for each anem height. </summary>
+        /// <summary> Shear Power law alpha datasets with WS and WD. One is created for each anem height.
+        ///           Used to extrapolate data. </summary>
         public Shear_Data[] alphaByAnem = new Shear_Data[0];
 
         /// <summary>   Simulated (estimated) wind speed, wind direction, and WS SD data. </summary>
@@ -632,7 +634,14 @@ namespace ContinuumNS
             return WD_Ind;
         }
 
-        
+        public int GetWS_ind(double thisWS, double binWidth)
+        {
+            int WS_Ind = 0;
+            if (binWidth != 0)
+                WS_Ind = (int)Math.Round(thisWS / binWidth, 0, MidpointRounding.AwayFromZero);
+
+            return WS_Ind;
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Calculates the average ws by wd. </summary>
@@ -1773,7 +1782,7 @@ namespace ContinuumNS
         {
             // using 2 deg bins
             double[] avgDiffs = new double[180];
-            double[] countDiffs = new double[180];
+            int[] countDiffs = new int[180];
 
             if (diffsAndWD.WD == null)
                 return avgDiffs;
@@ -1828,7 +1837,7 @@ namespace ContinuumNS
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>
-        /// Gets index of anemometer closest to (but not higher than) specified height.
+        /// Gets indices of anemometers closest to (but not higher than) specified height.
         /// </summary>
         ///
         /// <remarks>   Liz, 10/16/2017. </remarks>
@@ -1856,12 +1865,18 @@ namespace ContinuumNS
                 }
             }
 
-            if (heightDiff == 1000) // thisHH is lower than lowest measurement
-                for (int i = 0; i < GetNumAnems(); i++)                    
+            if (heightDiff == 1000) // thisHH is lower than lowest measurement so find lowest anemometer
+            {
+                double lowestHeight = 1000;
+                for (int i = 0; i < GetNumAnems(); i++)
                 {
-                    anemInd[0] = i;
-                    break;
+                    if (anems[i].height < lowestHeight)
+                    {
+                        lowestHeight = anems[i].height;
+                        anemInd[0] = i;
+                    } 
                 }
+            }
 
             // Find redundant sensor
             for (int i = 0; i < GetNumAnems(); i++)
@@ -1897,11 +1912,18 @@ namespace ContinuumNS
             }
 
             if (heightDiff == 1000) // thisHH is lower than lowest measurement
+            {
+                double lowestLevel = 1000;
+
                 for (int i = 0; i < anemHeights.Length; i++)
                 {
-                    heightInd = i;
-                    break;
-                }                      
+                    if (anemHeights[i] < lowestLevel)
+                    {
+                        lowestLevel = anemHeights[i];
+                        heightInd = i;
+                    }   
+                }
+            }
 
             return heightInd;
         }
@@ -2049,18 +2071,28 @@ namespace ContinuumNS
                         validCount++;
 
                 Array.Resize(ref simData[simData.Length - 1].WS_WD_data, validCount);
-                
-                for (int i = 0; i < anems[heightInd].windData.Length; i++)
+
+                try
                 {
-                    if (anems[heightInd].windData[i].filterFlag == Filter_Flags.Valid && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
+                    validCount = 0;
+                    for (int i = 0; i < anems[heightInd].windData.Length; i++)
                     {
-                        simData[simData.Length - 1].WS_WD_data[i].timeStamp = anems[heightInd].windData[i].timeStamp;
-                        simData[simData.Length - 1].WS_WD_data[i].WS = anems[heightInd].windData[i].avg;
-                        simData[simData.Length - 1].WS_WD_data[i].SD = anems[heightInd].windData[i].SD;
-                        simData[simData.Length - 1].WS_WD_data[i].WD = vanes[vaneInd].dirData[i].avg;
+                        if (anems[heightInd].windData[i].filterFlag == Filter_Flags.Valid && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
+                        {
+                            simData[simData.Length - 1].WS_WD_data[validCount].timeStamp = anems[heightInd].windData[i].timeStamp;
+                            simData[simData.Length - 1].WS_WD_data[validCount].WS = anems[heightInd].windData[i].avg;
+                            simData[simData.Length - 1].WS_WD_data[validCount].SD = anems[heightInd].windData[i].SD;
+                            simData[simData.Length - 1].WS_WD_data[validCount].WD = vanes[vaneInd].dirData[i].avg;
+
+                            validCount++;
+                        }
                     }
                 }
-
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error extrapolating data.", "Continuum 3");
+                }
+                                
             }
             else
             { 
@@ -2078,10 +2110,10 @@ namespace ContinuumNS
                 for (int i = 0; i < alphaByAnem[heightInd].WS_WD_Alpha.Length; i++)
                 {
                     simData[simData.Length - 1].WS_WD_data[i].timeStamp = alphaByAnem[heightInd].WS_WD_Alpha[i].timeStamp;
+                    simData[simData.Length - 1].WS_WD_data[i].WD = alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
 
                     if (alphaByAnem[heightInd].WS_WD_Alpha[i].alpha != -999 && alphaByAnem[heightInd].WS_WD_Alpha[i].WS != -999)
-                    {
-                        simData[simData.Length - 1].WS_WD_data[i].WD = alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
+                    {                        
                         simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS *
                             Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha);
 
@@ -2096,10 +2128,9 @@ namespace ContinuumNS
 
                     }
                     else
-                    {
-                        simData[simData.Length - 1].WS_WD_data[i].WD = alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
+                    { 
                         simData[simData.Length - 1].WS_WD_data[i].WS = -999;
-                        simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD;
+                        simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD; // Should this just be -999?
                         simData[simData.Length - 1].WS_WD_data[i].alpha = -999;
                     }
 
@@ -2232,14 +2263,15 @@ namespace ContinuumNS
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets average Valid by height. </summary>
+        /// <summary>   Calculates and returns average valid wind speed or standard deviation at each wind 
+        ///             speed measurement height at specified time series index. </summary>
         ///
         /// <remarks>   OEE, 7/6/2018. </remarks>
         ///
         /// <param name="dataInd">     The data ind. </param>
         /// <param name="avgOrSD">    The average or SD. </param>
         ///
-        /// <returns>   An array of double. </returns>
+        /// <returns>   Avg wind speed at each measurement height. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public double[] GetAvgValidByHeight(int dataInd, string avgOrSD)
@@ -2613,10 +2645,11 @@ namespace ContinuumNS
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.InnerException.ToString());
+                            MessageBox.Show(ex.InnerException.ToString());                            
                             return;
                         }
                     }
+                    
                 }
                 // Clear anem data
                 anems[i].windData = null;
@@ -2649,10 +2682,11 @@ namespace ContinuumNS
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.InnerException.ToString());
+                            MessageBox.Show(ex.InnerException.ToString());                            
                             return;
                         }
                     }
+                    
                 }
                 // Clear vane data
                 vanes[i].dirData = null;
@@ -2685,10 +2719,11 @@ namespace ContinuumNS
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.InnerException.ToString());
+                            MessageBox.Show(ex.InnerException.ToString());                            
                             return;
                         }
                     }
+                    
                 }
                 // Clear temperature data
                 temps[i].temp = null;
@@ -2705,7 +2740,7 @@ namespace ContinuumNS
 
             // Get anemometer data
             for (int i = 0; i < GetNumAnems(); i++)
-            {
+            {                
                 using (var context = new Continuum_EDMContainer(connString))
                 {
                     double thisHeight = anems[i].height;
@@ -2719,7 +2754,8 @@ namespace ContinuumNS
                         anems[i].windData = (data[])bin.Deserialize(MS);
                         MS.Close();
                     }
-                }
+                }                
+                
             }
 
             // Get vane data

@@ -90,7 +90,7 @@
             this.chkMetsToUse.FormattingEnabled = true;
             this.chkMetsToUse.Location = new System.Drawing.Point(16, 109);
             this.chkMetsToUse.Name = "chkMetsToUse";
-            this.chkMetsToUse.Size = new System.Drawing.Size(169, 94);
+            this.chkMetsToUse.Size = new System.Drawing.Size(169, 84);
             this.chkMetsToUse.TabIndex = 222;
             // 
             // txtMapReso
@@ -354,8 +354,6 @@
         internal System.Windows.Forms.TextBox txtMap_FlowSep_Used;
         internal System.Windows.Forms.TextBox txtMap_LC_used;
         internal System.Windows.Forms.Label Label2;
-        internal System.Windows.Forms.CheckedListBox chkMetsToUse;
-        internal System.Windows.Forms.TextBox txtMapReso;
         internal System.Windows.Forms.ComboBox cboPowerCrvs;
         internal System.Windows.Forms.Button btnCoordsAllTurbs;
         internal System.Windows.Forms.Button btnMinMax;
@@ -365,16 +363,18 @@
         internal System.Windows.Forms.Label Label6;
         internal System.Windows.Forms.Label Label5;
         internal System.Windows.Forms.Label Label4;
-        internal System.Windows.Forms.TextBox txtMaxUTMY;
-        internal System.Windows.Forms.TextBox txtMinUTMY;
-        internal System.Windows.Forms.TextBox txtMaxUTMX;
-        internal System.Windows.Forms.TextBox txtMinUTMX;
         internal System.Windows.Forms.Label Label3;
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.Button btnCancel;
         internal System.Windows.Forms.Button btnGenMap;
-        internal System.Windows.Forms.ComboBox cboWhatToMap;
         public System.Windows.Forms.ComboBox cboUseTimeSeries;
         internal System.Windows.Forms.TextBox txtisMCPdGenMap;
+        public System.Windows.Forms.TextBox txtMapReso;
+        public System.Windows.Forms.TextBox txtMaxUTMY;
+        public System.Windows.Forms.TextBox txtMinUTMY;
+        public System.Windows.Forms.TextBox txtMaxUTMX;
+        public System.Windows.Forms.TextBox txtMinUTMX;
+        public System.Windows.Forms.ComboBox cboWhatToMap;
+        public System.Windows.Forms.CheckedListBox chkMetsToUse;
     }
 }

@@ -26,10 +26,10 @@ namespace ContinuumNS
         [Serializable()]
         public struct WSWD_Dist
         {
-            public TOD timeOfDay;
-            public Season season;            
-            public double WS;
-            public double height;
+            public TOD timeOfDay; // Day or Night
+            public Season season; // Winter, Spring, Summer, or Fall            
+            public double WS; // Overall average wind speed
+            public double height; // Height of WS/WD
             public double[] sectorWS_Ratio; // Directional wind speed ratios
             public double[] windRose; // Wind direction frequency (wind rose)
             public double[,] sectorWS_Dist; // Sectorwise wind speed distribution i = Sector num, j = WS interval
@@ -59,9 +59,9 @@ namespace ContinuumNS
 
         public enum TOD
         {
-            Day,
-            Night,
-            All
+            Day, // If hour >= MetCollection.dayStartHour and <= hour < MetCollection.dayEndHour
+            Night, // Hours outside daytime hours
+            All // All hours
         }
 
         public int ExposureCount
@@ -236,21 +236,17 @@ namespace ContinuumNS
           
         public void CalcAvgWS(Continuum thisInst)
         {
-            // Calculates overall average wind speed using sectorwise wind speed distribution and wind rose (i.e. TAB file)
+            // Calculates overall average wind speed and wind speed distribution using sectorwise wind speed distribution and wind rose (i.e. TAB file)
             // ONLY USED FOR TAB FILE CALCS (i.e. all time of day and all seasons)
              
-            int WSWDind = GetWS_WD_DistInd(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
-
-            // first calc WS dist over all sectors
-            int numWS = WSWD_Dists[WSWDind].sectorWS_Dist.GetUpperBound(1) + 1;
-            WSWD_Dists[WSWDind].WS_Dist = new double[numWS];
-
-            double sumRose = 0;
-
-            for (int i = 0; i < numWS; i++)
+            int WSWDind = GetWS_WD_DistInd(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);                      
+            WSWD_Dists[WSWDind].WS_Dist = new double[thisInst.metList.numWS];
+                       
+            // Calculate overall wind speed distribution
+            for (int i = 0; i < thisInst.metList.numWS; i++)
             {
-                sumRose = 0;
-                for (int j = 0; j <= WSWD_Dists[WSWDind].sectorWS_Dist.GetUpperBound(0); j++)
+                double sumRose = 0;
+                for (int j = 0; j < thisInst.metList.numWD; j++)
                 {
                     WSWD_Dists[WSWDind].WS_Dist[i] = WSWD_Dists[WSWDind].WS_Dist[i] + WSWD_Dists[WSWDind].sectorWS_Dist[j, i] * WSWD_Dists[WSWDind].windRose[j];
                     sumRose = sumRose + WSWD_Dists[WSWDind].windRose[j];
@@ -258,10 +254,11 @@ namespace ContinuumNS
                 WSWD_Dists[WSWDind].WS_Dist[i] = WSWD_Dists[WSWDind].WS_Dist[i] / sumRose;
             }
 
+            // Calculate overall wind speed
             WSWD_Dists[WSWDind].WS = 0;
             double sumDist = 0;
 
-            for (int i = 0; i < numWS; i++)
+            for (int i = 0; i < thisInst.metList.numWS; i++)
             {
                 WSWD_Dists[WSWDind].WS = WSWD_Dists[WSWDind].WS + WSWD_Dists[WSWDind].WS_Dist[i] * (thisInst.metList.WS_FirstInt + i * thisInst.metList.WS_IntSize - thisInst.metList.WS_IntSize / 2);
                 sumDist = sumDist + WSWD_Dists[WSWDind].WS_Dist[i];
@@ -278,18 +275,16 @@ namespace ContinuumNS
             int WSWD_ind = GetWS_WD_DistInd(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
             if (WSWD_Dists[WSWD_ind].windRose == null || WSWD_Dists[WSWD_ind].WS == 0) return;
 
-            int numWS = WSWD_Dists[WSWD_ind].WS_Dist.Length;
-            int numWD = WSWD_Dists[WSWD_ind].windRose.Length;
+            int numWS = thisInst.metList.numWS;
+            int numWD = thisInst.metList.numWD;
 
             double[] WS_by_dir = new double[numWD];
-            WSWD_Dists[WSWD_ind].sectorWS_Ratio = new double[numWD];
-            
-            double sumWS = 0;
+            WSWD_Dists[WSWD_ind].sectorWS_Ratio = new double[numWD];                       
                     
             for (int i = 0; i < numWD; i++)
             {
-                sumWS = 0;
-                for (int j = 0; j <= numWS - 1; j++)
+                double sumWS = 0;
+                for (int j = 0; j < numWS; j++)
                 {
                     WS_by_dir[i] = WS_by_dir[i] + WSWD_Dists[WSWD_ind].sectorWS_Dist[i, j] * (thisInst.metList.WS_FirstInt + j * thisInst.metList.WS_IntSize - thisInst.metList.WS_IntSize / 2);
                     sumWS = sumWS + WSWD_Dists[WSWD_ind].sectorWS_Dist[i, j];
@@ -345,7 +340,10 @@ namespace ContinuumNS
 
             return simInd;
         }
-                
+
+        
+
+        //  Calculates and returns the wind speed and wind direction distribution based on a long-term time series estimate
         public WSWD_Dist CalcLT_WSWD_Dists(double thisHeight, TOD thisTOD, Season thisSeason, Continuum thisInst, MCP.Site_data[] LT_WS_Ests)
         {            
             WSWD_Dist thisDist = new WSWD_Dist();
@@ -357,16 +355,12 @@ namespace ContinuumNS
             thisDist.sectorWS_Ratio = new double[thisInst.metList.numWD];
             thisDist.sectorWS_Dist = new double[thisInst.metList.numWD, thisInst.metList.numWS];
 
-            int allCount = 0;
-            int[] secCount = new int[thisInst.metList.numWD];
-
-            // starting at This_Start, goes through LT WS Est data, until it reaches This_End,
-            // and finds WD and WS/WD distributions  
-            double sumDist = 0;
-
+            int allCount = 0; // Count of all WSWD used for overall WS, wind speed distribution, and wind rose
+            int[] secCount = new int[thisInst.metList.numWD]; // Sectorwise count used for sectorwise wind speed ratios and sectorwise wind speed distributions             
+            
             for (int i = 0; i < LT_WS_Ests.Length; i++)            
             {
-                Met.TOD siteDataTOD = thisInst.metList.GetTOD(LT_WS_Ests[i].thisDate);
+                Met.TOD siteDataTOD = thisInst.metList.GetTOD(LT_WS_Ests[i].thisDate); 
                 Met.Season siteDataSeason = thisInst.metList.GetSeason(LT_WS_Ests[i].thisDate);
                 
                 if ((thisTOD == Met.TOD.All || thisTOD == siteDataTOD) && (thisSeason == Met.Season.All || thisSeason == siteDataSeason))
@@ -374,60 +368,51 @@ namespace ContinuumNS
                     int WS_ind = mcp.Get_WS_ind(LT_WS_Ests[i].thisWS, 1);
                     int WD_ind = mcp.Get_WD_ind(LT_WS_Ests[i].thisWD);
 
-                    if (WS_ind > 29) WS_ind = 29;
+                    if (WS_ind >= thisInst.metList.numWS) WS_ind = thisInst.metList.numWS - 1;
 
-                    thisDist.windRose[WD_ind]++;
-                    thisDist.WS_Dist[WS_ind]++;
-                    thisDist.sectorWS_Dist[WD_ind, WS_ind]++;
-                    sumDist++;
-
-                    thisDist.WS = thisDist.WS + LT_WS_Ests[i].thisWS;
+                    thisDist.windRose[WD_ind]++; // Wind direction count
+                    thisDist.WS_Dist[WS_ind]++; // Overall wind speed distribution
+                    thisDist.sectorWS_Dist[WD_ind, WS_ind]++; // Sectorwise wind speed distribution                   
+                    
                     allCount++;
-
-                    thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] + LT_WS_Ests[i].thisWS;
                     secCount[WD_ind]++;
 
-                    if (WD_ind == 4)
-                        WD_ind = 4;
-                                        
+                    thisDist.WS = thisDist.WS + LT_WS_Ests[i].thisWS; // Overall wind speed
+                    thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] + LT_WS_Ests[i].thisWS; // Sectorwise wind speed 
                 }                
             }
 
-            if (sumDist > 0)
-                for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                    thisDist.WS_Dist[WS_ind] = thisDist.WS_Dist[WS_ind] / sumDist;
-
-            // Calculate wind speed overall and sectorwise distributions
-            if (sumDist > 0)
-                for (int i = 0; i < thisInst.metList.numWD; i++)            
-                    thisDist.windRose[i] = thisDist.windRose[i] / sumDist;                        
-            
-            for (int WD_ind = 0; WD_ind < thisInst.metList.numWD; WD_ind++)
-            {
-                double sumWS = 0;
-                for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                    sumWS = sumWS + thisDist.sectorWS_Dist[WD_ind, WS_ind];
-
-                for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                    thisDist.sectorWS_Dist[WD_ind, WS_ind] = thisDist.sectorWS_Dist[WD_ind, WS_ind] / sumWS;
-            }                      
-            
-            // Calculate sectorwise and overall wind speeds
-            
+            // Calculate mean wind speed, overall wind speed distribution and wind rose
             if (allCount > 0)
+            {
                 thisDist.WS = thisDist.WS / allCount;
 
-            for (int i = 0; i < thisInst.metList.numWD; i++)
-            {
-                if (secCount[i] > 0 && thisDist.WS > 0)
-                    thisDist.sectorWS_Ratio[i] = thisDist.sectorWS_Ratio[i] / secCount[i] / thisDist.WS;
+                for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
+                    thisDist.WS_Dist[WS_ind] = thisDist.WS_Dist[WS_ind] / allCount;
+                
+                for (int i = 0; i < thisInst.metList.numWD; i++)
+                    thisDist.windRose[i] = thisDist.windRose[i] / allCount;
             }
+            
+            // Calculate sectorwise wind speed ratios and wind speed distribution
+            for (int WD_ind = 0; WD_ind < thisInst.metList.numWD; WD_ind++)
+            {
+                if (secCount[WD_ind] > 0)
+                {
+                    for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
+                        thisDist.sectorWS_Dist[WD_ind, WS_ind] = thisDist.sectorWS_Dist[WD_ind, WS_ind] / secCount[WD_ind];
+
+                    if (thisDist.WS > 0)
+                        thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] / secCount[WD_ind] / thisDist.WS;
+                }
+            }               
 
             return thisDist;
         }
 
+        //  Calculates and returns the wind speed and wind direction distribution based on simulated (extrapolated) time series estimate
         public WSWD_Dist CalcMeas_WSWD_Dists(double thisHeight, TOD thisTOD, Season thisSeason, Continuum thisInst, Met_Data_Filter.Sim_TS extrapData)
-        {           
+        {
             WSWD_Dist thisDist = new WSWD_Dist();
             thisDist.height = thisHeight;
             thisDist.timeOfDay = thisTOD;
@@ -436,80 +421,67 @@ namespace ContinuumNS
             thisDist.windRose = new double[thisInst.metList.numWD];
             thisDist.sectorWS_Ratio = new double[thisInst.metList.numWD];
             thisDist.sectorWS_Dist = new double[thisInst.metList.numWD, thisInst.metList.numWS];
-            MCP mcp = new MCP(); // For Get_WS_ind and Get_WD_ind functions
-            mcp.New_MCP(false, false, thisInst);
 
-            int allCount = 0;
-            int[] secCount = new int[thisInst.metList.numWD];
+            MCP thisMCP = new MCP(); // Created to use Get_WS_ind and Get_WD_ind 
+            thisMCP.numWD = thisInst.metList.numWD;
+            thisMCP.numSeasons = thisInst.metList.numSeason;
+            thisMCP.numTODs = thisInst.metList.numTOD;
 
-            // starting at This_Start, goes through LT WS Est data, until it reaches This_End,
-            // and finds WD and WS/WD distributions                 
+            int allCount = 0; // Count of all WSWD used for overall WS, wind speed distribution, and wind rose
+            int[] secCount = new int[thisInst.metList.numWD]; // Sectorwise count used for sectorwise wind speed ratios and sectorwise wind speed distributions                
 
             for (int i = 0; i < extrapData.WS_WD_data.Length; i++)
             {
                 Met.TOD siteDataTOD = thisInst.metList.GetTOD(extrapData.WS_WD_data[i].timeStamp);
                 Met.Season siteDataSeason = thisInst.metList.GetSeason(extrapData.WS_WD_data[i].timeStamp);
 
-                if ((thisTOD == Met.TOD.All || thisTOD == siteDataTOD) && (thisSeason == Met.Season.All || thisSeason == siteDataSeason))
+                if (extrapData.WS_WD_data[i].WS != -999 && extrapData.WS_WD_data[i].WD != -999 && 
+                    (thisTOD == Met.TOD.All || thisTOD == siteDataTOD) && (thisSeason == Met.Season.All || thisSeason == siteDataSeason))
                 {
-                    int WS_ind = mcp.Get_WS_ind(extrapData.WS_WD_data[i].WS, 1);
-                    int WD_ind = mcp.Get_WD_ind(extrapData.WS_WD_data[i].WD);
-
-                    if (WS_ind > 29) WS_ind = 29;
+                    int WS_ind = thisMCP.Get_WS_ind(extrapData.WS_WD_data[i].WS, 1);
+                    int WD_ind = thisMCP.Get_WD_ind(extrapData.WS_WD_data[i].WD);
                                         
-                    if (extrapData.WS_WD_data[i].WS != -999 && extrapData.WS_WD_data[i].WD != -999)
-                    {
-                        thisDist.windRose[WD_ind]++;
-                        thisDist.WS_Dist[WS_ind]++;
-                        thisDist.sectorWS_Dist[WD_ind, WS_ind]++;
+                    if (WS_ind >= thisInst.metList.numWS) WS_ind = thisInst.metList.numWS - 1;
 
-                        thisDist.WS = thisDist.WS + extrapData.WS_WD_data[i].WS;
-                        allCount++;
+                    thisDist.windRose[WD_ind]++; // Wind direction count
+                    thisDist.WS_Dist[WS_ind]++; // Overall wind speed distribution
+                    thisDist.sectorWS_Dist[WD_ind, WS_ind]++; // Sectorwise wind speed distribution                   
 
-                        thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] + extrapData.WS_WD_data[i].WS;
-                        secCount[WD_ind]++;
-                    }
-                    
+                    allCount++;
+                    secCount[WD_ind]++;
+
+                    thisDist.WS = thisDist.WS + extrapData.WS_WD_data[i].WS; // Overall wind speed
+                    thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] + extrapData.WS_WD_data[i].WS; // Sectorwise wind speed 
                 }
             }
 
+            // Calculate wind speed overall distribution and wind rose
             if (allCount > 0)
+            {
+                thisDist.WS = thisDist.WS / allCount;
+
                 for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
                     thisDist.WS_Dist[WS_ind] = thisDist.WS_Dist[WS_ind] / allCount;
 
-            // Calculate wind speed overall and sectorwise distributions
-            double sumWD = 0;
-            for (int i = 0; i < thisInst.metList.numWD; i++)
-                sumWD = sumWD + thisDist.windRose[i];
+                for (int i = 0; i < thisInst.metList.numWD; i++)
+                    thisDist.windRose[i] = thisDist.windRose[i] / allCount;
+            }
 
-            for (int i = 0; i < thisInst.metList.numWD; i++)
-                thisDist.windRose[i] = thisDist.windRose[i] / sumWD;
-
+            // Calculate sectorwise wind speed ratios and wind speed distribution
             for (int WD_ind = 0; WD_ind < thisInst.metList.numWD; WD_ind++)
             {
-                double sumWS = 0;
-                for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                    sumWS = sumWS + thisDist.sectorWS_Dist[WD_ind, WS_ind];
+                if (secCount[WD_ind] > 0)
+                {                 
+                    for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
+                        thisDist.sectorWS_Dist[WD_ind, WS_ind] = thisDist.sectorWS_Dist[WD_ind, WS_ind] / secCount[WD_ind];
 
-                for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                    thisDist.sectorWS_Dist[WD_ind, WS_ind] = thisDist.sectorWS_Dist[WD_ind, WS_ind] / sumWS;
-            }
-                        
-            double[] sumSectorDist = new double[thisInst.metList.numWD];
-                        
-            // Calculate sectorwise and overall wind speeds
-
-            if (allCount > 0)
-                thisDist.WS = thisDist.WS / allCount;
-
-            for (int i = 0; i < thisInst.metList.numWD; i++)
-            {
-                if (secCount[i] > 0 && thisDist.WS > 0)
-                    thisDist.sectorWS_Ratio[i] = thisDist.sectorWS_Ratio[i] / secCount[i] / thisDist.WS;
-            }
+                    if (thisDist.WS > 0)
+                        thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] / secCount[WD_ind] / thisDist.WS;
+                }
+            }           
 
             return thisDist;
-        }
+        }               
 
         public void CalcAllLT_WSWD_Dists(Continuum thisInst, MCP.Site_data[] LT_WS_Ests)
         {
@@ -690,19 +662,12 @@ namespace ContinuumNS
             // Uses extrapolated wind speed and standard deviation at height closest to extrapolated height
 
             turbulence.startTime = startTime;
-            turbulence.endTime = endTime;
-
-            if (mcp == null)
-                mcp = new MCP();
+            turbulence.endTime = endTime;                       
 
             if (metData == null)
                 return;
 
-            Met_Data_Filter.Sim_TS extrapData = metData.GetSimulatedTimeSeries(height);                 
-                      
-            int vaneInd = metData.GetVaneClosestToHH(height);
-            Met_Data_Filter.Vane_Data vane = metData.vanes[vaneInd]; 
-
+            Met_Data_Filter.Sim_TS extrapData = metData.GetSimulatedTimeSeries(height);    
             int timeInd = 0;
 
             while (extrapData.WS_WD_data[timeInd].timeStamp < startTime)
@@ -720,11 +685,11 @@ namespace ContinuumNS
 
             while (extrapData.WS_WD_data[timeInd].timeStamp <= endTime)
             {
-                if (vane.dirData[timeInd].filterFlag == Met_Data_Filter.Filter_Flags.Valid && extrapData.WS_WD_data[timeInd].WS != -999
+                if (extrapData.WS_WD_data[timeInd].WD != -999 && extrapData.WS_WD_data[timeInd].WS != -999
                     && extrapData.WS_WD_data[timeInd].SD != -999 && extrapData.WS_WD_data[timeInd].SD < extrapData.WS_WD_data[timeInd].WS / 3)
                 {
-                    int WD_ind = metData.GetWD_Ind(vane.dirData[timeInd].avg, numWD);  
-                    int WS_ind = mcp.Get_WS_ind(extrapData.WS_WD_data[timeInd].WS, thisInst.metList.WS_IntSize);                                      
+                    int WD_ind = metData.GetWD_Ind(extrapData.WS_WD_data[timeInd].WD, numWD);                    
+                    int WS_ind = metData.GetWS_ind(extrapData.WS_WD_data[timeInd].WS, thisInst.metList.WS_IntSize);                                      
 
                     turbulence.avgSD[WS_ind, WD_ind] = turbulence.avgSD[WS_ind, WD_ind] + extrapData.WS_WD_data[timeInd].SD;
                     turbulence.avgWS[WS_ind, WD_ind] = turbulence.avgWS[WS_ind, WD_ind] + extrapData.WS_WD_data[timeInd].WS;
@@ -748,7 +713,7 @@ namespace ContinuumNS
                     {
                         turbulence.avgWS[i, j] = turbulence.avgWS[i, j] / turbulence.count[i, j];
                         turbulence.avgSD[i, j] = turbulence.avgSD[i, j] / turbulence.count[i, j];
-                        turbulence.avgPlus1_28SD[i, j] = turbulence.avgWS[i, j] + 1.28 * turbulence.avgSD[i, j];
+                        turbulence.avgPlus1_28SD[i, j] =   1.28 * turbulence.avgSD[i, j];
 
                         Array.Sort(arrayOfSDs[i, j].SDs);
                         int P90 = (int)Math.Round(arrayOfSDs[i, j].SDs.Length * 0.9) - 1;
@@ -766,7 +731,7 @@ namespace ContinuumNS
 
         public TIandCount[] CalcOverallTurbulenceIntensity(string turbType, Continuum thisInst)
         {
-            // Calculates and returns overall turbulence intensity. Either average or representative
+            // Calculates and returns overall (i.e. wind direction sectors) turbulence intensity. Either average or representative
             TIandCount[] overallTI = new TIandCount[thisInst.metList.numWS];
 
             if (turbulence.count == null)
@@ -861,7 +826,8 @@ namespace ContinuumNS
 
         public double GetAlphaPValue(double minWS, double maxWS, int pLevel, Continuum thisInst, DateTime startTime, DateTime endTime)
         {
-            // Finds alpha between min and max WS, sorts alpha and then finds and returns P-Value
+            // Finds all alpha exponents for wind speeds within the specified minimum/maximum range and within specified start/end times
+            //  and returns the alpha at the specified P-value
             double alphaPVal = 0;
             int alphaCount = 0;
 
@@ -917,12 +883,15 @@ namespace ContinuumNS
             return alphaPVal;
         }
 
+        /// <summary>
+        /// Holds array of measured maximum wind speeds and 1-year/50-year estimated long-term extreme wind speed
+        /// </summary>
         public struct Extreme_WindSpeed
         {
-            public double tenMin50yr;
-            public double tenMin1yr;
-            public double gust50yr;
-            public double gust1yr;
+            public double tenMin50yr; // 50-year extreme 10-minute wind speed estimate
+            public double tenMin1yr; // 1-year extreme 10-minute wind speed estimate
+            public double gust50yr; // 50-year extreme gust estimate
+            public double gust1yr; // 1-year extreme gust estimate
 
             public double[] yearsOfOcc;
             public double[] maxTenMin;
@@ -931,8 +900,8 @@ namespace ContinuumNS
 
         public struct MaxYearlyWind
         {
-            public double maxWS;
-            public int thisYear;
+            public double maxWS; // maximum measured wind speed 
+            public int thisYear; // year of measurement
         }
 
         public MaxYearlyWind[] GetMaxYearlyWinds(string tenMinOrGust, Continuum thisInst)
@@ -947,10 +916,12 @@ namespace ContinuumNS
             if (anemInds[1] != -999)
                 anem2 = metData.anems[anemInds[1]];
 
-            // Go to first Jan 1
-            
-            while (anem1.windData[dataInd].timeStamp.Month != 1 || anem1.windData[dataInd].timeStamp.Day != 1)
+            // Go to first Jan 1            
+            while (dataInd < anem1.windData.Length && (anem1.windData[dataInd].timeStamp.Month != 1 || anem1.windData[dataInd].timeStamp.Day != 1))
                 dataInd++;
+
+            if (dataInd >= anem1.windData.Length) // no Jan. 1 in dataset
+                return maxYearlyWinds;
 
             int lastYear = anem1.windData[dataInd].timeStamp.Year;
 
@@ -1028,13 +999,12 @@ namespace ContinuumNS
 
             // Get MERRA2 data used for this met
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(UTMX, UTMY);
-            int UTC_offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
+       //     int UTC_offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
 
             if (thisInst.merraList.GotMERRA(theseLL.latitude, theseLL.longitude) == false)
                 return extremeWinds;
             
-            MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-            
+            MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);            
             int refLength = thisMERRA.interpData.TS_Data.Length;
 
             if (thisMERRA.interpData.TS_Data.Length == 0)

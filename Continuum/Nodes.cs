@@ -90,10 +90,11 @@ namespace ContinuumNS
             return avgWS;
         }
 
+        /// <summary>
+        /// Calculates the grid stats (i.e. P10 exposure), exposure, surface roughness and disp. height at node for each radius of investigation
+        /// </summary>        
         public void CalcGridStatsAndExposures(Continuum thisInst)
-        {
-            // Calculates the grid stats, exposure, surface roughness and disp. height at node for each radius                                                
-            
+        {   
             int numWD = thisInst.metList.numWD;                        
             int smallerRadius = 0;
             Exposure smallerExposure = new Exposure();

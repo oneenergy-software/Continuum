@@ -150,7 +150,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum();
             
             thisInst.savedParams.savedFileName = testingFolder + "\\Testing GeoTiff load.cfm";
-            thisInst.SaveFile();
+            thisInst.SaveFile(true);
             thisInst.UTM_conversions.savedDatumIndex = 0;
             thisInst.UTM_conversions.UTMZoneNumber = 17;
             thisInst.UTM_conversions.hemisphere = "Northern";
@@ -198,7 +198,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum();
             
             thisInst.savedParams.savedFileName = testingFolder + "\\Testing LandCover load.cfm";
-            thisInst.SaveFile();
+            thisInst.SaveFile(true);
             thisInst.UTM_conversions.savedDatumIndex = 0;
             thisInst.UTM_conversions.UTMZoneNumber = 17;
             thisInst.UTM_conversions.hemisphere = "Northern";

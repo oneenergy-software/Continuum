@@ -817,9 +817,9 @@ namespace ContinuumNS
                         }
                     avgWS_Est[i].haveNetTS = false;
                     avgWS_Est[i].wakeModel = null;
+                    avgWS_Est[i].waked = new EstWS_Data();
+                    avgWS_Est[i].wakedMonthlyVals = null;                    
                 }
-
-
         }
 
         public void ClearGrossEstsFromAvgWS(string powerCurveName)
@@ -1005,7 +1005,7 @@ namespace ContinuumNS
             avgWS_Est[avgWS_index].waked.sectorWS_Dist = wakeResults.sectorDist;
             avgWS_Est[avgWS_index].waked.sectorWS = wakeResults.sectorWakedWS;
             avgWS_Est[avgWS_index].powerCurve = thisWakeModel.powerCurve;
-            
+                        
             netAEP[netEstInd].AEP = wakeResults.netEnergy;
             netAEP[netEstInd].sectorEnergy = wakeResults.sectorNetEnergy;
 
@@ -1212,6 +1212,9 @@ namespace ContinuumNS
             int avgWS_index = 0;
             bool foundAvgEst = false;
             bool isWaked = true;
+            if (wakeModel == null)
+                isWaked = false;
+
             if (wakeModel.powerCurve.ratedPower == 0)
                 isWaked = false;
 

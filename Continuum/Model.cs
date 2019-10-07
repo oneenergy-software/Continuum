@@ -343,7 +343,7 @@ namespace ContinuumNS
 
             if (isTurbulent == false)
             {
-                if ((thisDW > 0 && UW_or_DW == "DW") || (thisUW < 0 && thisDW > 0 && UW_or_DW == "UW"))
+                if ((thisDW >= 0 && UW_or_DW == "DW") || (thisUW < 0 && thisDW > 0 && UW_or_DW == "UW"))
                     flowType = "Downhill";
                 else if (thisUW > UW_crit[WD_sec] || (thisDW < 0 && UW_or_DW == "DW"))
                     flowType = "Uphill";

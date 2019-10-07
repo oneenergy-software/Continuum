@@ -30,13 +30,16 @@ namespace ContinuumNS
         public bool useFlowSep;  // true if flow separation model is used
         public bool useTimeSeries; // true if each map node is estimated using GenerateTimeSeries
         
-        [Serializable()] public struct mapNode {
+        /// <summary>
+        /// Holds all calculated parameters, wind speed and energy estimates at Map node
+        /// </summary>
+        [Serializable()] public struct MapNode {
             public double UTMX;
             public double UTMY;
             public double elev;
             public Exposure[] expo;
             public Grid_Info gridStats;
-            public WS_Ests[] WS_Estimates; // All wind speed estimates formed by each predictor met and each model
+            public WS_Ests[] WS_Estimates; // All wind speed estimates formed by each predictor met and each model      // Do we need to store these?       
             public double avgWS_Est; // Overall wind speed estimate at map node
             public double[] sectorWS; // Sectorwise wind speed estimates i = Sect num
             public double[] WS_Dist;  // Overall wind speed distribution
@@ -75,7 +78,7 @@ namespace ContinuumNS
             public double[] sectorWakeLoss; // Sectorwise wake loss %
         }
 
-        public void DoMapCalcs(ref mapNode thisMapNode, Continuum thisInst, NodeCollection nodeList, NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets,
+        public void DoMapCalcs(ref MapNode thisMapNode, Continuum thisInst, NodeCollection nodeList, NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets,
                                 string isCalibrated)
         {
             // This sub-routine performs all necessary calculations for referenced mapNode. 
@@ -123,7 +126,7 @@ namespace ContinuumNS
             }  
         }
 
-        public void CalcWakeLossesMap(ref mapNode thisMapNode, Continuum thisInst, Wake_Model thisWakeModel, WakeCollection.WakeLossCoeffs[] wakeLossCoeffs)
+        public void CalcWakeLossesMap(ref MapNode thisMapNode, Continuum thisInst, Wake_Model thisWakeModel, WakeCollection.WakeLossCoeffs[] wakeLossCoeffs)
             {
             // Using calculated wake profile polynomials (i.e. wakeLossCoeffs), calculates the wake losses and net energy at the map node
             WakeCollection.WakeCalcResults wakeResults = thisInst.wakeModelList.CalcWakeLosses(wakeLossCoeffs, thisMapNode.UTMX, thisMapNode.UTMY, 
@@ -141,7 +144,7 @@ namespace ContinuumNS
 
         }
 
-        public void GenerateAvgWS_AtOneMapNode(ref mapNode thisMapNode, Continuum thisInst)
+        public void GenerateAvgWS_AtOneMapNode(ref MapNode thisMapNode, Continuum thisInst)
             {
             // Combines all of the wind speed estimates formed by each predictor met and each site-calibrated UWDW model to form overall 
             // average wind speed estimate (including sectorwise WS) at map node
@@ -181,8 +184,8 @@ namespace ContinuumNS
                 Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
                        
             NodeCollection nodeList = new NodeCollection();
-            Nodes mapNode = nodeList.GetMapAsNode(thisMapNode);
-            indivMetWeights = modelList.GetWS_EstWeights(predMets, mapNode, models, metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All), thisInst.radiiList);
+            Nodes MapNode = nodeList.GetMapAsNode(thisMapNode);
+            indivMetWeights = modelList.GetWS_EstWeights(predMets, MapNode, models, metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All), thisInst.radiiList);
 
             for (int r = 0; r < numRadii; r++)
             { 
@@ -222,7 +225,7 @@ namespace ContinuumNS
             }
         }
 
-        public void CalcWS_DistAtMapNode(ref mapNode thisMapNode, MetCollection metList, int numWD, double height)
+        public void CalcWS_DistAtMapNode(ref MapNode thisMapNode, MetCollection metList, int numWD, double height)
         {
             // Calculates overall and sectorwise wind speed distribution for map node
             // FOR OVERALL MODELS
@@ -241,7 +244,7 @@ namespace ContinuumNS
             thisMapNode.WS_Dist = metList.CalcOverallWS_Dist(thisMapNode.sectDist, thisMapNode.windRose);
         }
 
-        public void CalcGrossAEP_AtMapNode(ref mapNode thisMapNode, MetCollection metList, TurbineCollection turbineList)
+        public void CalcGrossAEP_AtMapNode(ref MapNode thisMapNode, MetCollection metList, TurbineCollection turbineList)
         {
             // Calculates gross AEP at referenced mapNode            
             int numWS = metList.numWS;
@@ -265,7 +268,7 @@ namespace ContinuumNS
 
         }
 
-        public void DoWS_EstAlongNodes(Continuum thisInst, ref mapNode thisMapNode, int WS_Est_Ind)
+        public void DoWS_EstAlongNodes(Continuum thisInst, ref MapNode thisMapNode, int WS_Est_Ind)
         {
             // Calculates wind speed from Met to Map node along path of nodes     
             // FOR OVERALL MODEL CALCS        
@@ -304,7 +307,7 @@ namespace ContinuumNS
 
         }
 
-        public void AddWS_Estimate(ref mapNode thisMapNode, ref WS_Ests newWS_Est)
+        public void AddWS_Estimate(ref MapNode thisMapNode, ref WS_Ests newWS_Est)
         {
             // Adds a wind speed estimate to the list of WS_Ests
             int newCount = 0;
@@ -324,7 +327,7 @@ namespace ContinuumNS
 
         }
 
-        public bool IsNewSRDH(mapNode thisMapNode, int radius, double exponent, int numSectors)
+        public bool IsNewSRDH(MapNode thisMapNode, int radius, double exponent, int numSectors)
         {
             // Checks to see if surface roughness and displacement height have been calculated and returns true if new and needs to be calculated
             int thisCount = 0;
@@ -354,9 +357,9 @@ namespace ContinuumNS
             return isNew;
         }
 
-        public void CalcMapExposures(ref mapNode thisMapNode, int numSectors, Continuum thisInst)
-        {
-            // Calculates exposure and SRDH at referenced map node 
+        /// <summary> Calculates exposure and SRDH at referenced map node </summary>        
+        public void CalcMapExposures(ref MapNode thisMapNode, int numSectors, Continuum thisInst)
+        {            
             int numWD = thisInst.GetNumWD();
            
             for (int i = 0; i < thisInst.radiiList.ThisCount; i++) {
@@ -443,7 +446,7 @@ namespace ContinuumNS
             }
         }
 
-        public void AddExposure(ref mapNode thisMapNode, int radius, double exponent, int numSectors, int numWD)
+        public void AddExposure(ref MapNode thisMapNode, int radius, double exponent, int numSectors, int numWD)
         {
             // Adds another exposure to the list
             int expoCount = 0;
@@ -498,7 +501,7 @@ namespace ContinuumNS
 
         }
 
-        public bool IsNewExposure(mapNode thisMapNode, int radius, double exponent, int numSectors)
+        public bool IsNewExposure(MapNode thisMapNode, int radius, double exponent, int numSectors)
         {
             // Checks to see if exposure has already been calculated. Returns true if needs to be calculated.
             bool isNew = true;
@@ -607,7 +610,7 @@ namespace ContinuumNS
             return max;
         }
 
-        public void GetFlowSepNodes(ref mapNode thisMapNode, Continuum thisInst)
+        public void GetFlowSepNodes(ref MapNode thisMapNode, Continuum thisInst)
         {
             // Gets the flow separation nodes for map node (if flow separation model is used)
             int numWD = 0;

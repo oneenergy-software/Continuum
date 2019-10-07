@@ -172,7 +172,7 @@ namespace Continuum_Tests
             double UTMX = 710541;
             double UTMY = 4552553;
 
-            TopoInfo.TopoGrid closestNode = thisInst.topo.GetClosestNodeFixedGrid(UTMX, UTMY, 250);
+            TopoInfo.TopoGrid closestNode = thisInst.topo.GetClosestNodeFixedGrid(UTMX, UTMY, 250, 12000);
             
             Assert.AreEqual(closestNode.UTMX, 710482, 1, "Wrong UTMX");
             Assert.AreEqual(closestNode.UTMY, 4552458, 1, "Wrong UTMY");

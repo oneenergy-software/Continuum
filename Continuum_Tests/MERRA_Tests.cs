@@ -9,7 +9,8 @@ namespace Continuum_Tests
     public class MERRA_Tests
     {
         string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\MERRA";
-        
+        string merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+
         [TestMethod]
         public void GetMaxHourlyWindSpeeds_Test()
         {
@@ -320,16 +321,16 @@ namespace Continuum_Tests
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
             MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
 
-            bool Get_MERRA_Coords = merra.Find_MERRA_Coords();            
+            bool Get_MERRA_Coords = merra.Find_MERRA_Coords(merraFolder);            
             Assert.AreEqual(6, merra.MERRA_Nodes[0].XY_ind.X_ind, "Wrong x ind");
             Assert.AreEqual(1, merra.MERRA_Nodes[0].XY_ind.Y_ind, "Wrong y ind");
 
             merra.numMERRA_Nodes = 4;            
             Array.Resize(ref merra.MERRA_Nodes, merra.numMERRA_Nodes);
-            merra.ClearAll(true);            
+            merra.ClearAll();            
             merra.Set_Interp_LatLon_Dates_Offset(41.1, -85.4, thisInst.UTM_conversions.GetUTC_Offset(41.1, -85.4), thisInst);
             
-            Get_MERRA_Coords = merra.Find_MERRA_Coords();
+            Get_MERRA_Coords = merra.Find_MERRA_Coords(merraFolder);
             Assert.AreEqual(6, merra.MERRA_Nodes[0].XY_ind.X_ind, "Wrong x ind 0");
             Assert.AreEqual(1, merra.MERRA_Nodes[0].XY_ind.Y_ind, "Wrong y ind 0");
             Assert.AreEqual(7, merra.MERRA_Nodes[1].XY_ind.X_ind, "Wrong x ind 1");
@@ -341,9 +342,9 @@ namespace Continuum_Tests
 
             merra.numMERRA_Nodes = 16;            
             Array.Resize(ref merra.MERRA_Nodes, merra.numMERRA_Nodes);
-            merra.ClearAll(true);
+            merra.ClearAll();
             merra.Set_Interp_LatLon_Dates_Offset(41.1, -85.4, thisInst.UTM_conversions.GetUTC_Offset(41.1, -85.4), thisInst);            
-            Get_MERRA_Coords = merra.Find_MERRA_Coords();
+            Get_MERRA_Coords = merra.Find_MERRA_Coords(merraFolder);
             Assert.AreEqual(5, merra.MERRA_Nodes[0].XY_ind.X_ind, "Wrong x ind 0");
             Assert.AreEqual(0, merra.MERRA_Nodes[0].XY_ind.Y_ind, "Wrong y ind 0");
             Assert.AreEqual(6, merra.MERRA_Nodes[9].XY_ind.X_ind, "Wrong x ind 1");
@@ -353,23 +354,23 @@ namespace Continuum_Tests
 
             merra.numMERRA_Nodes = 16;            
             Array.Resize(ref merra.MERRA_Nodes, merra.numMERRA_Nodes);
-            merra.ClearAll(true);            
+            merra.ClearAll();            
             merra.Set_Interp_LatLon_Dates_Offset(41.1, -85.4, thisInst.UTM_conversions.GetUTC_Offset(41.1, -85.4), thisInst);
-            Get_MERRA_Coords = merra.Find_MERRA_Coords();
+            Get_MERRA_Coords = merra.Find_MERRA_Coords(merraFolder);
             Assert.AreEqual(5, merra.MERRA_Nodes[0].XY_ind.X_ind, "Wrong x ind 0 last");
             Assert.AreEqual(7, merra.MERRA_Nodes[0].XY_ind.Y_ind, "Wrong y ind 0");
 
             thisInst.Close();
         }
                 
-        [TestMethod]
+ /*       [TestMethod]
         public void InterpMERRA_Test()
         {
             MERRA merra = new MERRA();
             merra.numMERRA_Nodes = 4;
-            
-            merra.interpData.Coords.Lat = 41.1;
-            merra.interpData.Coords.Lon = -83.64;
+
+            merra.interpData.Coords.latitude = 41.1;
+            merra.interpData.Coords.longitude = -83.64;
 
             UTM_conversion utm = new UTM_conversion();
             utm.savedDatumIndex = 0;
@@ -411,8 +412,8 @@ namespace Continuum_Tests
 
             MERRA.MERRA_Pull[] This_MERRA = new MERRA.MERRA_Pull[4];
 
-            This_MERRA[0].Coords.Lat = 41;
-            This_MERRA[0].Coords.Lon = -83.75;
+            This_MERRA[0].Coords.latitude = 41;
+            This_MERRA[0].Coords.longitude = -83.75;
             theseUTM = utm.LLtoUTM(41, -83.75);
             This_MERRA[0].UTM.UTMEasting = theseUTM.UTMEasting;
             This_MERRA[0].UTM.UTMNorthing = theseUTM.UTMNorthing;
@@ -421,8 +422,8 @@ namespace Continuum_Tests
             This_MERRA[0].Data[0].Temp10m = 271.094f;
             This_MERRA[0].Data[0].SurfPress = 98659;
 
-            This_MERRA[1].Coords.Lat = 41.5;
-            This_MERRA[1].Coords.Lon = -83.75;
+            This_MERRA[1].Coords.latitude = 41.5;
+            This_MERRA[1].Coords.longitude = -83.75;
             theseUTM = utm.LLtoUTM(41.5, -83.75);
             This_MERRA[1].UTM.UTMEasting = theseUTM.UTMEasting;
             This_MERRA[1].UTM.UTMNorthing = theseUTM.UTMNorthing;
@@ -431,8 +432,8 @@ namespace Continuum_Tests
             This_MERRA[1].Data[0].Temp10m = 271.598f;
             This_MERRA[1].Data[0].SurfPress = 99147;
 
-            This_MERRA[2].Coords.Lat = 41;
-            This_MERRA[2].Coords.Lon = -83.125;
+            This_MERRA[2].Coords.latitude = 41;
+            This_MERRA[2].Coords.longitude = -83.125;
             theseUTM = utm.LLtoUTM(41, -83.125);
             This_MERRA[2].UTM.UTMEasting = theseUTM.UTMEasting;
             This_MERRA[2].UTM.UTMNorthing = theseUTM.UTMNorthing;
@@ -442,8 +443,8 @@ namespace Continuum_Tests
             This_MERRA[2].Data[0].Temp10m = 270.492f;
             This_MERRA[2].Data[0].SurfPress = 98331;
 
-            This_MERRA[3].Coords.Lat = 41.5;
-            This_MERRA[3].Coords.Lon = -83.125;
+            This_MERRA[3].Coords.latitude = 41.5;
+            This_MERRA[3].Coords.longitude = -83.125;
             theseUTM = utm.LLtoUTM(41.5, -83.125);
             This_MERRA[3].UTM.UTMEasting = theseUTM.UTMEasting;
             This_MERRA[3].UTM.UTMNorthing = theseUTM.UTMNorthing;
@@ -459,5 +460,7 @@ namespace Continuum_Tests
             Assert.AreEqual(This_Wind_TS[0].WS50m, 4.060930, 0.01, "Wrong interpolated 50m WS");
                        
         }
+    */
     }
+    
 }

@@ -9,16 +9,16 @@ namespace ContinuumNS
 {
     public class Check_class
     {
-        public bool NewTurbOrMet(Continuum thisInst, string metname, double UTMX, double UTMY, bool showMsg)
+        public bool NewTurbOrMet(TopoInfo topo, string metname, double UTMX, double UTMY, bool showMsg)
         {
             // Checks the distance between the mets/turbines and edges of topo data to make sure they all fit within defined radii. Returns false if outside bounds.
             bool goodToGo = true;
 
-            if (thisInst.topo.gotTopo)                               
-                goodToGo = TopoCheck(thisInst.topo, UTMX, UTMY, metname, "Plot"); 
+            if (topo.gotTopo)                               
+                goodToGo = TopoCheck(topo, UTMX, UTMY, metname); 
 
-            if (thisInst.topo.gotSR)
-                goodToGo = LandCoverCheck(thisInst.topo, UTMX, UTMY, metname, "Plot");         
+            if (topo.gotSR)
+                goodToGo = LandCoverCheck(topo, UTMX, UTMY, metname);         
                       
             return goodToGo;
 
@@ -128,18 +128,18 @@ namespace ContinuumNS
 
             return TAB_ok;
         }
-               
-        
-        public bool TopoCheck(TopoInfo topo, double UTMX, double UTMY, string siteName, string allOrPlot)
-        {
-            // Check elev at 8 points +/- 12000 m from UTMX/Y. If elev = -999, return false
 
+        /// <summary>
+        /// Checks if the elevation is available at 8 points +/- 12000 m from specified UTMX/Y and returns false if all are not available.
+        /// </summary>        
+        public bool TopoCheck(TopoInfo topo, double UTMX, double UTMY, string siteName)
+        {            
             bool goodToGo = true;
             int maxDist = 12000;
             double X_Loc = 0;
             double Y_Loc = 0;
                         
-            int[] indices = topo.GetXYIndices("Topo", UTMX, UTMY, allOrPlot); // Site location
+            int[] indices = topo.GetXYIndices("Topo", UTMX, UTMY, "Plot"); // Site location
             
             // Check that there is topography data
             if (indices[0] == -999 && indices[1] == -999)
@@ -148,7 +148,7 @@ namespace ContinuumNS
                 return goodToGo = false;
             }
 
-            for (int i = 0; i <= 8; i++)
+            for (int i = 0; i < 8; i++)
             {
                 if (i == 0) // North
                 {                    
@@ -191,24 +191,15 @@ namespace ContinuumNS
                     Y_Loc = UTMY + maxDist * 0.7071;
                 }
 
-                indices = topo.GetXYIndices("Topo", X_Loc, Y_Loc, allOrPlot); 
+                indices = topo.GetXYIndices("Topo", X_Loc, Y_Loc, "Plot"); 
+                                
+                if (indices[0] < 0 || indices[0] >= topo.topoNumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.topoNumXY.Y.plot.num)
+                {
+                    MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
+                    return goodToGo = false;
+                }
 
-                if (allOrPlot == "All")
-                {
-                    if (indices[0] < 0 || indices[0] >= topo.topoNumXY.X.all.num || indices[1] < 0 || indices[1] >= topo.topoNumXY.Y.all.num)
-                    {
-                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
-                        return goodToGo = false;
-                    }
-                }
-                else
-                {
-                    if (indices[0] < 0 || indices[0] >= topo.topoNumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.topoNumXY.Y.plot.num)
-                    {
-                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
-                        return goodToGo = false;
-                    }                    
-                }
+                double thisElev = topo.topoElevs[indices[0], indices[1]];
 
                 if (topo.topoElevs[indices[0], indices[1]] == -999)
                 {
@@ -222,18 +213,19 @@ namespace ContinuumNS
 
         }
 
-        public bool LandCoverCheck(TopoInfo topo, double UTMX, double UTMY, string siteName, string allOrPlot)
+        /// <summary>
+        /// Checks land cover at 8 points +/- 12000 m from UTMX/Y. If land cover = -999 or if outside range, return false
+        /// </summary>        
+        public bool LandCoverCheck(TopoInfo topo, double UTMX, double UTMY, string siteName)
         {
-            // Check land cover at 8 points +/- 12000 m from UTMX/Y. If land cover = -999 or if outside range, return false
-
             bool goodToGo = true;
             int maxDist = 12000;
             double X_Loc = 0;
             double Y_Loc = 0;
             
-            int[] indices = topo.GetXYIndices("Land Cover", UTMX, UTMY, allOrPlot); // Site location
+            int[] indices = topo.GetXYIndices("Land Cover", UTMX, UTMY, "Plot"); // Site location
 
-            // Check that there is topography data
+            // Check that there is land cover  data
             if (indices[0] == -999 && indices[1] == -999)
             {
                 MessageBox.Show("Land Cover data not loaded.", "Continuum 3");
@@ -283,24 +275,13 @@ namespace ContinuumNS
                     Y_Loc = UTMY + maxDist * 0.7071;
                 }
 
-                indices = topo.GetXYIndices("Land Cover", X_Loc, Y_Loc, allOrPlot); // Northeast of site
-
-                if (allOrPlot == "All")
+                indices = topo.GetXYIndices("Land Cover", X_Loc, Y_Loc, "Plot"); 
+                                
+                if (indices[0] < 0 || indices[0] >= topo.LC_NumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.LC_NumXY.Y.plot.num)
                 {
-                    if (indices[0] < 0 || indices[0] >= topo.LC_NumXY.X.all.num || indices[1] < 0 || indices[1] >= topo.LC_NumXY.Y.all.num)
-                    {
-                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
-                        return goodToGo = false;
-                    }
-                }
-                else
-                {
-                    if (indices[0] < 0 || indices[0] >= topo.LC_NumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.LC_NumXY.Y.plot.num)
-                    {
-                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
-                        return goodToGo = false;
-                    }
-                }
+                    MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
+                    return goodToGo = false;
+                }                
 
                 if (topo.landCover[indices[0], indices[1]] == -999)
                 {
@@ -313,33 +294,37 @@ namespace ContinuumNS
 
         }
 
-        public bool NewTopo(TopoInfo topo, MetCollection metList, TurbineCollection turbList, string allOrPlot)
-        {
-            // Go through each met and turbine site and check elev at 8 points +/- 12000 m. If elev = -999, return false
-            
+        /// <summary>
+        /// Go through each met and turbine site and check elev at 8 points +/- 12000 m. If elev = -999, return false
+        /// </summary>        
+        public bool NewTopo(TopoInfo topo, MetCollection metList, TurbineCollection turbList)
+        {            
             bool goodToGo = true;
             
             for (int i = 0; i < metList.ThisCount; i++)            
-                goodToGo = TopoCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name, allOrPlot); 
+                goodToGo = TopoCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name); 
             
             for (int i = 0; i < turbList.TurbineCount; i++)
-                goodToGo = TopoCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name, allOrPlot); 
+                goodToGo = TopoCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name); 
 
             return goodToGo;
 
         }
 
-        public bool NewLandCover(TopoInfo topo, MetCollection metList, TurbineCollection turbList, string allOrPlot)
+        /// <summary>
+        /// Go through each met and turbine site and check land cover at 8 points +/- 12000 m. If elev = -999, return false
+        /// </summary>   
+        public bool NewLandCover(TopoInfo topo, MetCollection metList, TurbineCollection turbList)
         {
             // Go through each met and turbine site and check land cover at 8 points +/- 12000 m. If elev = -999, return false
 
             bool goodToGo = true;
 
             for (int i = 0; i < metList.ThisCount; i++)
-                goodToGo = LandCoverCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name, allOrPlot);
+                goodToGo = LandCoverCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name);
 
             for (int i = 0; i < turbList.TurbineCount; i++)
-                goodToGo = LandCoverCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name, allOrPlot);
+                goodToGo = LandCoverCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name);
 
             return goodToGo;
 
@@ -383,5 +368,132 @@ namespace ContinuumNS
             return goodToGo;
         }
 
+        /// <summary>
+        /// Checks if the elevation is available at 8 points +/- 10000 m from specified UTMX/Y and returns index of point outside range if all are not available.
+        /// </summary>        
+        public int NewNodeCheck(TopoInfo topo, double UTMX, double UTMY, int minDist)
+        {
+            int goodToGo = 100;
+            
+            double X_Loc = 0;
+            double Y_Loc = 0;
+
+            int[] topoIndices = topo.GetXYIndices("Topo", UTMX, UTMY, "Plot"); // topoElevs indices at site location
+            int[] landCoverIndices = topo.GetXYIndices("Land cover", UTMX, UTMY, "Plot"); // landCover indices at site location
+
+            bool[] indexChecks = new bool[8];
+
+            // Check that there is topography data
+            if (topoIndices[0] == -999 && topoIndices[1] == -999)
+                return goodToGo = -999;
+
+            if (topo.gotSR && landCoverIndices[0] == -999 && landCoverIndices[1] == -999)
+                return goodToGo = -999;
+
+            for (int i = 0; i < 8; i++)
+            {
+                indexChecks[i] = true;
+
+                if (i == 0) // North
+                {
+                    X_Loc = UTMX;
+                    Y_Loc = UTMY + minDist;
+                }
+                else if (i == 1) // Northeast
+                {
+                    X_Loc = UTMX + minDist * 0.7071;
+                    Y_Loc = UTMY + minDist * 0.7071;
+                }
+                else if (i == 2) // East
+                {
+                    X_Loc = UTMX + minDist;
+                    Y_Loc = UTMY;
+                }
+                else if (i == 3) // Southeast
+                {
+                    X_Loc = UTMX + minDist * 0.7071;
+                    Y_Loc = UTMY - minDist * 0.7071;
+                }
+                else if (i == 4) // South
+                {
+                    X_Loc = UTMX;
+                    Y_Loc = UTMY - minDist;
+                }
+                else if (i == 5) // Southwest
+                {
+                    X_Loc = UTMX - minDist * 0.7071;
+                    Y_Loc = UTMY - minDist * 0.7071;
+                }
+                else if (i == 6) // West
+                {
+                    X_Loc = UTMX - minDist;
+                    Y_Loc = UTMY;
+                }
+                else if (i == 7) // Northwest
+                {
+                    X_Loc = UTMX - minDist * 0.7071;
+                    Y_Loc = UTMY + minDist * 0.7071;
+                }
+
+                topoIndices = topo.GetXYIndices("Topo", X_Loc, Y_Loc, "Plot");                
+
+                if (topoIndices[0] < 0 || topoIndices[0] >= topo.topoNumXY.X.plot.num || topoIndices[1] < 0 || topoIndices[1] >= topo.topoNumXY.Y.plot.num)                
+                    indexChecks[i] = false;
+                else if (topo.topoElevs[topoIndices[0], topoIndices[1]] == -999)
+                    indexChecks[i] = false;
+
+                if (topo.gotSR)
+                {
+                    landCoverIndices = topo.GetXYIndices("Land cover", X_Loc, Y_Loc, "Plot");
+
+                    if (landCoverIndices[0] < 0 || landCoverIndices[0] >= topo.LC_NumXY.X.plot.num || landCoverIndices[1] < 0 || landCoverIndices[1] >= topo.LC_NumXY.Y.plot.num)
+                        indexChecks[i] = false;
+                    else if (topo.landCover[landCoverIndices[0], landCoverIndices[1]] == -999)
+                        indexChecks[i] = false;
+                }
+
+            }
+
+            // Go through array of booleans to figure out which way to move location
+            bool allFalse = true;
+            for (int i = 0; i < 8; i++)
+            {
+                if (indexChecks[i] != true)
+                {
+                    int oppSect = i - 4;
+                    if (oppSect < 0) oppSect = oppSect + 8;
+
+                    if (indexChecks[oppSect] == true)
+                        return i;
+                }
+                else
+                    allFalse = false;
+
+            }
+
+
+            // If false at all locations, figure out which way to move based on distance to four corners
+            if (allFalse == true)
+            {
+                double distToMinXMinY = topo.CalcDistanceBetweenPoints(UTMX, UTMY, topo.topoNumXY.X.all.min, topo.topoNumXY.Y.all.min);
+                double distToMinXMaxY = topo.CalcDistanceBetweenPoints(UTMX, UTMY, topo.topoNumXY.X.all.min, topo.topoNumXY.Y.all.max);
+                double distToMaxXMinY = topo.CalcDistanceBetweenPoints(UTMX, UTMY, topo.topoNumXY.X.all.max, topo.topoNumXY.Y.all.min);
+                double distToMaxXMaxY = topo.CalcDistanceBetweenPoints(UTMX, UTMY, topo.topoNumXY.X.all.max, topo.topoNumXY.Y.all.max);
+
+                if (distToMinXMinY > distToMinXMaxY && distToMinXMinY > distToMaxXMinY && distToMinXMinY > distToMaxXMaxY)
+                    goodToGo = 1; // Furthest from Min X/Y
+                else if (distToMinXMaxY > distToMinXMinY && distToMinXMaxY > distToMaxXMinY && distToMinXMaxY > distToMaxXMaxY)
+                    goodToGo = 3; // Furthest from MinX and MaxY 
+                else if (distToMaxXMinY > distToMinXMinY && distToMaxXMinY > distToMinXMaxY && distToMaxXMinY > distToMaxXMaxY)
+                    goodToGo = 5; // Furthest from Max X/Y
+                else
+                    goodToGo = 7; // Furthest from Max X and Min Y
+
+            }
+            
+
+            return goodToGo;
+
+        }
     }
 }

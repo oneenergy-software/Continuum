@@ -82,7 +82,7 @@ namespace ContinuumNS
             }
             else
             {
-                inputTurbine = check.NewTurbOrMet(thisInst, name, UTMX, UTMY, true);
+                inputTurbine = check.NewTurbOrMet(thisInst.topo, name, UTMX, UTMY, true);
                 if (inputTurbine == true) thisInst.turbineList.AddTurbine(name, UTMX, UTMY, stringNum);
                 
                 thisInst.updateThe.AllTABs(thisInst);                    

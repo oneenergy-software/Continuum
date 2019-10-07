@@ -101,6 +101,35 @@
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GenMap_Tests.cs" />
     <Compile Include="Grid_Info_Tests.cs" />
+    <Compile Include="GUI Tests\TAB file Tests\DelOneMetTAB_Tests.cs" />
+    <Compile Include="GUI Tests\Filtered LT TS file Tests\DelOneMetTSNoMERRA.cs" />
+    <Compile Include="GUI Tests\Filtered TS file Tests\DelOneMetTSNotFilt_Tests.cs" />
+    <Compile Include="GUI Tests\Raw TS file Tests\DelOneMetTS_Tests.cs" />
+    <Compile Include="GUI Tests\TAB file Tests\DelOneTAB.cs" />
+    <Compile Include="GUI Tests\TAB file Tests\DelThreeMetTABs_Tests.cs" />
+    <Compile Include="GUI Tests\Filtered LT TS file Tests\DelThreeMetTSNoMERRA_Tests.cs" />
+    <Compile Include="GUI Tests\Filtered TS file Tests\DelThreeMetTSNotFilt_Tests.cs" />
+    <Compile Include="GUI Tests\Raw TS file Tests\DelThreeMetTS_Tests.cs" />
+    <Compile Include="GUI Tests\TAB file Tests\DelTwoMetTABs_Tests.cs" />
+    <Compile Include="GUI Tests\Filtered LT TS file Tests\DelTwoMetTSNoMERRA.cs" />
+    <Compile Include="GUI Tests\Filtered TS file Tests\DelTwoMetTSNotFilt_Tests.cs" />
+    <Compile Include="GUI Tests\Raw TS file Tests\DelTwoMetTS_Tests.cs" />
+    <Compile Include="GUI Tests\Map_tests.cs" />
+    <Compile Include="GUI Tests\MCP_Tests.cs" />
+    <Compile Include="GUI Tests\MERRA_node_Tests.cs" />
+    <Compile Include="GUI Tests\Filtered LT TS file Tests\OneMetTSNotFiltLTAndGrossNet.cs" />
+    <Compile Include="GUI Tests\Filtered TS file Tests\OneMetTSNotFiltWithMERRAAndMCP.cs" />
+    <Compile Include="GUI Tests\Raw TS file Tests\OneMetRawTSWithMERRAAndMCP.cs" />
+    <Compile Include="GUI Tests\TAB file Tests\OneMetTABAndGrossNet_Tests.cs" />
+    <Compile Include="GUI Tests\SiteSuitability_Tests.cs" />
+    <Compile Include="GUI Tests\Raw TS file Tests\ThreeMetRawTSWithMERRAAndMCP.cs" />
+    <Compile Include="GUI Tests\TAB file Tests\ThreeMetTABAndGrossNet.cs" />
+    <Compile Include="GUI Tests\Filtered LT TS file Tests\ThreeMetTSNotFiltLTAndGrossNet.cs" />
+    <Compile Include="GUI Tests\Filtered TS file Tests\ThreeMetTSNotFiltWithMERRAAndMCP.cs" />
+    <Compile Include="GUI Tests\Raw TS file Tests\TwoMetRawTSWithMERRAAndMCP.cs" />
+    <Compile Include="GUI Tests\TAB file Tests\TwoMetTABAndGrossNet.cs" />
+    <Compile Include="GUI Tests\Filtered TS file Tests\TwoMetTSNotFiltWithMERRAAndMCP.cs" />
+    <Compile Include="GUI Tests\WakeModel_Tests.cs" />
     <Compile Include="LC_Key_Tests.cs" />
     <Compile Include="Map_Tests.cs" />
     <Compile Include="MCP_Tests.cs" />
@@ -121,6 +150,7 @@
     <Compile Include="TopoInfo_Tests.cs" />
     <Compile Include="TurbineCollection_Tests.cs" />
     <Compile Include="Turbine_Tests.cs" />
+    <Compile Include="GUI Tests\Filtered LT TS file Tests\TwoMetTSNotFiltLTAndGrossNet.cs" />
     <Compile Include="UTM_Conversion_Tests.cs" />
     <Compile Include="WakeCollection_Tests.cs" />
   </ItemGroup>
@@ -129,13 +159,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GdalConfiguration.vb" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Continuum\Continuum.csproj">
       <Project>{ccf3fe40-1bae-43ea-88b0-8226de400da7}</Project>
       <Name>Continuum</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="GdalConfiguration.vb" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

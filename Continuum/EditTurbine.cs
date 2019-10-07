@@ -34,7 +34,7 @@ namespace ContinuumNS
             }
 
             Check_class Check = new Check_class();
-            bool inputTurbine = Check.NewTurbOrMet(thisInst, name, UTMX, UTMY, true);
+            bool inputTurbine = Check.NewTurbOrMet(thisInst.topo, name, UTMX, UTMY, true);
 
             if (inputTurbine == true) 
                 thisInst.turbineList.EditTurbine(name, UTMX, UTMY);                            

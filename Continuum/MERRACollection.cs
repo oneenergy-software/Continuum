@@ -17,7 +17,8 @@ namespace ContinuumNS
         public int numMERRA_Nodes = 1; // OE Methodology 2017.1 uses closest MERRA2 node (future methodology to incorporate interpolated data)
         public DateTime startDate = new DateTime(1989, 1, 1, 0, 0, 0);
         public DateTime endDate = new DateTime(2018, 12, 31, 23, 0, 0);
-        
+        public string MERRAfolder = "";
+
         public struct minMaxReq
         {
             public double minReqLat;
@@ -54,13 +55,15 @@ namespace ContinuumNS
 
                 {                    
                     numMERRA_Nodes = Convert.ToInt16(thisInst.cboNumMERRA_Nodes.SelectedItem.ToString());
-                    for (int i = 0; i < numMERRA_Data; i++)
+                    merraData = null;
+
+                  /*  for (int i = 0; i < numMERRA_Data; i++)
                     {
                         Array.Resize(ref merraData[i].MERRA_Nodes, numMERRA_Nodes);
-                        merraData[i].ClearAll(true);
-                        // TO DO: Reload MERRA data
+                        merraData[i].numMERRA_Nodes = numMERRA_Nodes;
+                        merraData[i].ClearAll(true);                        
                     }                    
-                                          
+                      */                    
 
                 }
                 else
@@ -72,9 +75,10 @@ namespace ContinuumNS
             thisInst.ChangesMade();
         }        
         
-        public MERRA.DecimalCoords[] GetRequiredMERRACoords(double latitude, double longitude)
+        /// <summary> Returns array of lat/long coordinates of MERRA2 coordinates for specified lat/long </summary>        
+        public UTM_conversion.Lat_Long[] GetRequiredMERRACoords(double latitude, double longitude)
         {
-            MERRA.DecimalCoords[] theseReqCoords = new MERRA.DecimalCoords[numMERRA_Nodes];
+            UTM_conversion.Lat_Long[] theseReqCoords = new UTM_conversion.Lat_Long[numMERRA_Nodes];
 
             double minReqLat = Math.Round(latitude / 0.5, 0) * 0.5;
             double  minReqLong = Math.Round(longitude / 0.625) * 0.625;
@@ -83,8 +87,8 @@ namespace ContinuumNS
 
             if (numMERRA_Nodes == 1)
             {                
-                theseReqCoords[0].Lat = minReqLat;
-                theseReqCoords[0].Lon = minReqLong;
+                theseReqCoords[0].latitude = minReqLat;
+                theseReqCoords[0].longitude = minReqLong;
             }
             else if (numMERRA_Nodes == 4)
             {                
@@ -104,17 +108,17 @@ namespace ContinuumNS
                     maxReqLong = minReqLong + 0.625;
                 }
 
-                theseReqCoords[0].Lat = minReqLat;
-                theseReqCoords[0].Lon = minReqLong;
+                theseReqCoords[0].latitude = minReqLat;
+                theseReqCoords[0].longitude = minReqLong;
 
-                theseReqCoords[1].Lat = minReqLat;
-                theseReqCoords[1].Lon = maxReqLong;
+                theseReqCoords[1].latitude = minReqLat;
+                theseReqCoords[1].longitude = maxReqLong;
 
-                theseReqCoords[2].Lat = maxReqLat;
-                theseReqCoords[2].Lon = minReqLong;
+                theseReqCoords[2].latitude = maxReqLat;
+                theseReqCoords[2].longitude = minReqLong;
 
-                theseReqCoords[3].Lat = maxReqLat;
-                theseReqCoords[3].Lon = maxReqLong;
+                theseReqCoords[3].latitude = maxReqLat;
+                theseReqCoords[3].longitude = maxReqLong;
             }
             else if (numMERRA_Nodes == 16)
             {
@@ -145,8 +149,8 @@ namespace ContinuumNS
 
                 for (int i = 0; i < numMERRA_Nodes; i++)
                 {
-                    theseReqCoords[i].Lat = minReqLat + 0.5 * latInd;
-                    theseReqCoords[i].Lon = minReqLong + 0.625 * longInd;
+                    theseReqCoords[i].latitude = minReqLat + 0.5 * latInd;
+                    theseReqCoords[i].longitude = minReqLong + 0.625 * longInd;
 
                     latInd++;
                     if (latInd >= 4)
@@ -161,15 +165,15 @@ namespace ContinuumNS
             return theseReqCoords;
         }
 
-        public MERRA.DecimalCoords[] GetRequiredNewMERRANodeCoords(double latitude, double longitude, int offset, Continuum thisInst)
+        public UTM_conversion.Lat_Long[] GetRequiredNewMERRANodeCoords(double latitude, double longitude, Continuum thisInst)
         {
             // Finds the min/max lat/long of MERRA nodes needed for specified latitude and longitude. Loops through existing MERRA data to see
             // if additional MERRA data is needed
-            MERRA.DecimalCoords[] newRequiredMERRANodes = new MERRA.DecimalCoords[0];
+            UTM_conversion.Lat_Long[] newRequiredMERRANodes = new UTM_conversion.Lat_Long[0];
             int numNewReqNodes = 0;
 
-            MERRA.DecimalCoords[] theseRequiredNodes = GetRequiredMERRACoords(latitude, longitude);
-            MERRA.DecimalCoords[] existingNodes = new MERRA.DecimalCoords[0];
+            UTM_conversion.Lat_Long[] theseRequiredNodes = GetRequiredMERRACoords(latitude, longitude);
+            UTM_conversion.Lat_Long[] existingNodes = new UTM_conversion.Lat_Long[0];
             int numExistingNodes = 0;
 
             // Loop through required nodes and see what additional nodes are needed
@@ -184,8 +188,8 @@ namespace ContinuumNS
                 {
                     numExistingNodes++;
                     Array.Resize(ref existingNodes, numExistingNodes);
-                    existingNodes[numExistingNodes - 1].Lat = N.latitude;
-                    existingNodes[numExistingNodes - 1].Lon = N.longitude;
+                    existingNodes[numExistingNodes - 1].latitude = N.latitude;
+                    existingNodes[numExistingNodes - 1].longitude = N.longitude;
                 }
             }
 
@@ -194,7 +198,7 @@ namespace ContinuumNS
                 bool gotIt = false;
                 for (int j = 0; j < numExistingNodes; j++)
                 {
-                    if (existingNodes[j].Lat == theseRequiredNodes[i].Lat && existingNodes[j].Lon == theseRequiredNodes[i].Lon)
+                    if (existingNodes[j].latitude == theseRequiredNodes[i].latitude && existingNodes[j].longitude == theseRequiredNodes[i].longitude)
                     {
                         gotIt = true;
                         break;
@@ -205,8 +209,8 @@ namespace ContinuumNS
                 {
                     numNewReqNodes++;
                     Array.Resize(ref newRequiredMERRANodes, numNewReqNodes);
-                    newRequiredMERRANodes[numNewReqNodes - 1].Lat = theseRequiredNodes[i].Lat;
-                    newRequiredMERRANodes[numNewReqNodes - 1].Lon = theseRequiredNodes[i].Lon;
+                    newRequiredMERRANodes[numNewReqNodes - 1].latitude = theseRequiredNodes[i].latitude;
+                    newRequiredMERRANodes[numNewReqNodes - 1].longitude = theseRequiredNodes[i].longitude;
                 }
 
             }                                       
@@ -235,13 +239,13 @@ namespace ContinuumNS
             MERRA thisMERRA = new MERRA();
 
             for (int i = 0; i < numMERRA_Data; i++)
-                if (merraData[i].interpData.Coords.Lat == Math.Round(latitude, 3) && merraData[i].interpData.Coords.Lon == Math.Round(longitude, 3))
+                if (merraData[i].interpData.Coords.latitude == Math.Round(latitude, 3) && merraData[i].interpData.Coords.longitude == Math.Round(longitude, 3))
                     thisMERRA = merraData[i];
 
             return thisMERRA;
         }
 
-        public void AddMERRA_GetDataFromTextFiles(double thisLat, double thisLong, int offset, Continuum thisInst, Met thisMet)
+        public void AddMERRA_GetDataFromTextFiles(double thisLat, double thisLong, int offset, Continuum thisInst, Met thisMet, bool isTest)
         {
             // Adds new MERRA object to list. Figures out if additional MERRA nodes need to be uploaded from textfiles.
             // Runs MCP at Met site (if thisMet not null) if have all MERRA node data. Calls BW worker to uploaded additional data if needed.
@@ -255,16 +259,13 @@ namespace ContinuumNS
             if (thisMet.name == null)
                 thisMERRA.isUserDefined = true;
 
-            if (numMERRA_Data > 0)
-                thisMERRA.MERRAfolder = merraData[0].MERRAfolder;
-
-            if (thisMERRA.MERRAfolder == "")
+            if (MERRAfolder == "")
             {
                 try
                 {
                     MessageBox.Show("Please select folder containing MERRA2 data .ascii files.");
                     if (thisInst.fbd_MERRAData.ShowDialog() == DialogResult.OK)
-                        thisMERRA.MERRAfolder = thisInst.fbd_MERRAData.SelectedPath;
+                        MERRAfolder = thisInst.fbd_MERRAData.SelectedPath;
                     else
                         return;
                 }
@@ -276,7 +277,7 @@ namespace ContinuumNS
             }
 
             // Figure out if MERRA textfile has the necessary lat/long range and get MERRA node coordinates
-            bool gotCoords = thisMERRA.Find_MERRA_Coords(); 
+            bool gotCoords = thisMERRA.Find_MERRA_Coords(MERRAfolder); 
 
             if (gotCoords == false)
                 return;                                                        
@@ -285,10 +286,12 @@ namespace ContinuumNS
                                    
             DialogResult doMCP = DialogResult.No;
 
-            if (thisMet.name != null && (thisInst.metList.ThisCount == 1 || thisInst.metList.isMCPd == false))
+            if (thisMet.name != null && isTest == false && (thisInst.metList.ThisCount == 1 || thisInst.metList.isMCPd == false))
                 doMCP = MessageBox.Show("Do you want to conduct MCP at selected met?", "Continuum 3.0", MessageBoxButtons.YesNo);
-            else if (thisMet.name != "" && thisInst.metList.ThisCount > 1 && thisInst.metList.isMCPd == true)
+            else if (thisMet.name != "" && isTest == false && thisInst.metList.ThisCount > 1 && thisInst.metList.isMCPd == true)
                 doMCP = DialogResult.Yes;
+            else if (isTest == true)
+                doMCP = DialogResult.No;
 
             if (doMCP == DialogResult.Yes)
             {                
@@ -302,7 +305,7 @@ namespace ContinuumNS
             }            
             
             // Figure out what MERRA nodes need to be downloaded
-            MERRA.DecimalCoords[] requiredMERRANode = GetRequiredNewMERRANodeCoords(thisLat, thisLong, offset, thisInst);
+            UTM_conversion.Lat_Long[] requiredMERRANode = GetRequiredNewMERRANodeCoords(thisLat, thisLong, thisInst);
 
             if (requiredMERRANode.Length != 0)
             {              
@@ -311,13 +314,13 @@ namespace ContinuumNS
 
                 for (int i = 0; i < requiredMERRANode.Length; i++)
                 {
-                    nodesToPull[i].Coords.Lat = requiredMERRANode[i].Lat;
-                    nodesToPull[i].Coords.Lon = requiredMERRANode[i].Lon;
-                    nodesToPull[i].UTM = thisInst.UTM_conversions.LLtoUTM(nodesToPull[i].Coords.Lat, nodesToPull[i].Coords.Lon);
+                    nodesToPull[i].Coords.latitude = requiredMERRANode[i].latitude;
+                    nodesToPull[i].Coords.longitude = requiredMERRANode[i].longitude;
+                    nodesToPull[i].UTM = thisInst.UTM_conversions.LLtoUTM(nodesToPull[i].Coords.latitude, nodesToPull[i].Coords.longitude);
                 }
 
                 // Check to see that MERRA data files have required lat/long and assign XInd and YInd
-                bool gotIndices = thisMERRA.GetMERRAPullXYIndices(ref nodesToPull);
+                bool gotIndices = thisMERRA.GetMERRAPullXYIndices(ref nodesToPull, MERRAfolder);
 
                 if (gotIndices == false)
                     return;
@@ -366,7 +369,7 @@ namespace ContinuumNS
 
                 for (int i = 0; i < numMERRA_Data; i++)
                 {
-                    if (merraData[i].interpData.Coords.Lat != Math.Round(latitude, 3) && merraData[i].interpData.Coords.Lon != Math.Round(longitude, 3))
+                    if (merraData[i].interpData.Coords.latitude != Math.Round(latitude, 3) && merraData[i].interpData.Coords.longitude != Math.Round(longitude, 3))
                     {
                         tempList[tempIndex] = merraData[i];
                         tempIndex++;
@@ -391,7 +394,7 @@ namespace ContinuumNS
                 using (var ctx = new Continuum_EDMContainer(connString))
                 {
                     ctx.Database.ExecuteSqlCommand("DELETE FROM MERRA_Node_table");
-                    ctx.SaveChanges();
+                    ctx.SaveChanges();                    
                 }
             }
             catch (Exception ex)
@@ -415,11 +418,11 @@ namespace ContinuumNS
                     foreach (var N in merra_db)
                         context.MERRA_Node_table.Remove(N);                                     
 
-                    context.SaveChanges();
+                    context.SaveChanges();                    
                 }
             }
             catch (Exception ex)
-            {
+            {                
                 MessageBox.Show(ex.InnerException.ToString());
                 return;
             }
@@ -475,7 +478,7 @@ namespace ContinuumNS
             bool gotIt = false;
 
             for (int i = 0; i < numMERRA_Data; i++)
-                if (merraData[i].interpData.Coords.Lat == Math.Round(latitude, 3) && merraData[i].interpData.Coords.Lon == Math.Round(longitude, 3))
+                if (merraData[i].interpData.Coords.latitude == Math.Round(latitude, 3) && merraData[i].interpData.Coords.longitude == Math.Round(longitude, 3))
                     gotIt = true;
 
             return gotIt;

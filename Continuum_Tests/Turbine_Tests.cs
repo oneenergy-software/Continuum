@@ -164,7 +164,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "Turbine testing.cfm";
             thisInst.Open(Filename);
 
-            thisInst.wakeModelList.AddWakeModel(0, 5, 12, thisInst.turbineList.GetPowerCurve("GW 87/1500 1.205 kg/m^3,,"), 10, 3, 0.05f, "Linear", 0, 0);
+            thisInst.wakeModelList.AddWakeModel(0, 5, 12, thisInst.turbineList.GetPowerCurve("GW 87/1500 1.205 kg/m^3,,"), 10, 3, 0.05f, "Linear");
             // Find wake loss coeffs
             WakeCollection.WakeLossCoeffs[] Wake_coeffs = null;
             int minDist = 10000000;

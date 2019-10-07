@@ -29,13 +29,13 @@ namespace Continuum_Tests
             startNode.elev = thisInst.topo.CalcElevs(startNode.UTMX, startNode.UTMY);
             startNode.gridStats = new Grid_Info();
             
-            Nodes highNode = nodeList.FindNodeInSectorHighSpot(thisInst, startNode, 56.16f, 86.16f, 2822, 1975, false);
+            Nodes highNode = nodeList.FindNodeInSectorHighSpot(thisInst, startNode, 56.16f, 86.16f, 2822, 1975);
 
             Assert.AreEqual(highNode.UTMX, 472379, 1, "Wrong UTMX in Test 1");
             Assert.AreEqual(highNode.UTMY, 5113886, 1, "Wrong UTMY in Test 1");
             Assert.AreEqual(highNode.elev, 655, 1, "Wrong elevation in Test 1");
 
-            highNode = nodeList.FindNodeInSectorHighSpot(thisInst, startNode, 116.5f, 146.16f, 1411, 987, false);
+            highNode = nodeList.FindNodeInSectorHighSpot(thisInst, startNode, 116.5f, 146.16f, 1411, 987);
 
             Assert.AreEqual(highNode.UTMX, 470879, 1, "Wrong UTMX in Test 2");
             Assert.AreEqual(highNode.UTMY, 5112613, 1, "Wrong UTMY in Test 2");
@@ -195,5 +195,7 @@ namespace Continuum_Tests
 
 
         }
+
+        
     }
 }

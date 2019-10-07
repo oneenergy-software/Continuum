@@ -107,7 +107,7 @@
             this.chkMetsToUse.FormattingEnabled = true;
             this.chkMetsToUse.Location = new System.Drawing.Point(194, 83);
             this.chkMetsToUse.Name = "chkMetsToUse";
-            this.chkMetsToUse.Size = new System.Drawing.Size(184, 109);
+            this.chkMetsToUse.Size = new System.Drawing.Size(184, 104);
             this.chkMetsToUse.TabIndex = 253;
             // 
             // btnCoordsAllTurbs
@@ -318,7 +318,6 @@
 
         internal System.Windows.Forms.TextBox txt_FlowSep_Used;
         internal System.Windows.Forms.TextBox txtLC_Used;
-        internal System.Windows.Forms.ComboBox cboWakeModels;
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.Label Label17;
         internal System.Windows.Forms.CheckedListBox chkMetsToUse;
@@ -339,5 +338,6 @@
         internal System.Windows.Forms.Button btnGenMap;
         public System.Windows.Forms.ComboBox cboUseTimeSeries;
         internal System.Windows.Forms.TextBox txtisMCPGenWakeMap;
+        public System.Windows.Forms.ComboBox cboWakeModels;
     }
 }

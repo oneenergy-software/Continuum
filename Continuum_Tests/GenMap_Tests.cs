@@ -18,7 +18,8 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
             GenMap New_Map = new GenMap(thisInst);
             New_Map.gridReso = 5000;
-            New_Map.UpdateLimits();
+            //  New_Map.UpdateLimits();
+            New_Map.FindLargestArea();
 
             Assert.AreEqual(New_Map.minUTMX_Limit, 426087, 0, "Test 1: Wrong Min UTMX Limit");
             Assert.AreEqual(New_Map.minUTMY_Limit, 3995085, 0, "Test 1: Wrong Min UTMY Limit");
@@ -29,7 +30,8 @@ namespace Continuum_Tests
             Assert.AreEqual(New_Map.numGrid, 36, 0, "Test 1: Wrong Num Grid");
 
             New_Map.gridReso = 1000;
-            New_Map.UpdateLimits();
+            //  New_Map.UpdateLimits();
+            New_Map.FindLargestArea();
             New_Map.GetBiggestArea();
 
             Assert.AreEqual(New_Map.minUTMX_Limit, 423087, 0, "Test 2: Wrong Min UTMX Limit");

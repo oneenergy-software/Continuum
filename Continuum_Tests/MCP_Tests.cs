@@ -104,7 +104,7 @@ namespace Continuum_Tests
             thisMCP.numWD = 16;
             thisMCP.numTODs = 2;
             thisMCP.numSeasons = 4;
-            thisMCP.FindConcurrentData(false, thisMet.metData.startDate, thisMet.metData.endDate);
+            thisMCP.FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate);
 
             double[] Avg_WS_WD = thisMCP.GetConcAvgsCount(16, Met.TOD.Day, Met.Season.Winter);  // 0: Target WS; 1: Reference WS; 2: Data Count'
 
@@ -150,42 +150,42 @@ namespace Continuum_Tests
         }
 
         [TestMethod]
-        public void Get_Min_Max_WD_test()
+        public void GetMinMaxWD_test()
         {
             MCP thisMCP = new MCP();
             thisMCP.numWD = 4;
 
-            double[] Min_Max_WD = thisMCP.Get_Min_Max_WD(0);
+            double[] Min_Max_WD = thisMCP.GetMinMaxWD(0);
             Assert.AreEqual(Min_Max_WD[0], 315, 0.01, "Wrong minimum WD in Test 1");
             Assert.AreEqual(Min_Max_WD[1], 45, 0.01, "Wrong minimum WD in Test 2");
 
-            Min_Max_WD = thisMCP.Get_Min_Max_WD(2);
+            Min_Max_WD = thisMCP.GetMinMaxWD(2);
             Assert.AreEqual(Min_Max_WD[0], 135, 0.01, "Wrong minimum WD in Test 3");
             Assert.AreEqual(Min_Max_WD[1], 225, 0.01, "Wrong minimum WD in Test 4");
 
             thisMCP.numWD = 8;
-            Min_Max_WD = thisMCP.Get_Min_Max_WD(2);
+            Min_Max_WD = thisMCP.GetMinMaxWD(2);
             Assert.AreEqual(Min_Max_WD[0], 67.5, 0.01, "Wrong minimum WD in Test 5");
             Assert.AreEqual(Min_Max_WD[1], 112.5, 0.01, "Wrong minimum WD in Test 6");
 
-            Min_Max_WD = thisMCP.Get_Min_Max_WD(7);
+            Min_Max_WD = thisMCP.GetMinMaxWD(7);
             Assert.AreEqual(Min_Max_WD[0], 292.5, 0.01, "Wrong minimum WD in Test 7");
             Assert.AreEqual(Min_Max_WD[1], 337.5, 0.01, "Wrong minimum WD in Test 8");
 
             thisMCP.numWD = 16;
-            Min_Max_WD = thisMCP.Get_Min_Max_WD(0);
+            Min_Max_WD = thisMCP.GetMinMaxWD(0);
             Assert.AreEqual(Min_Max_WD[0], 348.75, 0.01, "Wrong minimum WD in Test 9");
             Assert.AreEqual(Min_Max_WD[1], 11.25, 0.01, "Wrong minimum WD in Test 10");
 
-            Min_Max_WD = thisMCP.Get_Min_Max_WD(1);
+            Min_Max_WD = thisMCP.GetMinMaxWD(1);
             Assert.AreEqual(Min_Max_WD[0], 11.25, 0.01, "Wrong minimum WD in Test 11");
             Assert.AreEqual(Min_Max_WD[1], 33.75, 0.01, "Wrong minimum WD in Test 12");
 
-            Min_Max_WD = thisMCP.Get_Min_Max_WD(8);
+            Min_Max_WD = thisMCP.GetMinMaxWD(8);
             Assert.AreEqual(Min_Max_WD[0], 168.75, 0.01, "Wrong minimum WD in Test 13");
             Assert.AreEqual(Min_Max_WD[1], 191.25, 0.01, "Wrong minimum WD in Test 14");
 
-            Min_Max_WD = thisMCP.Get_Min_Max_WD(15);
+            Min_Max_WD = thisMCP.GetMinMaxWD(15);
             Assert.AreEqual(Min_Max_WD[0], 326.25, 0.01, "Wrong minimum WD in Test 15");
             Assert.AreEqual(Min_Max_WD[1], 348.75, 0.01, "Wrong minimum WD in Test 16");
                         
@@ -366,7 +366,7 @@ namespace Continuum_Tests
             Met thisMet = thisInst.metList.metItem[0];
             MCP thisMCP = thisMet.mcp;
 
-            thisMCP.FindConcurrentData(true, thisMCP.concStart, thisMCP.concEnd);
+            thisMCP.FindConcurrentData(thisMCP.concStart, thisMCP.concEnd);
             Assert.AreEqual(thisMCP.concData.Length, 8627, 0, "Wrong concurrent data length");
             
             double[] Conc_Avgs = thisMCP.GetConcAvgsCount(0, Met.TOD.All, Met.Season.All);
@@ -390,24 +390,24 @@ namespace Continuum_Tests
             thisMCP.numWD = 16;
             thisMCP.numTODs = 1;
             thisMCP.numSeasons = 1;
-            thisMCP.Find_Sector_Counts();
+            thisMCP.Find_Sector_Counts(thisInst.metList);
 
-            Assert.AreEqual(thisMCP.Get_Sector_Count(0, 0, 0), 12529, 0, "Wrong sector count in WD = 0");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(1, 0, 0), 11360, 0, "Wrong sector count in WD = 1");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(2, 0, 0), 12149, 0, "Wrong sector count in WD = 2");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(3, 0, 0), 13874, 0, "Wrong sector count in WD = 3");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(4, 0, 0), 13380, 0, "Wrong sector count in WD = 4");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(5, 0, 0), 10538, 0, "Wrong sector count in WD = 5");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(6, 0, 0), 9180, 0, "Wrong sector count in WD = 6");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(7, 0, 0), 10799, 0, "Wrong sector count in WD = 7");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(8, 0, 0), 15793, 0, "Wrong sector count in WD = 8");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(9, 0, 0), 24231, 0, "Wrong sector count in WD = 9");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(10, 0, 0), 29027, 0, "Wrong sector count in WD = 10");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(11, 0, 0), 26659, 0, "Wrong sector count in WD = 11");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(12, 0, 0), 24669, 0, "Wrong sector count in WD = 12");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(13, 0, 0), 22260, 0, "Wrong sector count in WD = 13");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(14, 0, 0), 19661, 0, "Wrong sector count in WD = 14");
-            Assert.AreEqual(thisMCP.Get_Sector_Count(15, 0, 0), 15538, 0, "Wrong sector count in WD = 15");
+            Assert.AreEqual(thisMCP.GetSectorCount(0, 0, 0, thisInst.metList), 12529, 0, "Wrong sector count in WD = 0");
+            Assert.AreEqual(thisMCP.GetSectorCount(1, 0, 0, thisInst.metList), 11360, 0, "Wrong sector count in WD = 1");
+            Assert.AreEqual(thisMCP.GetSectorCount(2, 0, 0, thisInst.metList), 12149, 0, "Wrong sector count in WD = 2");
+            Assert.AreEqual(thisMCP.GetSectorCount(3, 0, 0, thisInst.metList), 13874, 0, "Wrong sector count in WD = 3");
+            Assert.AreEqual(thisMCP.GetSectorCount(4, 0, 0, thisInst.metList), 13380, 0, "Wrong sector count in WD = 4");
+            Assert.AreEqual(thisMCP.GetSectorCount(5, 0, 0, thisInst.metList), 10538, 0, "Wrong sector count in WD = 5");
+            Assert.AreEqual(thisMCP.GetSectorCount(6, 0, 0, thisInst.metList), 9180, 0, "Wrong sector count in WD = 6");
+            Assert.AreEqual(thisMCP.GetSectorCount(7, 0, 0, thisInst.metList), 10799, 0, "Wrong sector count in WD = 7");
+            Assert.AreEqual(thisMCP.GetSectorCount(8, 0, 0, thisInst.metList), 15793, 0, "Wrong sector count in WD = 8");
+            Assert.AreEqual(thisMCP.GetSectorCount(9, 0, 0, thisInst.metList), 24231, 0, "Wrong sector count in WD = 9");
+            Assert.AreEqual(thisMCP.GetSectorCount(10, 0, 0, thisInst.metList), 29027, 0, "Wrong sector count in WD = 10");
+            Assert.AreEqual(thisMCP.GetSectorCount(11, 0, 0, thisInst.metList), 26659, 0, "Wrong sector count in WD = 11");
+            Assert.AreEqual(thisMCP.GetSectorCount(12, 0, 0, thisInst.metList), 24669, 0, "Wrong sector count in WD = 12");
+            Assert.AreEqual(thisMCP.GetSectorCount(13, 0, 0, thisInst.metList), 22260, 0, "Wrong sector count in WD = 13");
+            Assert.AreEqual(thisMCP.GetSectorCount(14, 0, 0, thisInst.metList), 19661, 0, "Wrong sector count in WD = 14");
+            Assert.AreEqual(thisMCP.GetSectorCount(15, 0, 0, thisInst.metList), 15538, 0, "Wrong sector count in WD = 15");
 
             thisInst.Close();
         }

@@ -36,12 +36,22 @@ namespace ContinuumNS
                 
         public bool fileChanged;
         public bool okToUpdate = true; // Used to determine when the GUI plots and tables should be updated
-
+        public bool isTest = false;
         public Continuum()
         {
             SplashScreen Splash = new SplashScreen();
-            Splash.ShowDialog();          
+            Splash.ShowDialog();
+            
             InitializeComponent();
+
+            // StartPosition was set to FormStartPosition.Manual in the properties window.
+            // Adjust size of form
+     /*       Rectangle screen = Screen.PrimaryScreen.WorkingArea;
+            int w = Width >= screen.Width ? screen.Width : (screen.Width + Width) / 2;
+            int h = Height >= screen.Height ? screen.Height : (screen.Height + Height) / 2;
+            this.Location = new Point((screen.Width - w) / 2, (screen.Height - h) / 2);
+            this.Size = new Size(w, h);
+      */                 
             radiiList.New(); // populates with R = 4000, 6000, 8000, 10000 and invserse distance exponent = 1
             metList.NewList(); // sets MCP settings and day/night hours
             turbineList.SetExceedCurves(); // initializes Exceedance curves
@@ -202,7 +212,7 @@ namespace ContinuumNS
                 saveChanges = MessageBox.Show("Do you want to save changes?", "Closing Continuum", MessageBoxButtons.YesNo);
                 if (saveChanges == DialogResult.Yes) {
                     if (savedParams.savedFileName != "")
-                        SaveFile();
+                        SaveFile(false);
                     else
                         SaveAs();
 
@@ -246,15 +256,15 @@ namespace ContinuumNS
             if (confirm == DialogResult.Yes)
             {
                 // check if models and turbine parameters have already been calculated
+                
+                DeleteMet(false);
 
-                DeleteMet();
-
-                SaveFile();                
+                SaveFile(false);                
                 updateThe.AllTABs(this);
             }
         }
 
-        public void DeleteMet()
+        public void DeleteMet(bool isTest)
         {
             // Deletes all selected mets, clears all calculations that used mets, calls background worker to perform met calcs
             int metCount = metList.ThisCount;
@@ -293,7 +303,7 @@ namespace ContinuumNS
             if (metList.isTimeSeries == false)
                 ChangesMade();
             else
-                SaveFile();
+                SaveFile(isTest);
 
             updateThe.AllTABs(this);
 
@@ -519,19 +529,16 @@ namespace ContinuumNS
                     return false;
                 }
 
-                // check the size of the wind rose for other mets
-
-                for (int i = 0; i < metList.ThisCount; i++)
-                {
-                    Met.WSWD_Dist otherDist = metList.metItem[i].GetWS_WD_Dist(modeledHeight, Met.TOD.All, Met.Season.All);
-                    if (otherDist.windRose.Length != WR_size)
-                    {
-                        MessageBox.Show("A " + thisDist.windRose.Length + "-sector wind rose has been imported for other mets but this met has " + WR_size + " sectors. check your input file.", "Continuum 3");
-                        sr.Close();
-                        return false;
-                    }
+                // If this is first met read in, assign metList.numWD otherwise compare WR_size to metList.numWD
+                if (metList.ThisCount == 0)
+                    metList.numWD = WR_size;
+                else if (metList.numWD != WR_size)
+                { 
+                    MessageBox.Show("A " + metList.numWD + "-sector wind rose has been imported for other mets but this met has " + WR_size + " sectors. check your input file.", "Continuum 3");
+                    sr.Close();
+                    return false;
                 }
-
+                
                 thisDist.windRose = new double[WR_size];
                 thisDist.sectorWS_Ratio = new double[WR_size];
                 thisDist.sectorWS_Dist = new double[0, 0];
@@ -589,14 +596,25 @@ namespace ContinuumNS
                     WS_Int++;
                 }
 
-                for (int i = 0; i < metList.ThisCount; i++)
+                // If this is first met read in, assign metList.WS_IntSize otherwise compare WS_IntSize to metList.numWD
+                if (metList.ThisCount == 0)
+                    metList.WS_IntSize = WS_IntSize;
+                else if (metList.WS_IntSize != WS_IntSize)
                 {
-                    if (metList.WS_IntSize != WS_IntSize)
-                    {
-                        MessageBox.Show("A different WS interval size of " + metList.WS_IntSize + " was used for other mets.  The WS intervals must be consistent for all met sites.");
-                        sr.Close();
-                        return false;
-                    }
+                    MessageBox.Show("A different WS interval size of " + metList.WS_IntSize + " was used for other mets.  The WS intervals must be consistent for all met sites.");
+
+                    sr.Close();
+                    return false;
+                }
+
+                // If this is first met read in, assign metList.WS_FirstInt otherwise compare WS_FirstInt to metList.numWD
+                if (metList.ThisCount == 0)
+                    metList.WS_FirstInt = WS_FirstInt;
+                else if (metList.WS_FirstInt != WS_FirstInt)
+                {
+                    MessageBox.Show("A different first WS bin of " + metList.WS_FirstInt + " was used for other mets.  The WS intervals must be consistent for all met sites.");
+                    sr.Close();
+                    return false;
                 }
 
                 sr.Close();
@@ -618,7 +636,7 @@ namespace ContinuumNS
                 if (inputMet == false)
                     return false;
 
-                inputMet = check.NewTurbOrMet(this, metName, UTMX, UTMY, showMsg); // checks the distance between met and topo grid edges to make sure that there//s enough distance for expo calcs
+                inputMet = check.NewTurbOrMet(this.topo, metName, UTMX, UTMY, showMsg); // checks the distance between met and topo grid edges to make sure that there//s enough distance for expo calcs
                                                                            
                 if (inputMet == true)
                     metList.AddMetTAB(metName, UTMX, UTMY, height, thisDist.windRose, thisDist.sectorWS_Dist, WS_FirstInt, WS_IntSize, this);
@@ -692,7 +710,10 @@ namespace ContinuumNS
                     return;
             }
 
-            LoadTurbines();
+            if (ofdTurbines.ShowDialog() != DialogResult.OK)
+                return;
+
+            LoadTurbines(ofdTurbines.FileName);
             ChangesMade();
             topo.GetElevsAndSRDH_ForCalcs(this, null, false);
 
@@ -708,7 +729,7 @@ namespace ContinuumNS
                                         
         }
 
-        public void LoadTurbines()
+        public void LoadTurbines(string fileName)
         {
             // Open .csv or .txt file with turbine coordinates, reads in each turbine site and adds to list of Turbines 
             if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
@@ -718,139 +739,135 @@ namespace ContinuumNS
                 MessageBox.Show("Cannot import turbine sites while calculations are under way.", "Continuum 3");
                 return;
             }
-
-            if (ofdTurbines.ShowDialog() == DialogResult.OK) {
-
-                string wholePath = ofdTurbines.FileName;
-                SetDefaultFolderLocations(wholePath);
+            
+            SetDefaultFolderLocations(fileName);
                                 
-                string[] fileRow;
-                int numTurbines = 0;
-                string turbineName = "";
-                double latitude = 0;
-                double longitude = 0;
-                bool inputTurbine = false;
-                int thisString = 0;
-                StreamReader sr;
-                try
-                {
-                    sr = new StreamReader(wholePath);
-                }
-                catch
-                {
-                    MessageBox.Show("Error opening file. Make sure that it's not open in another program.");
-                    return;
-                }
+            string[] fileRow;
+            int numTurbines = 0;
+            string turbineName = "";
+            double latitude = 0;
+            double longitude = 0;
+            bool inputTurbine = false;
+            int thisString = 0;
+            StreamReader sr;
+            try
+            {
+                sr = new StreamReader(fileName);
+            }
+            catch
+            {
+                MessageBox.Show("Error opening file. Make sure that it's not open in another program.");
+                return;
+            }
                 
-                char[] delims = new char[2];
-                delims[0] = '\t';
-                delims[1] = ',';
+            char[] delims = new char[2];
+            delims[0] = '\t';
+            delims[1] = ',';
                 
-                bool showMsg = true;
+            bool showMsg = true;
 
-                while (sr.EndOfStream == false)
-                {
-                    string dataStr = sr.ReadLine();
-                    char[] Trim_Chars = new char[2];
-                    Trim_Chars[0] = ',';
-                    Trim_Chars[1] = '\t';
-                    dataStr = dataStr.Trim(Trim_Chars);
-                    fileRow = dataStr.Split(delims);
+            while (sr.EndOfStream == false)
+            {
+                string dataStr = sr.ReadLine();
+                char[] Trim_Chars = new char[2];
+                Trim_Chars[0] = ',';
+                Trim_Chars[1] = '\t';
+                dataStr = dataStr.Trim(Trim_Chars);
+                fileRow = dataStr.Split(delims);
 
-                    if (fileRow.Length >= 3) { // to allow turbine names to have spaces, read last two columns to find Lat/Long
+                if (fileRow.Length >= 3) { // to allow turbine names to have spaces, read last two columns to find Lat/Long
 
-                        try {                            
-                            latitude = Convert.ToDouble(fileRow[fileRow.Length - 2]);
-                        }
-                        catch  {
-                            MessageBox.Show("Error reading the turbine input file.  The format should be Name, Easting, Northing.", "Continuum 3");
-                            sr.Close();
-                            return;
-                        }
-
-                        try {                            
-                            longitude = Convert.ToDouble(fileRow[fileRow.Length - 1]);
-                        }
-                        catch  {
-                            MessageBox.Show("Error reading the turbine input file.  The format should be Name, Easting, Northing.", "Continuum 3");
-                            sr.Close();
-                            return;
-                        }
-
-                        turbineName = fileRow[0];
-
-                        for (int i = 1; i <= fileRow.Length - 3; i++)
-                            turbineName = turbineName + " " + fileRow[i];
-
-                        if (latitude > 100)
-                        {
-                            MessageBox.Show("Invalid Latitude in TAB file : " + latitude.ToString());
-                            sr.Close();
-                            return;
-                        }
-
-                        if (longitude > 200)
-                        {
-                            MessageBox.Show("Invalid Longitude in TAB file : " + longitude.ToString());
-                            sr.Close();
-                            return;
-                        }
-                                                
-                        if (UTM_conversions.savedDatumIndex == 100) {
-                            UTM_datum thisDatum = new UTM_datum();
-                            thisDatum.ShowDialog();
-                            UTM_conversions.savedDatumIndex = thisDatum.cbo_Datums.SelectedIndex;
-                            UTM_conversions.hemisphere = thisDatum.cboNorthOrSouth.SelectedItem.ToString();
-                        }
-
-                        UTM_conversion.UTM_coords theseUTM = UTM_conversions.LLtoUTM(latitude, longitude);
-                        double UTMX = theseUTM.UTMEasting;
-                        double UTMY = theseUTM.UTMNorthing;
-                        txtUTMDatum.Text = UTM_conversions.GetDatumString(UTM_conversions.savedDatumIndex);
-                        txtUTMZone.Text = UTM_conversions.UTMZoneNumber.ToString() + UTM_conversions.hemisphere.Substring(0,1);                                              
-                                                
-                        if (turbineName == "") {
-                            MessageBox.Show("Couldn't read in a turbine name at line: " + numTurbines, "Continuum 3");
-                            sr.Close();
-                            return;
-                        }
-
-                        if (UTMX == 0) {
-                            MessageBox.Show("Couldn't read in an easting at line: " + numTurbines, "Continuum 3");
-                            sr.Close();
-                            return;
-                        }
-
-                        if (UTMY == 0) {
-                            MessageBox.Show("Couldn't read in a northing at line: " + numTurbines, "Continuum 3");
-                            sr.Close();
-                            return;
-                        }
-
-                        Check_class check = new Check_class();
-                        inputTurbine = check.NewTurbOrMet(this, turbineName, UTMX, UTMY, showMsg);
-                        if (inputTurbine == true)
-                            inputTurbine = check.CheckTurbName(turbineName, metList);
-                        else
-                            showMsg = false;
-
-                        if (inputTurbine == true) turbineList.AddTurbine(turbineName, UTMX, UTMY, thisString);
-                        numTurbines++;
+                    try {                            
+                        latitude = Convert.ToDouble(fileRow[fileRow.Length - 2]);
                     }
-                    else {
-                        MessageBox.Show("Error reading in the file at line: " + numTurbines + "The format should be Name, Easting, Northing.  " +
-                            "Make sure that there are no spaces in your turbine names", "Continuum 3");
+                    catch  {
+                        MessageBox.Show("Error reading the turbine input file.  The format should be Name, Easting, Northing.", "Continuum 3");
                         sr.Close();
                         return;
                     }
 
-                    turbineName = "";
-                    
+                    try {                            
+                        longitude = Convert.ToDouble(fileRow[fileRow.Length - 1]);
+                    }
+                    catch  {
+                        MessageBox.Show("Error reading the turbine input file.  The format should be Name, Easting, Northing.", "Continuum 3");
+                        sr.Close();
+                        return;
+                    }
+
+                    turbineName = fileRow[0];
+
+                    for (int i = 1; i <= fileRow.Length - 3; i++)
+                        turbineName = turbineName + " " + fileRow[i];
+
+                    if (latitude > 100)
+                    {
+                        MessageBox.Show("Invalid Latitude in TAB file : " + latitude.ToString());
+                        sr.Close();
+                        return;
+                    }
+
+                    if (longitude > 200)
+                    {
+                        MessageBox.Show("Invalid Longitude in TAB file : " + longitude.ToString());
+                        sr.Close();
+                        return;
+                    }
+                                                
+                    if (UTM_conversions.savedDatumIndex == 100) {
+                        UTM_datum thisDatum = new UTM_datum();
+                        thisDatum.ShowDialog();
+                        UTM_conversions.savedDatumIndex = thisDatum.cbo_Datums.SelectedIndex;
+                        UTM_conversions.hemisphere = thisDatum.cboNorthOrSouth.SelectedItem.ToString();
+                    }
+
+                    UTM_conversion.UTM_coords theseUTM = UTM_conversions.LLtoUTM(latitude, longitude);
+                    double UTMX = theseUTM.UTMEasting;
+                    double UTMY = theseUTM.UTMNorthing;
+                    txtUTMDatum.Text = UTM_conversions.GetDatumString(UTM_conversions.savedDatumIndex);
+                    txtUTMZone.Text = UTM_conversions.UTMZoneNumber.ToString() + UTM_conversions.hemisphere.Substring(0,1);                                              
+                                                
+                    if (turbineName == "") {
+                        MessageBox.Show("Couldn't read in a turbine name at line: " + numTurbines, "Continuum 3");
+                        sr.Close();
+                        return;
+                    }
+
+                    if (UTMX == 0) {
+                        MessageBox.Show("Couldn't read in an easting at line: " + numTurbines, "Continuum 3");
+                        sr.Close();
+                        return;
+                    }
+
+                    if (UTMY == 0) {
+                        MessageBox.Show("Couldn't read in a northing at line: " + numTurbines, "Continuum 3");
+                        sr.Close();
+                        return;
+                    }
+
+                    Check_class check = new Check_class();
+                    inputTurbine = check.NewTurbOrMet(topo, turbineName, UTMX, UTMY, showMsg);
+                    if (inputTurbine == true)
+                        inputTurbine = check.CheckTurbName(turbineName, metList);
+                    else
+                        showMsg = false;
+
+                    if (inputTurbine == true) turbineList.AddTurbine(turbineName, UTMX, UTMY, thisString);
+                    numTurbines++;
                 }
-                sr.Close();
+                else {
+                    MessageBox.Show("Error reading in the file at line: " + numTurbines + "The format should be Name, Easting, Northing.  " +
+                        "Make sure that there are no spaces in your turbine names", "Continuum 3");
+                    sr.Close();
+                    return;
+                }
+
+                turbineName = "";
+                    
             }
-                        
-            updateThe.ColoredButtons(this);
+            sr.Close();
+                                    
+        updateThe.ColoredButtons(this);
         }
 
         private void btnAddTurb_Click(object sender, EventArgs e)
@@ -1031,13 +1048,18 @@ namespace ContinuumNS
 
             if (goodToGo == DialogResult.No)
                 return false;
-
+                      
             // Get map settings            
             updateThe.GetMapSettings(this);
 
             if (sfdCFMfile.ShowDialog() == DialogResult.OK) {
                 string wholePath = sfdCFMfile.FileName;
                 SetDefaultFolderLocations(wholePath);
+
+                // Get all met data from DB
+                if (metList.isTimeSeries)
+                    for (int i = 0; i < metList.ThisCount; i++)
+                        metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
 
                 // Save mdf file to new location, update connection string
                 // create database in new location
@@ -1089,8 +1111,9 @@ namespace ContinuumNS
                 saveToolStripMenuItem.Enabled = true;
 
                 // Get met sensor data from DB
-                for (int i = 0; i < metList.ThisCount; i++)
-                    metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
+                if (metList.isTimeSeries)
+                    for (int i = 0; i < metList.ThisCount; i++)
+                        metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
             }
 
             bool wasSaved = false;
@@ -1100,7 +1123,7 @@ namespace ContinuumNS
             return wasSaved;
         }
 
-        public void SaveFile()
+        public void SaveFile(bool isTest)
         {
             // Saves file using stored filename and path
             
@@ -1111,7 +1134,7 @@ namespace ContinuumNS
                 return;
 
             DialogResult goodToGo = DialogResult.Yes; 
-            if (metList.isTimeSeries && turbineList.TurbineCount > 0)
+            if (metList.isTimeSeries && turbineList.TurbineCount > 0 && isTest == false)
             {
                 if (turbineList.turbineEsts[0].AvgWSEst_Count > 0)
                 {
@@ -1180,7 +1203,7 @@ namespace ContinuumNS
                     if (savedParams.savedFileName == "")
                         SaveAs();
                     else
-                        SaveFile();                    
+                        SaveFile(false);                    
                 }
             }
 
@@ -1388,7 +1411,7 @@ namespace ContinuumNS
             else
                 chk_Use_Sep.Checked = false;
 
-            if (turbineList.genTimeSeries)
+            if (turbineList.genTimeSeries && metList.allMCPd)
                 chkCreateTurbTS.Checked = true;
             else
                 chkCreateTurbTS.Checked = false;
@@ -1438,7 +1461,7 @@ namespace ContinuumNS
                 DialogResult Want_to_save_file = MessageBox.Show("Do you want to save changes?", "", MessageBoxButtons.YesNo);
                 if (Want_to_save_file == DialogResult.Yes) {
                     if (savedParams.savedFileName != "")
-                        SaveFile();
+                        SaveFile(false);
                     else
                         SaveAs();                    
                 }
@@ -1467,7 +1490,7 @@ namespace ContinuumNS
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Calls SaveFile
-            SaveFile();
+            SaveFile(false);
         }
 
         private void ExportCalculatedValues()
@@ -1562,9 +1585,7 @@ namespace ContinuumNS
             }
         
             if (BW_worker.BackgroundWorker_Map.IsBusy == false) {                                
-                
-                int gridRadius = metList.metItem[0].gridStats.gridRadius;
-
+                                
                 GenMap thisMap = new GenMap(this);
                 thisMap.cboWhatToMap.SelectedIndex = 2;    
 
@@ -1591,7 +1612,7 @@ namespace ContinuumNS
                     thisMap.gridReso = 250;
 
                 thisMap.txtMapReso.Text = thisMap.gridReso.ToString();
-                thisMap.UpdateLimits();                
+                thisMap.FindLargestArea();                
                 thisMap.UpdateTextboxes();
                 
                 thisMap.chkMetsToUse.Items.Clear();
@@ -2203,41 +2224,50 @@ namespace ContinuumNS
         private void btnImportCRV_Click(object sender, EventArgs e)
         {
             // Prompts user to open a power curve. thisPowerCurve file and updates turbine calcs if they were done before
-            turbineList.ImportPowerCurve(this);
+
+            if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
+                BW_worker = new BackgroundWork();
+
+            if (BW_worker.IsBusy())
+            {
+                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum 3");
+                return;
+            }
+
+            if (ofdPowerCurve.ShowDialog() != DialogResult.OK)
+                return;
+
+            double RD = Convert.ToSingle(Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum 3"));
+            double RPM = Convert.ToSingle(Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum 3"));
+
+            turbineList.ImportPowerCurve(this, RD, RPM);
         }
 
         private void btnDelPowerCrv_Click(object sender, EventArgs e)
-        {
-            // Calls turbineList.DeletePowerCurve()
-            string powerCurveToDelete = "";
-
-            if (cboPowerCrvs.Items != null) {
-                if (cboPowerCrvs.Items.Count > 0) {
-                    try {
-                        powerCurveToDelete = cboPowerCrvs.SelectedItem.ToString();
-                    }
-                    catch {
-                        MessageBox.Show("No power curve selected to delete.", "Continuum 3");
-                        return;
-                    }
-
+        {           
+                       
+            if (lstPowerCurveList.SelectedItems.Count > 0) {
+                for (int i = 0; i < lstPowerCurveList.SelectedItems.Count; i++)
+                {
+                    string powerCurveToDelete = lstPowerCurveList.SelectedItems[i].Text;
                     turbineList.DeletePowerCurve(powerCurveToDelete);
 
-                    for (int i = 0; i < turbineList.TurbineCount; i++)                    
-                        turbineList.turbineEsts[i].ClearGrossEstsFromAvgWS(powerCurveToDelete);                   
-                    
+                    for (int t = 0; t < turbineList.TurbineCount; t++)
+                        turbineList.turbineEsts[t].ClearGrossEstsFromAvgWS(powerCurveToDelete);
+
                     wakeModelList.RemoveWakeModelByPowerCurve(turbineList, mapList, powerCurveToDelete);
-                    turbineList.ClearDuplicateAvgWS(metList.isTimeSeries);
-                    merraList.ClearMERRA_ProdStats();                    
-                    updateThe.AllTABs(this);
-                    
                 }
-            }
-            else {
-                MessageBox.Show("No power curves to delete", "Continuum 3");
-            }
+
+                turbineList.ClearDuplicateAvgWS(metList.isTimeSeries);
+                merraList.ClearMERRA_ProdStats();                    
+                updateThe.AllTABs(this);
+                    
+            }            
+            else 
+                MessageBox.Show("No power curves to delete", "Continuum 3");            
 
             updateThe.ColoredButtons(this);
+
         }
 
         private void chkTurbGross_SelectedIndexChanged(object sender, EventArgs e) 
@@ -2755,8 +2785,8 @@ namespace ContinuumNS
             thisWake.cboPowerCrvs.SelectedIndex = 0;
             thisWake.txtHorizWakeExp.Text = "5";
             thisWake.txtAmbTI.Text = "10";
-            thisWake.numWRR.Value = 0;
-            thisWake.numWakeExp.Value = 0;
+          //  
+          //  
 
             thisWake.txtCrossSpace.Clear();
             thisWake.txtCrossSpace.Enabled = false;
@@ -3731,7 +3761,7 @@ namespace ContinuumNS
                             int UTC_offset = UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
 
                             // Adds new MERRA object to list, figures out if new MERRA nodes are needed, runs MCP
-                            merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, UTC_offset, this, metList.metItem[metList.ThisCount - 1]);
+                            merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, UTC_offset, this, metList.metItem[metList.ThisCount - 1], false);
                             MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
 
                             if (BW_worker.IsBusy() == false && thisMERRA.interpData.TS_Data != null) // found existing MERRA2 data so let's MCP!
@@ -4074,9 +4104,14 @@ namespace ContinuumNS
 
             if (metList.isTimeSeries && metList.ThisCount > 0)
             {
-                string message = "Changing the number of WD bins will reset the MCP and all estimated values. Do you want to continue?";
-                DialogResult result = MessageBox.Show(message, "", MessageBoxButtons.YesNo);
+                DialogResult result = DialogResult.Yes;
 
+                if (isTest == false)
+                {
+                    string message = "Changing the number of WD bins will reset the MCP and all estimated values. Do you want to continue?";
+                    result = MessageBox.Show(message, "", MessageBoxButtons.YesNo);
+                }
+                
                 if (result == DialogResult.Yes)
                 {
                     metList.numWD = Convert.ToInt16(cboMCPNumWD.SelectedItem.ToString());
@@ -4126,10 +4161,15 @@ namespace ContinuumNS
             // Resets MCP and time series calculations after user changes the selected MCP method
                        
             if (okToUpdate && metList.isTimeSeries && metList.isMCPd && metList.ThisCount > 0)
-            {                
-                string message = "Changing the MCP method will reset the MCP and all estimated values. Do you want to continue?";
-                DialogResult result = MessageBox.Show(message, "", MessageBoxButtons.YesNo);
+            {
+                DialogResult result = DialogResult.Yes;
 
+                if (isTest == false)
+                {
+                    string message = "Changing the MCP method will reset the MCP and all estimated values. Do you want to continue?";
+                    result = MessageBox.Show(message, "", MessageBoxButtons.YesNo);
+                }
+                
                 if (result == DialogResult.Yes)
                 {
                     ResetTimeSeries();
@@ -4187,7 +4227,7 @@ namespace ContinuumNS
             Met thisMet = GetSelectedMet("MCP");
             MCP thisMCP = thisMet.mcp;
 
-            if (thisMCP != null)
+            if (thisMCP != null && isTest == false)
             {
                 if (thisMCP.MCP_Bins.binAvgSD_Cnt != null || thisMCP.MCP_Matrix.WS_CDFs != null || thisMCP.uncertMatrix.Length > 0 || thisMCP.uncertBins.Length > 0)
                 {
@@ -4199,12 +4239,9 @@ namespace ContinuumNS
 
             if (result == DialogResult.Yes)
             {
-                if (metList.isMCPd)
-                {
-                    ResetTimeSeries();
-                    updateThe.AllTABs(this);
-                }
-
+                if (metList.isMCPd)                
+                    ResetTimeSeries();                   
+                
                 try
                 {
                     metList.mcpWS_BinWidth = Convert.ToSingle(txtWS_bin_width.Text);
@@ -4214,7 +4251,8 @@ namespace ContinuumNS
                     MessageBox.Show("Invalid wind speed bin width.", "Continuum 3.0");
                     txtWS_bin_width.Text = metList.mcpWS_BinWidth.ToString();
                 }
-                
+
+                updateThe.AllTABs(this);
             }
             else
                 txtWS_bin_width.Text = thisMCP.WS_BinWidth.ToString();
@@ -4260,8 +4298,13 @@ namespace ContinuumNS
 
             if (okToUpdate && metList.isTimeSeries && metList.isMCPd && metList.ThisCount > 0)
             {
-                string message = "Changing the number of time of day bins will reset the MCP and all estimated values. Do you want to continue?";
-                DialogResult result = MessageBox.Show(message, "", MessageBoxButtons.YesNo);
+                DialogResult result = DialogResult.Yes;
+
+                if (isTest == false)
+                {
+                    string message = "Changing the number of time of day bins will reset the MCP and all estimated values. Do you want to continue?";
+                    result = MessageBox.Show(message, "", MessageBoxButtons.YesNo);
+                }                
 
                 if (result == DialogResult.Yes)
                 {
@@ -4297,9 +4340,14 @@ namespace ContinuumNS
             // Resets time series and MCP if user changes the number of season bins to use
             if (okToUpdate && metList.isTimeSeries && metList.isMCPd && metList.ThisCount > 0)
             {
-                string message = "Changing the number of season bins will reset the MCP and all estimated values. Do you want to continue?";
-                DialogResult result = MessageBox.Show(message, "", MessageBoxButtons.YesNo);
+                DialogResult result = DialogResult.Yes;
 
+                if (isTest == false)
+                {
+                    string message = "Changing the number of season bins will reset the MCP and all estimated values. Do you want to continue?";
+                    result = MessageBox.Show(message, "", MessageBoxButtons.YesNo);
+                }
+                
                 if (result == DialogResult.Yes)
                 {
                     metList.numSeason = Convert.ToInt16(cboMCPNumSeasons.SelectedItem.ToString());
@@ -4374,19 +4422,23 @@ namespace ContinuumNS
             {
                 if (thisMCP.uncertMatrix.Length > 0 || thisMCP.MCP_Matrix.WS_CDFs != null)
                 {
-                    DialogResult result = MessageBox.Show("Changing the WS matrix weight will reset the Matrix MCP. Do you want to continue?", "Continuum 3.0",
+                    DialogResult result = DialogResult.Yes;
+
+                    if (isTest == false)
+                        result = MessageBox.Show("Changing the WS matrix weight will reset the Matrix MCP. Do you want to continue?", "Continuum 3.0",
                         MessageBoxButtons.YesNo);
 
                     if (result == DialogResult.Yes)
                     {
-                        ResetTimeSeries();
-                        updateThe.AllTABs(this);
+                        ResetTimeSeries();                        
                     }
                     else
                     {
                         txtWS_PDF_Wgt.Text = metList.mcpMatrixWgt.ToString();
                         return;
                     }
+
+                    updateThe.AllTABs(this);
                 }
 
                 try
@@ -4424,19 +4476,23 @@ namespace ContinuumNS
             {
                 if (thisMCP.uncertMatrix.Length > 0 || thisMCP.MCP_Matrix.WS_CDFs != null)
                 {
-                    DialogResult result = MessageBox.Show("Changing the WS matrix weight will reset the Matrix MCP. Do you want to continue?", "Continuum 3.0",
+                    DialogResult result = DialogResult.Yes;
+
+                    if (isTest == false)
+                        result = MessageBox.Show("Changing the WS matrix weight will reset the Matrix MCP. Do you want to continue?", "Continuum 3.0",
                         MessageBoxButtons.YesNo);
 
                     if (result == DialogResult.Yes)
                     {
-                        ResetTimeSeries();
-                        updateThe.AllTABs(this);
+                        ResetTimeSeries();                        
                     }
                     else
                     {
                         txtLast_WS_Wgt.Text = metList.mcpLastWS_Wgt.ToString();
                         return;
                     }
+
+                    updateThe.AllTABs(this);
                 }
 
                 try
@@ -4557,13 +4613,17 @@ namespace ContinuumNS
             // Updates number of MERRA2 nodes to interpolate between (1, 4, or 16). Resets merraList if have already imported MERRA2 data
             if (merraList.numMERRA_Data > 0 && okToUpdate)
             {
-                DialogResult goodToGo = MessageBox.Show("Changing the number of MERRA2 nodes to use will reset all time series estimates. Do you want to continue?",
-                    "Continuum 3.0", MessageBoxButtons.YesNo);
+                DialogResult goodToGo = DialogResult.Yes;
+
+                if (isTest == false)
+                    goodToGo = MessageBox.Show("Changing the number of MERRA2 nodes to use will reset all time series estimates. Do you want to continue?",
+                        "Continuum 3.0", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.Yes)
                 {
                     merraList.Set_Num_MERRA_Nodes(this); // Clears all MERRA2 data. TO DO: Update extract button or automatically reload 
                     ResetTimeSeries();
+                    updateThe.AllTABs(this);
                 }
                 else
                 {
@@ -4616,6 +4676,136 @@ namespace ContinuumNS
             return thisPowerCurve;
         }
 
+        public void ImportZones(string fileName)
+        {           
+                       
+            siteSuitability.mapMinBounds = new TopoInfo.UTM_X_Y();
+            siteSuitability.mapMaxBounds = new TopoInfo.UTM_X_Y();
+                            
+            SetDefaultFolderLocations(fileName);
+
+            StreamReader sr;
+            try
+            {
+                sr = new StreamReader(fileName);
+            }
+            catch
+            {
+                MessageBox.Show("Error opening file. Make sure that it's not open in another program.");
+                return;
+            }
+
+            char[] delims = new char[2];
+            delims[0] = '\t';
+            delims[1] = ',';
+
+            int lineNum = 0;
+
+            while (sr.EndOfStream == false)
+            {
+                string dataStr = sr.ReadLine();
+                char[] Trim_Chars = new char[2];
+                Trim_Chars[0] = ',';
+                Trim_Chars[1] = '\t';
+                dataStr = dataStr.Trim(Trim_Chars);
+                string[] fileRow = dataStr.Split(delims);
+                lineNum++;
+
+                int numZones = siteSuitability.GetNumZones();
+
+                if (fileRow.Length >= 5)
+                {
+                    bool isDuplicate = false;
+
+                    for (int i = 0; i < siteSuitability.GetNumZones(); i++)
+                        if (fileRow[0] == siteSuitability.zones[i].name)
+                            isDuplicate = true;
+
+                    if (isDuplicate == true)
+                        MessageBox.Show("Zone with same name already imported.", "Continuum 3.0");
+                    else
+                    {
+
+                        Array.Resize(ref siteSuitability.zones, numZones + 1);
+
+                        try
+                        {
+                            siteSuitability.zones[numZones].name = fileRow[0];
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error reading in zone name at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
+                            Array.Resize(ref siteSuitability.zones, numZones);
+                            return;
+                        }
+
+                        try
+                        {
+                            siteSuitability.zones[numZones].latitude = Convert.ToDouble(fileRow[1]);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error reading in zone latitude at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
+                            Array.Resize(ref siteSuitability.zones, numZones);
+                            return;
+                        }
+
+                        try
+                        {
+                            siteSuitability.zones[numZones].longitude = Convert.ToDouble(fileRow[2]);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error reading in zone longitude at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
+                            Array.Resize(ref siteSuitability.zones, numZones);
+                            return;
+                        }
+
+                        try
+                        {
+                            siteSuitability.zones[numZones].xSize = Convert.ToInt16(fileRow[3]);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error reading in zone X size at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
+                            Array.Resize(ref siteSuitability.zones, numZones);
+                            return;
+                        }
+
+                        try
+                        {
+                            siteSuitability.zones[numZones].ySize = Convert.ToInt16(fileRow[4]);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error reading in zone Y size at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
+                            Array.Resize(ref siteSuitability.zones, numZones);
+                            return;
+                        }
+                    }
+                }
+            }
+            sr.Close();
+
+            if (topo.gotTopo)
+            {
+                topo.GetElevsAndSRDH_ForCalcs(this, null, false);
+
+                for (int i = 0; i < siteSuitability.GetNumZones(); i++)
+                {
+                    UTM_conversion.UTM_coords theseUTM = UTM_conversions.LLtoUTM(siteSuitability.zones[i].latitude, siteSuitability.zones[i].longitude);
+                    siteSuitability.zones[i].elev = topo.CalcElevs(theseUTM.UTMEasting, theseUTM.UTMNorthing);
+                }
+            }
+
+            updateThe.ZoneList(this);
+            updateThe.SiteSuitabilityDropdown(this, null);
+            updateThe.ColoredButtons(this);
+            updateThe.SiteSuitabilityTAB(this);
+            ChangesMade();
+                        
+        }
+
         private void btnImportZones_Click(object sender, EventArgs e)
         {
             // Open .csv or .txt file with zone (i.e. houses, buildings) coordinates and X/Y size
@@ -4638,134 +4828,9 @@ namespace ContinuumNS
             }
 
             if (ofdZones.ShowDialog() == DialogResult.OK)
-            {
-                siteSuitability.mapMinBounds = new TopoInfo.UTM_X_Y();
-                siteSuitability.mapMaxBounds = new TopoInfo.UTM_X_Y();
-                                
-                string wholePath = ofdZones.FileName;
-                SetDefaultFolderLocations(wholePath);
-                                                
-                StreamReader sr;
-                try
-                {
-                    sr = new StreamReader(wholePath);
-                }
-                catch
-                {
-                    MessageBox.Show("Error opening file. Make sure that it's not open in another program.");
-                    return;
-                }
+                ImportZones(ofdZones.FileName);
 
-                char[] delims = new char[2];
-                delims[0] = '\t';
-                delims[1] = ',';
-
-                int lineNum = 0;
-                                
-                while (sr.EndOfStream == false)
-                {
-                    string dataStr = sr.ReadLine();
-                    char[] Trim_Chars = new char[2];
-                    Trim_Chars[0] = ',';
-                    Trim_Chars[1] = '\t';
-                    dataStr = dataStr.Trim(Trim_Chars);
-                    string[] fileRow = dataStr.Split(delims);
-                    lineNum++;
-
-                    int numZones = siteSuitability.GetNumZones();
-
-                    if (fileRow.Length >= 5)
-                    {
-                        bool isDuplicate = false;
-
-                        for (int i = 0; i < siteSuitability.GetNumZones(); i++)
-                            if (fileRow[0] == siteSuitability.zones[i].name)
-                                isDuplicate = true;
-
-                        if (isDuplicate == true)
-                            MessageBox.Show("Zone with same name already imported.", "Continuum 3.0");
-                        else
-                        {
-
-                            Array.Resize(ref siteSuitability.zones, numZones + 1);
-
-                            try
-                            {
-                                siteSuitability.zones[numZones].name = fileRow[0];
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Error reading in zone name at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
-                                Array.Resize(ref siteSuitability.zones, numZones);
-                                return;
-                            }
-
-                            try
-                            {
-                                siteSuitability.zones[numZones].latitude = Convert.ToDouble(fileRow[1]);
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Error reading in zone latitude at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
-                                Array.Resize(ref siteSuitability.zones, numZones);
-                                return;
-                            }
-
-                            try
-                            {
-                                siteSuitability.zones[numZones].longitude = Convert.ToDouble(fileRow[2]);
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Error reading in zone longitude at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
-                                Array.Resize(ref siteSuitability.zones, numZones);
-                                return;
-                            }
-
-                            try
-                            {
-                                siteSuitability.zones[numZones].xSize = Convert.ToInt16(fileRow[3]);
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Error reading in zone X size at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
-                                Array.Resize(ref siteSuitability.zones, numZones);
-                                return;
-                            }
-
-                            try
-                            {
-                                siteSuitability.zones[numZones].ySize = Convert.ToInt16(fileRow[4]);
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Error reading in zone Y size at line: " + lineNum + ". Format should be: Name, Lat, Long, XSize, YSize");
-                                Array.Resize(ref siteSuitability.zones, numZones);
-                                return;
-                            }
-                        }
-                    }
-                }
-                sr.Close();
-
-                if (topo.gotTopo)
-                {
-                    topo.GetElevsAndSRDH_ForCalcs(this, null, false);
-
-                    for (int i = 0; i < siteSuitability.GetNumZones(); i++)
-                    {
-                        UTM_conversion.UTM_coords theseUTM = UTM_conversions.LLtoUTM(siteSuitability.zones[i].latitude, siteSuitability.zones[i].longitude);
-                        siteSuitability.zones[i].elev = topo.CalcElevs(theseUTM.UTMEasting, theseUTM.UTMNorthing);
-                    }
-                }
-
-                updateThe.ZoneList(this);
-                updateThe.SiteSuitabilityDropdown(this, null);
-                updateThe.ColoredButtons(this);
-                updateThe.SiteSuitabilityTAB(this);
-                ChangesMade();
-                    
-            }
+            
         }
 
         private void btnRunIceThrow_Click(object sender, EventArgs e)
@@ -5027,7 +5092,22 @@ namespace ContinuumNS
         private void btnImportCRV_MERRA_Click(object sender, EventArgs e)
         {
             // Imports power curve (called from MERRA2 tab "Import Power Curve" button) 
-            turbineList.ImportPowerCurve(this);
+            if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
+                BW_worker = new BackgroundWork();
+
+            if (BW_worker.IsBusy())
+            {
+                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum 3");
+                return;
+            }
+
+            if (ofdPowerCurve.ShowDialog() != DialogResult.OK)
+                return;
+
+            double RD = Convert.ToSingle(Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum 3"));
+            double RPM = Convert.ToSingle(Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum 3"));
+
+            turbineList.ImportPowerCurve(this, RD, RPM);
         }
 
         private void cboSelectedTurbine_SelectedIndexChanged(object sender, EventArgs e)
@@ -5140,7 +5220,22 @@ namespace ContinuumNS
         private void btnSiteSuitImportCRV_Click(object sender, EventArgs e)
         {
             // Imports power curve (called from Site Suitability tab "Import Power Curve" button)
-            turbineList.ImportPowerCurve(this);
+            if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
+                BW_worker = new BackgroundWork();
+
+            if (BW_worker.IsBusy())
+            {
+                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum 3");
+                return;
+            }
+
+            if (ofdPowerCurve.ShowDialog() != DialogResult.OK)
+                return;
+
+            double RD = Convert.ToSingle(Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum 3"));
+            double RPM = Convert.ToSingle(Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum 3"));
+
+            turbineList.ImportPowerCurve(this, RD, RPM);
         }
 
         private void cboSiteSuitMonth_SelectedIndexChanged(object sender, EventArgs e)
@@ -5872,11 +5967,17 @@ namespace ContinuumNS
             int offset = UTM_conversions.GetUTC_Offset(thisLat, thisLong);
             Met thisMet = GetSelectedMet("MERRA");                       
 
-            merraList.AddMERRA_GetDataFromTextFiles(thisLat, thisLong, offset, this, thisMet);                       
+            merraList.AddMERRA_GetDataFromTextFiles(thisLat, thisLong, offset, this, thisMet, false);                       
           //  updateThe.MERRA_TAB(this);
         }
 
-        private void btnDoMCP_Click(object sender, EventArgs e)
+        private void btnDoMCP_Click(object sender, EventArgs e) 
+        {
+
+            DoMCP();
+        }     
+        
+        public void DoMCP()
         {
             // Runs MCP at seleced met site
             Met thisMet = GetSelectedMet("MCP");
@@ -5894,13 +5995,12 @@ namespace ContinuumNS
             thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
             metList.RunMCP(ref thisMet, thisMERRA, this, MCP_Method);
             thisMet.CalcAllLT_WSWD_Dists(this, thisMet.mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
-            
-            metList.isMCPd = true;            
+
+            metList.isMCPd = true;
             metList.AreAllMetsMCPd();
-                        
+
             updateThe.AllTABs(this);
-            
-        }                
+        }
 
         private void Start_Time_ValueChanged(object sender, EventArgs e)
         {
@@ -6545,6 +6645,16 @@ namespace ContinuumNS
             // Displays form 
             MCP_ValidSettings theseSettings = new MCP_ValidSettings();
             theseSettings.ShowDialog();
+
+        }
+
+        private void PgeMCP_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TxtTurbineNoise_TextChanged(object sender, EventArgs e)
+        {
 
         }
     }

@@ -268,7 +268,7 @@ namespace ContinuumNS
             powerCurves[newCount].firstWS = firstWS;
         }
 
-        public void ReadPowerCurve(Continuum thisInst, string name, double[,] importedPower)
+        public void ReadPowerCurve(Continuum thisInst, string name, double[,] importedPower, double RD, double RPM)
         {
             //  Imports new power curve and adds to list                    
             double cutIn = importedPower[0, 0]; // First wind
@@ -326,9 +326,7 @@ namespace ContinuumNS
                 powerOnly[i] = importedPower[1, i];
                 thrustOnly[i] = importedPower[2, i];
             }
-
-            double RD = Convert.ToSingle(Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum 3"));
-            double RPM = Convert.ToSingle(Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum 3"));
+                        
             AddPowerCurve(name, cutIn, cutOut, ratedPower, powerOnly, thrustOnly, RD, RPM, ratedWS, wsInterval, firstWS);                        
 
         }       
@@ -1697,126 +1695,114 @@ namespace ContinuumNS
             return thisVal;
         }
 
-        public void ImportPowerCurve(Continuum thisInst)
+        public void ImportPowerCurve(Continuum thisInst, double RD, double RPM)
         {
             // Prompts user to open a power curve. thisPowerCurve file and updates turbine calcs if they were done before
+            
+            int WS_Ind = 0;
+            double[,] powerCurve = new double[3, WS_Ind + 1];
 
-            if (thisInst.BW_worker.IsHandleCreated == false && thisInst.BW_worker.IsBusy()) // it was force closed
-                thisInst.BW_worker = new BackgroundWork();
+            string wholePath = thisInst.ofdPowerCurve.FileName;
 
-            if (thisInst.BW_worker.IsBusy())
+            string[] fileRow;
+            string fileName = thisInst.ofdPowerCurve.FileName;
+
+            StreamReader sr = new StreamReader(fileName);
+
+            char[] delims = new char[2];
+            delims[0] = '\t';
+            delims[1] = ',';
+
+            // Read in power curve name               
+            string powerCurveName = sr.ReadLine();
+            fileRow = powerCurveName.Split(delims);
+            bool gotFirstWS = false;
+
+            if (fileRow != null)
+                if (fileRow.Length == 3 && fileRow[1] != "" & fileRow[2] != "") // Read in first wind speed of file
+                {
+                    int lastSlash = fileName.LastIndexOf('\\');
+                    powerCurveName = fileName.Substring(lastSlash + 1, fileName.Length - lastSlash - 5);
+
+                    thisInst.ResizeArray(ref powerCurve, 3, WS_Ind + 1);
+                    powerCurve[0, WS_Ind] = Convert.ToSingle(fileRow[0]); // Wind speed
+                    powerCurve[1, WS_Ind] = Convert.ToSingle(fileRow[1]); // Power 
+                    powerCurve[2, WS_Ind] = Convert.ToSingle(fileRow[2]); // Thrust
+                    WS_Ind++;
+
+                    gotFirstWS = true;
+                }
+
+            // Make sure power curve hasn't already been entered                
+            int numPowerCurves = PowerCurveCount;
+
+            for (int i = 0; i < numPowerCurves; i++)
             {
-                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum 3");
-                return;
+                if (powerCurves[i].name == powerCurveName)
+                {
+                    MessageBox.Show("A power curve of the same name has already been imported.", "Continuum 3");
+                    sr.Close();
+                    return;
+                }
             }
 
-            if (thisInst.ofdPowerCurve.ShowDialog() == DialogResult.OK)
+            while (sr.EndOfStream == false)
             {
-                int WS_Ind = 0;
-                double[,] powerCurve = new double[3, WS_Ind + 1];
+                // Read in Met name
+                if (gotFirstWS == false || WS_Ind > 0)
+                {
+                    string dataStr = sr.ReadLine();
+                    fileRow = dataStr.Split(delims);
+                }
 
-                string wholePath = thisInst.ofdPowerCurve.FileName;
-
-                string[] fileRow;
-                string fileName = thisInst.ofdPowerCurve.FileName;
-
-                StreamReader sr = new StreamReader(fileName);
-
-                char[] delims = new char[2];
-                delims[0] = '\t';
-                delims[1] = ',';
-
-                // Read in power curve name               
-                string powerCurveName = sr.ReadLine();
-                fileRow = powerCurveName.Split(delims);
-                bool gotFirstWS = false;
-
-                if (fileRow != null)
-                    if (fileRow.Length == 3 && fileRow[1] != "" & fileRow[2] != "") // Read in first wind speed of file
-                    {
-                        int lastSlash = fileName.LastIndexOf('\\');
-                        powerCurveName = fileName.Substring(lastSlash + 1, fileName.Length - lastSlash - 5);
-
+                if (fileRow.Length >= 3)
+                {
+                    try
+                    {                            
                         thisInst.ResizeArray(ref powerCurve, 3, WS_Ind + 1);
                         powerCurve[0, WS_Ind] = Convert.ToSingle(fileRow[0]); // Wind speed
                         powerCurve[1, WS_Ind] = Convert.ToSingle(fileRow[1]); // Power 
                         powerCurve[2, WS_Ind] = Convert.ToSingle(fileRow[2]); // Thrust
                         WS_Ind++;
-
-                        gotFirstWS = true;
-                    }
-
-                // Make sure power curve hasn't already been entered                
-                int numPowerCurves = PowerCurveCount;
-
-                for (int i = 0; i < numPowerCurves; i++)
-                {
-                    if (powerCurves[i].name == powerCurveName)
-                    {
-                        MessageBox.Show("A power curve of the same name has already been imported.", "Continuum 3");
-                        sr.Close();
-                        return;
-                    }
-                }
-
-                while (sr.EndOfStream == false)
-                {
-                    // Read in Met name
-                    if (gotFirstWS == false || WS_Ind > 0)
-                    {
-                        string dataStr = sr.ReadLine();
-                        fileRow = dataStr.Split(delims);
-                    }
-
-                    if (fileRow.Length >= 3)
-                    {
-                        try
-                        {                            
-                            thisInst.ResizeArray(ref powerCurve, 3, WS_Ind + 1);
-                            powerCurve[0, WS_Ind] = Convert.ToSingle(fileRow[0]); // Wind speed
-                            powerCurve[1, WS_Ind] = Convert.ToSingle(fileRow[1]); // Power 
-                            powerCurve[2, WS_Ind] = Convert.ToSingle(fileRow[2]); // Thrust
-                            WS_Ind++;
                             
-                        }
-                        catch
-                        {
-                            MessageBox.Show("Error while importing power curve file.  Please check your file.", "Continuum 3");
-                            sr.Close();
-                            return;
-                        }
                     }
-                    else if (fileRow.Length == 2)
+                    catch
                     {
-                        MessageBox.Show("Power curve files must include wind speed, power and thrust coefficients. Please check your file.", "Continuum 3");
+                        MessageBox.Show("Error while importing power curve file.  Please check your file.", "Continuum 3");
                         sr.Close();
                         return;
                     }
                 }
-
-                sr.Close();
-
-                ReadPowerCurve(thisInst, powerCurveName, powerCurve);
-
-     /*           BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
-
-                argsForBW.thisInst = thisInst;
-                argsForBW.thisWakeModel = null;
-
-                // Call background worker to run calculations
-                thisInst.BW_worker = new BackgroundWork();
-                string MCP_Method = thisInst.Get_MCP_Method();
-                argsForBW.MCP_Method = MCP_Method;
-                if (thisInst.topo.gotTopo)
-                    thisInst.BW_worker.Call_BW_TurbCalcs(argsForBW);
-                else
-                    thisInst.updateThe.AllTABs(thisInst);
-*/
-                thisInst.ChangesMade();
-                thisInst.turbineList.AreTurbCalcsDone(thisInst);
-                thisInst.updateThe.AllTABs(thisInst);
+                else if (fileRow.Length == 2)
+                {
+                    MessageBox.Show("Power curve files must include wind speed, power and thrust coefficients. Please check your file.", "Continuum 3");
+                    sr.Close();
+                    return;
+                }
             }
-        }
+
+            sr.Close();
+
+            ReadPowerCurve(thisInst, powerCurveName, powerCurve, RD, RPM);
+
+    /*           BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+
+            argsForBW.thisInst = thisInst;
+            argsForBW.thisWakeModel = null;
+
+            // Call background worker to run calculations
+            thisInst.BW_worker = new BackgroundWork();
+            string MCP_Method = thisInst.Get_MCP_Method();
+            argsForBW.MCP_Method = MCP_Method;
+            if (thisInst.topo.gotTopo)
+                thisInst.BW_worker.Call_BW_TurbCalcs(argsForBW);
+            else
+                thisInst.updateThe.AllTABs(thisInst);
+*/
+            thisInst.ChangesMade();
+            thisInst.turbineList.AreTurbCalcsDone(thisInst);
+            thisInst.updateThe.AllTABs(thisInst);
+        }        
 
         public void ClearDuplicateAvgWS(bool isTimeSeries)
         {

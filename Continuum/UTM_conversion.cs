@@ -49,6 +49,7 @@ namespace ContinuumNS
             public double UTMEasting;
         }
 
+        [Serializable()]
         public struct Lat_Long
         {
             public double latitude;

@@ -30,7 +30,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -81,25 +81,29 @@
       <HintPath>..\packages\MathNet.Numerics.4.8.1\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Nevron.Chart, Version=18.1.11.12, Culture=neutral, PublicKeyToken=2961c51bb98125d2, processorArchitecture=MSIL">
+    <Reference Include="Nevron.Chart, Version=19.7.25.12, Culture=neutral, PublicKeyToken=2961c51bb98125d2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Nevron.Chart\v4.0_18.1.11.12__2961c51bb98125d2\Nevron.Chart.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.Chart.dll</HintPath>
     </Reference>
-    <Reference Include="Nevron.Chart.WinForm, Version=18.1.11.12, Culture=neutral, PublicKeyToken=c9bd8998e981e4ee, processorArchitecture=MSIL">
+    <Reference Include="Nevron.Chart.WinForm, Version=19.7.25.12, Culture=neutral, PublicKeyToken=c9bd8998e981e4ee, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Nevron.Chart.WinForm\v4.0_18.1.11.12__c9bd8998e981e4ee\Nevron.Chart.WinForm.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.Chart.WinForm.dll</HintPath>
     </Reference>
-    <Reference Include="Nevron.GraphicsGL, Version=18.1.11.12, Culture=neutral, PublicKeyToken=2f17c6a71f852d32, processorArchitecture=MSIL">
+    <Reference Include="Nevron.GraphicsGL, Version=19.7.25.12, Culture=neutral, PublicKeyToken=2f17c6a71f852d32, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Nevron.GraphicsGL\v4.0_18.1.11.12__2f17c6a71f852d32\Nevron.GraphicsGL.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.GraphicsGL.dll</HintPath>
     </Reference>
-    <Reference Include="Nevron.Presentation, Version=18.1.11.12, Culture=neutral, PublicKeyToken=6656c5d1103e75cc, processorArchitecture=MSIL">
+    <Reference Include="Nevron.Presentation, Version=19.7.25.12, Culture=neutral, PublicKeyToken=6656c5d1103e75cc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Nevron.Presentation\v4.0_18.1.11.12__6656c5d1103e75cc\Nevron.Presentation.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.Presentation.dll</HintPath>
     </Reference>
-    <Reference Include="Nevron.System, Version=18.1.11.12, Culture=neutral, PublicKeyToken=6a987feae5e496fd, processorArchitecture=MSIL">
+    <Reference Include="Nevron.System, Version=19.7.25.12, Culture=neutral, PublicKeyToken=6a987feae5e496fd, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Nevron.System\v4.0_18.1.11.12__6a987feae5e496fd\Nevron.System.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.System.dll</HintPath>
+    </Reference>
+    <Reference Include="Nevron.UI.WinForm.Docking, Version=19.7.25.12, Culture=neutral, PublicKeyToken=446d8963349a628a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.UI.WinForm.Docking.dll</HintPath>
     </Reference>
     <Reference Include="ogr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
       <HintPath>..\packages\GDAL.2.4.2\lib\net40\ogr_csharp.dll</HintPath>
@@ -116,6 +120,7 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -324,6 +329,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Add_Exceedance.resx">
       <DependentUpon>Add_Exceedance.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Add_Mode.resx">
       <DependentUpon>Add_Mode.cs</DependentUpon>

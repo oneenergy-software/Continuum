@@ -65,24 +65,25 @@ namespace ContinuumNS
 
         public Continuum thisInst;
 
-        private void btnGenMap_Click(object sender, EventArgs e)
+        public void GenWakeModel()
         {
             // Reads wake loss model settings from form and adds wake model to list and calls background_worker to conduct turbine calcs                     
-                        
+
             int wakeModelType = ReadWakeModelType();
             double horizExp = ReadHorizExp();
             TurbineCollection.PowerCurve thisPowerCurve = GetPowerCurve();
-            double WRR = ReadWRR();
-            double WRR_Exp = ReadWRR_Exp();
-            double avgTI = ReadTI();                        
+         //   double WRR = ReadWRR();
+         //   double WRR_Exp = ReadWRR_Exp();
+            double avgTI = ReadTI();
 
             string wakeCombo = ReadWakeCombo();
 
             double DW_Spacing = 0;
             double CW_Spacing = 0;
             double ambRough = 0;
-                        
-            if (wakeModelType == 1) { // read in inputs for DAWM
+
+            if (wakeModelType == 1)
+            { // read in inputs for DAWM
                 DW_Spacing = ReadDW_Spacing();
                 CW_Spacing = ReadCW_Spacing();
                 ambRough = ReadAmbRough();
@@ -93,26 +94,30 @@ namespace ContinuumNS
                 isCalibrated = true;
 
             // Check to see if wake model has been added        
-            bool wakeModelExists = thisInst.wakeModelList.WakeModelExists(wakeModelType, horizExp, avgTI, thisPowerCurve.name, DW_Spacing, CW_Spacing, ambRough, wakeCombo, WRR, WRR_Exp);
+            bool wakeModelExists = thisInst.wakeModelList.WakeModelExists(wakeModelType, horizExp, avgTI, thisPowerCurve.name, DW_Spacing, CW_Spacing, ambRough, wakeCombo);
 
             if (wakeModelExists == false)
-                thisInst.wakeModelList.AddWakeModel(wakeModelType, horizExp, avgTI, thisPowerCurve, DW_Spacing, CW_Spacing, ambRough, wakeCombo, WRR, WRR_Exp);
+                thisInst.wakeModelList.AddWakeModel(wakeModelType, horizExp, avgTI, thisPowerCurve, DW_Spacing, CW_Spacing, ambRough, wakeCombo);
 
             int wakeModelInd = 0;
 
-            for (int i = 0; i < thisInst.wakeModelList.NumWakeModels; i++) {
+            for (int i = 0; i < thisInst.wakeModelList.NumWakeModels; i++)
+            {
                 if (thisInst.wakeModelList.wakeModels[i].wakeModelType == wakeModelType && thisInst.wakeModelList.wakeModels[i].horizWakeExp == horizExp &&
                     thisInst.wakeModelList.wakeModels[i].powerCurve.name == thisPowerCurve.name && thisInst.wakeModelList.wakeModels[i].ambTI == avgTI &&
-                    thisInst.wakeModelList.wakeModels[i].comboMethod == wakeCombo && thisInst.wakeModelList.wakeModels[i].wakeRechargeRate == WRR &&
-                    thisInst.wakeModelList.wakeModels[i].wakeRechargeExp == WRR_Exp) {
-                    if (wakeModelType == 1) {
+                    thisInst.wakeModelList.wakeModels[i].comboMethod == wakeCombo)
+                {
+                    if (wakeModelType == 1)
+                    {
                         if (thisInst.wakeModelList.wakeModels[i].DW_Spacing == DW_Spacing && thisInst.wakeModelList.wakeModels[i].CW_Spacing == CW_Spacing &&
-                            thisInst.wakeModelList.wakeModels[i].ambRough == ambRough) {
+                            thisInst.wakeModelList.wakeModels[i].ambRough == ambRough)
+                        {
                             wakeModelInd = i;
                             break;
                         }
                     }
-                    else {
+                    else
+                    {
                         wakeModelInd = i;
                         break;
                     }
@@ -120,25 +125,30 @@ namespace ContinuumNS
                 }
             }
 
-            if (thisInst.turbineList.TurbineCount > 0) {
+            if (thisInst.turbineList.TurbineCount > 0)
+            {
                 if (thisInst.turbineList.turbineEsts[0].EstsExistForWakeModel(thisInst.wakeModelList.wakeModels[wakeModelInd], isCalibrated, thisInst.wakeModelList, thisInst.topo.useSR,
-                    thisInst.topo.useSepMod)) {
+                    thisInst.topo.useSepMod))
+                {
                     MessageBox.Show("Wake losses have already been calculated with this model and settings.", "Continuum 3");
                     return;
                 }
             }
-            else {
+            else
+            {
                 Close();
                 return;
             }
 
             if (thisInst.turbineList.turbineEsts[0].EstsExistForWakeModel(thisInst.wakeModelList.wakeModels[wakeModelInd], isCalibrated, thisInst.wakeModelList,
-                thisInst.topo.useSR, thisInst.topo.useSepMod) == false) {
+                thisInst.topo.useSR, thisInst.topo.useSepMod) == false)
+            {
 
                 BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
 
-                if (thisInst.metList.ThisCount > 0) {
-                    argsForBW.thisInst = thisInst;                    
+                if (thisInst.metList.ThisCount > 0)
+                {
+                    argsForBW.thisInst = thisInst;
                     argsForBW.thisWakeModel = thisInst.wakeModelList.wakeModels[wakeModelInd];
                     argsForBW.MCP_Method = thisInst.Get_MCP_Method();
 
@@ -148,13 +158,19 @@ namespace ContinuumNS
                     thisInst.ChangesMade();
                 }
             }
-            else {
+            else
+            {
                 // Update Net turb tab
-                Update updateThe = new Update();                
+                Update updateThe = new Update();
                 updateThe.NetTurbineEstsTAB(thisInst);
             }
 
             Close();
+        }
+
+        private void btnGenMap_Click(object sender, EventArgs e)
+        {
+            GenWakeModel();
         }               
 
         public TurbineCollection.PowerCurve GetPowerCurve()
@@ -231,7 +247,7 @@ namespace ContinuumNS
             return horizExp;
         }
 
-        public double ReadWRR()
+ /*       public double ReadWRR()
         {
             // Reads and returns wake recharge rate
             double WRR = 0;
@@ -260,7 +276,7 @@ namespace ContinuumNS
 
             return WRR_Exp;
         }
-
+*/
         public double ReadDW_Spacing()
         { 
             // Reads and returns the downwind spacing

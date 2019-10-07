@@ -16,6 +16,8 @@ namespace ContinuumNS
     public partial class BackgroundWork : Form
     {
         Update updateThe = new Update();
+        public bool DoWorkDone = false;
+        public bool WasReturned = false;
 
         public BackgroundWork()
         {
@@ -95,7 +97,8 @@ namespace ContinuumNS
         {
             // For each met, calculates exposure and grid stats, create met pairs and perform WS cross-prediction, finds site-calibrated model (if >1 met)
             // updates turbine calculations (if any)
-
+            DoWorkDone = false;
+            WasReturned = false;
             Vars_for_MetCalcs theArgs = (Vars_for_MetCalcs)e.Argument;
             Continuum thisInst = theArgs.thisInst;
             string MCP_Method = theArgs.MCP_type;
@@ -128,6 +131,7 @@ namespace ContinuumNS
                     if (BackgroundWorker_MetCalcs.CancellationPending == true)
                     {
                         e.Cancel = true;
+                        WasReturned = true;
                         return;
                     }
 
@@ -148,6 +152,7 @@ namespace ContinuumNS
                 if (BackgroundWorker_MetCalcs.CancellationPending == true)
                 {
                     e.Cancel = true;
+                    WasReturned = true;
                     return;
                 }
 
@@ -168,6 +173,7 @@ namespace ContinuumNS
             if (thisInst.metList.isTimeSeries && thisInst.metList.isMCPd && thisInst.metList.allMCPd == false)
             {
                 e.Cancel = true;
+                WasReturned = true;
                 return;
             }
 
@@ -191,6 +197,7 @@ namespace ContinuumNS
                     if (BackgroundWorker_MetCalcs.CancellationPending == true)
                     {
                         e.Cancel = true;
+                        WasReturned = true;
                         return;
                     }
 
@@ -203,6 +210,7 @@ namespace ContinuumNS
                         if (pathOfNodes.Length == 200)
                         { // couldn't find path in between mets
                             MessageBox.Show("Continuum could not find a path of nodes in between Met: " + metPairs.metPairs[i].met1.name + " and Met: " + metPairs.metPairs[i].met2.name + ". Cannot continue with calculations.  Please remove one of these mets from the analysis", "Continuum 3");
+                            WasReturned = true;
                             return;
                         }
                         metPairs.metPairs[i].WS_Pred[0, j].nodePath = pathOfNodes;
@@ -295,144 +303,7 @@ namespace ContinuumNS
                 }
             }
 
-
-            /*
-            // Needs to update turbine calcs if any are done
-            if (turbList.turbineCalcsDone == true) {
-               
-                for (int i = 0; i < turbList.TurbineCount; i++) { 
-                    if (BackgroundWorker_MetCalcs.CancellationPending == true)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }                       
-
-                    textForProgBar = "Calculating wind speeds at " + (i + 1).ToString() + "/" + turbList.TurbineCount + " turbine sites.";
-                    int Prog = Convert.ToInt16(100.0f * (i + 1) / turbList.TurbineCount);
-                    BackgroundWorker_MetCalcs.ReportProgress(Prog, textForProgBar);
-                    if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || thisInst.turbineList.genTimeSeries == false)
-                    {
-                        double[] windRose = metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-                        models = thisInst.modelList.GetModels(thisInst, metList.GetMetsUsed(), radiiList.investItem[0].radius, radiiList.GetMaxRadius(), false, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-                        turbList.turbineEsts[i].DoTurbineCalcs(thisInst, models);
-                        turbList.turbineEsts[i].GenerateAvgWSFromTABs(thisInst, models, windRose, false);
-
-                        models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), radiiList.investItem[0].radius, radiiList.GetMaxRadius(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-                        turbList.turbineEsts[i].DoTurbineCalcs(thisInst, models);
-                        turbList.turbineEsts[i].GenerateAvgWSFromTABs(thisInst, models, windRose, false);
-                    }
-                    else // generate turbine estimates using seasonal and diurnal models
-                    {
-                        Nodes targetNode = nodeList.GetTurbNode(turbList.turbineEsts[i]);
-                        if (thisInst.turbineList.PowerCurveCount == 0) // just do Avg_WS ests
-                        {
-                            // Default Model                            
-                            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, false, new TurbineCollection.PowerCurve(),
-                                new Wake_Model(), null, MCP_Method);
-                            turbList.turbineEsts[i].GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), false, false, MCP_Method, false); // Creates and adds new Avg_Est based on time series data
-
-                            // Site-Calibrated Model
-                            thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, true, new TurbineCollection.PowerCurve(),
-                                new Wake_Model(), null, MCP_Method);
-                            if (thisTS.Length > 0)
-                                turbList.turbineEsts[i].GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), true, false, MCP_Method, false);  // Creates and adds new Avg_Est based on time series data
-                        }
-                        else
-                        {
-                            for (int p = 0; p < turbList.PowerCurveCount; p++)
-                            {
-                                // Default Model
-                                ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, false, turbList.powerCurves[p],
-                                    new Wake_Model(), null, MCP_Method);
-                                turbList.turbineEsts[i].GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), false, false, MCP_Method, false); // Creates and adds new Avg_Est based on time series data
-                                turbList.turbineEsts[i].CalcGrossAEPFromTimeSeries(thisInst, false, thisTS, turbList.powerCurves[p]); // Calculates and adds gross energy estimate based on energy production time series
-
-                                // Site-Calibrated Model
-                                thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, true, turbList.powerCurves[p],
-                                    new Wake_Model(), null, MCP_Method);
-
-                                if (thisTS.Length > 0)
-                                {
-                                    turbList.turbineEsts[i].GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), true, false, MCP_Method, false);  // Creates and adds new Avg_Est based on time series data
-                                    turbList.turbineEsts[i].CalcGrossAEPFromTimeSeries(thisInst, true, thisTS, turbList.powerCurves[p]); // Calculates and adds gross energy estimate based on energy production time series
-
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-
-                if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false)
-                {
-                    if (thisInst.modelList.ModelCount > 1)
-                        turbList.CalcGrossAEPFromTABs(thisInst, true);
-
-                    turbList.CalcGrossAEPFromTABs(thisInst, false);
-                    
-                }
-
-                // Go through list of wake models and do calculations for those that don't exist yet
-                for (int w = 0; w < thisInst.wakeModelList.NumWakeModels; w++)
-                {
-                    Wake_Model thisWakeModel = thisInst.wakeModelList.wakeModels[w];
-                    if (turbList.turbineEsts[0].EstsExistForWakeModel(thisWakeModel, false, thisInst.wakeModelList, thisInst.topo.useSR, thisInst.topo.useSepMod) == false)
-                    {
-                        // Find wake loss coeffs
-                        WakeCollection.WakeLossCoeffs[] wakeCoeffs = null;
-                        int minDistance = 10000000;
-                        int maxDistance = 0;
-
-                        for (int i = 0; i < turbList.TurbineCount; i++)
-                        {
-                            int[] Min_Max_Dist = turbList.CalcMinMaxDistanceToTurbines(turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY);
-                            if (Min_Max_Dist[0] < minDistance) minDistance = Min_Max_Dist[0]; // this is min distance to turbine but when WD is at a different angle (not in line with turbines) the X dist is less than this value so making this always equal to 2*RD
-                            if (Min_Max_Dist[1] > maxDistance) maxDistance = Min_Max_Dist[1];
-                        }
-
-                        minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
-                        if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
-                        wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, thisInst.metList);
-
-                        for (int i = 0; i < turbList.TurbineCount; i++)
-                        {
-                            textForProgBar = "Calculating wake losses and net estimates at turbine sites. " + ((i + 1) / (float)turbList.TurbineCount).ToString("P") + " complete";
-                            BackgroundWorker_TurbCalcs.ReportProgress((int)(100 * (i + 1) / (float)turbList.TurbineCount), textForProgBar);
-
-                            if (BackgroundWorker_TurbCalcs.CancellationPending == true)
-                            {
-                                turbList.CleanUpEsts(thisInst.wakeModelList);
-                                thisInst.wakeModelList.CleanUpWakeModelsAndGrid();
-                                e.Result = thisInst;
-                                return;
-                            }
-
-                            if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || turbList.genTimeSeries == false)
-                            {
-                                turbList.turbineEsts[i].CalcTurbineWakeLosses(thisInst, wakeCoeffs, thisWakeModel, false); // Default model
-                                turbList.turbineEsts[i].CalcTurbineWakeLosses(thisInst, wakeCoeffs, thisWakeModel, true); // Site-Calibrated model
-                            }
-                            else
-                            {
-                                // Default model net wind speed and energy production
-                                Nodes targetNode = nodeList.GetTurbNode(turbList.turbineEsts[i]);
-                                ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, false,
-                                    thisWakeModel.powerCurve, thisWakeModel, wakeCoeffs, MCP_Method);
-                                turbList.turbineEsts[i].GenerateAvgWSTimeSeries(thisTS, thisInst, thisWakeModel, false, false, MCP_Method, false);
-                                turbList.turbineEsts[i].CalcNetAEPFromTimeSeries(thisInst, false, thisTS, thisWakeModel.powerCurve, thisWakeModel);
-
-                                // Site-calibrated model
-                                thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, true, thisWakeModel.powerCurve, thisWakeModel,
-                                    wakeCoeffs, MCP_Method);
-
-                                if (thisTS.Length > 0)
-                                {
-                                    turbList.turbineEsts[i].GenerateAvgWSTimeSeries(thisTS, thisInst, thisWakeModel, true, false, MCP_Method, false);
-                                    turbList.turbineEsts[i].CalcNetAEPFromTimeSeries(thisInst, true, thisTS, thisWakeModel.powerCurve, thisWakeModel);
-                                }
-                            }
-                        } */
-
+            DoWorkDone = true;
             e.Result = thisInst;
         }
 
@@ -453,8 +324,12 @@ namespace ContinuumNS
             if (e.Cancelled == false)
             {
                 Continuum thisInst = (Continuum)e.Result;
-                thisInst.SaveFile();
-                updateThe.AllTABs(thisInst);
+
+                if (thisInst.IsDisposed == false)
+                {
+                    thisInst.SaveFile(false);
+                    updateThe.AllTABs(thisInst);
+                }               
 
             }
 
@@ -475,6 +350,8 @@ namespace ContinuumNS
             //  Dim The_args  Vars_for_Topo_load = DirectCast(e.Argument, Vars_for_Topo_load)
             Vars_for_BW args = (Vars_for_BW)e.Argument;
             Continuum thisInst = args.thisInst;
+            DoWorkDone = false;
+            WasReturned = false;
 
             string filename = args.Filename;
             TopoInfo topo = thisInst.topo;
@@ -504,13 +381,24 @@ namespace ContinuumNS
             {
                 bool goodToGo = topo.ReadGeoTiffTopo(filename, thisInst);
 
+                if (goodToGo == false)
+                {
+                    e.Result = thisInst;
+                    WasReturned = true; // for unit tests
+                    return;
+                }
+
+                double[,] topoForDB = topo.topoElevs;
+                topo.DecimateForPlot("topo");
+
                 Check_class checker = new Check_class();
                 // Checks elev at 8 points around each met/turbine +/-12000 m and return false if elev = -999 or if mets out of range
-                goodToGo = checker.NewTopo(topo, thisInst.metList, thisInst.turbineList, "All");
+                goodToGo = checker.NewTopo(topo, thisInst.metList, thisInst.turbineList);
 
                 if (topo.topoElevs == null || goodToGo == false)
                 {
                     e.Result = thisInst;
+                    WasReturned = true; // for unit tests
                     return;
                 }
 
@@ -524,13 +412,13 @@ namespace ContinuumNS
 
                 using (var ctx = new Continuum_EDMContainer(connString))
                 {
-                    for (int i = 0; i <= topo.topoElevs.GetUpperBound(0); i++)
+                    for (int i = 0; i <= topoForDB.GetUpperBound(0); i++)
                     {
-                        for (int j = 0; j <= topo.topoElevs.GetUpperBound(1); j++)
+                        for (int j = 0; j <= topoForDB.GetUpperBound(1); j++)
                         {
                             thisCount++;
 
-                            elevsAlongX[entryInd] = (float)topo.topoElevs[i, j];
+                            elevsAlongX[entryInd] = (float)topoForDB[i, j];
                             entryInd++;
 
                             if (entryInd == topo.topoNumXY.Y.all.num)
@@ -555,18 +443,20 @@ namespace ContinuumNS
                                 thisInst.topo.topoElevs = null;
                                 updateThe.Clear_Topo_DB(thisInst.savedParams.savedFileName);
                                 e.Cancel = true;
+                                WasReturned = true; // for unit tests
                                 return;
                             }
                         }
                     }
 
                     ctx.SaveChanges();
+                    ctx.Database.Connection.Close();
                 }
             }
 
             topo.gotTopo = true;
-            topo.DecimateForPlot("topo");
-
+            
+            DoWorkDone = true;
             e.Result = thisInst;
         }
 
@@ -591,8 +481,13 @@ namespace ContinuumNS
             if (e.Cancelled == false)
             {
                 Continuum thisInst = (Continuum)e.Result;
-                thisInst.SaveFile();
-                updateThe.AllTABs((Continuum)e.Result);
+
+                if (thisInst.IsDisposed == false)
+                {
+                    thisInst.SaveFile(false);
+                    updateThe.AllTABs((Continuum)e.Result);
+                }
+                
             }
 
             Close();
@@ -619,6 +514,9 @@ namespace ContinuumNS
             NodeCollection nodeList = new NodeCollection();
             thisInst.savedParams.landCoverFileName = wholePath;
 
+            DoWorkDone = false;
+            WasReturned = false;
+
             string textForProgBar = "Reading in land cover data...";
             BackgroundWorker_LandCover.ReportProgress(10, textForProgBar);
 
@@ -630,17 +528,22 @@ namespace ContinuumNS
             if (topo.landCover == null || goodToGo == false)
             {
                 e.Result = thisInst;
+                WasReturned = true; // for unit tests
                 return;
             }
 
+            int[,] landCoverForDB = topo.landCover;
+            topo.DecimateForPlot("LC");
             Check_class checker = new Check_class();
-            bool Input_LC = checker.NewLandCover(topo, metList, turbList, "All");  // Check that all existing mets and turbines fall within bounds of new land cover data
+            bool Input_LC = checker.NewLandCover(topo, metList, turbList);  // Check that all existing mets and turbines fall within bounds of new land cover data
 
             if (Input_LC == false)
             {
                 e.Result = thisInst;
+                WasReturned = true; // for unit tests
                 return;
             }
+
 
             int thisCount = 0;
             int numAll = topo.LC_NumXY.X.all.num * topo.LC_NumXY.Y.all.num;
@@ -653,13 +556,13 @@ namespace ContinuumNS
 
             using (var ctx = new Continuum_EDMContainer(connString))
             {
-                for (int i = 0; i <= topo.landCover.GetUpperBound(0); i++)
+                for (int i = 0; i <= landCoverForDB.GetUpperBound(0); i++)
                 {
-                    for (int j = 0; j <= topo.landCover.GetUpperBound(1); j++)
+                    for (int j = 0; j <= landCoverForDB.GetUpperBound(1); j++)
                     {
                         thisCount++;
 
-                        LCsAlongX[entryInd] = topo.landCover[i, j];
+                        LCsAlongX[entryInd] = landCoverForDB[i, j];
                         entryInd++;
 
                         if (entryInd == topo.LC_NumXY.Y.all.num)
@@ -683,17 +586,19 @@ namespace ContinuumNS
                             thisInst.topo.gotSR = false;
                             updateThe.Clear_LandCover_DB(thisInst.savedParams.savedFileName);
                             e.Result = thisInst;
+                            WasReturned = true; // for unit tests
                             return;
                         }
                     }
                 }
 
                 ctx.SaveChanges();
+                ctx.Database.Connection.Close();
             }
 
+            topo.gotSR = true;
 
             // Calculate SR/DH at mets, turbines, and nodes in database
-
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, true);
             metList.ReCalcSRDH(thisInst.topo, thisInst.radiiList);
 
@@ -767,15 +672,18 @@ namespace ContinuumNS
 
                     // Save DB
                     context.SaveChanges();
+                    context.Database.Connection.Close();
                 }
+                
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.InnerException.ToString());
+                WasReturned = true; // for unit tests
                 return;
-            }
-
-            topo.DecimateForPlot("LC");
+            }                       
+           
+            DoWorkDone = true;
             e.Result = thisInst;
         }
 
@@ -798,10 +706,14 @@ namespace ContinuumNS
             // Updates met and turbine SRDH plots and tables, topo map, Advanced tab after land cover data import
             Continuum thisInst = (Continuum)e.Result;
 
-            if (e.Cancelled == false)
-                thisInst.SaveFile();
+            if (thisInst.IsDisposed == false)
+            {
+                if (e.Cancelled == false)
+                    thisInst.SaveFile(false);
 
-            updateThe.AllTABs(thisInst);
+                updateThe.AllTABs(thisInst);
+            }
+            
             Close();
         }
 
@@ -1019,6 +931,7 @@ namespace ContinuumNS
                 }
 
                 ctx.SaveChanges();
+                ctx.Database.Connection.Close();
             }
 
             topo.useSR = true;
@@ -1108,8 +1021,11 @@ namespace ContinuumNS
             if (e.Cancelled == false)
             {
                 Continuum thisInst = (Continuum)e.Result;
-                updateThe.AllTABs(thisInst);
-                thisInst.ChangesMade();
+                if (thisInst.IsDisposed == false)
+                {
+                    updateThe.AllTABs(thisInst);
+                    thisInst.ChangesMade();
+                }
             }
 
             Close();
@@ -1126,7 +1042,7 @@ namespace ContinuumNS
         private void BackgroundWorker_TurbCalcs_DoWork(object sender, DoWorkEventArgs e)
         {
             // Calculates exposure and SRDH at each turbine site, calls DoTurbineCalcs, generates avg WS estimates and energy estimate and wake loss calcs (if net calcs)
-
+            
             Vars_for_Turbine_and_Node_Calcs theArgs = (Vars_for_Turbine_and_Node_Calcs)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
             string MCP_Method = theArgs.MCP_Method;
@@ -1137,6 +1053,9 @@ namespace ContinuumNS
             int numWD = thisInst.metList.numWD;
             bool isCalibrated = false;
             if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+
+            DoWorkDone = false;
+            WasReturned = false;
 
             string textForProgBar = "Turbine calculations starting...";
             BackgroundWorker_TurbCalcs.ReportProgress(0, textForProgBar);
@@ -1176,6 +1095,7 @@ namespace ContinuumNS
                 {
                     thisInst.wakeModelList.RemoveWakeModel(thisInst.turbineList, thisInst.mapList, wakeModel);
                     e.Result = thisInst;
+                    WasReturned = true;
                     return;
                 }
             }
@@ -1223,6 +1143,7 @@ namespace ContinuumNS
                     {
                         thisInst.wakeModelList.RemoveWakeModel(thisInst.turbineList, thisInst.mapList, wakeModel);
                         e.Result = thisInst;
+                        WasReturned = true;
                         return;
                     }
                 }
@@ -1278,6 +1199,7 @@ namespace ContinuumNS
                     {
                         thisInst.wakeModelList.RemoveWakeModel(thisInst.turbineList, thisInst.mapList, wakeModel);
                         e.Result = thisInst;
+                        WasReturned = true;
                         return;
                     }
                 }
@@ -1339,6 +1261,7 @@ namespace ContinuumNS
                             turbList.CleanUpEsts(thisInst.wakeModelList);
                             thisInst.wakeModelList.CleanUpWakeModelsAndGrid();
                             e.Result = thisInst;
+                            WasReturned = true;
                             return;
                         }
 
@@ -1374,6 +1297,7 @@ namespace ContinuumNS
 
             turbList.AssignStringNumber();
             turbList.AreTurbCalcsDone(thisInst);
+            DoWorkDone = true;
             e.Result = thisInst;
         }
 
@@ -1393,8 +1317,13 @@ namespace ContinuumNS
             // Updates the turbine estimates on main form
 
             Continuum thisInst = (Continuum)e.Result;
-            updateThe.AllTABs(thisInst);
-            thisInst.ChangesMade();
+
+            if (thisInst.IsDisposed == false)
+            {
+                updateThe.AllTABs(thisInst);
+                thisInst.ChangesMade();
+            }
+            
 
             Close();
         }
@@ -1410,7 +1339,7 @@ namespace ContinuumNS
         {
             // for each map node, calculates exposure, SRDH, grid stats, and calls DoMapCalcs
             // Generates a map using the Background worker
-
+            DoWorkDone = false;
             Vars_for_Gen_Map theArgs = (Vars_for_Gen_Map)(e.Argument);
 
             Continuum thisInst = theArgs.thisInst;
@@ -1508,15 +1437,15 @@ namespace ContinuumNS
                     if (thisMap.parameterToMap[xind, yind] == 0)
                     {
                         double thisY = thisMap.minUTMY + yind * thisMap.reso;
-                        Map.mapNode thisMapNode = new Map.mapNode();
+                        Map.MapNode thisMapNode = new Map.MapNode();
                         thisMapNode.UTMX = thisX;
                         thisMapNode.UTMY = thisY;
                         Nodes thisNode = nodeList.GetANode(thisX, thisY, thisInst);
                         thisMapNode.elev = thisNode.elev;
                         thisMapNode.expo = thisNode.expo;
                         thisMapNode.gridStats = thisNode.gridStats;
-                        if (thisMap.metsUsed.Count() > 1)
-                            thisMapNode.isCalibrated = true;
+                     //   if (thisMap.metsUsed.Count() > 1)
+                     //       thisMapNode.isCalibrated = true;
 
                         if (BackgroundWorker_Map.CancellationPending == true)
                         {
@@ -1672,6 +1601,7 @@ namespace ContinuumNS
             if (thisMap.isWaked)
                 wakeModelList.wakeGridMaps[wakeGridInd].isComplete = true;
 
+            DoWorkDone = true;
             e.Result = thisInst;
 
         }
@@ -1692,10 +1622,13 @@ namespace ContinuumNS
             // Updates map list and wake map list on main form
             Continuum thisInst = (Continuum)e.Result;
 
-            updateThe.MapsTAB(thisInst);
-            updateThe.NetTurbineEstsTAB(thisInst);
+            if (thisInst.IsDisposed == false)
+            {
+                updateThe.MapsTAB(thisInst);
+                updateThe.NetTurbineEstsTAB(thisInst);
 
-            thisInst.SaveFile();
+                thisInst.SaveFile(false);
+            }
 
             Close();
         }
@@ -1765,6 +1698,8 @@ namespace ContinuumNS
                     metPairList.AddRoundRobinEst(RR_obj_coll, metsUsed, numMetsInModel, metsForModels, true, metList);
                 }
             }
+
+            DoWorkDone = true;
             e.Result = thisInst;
         }
 
@@ -1788,8 +1723,11 @@ namespace ContinuumNS
             else
             {
                 Continuum thisInst = (Continuum)e.Result;
-                updateThe.Uncertainty_TAB_Round_Robin(thisInst);
-                thisInst.ChangesMade();
+                if (thisInst.IsDisposed == false)
+                {
+                    updateThe.Uncertainty_TAB_Round_Robin(thisInst);
+                    thisInst.ChangesMade();
+                }
             }
 
             Close();
@@ -1806,7 +1744,7 @@ namespace ContinuumNS
         {
             // Saves a copy of database at new save location
             NodeCollection nodeList = new NodeCollection();
-
+            DoWorkDone = false;
             Vars_for_Save_As The_args = (Vars_for_Save_As)e.Argument;
             string newFilename = The_args.newFilename;
             string oldFilename = The_args.oldFilename;
@@ -1829,6 +1767,8 @@ namespace ContinuumNS
                     {
                         if (ctx.Database.Exists())
                             ctx.Database.Delete();
+
+                        ctx.Database.Connection.Close();
                     }
                 }
                 catch (Exception ex)
@@ -1843,6 +1783,7 @@ namespace ContinuumNS
                     using (var ctx = new Continuum_EDMContainer(oldConnString))
                     {
                         numNodes = ctx.Node_table.Count();
+                        ctx.Database.Connection.Close();
                     }
                 }
                 catch (Exception ex)
@@ -1920,6 +1861,7 @@ namespace ContinuumNS
 
                                 dataInd++;
                             }
+                            ctx.Database.Connection.Close();
                         }
                     }
                     catch (Exception ex)
@@ -1936,6 +1878,7 @@ namespace ContinuumNS
                             ctx.SaveChanges();
                             dataInd = 0;
                             nodeDB = new Node_table[2000];
+                            ctx.Database.Connection.Close();
                         }
                     }
                     catch (Exception ex)
@@ -1964,6 +1907,7 @@ namespace ContinuumNS
                     using (var ctx = new Continuum_EDMContainer(oldConnString))
                     {
                         numTopo = ctx.Topo_table.Count();
+                        ctx.Database.Connection.Close();
                     }
                 }
                 catch (Exception ex)
@@ -2004,6 +1948,7 @@ namespace ContinuumNS
                                 topoDB[dataInd].Elevs = N.Elevs;
                                 dataInd++;
                             }
+                            ctx.Database.Connection.Close();
                         }
 
                         using (var ctx = new Continuum_EDMContainer(newConnString))
@@ -2012,6 +1957,7 @@ namespace ContinuumNS
                             ctx.SaveChanges();
                             dataInd = 0;
                             topoDB = new Topo_table[20000];
+                            ctx.Database.Connection.Close();
                         }
                     }
                     catch (Exception ex)
@@ -2040,6 +1986,7 @@ namespace ContinuumNS
                     using (var ctx = new Continuum_EDMContainer(oldConnString))
                     {
                         numLC = ctx.LandCover_table.Count();
+                        ctx.Database.Connection.Close();
                     }
                 }
                 catch (Exception ex)
@@ -2080,6 +2027,7 @@ namespace ContinuumNS
                                 landCoverDB[dataInd].LandCover = N.LandCover;
                                 dataInd++;
                             }
+                            ctx.Database.Connection.Close();
                         }
 
                         using (var ctx = new Continuum_EDMContainer(newConnString))
@@ -2088,6 +2036,7 @@ namespace ContinuumNS
                             ctx.SaveChanges();
                             dataInd = 0;
                             landCoverDB = new LandCover_table[20000];
+                            ctx.Database.Connection.Close();
                         }
                     }
                     catch (Exception ex)
@@ -2105,7 +2054,88 @@ namespace ContinuumNS
                     if (maxId > numLC)
                     {
                         maxId = numLC;
-                        topoDB = new Topo_table[maxId - minId + 1];
+                        landCoverDB = new LandCover_table[maxId - minId + 1];
+                    }
+                }
+
+                // Copy over MERRA2 data
+                int numMERRA2Nodes = 0;
+                try
+                {
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numMERRA2Nodes = ctx.MERRA_Node_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+
+                minId = 1;
+                MERRA_Node_table[] merraDB = new MERRA_Node_table[20000];
+                if (numMERRA2Nodes > 20000)
+                    maxId = minId + 19999;
+                else
+                {
+                    maxId = numMERRA2Nodes;
+                    merraDB = new MERRA_Node_table[numMERRA2Nodes];
+                }
+
+                gotThemAll = false;
+
+                while (numMERRA2Nodes > 0 && gotThemAll == false)
+                {
+                    textForProgBar = "Saving MERRA2 data...";
+                    int prog = (int)(100 * (double)maxId / numMERRA2Nodes);
+                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+                    int dataInd = 0;
+                    // Copy up to 20000 entries from old DB
+
+                    try
+                    {
+                        using (var ctx = new Continuum_EDMContainer(oldConnString))
+                        {
+                            var merra_exist_db = from N in ctx.MERRA_Node_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in merra_exist_db)
+                            {
+                                merraDB[dataInd] = new MERRA_Node_table();
+                                merraDB[dataInd].latitude = N.latitude;
+                                merraDB[dataInd].longitude = N.longitude;
+                                merraDB[dataInd].merraData = N.merraData;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+
+                        using (var ctx = new Continuum_EDMContainer(newConnString))
+                        {
+                            ctx.MERRA_Node_table.AddRange(merraDB);
+                            ctx.SaveChanges();
+                            dataInd = 0;
+                            merraDB = new MERRA_Node_table[20000];
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());
+                        return;
+                    }
+
+                    if (maxId == numMERRA2Nodes)
+                        gotThemAll = true;
+
+                    minId = maxId + 1;
+                    maxId = maxId + 20000;
+
+                    if (maxId > numMERRA2Nodes)
+                    {
+                        maxId = numMERRA2Nodes;
+                        merraDB = new MERRA_Node_table[maxId - minId + 1];
                     }
                 }
             }
@@ -2120,6 +2150,7 @@ namespace ContinuumNS
                         {
                             if (ctx.Database.Exists())
                                 ctx.Database.Delete();
+                            ctx.Database.Connection.Close();
                         }
                     }
                     catch (Exception ex)
@@ -2130,6 +2161,8 @@ namespace ContinuumNS
 
                 }
             }
+
+            DoWorkDone = true;
         }
 
 
@@ -2238,7 +2271,8 @@ namespace ContinuumNS
                     }
 
                     // Save DB
-                    context.SaveChanges();
+                    context.SaveChanges();                    
+                    
                 }
             }
             catch (Exception ex)
@@ -2246,6 +2280,8 @@ namespace ContinuumNS
                 MessageBox.Show(ex.InnerException.ToString());
                 return;
             }
+
+            DoWorkDone = true;
         }
 
         private void BackgroundWorker_Node_SR_Recalc_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -2485,6 +2521,7 @@ namespace ContinuumNS
             }
 
             sw.Close();
+            DoWorkDone = true;
         }
 
         private void BackgroundWorker_WRG_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -2639,7 +2676,7 @@ namespace ContinuumNS
             int last_file_ind = 0;
             char[] delims = { ',', '\n' };
 
-            string[] MERRAfiles = Directory.GetFiles(thisMERRA.MERRAfolder, "*.ascii");
+            string[] MERRAfiles = Directory.GetFiles(merraList.MERRAfolder, "*.ascii");
 
             StreamReader file;
             DateTime startTime = thisInst.dateMERRAStart.Value;
@@ -2824,7 +2861,7 @@ namespace ContinuumNS
             }
 
             // Check that MERRA data was read in
-            bool gotItAll = thisMERRA.WasDataFullyLoaded(nodesToPull, thisMERRA.MERRAfolder);
+            bool gotItAll = thisMERRA.WasDataFullyLoaded(nodesToPull, thisInst.merraList.MERRAfolder);
             if (gotItAll == false)
             {
                 if (thisMet != null)
@@ -2863,6 +2900,7 @@ namespace ContinuumNS
                 thisInst.metList.AreAllMetsMCPd();
             }
 
+            DoWorkDone = true;
             e.Result = thisInst;
         }
 
@@ -2872,8 +2910,11 @@ namespace ContinuumNS
             if (e.Cancelled == false)
             {
                 Continuum thisInst = (Continuum)e.Result;
-                thisInst.ChangesMade();
-                updateThe.AllTABs(thisInst);
+                if (thisInst.IsDisposed == false)
+                {
+                    thisInst.ChangesMade();
+                    updateThe.AllTABs(thisInst);
+                }                
             }
 
             Close();
@@ -2900,12 +2941,9 @@ namespace ContinuumNS
         private void BackgroundWorker_IceThrow_DoWork(object sender, DoWorkEventArgs e)
         {
             // Runs ice throw model
+            DoWorkDone = false;
             Vars_for_BW theArgs = (Vars_for_BW)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
-            bool isCalibrated = false;
-
-            if (thisInst.metList.ThisCount > 1)
-                isCalibrated = true;
 
             Met_Data_Filter metDataFilter = new Met_Data_Filter();
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Site Suitability");
@@ -3020,6 +3058,7 @@ namespace ContinuumNS
             }
 
             //  file.Close();
+            DoWorkDone = true;
             e.Result = thisInst;
         }
 
@@ -3039,12 +3078,15 @@ namespace ContinuumNS
             // Updates site suitability form 
             Continuum thisInst = (Continuum)e.Result;
 
-            thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Ice Throw");
-            thisInst.updateThe.IcingYearsDropDown(thisInst);
-            thisInst.updateThe.SiteSuitabilityTAB(thisInst);
-            thisInst.ChangesMade();
+            if (thisInst.IsDisposed == false)
+            {
+                thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Ice Throw");
+                thisInst.updateThe.IcingYearsDropDown(thisInst);
+                thisInst.updateThe.SiteSuitabilityTAB(thisInst);
+                thisInst.ChangesMade();
 
-            thisInst.updateThe.ColoredButtons(thisInst);
+                thisInst.updateThe.ColoredButtons(thisInst);
+            }
 
             Close();
         }
@@ -3199,7 +3241,7 @@ namespace ContinuumNS
                 dateTime = dateTime.AddMinutes(1);
             }
 
-
+            DoWorkDone = true;
             e.Result = thisInst;
         }
 
@@ -3218,12 +3260,15 @@ namespace ContinuumNS
         {
             // Updates site suitability form 
             Continuum thisInst = (Continuum)e.Result;
-            thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Shadow Flicker");
-            thisInst.updateThe.SiteSuitabilityTAB(thisInst);
-            thisInst.updateThe.ColoredButtons(thisInst);
+            if (thisInst.IsDisposed == false)
+            {
+                thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Shadow Flicker");
+                thisInst.updateThe.SiteSuitabilityTAB(thisInst);
+                thisInst.updateThe.ColoredButtons(thisInst);
 
-            if (thisInst.siteSuitability.numXFlicker != 0)
-                thisInst.SaveFile();
+                if (thisInst.siteSuitability.numXFlicker != 0)
+                    thisInst.SaveFile(false);
+            }
 
             Close();
         }
@@ -3341,6 +3386,7 @@ namespace ContinuumNS
             }
 
             exceedance.compositeLoss.isComplete = true;
+            DoWorkDone = true;
             e.Result = thisInst;
         }
 
@@ -3370,7 +3416,8 @@ namespace ContinuumNS
                 thisInst.ChangesMade();
             }
 
-            thisInst.updateThe.AllTABs(thisInst);
+            if (thisInst.IsDisposed == false)
+                thisInst.updateThe.AllTABs(thisInst);
 
             Close();
         }

@@ -212,6 +212,7 @@
             this.btn_Import_MERRA = new System.Windows.Forms.Button();
             this.label151 = new System.Windows.Forms.Label();
             this.pgeMCP = new System.Windows.Forms.TabPage();
+            this.btnShowMCPRanges = new System.Windows.Forms.Button();
             this.label51 = new System.Windows.Forms.Label();
             this.btnDoMCPAllMets = new System.Windows.Forms.Button();
             this.btnDoMCP = new System.Windows.Forms.Button();
@@ -908,7 +909,6 @@
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
-            this.btnShowMCPRanges = new System.Windows.Forms.Button();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pgeMetData.SuspendLayout();
@@ -949,11 +949,11 @@
             this.tabContinuum.Controls.Add(this.pgeStepwise);
             this.tabContinuum.Controls.Add(this.pgeSuitability);
             this.tabContinuum.Font = new System.Drawing.Font("Palatino Linotype", 10F);
-            this.tabContinuum.Location = new System.Drawing.Point(14, 33);
+            this.tabContinuum.Location = new System.Drawing.Point(12, 29);
             this.tabContinuum.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabContinuum.Name = "tabContinuum";
             this.tabContinuum.SelectedIndex = 0;
-            this.tabContinuum.Size = new System.Drawing.Size(1643, 865);
+            this.tabContinuum.Size = new System.Drawing.Size(1635, 880);
             this.tabContinuum.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabContinuum.TabIndex = 3;
             // 
@@ -1014,7 +1014,7 @@
             this.pgeInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeInput.Name = "pgeInput";
             this.pgeInput.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeInput.Size = new System.Drawing.Size(1635, 834);
+            this.pgeInput.Size = new System.Drawing.Size(2457, 1267);
             this.pgeInput.TabIndex = 0;
             this.pgeInput.Text = "Input";
             this.pgeInput.UseVisualStyleBackColor = true;
@@ -1524,6 +1524,7 @@
             this.ColumnHeader19});
             this.lstTurbines.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstTurbines.FullRowSelect = true;
+            this.lstTurbines.HideSelection = false;
             this.lstTurbines.Location = new System.Drawing.Point(489, 248);
             this.lstTurbines.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstTurbines.Name = "lstTurbines";
@@ -1590,6 +1591,7 @@
             this.WindSpd1});
             this.lstMetTowers.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstMetTowers.FullRowSelect = true;
+            this.lstMetTowers.HideSelection = false;
             this.lstMetTowers.Location = new System.Drawing.Point(17, 248);
             this.lstMetTowers.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstMetTowers.Name = "lstMetTowers";
@@ -1706,7 +1708,7 @@
             this.pgeMetData.Location = new System.Drawing.Point(4, 27);
             this.pgeMetData.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMetData.Name = "pgeMetData";
-            this.pgeMetData.Size = new System.Drawing.Size(1635, 834);
+            this.pgeMetData.Size = new System.Drawing.Size(2457, 1267);
             this.pgeMetData.TabIndex = 14;
             this.pgeMetData.Text = "Met Data QC";
             this.pgeMetData.UseVisualStyleBackColor = true;
@@ -1966,6 +1968,7 @@
             this.columnHeader82,
             this.columnHeader84,
             this.columnHeader83});
+            this.lstExtrapolated.HideSelection = false;
             this.lstExtrapolated.Location = new System.Drawing.Point(474, 315);
             this.lstExtrapolated.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstExtrapolated.Name = "lstExtrapolated";
@@ -2016,6 +2019,7 @@
             this.lstTempSummary.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader80,
             this.columnHeader81});
+            this.lstTempSummary.HideSelection = false;
             this.lstTempSummary.Location = new System.Drawing.Point(325, 315);
             this.lstTempSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstTempSummary.Name = "lstTempSummary";
@@ -2051,6 +2055,7 @@
             this.columnHeader76,
             this.columnHeader78,
             this.columnHeader79});
+            this.lstVaneSummary.HideSelection = false;
             this.lstVaneSummary.Location = new System.Drawing.Point(29, 314);
             this.lstVaneSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstVaneSummary.Name = "lstVaneSummary";
@@ -2156,6 +2161,7 @@
             this.columnHeader86,
             this.columnHeader87,
             this.columnHeader114});
+            this.lstAlphas.HideSelection = false;
             this.lstAlphas.Location = new System.Drawing.Point(825, 62);
             this.lstAlphas.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstAlphas.Name = "lstAlphas";
@@ -2313,6 +2319,7 @@
             this.columnHeader71,
             this.columnHeader72,
             this.columnHeader73});
+            this.lstAnemSummary.HideSelection = false;
             this.lstAnemSummary.Location = new System.Drawing.Point(28, 91);
             this.lstAnemSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstAnemSummary.Name = "lstAnemSummary";
@@ -2424,7 +2431,7 @@
             this.pgeMERRA.Location = new System.Drawing.Point(4, 27);
             this.pgeMERRA.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMERRA.Name = "pgeMERRA";
-            this.pgeMERRA.Size = new System.Drawing.Size(1635, 834);
+            this.pgeMERRA.Size = new System.Drawing.Size(2457, 1267);
             this.pgeMERRA.TabIndex = 16;
             this.pgeMERRA.Text = "MERRA2 Data";
             this.pgeMERRA.UseVisualStyleBackColor = true;
@@ -2710,6 +2717,7 @@
             this.columnHeader117});
             this.lstMERRAAnnualProd.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstMERRAAnnualProd.GridLines = true;
+            this.lstMERRAAnnualProd.HideSelection = false;
             this.lstMERRAAnnualProd.Location = new System.Drawing.Point(504, 90);
             this.lstMERRAAnnualProd.Margin = new System.Windows.Forms.Padding(2);
             this.lstMERRAAnnualProd.Name = "lstMERRAAnnualProd";
@@ -2743,6 +2751,7 @@
             this.Average});
             this.lstMERRA_MonthlyProd.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstMERRA_MonthlyProd.GridLines = true;
+            this.lstMERRA_MonthlyProd.HideSelection = false;
             this.lstMERRA_MonthlyProd.Location = new System.Drawing.Point(800, 90);
             this.lstMERRA_MonthlyProd.Margin = new System.Windows.Forms.Padding(2);
             this.lstMERRA_MonthlyProd.Name = "lstMERRA_MonthlyProd";
@@ -3105,10 +3114,21 @@
             this.pgeMCP.Location = new System.Drawing.Point(4, 27);
             this.pgeMCP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMCP.Name = "pgeMCP";
-            this.pgeMCP.Size = new System.Drawing.Size(1635, 834);
+            this.pgeMCP.Size = new System.Drawing.Size(2457, 1267);
             this.pgeMCP.TabIndex = 15;
             this.pgeMCP.Text = "MCP";
             this.pgeMCP.UseVisualStyleBackColor = true;
+            this.pgeMCP.Click += new System.EventHandler(this.PgeMCP_Click);
+            // 
+            // btnShowMCPRanges
+            // 
+            this.btnShowMCPRanges.Location = new System.Drawing.Point(1463, 161);
+            this.btnShowMCPRanges.Name = "btnShowMCPRanges";
+            this.btnShowMCPRanges.Size = new System.Drawing.Size(138, 56);
+            this.btnShowMCPRanges.TabIndex = 295;
+            this.btnShowMCPRanges.Text = "View MCP Setting Valid Ranges";
+            this.btnShowMCPRanges.UseVisualStyleBackColor = true;
+            this.btnShowMCPRanges.Click += new System.EventHandler(this.btnShowMCPRanges_Click);
             // 
             // label51
             // 
@@ -3562,6 +3582,7 @@
             this.Mean,
             this.SD,
             this.Count});
+            this.lstMCP_Bins.HideSelection = false;
             this.lstMCP_Bins.Location = new System.Drawing.Point(24, 356);
             this.lstMCP_Bins.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.lstMCP_Bins.Name = "lstMCP_Bins";
@@ -3705,6 +3726,7 @@
             this.Window,
             this.AVG,
             this.SDU});
+            this.lstMCP_Uncert.HideSelection = false;
             this.lstMCP_Uncert.Location = new System.Drawing.Point(1451, 401);
             this.lstMCP_Uncert.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.lstMCP_Uncert.Name = "lstMCP_Uncert";
@@ -3733,7 +3755,7 @@
             this.btnExportMCPUncert.Location = new System.Drawing.Point(1479, 721);
             this.btnExportMCPUncert.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportMCPUncert.Name = "btnExportMCPUncert";
-            this.btnExportMCPUncert.Size = new System.Drawing.Size(113, 58);
+            this.btnExportMCPUncert.Size = new System.Drawing.Size(113, 66);
             this.btnExportMCPUncert.TabIndex = 235;
             this.btnExportMCPUncert.Text = "Export Uncertainty Analysis\r\n\r\n";
             this.btnExportMCPUncert.UseVisualStyleBackColor = true;
@@ -4060,7 +4082,7 @@
             this.pgeMetSumm.Location = new System.Drawing.Point(4, 27);
             this.pgeMetSumm.Margin = new System.Windows.Forms.Padding(1);
             this.pgeMetSumm.Name = "pgeMetSumm";
-            this.pgeMetSumm.Size = new System.Drawing.Size(1635, 834);
+            this.pgeMetSumm.Size = new System.Drawing.Size(2457, 1267);
             this.pgeMetSumm.TabIndex = 12;
             this.pgeMetSumm.Text = "Met && Turbine Summary";
             this.pgeMetSumm.UseVisualStyleBackColor = true;
@@ -4209,6 +4231,7 @@
             this.ColumnHeader35,
             this.ColumnHeader22,
             this.ColumnHeader33});
+            this.lstTurbStats.HideSelection = false;
             this.lstTurbStats.Location = new System.Drawing.Point(1312, 38);
             this.lstTurbStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstTurbStats.MultiSelect = false;
@@ -4335,6 +4358,7 @@
             this.ColumnHeader93,
             this.ColumnHeader92,
             this.ColumnHeader52});
+            this.lstMetStats.HideSelection = false;
             this.lstMetStats.Location = new System.Drawing.Point(1016, 38);
             this.lstMetStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstMetStats.MultiSelect = false;
@@ -4433,6 +4457,7 @@
             this.ColumnHeader49,
             this.ColumnHeader50,
             this.ColumnHeader51});
+            this.lstMetSummary.HideSelection = false;
             this.lstMetSummary.Location = new System.Drawing.Point(10, 75);
             this.lstMetSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstMetSummary.MultiSelect = false;
@@ -4564,7 +4589,7 @@
             this.pgeGrossTurbs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeGrossTurbs.Name = "pgeGrossTurbs";
             this.pgeGrossTurbs.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeGrossTurbs.Size = new System.Drawing.Size(1635, 834);
+            this.pgeGrossTurbs.Size = new System.Drawing.Size(2457, 1267);
             this.pgeGrossTurbs.TabIndex = 3;
             this.pgeGrossTurbs.Text = "Gross Turbine Ests.";
             this.pgeGrossTurbs.UseVisualStyleBackColor = true;
@@ -4590,6 +4615,7 @@
             this.columnHeader193,
             this.columnHeader194});
             this.lstPowerCurveList.FullRowSelect = true;
+            this.lstPowerCurveList.HideSelection = false;
             this.lstPowerCurveList.Location = new System.Drawing.Point(871, 154);
             this.lstPowerCurveList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstPowerCurveList.MultiSelect = false;
@@ -4723,6 +4749,7 @@
             this.ColumnHeader103,
             this.ColumnHeader104,
             this.ColumnHeader105});
+            this.lstGrossHisto.HideSelection = false;
             this.lstGrossHisto.Location = new System.Drawing.Point(857, 508);
             this.lstGrossHisto.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstGrossHisto.Name = "lstGrossHisto";
@@ -5173,6 +5200,7 @@
             this.ColumnHeader13,
             this.ColumnHeader29,
             this.ColumnHeader32});
+            this.lstGrossTurbEst.HideSelection = false;
             this.lstGrossTurbEst.Location = new System.Drawing.Point(24, 121);
             this.lstGrossTurbEst.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstGrossTurbEst.MultiSelect = false;
@@ -5243,7 +5271,7 @@
             this.pgeExceedance.Location = new System.Drawing.Point(4, 27);
             this.pgeExceedance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeExceedance.Name = "pgeExceedance";
-            this.pgeExceedance.Size = new System.Drawing.Size(1635, 834);
+            this.pgeExceedance.Size = new System.Drawing.Size(2457, 1267);
             this.pgeExceedance.TabIndex = 19;
             this.pgeExceedance.Text = "Exceedance Modeling";
             this.pgeExceedance.UseVisualStyleBackColor = true;
@@ -5422,6 +5450,7 @@
             this.columnHeader165,
             this.columnHeader166});
             this.lstPvals.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstPvals.HideSelection = false;
             this.lstPvals.Location = new System.Drawing.Point(34, 564);
             this.lstPvals.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.lstPvals.Name = "lstPvals";
@@ -5540,6 +5569,7 @@
             this.columnHeader173,
             this.columnHeader174});
             this.lstDefinedLosses.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstDefinedLosses.HideSelection = false;
             this.lstDefinedLosses.Location = new System.Drawing.Point(48, 91);
             this.lstDefinedLosses.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.lstDefinedLosses.Name = "lstDefinedLosses";
@@ -5642,7 +5672,7 @@
             this.pgeNetEsts.Location = new System.Drawing.Point(4, 27);
             this.pgeNetEsts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeNetEsts.Name = "pgeNetEsts";
-            this.pgeNetEsts.Size = new System.Drawing.Size(1635, 834);
+            this.pgeNetEsts.Size = new System.Drawing.Size(2457, 1267);
             this.pgeNetEsts.TabIndex = 13;
             this.pgeNetEsts.Text = "Net Turbine Ests";
             this.pgeNetEsts.UseVisualStyleBackColor = true;
@@ -6212,7 +6242,7 @@
             this.pgeSiteConditions.Location = new System.Drawing.Point(4, 27);
             this.pgeSiteConditions.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeSiteConditions.Name = "pgeSiteConditions";
-            this.pgeSiteConditions.Size = new System.Drawing.Size(1635, 834);
+            this.pgeSiteConditions.Size = new System.Drawing.Size(2457, 1267);
             this.pgeSiteConditions.TabIndex = 20;
             this.pgeSiteConditions.Text = "Site Conditions";
             this.pgeSiteConditions.UseVisualStyleBackColor = true;
@@ -6683,6 +6713,7 @@
             this.columnHeader184});
             this.lstExtremeShear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstExtremeShear.GridLines = true;
+            this.lstExtremeShear.HideSelection = false;
             this.lstExtremeShear.Location = new System.Drawing.Point(454, 148);
             this.lstExtremeShear.Margin = new System.Windows.Forms.Padding(2);
             this.lstExtremeShear.Name = "lstExtremeShear";
@@ -6916,6 +6947,7 @@
             this.columnHeader179});
             this.lstTurbulence.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstTurbulence.GridLines = true;
+            this.lstTurbulence.HideSelection = false;
             this.lstTurbulence.Location = new System.Drawing.Point(15, 68);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
@@ -7036,7 +7068,7 @@
             this.pgeMonthlyAnalysis.Location = new System.Drawing.Point(4, 27);
             this.pgeMonthlyAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMonthlyAnalysis.Name = "pgeMonthlyAnalysis";
-            this.pgeMonthlyAnalysis.Size = new System.Drawing.Size(1635, 834);
+            this.pgeMonthlyAnalysis.Size = new System.Drawing.Size(2457, 1267);
             this.pgeMonthlyAnalysis.TabIndex = 17;
             this.pgeMonthlyAnalysis.Text = "Time Series Analysis";
             this.pgeMonthlyAnalysis.UseVisualStyleBackColor = true;
@@ -7240,6 +7272,7 @@
             this.columnHeader128});
             this.lstYearlyTurbine.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstYearlyTurbine.GridLines = true;
+            this.lstYearlyTurbine.HideSelection = false;
             this.lstYearlyTurbine.Location = new System.Drawing.Point(15, 124);
             this.lstYearlyTurbine.Margin = new System.Windows.Forms.Padding(2);
             this.lstYearlyTurbine.Name = "lstYearlyTurbine";
@@ -7295,6 +7328,7 @@
             this.columnHeader130});
             this.lstMonthlyTurbine.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstMonthlyTurbine.GridLines = true;
+            this.lstMonthlyTurbine.HideSelection = false;
             this.lstMonthlyTurbine.Location = new System.Drawing.Point(765, 47);
             this.lstMonthlyTurbine.Margin = new System.Windows.Forms.Padding(2);
             this.lstMonthlyTurbine.Name = "lstMonthlyTurbine";
@@ -7396,7 +7430,7 @@
             this.pgeMaps.Location = new System.Drawing.Point(4, 27);
             this.pgeMaps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMaps.Name = "pgeMaps";
-            this.pgeMaps.Size = new System.Drawing.Size(1635, 834);
+            this.pgeMaps.Size = new System.Drawing.Size(2457, 1267);
             this.pgeMaps.TabIndex = 8;
             this.pgeMaps.Text = "Maps";
             this.pgeMaps.UseVisualStyleBackColor = true;
@@ -7796,6 +7830,7 @@
             this.ColumnHeader12,
             this.columnHeader185});
             this.lstMaps.FullRowSelect = true;
+            this.lstMaps.HideSelection = false;
             this.lstMaps.Location = new System.Drawing.Point(17, 158);
             this.lstMaps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstMaps.Name = "lstMaps";
@@ -7879,7 +7914,7 @@
             this.pgeRound.Location = new System.Drawing.Point(4, 27);
             this.pgeRound.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeRound.Name = "pgeRound";
-            this.pgeRound.Size = new System.Drawing.Size(1635, 834);
+            this.pgeRound.Size = new System.Drawing.Size(2457, 1267);
             this.pgeRound.TabIndex = 11;
             this.pgeRound.Text = "Uncertainty Analysis";
             this.pgeRound.UseVisualStyleBackColor = true;
@@ -8099,6 +8134,7 @@
             this.ColumnHeader27});
             this.lstTurbUncert.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstTurbUncert.FullRowSelect = true;
+            this.lstTurbUncert.HideSelection = false;
             this.lstTurbUncert.Location = new System.Drawing.Point(960, 117);
             this.lstTurbUncert.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstTurbUncert.Name = "lstTurbUncert";
@@ -8182,6 +8218,7 @@
             this.ColumnHeader9});
             this.lstRR_AllErr.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstRR_AllErr.FullRowSelect = true;
+            this.lstRR_AllErr.HideSelection = false;
             this.lstRR_AllErr.Location = new System.Drawing.Point(461, 117);
             this.lstRR_AllErr.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstRR_AllErr.Name = "lstRR_AllErr";
@@ -8235,6 +8272,7 @@
             this.ColumnHeader45});
             this.lstRR_Results.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstRR_Results.FullRowSelect = true;
+            this.lstRR_Results.HideSelection = false;
             this.lstRR_Results.Location = new System.Drawing.Point(244, 353);
             this.lstRR_Results.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstRR_Results.Name = "lstRR_Results";
@@ -8340,7 +8378,7 @@
             this.pgeStepwise.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeStepwise.Name = "pgeStepwise";
             this.pgeStepwise.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeStepwise.Size = new System.Drawing.Size(1635, 834);
+            this.pgeStepwise.Size = new System.Drawing.Size(2457, 1267);
             this.pgeStepwise.TabIndex = 10;
             this.pgeStepwise.Text = "Advanced";
             this.pgeStepwise.UseVisualStyleBackColor = true;
@@ -8459,6 +8497,7 @@
             this.ColumnHeader112});
             this.lstPathNodes_DW.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstPathNodes_DW.FullRowSelect = true;
+            this.lstPathNodes_DW.HideSelection = false;
             this.lstPathNodes_DW.Location = new System.Drawing.Point(1305, 75);
             this.lstPathNodes_DW.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstPathNodes_DW.Name = "lstPathNodes_DW";
@@ -8512,6 +8551,7 @@
             this.ColumnHeader111});
             this.lstPathNodes_UW.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstPathNodes_UW.FullRowSelect = true;
+            this.lstPathNodes_UW.HideSelection = false;
             this.lstPathNodes_UW.Location = new System.Drawing.Point(966, 75);
             this.lstPathNodes_UW.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstPathNodes_UW.Name = "lstPathNodes_UW";
@@ -8964,6 +9004,7 @@
             this.DW_DH});
             this.lstPathNodes.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstPathNodes.FullRowSelect = true;
+            this.lstPathNodes.HideSelection = false;
             this.lstPathNodes.Location = new System.Drawing.Point(484, 75);
             this.lstPathNodes.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstPathNodes.Name = "lstPathNodes";
@@ -9050,6 +9091,7 @@
             this.ColumnHeader31});
             this.lstModCrossPred.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstModCrossPred.FullRowSelect = true;
+            this.lstModCrossPred.HideSelection = false;
             this.lstModCrossPred.Location = new System.Drawing.Point(17, 636);
             this.lstModCrossPred.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstModCrossPred.Name = "lstModCrossPred";
@@ -9152,7 +9194,7 @@
             this.pgeSuitability.Location = new System.Drawing.Point(4, 27);
             this.pgeSuitability.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeSuitability.Name = "pgeSuitability";
-            this.pgeSuitability.Size = new System.Drawing.Size(1635, 834);
+            this.pgeSuitability.Size = new System.Drawing.Size(1627, 849);
             this.pgeSuitability.TabIndex = 18;
             this.pgeSuitability.Text = "Site Suitability";
             this.pgeSuitability.UseVisualStyleBackColor = true;
@@ -9249,6 +9291,7 @@
             this.txtTurbineNoise.Name = "txtTurbineNoise";
             this.txtTurbineNoise.Size = new System.Drawing.Size(44, 25);
             this.txtTurbineNoise.TabIndex = 270;
+            this.txtTurbineNoise.TextChanged += new System.EventHandler(this.TxtTurbineNoise_TextChanged);
             // 
             // label90
             // 
@@ -9296,7 +9339,7 @@
             this.chtIceVsDistOrHisto.AutoRefresh = false;
             this.chtIceVsDistOrHisto.BackColor = System.Drawing.SystemColors.Control;
             this.chtIceVsDistOrHisto.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtIceVsDistOrHisto.Location = new System.Drawing.Point(1003, 443);
+            this.chtIceVsDistOrHisto.Location = new System.Drawing.Point(1004, 443);
             this.chtIceVsDistOrHisto.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chtIceVsDistOrHisto.Name = "chtIceVsDistOrHisto";
             this.chtIceVsDistOrHisto.Size = new System.Drawing.Size(619, 372);
@@ -9354,6 +9397,7 @@
             this.columnHeader159});
             this.lstZoneSound.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstZoneSound.GridLines = true;
+            this.lstZoneSound.HideSelection = false;
             this.lstZoneSound.Location = new System.Drawing.Point(1475, 59);
             this.lstZoneSound.Margin = new System.Windows.Forms.Padding(2);
             this.lstZoneSound.Name = "lstZoneSound";
@@ -9404,6 +9448,7 @@
             this.columnHeader176});
             this.lstZoneIceHits.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstZoneIceHits.GridLines = true;
+            this.lstZoneIceHits.HideSelection = false;
             this.lstZoneIceHits.Location = new System.Drawing.Point(1158, 59);
             this.lstZoneIceHits.Margin = new System.Windows.Forms.Padding(2);
             this.lstZoneIceHits.Name = "lstZoneIceHits";
@@ -9470,6 +9515,7 @@
             this.columnHeader153});
             this.lstShadowZoneSummary.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstShadowZoneSummary.GridLines = true;
+            this.lstShadowZoneSummary.HideSelection = false;
             this.lstShadowZoneSummary.Location = new System.Drawing.Point(993, 59);
             this.lstShadowZoneSummary.Margin = new System.Windows.Forms.Padding(2);
             this.lstShadowZoneSummary.Name = "lstShadowZoneSummary";
@@ -9556,8 +9602,9 @@
             this.columnHeader148,
             this.columnHeader149,
             this.columnHeader150});
-            this.lstShadow12x24.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstShadow12x24.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstShadow12x24.GridLines = true;
+            this.lstShadow12x24.HideSelection = false;
             this.lstShadow12x24.Location = new System.Drawing.Point(1003, 443);
             this.lstShadow12x24.Margin = new System.Windows.Forms.Padding(2);
             this.lstShadow12x24.Name = "lstShadow12x24";
@@ -9787,6 +9834,7 @@
             this.columnHeader136,
             this.columnHeader137});
             this.lstZones.FullRowSelect = true;
+            this.lstZones.HideSelection = false;
             this.lstZones.Location = new System.Drawing.Point(14, 171);
             this.lstZones.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstZones.Name = "lstZones";
@@ -10094,20 +10142,11 @@
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
-            // btnShowMCPRanges
-            // 
-            this.btnShowMCPRanges.Location = new System.Drawing.Point(1463, 161);
-            this.btnShowMCPRanges.Name = "btnShowMCPRanges";
-            this.btnShowMCPRanges.Size = new System.Drawing.Size(138, 56);
-            this.btnShowMCPRanges.TabIndex = 295;
-            this.btnShowMCPRanges.Text = "View MCP Setting Valid Ranges";
-            this.btnShowMCPRanges.UseVisualStyleBackColor = true;
-            this.btnShowMCPRanges.Click += new System.EventHandler(this.btnShowMCPRanges_Click);
-            // 
             // Continuum
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1671, 910);
             this.Controls.Add(this.tabContinuum);
             this.Controls.Add(this.menuStrip1);
@@ -10116,7 +10155,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Continuum";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Continuum Wind Flow Model";
             this.tabContinuum.ResumeLayout(false);
             this.pgeInput.ResumeLayout(false);
@@ -10163,17 +10202,13 @@
         }
 
         #endregion
-
-        internal System.Windows.Forms.TabControl tabContinuum;
         internal System.Windows.Forms.TabPage pgeInput;
         internal Nevron.Chart.WinForm.NChartControl chtDirectionalWSRatios_Nev;
         internal Nevron.Chart.WinForm.NChartControl chtWindRose_Nev;
         internal Nevron.Chart.WinForm.NChartControl cht_NevTopo;
         internal System.Windows.Forms.Button btnImportRoughness;
-        internal System.Windows.Forms.CheckBox chk_Use_Sep;
         internal System.Windows.Forms.Label Label84;
         internal System.Windows.Forms.TextBox txt_LC_Key_selected;
-        internal System.Windows.Forms.CheckBox chkUseSR;
         internal System.Windows.Forms.Button btnViewModNLCD;
         internal System.Windows.Forms.ComboBox cboTopo_Or_Roughness;
         internal System.Windows.Forms.TextBox txtUTMZone;
@@ -10202,7 +10237,6 @@
         internal System.Windows.Forms.Button btnDelTurb;
         internal System.Windows.Forms.Button btnEditTurb;
         internal System.Windows.Forms.Button btnAddTurb;
-        internal System.Windows.Forms.ListView lstTurbines;
         internal System.Windows.Forms.ColumnHeader ColumnHeader17;
         internal System.Windows.Forms.ColumnHeader ColumnHeader18;
         internal System.Windows.Forms.ColumnHeader ColumnHeader19;
@@ -10555,15 +10589,12 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-        internal System.Windows.Forms.OpenFileDialog ofdPowerCurve;
         internal System.Windows.Forms.SaveFileDialog sfdrsf;
         internal System.Windows.Forms.SaveFileDialog sfdWRG;
         internal System.Windows.Forms.OpenFileDialog ofdCFMfile;
         internal System.Windows.Forms.OpenFileDialog ofdLandCover;
-        internal System.Windows.Forms.SaveFileDialog sfdCFMfile;
         internal System.Windows.Forms.OpenFileDialog ofdLC_Key;
         internal System.Windows.Forms.OpenFileDialog ofdTurbines;
         internal System.Windows.Forms.OpenFileDialog ofdImportMap;
@@ -11031,7 +11062,6 @@
         internal System.Windows.Forms.OpenFileDialog ofdExceedCurves;
         internal System.Windows.Forms.Button btnModHeight;
         internal System.Windows.Forms.CheckBox chkDisableFilter;
-        internal System.Windows.Forms.ListView lstPowerCurveList;
         internal System.Windows.Forms.ColumnHeader columnHeader186;
         private System.Windows.Forms.ColumnHeader columnHeader193;
         private System.Windows.Forms.ColumnHeader columnHeader194;
@@ -11044,6 +11074,14 @@
         public System.Windows.Forms.ListView lstZones;
         public System.Windows.Forms.Label lblTurbineTSNoAdvanced;
         private System.Windows.Forms.Button btnShowMCPRanges;
+        public System.Windows.Forms.CheckBox chkUseSR;
+        public System.Windows.Forms.CheckBox chk_Use_Sep;
+        public System.Windows.Forms.OpenFileDialog ofdPowerCurve;
+        public System.Windows.Forms.ListView lstTurbines;
+        public System.Windows.Forms.ListView lstPowerCurveList;
+        public System.Windows.Forms.SaveFileDialog sfdCFMfile;
+        public System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        public System.Windows.Forms.TabControl tabContinuum;
     }
 }
 

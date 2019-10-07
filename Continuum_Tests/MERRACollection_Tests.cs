@@ -24,7 +24,7 @@ namespace Continuum_Tests
             Met thisMet = new Met();
 
             thisInst.merraList.numMERRA_Nodes = 4;
-            thisInst.merraList.AddMERRA_GetDataFromTextFiles(thisLat, thisLong, -5, thisInst, thisMet);
+            thisInst.merraList.AddMERRA_GetDataFromTextFiles(thisLat, thisLong, -5, thisInst, thisMet, true);
             MERRA thisMERRA = thisInst.merraList.GetMERRA(thisLat, thisLong);
 
             Assert.AreEqual(thisMERRA.interpData.TS_Data[226].WS50m, 14.60535, 0.001, "Wrong interp WS Index 226");
@@ -49,61 +49,61 @@ namespace Continuum_Tests
             double thisLat = 41.09805;
             double thisLong = -83.6422;
 
-            MERRA.DecimalCoords[] theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
+            UTM_conversion.Lat_Long[] theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
 
-            Assert.AreEqual(theseNodes[0].Lat, 41.0, 0, "Wrong lat Test 1");
-            Assert.AreEqual(theseNodes[0].Lon, -83.75, 0, "Wrong long Test 1");
+            Assert.AreEqual(theseNodes[0].latitude, 41.0, 0, "Wrong lat Test 1");
+            Assert.AreEqual(theseNodes[0].longitude, -83.75, 0, "Wrong long Test 1");
 
             merraList.numMERRA_Nodes = 4;
             theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
 
-            Assert.AreEqual(theseNodes[0].Lat, 41.0, 0, "Wrong lat Test 2");
-            Assert.AreEqual(theseNodes[0].Lon, -83.75, 0, "Wrong long Test 2");
-            Assert.AreEqual(theseNodes[1].Lat, 41.0, 0, "Wrong lat Test 2");
-            Assert.AreEqual(theseNodes[1].Lon, -83.125, 0, "Wrong long Test 2");
-            Assert.AreEqual(theseNodes[2].Lat, 41.5, 0, "Wrong lat Test 2");
-            Assert.AreEqual(theseNodes[2].Lon, -83.75, 0, "Wrong long Test 2");
-            Assert.AreEqual(theseNodes[3].Lat, 41.5, 0, "Wrong lat Test 2");
-            Assert.AreEqual(theseNodes[3].Lon, -83.125, 0, "Wrong long Test 2");
+            Assert.AreEqual(theseNodes[0].latitude, 41.0, 0, "Wrong lat Test 2");
+            Assert.AreEqual(theseNodes[0].longitude, -83.75, 0, "Wrong long Test 2");
+            Assert.AreEqual(theseNodes[1].latitude, 41.0, 0, "Wrong lat Test 2");
+            Assert.AreEqual(theseNodes[1].longitude, -83.125, 0, "Wrong long Test 2");
+            Assert.AreEqual(theseNodes[2].latitude, 41.5, 0, "Wrong lat Test 2");
+            Assert.AreEqual(theseNodes[2].longitude, -83.75, 0, "Wrong long Test 2");
+            Assert.AreEqual(theseNodes[3].latitude, 41.5, 0, "Wrong lat Test 2");
+            Assert.AreEqual(theseNodes[3].longitude, -83.125, 0, "Wrong long Test 2");
 
             merraList.numMERRA_Nodes = 16;
             theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
 
-            Assert.AreEqual(theseNodes[0].Lat, 40.5, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[0].Lon, -84.375, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[1].Lat, 41.0, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[1].Lon, -84.375, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[2].Lat, 41.5, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[2].Lon, -84.375, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[3].Lat, 42.0, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[3].Lon, -84.375, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[0].latitude, 40.5, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[0].longitude, -84.375, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[1].latitude, 41.0, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[1].longitude, -84.375, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[2].latitude, 41.5, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[2].longitude, -84.375, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[3].latitude, 42.0, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[3].longitude, -84.375, 0, "Wrong long Test 3");
 
-            Assert.AreEqual(theseNodes[4].Lat, 40.5, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[4].Lon, -83.75, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[5].Lat, 41.0, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[5].Lon, -83.75, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[6].Lat, 41.5, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[6].Lon, -83.75, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[7].Lat, 42.0, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[7].Lon, -83.75, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[4].latitude, 40.5, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[4].longitude, -83.75, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[5].latitude, 41.0, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[5].longitude, -83.75, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[6].latitude, 41.5, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[6].longitude, -83.75, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[7].latitude, 42.0, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[7].longitude, -83.75, 0, "Wrong long Test 3");
 
-            Assert.AreEqual(theseNodes[8].Lat, 40.5, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[8].Lon, -83.125, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[9].Lat, 41.0, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[9].Lon, -83.125, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[10].Lat, 41.5, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[10].Lon, -83.125, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[11].Lat, 42.0, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[11].Lon, -83.125, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[8].latitude, 40.5, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[8].longitude, -83.125, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[9].latitude, 41.0, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[9].longitude, -83.125, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[10].latitude, 41.5, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[10].longitude, -83.125, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[11].latitude, 42.0, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[11].longitude, -83.125, 0, "Wrong long Test 3");
 
-            Assert.AreEqual(theseNodes[12].Lat, 40.5, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[12].Lon, -82.5, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[13].Lat, 41.0, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[13].Lon, -82.5, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[14].Lat, 41.5, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[14].Lon, -82.5, 0, "Wrong long Test 3");
-            Assert.AreEqual(theseNodes[15].Lat, 42.0, 0, "Wrong lat Test 3");
-            Assert.AreEqual(theseNodes[15].Lon, -82.5, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[12].latitude, 40.5, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[12].longitude, -82.5, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[13].latitude, 41.0, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[13].longitude, -82.5, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[14].latitude, 41.5, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[14].longitude, -82.5, 0, "Wrong long Test 3");
+            Assert.AreEqual(theseNodes[15].latitude, 42.0, 0, "Wrong lat Test 3");
+            Assert.AreEqual(theseNodes[15].longitude, -82.5, 0, "Wrong long Test 3");
 
             // Southern hemisphere
             thisLat = -35.279;
@@ -112,59 +112,59 @@ namespace Continuum_Tests
             merraList.numMERRA_Nodes = 1;
             theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
 
-            Assert.AreEqual(theseNodes[0].Lat, -35.5, 0, "Wrong lat Test 4");
-            Assert.AreEqual(theseNodes[0].Lon, 149.375, 0, "Wrong long Test 4");
+            Assert.AreEqual(theseNodes[0].latitude, -35.5, 0, "Wrong lat Test 4");
+            Assert.AreEqual(theseNodes[0].longitude, 149.375, 0, "Wrong long Test 4");
 
             merraList.numMERRA_Nodes = 4;
             theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
 
-            Assert.AreEqual(theseNodes[0].Lat, -35.5, 0, "Wrong lat Test 5");
-            Assert.AreEqual(theseNodes[0].Lon, 148.75, 0, "Wrong long Test 5");
-            Assert.AreEqual(theseNodes[1].Lat, -35.5, 0, "Wrong lat Test 5");
-            Assert.AreEqual(theseNodes[1].Lon, 149.375, 0, "Wrong long Test 5");
-            Assert.AreEqual(theseNodes[2].Lat, -35.0, 0, "Wrong lat Test 5");
-            Assert.AreEqual(theseNodes[2].Lon, 148.75, 0, "Wrong long Test 5");
-            Assert.AreEqual(theseNodes[3].Lat, -35.0, 0, "Wrong lat Test 5");
-            Assert.AreEqual(theseNodes[3].Lon, 149.375, 0, "Wrong long Test 5");
+            Assert.AreEqual(theseNodes[0].latitude, -35.5, 0, "Wrong lat Test 5");
+            Assert.AreEqual(theseNodes[0].longitude, 148.75, 0, "Wrong long Test 5");
+            Assert.AreEqual(theseNodes[1].latitude, -35.5, 0, "Wrong lat Test 5");
+            Assert.AreEqual(theseNodes[1].longitude, 149.375, 0, "Wrong long Test 5");
+            Assert.AreEqual(theseNodes[2].latitude, -35.0, 0, "Wrong lat Test 5");
+            Assert.AreEqual(theseNodes[2].longitude, 148.75, 0, "Wrong long Test 5");
+            Assert.AreEqual(theseNodes[3].latitude, -35.0, 0, "Wrong lat Test 5");
+            Assert.AreEqual(theseNodes[3].longitude, 149.375, 0, "Wrong long Test 5");
 
             merraList.numMERRA_Nodes = 16;
             theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
 
-            Assert.AreEqual(theseNodes[0].Lat, -36, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[0].Lon, 148.125, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[1].Lat, -35.5, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[1].Lon, 148.125, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[2].Lat, -35.0, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[2].Lon, 148.125, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[3].Lat, -34.5, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[3].Lon, 148.125, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[0].latitude, -36, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[0].longitude, 148.125, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[1].latitude, -35.5, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[1].longitude, 148.125, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[2].latitude, -35.0, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[2].longitude, 148.125, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[3].latitude, -34.5, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[3].longitude, 148.125, 0, "Wrong long Test 6");
 
-            Assert.AreEqual(theseNodes[4].Lat, -36, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[4].Lon, 148.75, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[5].Lat, -35.5, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[5].Lon, 148.75, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[6].Lat, -35.0, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[6].Lon, 148.75, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[7].Lat, -34.5, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[7].Lon, 148.75, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[4].latitude, -36, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[4].longitude, 148.75, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[5].latitude, -35.5, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[5].longitude, 148.75, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[6].latitude, -35.0, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[6].longitude, 148.75, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[7].latitude, -34.5, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[7].longitude, 148.75, 0, "Wrong long Test 6");
 
-            Assert.AreEqual(theseNodes[8].Lat, -36, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[8].Lon, 149.375, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[9].Lat, -35.5, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[9].Lon, 149.375, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[10].Lat, -35.0, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[10].Lon, 149.375, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[11].Lat, -34.5, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[11].Lon, 149.375, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[8].latitude, -36, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[8].longitude, 149.375, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[9].latitude, -35.5, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[9].longitude, 149.375, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[10].latitude, -35.0, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[10].longitude, 149.375, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[11].latitude, -34.5, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[11].longitude, 149.375, 0, "Wrong long Test 6");
 
-            Assert.AreEqual(theseNodes[12].Lat, -36, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[12].Lon, 150, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[13].Lat, -35.5, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[13].Lon, 150, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[14].Lat, -35.0, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[14].Lon, 150, 0, "Wrong long Test 6");
-            Assert.AreEqual(theseNodes[15].Lat, -34.5, 0, "Wrong lat Test 6");
-            Assert.AreEqual(theseNodes[15].Lon, 150, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[12].latitude, -36, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[12].longitude, 150, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[13].latitude, -35.5, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[13].longitude, 150, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[14].latitude, -35.0, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[14].longitude, 150, 0, "Wrong long Test 6");
+            Assert.AreEqual(theseNodes[15].latitude, -34.5, 0, "Wrong lat Test 6");
+            Assert.AreEqual(theseNodes[15].longitude, 150, 0, "Wrong long Test 6");
         }
     }
 }

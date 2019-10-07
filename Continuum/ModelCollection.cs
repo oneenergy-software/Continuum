@@ -2591,6 +2591,10 @@ namespace ContinuumNS
                 AddCoeffDeltaWS(ref coeffsDelta, 0, deltaWS, "Total", "Expo");
 
             }
+            else
+            {
+                flow1 = flow1;
+            }
 
             return coeffsDelta;
         }

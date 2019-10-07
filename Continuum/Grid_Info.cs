@@ -36,20 +36,16 @@ namespace ContinuumNS
         /// <summary>   Terrain complexity statistics. </summary>
         public Grid_Avg_SD[] stats;
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   (Serializable) a grid average sd. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>  Holds the radius of investigation and arrays of upwind and downwind P10 exposures. </summary>        
         [Serializable()]
         public struct Grid_Avg_SD
         {
-            /// <summary>   The radius. </summary>
+            /// <summary>   Radius of investigation. </summary>
             public int radius;
-            /// <summary>   The 10 uw. </summary>
+            /// <summary>   Upwind P10 terrain exposure by wind direction. </summary>
             public double[] P10_UW;
-            /// <summary>   The 10 double-word. </summary>
+            /// <summary>   Downwind P10 terrain exposure by wind direction. </summary>
             public double[] P10_DW;
         }
 
@@ -119,20 +115,11 @@ namespace ContinuumNS
             }
 
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Searches for the first sectors for grid. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="windRose"> The wind rose. </param>
-        ///
-        /// <returns>   The found sectors for grid. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary>   Finds wind direction sectors with the highest frequency and that account for 60% of wind rose. 
+        /// Returns array of boolean with the top sectors flagged as true. Used to define the grid for P10 calculations. </summary>        
         public bool[] FindSectorsForGrid(double[] windRose)
-        {
-            // Ranks and finds wind direction sectors that account for 60% of wind rose and return array of boolean with the top sectors flagged as true. Used to define the grid for P10 calculations.
+        {            
             int numWD = 0;
 
             try {
@@ -180,56 +167,34 @@ namespace ContinuumNS
             return sectorsToUse;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets grid array. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">     The utmx. </param>
-        /// <param name="UTMY">     The utmy. </param>
-        /// <param name="thisInst"> this instance. </param>
-        ///
-        /// <returns>   An array of topo grid. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public TopoInfo.TopoGrid[] GetGridArray(double UTMX, double UTMY, Continuum thisInst) // returns array of grid points surrounding met/node
-        {
-            // Defines grid surrounding UTMX and UTMY and returns array of TopoInfo.TopoGrid structs for each grid point in defined area               
+        /// <summary>  Returns array of grid points surrounding met/node for P10 exposure calculation. </summary>
+        public TopoInfo.TopoGrid[] GetGridArray(double UTMX, double UTMY, Continuum thisInst) // 
+        {                        
             double minX = UTMX - gridRadius;
             double minY = UTMY - gridRadius;
 
             double maxX = UTMX + gridRadius;
             double maxY = UTMY + gridRadius;
 
-            // Find closest nodes to minX and minY and maxX and maxY
-            TopoInfo.TopoGrid closestNodeToMin = thisInst.topo.GetClosestNodeFixedGrid(minX, minY, reso);
-            TopoInfo.TopoGrid closestNodeToMax = thisInst.topo.GetClosestNodeFixedGrid(maxX, maxY, reso);
+            // Find closest nodes to minX and minY and maxX and maxY with a minimum distance of 10 km from edge of topography 
+            TopoInfo.TopoGrid closestNodeToMin = thisInst.topo.GetClosestNodeFixedGrid(minX, minY, reso, 10000);
+            TopoInfo.TopoGrid closestNodeToMax = thisInst.topo.GetClosestNodeFixedGrid(maxX, maxY, reso, 10000);
 
             minX = closestNodeToMin.UTMX;
             minY = closestNodeToMin.UTMY;
             maxX = closestNodeToMax.UTMX;
             maxY = closestNodeToMax.UTMY;
 
-            double minTopoX = thisInst.topo.topoNumXY.X.all.min;
-            double minTopoY = thisInst.topo.topoNumXY.Y.all.min;
+            Check_class check = new Check_class();
 
             int gridCount = 0;
-            TopoInfo.TopoGrid[] gridArray = new TopoInfo.TopoGrid[1];                       
+            TopoInfo.TopoGrid[] gridArray = new TopoInfo.TopoGrid[1];
 
-            double dirBinSize = 0;
+            double dirBinSize = (double)360 / thisInst.metList.numWD;
             
             double[] windRose = thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
-            try {
-                dirBinSize = (double)360 / windRose.Length;
-            }
-            catch {
-                MessageBox.Show("Error trying to access wind rose length in grid array function", "Continuum 2.2");
-                return gridArray;
-            }
-
             bool[] sectorsToUse = FindSectorsForGrid(windRose);
-            int numSectorsInGrid = sectorsToUse.Length;
-
+            
             for (double i = minX; i <= maxX; i = i + reso)
             {
                 for (double j = minY; j <= maxY; j = j + reso)
@@ -238,9 +203,10 @@ namespace ContinuumNS
                     double deltaX = i - UTMX;
                     double deltaY = j - UTMY;
                     int dirInd = thisInst.topo.CalcDirInd(deltaX, deltaY, dirBinSize);
-                    bool gridOk = thisInst.topo.newNode(i, j, thisInst.radiiList, gridRadius);
+                    int goodToGo = check.NewNodeCheck(thisInst.topo, i, j, 10000);
+                  //  bool gridOk = thisInst.topo.newNode(i, j, thisInst.radiiList, gridRadius);
 
-                    if (gridOk == true && ((dist < gridRadius && sectorsToUse[dirInd] == true) || dist < gridRadius / 2))
+                    if (goodToGo == 100 && ((dist < gridRadius && sectorsToUse[dirInd] == true) || dist < gridRadius / 2))
                     {
                         gridCount = gridCount + 1;
                         Array.Resize(ref gridArray, gridCount);
@@ -346,18 +312,18 @@ namespace ContinuumNS
                 using (var ctx = new Continuum_EDMContainer(connString))
                 {
                     ctx.Node_table.AddRange(theseNodes);
-                    ctx.SaveChanges();
+                    ctx.SaveChanges();                    
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.InnerException.ToString());                
+                MessageBox.Show(ex.InnerException.ToString());                 
                 return;
             }
-        }       
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the grid statistics. </summary>
+        /// <summary>   Calculates P10 UW and P10 DW exposure in each WD sector for specified radius. </summary>
         ///
         /// <remarks>   OEE, 7/15/2019. </remarks>
         ///
@@ -370,41 +336,31 @@ namespace ContinuumNS
 
         public void CalcGridStats(int radiusInd, ref TopoInfo.TopoGrid[] gridArray, ref Node_table[] allNodesForDB, Nodes[] nodesFromDB, Continuum thisInst,
             bool isTest, string outFilename)
-        {
-            // Calculates P10 UW and P10 DW exposure in each WD sector for specified radius 
+        {            
             Grid_Avg_SD thisStats = new Grid_Avg_SD();
             int gridCount = gridArray.Length;            
             int numWD = thisInst.metList.numWD;
 
-            double[] P10_GridUW = new double[numWD]; // P10 UW exposure in each WD sector            
+       //     double[] P10_GridUW = new double[numWD]; // P10 UW exposure in each WD sector            
             double[] thisGridUW = new double[gridCount]; // UW exposure at each grid point for specific WD sector
 
-            double[] P10_Grid_DW = new double[numWD];            
+       //     double[] P10_Grid_DW = new double[numWD];            
             double[] thisGridDW = new double[gridCount];
 
             Exposure[] gridExpos = new Exposure[gridCount];
 
-            int numDB = 0;
-            if (allNodesForDB != null)
-                numDB = allNodesForDB.Length;
-
+            int numDB = 0;            
             int radius = thisInst.radiiList.investItem[radiusInd].radius;
-            double exponent = thisInst.radiiList.investItem[radiusInd].exponent;
-
+            
             double[,] gridUW = new double[gridCount, numWD]; // UW exposure at each grid point for each WD sector
             double[,] gridDW = new double[gridCount, numWD]; 
-            gridExpos = new Exposure[gridCount];
+            
             BinaryFormatter bin = new BinaryFormatter();
 
             for (int j = 0; j < gridCount; j++)
-            {
-                double gridUTMX = gridArray[j].UTMX;
-                double gridUTMY = gridArray[j].UTMY;
-                
+            {   
                 if (gridArray[j].elev == 0)
-                    gridArray[j].elev = thisInst.topo.CalcElevs(gridArray[j].UTMX, gridArray[j].UTMY);
-
-                double gridElev = gridArray[j].elev;
+                    gridArray[j].elev = thisInst.topo.CalcElevs(gridArray[j].UTMX, gridArray[j].UTMY);                               
 
                 gridExpos[j] = new Exposure();
 
@@ -412,42 +368,24 @@ namespace ContinuumNS
                 {
                     for (int i = 0; i < nodesFromDB.Length; i++)
                     {
-                        if (nodesFromDB[i].UTMX == gridUTMX && nodesFromDB[i].UTMY == gridUTMY)
+                        if (nodesFromDB[i].UTMX == gridArray[j].UTMX && nodesFromDB[i].UTMY == gridArray[j].UTMY)
                         {
                             gridExpos[j] = nodesFromDB[i].expo.ElementAt(radiusInd);
                             break;
                         }
                     }
                 }
-
-                if (allNodesForDB != null)
-                {
-                    for (int i = 0; i < allNodesForDB.Length; i++)
-                    {
-                        if (allNodesForDB[i].UTMX == gridUTMX && allNodesForDB[i].UTMY == gridUTMY)
-                        {
-                            gridExpos[j].radius = radius;
-                            gridExpos[j].exponent = exponent;
-                            MemoryStream MS1 = new MemoryStream(allNodesForDB[i].expo.ElementAt(radiusInd).Expo_Array);
-                            gridExpos[j].expo = (double[])bin.Deserialize(MS1);
-                            MS1 = new MemoryStream(allNodesForDB[i].expo.ElementAt(radiusInd).ExpoDist_Array);
-                            gridExpos[j].expoDist = (double[])bin.Deserialize(MS1);
-                            break;
-                        }
-                    }
-                }
-
+                          
                 if (gridExpos[j].expo == null)
                 {
                     // Calculate exposure for each radius
                     // Save calculated node to list
-
                     Array.Resize(ref allNodesForDB, numDB + 1);
 
                     allNodesForDB[numDB] = new Node_table();
-                    allNodesForDB[numDB].UTMX = gridUTMX;
-                    allNodesForDB[numDB].UTMY = gridUTMY;
-                    allNodesForDB[numDB].elev = gridElev;                                       
+                    allNodesForDB[numDB].UTMX = gridArray[j].UTMX;
+                    allNodesForDB[numDB].UTMY = gridArray[j].UTMY;
+                    allNodesForDB[numDB].elev = gridArray[j].elev;                                       
 
                     for (int i = 0; i < thisInst.radiiList.ThisCount; i++)
                     {
@@ -455,12 +393,12 @@ namespace ContinuumNS
                         double thisExponent = thisInst.radiiList.investItem[i].exponent;
 
                         if (gridArray[j].smallerR_Exposure == null)
-                            gridExpos[j] = thisInst.topo.CalcExposures(gridUTMX, gridUTMY, gridElev, thisRadius, thisExponent, 1, thisInst.topo, numWD);
+                            gridExpos[j] = thisInst.topo.CalcExposures(gridArray[j].UTMX, gridArray[j].UTMY, gridArray[j].elev, thisRadius, thisExponent, 1, thisInst.topo, numWD);
                         else
                         {
                             int smallerRadius = gridArray[j].smallerRadius;
                             Exposure smallerExposure = gridArray[j].smallerR_Exposure;
-                            gridExpos[j] = thisInst.topo.CalcExposuresWithSmallerRadius(gridUTMX, gridUTMY, gridElev, thisRadius, thisExponent, 1, smallerRadius, smallerExposure, numWD);
+                            gridExpos[j] = thisInst.topo.CalcExposuresWithSmallerRadius(gridArray[j].UTMX, gridArray[j].UTMY, gridArray[j].elev, thisRadius, thisExponent, 1, smallerRadius, smallerExposure, numWD);
                         }
 
                         if (thisRadius == radius)
@@ -533,14 +471,14 @@ namespace ContinuumNS
                 }
 
                 Array.Sort(thisGridUW);
-                Array.Sort(thisGridDW);
-
-                P10_GridUW[WD] = thisGridUW[Convert.ToInt16(gridCount * 0.9)];
-                P10_Grid_DW[WD] = thisGridDW[Convert.ToInt16(gridCount * 0.9)];
+                Array.Sort(thisGridDW);                
 
                 thisStats.radius = radius;
-                thisStats.P10_UW[WD] = P10_GridUW[WD];
-                thisStats.P10_DW[WD] = P10_Grid_DW[WD];
+                thisStats.P10_UW[WD] = thisGridUW[Convert.ToInt16(gridCount * 0.9)];
+                thisStats.P10_DW[WD] = thisGridDW[Convert.ToInt16(gridCount * 0.9)];
+
+                if (thisStats.P10_UW[WD] > 100)
+                    WD = WD;
             }
 
             Array.Resize(ref stats, radiusInd + 1);
@@ -575,8 +513,13 @@ namespace ContinuumNS
 
             // Get grid elevations
             for (int k = 0; k < gridArray.Length; k++)
-                gridArray[k].elev = thisInst.topo.CalcElevs(gridArray[k].UTMX, gridArray[k].UTMY);
+            {
+                if (gridArray[k].UTMX == 0)
+                    k = k;
 
+                gridArray[k].elev = thisInst.topo.CalcElevs(gridArray[k].UTMX, gridArray[k].UTMY);
+            }
+            
             // Find min/max X/Y of grid so the All_Expos table from database can be queried and extract exposure values that have already been calculated
             double minX = 10000000;
             double maxX = 0;

@@ -30,10 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Gen_WakeModel));
             this.txt_FlowSep_Used = new System.Windows.Forms.TextBox();
-            this.numWakeExp = new System.Windows.Forms.NumericUpDown();
-            this.Label6 = new System.Windows.Forms.Label();
-            this.numWRR = new System.Windows.Forms.NumericUpDown();
-            this.Label5 = new System.Windows.Forms.Label();
             this.cboWakeCombo = new System.Windows.Forms.ComboBox();
             this.Label4 = new System.Windows.Forms.Label();
             this.Label3 = new System.Windows.Forms.Label();
@@ -56,83 +52,16 @@
             this.Label1 = new System.Windows.Forms.Label();
             this.btnGenMap = new System.Windows.Forms.Button();
             this.txtisMCPWakeModel = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.numWakeExp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWRR)).BeginInit();
             this.SuspendLayout();
             // 
             // txt_FlowSep_Used
             // 
             this.txt_FlowSep_Used.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_FlowSep_Used.Location = new System.Drawing.Point(29, 459);
+            this.txt_FlowSep_Used.Location = new System.Drawing.Point(29, 416);
             this.txt_FlowSep_Used.Name = "txt_FlowSep_Used";
             this.txt_FlowSep_Used.ReadOnly = true;
             this.txt_FlowSep_Used.Size = new System.Drawing.Size(159, 25);
             this.txt_FlowSep_Used.TabIndex = 275;
-            // 
-            // numWakeExp
-            // 
-            this.numWakeExp.DecimalPlaces = 3;
-            this.numWakeExp.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numWakeExp.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            196608});
-            this.numWakeExp.Location = new System.Drawing.Point(170, 250);
-            this.numWakeExp.Maximum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numWakeExp.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            this.numWakeExp.Name = "numWakeExp";
-            this.numWakeExp.Size = new System.Drawing.Size(73, 25);
-            this.numWakeExp.TabIndex = 274;
-            this.numWakeExp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // Label6
-            // 
-            this.Label6.AutoSize = true;
-            this.Label6.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label6.Location = new System.Drawing.Point(8, 252);
-            this.Label6.Name = "Label6";
-            this.Label6.Size = new System.Drawing.Size(155, 18);
-            this.Label6.TabIndex = 273;
-            this.Label6.Text = "Wake distance exponent:";
-            // 
-            // numWRR
-            // 
-            this.numWRR.DecimalPlaces = 4;
-            this.numWRR.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numWRR.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-            this.numWRR.Location = new System.Drawing.Point(169, 223);
-            this.numWRR.Maximum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numWRR.Name = "numWRR";
-            this.numWRR.Size = new System.Drawing.Size(73, 25);
-            this.numWRR.TabIndex = 272;
-            this.numWRR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // Label5
-            // 
-            this.Label5.AutoSize = true;
-            this.Label5.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label5.Location = new System.Drawing.Point(21, 225);
-            this.Label5.Name = "Label5";
-            this.Label5.Size = new System.Drawing.Size(132, 18);
-            this.Label5.TabIndex = 271;
-            this.Label5.Text = "Wake Recharge Rate:";
             // 
             // cboWakeCombo
             // 
@@ -168,7 +97,7 @@
             // 
             this.Label3.AutoSize = true;
             this.Label3.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label3.Location = new System.Drawing.Point(13, 278);
+            this.Label3.Location = new System.Drawing.Point(13, 235);
             this.Label3.Name = "Label3";
             this.Label3.Size = new System.Drawing.Size(206, 18);
             this.Label3.TabIndex = 268;
@@ -177,7 +106,7 @@
             // txtLC_Used
             // 
             this.txtLC_Used.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLC_Used.Location = new System.Drawing.Point(29, 426);
+            this.txtLC_Used.Location = new System.Drawing.Point(29, 383);
             this.txtLC_Used.Name = "txtLC_Used";
             this.txtLC_Used.ReadOnly = true;
             this.txtLC_Used.Size = new System.Drawing.Size(159, 25);
@@ -187,7 +116,7 @@
             // 
             this.Label16.AutoSize = true;
             this.Label16.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label16.Location = new System.Drawing.Point(24, 363);
+            this.Label16.Location = new System.Drawing.Point(24, 320);
             this.Label16.Name = "Label16";
             this.Label16.Size = new System.Drawing.Size(143, 18);
             this.Label16.TabIndex = 264;
@@ -197,7 +126,7 @@
             // 
             this.Label15.AutoSize = true;
             this.Label15.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label15.Location = new System.Drawing.Point(23, 333);
+            this.Label15.Location = new System.Drawing.Point(23, 290);
             this.Label15.Name = "Label15";
             this.Label15.Size = new System.Drawing.Size(215, 18);
             this.Label15.TabIndex = 263;
@@ -206,7 +135,7 @@
             // txtCrossSpace
             // 
             this.txtCrossSpace.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCrossSpace.Location = new System.Drawing.Point(243, 332);
+            this.txtCrossSpace.Location = new System.Drawing.Point(243, 289);
             this.txtCrossSpace.Name = "txtCrossSpace";
             this.txtCrossSpace.Size = new System.Drawing.Size(84, 25);
             this.txtCrossSpace.TabIndex = 262;
@@ -241,7 +170,7 @@
             // txtDownSpace
             // 
             this.txtDownSpace.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDownSpace.Location = new System.Drawing.Point(243, 301);
+            this.txtDownSpace.Location = new System.Drawing.Point(243, 258);
             this.txtDownSpace.Name = "txtDownSpace";
             this.txtDownSpace.Size = new System.Drawing.Size(84, 25);
             this.txtDownSpace.TabIndex = 258;
@@ -250,7 +179,7 @@
             // 
             this.Label13.AutoSize = true;
             this.Label13.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label13.Location = new System.Drawing.Point(24, 304);
+            this.Label13.Location = new System.Drawing.Point(24, 261);
             this.Label13.Name = "Label13";
             this.Label13.Size = new System.Drawing.Size(217, 18);
             this.Label13.TabIndex = 257;
@@ -287,7 +216,7 @@
             // txtAmbRough
             // 
             this.txtAmbRough.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAmbRough.Location = new System.Drawing.Point(170, 362);
+            this.txtAmbRough.Location = new System.Drawing.Point(170, 319);
             this.txtAmbRough.Name = "txtAmbRough";
             this.txtAmbRough.Size = new System.Drawing.Size(84, 25);
             this.txtAmbRough.TabIndex = 253;
@@ -295,7 +224,7 @@
             // btnCancel
             // 
             this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(37, 498);
+            this.btnCancel.Location = new System.Drawing.Point(37, 455);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(87, 54);
             this.btnCancel.TabIndex = 252;
@@ -340,7 +269,7 @@
             // btnGenMap
             // 
             this.btnGenMap.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGenMap.Location = new System.Drawing.Point(130, 498);
+            this.btnGenMap.Location = new System.Drawing.Point(130, 455);
             this.btnGenMap.Name = "btnGenMap";
             this.btnGenMap.Size = new System.Drawing.Size(166, 54);
             this.btnGenMap.TabIndex = 248;
@@ -351,7 +280,7 @@
             // txtisMCPWakeModel
             // 
             this.txtisMCPWakeModel.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtisMCPWakeModel.Location = new System.Drawing.Point(29, 393);
+            this.txtisMCPWakeModel.Location = new System.Drawing.Point(29, 350);
             this.txtisMCPWakeModel.Name = "txtisMCPWakeModel";
             this.txtisMCPWakeModel.ReadOnly = true;
             this.txtisMCPWakeModel.Size = new System.Drawing.Size(159, 25);
@@ -361,13 +290,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(345, 564);
+            this.ClientSize = new System.Drawing.Size(345, 527);
             this.Controls.Add(this.txtisMCPWakeModel);
             this.Controls.Add(this.txt_FlowSep_Used);
-            this.Controls.Add(this.numWakeExp);
-            this.Controls.Add(this.Label6);
-            this.Controls.Add(this.numWRR);
-            this.Controls.Add(this.Label5);
             this.Controls.Add(this.cboWakeCombo);
             this.Controls.Add(this.Label4);
             this.Controls.Add(this.Label3);
@@ -391,8 +316,6 @@
             this.Controls.Add(this.btnGenMap);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Gen_WakeModel";
-            ((System.ComponentModel.ISupportInitialize)(this.numWakeExp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWRR)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -401,31 +324,27 @@
         #endregion
 
         internal System.Windows.Forms.TextBox txt_FlowSep_Used;
-        internal System.Windows.Forms.NumericUpDown numWakeExp;
-        internal System.Windows.Forms.Label Label6;
-        internal System.Windows.Forms.NumericUpDown numWRR;
-        internal System.Windows.Forms.Label Label5;
-        internal System.Windows.Forms.ComboBox cboWakeCombo;
         internal System.Windows.Forms.Label Label4;
         internal System.Windows.Forms.Label Label3;
         internal System.Windows.Forms.TextBox txtLC_Used;
         internal System.Windows.Forms.Label Label16;
         internal System.Windows.Forms.Label Label15;
-        internal System.Windows.Forms.TextBox txtCrossSpace;
-        internal System.Windows.Forms.TextBox txtHorizWakeExp;
-        internal System.Windows.Forms.ComboBox cboPowerCrvs;
         internal System.Windows.Forms.Label Label14;
-        internal System.Windows.Forms.TextBox txtDownSpace;
         internal System.Windows.Forms.Label Label13;
-        internal System.Windows.Forms.TextBox txtAmbTI;
         internal System.Windows.Forms.Label Label11;
         internal System.Windows.Forms.Label Label9;
-        internal System.Windows.Forms.TextBox txtAmbRough;
         internal System.Windows.Forms.Button btnCancel;
-        internal System.Windows.Forms.ComboBox cboWakeModel;
         internal System.Windows.Forms.Label Label2;
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.Button btnGenMap;
         internal System.Windows.Forms.TextBox txtisMCPWakeModel;
+        public System.Windows.Forms.ComboBox cboWakeCombo;
+        public System.Windows.Forms.TextBox txtCrossSpace;
+        public System.Windows.Forms.TextBox txtHorizWakeExp;
+        public System.Windows.Forms.ComboBox cboPowerCrvs;
+        public System.Windows.Forms.TextBox txtDownSpace;
+        public System.Windows.Forms.TextBox txtAmbTI;
+        public System.Windows.Forms.TextBox txtAmbRough;
+        public System.Windows.Forms.ComboBox cboWakeModel;
     }
 }

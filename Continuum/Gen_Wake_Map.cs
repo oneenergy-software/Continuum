@@ -237,6 +237,11 @@ namespace ContinuumNS
 
         private void btnGenMap_Click(object sender, EventArgs e)
         {
+            GenerateWakeMap();
+        }
+
+        public void GenerateWakeMap()
+        {
             // Gets map settings then adds map to list (which calls background worker to generate map)
             GetMapSettings();
 
@@ -247,7 +252,7 @@ namespace ContinuumNS
                 thisInst.wakeModelList.AddWakeGridMap(mapName, minUTMX, minUTMY, numX, numY, gridReso, thisWakeModel);
 
             thisInst.mapList.AddMap(mapName, minUTMX, minUTMY, gridReso, numX, numY, whatToMap, thisWakeModel.powerCurve.name,
-                                thisInst, true, thisWakeModel, metsUsed, models, useTimeSeries);            
+                                thisInst, true, thisWakeModel, metsUsed, models, useTimeSeries);
 
             Close();
         }

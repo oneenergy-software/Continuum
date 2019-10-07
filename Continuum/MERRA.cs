@@ -50,9 +50,9 @@ namespace ContinuumNS
         
         public Export_Params MERRA_Params;
         public bool isUserDefined; // true if not associated with a loaded met site
-        public string MERRAfolder = "";
-        public TurbineCollection.PowerCurve powerCurve;           
-
+        
+        public TurbineCollection.PowerCurve powerCurve;
+        
         public double WS_ScaleFactor = 0.85; // Scaling Factor applied to WS 
 
         public int numMERRA_Nodes;
@@ -69,12 +69,14 @@ namespace ContinuumNS
             public Wind_TS_with_Prod[] TS_Data;            
             public MonthlyProdByYearAndLTAvg[] Monthly_Prod; // one for every month
             public YearlyProdAndLTAvg Annual_Prod;      
-            public DecimalCoords Coords;
+            public UTM_conversion.Lat_Long Coords;
             public UTM_conversion.UTM_coords UTM;
-            public int UTC_offset;
-            public string File_or_Folder_Name;
+            public int UTC_offset;         
         }
 
+        /// <summary>
+        /// Contains time stamp, wind speed, direction, pressure, and temperature data
+        /// </summary>
         [Serializable()]
         public struct Wind_TS
         {            
@@ -132,20 +134,16 @@ namespace ContinuumNS
          //   public YearlyProdAndLTAvg Annual_Prod; 
         }
 
+        /// <summary> Holds coordinates, UTM coordinates, MERRA2 file indices and time series data of MERRA2 node </summary>
         public struct MERRA_Pull
         {
-            public DecimalCoords Coords;
+            public UTM_conversion.Lat_Long Coords;
             public UTM_conversion.UTM_coords UTM;
             public XYIndices XY_ind;
             public Wind_TS[] Data;
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing the Lat/Long and X/Y index (i.e. in MERRA2 datafile) of MERRA2 
-        ///             nodes. </summary>
-        ///
-        /// <remarks>   Liz, 1/16/2018. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>   Contains the Lat/Long and X/Y index (i.e. in MERRA2 datafile) of MERRA2 nodes. </summary>
         [Serializable()]
         public struct XYIndices
         {            
@@ -153,29 +151,7 @@ namespace ContinuumNS
             public double Lat;            
             public int Y_ind;            
             public double Lon;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing the hour, eastward 50m WS, and northward 50m WS of a MERRA2 node.
-        ///             When reading MERRA2 data and finding closest nodes, four (or sixteen) these objects
-        ///             are created to hold hourly wind speeds from the nodes. </summary>
-        ///
-        /// <remarks>   Liz, 1/16/2018. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-         
-        [Serializable()]
-        public struct UTMCoords
-        {            
-            public double Easting;
-            public double Northing;
-        }
-
-        [Serializable()]
-        public struct DecimalCoords
-        {            
-            public double Lat;            
-            public double Lon;
-        }                
+        }                         
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Struct containing the specified month, an array of type Year_and_Prod which 
@@ -230,6 +206,7 @@ namespace ContinuumNS
             public bool Get_Corr_Precip;
         }
 
+        /// <summary> Holds an array of timestamps and east/north (i.e. U/V) wind speeds at 10 and 50 m </summary>
         public struct East_North_WSs
         {
             public DateTime[] timeStamp;
@@ -237,9 +214,7 @@ namespace ContinuumNS
             public double[] V50;
             public double[] U10;
             public double[] V10;
-        }                
-              
-               
+        }                    
 
         /// <summary>
         /// CLEAR and RESET STUFF
@@ -247,13 +222,12 @@ namespace ContinuumNS
 
         public void ClearInterpData()
         {
-            interpData.TS_Data = new Wind_TS_with_Prod[0];
-            interpData.File_or_Folder_Name = "";
+            interpData.TS_Data = new Wind_TS_with_Prod[0];          
             interpData.Monthly_Prod = null;
             interpData.Annual_Prod.Yearly_Prod = null;
             interpData.Annual_Prod.LT_Avg = 0;
-            interpData.Coords.Lat = 0;
-            interpData.Coords.Lon = 0;
+            interpData.Coords.latitude = 0;
+            interpData.Coords.longitude = 0;
             interpData.UTM.UTMEasting = 0;
             interpData.UTM.UTMNorthing = 0;
             interpData.UTC_offset = 0;
@@ -267,11 +241,10 @@ namespace ContinuumNS
                     MERRA_Nodes[i].TS_Data = new Wind_TS[0];             
         }                    
 
-        public void ClearAll(bool Keep_Filename)
+        public void ClearAll()
         {            
             ClearInterpData();           
-            Clear_MERRA2_Node_Data();
-            MERRAfolder = "";            
+            Clear_MERRA2_Node_Data();                                 
         }                 
         
         public void Reset_MERRA_Pull(ref MERRA_Pull[] thisMERRA_Pull)
@@ -430,8 +403,8 @@ namespace ContinuumNS
         /// </summary>
         public void Set_Interp_LatLon_Dates_Offset(double latitude, double longitude, int offset, Continuum thisInst)
         {            
-            interpData.Coords.Lat = Math.Round(latitude, 3);
-            interpData.Coords.Lon = Math.Round(longitude, 3);                
+            interpData.Coords.latitude = Math.Round(latitude, 3);
+            interpData.Coords.longitude = Math.Round(longitude, 3);                
             interpData.UTC_offset = offset;
 
             if (thisInst.UTM_conversions.savedDatumIndex == 100)
@@ -445,7 +418,7 @@ namespace ContinuumNS
                     thisInst.UTM_conversions.hemisphere = "Southern";
             }
                                     
-            interpData.UTM = thisInst.UTM_conversions.LLtoUTM(interpData.Coords.Lat, interpData.Coords.Lon);
+            interpData.UTM = thisInst.UTM_conversions.LLtoUTM(interpData.Coords.latitude, interpData.Coords.longitude);
 
         }
 
@@ -1000,6 +973,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary>
+        /// Calculates and returns the average wind rose for specified month and year
+        /// </summary>        
         public double[] Calc_Wind_Rose(int thisMonth, int thisYear, UTM_conversion utm)
         {
             int numWD = 16;
@@ -1028,7 +1004,9 @@ namespace ContinuumNS
             return windRose;
         }
                
-
+        /// <summary>
+        /// Calculates the long-term average energy production for referenced YearlyProdAndLTAvg object
+        /// </summary>        
         public void Calc_LT_Avg_Prod(ref YearlyProdAndLTAvg thisAnnual)
         {            
             double avgLT = 0.0;                                 
@@ -1042,6 +1020,7 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Calculates the wind speed and wind direction based on MERRA U and V wind speeds for each node in thisMERRA_Pull and for each time stamp </summary>        
         public void Calc_MERRA2_WS_WD(ref MERRA_Pull[] thisMERRA_Pull, East_North_WSs[] theseUVs)
         {
             if (thisMERRA_Pull == null || theseUVs == null)
@@ -1053,14 +1032,18 @@ namespace ContinuumNS
             for (int i = 0; i < numNodes; i++)
                 for (int j = 0; j < numHours; j++)
                 {
-            /*        if (theseUVs[i].U10[j] != 0 && theseUVs[i].V10[j] != 0 && MERRA_Params.Get_10mWSWD)
-                    {
-                        thisMERRA_Pull[i].Data[j].WS10m = Math.Pow((Math.Pow(theseUVs[i].U10[j], 2) + Math.Pow(theseUVs[i].V10[j], 2)), 0.5);
-                        thisMERRA_Pull[i].Data[j].WD10m = Math.Atan2(theseUVs[i].V10[j], theseUVs[i].U10[j]) * (180 / Math.PI);
-                        thisMERRA_Pull[i].Data[j].WD10m = 270 - thisMERRA_Pull[i].Data[j].WD10m; // this moves WD=0 to north and flips WD to be from wind direction
-                        if (thisMERRA_Pull[i].Data[j].WD10m > 360) thisMERRA_Pull[i].Data[j].WD10m = thisMERRA_Pull[i].Data[j].WD10m - 360;
-                    }
-            */
+                    /*        if (theseUVs[i].U10[j] != 0 && theseUVs[i].V10[j] != 0 && MERRA_Params.Get_10mWSWD)
+                            {
+                                thisMERRA_Pull[i].Data[j].WS10m = Math.Pow((Math.Pow(theseUVs[i].U10[j], 2) + Math.Pow(theseUVs[i].V10[j], 2)), 0.5);
+                                thisMERRA_Pull[i].Data[j].WD10m = Math.Atan2(theseUVs[i].V10[j], theseUVs[i].U10[j]) * (180 / Math.PI);
+                                thisMERRA_Pull[i].Data[j].WD10m = 270 - thisMERRA_Pull[i].Data[j].WD10m; // this moves WD=0 to north and flips WD to be from wind direction
+                                if (thisMERRA_Pull[i].Data[j].WD10m > 360) thisMERRA_Pull[i].Data[j].WD10m = thisMERRA_Pull[i].Data[j].WD10m - 360;
+                            }
+                    */
+
+                    if (j == 52627)
+                        j = j;
+
                     if (theseUVs[i].U50[j] != 0 && theseUVs[i].V50[j] != 0 && MERRA_Params.Get_50mWSWD)
                     {
                         thisMERRA_Pull[i].Data[j].WS50m = Math.Pow((Math.Pow(theseUVs[i].U50[j], 2) + Math.Pow(theseUVs[i].V50[j], 2)), 0.5);
@@ -1072,10 +1055,9 @@ namespace ContinuumNS
                 }                        
         }
 
+        /// <summary> Calculates the monthly energy production on a yearly basis and the average long-term monthly energy production </summary>
         public void Calc_MonthProdStats(UTM_conversion utm)
         {
-            /// Calculates the monthly energy production on a yearly basis and the average long-term monthly energy production based on the Swiss Re Data
-
             Reset_MonthProdStats();
 
             if (GotWindTS(utm) == false) return;
@@ -1103,18 +1085,18 @@ namespace ContinuumNS
             // Calculate average monthly energy production           
             for (int i = 0; i < interpData.Monthly_Prod.Length; i++)
             {
-                int Year_Count = 0;
+                int yearCount = 0;
 
                 for (int j = 0; j < interpData.Monthly_Prod[0].YearProd.Length; j++)
                 {
                     if (interpData.Monthly_Prod[i].YearProd[j].prod > 0)
                     {
                         interpData.Monthly_Prod[i].LT_Avg = interpData.Monthly_Prod[i].LT_Avg + interpData.Monthly_Prod[i].YearProd[j].prod;
-                        Year_Count++;
+                        yearCount++;
                     }
                 }
 
-                interpData.Monthly_Prod[i].LT_Avg = interpData.Monthly_Prod[i].LT_Avg / Year_Count;
+                interpData.Monthly_Prod[i].LT_Avg = interpData.Monthly_Prod[i].LT_Avg / yearCount;
             }            
 
         }                   
@@ -1169,7 +1151,7 @@ namespace ContinuumNS
         }
 
             
-        public bool GetMERRAPullXYIndices(ref MERRA_Pull[] nodesToPull)
+        public bool GetMERRAPullXYIndices(ref MERRA_Pull[] nodesToPull, string MERRAfolder)
         {
             // Opens a MERRA data file, looks at lat/long and assigns Xind and Yind to nodesToPull
             // If any nodesToPull are out of the range, returns false. 
@@ -1238,14 +1220,14 @@ namespace ContinuumNS
 
             for (int i = 0; i < nodesToPull.Length; i++)
             {
-                if (nodesToPull[i].Coords.Lat < minLat)
-                    minLat = nodesToPull[i].Coords.Lat;
-                if (nodesToPull[i].Coords.Lon < minLong)
-                    minLong = nodesToPull[i].Coords.Lon;
-                if (nodesToPull[i].Coords.Lat > maxLat)
-                    maxLat = nodesToPull[i].Coords.Lat;
-                if (nodesToPull[i].Coords.Lon > maxLong)
-                    maxLong = nodesToPull[i].Coords.Lon;
+                if (nodesToPull[i].Coords.latitude < minLat)
+                    minLat = nodesToPull[i].Coords.latitude;
+                if (nodesToPull[i].Coords.longitude < minLong)
+                    minLong = nodesToPull[i].Coords.longitude;
+                if (nodesToPull[i].Coords.latitude > maxLat)
+                    maxLat = nodesToPull[i].Coords.latitude;
+                if (nodesToPull[i].Coords.longitude > maxLong)
+                    maxLong = nodesToPull[i].Coords.longitude;
             }
             
             // Go through nodesToPull and assign Xind and Yind
@@ -1256,7 +1238,7 @@ namespace ContinuumNS
 
                 for (int latInd = 0; latInd < numLats; latInd++)
                 {
-                    if (lats[latInd] == nodesToPull[i].Coords.Lat)
+                    if (lats[latInd] == nodesToPull[i].Coords.latitude)
                     {
                         nodesToPull[i].XY_ind.Lat = lats[latInd];
                         nodesToPull[i].XY_ind.X_ind = latInd;
@@ -1266,7 +1248,7 @@ namespace ContinuumNS
 
                 for (int longInd = 0; longInd < numLongs; longInd++)
                 { 
-                    if (longs[longInd] == nodesToPull[i].Coords.Lon)
+                    if (longs[longInd] == nodesToPull[i].Coords.longitude)
                     {
                         nodesToPull[i].XY_ind.Lon = longs[longInd];
                         nodesToPull[i].XY_ind.Y_ind = longInd;
@@ -1286,20 +1268,15 @@ namespace ContinuumNS
 
             return gotAllIndices;
         }
-               
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets merra coordinates. </summary>
-        ///
-        /// <remarks>   OEE, 1/16/2018. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public bool Find_MERRA_Coords()
-        {
-            // Finds closest MERRA2 nodes to project site
-            // Grabbing filepaths for all MERRA data containing files
+
+        /// <summary> Finds lat/long and MERRA2 datafile X/Y indices for MERRA2 node(s) closest to project site </summary>        
+        public bool Find_MERRA_Coords(string MERRAfolder)
+        {                        
             bool foundInds = false;
 
+            // Grabbing filepaths for all MERRA data containing files
             string[] MERRAfiles = Directory.GetFiles(MERRAfolder, "*.ascii");
             string line;
 
@@ -1324,21 +1301,21 @@ namespace ContinuumNS
 
             double[] lats = new double[0];
             double[] longs = new double[0];
-            int numPerRC = 1;
+            int numPerRC = 1; // Number of nodes per row/column
+            numPerRC = (int)Math.Pow(numMERRA_Nodes, 0.5);
 
             while ((line = file.ReadLine()) != null)
             {
                 char[] delims = { ',' };
                 string[] substrings = line.Split(delims);
-                numPerRC = (int)Math.Pow(numMERRA_Nodes, 0.5);                
+                        
 
                 if (substrings[0] == "lat") // read in all latitudes
                 {
                     Array.Resize(ref lats, substrings.Length - 1);
 
                     for (int i = 1; i < substrings.Length; i++)
-                        lats[i - 1] = Convert.ToDouble(substrings[i]);
-                                            
+                        lats[i - 1] = Convert.ToDouble(substrings[i]);                                            
                 }
 
                 if (substrings[0] == "lon") // read in all latitudes
@@ -1346,12 +1323,22 @@ namespace ContinuumNS
                     Array.Resize(ref longs, substrings.Length - 1);
 
                     for (int i = 1; i < substrings.Length; i++)
-                        longs[i - 1] = Convert.ToDouble(substrings[i]);
-                                                               
+                        longs[i - 1] = Convert.ToDouble(substrings[i]);                                                               
                 }
             }                    
 
             file.Close();
+
+            if ((lats.Length < 4 || longs.Length < 4) & numPerRC == 4) // 16 MERRA nodes
+            {                               
+                MessageBox.Show("MERRA2 data range is too small. A minimum of four latitudes and four longitudes are needed if 16 MERRA nodes are used.", "Continuum 3");
+                return foundInds;
+            }
+            else if (lats.Length < 2 || longs.Length < 2)
+            {
+                MessageBox.Show("MERRA2 data range is too small. A minimum of two latitudes and two longitudes are needed.", "Continuum 3");
+                return foundInds;
+            }
 
             // Figure out if the MERRA2 files have nodes covering the specified area
             double latReso = lats[1] - lats[0];
@@ -1365,79 +1352,85 @@ namespace ContinuumNS
 
             if (numMERRA_Nodes > 1)
             {
-                minReqLat = lats[numPerRC / 2 - 1];
-                minReqLong = longs[numPerRC / 2 - 1];
-                maxReqLat = lats[lats.Length - numPerRC / 2];
-                maxReqLong = longs[longs.Length - numPerRC / 2];
-            }
-                        
+                if (lats.Length > (numPerRC / 2 - 1) && longs.Length > (numPerRC / 2 - 1))
+                {
+                    minReqLat = lats[numPerRC / 2 - 1]; 
+                    minReqLong = longs[numPerRC / 2 - 1];
+                    maxReqLat = lats[lats.Length - numPerRC / 2];
+                    maxReqLong = longs[longs.Length - numPerRC / 2];
+                }
+                else
+                {
+                    MessageBox.Show("MERRA2 data range is not large enough to cover desired number of MERRA2 nodes.");
+                    return foundInds;
+                }                
+            }                        
 
-            if (interpData.Coords.Lat < minReqLat || interpData.Coords.Lat > maxReqLat)
-            {               
-
+            if (interpData.Coords.latitude < minReqLat || interpData.Coords.latitude > maxReqLat)
+            {
                 MessageBox.Show("Outside of available MERRA2 data range. With " + numMERRA_Nodes + " MERRA2 nodes selected, the allowed latitude range is " + minReqLat + " to " + maxReqLat);
                 return foundInds;
             }
 
-            if (interpData.Coords.Lon < minReqLong || interpData.Coords.Lon > maxReqLong)
-            {
-                
+            if (interpData.Coords.longitude < minReqLong || interpData.Coords.longitude > maxReqLong)
+            {                
                 MessageBox.Show("Outside of available MERRA2 data range. With " + numMERRA_Nodes + " MERRA2 nodes selected, the allowed longitude range is " + minReqLong + " to " + maxReqLong);
                 return foundInds;
             }
 
-            int Start_Lat_ind = 0;
-            int Start_Long_ind = 0;
-            double Last_diff = 1000;
+            int startLatInd = 0;
+            int startLongInd = 0;
+            double lastDiff = 1000;
 
             if (numMERRA_Nodes == 1) // find lat and long closest to project site (as opposed to finding the lat/long that form a box around project site)
             {
                 for (int i = 0; i < lats.Length; i++)
                 {
-                    double This_diff = lats[i] - interpData.Coords.Lat;
-                    if (Math.Abs(This_diff) < Last_diff)
+                    double thisDiff = lats[i] - interpData.Coords.latitude;
+                    if (Math.Abs(thisDiff) < lastDiff)
                     {
-                        Start_Lat_ind = i;
-                        Last_diff = Math.Abs(This_diff);
+                        startLatInd = i;
+                        lastDiff = Math.Abs(thisDiff);
                     }
                 }
 
-                Last_diff = 1000;
+                lastDiff = 1000;
                 for (int i = 0; i < longs.Length; i++)
                 {
-                    double This_diff = longs[i] - interpData.Coords.Lon;
-                    if (Math.Abs(This_diff) < Last_diff)
+                    double thisDiff = longs[i] - interpData.Coords.longitude;
+                    if (Math.Abs(thisDiff) < lastDiff)
                     {
-                        Start_Long_ind = i;
-                        Last_diff = Math.Abs(This_diff);
+                        startLongInd = i;
+                        lastDiff = Math.Abs(thisDiff);
                     }
                 }
             }
             else
-            {
+            { // Find latitude that is closest but also west of desired latitude
                 for (int i = 0; i < lats.Length; i++)
                 {
-                    double This_diff = lats[i] - interpData.Coords.Lat;
-                    if (This_diff <= 0 && Math.Abs(This_diff) < Last_diff)
+                    double thisDiff = lats[i] - interpData.Coords.latitude;
+                    if (thisDiff <= 0 && Math.Abs(thisDiff) < lastDiff)
                     {
-                        Start_Lat_ind = i;
-                        Last_diff = Math.Abs(This_diff);
+                        startLatInd = i;
+                        lastDiff = Math.Abs(thisDiff);
                     }
                 }
 
-                Last_diff = 1000;
+                // Find longitude that is closest but south of desired location
+                lastDiff = 1000;
                 for (int i = 0; i < longs.Length; i++)
                 {
-                    double This_diff = longs[i] - interpData.Coords.Lon;
-                    if (This_diff <= 0 && Math.Abs(This_diff) < Last_diff)
+                    double thisDiff = longs[i] - interpData.Coords.longitude;
+                    if (thisDiff <= 0 && Math.Abs(thisDiff) < lastDiff)
                     {
-                        Start_Long_ind = i;
-                        Last_diff = Math.Abs(This_diff);
+                        startLongInd = i;
+                        lastDiff = Math.Abs(thisDiff);
                     }
                 }
 
-                Start_Lat_ind = Start_Lat_ind - numPerRC / 2 + 1;
-                Start_Long_ind = Start_Long_ind - numPerRC / 2 + 1;
+                startLatInd = startLatInd - numPerRC / 2 + 1;
+                startLongInd = startLongInd - numPerRC / 2 + 1;
             }
             
 
@@ -1445,119 +1438,18 @@ namespace ContinuumNS
                 for (int col = 0; col < numPerRC; col++)
                 {
                     int MERRA_ind = row * numPerRC + col ;
-                    MERRA_Nodes[MERRA_ind].XY_ind.X_ind = Start_Lat_ind + col;
-                    MERRA_Nodes[MERRA_ind].XY_ind.Lat = lats[0] + (Start_Lat_ind + col) * latReso;
-                    MERRA_Nodes[MERRA_ind].XY_ind.Y_ind = Start_Long_ind + row;
-                    MERRA_Nodes[MERRA_ind].XY_ind.Lon = longs[0] + (Start_Long_ind + row) * longReso;
+                    MERRA_Nodes[MERRA_ind].XY_ind.X_ind = startLatInd + col;
+                    MERRA_Nodes[MERRA_ind].XY_ind.Lat = lats[0] + (startLatInd + col) * latReso;
+                    MERRA_Nodes[MERRA_ind].XY_ind.Y_ind = startLongInd + row;
+                    MERRA_Nodes[MERRA_ind].XY_ind.Lon = longs[0] + (startLongInd + row) * longReso;
                 }
 
             foundInds = true;
 
             return foundInds;
         }
-                    
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Interp merra. </summary>
-        ///
-        /// <remarks>   OEE, 1/16/2018. </remarks>
-        ///
-        /// <param name="ThisMERRA">    this merra. </param>
-        /// <param name="TargCoords">   The targ coordinates. </param>
-        /// <param name="RefCoords">    The reference coordinates. </param>
-        ///
-        /// <returns>   A Wind_TS[]. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-                
-        public Wind_TS[] InterpMERRA(East_North_WSs[] theseUVs, MERRA_Pull[] thisMERRA_Pull)
-        {
-            // interpolates U50 and V50 then calculates WS and WD at project location
-            // also interpolates temperature and pressure data
-            if (theseUVs == null)
-                return null;
                         
-            int numHours = theseUVs[0].U10.Length;
-
-            Wind_TS[] interpWSWD = new Wind_TS[numHours];
-            East_North_WSs[] interpUV = new East_North_WSs[1]; // one node (to interpolate at) 
-            Size_East_North_WS_Data(ref interpUV, 24); // U and V arrays sized to 24 hours
-
-            double[] distance = new double[numMERRA_Nodes];
-            TopoInfo topo = new TopoInfo(); // created to use 'CalcDistanceBetweenTwoPoints' function
-            double invDistance = 0;
-            double distExp = 1;
-            UTM_conversion thisConv = new UTM_conversion();
-            UTM_conversion.UTM_coords target = thisConv.LLtoUTM(interpData.Coords.Lat, interpData.Coords.Lon);
             
-            // Finding the distance from each of the 4 closest MERRA2 nodes to the input dataset coords
-            for (int i = 0; i < numMERRA_Nodes; i++)
-            {
-                distance[i] = topo.CalcDistanceBetweenPoints(interpData.UTM.UTMEasting, interpData.UTM.UTMNorthing, thisMERRA_Pull[i].UTM.UTMEasting, thisMERRA_Pull[i].UTM.UTMNorthing);
-
-                if (distance[i] == 0)
-                    distance[i] = .000001;
-            }
-
-            for (int i = 0; i < numMERRA_Nodes; i++)
-                for (int j = 0; j < numHours; j++)
-                {
-                    // intepolate eastward and northward WS
-                    interpUV[0].U50[j] = theseUVs[i].U50[j] * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpUV[0].U50[j]; // Sum of inverse distance weighted WS's 
-                    interpUV[0].V50[j] = theseUVs[i].V50[j] * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpUV[0].V50[j]; // Sum of inverse distance weighted WS's 
-                    interpUV[0].U10[j] = theseUVs[i].U10[j] * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpUV[0].U10[j]; // Sum of inverse distance weighted WS's 
-                    interpUV[0].V10[j] = theseUVs[i].V10[j] * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpUV[0].V10[j]; // Sum of inverse distance weighted WS's 
-                    // interpolate other parameters
-                    interpWSWD[j].Temp10m = thisMERRA_Pull[i].Data[j].Temp10m * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpWSWD[j].Temp10m;
-                    interpWSWD[j].SurfPress = thisMERRA_Pull[i].Data[j].SurfPress * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpWSWD[j].SurfPress;
-                    interpWSWD[j].SeaPress = thisMERRA_Pull[i].Data[j].SeaPress * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpWSWD[j].SeaPress;
-                  //  interpWSWD[j].Mean_Cloud_Fraction = thisMERRA_Pull[i].Data[j].Mean_Cloud_Fraction * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpWSWD[j].Mean_Cloud_Fraction;
-                  //  interpWSWD[j].Optical_Thick = thisMERRA_Pull[i].Data[j].Optical_Thick * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpWSWD[j].Optical_Thick;
-                  //  interpWSWD[j].Total_Cloud_Area_Fraction = thisMERRA_Pull[i].Data[j].Total_Cloud_Area_Fraction * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpWSWD[j].Total_Cloud_Area_Fraction;
-                  //  interpWSWD[j].Precip = thisMERRA_Pull[i].Data[j].Precip * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpWSWD[j].Precip;
-                  //  interpWSWD[j].Precip_Corr = thisMERRA_Pull[i].Data[j].Precip_Corr * Math.Pow(1 / Convert.ToSingle(distance[i]), distExp) + interpWSWD[j].Precip_Corr;
-                }
-
-            // Sum of inverse distances
-            for (int i = 0; i < numMERRA_Nodes; i++)
-                invDistance = invDistance + Math.Pow(1 / distance[i], distExp);
-
-            // Dividing each inverse distance weighted WS sum by the sum of the inverse distances
-            for (int i = 0; i < numHours; i++)
-            {
-                interpUV[0].U10[i] = interpUV[0].U10[i] / Convert.ToSingle(invDistance);
-                interpUV[0].V10[i] = interpUV[0].V10[i] / Convert.ToSingle(invDistance);
-                interpUV[0].U50[i] = interpUV[0].U50[i] / Convert.ToSingle(invDistance);
-                interpUV[0].V50[i] = interpUV[0].V50[i] / Convert.ToSingle(invDistance);
-
-                interpWSWD[i].Temp10m = interpWSWD[i].Temp10m / Convert.ToSingle(invDistance);
-                interpWSWD[i].SurfPress = interpWSWD[i].SurfPress / Convert.ToSingle(invDistance);
-                interpWSWD[i].SeaPress = interpWSWD[i].SeaPress / Convert.ToSingle(invDistance);
-             //   interpWSWD[i].Mean_Cloud_Fraction = interpWSWD[i].Mean_Cloud_Fraction / Convert.ToSingle(invDistance);
-             //   interpWSWD[i].Optical_Thick = interpWSWD[i].Optical_Thick / Convert.ToSingle(invDistance);
-             //   interpWSWD[i].Total_Cloud_Area_Fraction = interpWSWD[i].Total_Cloud_Area_Fraction / Convert.ToSingle(invDistance);
-             //   interpWSWD[i].Precip = interpWSWD[i].Precip / Convert.ToSingle(invDistance);
-             //   interpWSWD[i].Precip_Corr = interpWSWD[i].Precip_Corr / Convert.ToSingle(invDistance);
-
-                interpWSWD[i].ThisDate = thisMERRA_Pull[0].Data[i].ThisDate;
-             //   interpWSWD[i].WS10m = Math.Pow(Math.Pow(interpUV[0].U10[i], 2) + Math.Pow(interpUV[0].V10[i], 2), 0.5);
-                interpWSWD[i].WS50m = Math.Pow(Math.Pow(interpUV[0].U50[i], 2) + Math.Pow(interpUV[0].V50[i], 2), 0.5);
-
-             //   if (MERRA_Params.Get_10mWSWD) interpWSWD[i].WD10m = 270 - 180 / Math.PI * Math.Atan2(interpUV[0].V10[i], interpUV[0].U10[i]);
-                if (MERRA_Params.Get_50mWSWD) interpWSWD[i].WD50m = 270 - 180 / Math.PI * Math.Atan2(interpUV[0].V50[i], interpUV[0].U50[i]);
-
-             //   if (interpWSWD[i].WS10m < 0)
-             //       interpWSWD[i].WS10m = -999;
-
-                if (interpWSWD[i].WS50m < 0)
-                    interpWSWD[i].WS50m = -999;
-
-            //    if (interpWSWD[i].WD10m > 360) interpWSWD[i].WD10m -= 360;
-                if (interpWSWD[i].WD50m > 360) interpWSWD[i].WD50m -= 360;
-                
-            }
-
-            return interpWSWD;
-        }        
 
         public int Get_Num_Days_in_Month(int Month_1_to_12, int thisYear)
         {
@@ -1605,13 +1497,14 @@ namespace ContinuumNS
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(ex.InnerException.ToString());
+                            MessageBox.Show(ex.InnerException.ToString());                            
                             return;
                         }
                     }
 
                     MERRA_Nodes[i].TS_Data = null;
                 }
+                context.Database.Connection.Close();
             }
         }
 
@@ -1632,8 +1525,8 @@ namespace ContinuumNS
                 for (int i = 0; i < numNewData; i++)
                 { 
                     MERRA_Node_table merraNodeTable = new MERRA_Node_table();
-                    merraNodeTable.latitude = newDataToAdd[i].Coords.Lat;
-                    merraNodeTable.longitude = newDataToAdd[i].Coords.Lon;
+                    merraNodeTable.latitude = newDataToAdd[i].Coords.latitude;
+                    merraNodeTable.longitude = newDataToAdd[i].Coords.longitude;
 
                     MemoryStream MS1 = new MemoryStream();
                     bin.Serialize(MS1, newDataToAdd[i].Data);
@@ -1646,11 +1539,13 @@ namespace ContinuumNS
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.InnerException.ToString());
+                        MessageBox.Show(ex.InnerException.ToString());                        
                         return;
                     }                    
                     
                 }
+
+                context.Database.Connection.Close();
             }
         }
 
@@ -1662,8 +1557,8 @@ namespace ContinuumNS
                       
             using (var context = new Continuum_EDMContainer(connString))
             {
-                double thisLat = interpData.Coords.Lat;
-                double thisLong = interpData.Coords.Lon;                      
+                double thisLat = interpData.Coords.latitude;
+                double thisLong = interpData.Coords.longitude;                      
 
                 for (int i = 0; i < numMERRA_Nodes; i++)
                 {
@@ -1678,16 +1573,17 @@ namespace ContinuumNS
                         MERRA_Nodes[i].TS_Data = (Wind_TS[])bin.Deserialize(MS);
                         MS.Close();
                     }
-                }                    
-                
+                }
+
+                context.Database.Connection.Close();
             }
             
         }
 
+        /// <summary> Generates interpData time series dataset which contains MERRA2 interpolated temperature, pressure, and wind speed data </summary>        
         public void GetInterpData(UTM_conversion utm)
         {
-            // Generates interpData series. (interpData not saved in file or DB, only MERRA2 data saved in DB and interpData created as needed)
-
+            // interpData not saved in file or DB, only MERRA2 data saved in DB and interpData created as needed)
             if (MERRA_Nodes.Length == 0)
                 return;
 
@@ -1746,10 +1642,12 @@ namespace ContinuumNS
 
         }
 
+        /// <summary>
+        /// Finds and returns maximum hourly wind speed for each year of long-term data (used in extreme WS calcs)
+        /// </summary>
+        /// <returns></returns>
         public Met.MaxYearlyWind[] GetMaxHourlyWindSpeeds()
-        {
-            // Finds maximum hourly wind speed for each year of long-term data (used in extreme WS calcs)
-            
+        {            
             int refLength = interpData.TS_Data.Length;
             int firstYear = interpData.TS_Data[0].ThisDate.Year;
             int lastYear = interpData.TS_Data[refLength - 1].ThisDate.Year;
@@ -1792,15 +1690,34 @@ namespace ContinuumNS
         public bool WasDataFullyLoaded(MERRA_Pull[] merraData, string selectedFolder)
         {
             bool fullyLoaded = true;
+            TimeSpan timeSpan;
+            DateTime thisTime;
+            DateTime lastTime = DateTime.Now;
 
             for (int i = 0; i < merraData.Length; i++)
             {
+                if (merraData[i].Data.Length > 0)
+                    lastTime = merraData[i].Data[0].ThisDate;
+
                 for (int j = 0; j < merraData[i].Data.Length; j++)
-                    if (merraData[i].Data[j].WS50m == 0 && merraData[i].Data[j].WD50m == 0)
+                {
+                    thisTime = merraData[i].Data[j].ThisDate;
+                    timeSpan = thisTime.Subtract(lastTime);
+
+                    if (timeSpan.TotalMinutes > 60) // one hour
                     {
-                        MessageBox.Show("MERRA2 data was not fully loaded. Check the datafiles in the selected folder: " + selectedFolder);
+                        MessageBox.Show("Missing MERRA data. Start of missing interval: " + thisTime.ToString());
                         return fullyLoaded = false;
                     }
+
+                    if (merraData[i].Data[j].WS50m == 0 && merraData[i].Data[j].WD50m == 0)
+                    {
+                        MessageBox.Show("MERRA2 data was not fully loaded. Missing data: " + lastTime.ToString());
+                        return fullyLoaded = false;
+                    }
+
+                    lastTime = thisTime;
+                }
             }
 
 

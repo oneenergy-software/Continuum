@@ -59,19 +59,19 @@ namespace ContinuumNS
         public int maxUTMY;   // Maximum UTM Y coordinate
         public int gridReso;   // Grid resolution
         public int numGrid;   // Number of grid points
-        string mapName = ""; // Map name
+        public string mapName = ""; // Map name
         public int numX;   // Number of grid points along X
         public int numY;   // Number of grid points along Y
         public int minUTMX_Limit; // Minimum allowable X
         public int minUTMY_Limit; // Minimum allowable Y
         public int maxUTMX_Limit; // Maximum allowable X
         public int maxUTMY_Limit; // Maximum allowable Y
-        int whatToMap = 0; // Index of selected map type
-        string powerCurve = ""; // Name of power curve used in map (if AEP map)
-        Met[] metsUsed;
-        Model[] models; // Wind flow model parameters
-        Continuum thisInst;
-        bool useTimeSeries;
+        public int whatToMap = 0; // Index of selected map type
+        public string powerCurve = ""; // Name of power curve used in map (if AEP map)
+        public Met[] metsUsed;
+        public Model[] models; // Wind flow model parameters
+        public Continuum thisInst;
+        public bool useTimeSeries;
 
 
         private void btnCancel_Click(object sender, EventArgs e) {
@@ -87,34 +87,42 @@ namespace ContinuumNS
             txtNumPoints.Text = numGrid.ToString();
         }
 
-        public void UpdateLimits()
+  /*      public void UpdateLimits()
         {
             if (gridReso == 0)
                 UpdateGridReso();
 
-            int minX_Lim = (int)thisInst.topo.topoNumXY.X.all.min + 12000;
-            int minY_Lim = (int)thisInst.topo.topoNumXY.Y.all.min + 12000;
-            int maxX_Lim = (int)thisInst.topo.topoNumXY.X.all.max - 12000;
-            int maxY_Lim = (int)thisInst.topo.topoNumXY.Y.all.max - 12000;
-            
-            int minX_LimInd = (int)Math.Ceiling((minX_Lim - thisInst.topo.topoNumXY.X.all.min) / gridReso);
-            int minY_LimInd = (int)Math.Ceiling((minY_Lim - thisInst.topo.topoNumXY.Y.all.min) / gridReso);
-            int maxX_LimInd = (int)Math.Floor((maxX_Lim - thisInst.topo.topoNumXY.X.all.min) / gridReso);
-            int maxY_LimInd = (int)Math.Floor((maxY_Lim - thisInst.topo.topoNumXY.Y.all.min) / gridReso);
+            TopoInfo.Min_Max_Num minMaxX = new TopoInfo.Min_Max_Num();
+            minMaxX.min = thisInst.topo.topoNumXY.X.all.min;
+            minMaxX.max = thisInst.topo.topoNumXY.X.all.max;
 
-            minUTMX_Limit = (int)thisInst.topo.topoNumXY.X.all.min + minX_LimInd * gridReso;
-            minUTMY_Limit = (int)thisInst.topo.topoNumXY.Y.all.min + minY_LimInd * gridReso;
-            maxUTMX_Limit = (int)thisInst.topo.topoNumXY.X.all.min + maxX_LimInd * gridReso;
-            maxUTMY_Limit = (int)thisInst.topo.topoNumXY.Y.all.min + maxY_LimInd * gridReso;
+            TopoInfo.Min_Max_Num minMaxY = new TopoInfo.Min_Max_Num();
+            minMaxY.min = thisInst.topo.topoNumXY.Y.all.min;
+            minMaxY.max = thisInst.topo.topoNumXY.Y.all.max;
 
-            if (minUTMX < minUTMX_Limit || minUTMX == 0) minUTMX = minUTMX_Limit;
-            if (minUTMY < minUTMY_Limit || minUTMY == 0) minUTMY = minUTMY_Limit;
-            if (maxUTMX > maxUTMX_Limit || maxUTMX == 0) maxUTMX = maxUTMX_Limit;
-            if (maxUTMY > maxUTMY_Limit || maxUTMY == 0) maxUTMY = maxUTMY_Limit;
+            TopoInfo.TopoGrid minXY = thisInst.topo.GetClosestNodeFixedGrid(minMaxX.min, minMaxY.min, 250, 12000);
+            minUTMX_Limit = (int)minXY.UTMX;
+            minUTMY_Limit = (int)minXY.UTMY;
+
+            TopoInfo.TopoGrid maxXY = thisInst.topo.GetClosestNodeFixedGrid(minMaxX.max, minMaxY.max, 250, 12000);
+            maxUTMX_Limit = (int)maxXY.UTMX;
+            maxUTMY_Limit = (int)maxXY.UTMY;
+
+            if (minUTMX == 0)
+                minUTMX = minUTMX_Limit;
+
+            if (minUTMY == 0)
+                minUTMY = minUTMY_Limit;
+
+            if (maxUTMX == 0)
+                maxUTMX = maxUTMX_Limit;
+
+            if (maxUTMY == 0)
+                maxUTMY = maxUTMY_Limit;
 
             UpdateNumPoints();
         }
-
+*/
         public void GetBiggestArea()
         {
             minUTMX = minUTMX_Limit;
@@ -122,6 +130,134 @@ namespace ContinuumNS
             minUTMY = minUTMY_Limit;
             maxUTMY = maxUTMY_Limit;
             UpdateNumPoints();
+        }
+
+        public void FindLargestArea()
+        {
+            // Find largest allowable mapping area
+            int plotNumX = thisInst.topo.topoNumXY.X.plot.num;
+            int plotNumY = thisInst.topo.topoNumXY.Y.plot.num;
+
+            // First find min X ind
+            int numValid = 0;
+            int lastNumValid = 0;
+            int minXInd = 0;
+
+            while (minXInd < plotNumX)
+            {
+                for (int j = 0; j < plotNumY; j++)
+                    if (thisInst.topo.topoElevs[minXInd, j] != -999)
+                        numValid++;
+
+                if (numValid <= lastNumValid && numValid > 0)
+                {
+                    minXInd = minXInd - 1;
+                    break;
+                }
+                else
+                {
+                    lastNumValid = numValid;
+                    minXInd++;
+                }
+
+                numValid = 0;
+            }
+
+            // Now find max X ind
+            numValid = 0;
+            lastNumValid = 0;
+            int maxXInd = plotNumX - 1;
+
+            while (maxXInd > 0)
+            {
+                for (int j = 0; j < plotNumY; j++)
+                    if (thisInst.topo.topoElevs[maxXInd, j] != -999)
+                        numValid++;
+
+                if (numValid <= lastNumValid && numValid > 0)
+                {
+                    maxXInd = maxXInd + 1;
+                    break;
+                }
+                else
+                {
+                    lastNumValid = numValid;
+                    maxXInd--;
+                }
+
+                numValid = 0;
+            }
+
+            // Now find min Y ind
+            numValid = 0;
+            lastNumValid = 0;
+            int minYInd = 0;
+
+            while (minYInd < plotNumY)
+            {
+                for (int i = 0; i < plotNumX; i++)
+                    if (thisInst.topo.topoElevs[i, minYInd] != -999)
+                        numValid++;
+
+                if (numValid <= lastNumValid && numValid > 0)
+                {
+                    minYInd = minYInd - 1;
+                    break;
+                }
+                else
+                {
+                    lastNumValid = numValid;
+                    minYInd++;
+                }
+
+                numValid = 0;
+            }
+
+            // Now find max Y ind
+            numValid = 0;
+            lastNumValid = 0;
+            int maxYInd = plotNumY - 1;
+
+            while (maxYInd > 0)
+            {
+                for (int i = 0; i < plotNumX; i++)
+                    if (thisInst.topo.topoElevs[i, maxYInd] != -999)
+                        numValid++;
+
+                if (numValid <= lastNumValid && numValid > 0)
+                {
+                    maxYInd = maxYInd + 1;
+                    break;
+                }
+                else
+                {
+                    lastNumValid = numValid;
+                    maxYInd--;
+                }
+
+                numValid = 0;
+            }
+
+            minUTMX_Limit = (int)(thisInst.topo.topoNumXY.X.plot.min + minXInd * thisInst.topo.topoNumXY.X.plot.reso);
+            minUTMY_Limit = (int)(thisInst.topo.topoNumXY.Y.plot.min + minYInd * thisInst.topo.topoNumXY.Y.plot.reso);
+            maxUTMX_Limit = (int)(thisInst.topo.topoNumXY.X.plot.min + maxXInd * thisInst.topo.topoNumXY.X.plot.reso);
+            maxUTMY_Limit = (int)(thisInst.topo.topoNumXY.Y.plot.min + maxYInd * thisInst.topo.topoNumXY.Y.plot.reso);
+
+            TopoInfo.TopoGrid thisXY = thisInst.topo.GetClosestNodeFixedGrid(minUTMX_Limit, minUTMY_Limit, gridReso, 12000);
+            minUTMX_Limit = (int)thisXY.UTMX;
+            minUTMY_Limit = (int)thisXY.UTMY;
+                        
+            thisXY = thisInst.topo.GetClosestNodeFixedGrid(maxUTMX_Limit, maxUTMY_Limit, gridReso, 12000);
+            maxUTMX_Limit = (int)thisXY.UTMX;
+            maxUTMY_Limit = (int)thisXY.UTMY;
+
+            numX = (int)Math.Round((double)(maxUTMX_Limit - minUTMX_Limit) / gridReso, 0);
+            numY = (int)Math.Round((double)(maxUTMY_Limit - minUTMY_Limit) / gridReso, 0);
+
+            maxUTMX_Limit = minUTMX_Limit + numX * gridReso;
+            maxUTMY_Limit = minUTMY_Limit + numY * gridReso;
+                        
+
         }
 
         public void UpdateGridReso()
@@ -148,12 +284,12 @@ namespace ContinuumNS
             }
             else
                 numGrid = 0;
-
+                        
             txtNumPoints.Text = numGrid.ToString();
         }
                
         
-        private void GetMapSettings()
+        public void GetMapSettings()
         {            
             double height = thisInst.modeledHeight;
             
@@ -289,7 +425,7 @@ namespace ContinuumNS
         {
             // Finds the largest area that can be mapped based on loaded topo data and updates Min/Max X/Y
 
-            UpdateLimits();
+            FindLargestArea();
             GetBiggestArea();
             UpdateTextboxes(); 
             
@@ -297,23 +433,31 @@ namespace ContinuumNS
         
         private void btnCoordsAllTurbs_Click(object sender, EventArgs e)
         {
+            FindAreaAroundTurbines();
+        }
+
+        public void FindAreaAroundTurbines()
+        {
             // Finds map area that covers all loaded turbine sites and updates Min/Max X/Y
-            
+
             double turbMinX = 0;
             double turbMinY = 0;
             double turbMaxX = 0;
-            double turbMaxY = 0;            
+            double turbMaxY = 0;
             int numTurbines = thisInst.turbineList.TurbineCount;
 
-            if (numTurbines == 0) {
+            if (numTurbines == 0)
+            {
                 MessageBox.Show("No Turbine sites have been loaded.", "Continuum 3");
                 return;
             }
 
-            for (int i = 0; i < numTurbines; i++) {
+            for (int i = 0; i < numTurbines; i++)
+            {
 
                 Turbine thisTurb = thisInst.turbineList.turbineEsts[i];
-                if (i == 0) {
+                if (i == 0)
+                {
                     turbMinX = thisTurb.UTMX;
                     turbMinY = thisTurb.UTMY;
                     turbMaxX = thisTurb.UTMX;
@@ -334,8 +478,8 @@ namespace ContinuumNS
 
             if (turbMinX > minUTMX) minUTMX = (int)Math.Round(turbMinX, 0);
             if (turbMinY > minUTMY) minUTMY = (int)Math.Round(turbMinY, 0);
-            if (turbMaxX < maxUTMX) maxUTMX = (int)Math.Round(turbMaxX, 0);
-            if (turbMaxY < maxUTMY) maxUTMY = (int)Math.Round(turbMaxY, 0);
+            if (turbMaxX < maxUTMX || maxUTMX == 0) maxUTMX = (int)Math.Round(turbMaxX, 0);
+            if (turbMaxY < maxUTMY || maxUTMY == 0) maxUTMY = (int)Math.Round(turbMaxY, 0);
 
             UpdateNumPoints();
             UpdateTextboxes();
@@ -384,7 +528,7 @@ namespace ContinuumNS
         {
             // Recalculates number of grid points and updates txtNumPoints
             UpdateGridReso();
-            UpdateLimits();
+            FindLargestArea();
             UpdateNumPoints();
             UpdateTextboxes();
             

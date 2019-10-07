@@ -135,7 +135,7 @@ namespace Continuum_Tests
                 Thrust[i] = Convert.ToSingle(sr.ReadLine());
 
             turbineList.AddPowerCurve("GW 1500/87", 3, 22, 1500, power, Thrust, 87, 16, 10, 1, 0);
-            wakeModelList.AddWakeModel(0, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear", 0, 0);
+            wakeModelList.AddWakeModel(0, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
             MetCollection metList = new MetCollection();
             metList.metItem = new Met[1];
             metList.metItem[0] = new Met();
@@ -149,7 +149,7 @@ namespace Continuum_Tests
             Assert.AreEqual(Vel_Def[40, 7], 0.194434, 0.01, "Wrong Vel Def Test 2 r = 0.25");
             Assert.AreEqual(Vel_Def[40, 18], 0.02328, 0.01, "Wrong Vel Def Test 2 r = 0.425");
 
-            wakeModelList.AddWakeModel(0, 10, 14, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear", 0, 0);
+            wakeModelList.AddWakeModel(0, 10, 14, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
             Vel_Def = wakeModelList.CalcWS_DeficitEddyViscosityGrid(2, 30, 0.1f, 0.025f, 6, wakeModelList.wakeModels[1], metList);
             Assert.AreEqual(Vel_Def[4, 2], 0.513121, 0.01, "Wrong Vel Def Test 3 r = 0.05");
             Assert.AreEqual(Vel_Def[4, 10], 0.20352, 0.01, "Wrong Vel Def Test 3 r = 0.25");
@@ -174,7 +174,7 @@ namespace Continuum_Tests
                 power[i] = Convert.ToSingle(sr.ReadLine());
 
             turbineList.AddPowerCurve("GW 1500/87", 3, 22, 1500, power, null, 87, 16, 10, 1, 0);
-            wakeModelList.AddWakeModel(0, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear", 0, 0);
+            wakeModelList.AddWakeModel(0, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
 
             string Dist_file = testingFolder + "\\CalcNetEnergy\\WS_Dist.txt";
             sr = new StreamReader(Dist_file);
@@ -211,7 +211,7 @@ namespace Continuum_Tests
                 Thrust[i] = Convert.ToSingle(sr.ReadLine());
 
             turbineList.AddPowerCurve("GW 1500/87", 3, 22, 1500, power, Thrust, 87, 16, 10, 1, 0);
-            WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear", 0, 0);
+            WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
 
             MetCollection metList = new MetCollection();
             metList.metItem = new Met[1];
@@ -254,7 +254,7 @@ namespace Continuum_Tests
             metList.metItem = new Met[1];
             metList.metItem[0] = new Met();
 
-            WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear", 0, 0);
+            WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
             double This_IBL_H1 = WakeModList.Calc_IBL_H1_New(UW_Turbs[0], 280000, 4553500, WakeModList.wakeModels[0], 90f, 1.9316f, metList, 8, 80.0);
 
             Assert.AreEqual(This_IBL_H1, 750.4, 1, "Wrong IBL H1");
@@ -292,7 +292,7 @@ namespace Continuum_Tests
             metList.metItem = new Met[1];
             metList.metItem[0] = new Met();
 
-            WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear", 0, 0);
+            WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
             double This_IBL_H2 = WakeModList.Calc_IBL_H2_NEW(UW_Turbs[0], 280000, 4553500, WakeModList.wakeModels[0], 90f, metList, 8, 80.0);
 
             Assert.AreEqual(This_IBL_H2, 394.2, 1, "Wrong IBL H2");
@@ -330,7 +330,7 @@ namespace Continuum_Tests
             metList.metItem = new Met[1];
             metList.metItem[0] = new Met();
 
-            WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear", 0, 0);
+            WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
 
             double This_Def = WakeModList.Calc_DAWM_Deficit(UW_Turbs, 280000, 4553500, 90, 8, WakeModList.wakeModels[0], metList, 80.0);
             Assert.AreEqual(This_Def, 0.04742, 1, "Wrong wind speed deficit in DAWM");
@@ -358,7 +358,7 @@ namespace Continuum_Tests
                 Thrust[i] = Convert.ToSingle(sr.ReadLine());
 
             turbineList.AddPowerCurve("GW 1500/87", 3, 22, 1500, power, Thrust, 87, 16, 10, 1, 0);
-            WakeModList.AddWakeModel(0, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear", 0, 0);
+            WakeModList.AddWakeModel(0, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
 
             string WR_file = testingFolder + "\\CalcNetSectEnergy\\Wind_Rose.txt";
             sr = new StreamReader(WR_file);
@@ -407,7 +407,7 @@ namespace Continuum_Tests
                 Thrust[i] = Convert.ToSingle(sr.ReadLine());
 
             turbineList.AddPowerCurve("GW 1500/87", 3, 22, 1500, power, Thrust, 87, 16, 10, 1, 0);
-            WakeModList.AddWakeModel(0, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear", 0, 0);
+            WakeModList.AddWakeModel(0, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
 
             MetCollection metList = new MetCollection();
             metList.metItem = new Met[1];

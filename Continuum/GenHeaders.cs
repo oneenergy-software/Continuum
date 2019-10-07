@@ -494,11 +494,10 @@ namespace ContinuumNS
             chkAvgAnem.Checked = false;
             chkMinAnem.Checked = false;
             chkMaxAnem.Checked = false;
-            cboTempUnits.Items.Clear();
+            
             listVanesHeight.Items.Clear();
             listTempsHeight.Items.Clear();
-            cboWindSpeedUnits.Items.Clear();
-
+            
 
         }
 

@@ -77,16 +77,10 @@ namespace ContinuumNS
         public Site_data[] targetData = new Site_data[0]; // Not saved with file. Regenerated as needed.
         /// <summary>   True if target data has been imported. </summary>
         public bool gotTarg = false;
-        
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Array of type Concurrent_data where each entry contains Date/Time, refWS, refWD, refTemp
-        /// targetWS, targetWD. This array holds the concurrent data for a specified window (i.e. not
-        /// necessarily all concurrent data)
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Array of type Concurrent_data for a specified window (i.e. not necessarily all concurrent data) </summary>        
         public Concurrent_data[] concData = new Concurrent_data[0];
+
         /// <summary>   True if conccurent data is defined. </summary>
         public bool gotConc = false;
 
@@ -96,13 +90,8 @@ namespace ContinuumNS
         public Site_data[] LT_WS_Ests = new Site_data[0];
 
         public bool gotMCP_Est = false;
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+                
         /// <summary>   Number of Wind Direction sectors to conduct MCP. </summary>
-        ///
-        /// <value> The total number of wd sectors. </value>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
         public int numWD { get; set; }
 
         public int numTODs { get; set; } // either 1 or 2 (Day / Night) 
@@ -183,14 +172,9 @@ namespace ContinuumNS
 
         public MCP_Uncert[] uncertMatrix = new MCP_Uncert[0];
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Array of type Sector_count_bin containing the data count in each WD, hourly and temperature
-        /// bin.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        Sector_count_bin[] sectors = new Sector_count_bin[0];
+        
+        /// <summary> Array of SectorCountBin containing the data count in each WD, time of day, and seasonal bin. </summary>        
+        SectorCountBin[] sectors = new SectorCountBin[0];
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>
@@ -258,8 +242,7 @@ namespace ContinuumNS
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>
-        /// Structure defined to hold reference and target wind speed, wind direction and temperature
-        /// time series data  (Serializable) a site data.
+        ///  Struct containing time stamp, wind speed, and wind direction.
         /// </summary>
         ///
         /// <remarks>   OEE, 10/19/2017. </remarks>
@@ -278,8 +261,7 @@ namespace ContinuumNS
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>
-        /// Structure defined to hold concurrent reference and target wind speed and wind direction time
-        /// series plus temperature at reference site.
+        /// Structure defined to hold concurrent reference and target wind speed and wind direction time series
         /// </summary>
         ///
         /// <remarks>   OEE, 10/19/2017. </remarks>
@@ -499,24 +481,19 @@ namespace ContinuumNS
             public double WS_Ind;
             /// <summary>   Wind direction index. </summary>
             public int WD_Ind;
-            /// <summary>   Hourly interval index. </summary>
+            /// <summary>   Time of day bin </summary>
             public Met.TOD TOD;
-            /// <summary>   Temperature interval index. </summary>
+            /// <summary>   Seasonal bin </summary>
             public Met.Season season;
             /// <summary>   Number of data points used to define CDF. </summary>
             public int count;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Structure to store sector counts as a function of bins. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary>   Holds sector count for specified wind direction, time of day, and season bin. </summary>        
         [Serializable()]
-        public struct Sector_count_bin
+        public struct SectorCountBin
         {
-            /// <summary>   Wind direction index. </summary>
+            /// <summary>   Wind direction bin </summary>
             public int WD;
             /// <summary>   Time of day. </summary>
             public Met.TOD TOD;
@@ -654,8 +631,8 @@ namespace ContinuumNS
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>
-        /// Generates a cumulative distribution functions (CDF) of target wind speed distribution for
-        /// each specified WD, hour and temperature bin.
+        /// Generates a cumulative distribution function (CDF) of target wind speed distribution for
+        /// each specified wind direction, time of day and seasonal bin.
         /// </summary>
         ///
         /// <remarks>   OEE, 10/19/2017. </remarks>
@@ -664,10 +641,7 @@ namespace ContinuumNS
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public CDF_Obj[] GenerateMatrixCDFs()
-        {
-            // calculates WS cumulative distribution functions for every WD, hourly, temperature and WS bin
-            // returns array of CDFs
-            
+        {                        
             double WS_width = Get_WS_width_for_MCP();          
             
             int numWS = (int)(30 / WS_width);
@@ -704,7 +678,7 @@ namespace ContinuumNS
                             theseCDFs[CDF_Count].WD_Ind = i;
                             theseCDFs[CDF_Count].WS_Ind = l;                                                                                 
 
-                            double[] minMaxWD = Get_Min_Max_WD(i);                            
+                          //  double[] minMaxWD = GetMinMaxWD(i);                            
                             double minWS = l * WS_width - WS_width / 2;
                             double maxWS = l * WS_width + WS_width / 2;
 
@@ -727,15 +701,14 @@ namespace ContinuumNS
                                 theseCDFs[CDF_Count].count = targetWS.Length;
                                 theseCDFs[CDF_Count].minWS = targMinWS;
                                 theseCDFs[CDF_Count].WS_interval = WS_int;                                                        
-                                     
-                                                                    
+                                                                                                         
                                 // count WS in each bin
                                 int[] WS_count = new int[100];
 
                                 for (int m = 0; m < targetWS.Length; m++)
                                 {
                                     int WS_Ind = Convert.ToInt16((targetWS[m] - targMinWS) / WS_int);
-                                    int Round_ind = (int)Math.Round((targetWS[m] - targMinWS) / WS_int, 0);
+                             //       int Round_ind = (int)Math.Round((targetWS[m] - targMinWS) / WS_int, 0);
 
                                     WS_count[WS_Ind]++;
                                 }
@@ -743,19 +716,15 @@ namespace ContinuumNS
                                 theseCDFs[CDF_Count].CDF = new double[100];
                                 double[] thisPDF = new double[100];
 
-                                for (int m = 0; m < 100; m++)
-                                {
+                                for (int m = 0; m < 100; m++)                                
                                     thisPDF[m] = (double)WS_count[m] / targetWS.Length / WS_int;
-                                }
-
-                                //  Calculate CDF                        
-
+                                
+                                //  Calculate CDF
                                 theseCDFs[CDF_Count].CDF[0] = thisPDF[0] * theseCDFs[CDF_Count].WS_interval;
 
-                                for (int m = 1; m < 100; m++)
-                                {
+                                for (int m = 1; m < 100; m++)                                
                                     theseCDFs[CDF_Count].CDF[m] = theseCDFs[CDF_Count].CDF[m - 1] + thisPDF[m] * theseCDFs[CDF_Count].WS_interval;
-                                }
+                                
 
                                 // interpolate between plateaus in CDF
                                 //CDF = InterpolateCDF(CDF);
@@ -784,9 +753,12 @@ namespace ContinuumNS
             return theseCDFs;
         }
           
+        /// <summary>
+        /// Calculates and returns the average wind speeds at the target site and the reference site, and the concurrent data count 
+        /// </summary>
         public double[] GetConcAvgsCount(int WD_Ind, Met.TOD TOD, Met.Season Season)
         {
-            double[] avgWS_WD = { 0, 0, 0 }; // 0: Target WS; 1: Reference WS; 2: Data count'
+            double[] avgWS_Count = { 0, 0, 0 }; // 0: Target WS; 1: Reference WS; 2: Data count'
             MetCollection metList = new MetCollection();
             metList.numWD = numWD;
             metList.numTOD = numTODs;
@@ -803,22 +775,25 @@ namespace ContinuumNS
                     {
                         if (WD_Ind == numWD || thisWD_Ind == WD_Ind)
                         {
-                            avgWS_WD[0] = avgWS_WD[0] + Conc.targetWS;
-                            avgWS_WD[1] = avgWS_WD[1] + Conc.refWS;
-                            avgWS_WD[2] = avgWS_WD[2] + 1;
+                            avgWS_Count[0] = avgWS_Count[0] + Conc.targetWS;
+                            avgWS_Count[1] = avgWS_Count[1] + Conc.refWS;
+                            avgWS_Count[2] = avgWS_Count[2] + 1;
                         }                        
                     }
                 }
 
-            if (avgWS_WD[2] > 0)
+            if (avgWS_Count[2] > 0)
             {
-                avgWS_WD[0] = avgWS_WD[0] / avgWS_WD[2];
-                avgWS_WD[1] = avgWS_WD[1] / avgWS_WD[2];
+                avgWS_Count[0] = avgWS_Count[0] / avgWS_Count[2];
+                avgWS_Count[1] = avgWS_Count[1] / avgWS_Count[2];
             }
 
-            return avgWS_WD;
+            return avgWS_Count;
         }              
 
+        /// <summary>
+        /// Finds and returns array of either reference and target wind speeds during concurrent period for specified wind direction, TOD, season, and wind speed range
+        /// </summary>        
         public double[] GetConcWS_Array(string targetOrRef, int WD_Ind, Met.TOD TOD, Met.Season season, double minWS, double maxWS, bool getAll)
         {
             double[] theseWS = null;            
@@ -892,21 +867,9 @@ namespace ContinuumNS
             return theseWS;
         }
         
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Creates array of Concurrent_data containing WS &amp; WD at reference and target sites.
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <param name="Conc_form">    If True, uses start and end date on form otherwise uses dates in
-        ///                             memory
-        ///                              (i.e. this is done in uncertainty calculations). </param>
-        /// <param name="Start">        Start Date/Time of concurrent data set. </param>
-        /// <param name="End">          End Date/Time of concurrent data set. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public void FindConcurrentData(bool Conc_form, DateTime start, DateTime end)
+        
+        /// <summary> Creates array of Concurrent_data containing WS and WD at reference and target sites. </summary>        
+        public void FindConcurrentData(DateTime start, DateTime end)
         {            
             int concCount = 0;
             int refStartInd = 0;
@@ -967,20 +930,10 @@ namespace ContinuumNS
                 gotConc = true;
             
         }
-
         
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets minimum and maximum wind direction in specified wind direction bin. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <param name="WD_Ind">   Wind direction index. </param>
-        ///
-        /// <returns>   An array of type double containing min and max wind direction in degs. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public double[] Get_Min_Max_WD(int WD_Ind)
+        /// <summary>   Gets and returns minimum and maximum wind direction for specified wind direction bin. </summary>        
+        /// <returns>   An array of type double containing min and max wind direction in degs. </returns>        
+        public double[] GetMinMaxWD(int WD_Ind)
         {
             double[] minMaxWD = new double[2];
             
@@ -1002,64 +955,45 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Extracts array of concurrent data from concDataAll based on specified start and end dates .
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <param name="thisConcStart">  Start Date/Time of concurrent data to use in MCP. </param>
-        /// <param name="thisConcEnd">    End Date/Time of concurrent data to use in MCP. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Redefines concurrent data (concData) by copying data from concDataAll between specified start and end dates. </summary> 
         public void GetSubsetConcData(DateTime thisConcStart, DateTime thisConcEnd)
         {
-            int S = 0;
-            int E = 0;
-            int L = 0;
+            int startInd = 0; 
+            int endInd = 0; 
+            int subLength = 0;
 
             for (int i = 0; i < concDataAll.Length; i++)
             {               
 
                 if (concDataAll[i].thisDate.Year == thisConcStart.Year && concDataAll[i].thisDate.Month == thisConcStart.Month
                     && concDataAll[i].thisDate.Day == thisConcStart.Day && concDataAll[i].thisDate.Hour == thisConcStart.Hour)
-                    S = i;
+                    startInd = i;
                 else if (concDataAll[i].thisDate.Year == thisConcEnd.Year && concDataAll[i].thisDate.Month == thisConcEnd.Month
                     && concDataAll[i].thisDate.Day == thisConcEnd.Day && concDataAll[i].thisDate.Hour == thisConcEnd.Hour)
                 {
-                    E = i;
-                    L = E - S + 1;
+                    endInd = i;
+                    subLength = endInd - startInd + 1;
                     break;
                 }
-                else if (i == concDataAll.Length - 1 && E == 0)
+                else if (i == concDataAll.Length - 1 && endInd == 0)
                 {
-                    E = concDataAll.Length;
-                    L = E - S;
+                    endInd = concDataAll.Length;
+                    subLength = endInd - startInd;
                     break;
                 }
             }
 
-            Array.Resize(ref concData, L);
-            Array.ConstrainedCopy(concDataAll, S, concData, 0, L);
+            Array.Resize(ref concData, subLength);
+            Array.ConstrainedCopy(concDataAll, startInd, concData, 0, subLength);
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets sector count. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <param name="WD_Ind">   Wind direction index. </param>
-        /// <param name="hourInd"> Hourly index. </param>
-        /// <param name="tempInd"> Temperature index. </param>
-        ///
-        /// <returns>   The sector count. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public int Get_Sector_Count(int WD_Ind, Met.TOD TOD, Met.Season season)
+        
+        /// <summary>   Gets the sector count of specified wind speed, time of day, and seasonal bin. </summary>
+        public int GetSectorCount(int WD_Ind, Met.TOD TOD, Met.Season season, MetCollection metList)
         {            
             if (sectors.Length == 0)
-                Find_Sector_Counts();
+                Find_Sector_Counts(metList);
 
             int sectorCount = 0;
             for (int l = 0; l < sectors.Length; l++)
@@ -1106,9 +1040,9 @@ namespace ContinuumNS
             double[] targetWS = GetConcWS_Array("Target", 0, 0, 0, 0, 30, true);
             
             Stats stat = new Stats();
-            double var_x = Convert.ToSingle(stat.Calc_Variance(refWS));
-            double var_y = Convert.ToSingle(stat.Calc_Variance(targetWS));
-            double covar_xy = Convert.ToSingle(stat.Calc_Covariance(refWS, targetWS));
+            double var_x = Convert.ToSingle(stat.CalcVariance(refWS));
+            double var_y = Convert.ToSingle(stat.CalcVariance(targetWS));
+            double covar_xy = Convert.ToSingle(stat.CalcCovariance(refWS, targetWS));
 
             int WD_Ind;
             double WS_bin = Get_WS_width_for_MCP();
@@ -1126,10 +1060,10 @@ namespace ContinuumNS
             double lastWS_Wgt = Get_Last_WS_Weight();
             double matrixWgt = Get_WS_PDF_Weight();
 
-            MetCollection metList = new MetCollection();
+            MetCollection metList = thisInst.metList;
 
             // find total data count
-            totalCount = totalCount + stat.Get_Data_Count(refData, exportStart, exportEnd, 0, 0, 0, this, true);
+            totalCount = totalCount + stat.GetDataCount(refData, exportStart, exportEnd, 0, 0, 0, thisInst.metList, true);
 
             // if this is not an uncertainty analysis, then calculate the slope, intercept and R^2 for all WD (this is not used in LT WS Estimation, just GUI)
             if (Use_All_Data == true && MCP_Method == "Orth. Regression")
@@ -1140,8 +1074,8 @@ namespace ContinuumNS
                 MCP_Ortho.R_sq = new double[numWD, numTODs, numSeasons];
 
                 MCP_Ortho.allSlope = CalcOrthoSlope(var_x, var_y, covar_xy);
-                MCP_Ortho.allIntercept = stat.Calc_Intercept(avgTarg, MCP_Ortho.allSlope, avgRef);
-                MCP_Ortho.allR_Sq = stat.Calc_R_sqr(covar_xy, var_x, var_y);
+                MCP_Ortho.allIntercept = stat.CalcIntercept(avgTarg, MCP_Ortho.allSlope, avgRef);
+                MCP_Ortho.allR_Sq = stat.CalcR_Sqr(covar_xy, var_x, var_y);
             }
             else if (Use_All_Data == true && MCP_Method == "Variance Ratio")
             {
@@ -1151,8 +1085,8 @@ namespace ContinuumNS
                 MCP_Varrat.R_sq = new double[numWD, numTODs, numSeasons];
 
                 MCP_Varrat.allSlope = CalcVarianceRatioSlope(var_x, var_y);
-                MCP_Varrat.allIntercept = stat.Calc_Intercept(avgTarg, MCP_Varrat.allSlope, avgRef);
-                MCP_Varrat.allR_Sq = stat.Calc_R_sqr(covar_xy, var_x, var_y);
+                MCP_Varrat.allIntercept = stat.CalcIntercept(avgTarg, MCP_Varrat.allSlope, avgRef);
+                MCP_Varrat.allR_Sq = stat.CalcR_Sqr(covar_xy, var_x, var_y);
             }
             else if (Use_All_Data == true && MCP_Method == "Method of Bins")
             {
@@ -1172,7 +1106,7 @@ namespace ContinuumNS
                     for (int j = 0; j < numTODs; j++)
                         for (int k = 0; k < numSeasons; k++)
                         {
-                            double[] minMaxWD = Get_Min_Max_WD(i);
+                            double[] minMaxWD = GetMinMaxWD(i);
                             minWD = minMaxWD[0];
                             maxWD = minMaxWD[1];
 
@@ -1202,11 +1136,11 @@ namespace ContinuumNS
                             targetWS = GetConcWS_Array("Target", i, thisTOD, thisSeason, 0, 30, false);
 
                             // Find Sector count for specific WD, hour, and temp bin combination
-                            int sectorCount = Get_Sector_Count(i, thisTOD, thisSeason);
+                            int sectorCount = GetSectorCount(i, thisTOD, thisSeason, metList);
 
-                            var_x = Convert.ToSingle(stat.Calc_Variance(refWS));
-                            var_y = Convert.ToSingle(stat.Calc_Variance(targetWS));
-                            covar_xy = Convert.ToSingle(stat.Calc_Covariance(refWS, targetWS));
+                            var_x = Convert.ToSingle(stat.CalcVariance(refWS));
+                            var_y = Convert.ToSingle(stat.CalcVariance(targetWS));
+                            covar_xy = Convert.ToSingle(stat.CalcCovariance(refWS, targetWS));
 
                             thisConc = GetConcAvgsCount(i, thisTOD, thisSeason);
                             avgTarg = thisConc[0];
@@ -1236,7 +1170,7 @@ namespace ContinuumNS
                                 thisSlope = avgTarg / avgRef;
 
                             if (thisSlope > 5) thisSlope = 5;
-                            This_Int = stat.Calc_Intercept(avgTarg, thisSlope, avgRef);
+                            This_Int = stat.CalcIntercept(avgTarg, thisSlope, avgRef);
 
                             if (Use_All_Data == true)
                             {
@@ -1244,17 +1178,17 @@ namespace ContinuumNS
                                 {
                                     MCP_Ortho.slope[i, j, k] = thisSlope;
                                     MCP_Ortho.intercept[i, j, k] = This_Int;
-                                    MCP_Ortho.R_sq[i, j, k] = stat.Calc_R_sqr(covar_xy, var_x, var_y);
+                                    MCP_Ortho.R_sq[i, j, k] = stat.CalcR_Sqr(covar_xy, var_x, var_y);
                                 }
                                 else // if more linear models are added, will need to add another else if
                                 {
                                     MCP_Varrat.slope[i, j, k] = thisSlope;
                                     MCP_Varrat.intercept[i, j, k] = This_Int;
-                                    MCP_Varrat.R_sq[i, j, k] = stat.Calc_R_sqr(covar_xy, var_x, var_y);
+                                    MCP_Varrat.R_sq[i, j, k] = stat.CalcR_Sqr(covar_xy, var_x, var_y);
                                 }
                             }
 
-                            avgRef = stat.CalcAvgWS(refData, 0, 10000, refStart, refEnd, minWD, maxWD, thisTOD, thisSeason, this);
+                            avgRef = stat.CalcAvgWS(refData, refStart, refEnd, minWD, maxWD, thisTOD, thisSeason, metList);
 
                             double thisWS = avgRef * thisSlope + This_Int;
                             if (thisWS < 0)
@@ -1303,7 +1237,7 @@ namespace ContinuumNS
             LT_WS_Ests = GenerateLT_WS_TS(thisInst, thisMet, MCP_Method);
 
             if (MCP_Method == "Method of Bins" || MCP_Method == "Matrix")
-                LT_WS_Est = stat.CalcAvgWS(LT_WS_Ests, 0, 10000, refStart, refEnd, 0, 360, Met.TOD.All, Met.Season.All, this);
+                LT_WS_Est = stat.CalcAvgWS(LT_WS_Ests, refStart, refEnd, 0, 360, Met.TOD.All, Met.Season.All, metList);
 
             return LT_WS_Est;
         }
@@ -1466,20 +1400,8 @@ namespace ContinuumNS
             return LT_WS_Est_TS;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Searches for the Cumulative Distribution Function index that corresponds to random number
-        /// (between 0 and 1).
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <param name="thisCDF"> This Cumulative Distribution Function. </param>
-        /// <param name="randomNum"> The random number from 0 to 1. </param>
-        ///
-        /// <returns>   The CDF index corresponding to random number. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Finds and returns the CDF index that corresponds to random number between 0 and 1 </summary>        
         public int FindCDF_Index(CDF_Obj thisCDF, double randomNum)
         {
             double minDiff = 100;
@@ -1557,21 +1479,8 @@ namespace ContinuumNS
             return interpCDF;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Calculates and returns CDF corresponding to last WS estimate and calculated standard
-        /// deviation of change in WS from one hour to next.
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <param name="lastWS">      Wind speed estimated for previous timestamp. </param>
-        /// <param name="CDF_MinWS">   The minimum WS in CDF. </param>
-        /// <param name="CDF_WS_Int">   The WS interval in CDF. </param>
-        ///
-        /// <returns>   Calculated 'LastWS' CDF as array of type double. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Calculates and returns a CDF corresponding to the last WS estimate and the standard deviation
+        /// of change in WS from one hour to next. </summary>
         public double[] GetLagWS_CDF(double lastWS, double CDF_MinWS, double CDF_WS_Int)
         {             
             double[] lagWS_CDF = new double[100];
@@ -1579,32 +1488,31 @@ namespace ContinuumNS
             int WS_Ind = Get_WS_ind(lastWS, Get_WS_width_for_MCP());
 
             if (WS_Ind >= SD_WS_Lag.Length)
-                WS_Ind = SD_WS_Lag.Length - 1;                     
-            
-            int numLessMin = (int)Math.Round(CDF_MinWS / CDF_WS_Int, 0);
-            double thisX = CDF_MinWS - numLessMin * CDF_WS_Int;
-            double SD_Sqr = Math.Pow(SD_WS_Lag[WS_Ind], 2);
-            double thisPDF;
-            double lastPDF = 0;
-            double midPDF = 0;                       
-            
-            while (thisX <= CDF_MinWS)
-            {
-                thisPDF = 1 / Math.Pow(2 * Math.Pow(SD_Sqr, 2) * Math.PI, 0.5) * Math.Exp(-Math.Pow((thisX - lastWS), 2) / (2 * Math.Pow(SD_Sqr, 2)));
-                midPDF = (thisPDF + lastPDF) / 2;
+                WS_Ind = SD_WS_Lag.Length - 1;          
+      
+            double thisWS = 0;
+            double SD_Sqr = Math.Pow(SD_WS_Lag[WS_Ind], 2); // Square of standard deviation of WS change at bin WS_Ind
+            double thisPDF; // PDF calculated at thisWS
+            double lastPDF = 0; // PDF calculated at last WS
+            double midPDF = 0; // Average of thisPDF and lastPDF. Cumulative distribution is an integration, using trapezoidal integration so use avg PDF value                        
 
+            while (thisWS <= CDF_MinWS) // Sum up CDF from thisWS = 0 to CDF_MinWS
+            {                
+                thisPDF = 1 / Math.Pow(2 * SD_Sqr * Math.PI, 0.5) * Math.Exp(-Math.Pow((thisWS - lastWS), 2) / (2 * SD_Sqr));
+                midPDF = (thisPDF + lastPDF) / 2;
+                                
                 lagWS_CDF[0] = lagWS_CDF[0] + CDF_WS_Int * midPDF;
                 lastPDF = thisPDF;
-                thisX = thisX + CDF_WS_Int;
+                thisWS = thisWS + CDF_WS_Int;
             }
                                                
             for (int i = 1; i < 100; i++)
             {
-                thisX = CDF_MinWS + i * CDF_WS_Int;
-                thisPDF = 1 / Math.Pow(2 * Math.Pow(SD_Sqr, 2) * Math.PI, 0.5) * Math.Exp(-Math.Pow((thisX - lastWS), 2) / (2 * Math.Pow(SD_Sqr, 2)));
+                thisWS = CDF_MinWS + i * CDF_WS_Int;                
+                thisPDF = 1 / Math.Pow(2 * SD_Sqr * Math.PI, 0.5) * Math.Exp(-Math.Pow((thisWS - lastWS), 2) / (2 * SD_Sqr));
                 midPDF = (thisPDF + lastPDF) / 2;
-
-                lagWS_CDF[i] = lagWS_CDF[i-1] + CDF_WS_Int * midPDF;
+                
+                lagWS_CDF[i] = lagWS_CDF[i - 1] + CDF_WS_Int * midPDF;
                 lastPDF = thisPDF;
             }
 
@@ -1614,23 +1522,15 @@ namespace ContinuumNS
 
             return lagWS_CDF;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Calculate standard deviation of change in wind speed at target site for specified concurrent
-        /// period.
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Calculates the standard deviation of change in wind speed (from one hour to the next) as a function of 
+        /// wind speed at target site for specified concurrent period. </summary>  
         public void FindSD_ChangeInWS()
         {    
             DateTime lastRecord = DateTime.Today;
             DateTime nextRecord = lastRecord.AddHours(1);
                       
-            int numWS = (int)(30 / Get_WS_width_for_MCP());
-            
+            int numWS = (int)(30 / Get_WS_width_for_MCP());            
             SD_WS_Lag = new double[numWS];
             double[] thisAvg = new double[numWS];
             double lastWS = 0;
@@ -1646,8 +1546,7 @@ namespace ContinuumNS
                     thisAvg[WS_Ind] = thisAvg[WS_Ind] + thisDiff;
                     SD_WS_Lag[WS_Ind] = SD_WS_Lag[WS_Ind] + Math.Pow(thisDiff,2);
                     lastWS = thisConc.targetWS;
-                    thisCount[WS_Ind]++;
-                    
+                    thisCount[WS_Ind]++;                    
                 }
                 
                 lastWS = thisConc.targetWS;
@@ -1664,8 +1563,7 @@ namespace ContinuumNS
                     }
                     else
                         SD_WS_Lag[i] = 1; // If no data, assume a SD deviation of 1 m/s
-            }
-                      
+            }                     
            
         }
 
@@ -1697,50 +1595,25 @@ namespace ContinuumNS
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public double CalcOrthoSlope(double var_x, double var_y, double covar_xy)
-        {            
-            double dbl_slope = 0;
-            double slope = 0;
-
-            dbl_slope = (var_y - var_x + Math.Pow((Math.Pow((var_y - var_x), 2) + 4 * Math.Pow(covar_xy, 2)), 0.5)) / (2 * covar_xy);
-            slope = Convert.ToSingle(dbl_slope);
-
+        {    
+            double slope = (var_y - var_x + Math.Pow((Math.Pow((var_y - var_x), 2) + 4 * Math.Pow(covar_xy, 2)), 0.5)) / (2 * covar_xy);
+            
             return slope;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Calculates the slope of variance ratio method where slope is defined as ratio of standard
-        /// deviation of reference and target concurrent wind speed.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 5/16/2017. </remarks>
-        ///
-        /// <param name="var_x">    Variance of concurrent reference wind speed. </param>
-        /// <param name="var_y">    Variance of concurrent target wind speed. </param>
-        ///
-        /// <returns>   The calculated slope of variance ratio method. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Calculates the slope of variance ratio method where slope is defined as ratio of standard
+        /// deviation of reference and target concurrent wind speeds. </summary>        
         public double CalcVarianceRatioSlope(double var_x, double var_y)
-        {
-            // Calculates and returns slope of Variance Ratio
-            double dbl_slope = 0;
+        {            
             double slope = 0;
-
-            if (var_x > 0)
-            {
-                dbl_slope = Math.Pow(var_y, 0.5) / Math.Pow(var_x, 0.5);
-                slope = Convert.ToSingle(dbl_slope);
-            }
-            else
-            {
+            
+            if (var_x > 0)            
+                slope = Math.Pow(var_y, 0.5) / Math.Pow(var_x, 0.5);
+            else            
                 slope = 0;
-            }
-
+            
             return slope;
-        }
-
-        
+        }        
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>   Resets the export dates with start/end date of reference dataset. </summary>
@@ -2009,13 +1882,13 @@ namespace ContinuumNS
                 refData = GetRefData(thisMERRA, ref thisMet, thisInst);
 
             // Get sector count to be used within loops
-            Find_Sector_Counts();
+            Find_Sector_Counts(thisInst.metList);
 
             // Get target data
             if (targetData == null)
                 targetData = GetTargetData(thisInst.modeledHeight, thisMet); 
                       
-            thisMet.mcp.FindConcurrentData(false, thisMet.metData.startDate, thisMet.metData.endDate);
+            thisMet.mcp.FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate);
             // Find concurrent data to be referenced in DoMCP function            
             
             // For every MCP_Uncert, for every possible conc window, construct Uncert structures
@@ -2167,17 +2040,14 @@ namespace ContinuumNS
             if (thisUncert.LT_Ests != null)
             {
                 foreach (double value in thisUncert.LT_Ests)
-                {
                     sum_x = sum_x + value;
-                }
-
+                
                 thisUncert.avg = Convert.ToSingle(sum_x / val_length);
 
-                foreach (double value in thisUncert.LT_Ests)
-                {
+                foreach (double value in thisUncert.LT_Ests)                
                     var_x = var_x + (Math.Pow(value - thisUncert.avg, 2) / (val_length));
-                }
-                thisUncert.stDev = Convert.ToSingle(Math.Pow(var_x, 0.5));
+                
+                thisUncert.stDev = Math.Pow(var_x, 0.5);
 
             }
         }
@@ -2247,7 +2117,7 @@ namespace ContinuumNS
         /// <remarks>   Liz, 5/16/2017. </remarks>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public void Find_Sector_Counts()
+        public void Find_Sector_Counts(MetCollection metList)
         {
             int Total_comb = numWD * numTODs * numSeasons;
             int counter = 0;
@@ -2278,7 +2148,7 @@ namespace ContinuumNS
                         else if (k == 3)
                             sectors[counter].season = Met.Season.Fall;
 
-                        sectors[counter].count = stat.Get_Data_Count(refData, exportStart, exportEnd, i, sectors[counter].TOD, sectors[counter].season, this, false);
+                        sectors[counter].count = stat.GetDataCount(refData, exportStart, exportEnd, i, sectors[counter].TOD, sectors[counter].season, metList, false);
                         counter = counter + 1;
                     }
         }  

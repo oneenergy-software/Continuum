@@ -3045,9 +3045,9 @@ namespace ContinuumNS
                 return;
 
             if (Month_str != "All")
-                filename = Output_folder + "\\MERRA2_" + "Lat_" + Math.Round(thisMERRA.interpData.Coords.Lat, 3) + "_" + "Lon_" + Math.Round(thisMERRA.interpData.Coords.Lon, 3) + "_" + Month_str + "_" + Year_str + "_Wind_Rose" + ".csv";
+                filename = Output_folder + "\\MERRA2_" + "Lat_" + Math.Round(thisMERRA.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisMERRA.interpData.Coords.longitude, 3) + "_" + Month_str + "_" + Year_str + "_Wind_Rose" + ".csv";
             else
-                filename = Output_folder + "\\MERRA2_" + "Lat_" + Math.Round(thisMERRA.interpData.Coords.Lat, 3) + "_" + "Lon_" + Math.Round(thisMERRA.interpData.Coords.Lon, 3) + "_" + Year_str + "_Wind_Rose" + ".csv";
+                filename = Output_folder + "\\MERRA2_" + "Lat_" + Math.Round(thisMERRA.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisMERRA.interpData.Coords.longitude, 3) + "_" + Year_str + "_Wind_Rose" + ".csv";
 
             // Header
             StreamWriter file = new StreamWriter(filename);
@@ -3066,7 +3066,7 @@ namespace ContinuumNS
                 return;
             }
 
-            file.WriteLine("Lat: ," + thisMERRA.interpData.Coords.Lat + ", Long: ," + thisMERRA.interpData.Coords.Lon);
+            file.WriteLine("Lat: ," + thisMERRA.interpData.Coords.latitude + ", Long: ," + thisMERRA.interpData.Coords.longitude);
             file.WriteLine();
 
 
@@ -3116,7 +3116,7 @@ namespace ContinuumNS
 
             if (selectedMERRA == "User-Defined Lat/Long")
             {
-                filename = Output_folder + "\\Monthly_Prod_Lat_" + thisMERRA.interpData.Coords.Lat + "_" + "Lon_" + thisMERRA.interpData.Coords.Lon +
+                filename = Output_folder + "\\Monthly_Prod_Lat_" + thisMERRA.interpData.Coords.latitude + "_" + "Lon_" + thisMERRA.interpData.Coords.longitude +
                 "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";
             }
             else
@@ -3129,7 +3129,7 @@ namespace ContinuumNS
             file.WriteLine("Long-Term Monthly Production based on MERRA data");
             if (selectedMERRA == "User-Defined Lat/Long")
             {
-                file.WriteLine("Project location (user-defined):, Lat:, " + thisMERRA.interpData.Coords.Lat + ", Long:, " + thisMERRA.interpData.Coords.Lon);
+                file.WriteLine("Project location (user-defined):, Lat:, " + thisMERRA.interpData.Coords.latitude + ", Long:, " + thisMERRA.interpData.Coords.longitude);
             }
             else
                 file.WriteLine("Project:," + selectedMERRA);
@@ -3179,7 +3179,7 @@ namespace ContinuumNS
             else
                 return;
 
-            string filename = Output_folder + "\\MERRA2_" + "Lat_" + thisMERRA.interpData.Coords.Lat + "_" + "Lon_" + thisMERRA.interpData.Coords.Lon + "_" + thisMERRA.Make_MERRA2_Date_String(thisInst.merraList.startDate)
+            string filename = Output_folder + "\\MERRA2_" + "Lat_" + thisMERRA.interpData.Coords.latitude + "_" + "Lon_" + thisMERRA.interpData.Coords.longitude + "_" + thisMERRA.Make_MERRA2_Date_String(thisInst.merraList.startDate)
                 + "_to_" + thisMERRA.Make_MERRA2_Date_String(thisInst.merraList.endDate) + ".csv";
 
             // Header
@@ -3191,7 +3191,7 @@ namespace ContinuumNS
                 file.WriteLine("Interpolated between " + thisInst.merraList.numMERRA_Nodes + " MERRA2 nodes");
 
             file.WriteLine();
-            file.WriteLine("Lat: ," + thisMERRA.interpData.Coords.Lat + ", Long: ," + thisMERRA.interpData.Coords.Lon);
+            file.WriteLine("Lat: ," + thisMERRA.interpData.Coords.latitude + ", Long: ," + thisMERRA.interpData.Coords.longitude);
             file.WriteLine("UTC Offset: " + thisMERRA.interpData.UTC_offset.ToString());
 
             file.WriteLine();
