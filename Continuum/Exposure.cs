@@ -85,11 +85,16 @@ namespace ContinuumNS
 
             return overallValue;
         }
-                
 
-    public double GetDW_Param(int WD_Ind, string paramType)
-        {
-            // Returns DW exposure, surface roughness or displacement for specified WD sector
+
+        /// <summary>
+        ///  Returns DW exposure, surface roughness or displacement for specified WD sector
+        /// </summary>
+        /// <param name="WD_Ind">Wind direction index</param>
+        /// <param name="paramType">Expo, SR, DH, Cross, or Para</param>
+        /// <returns>Downwind value</returns>
+        public double GetDW_Param(int WD_Ind, string paramType)
+        {            
             double DW_Param = 0;
             int numWD = expo.Length;
 

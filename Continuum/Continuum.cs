@@ -12,7 +12,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters;
 using System.Diagnostics;
 using Microsoft.VisualBasic;
-
+using Nevron;
 
 namespace ContinuumNS
 {
@@ -37,21 +37,26 @@ namespace ContinuumNS
         public bool fileChanged;
         public bool okToUpdate = true; // Used to determine when the GUI plots and tables should be updated
         public bool isTest = false;
-        public Continuum()
+        public Continuum(string filename)
         {
             SplashScreen Splash = new SplashScreen();
             Splash.ShowDialog();
             
             InitializeComponent();
 
+            NLicense license = new NLicense("76104216-0103-1669-1902-82f9b34708fe");
+
+            NLicenseManager.Instance.SetLicense(license);
+            NLicenseManager.Instance.LockLicense = true;
+
             // StartPosition was set to FormStartPosition.Manual in the properties window.
             // Adjust size of form
-     /*       Rectangle screen = Screen.PrimaryScreen.WorkingArea;
-            int w = Width >= screen.Width ? screen.Width : (screen.Width + Width) / 2;
-            int h = Height >= screen.Height ? screen.Height : (screen.Height + Height) / 2;
-            this.Location = new Point((screen.Width - w) / 2, (screen.Height - h) / 2);
-            this.Size = new Size(w, h);
-      */                 
+            /*       Rectangle screen = Screen.PrimaryScreen.WorkingArea;
+                   int w = Width >= screen.Width ? screen.Width : (screen.Width + Width) / 2;
+                   int h = Height >= screen.Height ? screen.Height : (screen.Height + Height) / 2;
+                   this.Location = new Point((screen.Width - w) / 2, (screen.Height - h) / 2);
+                   this.Size = new Size(w, h);
+             */
             radiiList.New(); // populates with R = 4000, 6000, 8000, 10000 and invserse distance exponent = 1
             metList.NewList(); // sets MCP settings and day/night hours
             turbineList.SetExceedCurves(); // initializes Exceedance curves
@@ -71,6 +76,10 @@ namespace ContinuumNS
             cboMERRASelectedMet.SelectedIndex = 0;
             cboMCP_Type.SelectedIndex = 0;
             updateThe.MCP_Settings(this);
+
+            if (filename != "")
+                Open(filename);
+            
         }               
 
         private void btnLoadXYZ_Click(object sender, EventArgs e)

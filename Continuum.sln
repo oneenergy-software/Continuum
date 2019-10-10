@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Continuum", "Continuum\Cont
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Continuum_Tests", "Continuum_Tests\Continuum_Tests.csproj", "{CE649637-1655-42DA-A6F1-68416F09073F}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Continuum_Setup", "Continuum_Setup\Continuum_Setup.vdproj", "{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI Test Creator", "GUI Test Creator\GUI Test Creator.csproj", "{3170A9F3-691E-4534-B454-75FC671B8707}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Continuum_Setup", "Continuum_Setup\Continuum_Setup.vdproj", "{192FD6DD-650B-423F-9408-F2E59183E566}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,6 @@ Global
 		{CE649637-1655-42DA-A6F1-68416F09073F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE649637-1655-42DA-A6F1-68416F09073F}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE649637-1655-42DA-A6F1-68416F09073F}.Release|x86.Build.0 = Release|Any CPU
-		{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}.Debug|Any CPU.ActiveCfg = Debug
-		{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}.Debug|x86.ActiveCfg = Debug
-		{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}.Release|Any CPU.ActiveCfg = Release
-		{61C2618C-7DDC-4D31-9B1A-5579B4FCA250}.Release|x86.ActiveCfg = Release
 		{3170A9F3-691E-4534-B454-75FC671B8707}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3170A9F3-691E-4534-B454-75FC671B8707}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3170A9F3-691E-4534-B454-75FC671B8707}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -47,6 +43,14 @@ Global
 		{3170A9F3-691E-4534-B454-75FC671B8707}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3170A9F3-691E-4534-B454-75FC671B8707}.Release|x86.ActiveCfg = Release|Any CPU
 		{3170A9F3-691E-4534-B454-75FC671B8707}.Release|x86.Build.0 = Release|Any CPU
+		{192FD6DD-650B-423F-9408-F2E59183E566}.Debug|Any CPU.ActiveCfg = Debug
+		{192FD6DD-650B-423F-9408-F2E59183E566}.Debug|Any CPU.Build.0 = Debug
+		{192FD6DD-650B-423F-9408-F2E59183E566}.Debug|x86.ActiveCfg = Debug
+		{192FD6DD-650B-423F-9408-F2E59183E566}.Debug|x86.Build.0 = Debug
+		{192FD6DD-650B-423F-9408-F2E59183E566}.Release|Any CPU.ActiveCfg = Release
+		{192FD6DD-650B-423F-9408-F2E59183E566}.Release|Any CPU.Build.0 = Release
+		{192FD6DD-650B-423F-9408-F2E59183E566}.Release|x86.ActiveCfg = Release
+		{192FD6DD-650B-423F-9408-F2E59183E566}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

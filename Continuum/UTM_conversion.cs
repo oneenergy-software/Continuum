@@ -15,8 +15,8 @@ namespace ContinuumNS
 
         // Tom Lambert generously shared this code with me. I cross-checked it
         // with this website: http://www.uwgb.edu/dutchs/usefuldata/utmformulas.htm
-        // and it//s all consistent.The website that he lists is no longer up so
-        // I//m using the reference ellipsoids on the uwgb.edu page(11 of them)
+        // and it's all consistent.The website that he lists is no longer up so
+        // I'm using the reference ellipsoids on the uwgb.edu page(11 of them)
         ///*Reference ellipsoids derived from Peter H. Dana//s website- 
         //http://www.utexas.edu/depts/grg/gcraft/notes/datum/elist.html
         //Department of Geography, University of Texas at Austin

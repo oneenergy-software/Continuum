@@ -1335,67 +1335,6 @@ namespace ContinuumNS
         }
                 
 
-        public Met Get_Met_with_Min_or_Max_UH_or_DH_P10(int WD_Ind, string minOrMax, string UH_or_DH, Model This_Model)
-        {
-            Met metReturn = new Met();
-            InvestCollection radiiList = new InvestCollection();
-            radiiList.New();
-            int radiusIndex = radiiList.GetRadiusInd(This_Model.radius);
-            double minOrMaxValue;
-            if (minOrMax == "Min")
-                minOrMaxValue = 1000;
-            else
-                minOrMaxValue = -1000;
-            
-            for (int i = 0; i < ThisCount; i++)
-            {
-                Met thisMet = metItem[i];
-                string UW_Flow = This_Model.GetFlowType(thisMet.expo[radiusIndex].expo[WD_Ind], thisMet.expo[radiusIndex].GetDW_Param(WD_Ind, "Expo"), WD_Ind, "UW", null, 5, false, radiusIndex);
-                if (UW_Flow == "SpdUp")
-                    UW_Flow = "Uphill"; // doesn't distinguish between induced speed-up and uphill flow for error estimate calculation
-
-                string DW_Flow = This_Model.GetFlowType(thisMet.expo[radiusIndex].expo[WD_Ind], thisMet.expo[radiusIndex].GetDW_Param(WD_Ind, "Expo"), WD_Ind, "DW", null, 5, false, radiusIndex);
-                double thisP10 = Math.Max(thisMet.gridStats.stats[radiusIndex].P10_UW[WD_Ind], thisMet.gridStats.stats[radiusIndex].P10_DW[WD_Ind]);
-
-                if (UW_Flow == UH_or_DH || DW_Flow == UH_or_DH)
-                {                    
-                    if ((minOrMax == "Min" && thisP10 < minOrMaxValue) || (minOrMax == "Max" && thisP10 > minOrMaxValue))
-                    {
-                        minOrMaxValue = thisP10;
-                        metReturn = thisMet;
-                    }                    
-                }
-            }
-
-            return metReturn;
-        }
-
-        public string[] GetMetsExceptThoseInList(string[] metsToOmit)
-        {
-            string[] theseMets = null;
-            int Num_to_use = 0;
-            int Num_to_omit = 0;
-            if (metsToOmit != null)
-                Num_to_omit = metsToOmit.Length;
-
-            for (int i = 0; i < ThisCount; i++)
-            {
-                bool includeThisMet = true;
-
-                for (int j = 0; j < Num_to_omit; j++)
-                    if (metItem[i].name == metsToOmit[j])
-                        includeThisMet = false;
-
-                if (includeThisMet == true)
-                {
-                    Num_to_use++;
-                    Array.Resize(ref theseMets, Num_to_use);
-                    theseMets[Num_to_use - 1] = metItem[i].name;
-                }
-            }
-
-            return theseMets;
-        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         /// <summary>

@@ -301,9 +301,12 @@ namespace ContinuumNS
             return Stab_corr;
         }
 
-        public string GetFlowType(double thisUW, double thisDW, int WD_sec, string UW_or_DW, NodeCollection.Sep_Nodes[] flowSepNodes, double thisWS, bool useFlowSep, int radiusInd)
-        {
-            // Determines flow type upwind of site: Downhill, Uphill, Induced Speed-up, Valley or Turbulent
+        /// <summary>
+        /// Determines flow type upwind or downwind of site: Downhill, Uphill, Induced Speed-up, Valley or Turbulent
+        /// </summary>        
+        public string GetFlowType(double thisUW, double thisDW, int WD_sec, string UW_or_DW, NodeCollection.Sep_Nodes[] flowSepNodes, double thisWS, bool useFlowSep, 
+            int radiusInd)
+        {             
             string flowType = "";
             bool isTurbulent = false;
             NodeCollection.Sep_Nodes thisFS_Node = new NodeCollection.Sep_Nodes();

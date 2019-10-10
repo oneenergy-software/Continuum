@@ -369,17 +369,18 @@ namespace ContinuumNS
         }
 
         /// <summary>
-        /// Checks if the elevation is available at 8 points +/- 10000 m from specified UTMX/Y and returns index of point outside range if all are not available.
+        /// Checks if the 8 points +/- specified distance from specified UTMX/Y on specified grid (plot vs calcs) fall within bounds. 
+        /// Returns 100 if all points are within defined area and returns index of point outside range if all are not available.
         /// </summary>        
-        public int NewNodeCheck(TopoInfo topo, double UTMX, double UTMY, int minDist)
+        public int NewNodeCheck(TopoInfo topo, double UTMX, double UTMY, int minDist, string plotOrCalcs)
         {
             int goodToGo = 100;
             
             double X_Loc = 0;
             double Y_Loc = 0;
 
-            int[] topoIndices = topo.GetXYIndices("Topo", UTMX, UTMY, "Plot"); // topoElevs indices at site location
-            int[] landCoverIndices = topo.GetXYIndices("Land cover", UTMX, UTMY, "Plot"); // landCover indices at site location
+            int[] topoIndices = topo.GetXYIndices("Topo", UTMX, UTMY, plotOrCalcs); // topoElevs indices at site location
+            int[] landCoverIndices = topo.GetXYIndices("Land cover", UTMX, UTMY, plotOrCalcs); // landCover indices at site location
 
             bool[] indexChecks = new bool[8];
 
@@ -435,21 +436,53 @@ namespace ContinuumNS
                     Y_Loc = UTMY + minDist * 0.7071;
                 }
 
-                topoIndices = topo.GetXYIndices("Topo", X_Loc, Y_Loc, "Plot");                
+                topoIndices = topo.GetXYIndices("Topo", X_Loc, Y_Loc, plotOrCalcs);
 
-                if (topoIndices[0] < 0 || topoIndices[0] >= topo.topoNumXY.X.plot.num || topoIndices[1] < 0 || topoIndices[1] >= topo.topoNumXY.Y.plot.num)                
+                int numXTopo = 0;
+                int numYTopo = 0;
+
+                if (plotOrCalcs == "Plot")
+                {
+                    numXTopo = topo.topoNumXY.X.plot.num;
+                    numYTopo = topo.topoNumXY.Y.plot.num;
+                }
+                else if (plotOrCalcs == "Calcs")
+                {
+                    numXTopo = topo.topoNumXY.X.calcs.num;
+                    numYTopo = topo.topoNumXY.Y.calcs.num;
+                }
+
+                if (topoIndices[0] < 0 || topoIndices[0] >= numXTopo || topoIndices[1] < 0 || topoIndices[1] >= numYTopo)                
                     indexChecks[i] = false;
-                else if (topo.topoElevs[topoIndices[0], topoIndices[1]] == -999)
-                    indexChecks[i] = false;
+
+                if (plotOrCalcs == "Plot")
+                    if (topo.topoElevs[topoIndices[0], topoIndices[1]] == -999)
+                        indexChecks[i] = false;
 
                 if (topo.gotSR)
                 {
-                    landCoverIndices = topo.GetXYIndices("Land cover", X_Loc, Y_Loc, "Plot");
+                    landCoverIndices = topo.GetXYIndices("Land cover", X_Loc, Y_Loc, plotOrCalcs);
 
-                    if (landCoverIndices[0] < 0 || landCoverIndices[0] >= topo.LC_NumXY.X.plot.num || landCoverIndices[1] < 0 || landCoverIndices[1] >= topo.LC_NumXY.Y.plot.num)
+                    int numXLC = 0;
+                    int numYLC = 0;
+
+                    if (plotOrCalcs == "Plot")
+                    {
+                        numXLC = topo.LC_NumXY.X.plot.num;
+                        numYLC = topo.LC_NumXY.Y.plot.num;
+                    }
+                    else if (plotOrCalcs == "Calcs")
+                    {
+                        numXLC = topo.LC_NumXY.X.calcs.num;
+                        numYLC = topo.LC_NumXY.Y.calcs.num;
+                    }
+
+                    if (landCoverIndices[0] < 0 || landCoverIndices[0] >= numXLC || landCoverIndices[1] < 0 || landCoverIndices[1] >= numYLC)
                         indexChecks[i] = false;
-                    else if (topo.landCover[landCoverIndices[0], landCoverIndices[1]] == -999)
-                        indexChecks[i] = false;
+
+                    if (plotOrCalcs == "Plot")
+                        if (topo.landCover[landCoverIndices[0], landCoverIndices[1]] == -999)
+                            indexChecks[i] = false;
                 }
 
             }

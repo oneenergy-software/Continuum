@@ -73,10 +73,6 @@
     <Reference Include="GeoTimeZone, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e20ab7d0d9479841, processorArchitecture=MSIL">
       <HintPath>..\packages\GeoTimeZone.4.0.0\lib\net461\GeoTimeZone.dll</HintPath>
     </Reference>
-    <Reference Include="LogicNP.CryptoLicensing, Version=11.0.0.0, Culture=neutral, PublicKeyToken=4a3c0a4c668b48b4">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\LogicNP Software\CryptoLicensing For .Net 2015\LogicNP.CryptoLicensing.dll</HintPath>
-    </Reference>
     <Reference Include="MathNet.Numerics, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.8.1\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
@@ -114,9 +110,6 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -132,9 +125,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="TimeZoneConverter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=e20ab7d0d9479841, processorArchitecture=MSIL">
       <HintPath>..\packages\TimeZoneConverter.3.2.0\lib\net461\TimeZoneConverter.dll</HintPath>
-    </Reference>
-    <Reference Include="TimeZoneDb, Version=1.0.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TimeZoneDb.1.0.15\lib\net45\TimeZoneDb.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

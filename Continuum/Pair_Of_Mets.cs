@@ -329,7 +329,7 @@ namespace ContinuumNS
                     }
 
                     if (keepWS_Pred == true) {
-                        Continuum thisInst = new Continuum();
+                        Continuum thisInst = new Continuum("");
                         newWS_Preds = thisInst.ResizeArray(ref newWS_Preds, newWS_count + 1, numRadii);
                         newWS_Preds[newWS_count, numRadii - 1] = WS_Pred[i, j];
                         newWS_count++;

@@ -478,7 +478,7 @@ namespace ContinuumNS
             public double weibull_A;
 
             /// <summary>   Wind Speed index. </summary>
-            public double WS_Ind;
+            public int WS_Ind;
             /// <summary>   Wind direction index. </summary>
             public int WD_Ind;
             /// <summary>   Time of day bin </summary>

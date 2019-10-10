@@ -12,12 +12,21 @@ namespace ContinuumNS
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string filename)
         {
         
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Continuum());
+            Application.Run(new Continuum(filename));
+        }
+
+        [STAThread]
+        static void Main()
+        {
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Continuum(""));
         }
     }
 }

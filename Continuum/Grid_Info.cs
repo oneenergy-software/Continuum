@@ -203,7 +203,7 @@ namespace ContinuumNS
                     double deltaX = i - UTMX;
                     double deltaY = j - UTMY;
                     int dirInd = thisInst.topo.CalcDirInd(deltaX, deltaY, dirBinSize);
-                    int goodToGo = check.NewNodeCheck(thisInst.topo, i, j, 10000);
+                    int goodToGo = check.NewNodeCheck(thisInst.topo, i, j, 10000, "Calcs");
                   //  bool gridOk = thisInst.topo.newNode(i, j, thisInst.radiiList, gridRadius);
 
                     if (goodToGo == 100 && ((dist < gridRadius && sectorsToUse[dirInd] == true) || dist < gridRadius / 2))

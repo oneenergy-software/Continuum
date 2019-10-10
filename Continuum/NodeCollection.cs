@@ -719,18 +719,13 @@ namespace ContinuumNS
             nodesFromEnd[0] = endNode;
             int endInd = 0;
 
-            bool isTerrainSame = TerrainSame(startNode, endNode, model, 1.0, numMets, windRose, radiusIndex);
-            bool isElevClose = ElevClose(startNode, endNode, model, 1);
-
-            // for sites with low P10 exposures, the stepwise approach can give funky results since the
-            // mdw changes considerably at low expos.  The stepwise approach is used when the iteration method
-            // is being used but, for single met models, if the P10 DW is less than 4 m then just use one-step
-            bool isDW_ExpoLow = LowDW_Expo(startNode, endNode, model, windRose);
+            bool isTerrainSame = TerrainSame(startNode, endNode, model, 1.0, windRose, radiusIndex);
+            bool isElevClose = ElevClose(startNode, endNode, model, 1);                       
 
             Nodes targetNode = endNode;
             double distToTarget = thisInst.topo.CalcDistanceBetweenPoints(nodesFromStart[0].UTMX, nodesFromStart[0].UTMY, targetNode.UTMX, targetNode.UTMY);
 
-            if ((isTerrainSame == true && isElevClose == true) || isDW_ExpoLow == true || distToTarget < 500)
+            if ((isTerrainSame == true && isElevClose == true) || distToTarget < 500)
                 // No nodes needed in between start and end mets
                 nodePath1to2 = null;
             else {
@@ -740,17 +735,11 @@ namespace ContinuumNS
                     double stepSplit = 1;
                     double adjFac = 1;
 
-                    // First find node starting with met1
+                    // First find node starting with last node in nodesFromStart array
                     while (goToNextStep == false)
                     {
                         if (stepSplit >= 16 || radiusStep < 500)
-                            adjFac = adjFac * 1.5f;
-
-                        if (minDir == 0 && maxDir == 0)
-                        {
-                            adjFac = adjFac * 1.5f;
-                            stepSplit = 1;
-                        }
+                            adjFac = adjFac * 1.5f;                                               
 
                         startNode = nodesFromStart[startInd];
                         targetNode = nodesFromEnd[endInd];
@@ -787,18 +776,15 @@ namespace ContinuumNS
 
                         // Check to see if next node is similar enough to start node in terms of terrain complex and elev
                         if (foundNode == true) {
-                            isTerrainSame = TerrainSame(startNode, nextNode, model, adjFac, numMets, windRose, radiusIndex);
+                            isTerrainSame = TerrainSame(startNode, nextNode, model, adjFac, windRose, radiusIndex);
                             isElevClose = ElevClose(startNode, nextNode, model, adjFac);
                         }
 
                         if (foundNode == true && ((isTerrainSame == true && isElevClose == true) || radiusStep < 500))
                         { // found next node to use
                             if (thisInst.topo.useSepMod == true && nextNode.expo != null)
-                            {
-                                Model thisModel = new Model();                                
                                 nextNode.flowSepNodes = FindAllFlowSeps(nextNode, thisInst, thisInst.metList.numWD);
-                            }
-
+                            
                             startInd++;
                             Array.Resize(ref nodesFromStart, startInd + 1);
                             nodesFromStart[startInd] = nextNode;
@@ -806,42 +792,30 @@ namespace ContinuumNS
                             goToNextStep = true;
                             lastStepSize = radiusStep;
                         }
-                        else if (foundNode == true && radiusStep > 500)
-                            stepSplit = stepSplit * 2;
-                        else {
-                            adjFac = adjFac * 1.5f;
-                            stepSplit = 1;
-                        }
+                        else 
+                            stepSplit = stepSplit * 2;                        
 
                     }
 
                     // Check to see if node path is complete
                     // Compare terrain and elevation between new node and newest node found from end (or end met)
-                    adjFac = 1;
-                    isDW_ExpoLow = LowDW_Expo(nextNode, nodesFromEnd[endInd], model, windRose);
-                    isTerrainSame = TerrainSame(nextNode, nodesFromEnd[endInd], model, adjFac, numMets, windRose, radiusIndex);
+                    adjFac = 1;                    
+                    isTerrainSame = TerrainSame(nextNode, nodesFromEnd[endInd], model, adjFac, windRose, radiusIndex);
                     isElevClose = ElevClose(nextNode, nodesFromEnd[endInd], model, adjFac);
                     distToTarget = thisInst.topo.CalcDistanceBetweenPoints(nextNode.UTMX, nextNode.UTMY, nodesFromEnd[endInd].UTMX, nodesFromEnd[endInd].UTMY);
                     
-                    if ((isTerrainSame == true && isElevClose == true) || distToTarget < 500 || isDW_ExpoLow == true)
+                    if ((isTerrainSame == true && isElevClose == true) || distToTarget < 500)
                         madeItToTarget = true;
 
                     goToNextStep = false;
                     stepSplit = 1;
-                    adjFac = 1;
-
+                    
                     if (madeItToTarget == false)
                     { // find node from last end node with last start node as new target
                         while (goToNextStep == false)
                         {
-                            if (stepSplit >= 16 || radiusStep < 500)
-                                adjFac = adjFac * 1.5f;
-
-                            if (minDir == 0 && maxDir == 0)
-                            {
-                                adjFac = adjFac * 1.5f;
-                                stepSplit = 1;
-                            }
+                            if (stepSplit >= 16)
+                                adjFac = adjFac * 1.5f;                                                       
 
                             startNode = nodesFromEnd[endInd];
                             targetNode = nodesFromStart[startInd];
@@ -855,8 +829,7 @@ namespace ContinuumNS
 
                             if (radiusStep > 7500)
                                 radiusStep = 7500;
-
-
+                            
                             if (endInd > 100)
                             {
                                 Array.Resize(ref nodePath1to2, 200);
@@ -881,7 +854,7 @@ namespace ContinuumNS
                             
                             // Check to see if next node is similar enough to start node in terms of terrain complex and elev
                             if (foundNode == true) {
-                                isTerrainSame = TerrainSame(startNode, nextNode, model, adjFac, numMets, windRose, radiusIndex);
+                                isTerrainSame = TerrainSame(startNode, nextNode, model, adjFac, windRose, radiusIndex);
                                 isElevClose = ElevClose(startNode, nextNode, model, adjFac);
                             }
 
@@ -897,24 +870,20 @@ namespace ContinuumNS
                                 goToNextStep = true;
                                 lastStepSize = radiusStep;
                             }
-                            else if (foundNode == true && radiusStep > 500)
+                            else 
                                 stepSplit = stepSplit * 2;
-                            else {
-                                adjFac = adjFac * 1.5f;
-                                stepSplit = 1;
-                            }
-
+                            
                         }
 
                         // Check to see if node path is complete
                         // Compare terrain and elevation between new node and newest node found from end (or end met)
                         adjFac = 1;
-                        isDW_ExpoLow = LowDW_Expo(nextNode, nodesFromStart[startInd], model, windRose);
-                        isTerrainSame = TerrainSame(nextNode, nodesFromStart[startInd], model, adjFac, numMets, windRose, radiusIndex);
+                        
+                        isTerrainSame = TerrainSame(nextNode, nodesFromStart[startInd], model, adjFac, windRose, radiusIndex);
                         isElevClose = ElevClose(nextNode, nodesFromStart[startInd], model, adjFac);
                         distToTarget = thisInst.topo.CalcDistanceBetweenPoints(nextNode.UTMX, nextNode.UTMY, nodesFromStart[startInd].UTMX, nodesFromStart[startInd].UTMY);
 
-                        if ((isTerrainSame == true && isElevClose == true) || distToTarget < 500 || isDW_ExpoLow == true)
+                        if ((isTerrainSame == true && isElevClose == true) || distToTarget < 500)
                             madeItToTarget = true;
 
                     }
@@ -978,7 +947,7 @@ namespace ContinuumNS
                     thisNode.UTMX = startNode.UTMX + j * Math.Cos((90 - i) * Math.PI / 180);
                     thisNode.UTMY = startNode.UTMY + j * Math.Sin((90 - i) * Math.PI / 180); 
 
-                    int nodeOk = check.NewNodeCheck(topo, thisNode.UTMX, thisNode.UTMY, 0); // Min distance is zero since we just need an elevation at this location
+                    int nodeOk = check.NewNodeCheck(topo, thisNode.UTMX, thisNode.UTMY, 0, "Calcs"); // Min distance is zero since we just need an elevation at this location
 
                     if (nodeOk == 100)
                     {
@@ -1143,6 +1112,7 @@ namespace ContinuumNS
         {             
             Nodes highNode = new Nodes();
             Nodes thisNode = new Nodes();
+            Check_class check = new Check_class();
       
             int reso = 250;
             
@@ -1160,15 +1130,20 @@ namespace ContinuumNS
                     // Find closest nodes on fixed grid
                     TopoInfo.TopoGrid closestNode = thisInst.topo.GetClosestNodeFixedGrid(thisNode.UTMX, thisNode.UTMY, 250, 12000);
                     thisNode.UTMX = closestNode.UTMX;
-                    thisNode.UTMY = closestNode.UTMY;                                       
+                    thisNode.UTMY = closestNode.UTMY;
 
-                    thisNode.elev = thisInst.topo.CalcElevs(thisNode.UTMX, thisNode.UTMY);
+                    int newOk = check.NewNodeCheck(thisInst.topo, thisNode.UTMX, thisNode.UTMY, 10000, "Calcs");
 
-                    if (highNode == null || thisNode.elev > highNode.elev)
+                    if (newOk == 100)
                     {
-                        highNode.UTMX = thisNode.UTMX;
-                        highNode.UTMY = thisNode.UTMY;
-                        highNode.elev = thisNode.elev;
+                        thisNode.elev = thisInst.topo.CalcElevs(thisNode.UTMX, thisNode.UTMY);
+
+                        if (highNode == null || thisNode.elev > highNode.elev)
+                        {
+                            highNode.UTMX = thisNode.UTMX;
+                            highNode.UTMY = thisNode.UTMY;
+                            highNode.elev = thisNode.elev;
+                        }
                     }
                     
                 }
@@ -1315,10 +1290,12 @@ namespace ContinuumNS
 
         }
 
-
+        /// <summary>
+        /// Returns true if elevation difference between two nodes is lower than max allowed
+        /// </summary>        
+        /// <returns></returns>
         public bool ElevClose(Nodes node1, Nodes node2, Model model, double adjFac)
-        {
-            // Returns true if elevation difference between two nodes is lower than max allowed
+        {            
             bool isClose = false;
             double maxElevDiff = adjFac * model.maxElevDiff;
             double elevDiff = Math.Abs(node1.elev - node2.elev);
@@ -1332,25 +1309,15 @@ namespace ContinuumNS
 
         }
 
+        /// <summary>
+        /// Compares the terrain complexity (P10 Exposure) at two sites and returns true if P10 exposure difference between two nodes 
+        /// is lower than max allowed
+        /// </summary>
 
-        public bool TerrainSame(Nodes node1, Nodes node2, Model model, double adjFac, int numMets, double[] windRose, int radiusIndex)
-        {
-            // Returns true if exposure difference between two nodes is lower than max allowed
+        /// <returns></returns>
+        public bool TerrainSame(Nodes node1, Nodes node2, Model model, double adjFac, double[] windRose, int radiusIndex)
+        {            
             bool isSame = false;
-
-            double numMetConst;
-
-            if (numMets == 1)
-                numMetConst = 1.5f;
-            else if (numMets == 2)
-                numMetConst = 1.3f;
-            else if (numMets == 3)
-                numMetConst = 1.1f;
-            else
-                numMetConst = 1f;
-            
-            double maxDiffSlope = model.maxP10DiffSlope;
-            double maxDiffInt = model.maxP10DiffOffset;
 
             double P10_UW_1 = node1.gridStats.GetOverallP10(windRose, radiusIndex, "UW");
             double P10_UW_2 = node2.gridStats.GetOverallP10(windRose, radiusIndex, "UW");
@@ -1360,8 +1327,8 @@ namespace ContinuumNS
             double avgP10UW = Math.Abs(P10_UW_1 + P10_UW_2) / 2;
             double avgP10DW = Math.Abs(P10_DW_1 + P10_DW_2) / 2;
 
-            double maxUW_Diff = numMetConst * (avgP10UW * maxDiffSlope + adjFac * maxDiffInt);
-            double maxDW_Diff = numMetConst * (avgP10DW * maxDiffSlope + adjFac * maxDiffInt);
+            double maxUW_Diff = avgP10UW * model.maxP10DiffSlope + adjFac * model.maxP10DiffOffset;
+            double maxDW_Diff = avgP10DW * model.maxP10DiffSlope + adjFac * model.maxP10DiffOffset;
 
             double UW_Diff = Math.Abs(P10_UW_1 - P10_UW_2);
             double DW_Diff = Math.Abs(P10_DW_1 - P10_DW_2);
@@ -1380,58 +1347,7 @@ namespace ContinuumNS
             }
 
             return isSame;
-        }
-
-        public bool LowDW_Expo(Nodes node1, Nodes node2, Model model, double[] windRose)
-        {
-            // Returns true if DW exposure is very low
-            bool isLow = false;
-            int numRadii;
-            int minRadInd = 0;
-            int maxRadInd = 0;
-
-            int minRadius = model.radius;
-            int maxRadius = model.radius;
-
-            double P10_DW_1 = 0;
-            double P10_DW_2 = 0;
-            double avgP10DW = 0;
-
-            // if ( UWDW model is an iterative then return false (i.e. only jump to one-step at low expo sites for single met model)
-
-            if (model.isCalibrated == true) {
-                isLow = false;
-                return isLow;
-            }
-
-            numRadii = node1.gridStats.stats.Length;
-            
-            for (int i = 0; i < numRadii; i++)
-            {
-                if (node1.gridStats.stats[i].radius == minRadius)
-                    minRadInd = i;
-
-                if (node1.gridStats.stats[i].radius == maxRadius)
-                    maxRadInd = i;
-            }
-            
-            for (int i = minRadInd; i <= maxRadInd; i++)
-            {
-                P10_DW_1 = node1.gridStats.GetOverallP10(windRose, i, "DW");
-                P10_DW_2 = node2.gridStats.GetOverallP10(windRose, i, "DW");
-
-                avgP10DW = Math.Abs(P10_DW_1 + P10_DW_2) / 2;
-
-                if (avgP10DW < 4 || (avgP10DW < 10 && (P10_DW_1 < 4 || P10_DW_2 < 4)))
-                {
-                    isLow = true;
-                    return isLow;
-                }
-
-            }
-
-            return isLow;
-        }
+        }           
 
         public void ClearExposGridStatsFromDB(Continuum thisInst)
         {

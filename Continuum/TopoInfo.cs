@@ -939,7 +939,7 @@ namespace ContinuumNS
 
             // Check that location has elevation
             Check_class check = new Check_class();
-            int goodToGo = check.NewNodeCheck(this, xFixed, yFixed, minDist);
+            int goodToGo = check.NewNodeCheck(this, xFixed, yFixed, minDist, "Plot");
 
             if (goodToGo == 100)
             {
@@ -985,7 +985,7 @@ namespace ContinuumNS
                     if (yFixed < 4000000)
                         yFixed = yFixed;
 
-                    goodToGo = check.NewNodeCheck(this, xFixed, yFixed, minDist);
+                    goodToGo = check.NewNodeCheck(this, xFixed, yFixed, minDist, "Plot");
                 }
 
                 closestNode.UTMX = X_Ind * gridReso + topoNumXY.X.all.min;
@@ -2642,14 +2642,14 @@ namespace ContinuumNS
         /// <returns>   An array of int. </returns>
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public int[] GetXYIndices(string topoOrLC, double UTMX, double UTMY, string allOrPlot)
+        public int[] GetXYIndices(string topoOrLC, double UTMX, double UTMY, string allPlotOrCalcs)
         {
             // Returns X/Y indices associated with specified UTMX/Y and either topography or land cover data and using either 'all' data or decimated 'plot' data
             int[] indices = new int[2]; // 0: X, 1: Y
                        
             if (topoOrLC == "Topo")
             {
-                if (allOrPlot == "All")
+                if (allPlotOrCalcs == "All")
                 {
                     if (topoNumXY.X.all.reso == 0)
                     {
@@ -2661,7 +2661,19 @@ namespace ContinuumNS
                     indices[0] = Convert.ToInt16((UTMX - topoNumXY.X.all.min) / topoNumXY.X.all.reso);
                     indices[1] = Convert.ToInt16((UTMY - topoNumXY.Y.all.min) / topoNumXY.Y.all.reso);
                 }
-                else
+                else if (allPlotOrCalcs == "Calcs")
+                {
+                    if (topoNumXY.X.calcs.reso == 0)
+                    {
+                        indices[0] = -999;
+                        indices[1] = -999;
+                        return indices;
+                    }
+
+                    indices[0] = Convert.ToInt16((UTMX - topoNumXY.X.calcs.min) / topoNumXY.X.calcs.reso);
+                    indices[1] = Convert.ToInt16((UTMY - topoNumXY.Y.calcs.min) / topoNumXY.Y.calcs.reso);
+                }
+                else if (allPlotOrCalcs == "Plot")
                 {
                     if (topoNumXY.X.plot.reso == 0)
                     {
@@ -2676,7 +2688,7 @@ namespace ContinuumNS
             }
             else
             {
-                if (allOrPlot == "All")
+                if (allPlotOrCalcs == "All")
                 {
                     if (LC_NumXY.X.all.reso == 0)
                     {
@@ -2688,7 +2700,19 @@ namespace ContinuumNS
                     indices[0] = Convert.ToInt16((UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso);
                     indices[1] = Convert.ToInt16((UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso);
                 }
-                else
+                else if (allPlotOrCalcs == "Calcs")
+                {
+                    if (LC_NumXY.X.calcs.reso == 0)
+                    {
+                        indices[0] = -999;
+                        indices[1] = -999;
+                        return indices;
+                    }
+
+                    indices[0] = Convert.ToInt16((UTMX - LC_NumXY.X.calcs.min) / LC_NumXY.X.calcs.reso);
+                    indices[1] = Convert.ToInt16((UTMY - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.calcs.reso);
+                }
+                else if (allPlotOrCalcs == "Plot")
                 {
                     if (LC_NumXY.X.plot.reso == 0)
                     {

@@ -1014,7 +1014,7 @@
             this.pgeInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeInput.Name = "pgeInput";
             this.pgeInput.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeInput.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeInput.Size = new System.Drawing.Size(1627, 849);
             this.pgeInput.TabIndex = 0;
             this.pgeInput.Text = "Input";
             this.pgeInput.UseVisualStyleBackColor = true;
@@ -1708,7 +1708,7 @@
             this.pgeMetData.Location = new System.Drawing.Point(4, 27);
             this.pgeMetData.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMetData.Name = "pgeMetData";
-            this.pgeMetData.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeMetData.Size = new System.Drawing.Size(1627, 849);
             this.pgeMetData.TabIndex = 14;
             this.pgeMetData.Text = "Met Data QC";
             this.pgeMetData.UseVisualStyleBackColor = true;
@@ -2431,7 +2431,7 @@
             this.pgeMERRA.Location = new System.Drawing.Point(4, 27);
             this.pgeMERRA.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMERRA.Name = "pgeMERRA";
-            this.pgeMERRA.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeMERRA.Size = new System.Drawing.Size(1627, 849);
             this.pgeMERRA.TabIndex = 16;
             this.pgeMERRA.Text = "MERRA2 Data";
             this.pgeMERRA.UseVisualStyleBackColor = true;
@@ -3114,7 +3114,7 @@
             this.pgeMCP.Location = new System.Drawing.Point(4, 27);
             this.pgeMCP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMCP.Name = "pgeMCP";
-            this.pgeMCP.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeMCP.Size = new System.Drawing.Size(1627, 849);
             this.pgeMCP.TabIndex = 15;
             this.pgeMCP.Text = "MCP";
             this.pgeMCP.UseVisualStyleBackColor = true;
@@ -4082,7 +4082,7 @@
             this.pgeMetSumm.Location = new System.Drawing.Point(4, 27);
             this.pgeMetSumm.Margin = new System.Windows.Forms.Padding(1);
             this.pgeMetSumm.Name = "pgeMetSumm";
-            this.pgeMetSumm.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeMetSumm.Size = new System.Drawing.Size(1627, 849);
             this.pgeMetSumm.TabIndex = 12;
             this.pgeMetSumm.Text = "Met && Turbine Summary";
             this.pgeMetSumm.UseVisualStyleBackColor = true;
@@ -4589,7 +4589,7 @@
             this.pgeGrossTurbs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeGrossTurbs.Name = "pgeGrossTurbs";
             this.pgeGrossTurbs.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeGrossTurbs.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeGrossTurbs.Size = new System.Drawing.Size(1627, 849);
             this.pgeGrossTurbs.TabIndex = 3;
             this.pgeGrossTurbs.Text = "Gross Turbine Ests.";
             this.pgeGrossTurbs.UseVisualStyleBackColor = true;
@@ -5271,7 +5271,7 @@
             this.pgeExceedance.Location = new System.Drawing.Point(4, 27);
             this.pgeExceedance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeExceedance.Name = "pgeExceedance";
-            this.pgeExceedance.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeExceedance.Size = new System.Drawing.Size(1627, 849);
             this.pgeExceedance.TabIndex = 19;
             this.pgeExceedance.Text = "Exceedance Modeling";
             this.pgeExceedance.UseVisualStyleBackColor = true;
@@ -5672,7 +5672,7 @@
             this.pgeNetEsts.Location = new System.Drawing.Point(4, 27);
             this.pgeNetEsts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeNetEsts.Name = "pgeNetEsts";
-            this.pgeNetEsts.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeNetEsts.Size = new System.Drawing.Size(1627, 849);
             this.pgeNetEsts.TabIndex = 13;
             this.pgeNetEsts.Text = "Net Turbine Ests";
             this.pgeNetEsts.UseVisualStyleBackColor = true;
@@ -6242,7 +6242,7 @@
             this.pgeSiteConditions.Location = new System.Drawing.Point(4, 27);
             this.pgeSiteConditions.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeSiteConditions.Name = "pgeSiteConditions";
-            this.pgeSiteConditions.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeSiteConditions.Size = new System.Drawing.Size(1627, 849);
             this.pgeSiteConditions.TabIndex = 20;
             this.pgeSiteConditions.Text = "Site Conditions";
             this.pgeSiteConditions.UseVisualStyleBackColor = true;
@@ -7068,7 +7068,7 @@
             this.pgeMonthlyAnalysis.Location = new System.Drawing.Point(4, 27);
             this.pgeMonthlyAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMonthlyAnalysis.Name = "pgeMonthlyAnalysis";
-            this.pgeMonthlyAnalysis.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeMonthlyAnalysis.Size = new System.Drawing.Size(1627, 849);
             this.pgeMonthlyAnalysis.TabIndex = 17;
             this.pgeMonthlyAnalysis.Text = "Time Series Analysis";
             this.pgeMonthlyAnalysis.UseVisualStyleBackColor = true;
@@ -7430,7 +7430,7 @@
             this.pgeMaps.Location = new System.Drawing.Point(4, 27);
             this.pgeMaps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMaps.Name = "pgeMaps";
-            this.pgeMaps.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeMaps.Size = new System.Drawing.Size(1627, 849);
             this.pgeMaps.TabIndex = 8;
             this.pgeMaps.Text = "Maps";
             this.pgeMaps.UseVisualStyleBackColor = true;
@@ -7914,7 +7914,7 @@
             this.pgeRound.Location = new System.Drawing.Point(4, 27);
             this.pgeRound.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeRound.Name = "pgeRound";
-            this.pgeRound.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeRound.Size = new System.Drawing.Size(1627, 849);
             this.pgeRound.TabIndex = 11;
             this.pgeRound.Text = "Uncertainty Analysis";
             this.pgeRound.UseVisualStyleBackColor = true;
@@ -8378,7 +8378,7 @@
             this.pgeStepwise.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeStepwise.Name = "pgeStepwise";
             this.pgeStepwise.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeStepwise.Size = new System.Drawing.Size(2457, 1267);
+            this.pgeStepwise.Size = new System.Drawing.Size(1627, 849);
             this.pgeStepwise.TabIndex = 10;
             this.pgeStepwise.Text = "Advanced";
             this.pgeStepwise.UseVisualStyleBackColor = true;
