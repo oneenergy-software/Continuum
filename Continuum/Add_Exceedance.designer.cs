@@ -45,7 +45,7 @@
             this.txtExceed = new System.Windows.Forms.TextBox();
             this.btnImportCDF = new System.Windows.Forms.Button();
             this.ofdImportCFD = new System.Windows.Forms.OpenFileDialog();
-            this.chtExceedDist = new Nevron.Chart.WinForm.NChartControl();
+            
             this.SuspendLayout();
             // 
             // label2
@@ -202,7 +202,7 @@
             this.ofdImportCFD.FileName = "openFileDialog1";
             // 
             // chtExceedDist
-            // 
+      /*      // 
             this.chtExceedDist.AutoRefresh = false;
             this.chtExceedDist.BackColor = System.Drawing.SystemColors.Control;
             this.chtExceedDist.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -215,12 +215,12 @@
             this.chtExceedDist.TabIndex = 224;
             this.chtExceedDist.Text = "NChartControl1";
             // 
+            */
             // Add_Exceedance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(714, 590);
-            this.Controls.Add(this.chtExceedDist);
+            this.ClientSize = new System.Drawing.Size(714, 590);            
             this.Controls.Add(this.btnImportCDF);
             this.Controls.Add(this.txtExceed);
             this.Controls.Add(this.label1);
@@ -260,7 +260,6 @@
         public System.Windows.Forms.TextBox txtExceed;
         public System.Windows.Forms.ListView lstModes;        
         private System.Windows.Forms.Button btnImportCDF;
-        private System.Windows.Forms.OpenFileDialog ofdImportCFD;
-        public Nevron.Chart.WinForm.NChartControl chtExceedDist;
+        private System.Windows.Forms.OpenFileDialog ofdImportCFD;    
     }
 }

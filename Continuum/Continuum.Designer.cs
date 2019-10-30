@@ -31,14 +31,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
+            this.plotTopo = new OxyPlot.WindowsForms.PlotView();
             this.chkCreateTurbTS = new System.Windows.Forms.CheckBox();
             this.btnModHeight = new System.Windows.Forms.Button();
             this.label168 = new System.Windows.Forms.Label();
             this.txtModeledHeight = new System.Windows.Forms.TextBox();
             this.btnImportMetTS = new System.Windows.Forms.Button();
-            this.chtDirectionalWSRatios_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtWindRose_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.cht_NevTopo = new Nevron.Chart.WinForm.NChartControl();
             this.btnImportRoughness = new System.Windows.Forms.Button();
             this.chk_Use_Sep = new System.Windows.Forms.CheckBox();
             this.Label84 = new System.Windows.Forms.Label();
@@ -91,7 +89,6 @@
             this.pgeMetData = new System.Windows.Forms.TabPage();
             this.btnGenerateHeaders = new System.Windows.Forms.Button();
             this.chkDisableFilter = new System.Windows.Forms.CheckBox();
-            this.chtWindRoseMetQC = new Nevron.Chart.WinForm.NChartControl();
             this.btnViewFilters = new System.Windows.Forms.Button();
             this.Export_End = new System.Windows.Forms.DateTimePicker();
             this.label105 = new System.Windows.Forms.Label();
@@ -106,10 +103,7 @@
             this.cboSensorHeight = new System.Windows.Forms.ComboBox();
             this.label103 = new System.Windows.Forms.Label();
             this.label102 = new System.Windows.Forms.Label();
-            this.chtWSRatiobyWS = new Nevron.Chart.WinForm.NChartControl();
-            this.chtRatio_vs_WD = new Nevron.Chart.WinForm.NChartControl();
             this.label70 = new System.Windows.Forms.Label();
-            this.chtWS_Scatter = new Nevron.Chart.WinForm.NChartControl();
             this.label69 = new System.Windows.Forms.Label();
             this.lstExtrapolated = new System.Windows.Forms.ListView();
             this.columnHeader82 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -126,11 +120,9 @@
             this.columnHeader76 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader78 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader79 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.chtAlphabyWD = new Nevron.Chart.WinForm.NChartControl();
             this.label65 = new System.Windows.Forms.Label();
             this.cboMetWindRose = new System.Windows.Forms.ComboBox();
             this.label64 = new System.Windows.Forms.Label();
-            this.chtWS_by_H = new Nevron.Chart.WinForm.NChartControl();
             this.label62 = new System.Windows.Forms.Label();
             this.lstAlphas = new System.Windows.Forms.ListView();
             this.columnHeader74 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -173,13 +165,10 @@
             this.cboNumMERRA_Nodes = new System.Windows.Forms.ComboBox();
             this.label161 = new System.Windows.Forms.Label();
             this.label160 = new System.Windows.Forms.Label();
-            this.cboMERRA_PowerCurves = new System.Windows.Forms.ComboBox();
-            this.chtMERRA_Monthly = new Nevron.Chart.WinForm.NChartControl();
-            this.chtMERRA_Yearly = new Nevron.Chart.WinForm.NChartControl();
+            this.cboMERRA_PowerCurves = new System.Windows.Forms.ComboBox();            
             this.btn_ExportWR = new System.Windows.Forms.Button();
             this.btn_Export_All_Months_All_Years = new System.Windows.Forms.Button();
-            this.label159 = new System.Windows.Forms.Label();
-            this.chtMERRA_WR = new Nevron.Chart.WinForm.NChartControl();
+            this.label159 = new System.Windows.Forms.Label();            
             this.label156 = new System.Windows.Forms.Label();
             this.cboMERRA_PlotParam = new System.Windows.Forms.ComboBox();
             this.lstMERRAAnnualProd = new System.Windows.Forms.ListView();
@@ -295,22 +284,13 @@
             this.label115 = new System.Windows.Forms.Label();
             this.label116 = new System.Windows.Forms.Label();
             this.label117 = new System.Windows.Forms.Label();
-            this.chtMCP_Uncert = new Nevron.Chart.WinForm.NChartControl();
-            this.chtMCP_Scatter = new Nevron.Chart.WinForm.NChartControl();
             this.label107 = new System.Windows.Forms.Label();
             this.cboMCP_Met = new System.Windows.Forms.ComboBox();
             this.label106 = new System.Windows.Forms.Label();
             this.pgeMetSumm = new System.Windows.Forms.TabPage();
+            this.chtUWExpo = new OxyPlot.WindowsForms.PlotView();
             this.cboSummSeason = new System.Windows.Forms.ComboBox();
             this.cboSummTOD = new System.Windows.Forms.ComboBox();
-            this.chtDW_DH_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtUW_DH_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtDW_SR_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtUW_SR_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtElev_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtDWUWExpo_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtDWExpo_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtUWExpo_Nev = new Nevron.Chart.WinForm.NChartControl();
             this.Label80 = new System.Windows.Forms.Label();
             this.lstTurbStats = new System.Windows.Forms.ListView();
             this.ColumnHeader21 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -356,10 +336,6 @@
             this.columnHeader193 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader194 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.txtisMCPdGross = new System.Windows.Forms.TextBox();
-            this.chtPowerCrv_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtHistogram_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtEst_Roses_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtWSDist_Nev = new Nevron.Chart.WinForm.NChartControl();
             this.Label40 = new System.Windows.Forms.Label();
             this.cboWS_or_WD = new System.Windows.Forms.ComboBox();
             this.txtGross_FlowSepUsed = new System.Windows.Forms.TextBox();
@@ -420,8 +396,6 @@
             this.btnGetDefaultExceed = new System.Windows.Forms.Button();
             this.cboExceedWake = new System.Windows.Forms.ComboBox();
             this.label185 = new System.Windows.Forms.Label();
-            this.chtPVals = new Nevron.Chart.WinForm.NChartControl();
-            this.chtExceedDists = new Nevron.Chart.WinForm.NChartControl();
             this.label183 = new System.Windows.Forms.Label();
             this.cboExceedTurbine = new System.Windows.Forms.ComboBox();
             this.btn_AddProj = new System.Windows.Forms.Button();
@@ -457,9 +431,6 @@
             this.txtisMCPdNet = new System.Windows.Forms.TextBox();
             this.txtOtherLosses = new System.Windows.Forms.TextBox();
             this.label88 = new System.Windows.Forms.Label();
-            this.cht3DWakeLoss_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtTurbByString_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtWakedWSDists_Nev = new Nevron.Chart.WinForm.NChartControl();
             this.txtNet_FlowSep_Used = new System.Windows.Forms.TextBox();
             this.btnExportNetDirWSDists = new System.Windows.Forms.Button();
             this.btnExportNetDirWS = new System.Windows.Forms.Button();
@@ -530,7 +501,6 @@
             this.label197 = new System.Windows.Forms.Label();
             this.label196 = new System.Windows.Forms.Label();
             this.cboInflowWD = new System.Windows.Forms.ComboBox();
-            this.chtInflowAngle = new Nevron.Chart.WinForm.NChartControl();
             this.label171 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblNoExtremeWS = new System.Windows.Forms.Label();
@@ -538,7 +508,6 @@
             this.btnExtremeWS = new System.Windows.Forms.Button();
             this.label195 = new System.Windows.Forms.Label();
             this.cboExtremeWSMet = new System.Windows.Forms.ComboBox();
-            this.chtExtremeWSDist = new Nevron.Chart.WinForm.NChartControl();
             this.txt1yrExtremeGust = new System.Windows.Forms.TextBox();
             this.txt1yrExtreme10min = new System.Windows.Forms.TextBox();
             this.txt50yrExtremeGust = new System.Windows.Forms.TextBox();
@@ -565,7 +534,6 @@
             this.columnHeader182 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader183 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader184 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.chtAlpha_Histo = new Nevron.Chart.WinForm.NChartControl();
             this.label95 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnExportTI = new System.Windows.Forms.Button();
@@ -589,7 +557,6 @@
             this.cboTurbMet = new System.Windows.Forms.ComboBox();
             this.label172 = new System.Windows.Forms.Label();
             this.cboTurbWD = new System.Windows.Forms.ComboBox();
-            this.chtTurbulence = new Nevron.Chart.WinForm.NChartControl();
             this.label93 = new System.Windows.Forms.Label();
             this.label92 = new System.Windows.Forms.Label();
             this.pgeMonthlyAnalysis = new System.Windows.Forms.TabPage();
@@ -608,8 +575,6 @@
             this.label122 = new System.Windows.Forms.Label();
             this.chkSelectAllTurbineYears = new System.Windows.Forms.CheckBox();
             this.chkYears_Monthly = new System.Windows.Forms.CheckedListBox();
-            this.chtTurbineYearly = new Nevron.Chart.WinForm.NChartControl();
-            this.chtTurbineMonthly = new Nevron.Chart.WinForm.NChartControl();
             this.lstYearlyTurbine = new System.Windows.Forms.ListView();
             this.columnHeader118 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader119 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -627,7 +592,6 @@
             this.columnHeader130 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label163 = new System.Windows.Forms.Label();
             this.pgeMaps = new System.Windows.Forms.TabPage();
-            this.c3DMaps_Nev = new Nevron.Chart.WinForm.NChartControl();
             this.Label72 = new System.Windows.Forms.Label();
             this.cboMapWD = new System.Windows.Forms.ComboBox();
             this.txtMap_MetsUsed = new System.Windows.Forms.TextBox();
@@ -674,10 +638,7 @@
             this.ColumnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader185 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgeRound = new System.Windows.Forms.TabPage();
-            this.txtisMCPdUncert = new System.Windows.Forms.TextBox();
-            this.chtTurbUncert_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtHistoRoundRobin_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtRR_RMSAll_Nev = new Nevron.Chart.WinForm.NChartControl();
+            this.txtisMCPdUncert = new System.Windows.Forms.TextBox();            
             this.txtRR_FlowSep_Used = new System.Windows.Forms.TextBox();
             this.cboRR_MinSize = new System.Windows.Forms.ComboBox();
             this.Label31 = new System.Windows.Forms.Label();
@@ -722,10 +683,6 @@
             this.txtisMCPdAdv = new System.Windows.Forms.TextBox();
             this.cboSeasonAdvanced = new System.Windows.Forms.ComboBox();
             this.cboTODAdvanced = new System.Windows.Forms.ComboBox();
-            this.cht_Uphill_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.cht_Downhill_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtNodeWS_Nev = new Nevron.Chart.WinForm.NChartControl();
-            this.chtTopoStep_Nev = new Nevron.Chart.WinForm.NChartControl();
             this.Label39 = new System.Windows.Forms.Label();
             this.lstPathNodes_DW = new System.Windows.Forms.ListView();
             this.ColumnHeader15 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -813,7 +770,6 @@
             this.txtNumIceDays = new System.Windows.Forms.TextBox();
             this.label89 = new System.Windows.Forms.Label();
             this.btnExportIceVsDist = new System.Windows.Forms.Button();
-            this.chtIceVsDistOrHisto = new Nevron.Chart.WinForm.NChartControl();
             this.btnExportSoundSummary = new System.Windows.Forms.Button();
             this.btnExportShadowFlicker = new System.Windows.Forms.Button();
             this.btnExportIceSummary = new System.Windows.Forms.Button();
@@ -863,7 +819,6 @@
             this.btnDelZones = new System.Windows.Forms.Button();
             this.label164 = new System.Windows.Forms.Label();
             this.cboSiteSuitabilitySelectPlot = new System.Windows.Forms.ComboBox();
-            this.chtSiteSuitability = new Nevron.Chart.WinForm.NChartControl();
             this.lstZones = new System.Windows.Forms.ListView();
             this.columnHeader133 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader134 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -909,8 +864,6 @@
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
-            this.plotTopo = new OxyPlot.WindowsForms.PlotView();
-            this.chtUWExpo = new OxyPlot.WindowsForms.PlotView();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pgeMetData.SuspendLayout();
@@ -967,9 +920,6 @@
             this.pgeInput.Controls.Add(this.label168);
             this.pgeInput.Controls.Add(this.txtModeledHeight);
             this.pgeInput.Controls.Add(this.btnImportMetTS);
-            this.pgeInput.Controls.Add(this.chtDirectionalWSRatios_Nev);
-            this.pgeInput.Controls.Add(this.chtWindRose_Nev);
-            this.pgeInput.Controls.Add(this.cht_NevTopo);
             this.pgeInput.Controls.Add(this.btnImportRoughness);
             this.pgeInput.Controls.Add(this.chk_Use_Sep);
             this.pgeInput.Controls.Add(this.Label84);
@@ -1021,6 +971,14 @@
             this.pgeInput.TabIndex = 0;
             this.pgeInput.Text = "Input";
             this.pgeInput.UseVisualStyleBackColor = true;
+            // 
+            // plotTopo
+            // 
+            this.plotTopo.Location = new System.Drawing.Point(824, 26);
+            this.plotTopo.Name = "plotTopo";
+            this.plotTopo.Size = new System.Drawing.Size(657, 608);
+            this.plotTopo.TabIndex = 126;
+            this.plotTopo.Text = "plotTopo";
             // 
             // chkCreateTurbTS
             // 
@@ -1084,48 +1042,6 @@
             this.btnImportMetTS.Text = "Import Met TS file(s)";
             this.btnImportMetTS.UseVisualStyleBackColor = false;
             this.btnImportMetTS.Click += new System.EventHandler(this.btnMetData_Click);
-            // 
-            // chtDirectionalWSRatios_Nev
-            // 
-            this.chtDirectionalWSRatios_Nev.AutoRefresh = false;
-            this.chtDirectionalWSRatios_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtDirectionalWSRatios_Nev.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chtDirectionalWSRatios_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtDirectionalWSRatios_Nev.Location = new System.Drawing.Point(405, 510);
-            this.chtDirectionalWSRatios_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtDirectionalWSRatios_Nev.Name = "chtDirectionalWSRatios_Nev";
-            this.chtDirectionalWSRatios_Nev.Size = new System.Drawing.Size(352, 314);
-            this.chtDirectionalWSRatios_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtDirectionalWSRatios_Nev.State")));
-            this.chtDirectionalWSRatios_Nev.TabIndex = 120;
-            this.chtDirectionalWSRatios_Nev.Text = "Wind Rose";
-            // 
-            // chtWindRose_Nev
-            // 
-            this.chtWindRose_Nev.AutoRefresh = false;
-            this.chtWindRose_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtWindRose_Nev.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chtWindRose_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtWindRose_Nev.Location = new System.Drawing.Point(17, 510);
-            this.chtWindRose_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtWindRose_Nev.Name = "chtWindRose_Nev";
-            this.chtWindRose_Nev.Size = new System.Drawing.Size(352, 314);
-            this.chtWindRose_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtWindRose_Nev.State")));
-            this.chtWindRose_Nev.TabIndex = 119;
-            this.chtWindRose_Nev.Text = "Wind Rose";
-            // 
-            // cht_NevTopo
-            // 
-            this.cht_NevTopo.AutoRefresh = false;
-            this.cht_NevTopo.BackColor = System.Drawing.SystemColors.Control;
-            this.cht_NevTopo.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cht_NevTopo.InputKeys = new System.Windows.Forms.Keys[0];
-            this.cht_NevTopo.Location = new System.Drawing.Point(801, 15);
-            this.cht_NevTopo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cht_NevTopo.Name = "cht_NevTopo";
-            this.cht_NevTopo.Size = new System.Drawing.Size(804, 615);
-            this.cht_NevTopo.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("cht_NevTopo.State")));
-            this.cht_NevTopo.TabIndex = 118;
-            this.cht_NevTopo.Text = "NChartControl1";
             // 
             // btnImportRoughness
             // 
@@ -1663,7 +1579,6 @@
             // 
             this.pgeMetData.Controls.Add(this.btnGenerateHeaders);
             this.pgeMetData.Controls.Add(this.chkDisableFilter);
-            this.pgeMetData.Controls.Add(this.chtWindRoseMetQC);
             this.pgeMetData.Controls.Add(this.btnViewFilters);
             this.pgeMetData.Controls.Add(this.Export_End);
             this.pgeMetData.Controls.Add(this.label105);
@@ -1678,10 +1593,7 @@
             this.pgeMetData.Controls.Add(this.cboSensorHeight);
             this.pgeMetData.Controls.Add(this.label103);
             this.pgeMetData.Controls.Add(this.label102);
-            this.pgeMetData.Controls.Add(this.chtWSRatiobyWS);
-            this.pgeMetData.Controls.Add(this.chtRatio_vs_WD);
             this.pgeMetData.Controls.Add(this.label70);
-            this.pgeMetData.Controls.Add(this.chtWS_Scatter);
             this.pgeMetData.Controls.Add(this.label69);
             this.pgeMetData.Controls.Add(this.lstExtrapolated);
             this.pgeMetData.Controls.Add(this.label68);
@@ -1689,11 +1601,9 @@
             this.pgeMetData.Controls.Add(this.lstTempSummary);
             this.pgeMetData.Controls.Add(this.label66);
             this.pgeMetData.Controls.Add(this.lstVaneSummary);
-            this.pgeMetData.Controls.Add(this.chtAlphabyWD);
             this.pgeMetData.Controls.Add(this.label65);
             this.pgeMetData.Controls.Add(this.cboMetWindRose);
             this.pgeMetData.Controls.Add(this.label64);
-            this.pgeMetData.Controls.Add(this.chtWS_by_H);
             this.pgeMetData.Controls.Add(this.label62);
             this.pgeMetData.Controls.Add(this.lstAlphas);
             this.pgeMetData.Controls.Add(this.label61);
@@ -1741,19 +1651,6 @@
             this.chkDisableFilter.Text = "Filtering\r\nEnabled";
             this.chkDisableFilter.UseVisualStyleBackColor = true;
             this.chkDisableFilter.CheckedChanged += new System.EventHandler(this.chkDisableFilter_CheckedChanged);
-            // 
-            // chtWindRoseMetQC
-            // 
-            this.chtWindRoseMetQC.AutoRefresh = false;
-            this.chtWindRoseMetQC.BackColor = System.Drawing.SystemColors.Control;
-            this.chtWindRoseMetQC.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtWindRoseMetQC.Location = new System.Drawing.Point(1377, 41);
-            this.chtWindRoseMetQC.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtWindRoseMetQC.Name = "chtWindRoseMetQC";
-            this.chtWindRoseMetQC.Size = new System.Drawing.Size(241, 206);
-            this.chtWindRoseMetQC.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtWindRoseMetQC.State")));
-            this.chtWindRoseMetQC.TabIndex = 216;
-            this.chtWindRoseMetQC.Text = "Wind Rose";
             // 
             // btnViewFilters
             // 
@@ -1906,32 +1803,6 @@
             this.label102.TabIndex = 202;
             this.label102.Text = "Anem. WS Diff. vs. Wind Speed";
             // 
-            // chtWSRatiobyWS
-            // 
-            this.chtWSRatiobyWS.AutoRefresh = false;
-            this.chtWSRatiobyWS.BackColor = System.Drawing.SystemColors.Control;
-            this.chtWSRatiobyWS.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtWSRatiobyWS.Location = new System.Drawing.Point(1062, 535);
-            this.chtWSRatiobyWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtWSRatiobyWS.Name = "chtWSRatiobyWS";
-            this.chtWSRatiobyWS.Size = new System.Drawing.Size(555, 292);
-            this.chtWSRatiobyWS.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtWSRatiobyWS.State")));
-            this.chtWSRatiobyWS.TabIndex = 201;
-            this.chtWSRatiobyWS.Text = "NChartControl1";
-            // 
-            // chtRatio_vs_WD
-            // 
-            this.chtRatio_vs_WD.AutoRefresh = false;
-            this.chtRatio_vs_WD.BackColor = System.Drawing.SystemColors.Control;
-            this.chtRatio_vs_WD.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtRatio_vs_WD.Location = new System.Drawing.Point(493, 535);
-            this.chtRatio_vs_WD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtRatio_vs_WD.Name = "chtRatio_vs_WD";
-            this.chtRatio_vs_WD.Size = new System.Drawing.Size(556, 292);
-            this.chtRatio_vs_WD.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtRatio_vs_WD.State")));
-            this.chtRatio_vs_WD.TabIndex = 200;
-            this.chtRatio_vs_WD.Text = "NChartControl1";
-            // 
             // label70
             // 
             this.label70.AutoSize = true;
@@ -1941,19 +1812,6 @@
             this.label70.Size = new System.Drawing.Size(302, 23);
             this.label70.TabIndex = 199;
             this.label70.Text = "Anem. WS Diff vs. Wind Direction";
-            // 
-            // chtWS_Scatter
-            // 
-            this.chtWS_Scatter.AutoRefresh = false;
-            this.chtWS_Scatter.BackColor = System.Drawing.SystemColors.Control;
-            this.chtWS_Scatter.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtWS_Scatter.Location = new System.Drawing.Point(29, 537);
-            this.chtWS_Scatter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtWS_Scatter.Name = "chtWS_Scatter";
-            this.chtWS_Scatter.Size = new System.Drawing.Size(457, 292);
-            this.chtWS_Scatter.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtWS_Scatter.State")));
-            this.chtWS_Scatter.TabIndex = 198;
-            this.chtWS_Scatter.Text = "NChartControl1";
             // 
             // label69
             // 
@@ -2087,19 +1945,6 @@
             this.columnHeader79.Text = "% Overall Rec";
             this.columnHeader79.Width = 81;
             // 
-            // chtAlphabyWD
-            // 
-            this.chtAlphabyWD.AutoRefresh = false;
-            this.chtAlphabyWD.BackColor = System.Drawing.SystemColors.Control;
-            this.chtAlphabyWD.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtAlphabyWD.Location = new System.Drawing.Point(1050, 284);
-            this.chtAlphabyWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtAlphabyWD.Name = "chtAlphabyWD";
-            this.chtAlphabyWD.Size = new System.Drawing.Size(405, 203);
-            this.chtAlphabyWD.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtAlphabyWD.State")));
-            this.chtAlphabyWD.TabIndex = 190;
-            this.chtAlphabyWD.Text = "NChartControl1";
-            // 
             // label65
             // 
             this.label65.AutoSize = true;
@@ -2133,19 +1978,6 @@
             this.label64.Size = new System.Drawing.Size(140, 23);
             this.label64.TabIndex = 178;
             this.label64.Text = "WS/WD vs. WD";
-            // 
-            // chtWS_by_H
-            // 
-            this.chtWS_by_H.AutoRefresh = false;
-            this.chtWS_by_H.BackColor = System.Drawing.SystemColors.Control;
-            this.chtWS_by_H.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtWS_by_H.Location = new System.Drawing.Point(1051, 42);
-            this.chtWS_by_H.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtWS_by_H.Name = "chtWS_by_H";
-            this.chtWS_by_H.Size = new System.Drawing.Size(307, 204);
-            this.chtWS_by_H.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtWS_by_H.State")));
-            this.chtWS_by_H.TabIndex = 177;
-            this.chtWS_by_H.Text = "NChartControl1";
             // 
             // label62
             // 
@@ -2400,13 +2232,10 @@
             this.pgeMERRA.Controls.Add(this.cboNumMERRA_Nodes);
             this.pgeMERRA.Controls.Add(this.label161);
             this.pgeMERRA.Controls.Add(this.label160);
-            this.pgeMERRA.Controls.Add(this.cboMERRA_PowerCurves);
-            this.pgeMERRA.Controls.Add(this.chtMERRA_Monthly);
-            this.pgeMERRA.Controls.Add(this.chtMERRA_Yearly);
+            this.pgeMERRA.Controls.Add(this.cboMERRA_PowerCurves);           
             this.pgeMERRA.Controls.Add(this.btn_ExportWR);
             this.pgeMERRA.Controls.Add(this.btn_Export_All_Months_All_Years);
-            this.pgeMERRA.Controls.Add(this.label159);
-            this.pgeMERRA.Controls.Add(this.chtMERRA_WR);
+            this.pgeMERRA.Controls.Add(this.label159);            
             this.pgeMERRA.Controls.Add(this.label156);
             this.pgeMERRA.Controls.Add(this.cboMERRA_PlotParam);
             this.pgeMERRA.Controls.Add(this.lstMERRAAnnualProd);
@@ -2613,14 +2442,14 @@
             // 
             // chtMERRA_Monthly
             // 
-            this.chtMERRA_Monthly.AutoRefresh = false;
+      /*      this.chtMERRA_Monthly.AutoRefresh = false;
             this.chtMERRA_Monthly.BackColor = System.Drawing.SystemColors.Control;
             this.chtMERRA_Monthly.InputKeys = new System.Windows.Forms.Keys[0];
             this.chtMERRA_Monthly.Location = new System.Drawing.Point(1086, 414);
             this.chtMERRA_Monthly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chtMERRA_Monthly.Name = "chtMERRA_Monthly";
             this.chtMERRA_Monthly.Size = new System.Drawing.Size(532, 400);
-            this.chtMERRA_Monthly.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtMERRA_Monthly.State")));
+            
             this.chtMERRA_Monthly.TabIndex = 200;
             this.chtMERRA_Monthly.Text = "NChartControl1";
             // 
@@ -2633,10 +2462,11 @@
             this.chtMERRA_Yearly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chtMERRA_Yearly.Name = "chtMERRA_Yearly";
             this.chtMERRA_Yearly.Size = new System.Drawing.Size(561, 400);
-            this.chtMERRA_Yearly.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtMERRA_Yearly.State")));
+            
             this.chtMERRA_Yearly.TabIndex = 199;
             this.chtMERRA_Yearly.Text = "NChartControl1";
             // 
+            */
             // btn_ExportWR
             // 
             this.btn_ExportWR.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -2674,7 +2504,7 @@
             // 
             // chtMERRA_WR
             // 
-            this.chtMERRA_WR.AutoRefresh = false;
+       /*     this.chtMERRA_WR.AutoRefresh = false;
             this.chtMERRA_WR.BackColor = System.Drawing.SystemColors.Control;
             this.chtMERRA_WR.InputKeys = new System.Windows.Forms.Keys[0];
             this.chtMERRA_WR.Location = new System.Drawing.Point(1298, 105);
@@ -2684,6 +2514,7 @@
             this.chtMERRA_WR.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtMERRA_WR.State")));
             this.chtMERRA_WR.TabIndex = 150;
             this.chtMERRA_WR.Text = "nChartControl1";
+            */
             // 
             // label156
             // 
@@ -3109,8 +2940,6 @@
             this.pgeMCP.Controls.Add(this.label115);
             this.pgeMCP.Controls.Add(this.label116);
             this.pgeMCP.Controls.Add(this.label117);
-            this.pgeMCP.Controls.Add(this.chtMCP_Uncert);
-            this.pgeMCP.Controls.Add(this.chtMCP_Scatter);
             this.pgeMCP.Controls.Add(this.label107);
             this.pgeMCP.Controls.Add(this.cboMCP_Met);
             this.pgeMCP.Controls.Add(this.label106);
@@ -3997,32 +3826,6 @@
             this.label117.TabIndex = 211;
             this.label117.Text = "Ref. Site";
             // 
-            // chtMCP_Uncert
-            // 
-            this.chtMCP_Uncert.AutoRefresh = false;
-            this.chtMCP_Uncert.BackColor = System.Drawing.SystemColors.Control;
-            this.chtMCP_Uncert.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtMCP_Uncert.Location = new System.Drawing.Point(988, 401);
-            this.chtMCP_Uncert.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtMCP_Uncert.Name = "chtMCP_Uncert";
-            this.chtMCP_Uncert.Size = new System.Drawing.Size(457, 345);
-            this.chtMCP_Uncert.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtMCP_Uncert.State")));
-            this.chtMCP_Uncert.TabIndex = 210;
-            this.chtMCP_Uncert.Text = "NChartControl1";
-            // 
-            // chtMCP_Scatter
-            // 
-            this.chtMCP_Scatter.AutoRefresh = false;
-            this.chtMCP_Scatter.BackColor = System.Drawing.SystemColors.Control;
-            this.chtMCP_Scatter.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtMCP_Scatter.Location = new System.Drawing.Point(272, 286);
-            this.chtMCP_Scatter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtMCP_Scatter.Name = "chtMCP_Scatter";
-            this.chtMCP_Scatter.Size = new System.Drawing.Size(689, 426);
-            this.chtMCP_Scatter.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtMCP_Scatter.State")));
-            this.chtMCP_Scatter.TabIndex = 209;
-            this.chtMCP_Scatter.Text = "NChartControl1";
-            // 
             // label107
             // 
             this.label107.AutoSize = true;
@@ -4058,14 +3861,6 @@
             this.pgeMetSumm.Controls.Add(this.chtUWExpo);
             this.pgeMetSumm.Controls.Add(this.cboSummSeason);
             this.pgeMetSumm.Controls.Add(this.cboSummTOD);
-            this.pgeMetSumm.Controls.Add(this.chtDW_DH_Nev);
-            this.pgeMetSumm.Controls.Add(this.chtUW_DH_Nev);
-            this.pgeMetSumm.Controls.Add(this.chtDW_SR_Nev);
-            this.pgeMetSumm.Controls.Add(this.chtUW_SR_Nev);
-            this.pgeMetSumm.Controls.Add(this.chtElev_Nev);
-            this.pgeMetSumm.Controls.Add(this.chtDWUWExpo_Nev);
-            this.pgeMetSumm.Controls.Add(this.chtDWExpo_Nev);
-            this.pgeMetSumm.Controls.Add(this.chtUWExpo_Nev);
             this.pgeMetSumm.Controls.Add(this.Label80);
             this.pgeMetSumm.Controls.Add(this.lstTurbStats);
             this.pgeMetSumm.Controls.Add(this.chkTurbSummAll);
@@ -4091,6 +3886,14 @@
             this.pgeMetSumm.Text = "Met && Turbine Summary";
             this.pgeMetSumm.UseVisualStyleBackColor = true;
             // 
+            // chtUWExpo
+            // 
+            this.chtUWExpo.Location = new System.Drawing.Point(20, 264);
+            this.chtUWExpo.Name = "chtUWExpo";
+            this.chtUWExpo.Size = new System.Drawing.Size(387, 258);
+            this.chtUWExpo.TabIndex = 214;
+            this.chtUWExpo.Text = "plotView1";
+            // 
             // cboSummSeason
             // 
             this.cboSummSeason.FormattingEnabled = true;
@@ -4112,110 +3915,6 @@
             this.cboSummTOD.TabIndex = 212;
             this.cboSummTOD.Text = "All Hours";
             this.cboSummTOD.SelectedIndexChanged += new System.EventHandler(this.cboSummTOD_SelectedIndexChanged);
-            // 
-            // chtDW_DH_Nev
-            // 
-            this.chtDW_DH_Nev.AutoRefresh = false;
-            this.chtDW_DH_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtDW_DH_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtDW_DH_Nev.Location = new System.Drawing.Point(1209, 544);
-            this.chtDW_DH_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtDW_DH_Nev.Name = "chtDW_DH_Nev";
-            this.chtDW_DH_Nev.Size = new System.Drawing.Size(387, 271);
-            this.chtDW_DH_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtDW_DH_Nev.State")));
-            this.chtDW_DH_Nev.TabIndex = 183;
-            this.chtDW_DH_Nev.Text = "NChartControl1";
-            // 
-            // chtUW_DH_Nev
-            // 
-            this.chtUW_DH_Nev.AutoRefresh = false;
-            this.chtUW_DH_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtUW_DH_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtUW_DH_Nev.Location = new System.Drawing.Point(811, 544);
-            this.chtUW_DH_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtUW_DH_Nev.Name = "chtUW_DH_Nev";
-            this.chtUW_DH_Nev.Size = new System.Drawing.Size(387, 271);
-            this.chtUW_DH_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtUW_DH_Nev.State")));
-            this.chtUW_DH_Nev.TabIndex = 182;
-            this.chtUW_DH_Nev.Text = "NChartControl1";
-            // 
-            // chtDW_SR_Nev
-            // 
-            this.chtDW_SR_Nev.AutoRefresh = false;
-            this.chtDW_SR_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtDW_SR_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtDW_SR_Nev.Location = new System.Drawing.Point(411, 544);
-            this.chtDW_SR_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtDW_SR_Nev.Name = "chtDW_SR_Nev";
-            this.chtDW_SR_Nev.Size = new System.Drawing.Size(387, 271);
-            this.chtDW_SR_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtDW_SR_Nev.State")));
-            this.chtDW_SR_Nev.TabIndex = 181;
-            this.chtDW_SR_Nev.Text = "NChartControl1";
-            // 
-            // chtUW_SR_Nev
-            // 
-            this.chtUW_SR_Nev.AutoRefresh = false;
-            this.chtUW_SR_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtUW_SR_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtUW_SR_Nev.Location = new System.Drawing.Point(10, 544);
-            this.chtUW_SR_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtUW_SR_Nev.Name = "chtUW_SR_Nev";
-            this.chtUW_SR_Nev.Size = new System.Drawing.Size(387, 271);
-            this.chtUW_SR_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtUW_SR_Nev.State")));
-            this.chtUW_SR_Nev.TabIndex = 180;
-            this.chtUW_SR_Nev.Text = "NChartControl1";
-            // 
-            // chtElev_Nev
-            // 
-            this.chtElev_Nev.AutoRefresh = false;
-            this.chtElev_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtElev_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtElev_Nev.Location = new System.Drawing.Point(1209, 266);
-            this.chtElev_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtElev_Nev.Name = "chtElev_Nev";
-            this.chtElev_Nev.Size = new System.Drawing.Size(387, 271);
-            this.chtElev_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtElev_Nev.State")));
-            this.chtElev_Nev.TabIndex = 179;
-            this.chtElev_Nev.Text = "NChartControl1";
-            // 
-            // chtDWUWExpo_Nev
-            // 
-            this.chtDWUWExpo_Nev.AutoRefresh = false;
-            this.chtDWUWExpo_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtDWUWExpo_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtDWUWExpo_Nev.Location = new System.Drawing.Point(811, 266);
-            this.chtDWUWExpo_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtDWUWExpo_Nev.Name = "chtDWUWExpo_Nev";
-            this.chtDWUWExpo_Nev.Size = new System.Drawing.Size(387, 271);
-            this.chtDWUWExpo_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtDWUWExpo_Nev.State")));
-            this.chtDWUWExpo_Nev.TabIndex = 178;
-            this.chtDWUWExpo_Nev.Text = "NChartControl1";
-            // 
-            // chtDWExpo_Nev
-            // 
-            this.chtDWExpo_Nev.AutoRefresh = false;
-            this.chtDWExpo_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtDWExpo_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtDWExpo_Nev.Location = new System.Drawing.Point(411, 266);
-            this.chtDWExpo_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtDWExpo_Nev.Name = "chtDWExpo_Nev";
-            this.chtDWExpo_Nev.Size = new System.Drawing.Size(387, 271);
-            this.chtDWExpo_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtDWExpo_Nev.State")));
-            this.chtDWExpo_Nev.TabIndex = 177;
-            this.chtDWExpo_Nev.Text = "NChartControl1";
-            // 
-            // chtUWExpo_Nev
-            // 
-            this.chtUWExpo_Nev.AutoRefresh = false;
-            this.chtUWExpo_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtUWExpo_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtUWExpo_Nev.Location = new System.Drawing.Point(10, 266);
-            this.chtUWExpo_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtUWExpo_Nev.Name = "chtUWExpo_Nev";
-            this.chtUWExpo_Nev.Size = new System.Drawing.Size(387, 271);
-            this.chtUWExpo_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtUWExpo_Nev.State")));
-            this.chtUWExpo_Nev.TabIndex = 176;
-            this.chtUWExpo_Nev.Text = "NChartControl1";
             // 
             // Label80
             // 
@@ -4540,10 +4239,6 @@
             this.pgeGrossTurbs.Controls.Add(this.btnGenTurbGross);
             this.pgeGrossTurbs.Controls.Add(this.lstPowerCurveList);
             this.pgeGrossTurbs.Controls.Add(this.txtisMCPdGross);
-            this.pgeGrossTurbs.Controls.Add(this.chtPowerCrv_Nev);
-            this.pgeGrossTurbs.Controls.Add(this.chtHistogram_Nev);
-            this.pgeGrossTurbs.Controls.Add(this.chtEst_Roses_Nev);
-            this.pgeGrossTurbs.Controls.Add(this.chtWSDist_Nev);
             this.pgeGrossTurbs.Controls.Add(this.Label40);
             this.pgeGrossTurbs.Controls.Add(this.cboWS_or_WD);
             this.pgeGrossTurbs.Controls.Add(this.txtGross_FlowSepUsed);
@@ -4651,58 +4346,6 @@
             this.txtisMCPdGross.ReadOnly = true;
             this.txtisMCPdGross.Size = new System.Drawing.Size(133, 25);
             this.txtisMCPdGross.TabIndex = 189;
-            // 
-            // chtPowerCrv_Nev
-            // 
-            this.chtPowerCrv_Nev.AutoRefresh = false;
-            this.chtPowerCrv_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtPowerCrv_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtPowerCrv_Nev.Location = new System.Drawing.Point(1050, 426);
-            this.chtPowerCrv_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtPowerCrv_Nev.Name = "chtPowerCrv_Nev";
-            this.chtPowerCrv_Nev.Size = new System.Drawing.Size(570, 401);
-            this.chtPowerCrv_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtPowerCrv_Nev.State")));
-            this.chtPowerCrv_Nev.TabIndex = 188;
-            this.chtPowerCrv_Nev.Text = "NChartControl1";
-            // 
-            // chtHistogram_Nev
-            // 
-            this.chtHistogram_Nev.AutoRefresh = false;
-            this.chtHistogram_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtHistogram_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtHistogram_Nev.Location = new System.Drawing.Point(279, 508);
-            this.chtHistogram_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtHistogram_Nev.Name = "chtHistogram_Nev";
-            this.chtHistogram_Nev.Size = new System.Drawing.Size(570, 319);
-            this.chtHistogram_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtHistogram_Nev.State")));
-            this.chtHistogram_Nev.TabIndex = 187;
-            this.chtHistogram_Nev.Text = "Wind Rose";
-            // 
-            // chtEst_Roses_Nev
-            // 
-            this.chtEst_Roses_Nev.AutoRefresh = false;
-            this.chtEst_Roses_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtEst_Roses_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtEst_Roses_Nev.Location = new System.Drawing.Point(1091, 7);
-            this.chtEst_Roses_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtEst_Roses_Nev.Name = "chtEst_Roses_Nev";
-            this.chtEst_Roses_Nev.Size = new System.Drawing.Size(530, 401);
-            this.chtEst_Roses_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtEst_Roses_Nev.State")));
-            this.chtEst_Roses_Nev.TabIndex = 186;
-            this.chtEst_Roses_Nev.Text = "Wind Rose";
-            // 
-            // chtWSDist_Nev
-            // 
-            this.chtWSDist_Nev.AutoRefresh = false;
-            this.chtWSDist_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtWSDist_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtWSDist_Nev.Location = new System.Drawing.Point(1108, 7);
-            this.chtWSDist_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtWSDist_Nev.Name = "chtWSDist_Nev";
-            this.chtWSDist_Nev.Size = new System.Drawing.Size(512, 401);
-            this.chtWSDist_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtWSDist_Nev.State")));
-            this.chtWSDist_Nev.TabIndex = 185;
-            this.chtWSDist_Nev.Text = "NChartControl1";
             // 
             // Label40
             // 
@@ -5254,8 +4897,6 @@
             this.pgeExceedance.Controls.Add(this.btnGetDefaultExceed);
             this.pgeExceedance.Controls.Add(this.cboExceedWake);
             this.pgeExceedance.Controls.Add(this.label185);
-            this.pgeExceedance.Controls.Add(this.chtPVals);
-            this.pgeExceedance.Controls.Add(this.chtExceedDists);
             this.pgeExceedance.Controls.Add(this.label183);
             this.pgeExceedance.Controls.Add(this.cboExceedTurbine);
             this.pgeExceedance.Controls.Add(this.btn_AddProj);
@@ -5323,32 +4964,6 @@
             this.label185.Size = new System.Drawing.Size(128, 18);
             this.label185.TabIndex = 230;
             this.label185.Text = "Net Estimate Model:";
-            // 
-            // chtPVals
-            // 
-            this.chtPVals.AutoRefresh = false;
-            this.chtPVals.BackColor = System.Drawing.SystemColors.Control;
-            this.chtPVals.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtPVals.Location = new System.Drawing.Point(1045, 462);
-            this.chtPVals.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtPVals.Name = "chtPVals";
-            this.chtPVals.Size = new System.Drawing.Size(538, 361);
-            this.chtPVals.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtPVals.State")));
-            this.chtPVals.TabIndex = 223;
-            this.chtPVals.Text = "NChartControl1";
-            // 
-            // chtExceedDists
-            // 
-            this.chtExceedDists.AutoRefresh = false;
-            this.chtExceedDists.BackColor = System.Drawing.SystemColors.Control;
-            this.chtExceedDists.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtExceedDists.Location = new System.Drawing.Point(994, 20);
-            this.chtExceedDists.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtExceedDists.Name = "chtExceedDists";
-            this.chtExceedDists.Size = new System.Drawing.Size(589, 398);
-            this.chtExceedDists.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtExceedDists.State")));
-            this.chtExceedDists.TabIndex = 222;
-            this.chtExceedDists.Text = "NChartControl1";
             // 
             // label183
             // 
@@ -5636,9 +5251,6 @@
             this.pgeNetEsts.Controls.Add(this.txtisMCPdNet);
             this.pgeNetEsts.Controls.Add(this.txtOtherLosses);
             this.pgeNetEsts.Controls.Add(this.label88);
-            this.pgeNetEsts.Controls.Add(this.cht3DWakeLoss_Nev);
-            this.pgeNetEsts.Controls.Add(this.chtTurbByString_Nev);
-            this.pgeNetEsts.Controls.Add(this.chtWakedWSDists_Nev);
             this.pgeNetEsts.Controls.Add(this.txtNet_FlowSep_Used);
             this.pgeNetEsts.Controls.Add(this.btnExportNetDirWSDists);
             this.pgeNetEsts.Controls.Add(this.btnExportNetDirWS);
@@ -5708,45 +5320,6 @@
             this.label88.Size = new System.Drawing.Size(164, 19);
             this.label88.TabIndex = 197;
             this.label88.Text = "Overall Other Losses:";
-            // 
-            // cht3DWakeLoss_Nev
-            // 
-            this.cht3DWakeLoss_Nev.AutoRefresh = false;
-            this.cht3DWakeLoss_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.cht3DWakeLoss_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.cht3DWakeLoss_Nev.Location = new System.Drawing.Point(990, 215);
-            this.cht3DWakeLoss_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cht3DWakeLoss_Nev.Name = "cht3DWakeLoss_Nev";
-            this.cht3DWakeLoss_Nev.Size = new System.Drawing.Size(624, 553);
-            this.cht3DWakeLoss_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("cht3DWakeLoss_Nev.State")));
-            this.cht3DWakeLoss_Nev.TabIndex = 196;
-            this.cht3DWakeLoss_Nev.Text = "NChartControl1";
-            // 
-            // chtTurbByString_Nev
-            // 
-            this.chtTurbByString_Nev.AutoRefresh = false;
-            this.chtTurbByString_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtTurbByString_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtTurbByString_Nev.Location = new System.Drawing.Point(503, 526);
-            this.chtTurbByString_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtTurbByString_Nev.Name = "chtTurbByString_Nev";
-            this.chtTurbByString_Nev.Size = new System.Drawing.Size(478, 289);
-            this.chtTurbByString_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtTurbByString_Nev.State")));
-            this.chtTurbByString_Nev.TabIndex = 195;
-            this.chtTurbByString_Nev.Text = "NChartControl1";
-            // 
-            // chtWakedWSDists_Nev
-            // 
-            this.chtWakedWSDists_Nev.AutoRefresh = false;
-            this.chtWakedWSDists_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtWakedWSDists_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtWakedWSDists_Nev.Location = new System.Drawing.Point(17, 526);
-            this.chtWakedWSDists_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtWakedWSDists_Nev.Name = "chtWakedWSDists_Nev";
-            this.chtWakedWSDists_Nev.Size = new System.Drawing.Size(478, 289);
-            this.chtWakedWSDists_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtWakedWSDists_Nev.State")));
-            this.chtWakedWSDists_Nev.TabIndex = 194;
-            this.chtWakedWSDists_Nev.Text = "NChartControl1";
             // 
             // txtNet_FlowSep_Used
             // 
@@ -6264,7 +5837,6 @@
             this.panel4.Controls.Add(this.label197);
             this.panel4.Controls.Add(this.label196);
             this.panel4.Controls.Add(this.cboInflowWD);
-            this.panel4.Controls.Add(this.chtInflowAngle);
             this.panel4.Controls.Add(this.label171);
             this.panel4.Location = new System.Drawing.Point(821, 442);
             this.panel4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -6397,19 +5969,6 @@
             this.cboInflowWD.TabIndex = 198;
             this.cboInflowWD.SelectedIndexChanged += new System.EventHandler(this.cboInflowWD_SelectedIndexChanged);
             // 
-            // chtInflowAngle
-            // 
-            this.chtInflowAngle.AutoRefresh = false;
-            this.chtInflowAngle.BackColor = System.Drawing.SystemColors.Control;
-            this.chtInflowAngle.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtInflowAngle.Location = new System.Drawing.Point(287, 20);
-            this.chtInflowAngle.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtInflowAngle.Name = "chtInflowAngle";
-            this.chtInflowAngle.Size = new System.Drawing.Size(502, 310);
-            this.chtInflowAngle.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtInflowAngle.State")));
-            this.chtInflowAngle.TabIndex = 197;
-            this.chtInflowAngle.Text = "NChartControl1";
-            // 
             // label171
             // 
             this.label171.AutoSize = true;
@@ -6427,7 +5986,6 @@
             this.panel3.Controls.Add(this.btnExtremeWS);
             this.panel3.Controls.Add(this.label195);
             this.panel3.Controls.Add(this.cboExtremeWSMet);
-            this.panel3.Controls.Add(this.chtExtremeWSDist);
             this.panel3.Controls.Add(this.txt1yrExtremeGust);
             this.panel3.Controls.Add(this.txt1yrExtreme10min);
             this.panel3.Controls.Add(this.txt50yrExtremeGust);
@@ -6488,19 +6046,6 @@
             this.cboExtremeWSMet.Size = new System.Drawing.Size(227, 26);
             this.cboExtremeWSMet.TabIndex = 209;
             this.cboExtremeWSMet.SelectedIndexChanged += new System.EventHandler(this.cboExtremeWSMet_SelectedIndexChanged);
-            // 
-            // chtExtremeWSDist
-            // 
-            this.chtExtremeWSDist.AutoRefresh = false;
-            this.chtExtremeWSDist.BackColor = System.Drawing.SystemColors.Control;
-            this.chtExtremeWSDist.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtExtremeWSDist.Location = new System.Drawing.Point(317, 20);
-            this.chtExtremeWSDist.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtExtremeWSDist.Name = "chtExtremeWSDist";
-            this.chtExtremeWSDist.Size = new System.Drawing.Size(447, 310);
-            this.chtExtremeWSDist.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtExtremeWSDist.State")));
-            this.chtExtremeWSDist.TabIndex = 196;
-            this.chtExtremeWSDist.Text = "NChartControl1";
             // 
             // txt1yrExtremeGust
             // 
@@ -6593,7 +6138,6 @@
             this.panel2.Controls.Add(this.cboExtremeShearMet);
             this.panel2.Controls.Add(this.btnExportShearStats);
             this.panel2.Controls.Add(this.lstExtremeShear);
-            this.panel2.Controls.Add(this.chtAlpha_Histo);
             this.panel2.Controls.Add(this.label95);
             this.panel2.Location = new System.Drawing.Point(821, 47);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -6751,19 +6295,6 @@
             this.columnHeader184.Text = "All > Cut-In";
             this.columnHeader184.Width = 72;
             // 
-            // chtAlpha_Histo
-            // 
-            this.chtAlpha_Histo.AutoRefresh = false;
-            this.chtAlpha_Histo.BackColor = System.Drawing.SystemColors.Control;
-            this.chtAlpha_Histo.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtAlpha_Histo.Location = new System.Drawing.Point(26, 79);
-            this.chtAlpha_Histo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtAlpha_Histo.Name = "chtAlpha_Histo";
-            this.chtAlpha_Histo.Size = new System.Drawing.Size(394, 283);
-            this.chtAlpha_Histo.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtAlpha_Histo.State")));
-            this.chtAlpha_Histo.TabIndex = 266;
-            this.chtAlpha_Histo.Text = "NChartControl1";
-            // 
             // label95
             // 
             this.label95.AutoSize = true;
@@ -6794,7 +6325,6 @@
             this.panel1.Controls.Add(this.cboTurbMet);
             this.panel1.Controls.Add(this.label172);
             this.panel1.Controls.Add(this.cboTurbWD);
-            this.panel1.Controls.Add(this.chtTurbulence);
             this.panel1.Controls.Add(this.label93);
             this.panel1.Location = new System.Drawing.Point(9, 47);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -7014,19 +6544,6 @@
             this.cboTurbWD.TabIndex = 196;
             this.cboTurbWD.SelectedIndexChanged += new System.EventHandler(this.cboTurbWD_SelectedIndexChanged);
             // 
-            // chtTurbulence
-            // 
-            this.chtTurbulence.AutoRefresh = false;
-            this.chtTurbulence.BackColor = System.Drawing.SystemColors.Control;
-            this.chtTurbulence.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtTurbulence.Location = new System.Drawing.Point(251, 113);
-            this.chtTurbulence.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtTurbulence.Name = "chtTurbulence";
-            this.chtTurbulence.Size = new System.Drawing.Size(451, 245);
-            this.chtTurbulence.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtTurbulence.State")));
-            this.chtTurbulence.TabIndex = 195;
-            this.chtTurbulence.Text = "NChartControl1";
-            // 
             // label93
             // 
             this.label93.AutoSize = true;
@@ -7064,8 +6581,6 @@
             this.pgeMonthlyAnalysis.Controls.Add(this.label122);
             this.pgeMonthlyAnalysis.Controls.Add(this.chkSelectAllTurbineYears);
             this.pgeMonthlyAnalysis.Controls.Add(this.chkYears_Monthly);
-            this.pgeMonthlyAnalysis.Controls.Add(this.chtTurbineYearly);
-            this.pgeMonthlyAnalysis.Controls.Add(this.chtTurbineMonthly);
             this.pgeMonthlyAnalysis.Controls.Add(this.lstYearlyTurbine);
             this.pgeMonthlyAnalysis.Controls.Add(this.lstMonthlyTurbine);
             this.pgeMonthlyAnalysis.Controls.Add(this.label163);
@@ -7239,32 +6754,6 @@
             this.chkYears_Monthly.TabIndex = 213;
             this.chkYears_Monthly.SelectedIndexChanged += new System.EventHandler(this.chkYears_Monthly_SelectedIndexChanged);
             // 
-            // chtTurbineYearly
-            // 
-            this.chtTurbineYearly.AutoRefresh = false;
-            this.chtTurbineYearly.BackColor = System.Drawing.SystemColors.Control;
-            this.chtTurbineYearly.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtTurbineYearly.Location = new System.Drawing.Point(15, 431);
-            this.chtTurbineYearly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtTurbineYearly.Name = "chtTurbineYearly";
-            this.chtTurbineYearly.Size = new System.Drawing.Size(734, 383);
-            this.chtTurbineYearly.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtTurbineYearly.State")));
-            this.chtTurbineYearly.TabIndex = 203;
-            this.chtTurbineYearly.Text = "NChartControl1";
-            // 
-            // chtTurbineMonthly
-            // 
-            this.chtTurbineMonthly.AutoRefresh = false;
-            this.chtTurbineMonthly.BackColor = System.Drawing.SystemColors.Control;
-            this.chtTurbineMonthly.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtTurbineMonthly.Location = new System.Drawing.Point(765, 431);
-            this.chtTurbineMonthly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtTurbineMonthly.Name = "chtTurbineMonthly";
-            this.chtTurbineMonthly.Size = new System.Drawing.Size(792, 383);
-            this.chtTurbineMonthly.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtTurbineMonthly.State")));
-            this.chtTurbineMonthly.TabIndex = 202;
-            this.chtTurbineMonthly.Text = "NChartControl1";
-            // 
             // lstYearlyTurbine
             // 
             this.lstYearlyTurbine.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -7394,7 +6883,6 @@
             // 
             // pgeMaps
             // 
-            this.pgeMaps.Controls.Add(this.c3DMaps_Nev);
             this.pgeMaps.Controls.Add(this.Label72);
             this.pgeMaps.Controls.Add(this.cboMapWD);
             this.pgeMaps.Controls.Add(this.txtMap_MetsUsed);
@@ -7438,19 +6926,6 @@
             this.pgeMaps.TabIndex = 8;
             this.pgeMaps.Text = "Maps";
             this.pgeMaps.UseVisualStyleBackColor = true;
-            // 
-            // c3DMaps_Nev
-            // 
-            this.c3DMaps_Nev.AutoRefresh = false;
-            this.c3DMaps_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.c3DMaps_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.c3DMaps_Nev.Location = new System.Drawing.Point(638, 14);
-            this.c3DMaps_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.c3DMaps_Nev.Name = "c3DMaps_Nev";
-            this.c3DMaps_Nev.Size = new System.Drawing.Size(980, 805);
-            this.c3DMaps_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("c3DMaps_Nev.State")));
-            this.c3DMaps_Nev.TabIndex = 197;
-            this.c3DMaps_Nev.Text = "NChartControl1";
             // 
             // Label72
             // 
@@ -7889,10 +7364,7 @@
             // 
             // pgeRound
             // 
-            this.pgeRound.Controls.Add(this.txtisMCPdUncert);
-            this.pgeRound.Controls.Add(this.chtTurbUncert_Nev);
-            this.pgeRound.Controls.Add(this.chtHistoRoundRobin_Nev);
-            this.pgeRound.Controls.Add(this.chtRR_RMSAll_Nev);
+            this.pgeRound.Controls.Add(this.txtisMCPdUncert);            
             this.pgeRound.Controls.Add(this.txtRR_FlowSep_Used);
             this.pgeRound.Controls.Add(this.cboRR_MinSize);
             this.pgeRound.Controls.Add(this.Label31);
@@ -7934,7 +7406,7 @@
             // 
             // chtTurbUncert_Nev
             // 
-            this.chtTurbUncert_Nev.AutoRefresh = false;
+      /*      this.chtTurbUncert_Nev.AutoRefresh = false;
             this.chtTurbUncert_Nev.BackColor = System.Drawing.SystemColors.Control;
             this.chtTurbUncert_Nev.InputKeys = new System.Windows.Forms.Keys[0];
             this.chtTurbUncert_Nev.Location = new System.Drawing.Point(960, 516);
@@ -7945,32 +7417,7 @@
             this.chtTurbUncert_Nev.TabIndex = 189;
             this.chtTurbUncert_Nev.Text = "Wind Rose";
             // 
-            // chtHistoRoundRobin_Nev
-            // 
-            this.chtHistoRoundRobin_Nev.AutoRefresh = false;
-            this.chtHistoRoundRobin_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtHistoRoundRobin_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtHistoRoundRobin_Nev.Location = new System.Drawing.Point(15, 489);
-            this.chtHistoRoundRobin_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtHistoRoundRobin_Nev.Name = "chtHistoRoundRobin_Nev";
-            this.chtHistoRoundRobin_Nev.Size = new System.Drawing.Size(439, 330);
-            this.chtHistoRoundRobin_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtHistoRoundRobin_Nev.State")));
-            this.chtHistoRoundRobin_Nev.TabIndex = 188;
-            this.chtHistoRoundRobin_Nev.Text = "Wind Rose";
-            // 
-            // chtRR_RMSAll_Nev
-            // 
-            this.chtRR_RMSAll_Nev.AutoRefresh = false;
-            this.chtRR_RMSAll_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtRR_RMSAll_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtRR_RMSAll_Nev.Location = new System.Drawing.Point(15, 92);
-            this.chtRR_RMSAll_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtRR_RMSAll_Nev.Name = "chtRR_RMSAll_Nev";
-            this.chtRR_RMSAll_Nev.Size = new System.Drawing.Size(439, 254);
-            this.chtRR_RMSAll_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtRR_RMSAll_Nev.State")));
-            this.chtRR_RMSAll_Nev.TabIndex = 177;
-            this.chtRR_RMSAll_Nev.Text = "NChartControl1";
-            // 
+            */
             // txtRR_FlowSep_Used
             // 
             this.txtRR_FlowSep_Used.Location = new System.Drawing.Point(827, 82);
@@ -8328,10 +7775,6 @@
             this.pgeStepwise.Controls.Add(this.txtisMCPdAdv);
             this.pgeStepwise.Controls.Add(this.cboSeasonAdvanced);
             this.pgeStepwise.Controls.Add(this.cboTODAdvanced);
-            this.pgeStepwise.Controls.Add(this.cht_Uphill_Nev);
-            this.pgeStepwise.Controls.Add(this.cht_Downhill_Nev);
-            this.pgeStepwise.Controls.Add(this.chtNodeWS_Nev);
-            this.pgeStepwise.Controls.Add(this.chtTopoStep_Nev);
             this.pgeStepwise.Controls.Add(this.Label39);
             this.pgeStepwise.Controls.Add(this.lstPathNodes_DW);
             this.pgeStepwise.Controls.Add(this.Label8);
@@ -8428,58 +7871,6 @@
             this.cboTODAdvanced.TabIndex = 209;
             this.cboTODAdvanced.Text = "All Hours";
             this.cboTODAdvanced.SelectedIndexChanged += new System.EventHandler(this.cboTODAdvanced_SelectedIndexChanged);
-            // 
-            // cht_Uphill_Nev
-            // 
-            this.cht_Uphill_Nev.AutoRefresh = false;
-            this.cht_Uphill_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.cht_Uphill_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.cht_Uphill_Nev.Location = new System.Drawing.Point(1053, 543);
-            this.cht_Uphill_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cht_Uphill_Nev.Name = "cht_Uphill_Nev";
-            this.cht_Uphill_Nev.Size = new System.Drawing.Size(443, 281);
-            this.cht_Uphill_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("cht_Uphill_Nev.State")));
-            this.cht_Uphill_Nev.TabIndex = 207;
-            this.cht_Uphill_Nev.Text = "NChartControl1";
-            // 
-            // cht_Downhill_Nev
-            // 
-            this.cht_Downhill_Nev.AutoRefresh = false;
-            this.cht_Downhill_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.cht_Downhill_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.cht_Downhill_Nev.Location = new System.Drawing.Point(483, 543);
-            this.cht_Downhill_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cht_Downhill_Nev.Name = "cht_Downhill_Nev";
-            this.cht_Downhill_Nev.Size = new System.Drawing.Size(443, 281);
-            this.cht_Downhill_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("cht_Downhill_Nev.State")));
-            this.cht_Downhill_Nev.TabIndex = 206;
-            this.cht_Downhill_Nev.Text = "NChartControl1";
-            // 
-            // chtNodeWS_Nev
-            // 
-            this.chtNodeWS_Nev.AutoRefresh = false;
-            this.chtNodeWS_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtNodeWS_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtNodeWS_Nev.Location = new System.Drawing.Point(484, 241);
-            this.chtNodeWS_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtNodeWS_Nev.Name = "chtNodeWS_Nev";
-            this.chtNodeWS_Nev.Size = new System.Drawing.Size(883, 294);
-            this.chtNodeWS_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtNodeWS_Nev.State")));
-            this.chtNodeWS_Nev.TabIndex = 205;
-            this.chtNodeWS_Nev.Text = "NChartControl1";
-            // 
-            // chtTopoStep_Nev
-            // 
-            this.chtTopoStep_Nev.AutoRefresh = false;
-            this.chtTopoStep_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtTopoStep_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtTopoStep_Nev.Location = new System.Drawing.Point(17, 47);
-            this.chtTopoStep_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtTopoStep_Nev.Name = "chtTopoStep_Nev";
-            this.chtTopoStep_Nev.Size = new System.Drawing.Size(451, 420);
-            this.chtTopoStep_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtTopoStep_Nev.State")));
-            this.chtTopoStep_Nev.TabIndex = 204;
-            this.chtTopoStep_Nev.Text = "NChartControl1";
             // 
             // Label39
             // 
@@ -9160,7 +8551,6 @@
             this.pgeSuitability.Controls.Add(this.txtNumIceDays);
             this.pgeSuitability.Controls.Add(this.label89);
             this.pgeSuitability.Controls.Add(this.btnExportIceVsDist);
-            this.pgeSuitability.Controls.Add(this.chtIceVsDistOrHisto);
             this.pgeSuitability.Controls.Add(this.btnExportSoundSummary);
             this.pgeSuitability.Controls.Add(this.btnExportShadowFlicker);
             this.pgeSuitability.Controls.Add(this.btnExportIceSummary);
@@ -9186,7 +8576,6 @@
             this.pgeSuitability.Controls.Add(this.btnDelZones);
             this.pgeSuitability.Controls.Add(this.label164);
             this.pgeSuitability.Controls.Add(this.cboSiteSuitabilitySelectPlot);
-            this.pgeSuitability.Controls.Add(this.chtSiteSuitability);
             this.pgeSuitability.Controls.Add(this.lstZones);
             this.pgeSuitability.Controls.Add(this.btnRunSoundModel);
             this.pgeSuitability.Controls.Add(this.btnRunShadowFlicker);
@@ -9337,19 +8726,6 @@
             this.btnExportIceVsDist.Text = "Export Ice Throw vs. Distance";
             this.btnExportIceVsDist.UseVisualStyleBackColor = true;
             this.btnExportIceVsDist.Click += new System.EventHandler(this.btnExportIceVsDist_Click);
-            // 
-            // chtIceVsDistOrHisto
-            // 
-            this.chtIceVsDistOrHisto.AutoRefresh = false;
-            this.chtIceVsDistOrHisto.BackColor = System.Drawing.SystemColors.Control;
-            this.chtIceVsDistOrHisto.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtIceVsDistOrHisto.Location = new System.Drawing.Point(1004, 443);
-            this.chtIceVsDistOrHisto.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtIceVsDistOrHisto.Name = "chtIceVsDistOrHisto";
-            this.chtIceVsDistOrHisto.Size = new System.Drawing.Size(619, 372);
-            this.chtIceVsDistOrHisto.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtIceVsDistOrHisto.State")));
-            this.chtIceVsDistOrHisto.TabIndex = 265;
-            this.chtIceVsDistOrHisto.Text = "NChartControl1";
             // 
             // btnExportSoundSummary
             // 
@@ -9815,19 +9191,6 @@
             this.cboSiteSuitabilitySelectPlot.TabIndex = 199;
             this.cboSiteSuitabilitySelectPlot.SelectedIndexChanged += new System.EventHandler(this.cboSiteSuitabilitySelectPlot_SelectedIndexChanged);
             // 
-            // chtSiteSuitability
-            // 
-            this.chtSiteSuitability.AutoRefresh = false;
-            this.chtSiteSuitability.BackColor = System.Drawing.SystemColors.Control;
-            this.chtSiteSuitability.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtSiteSuitability.Location = new System.Drawing.Point(334, 171);
-            this.chtSiteSuitability.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtSiteSuitability.Name = "chtSiteSuitability";
-            this.chtSiteSuitability.Size = new System.Drawing.Size(640, 583);
-            this.chtSiteSuitability.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtSiteSuitability.State")));
-            this.chtSiteSuitability.TabIndex = 198;
-            this.chtSiteSuitability.Text = "NChartControl1";
-            // 
             // lstZones
             // 
             this.lstZones.CheckBoxes = true;
@@ -10146,30 +9509,6 @@
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
-            // plotTopo
-            // 
-            this.plotTopo.Location = new System.Drawing.Point(121, 22);
-            this.plotTopo.Name = "plotTopo";
-            this.plotTopo.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTopo.Size = new System.Drawing.Size(657, 608);
-            this.plotTopo.TabIndex = 126;
-            this.plotTopo.Text = "plotTopo";
-            this.plotTopo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotTopo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotTopo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            // 
-            // chtUWExpo
-            // 
-            this.chtUWExpo.Location = new System.Drawing.Point(18, 10);
-            this.chtUWExpo.Name = "chtUWExpo";
-            this.chtUWExpo.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.chtUWExpo.Size = new System.Drawing.Size(387, 258);
-            this.chtUWExpo.TabIndex = 214;
-            this.chtUWExpo.Text = "plotView1";
-            this.chtUWExpo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.chtUWExpo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.chtUWExpo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            // 
             // Continuum
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -10230,10 +9569,7 @@
         }
 
         #endregion
-        internal System.Windows.Forms.TabPage pgeInput;
-        internal Nevron.Chart.WinForm.NChartControl chtDirectionalWSRatios_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtWindRose_Nev;
-        internal Nevron.Chart.WinForm.NChartControl cht_NevTopo;
+        internal System.Windows.Forms.TabPage pgeInput;        
         internal System.Windows.Forms.Button btnImportRoughness;
         internal System.Windows.Forms.Label Label84;
         internal System.Windows.Forms.TextBox txt_LC_Key_selected;
@@ -10278,15 +9614,7 @@
         internal System.Windows.Forms.ColumnHeader WindSpd1;
         internal System.Windows.Forms.Label lblMetTable;
         internal System.Windows.Forms.Button btnTurbines;
-        internal System.Windows.Forms.TabPage pgeMetSumm;
-        internal Nevron.Chart.WinForm.NChartControl chtDW_DH_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtUW_DH_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtDW_SR_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtUW_SR_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtElev_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtDWUWExpo_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtDWExpo_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtUWExpo_Nev;
+        internal System.Windows.Forms.TabPage pgeMetSumm;        
         internal System.Windows.Forms.Label Label80;
         internal System.Windows.Forms.ListView lstTurbStats;
         internal System.Windows.Forms.ColumnHeader ColumnHeader21;
@@ -10326,10 +9654,6 @@
         internal System.Windows.Forms.ColumnHeader ColumnHeader51;
         internal System.Windows.Forms.Label Label73;
         internal System.Windows.Forms.TabPage pgeGrossTurbs;
-        internal Nevron.Chart.WinForm.NChartControl chtPowerCrv_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtHistogram_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtEst_Roses_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtWSDist_Nev;
         internal System.Windows.Forms.Label Label40;
         internal System.Windows.Forms.ComboBox cboWS_or_WD;
         internal System.Windows.Forms.TextBox txtGross_FlowSepUsed;
@@ -10386,9 +9710,6 @@
         internal System.Windows.Forms.ColumnHeader ColumnHeader29;
         internal System.Windows.Forms.ColumnHeader ColumnHeader32;
         internal System.Windows.Forms.TabPage pgeNetEsts;
-        internal Nevron.Chart.WinForm.NChartControl cht3DWakeLoss_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtTurbByString_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtWakedWSDists_Nev;
         internal System.Windows.Forms.TextBox txtNet_FlowSep_Used;
         internal System.Windows.Forms.Button btnExportNetDirWSDists;
         internal System.Windows.Forms.Button btnExportNetDirWS;
@@ -10447,7 +9768,6 @@
         internal System.Windows.Forms.ColumnHeader ColumnHeader77;
         internal System.Windows.Forms.Label Label36;
         internal System.Windows.Forms.TabPage pgeMaps;
-        internal Nevron.Chart.WinForm.NChartControl c3DMaps_Nev;
         internal System.Windows.Forms.Label Label72;
         internal System.Windows.Forms.ComboBox cboMapWD;
         internal System.Windows.Forms.TextBox txtMap_MetsUsed;
@@ -10492,10 +9812,7 @@
         internal System.Windows.Forms.ColumnHeader ColumnHeader59;
         internal System.Windows.Forms.ColumnHeader ColumnHeader36;
         internal System.Windows.Forms.ColumnHeader ColumnHeader12;
-        internal System.Windows.Forms.TabPage pgeRound;
-        internal Nevron.Chart.WinForm.NChartControl chtTurbUncert_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtHistoRoundRobin_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtRR_RMSAll_Nev;
+        internal System.Windows.Forms.TabPage pgeRound;        
         internal System.Windows.Forms.TextBox txtRR_FlowSep_Used;
         internal System.Windows.Forms.ComboBox cboRR_MinSize;
         internal System.Windows.Forms.Label Label31;
@@ -10536,10 +9853,6 @@
         internal System.Windows.Forms.Button btnDoRRCalcs;
         internal System.Windows.Forms.Label Label46;
         internal System.Windows.Forms.TabPage pgeStepwise;
-        internal Nevron.Chart.WinForm.NChartControl cht_Uphill_Nev;
-        internal Nevron.Chart.WinForm.NChartControl cht_Downhill_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtNodeWS_Nev;
-        internal Nevron.Chart.WinForm.NChartControl chtTopoStep_Nev;
         internal System.Windows.Forms.Label Label39;
         internal System.Windows.Forms.ListView lstPathNodes_DW;
         internal System.Windows.Forms.ColumnHeader ColumnHeader15;
@@ -10643,10 +9956,7 @@
         internal System.Windows.Forms.ComboBox cboSensorHeight;
         private System.Windows.Forms.Label label103;
         private System.Windows.Forms.Label label102;
-        internal Nevron.Chart.WinForm.NChartControl chtWSRatiobyWS;
-        internal Nevron.Chart.WinForm.NChartControl chtRatio_vs_WD;
         private System.Windows.Forms.Label label70;
-        internal Nevron.Chart.WinForm.NChartControl chtWS_Scatter;
         private System.Windows.Forms.Label label69;
         private System.Windows.Forms.ColumnHeader columnHeader82;
         private System.Windows.Forms.ColumnHeader columnHeader84;
@@ -10660,11 +9970,9 @@
         private System.Windows.Forms.ColumnHeader columnHeader76;
         private System.Windows.Forms.ColumnHeader columnHeader78;
         private System.Windows.Forms.ColumnHeader columnHeader79;
-        internal Nevron.Chart.WinForm.NChartControl chtAlphabyWD;
         private System.Windows.Forms.Label label65;
         internal System.Windows.Forms.ComboBox cboMetWindRose;
         private System.Windows.Forms.Label label64;
-        internal Nevron.Chart.WinForm.NChartControl chtWS_by_H;
         private System.Windows.Forms.Label label62;
         private System.Windows.Forms.ColumnHeader columnHeader74;
         private System.Windows.Forms.ColumnHeader columnHeader86;
@@ -10729,8 +10037,6 @@
         private System.Windows.Forms.Label label115;
         private System.Windows.Forms.Label label116;
         private System.Windows.Forms.Label label117;
-        internal Nevron.Chart.WinForm.NChartControl chtMCP_Uncert;
-        internal Nevron.Chart.WinForm.NChartControl chtMCP_Scatter;
         private System.Windows.Forms.Label label107;
         private System.Windows.Forms.Label label118;
         public System.Windows.Forms.Button btnMCP_Uncert;
@@ -10798,9 +10104,7 @@
         public System.Windows.Forms.ListView lstMCP_Bins;
         public System.Windows.Forms.ListView lstMCP_Uncert;
         public System.Windows.Forms.SaveFileDialog sfdSaveTAB;
-        private System.Windows.Forms.TabPage pgeMERRA;
-        internal Nevron.Chart.WinForm.NChartControl chtMERRA_Monthly;
-        internal Nevron.Chart.WinForm.NChartControl chtMERRA_Yearly;
+        private System.Windows.Forms.TabPage pgeMERRA;        
         private System.Windows.Forms.Button btn_ExportWR;
         private System.Windows.Forms.Button btn_Export_All_Months_All_Years;
         private System.Windows.Forms.Label label159;
@@ -10837,8 +10141,7 @@
         public System.Windows.Forms.ComboBox cboNumMERRA_Nodes;
         private System.Windows.Forms.Label label161;
         private System.Windows.Forms.Label label162;
-        public System.Windows.Forms.TextBox txtMERRA_WS_ScaleFact;
-        public Nevron.Chart.WinForm.NChartControl chtMERRA_WR;
+        public System.Windows.Forms.TextBox txtMERRA_WS_ScaleFact;        
         public System.Windows.Forms.ListView lstMERRAAnnualProd;
         public System.Windows.Forms.ListView lstMERRA_MonthlyProd;
         public System.Windows.Forms.Button btn_Import_MERRA;
@@ -10862,8 +10165,6 @@
         internal System.Windows.Forms.CheckedListBox chkYearsToDisplay;
         internal System.Windows.Forms.CheckBox chkYearsToDisplayAll;
         internal System.Windows.Forms.Button btnImportCRV_MERRA;
-        internal Nevron.Chart.WinForm.NChartControl chtTurbineYearly;
-        internal Nevron.Chart.WinForm.NChartControl chtTurbineMonthly;
         public System.Windows.Forms.ListView lstYearlyTurbine;
         private System.Windows.Forms.ColumnHeader columnHeader118;
         private System.Windows.Forms.ColumnHeader columnHeader119;
@@ -10897,7 +10198,6 @@
         internal System.Windows.Forms.ColumnHeader columnHeader133;
         internal System.Windows.Forms.ColumnHeader columnHeader134;
         internal System.Windows.Forms.ColumnHeader columnHeader135;
-        internal Nevron.Chart.WinForm.NChartControl chtSiteSuitability;
         private System.Windows.Forms.TabPage pgeExceedance;
         internal System.Windows.Forms.Label label164;
         internal System.Windows.Forms.ComboBox cboSiteSuitabilitySelectPlot;
@@ -10974,13 +10274,11 @@
         internal System.Windows.Forms.Label label183;
         internal System.Windows.Forms.ComboBox cboExceedTurbine;
         public System.Windows.Forms.ListView lstDefinedLosses;
-        internal Nevron.Chart.WinForm.NChartControl chtExceedDists;
         private System.Windows.Forms.ColumnHeader columnHeader171;
         private System.Windows.Forms.ColumnHeader columnHeader172;
         private System.Windows.Forms.ColumnHeader columnHeader173;
         private System.Windows.Forms.ColumnHeader columnHeader174;
         public System.Windows.Forms.ListView lstPvals;
-        public Nevron.Chart.WinForm.NChartControl chtPVals;
         internal System.Windows.Forms.ComboBox cboExceedWake;
         internal System.Windows.Forms.Label label185;
         public System.Windows.Forms.CheckBox chkShowCDFs;
@@ -10988,7 +10286,6 @@
         public System.Windows.Forms.Button btnDoMonteCarlo;
         internal System.Windows.Forms.TextBox txtOtherLosses;
         internal System.Windows.Forms.Label label88;
-        public Nevron.Chart.WinForm.NChartControl chtIceVsDistOrHisto;
         private System.Windows.Forms.Button btnExportIceVsDist;
         public System.Windows.Forms.TextBox txtNumIceDays;
         internal System.Windows.Forms.Label label89;
@@ -11016,7 +10313,6 @@
         internal System.Windows.Forms.Label label171;
         internal System.Windows.Forms.Label label172;
         internal System.Windows.Forms.ComboBox cboTurbWD;
-        internal Nevron.Chart.WinForm.NChartControl chtTurbulence;
         internal System.Windows.Forms.Label label174;
         public System.Windows.Forms.ComboBox cboTurbMet;
         public System.Windows.Forms.ListView lstTurbulence;
@@ -11045,7 +10341,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader182;
         private System.Windows.Forms.ColumnHeader columnHeader183;
         private System.Windows.Forms.ColumnHeader columnHeader184;
-        public Nevron.Chart.WinForm.NChartControl chtAlpha_Histo;
         internal System.Windows.Forms.Label label190;
         public System.Windows.Forms.ComboBox cboExtremeShearRange;
         private System.Windows.Forms.Button btnInflowAngles;
@@ -11053,11 +10348,9 @@
         internal System.Windows.Forms.Label label197;
         internal System.Windows.Forms.Label label196;
         internal System.Windows.Forms.ComboBox cboInflowWD;
-        internal Nevron.Chart.WinForm.NChartControl chtInflowAngle;
         private System.Windows.Forms.Button btnExtremeWS;
         internal System.Windows.Forms.Label label195;
         public System.Windows.Forms.ComboBox cboExtremeWSMet;
-        internal Nevron.Chart.WinForm.NChartControl chtExtremeWSDist;
         private System.Windows.Forms.Label label193;
         private System.Windows.Forms.Label label194;
         private System.Windows.Forms.Label label192;
@@ -11074,7 +10367,6 @@
         public System.Windows.Forms.TextBox txtInflowAngle;
         internal System.Windows.Forms.Label label201;
         public System.Windows.Forms.Button btnDoMCP;
-        internal Nevron.Chart.WinForm.NChartControl chtWindRoseMetQC;
         public System.Windows.Forms.DateTimePicker dateTimeExtremeShearStart;
         private System.Windows.Forms.Label label202;
         private System.Windows.Forms.Label label203;

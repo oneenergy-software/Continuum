@@ -80,30 +80,6 @@
       <HintPath>..\packages\MatplotlibCS.1.0.63\lib\netstandard2.0\MatplotlibCS.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Nevron.Chart, Version=19.7.25.12, Culture=neutral, PublicKeyToken=2961c51bb98125d2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.Chart.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.Chart.WinForm, Version=19.7.25.12, Culture=neutral, PublicKeyToken=c9bd8998e981e4ee, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.Chart.WinForm.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.GraphicsGL, Version=19.7.25.12, Culture=neutral, PublicKeyToken=2f17c6a71f852d32, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.GraphicsGL.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.Presentation, Version=19.7.25.12, Culture=neutral, PublicKeyToken=6656c5d1103e75cc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.Presentation.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.System, Version=19.7.25.12, Culture=neutral, PublicKeyToken=6a987feae5e496fd, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.System.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.UI.WinForm.Docking, Version=19.7.25.12, Culture=neutral, PublicKeyToken=446d8963349a628a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.UI.WinForm.Docking.dll</HintPath>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.6\lib\net45\NLog.dll</HintPath>
     </Reference>

@@ -12,8 +12,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters;
 using System.Diagnostics;
 using Microsoft.VisualBasic;
-using Nevron;
-using MatplotlibCS;
 
 namespace ContinuumNS
 {
@@ -38,17 +36,12 @@ namespace ContinuumNS
         public bool fileChanged;
         public bool okToUpdate = true; // Used to determine when the GUI plots and tables should be updated
         public bool isTest = false;
-
-        NLicense license = new NLicense("6f1902e6-0100-4903-894b-d803c09d2306");
+                
 
         public Continuum()
         {
             SplashScreen Splash = new SplashScreen();
-            Splash.ShowDialog();
-
-            license = new NLicense("6f1902e6-0100-4903-894b-d803c09d2306");
-            NLicenseManager.Instance.SetLicense(license);
-            NLicenseManager.Instance.LockLicense = true;
+            Splash.ShowDialog();                        
 
             InitializeComponent();      
 

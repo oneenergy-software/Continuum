@@ -5,11 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
-using Nevron.Chart;
-using Nevron.Chart.WinForm;
-using Nevron.GraphicsCore;
-using Nevron.Chart.Windows;
-using Nevron.Dom;
 using System.Globalization;
 using OxyPlot;
 using OxyPlot.Series;
@@ -342,7 +337,7 @@ namespace ContinuumNS
 
         public void TurbsByString(Continuum thisInst) // Updates net turbine  plot that shows estimates for each specified string
         {
-            int dist;
+   /*         int dist;
             double maxVal = 0;
             double minVal = 10000000;
             Turbine lastTurb = null;
@@ -522,11 +517,12 @@ namespace ContinuumNS
             turbsByString.Labels.AddHeader(header);
 
             turbsByString.Refresh();
-
+*/
         }
 
-        public void WakeLossMap(Continuum thisInst) // Updates waked WS map on Net Turbine Ests tab
+        public void WakeLossMap(Continuum thisInst) // Updates waked WS map on Net Turbine Ests tab            
         {
+            /*
             //  thisInst.cht3DWakeLoss.ChartLabels.LabelsCollection.Clear()
             int numWakeModels = thisInst.wakeModelList.NumWakeModels;
 
@@ -772,9 +768,9 @@ namespace ContinuumNS
 
             thisInst.cht3DWakeLoss_Nev.Refresh();
             wakedMap.Refresh();
-
+            */
         }
-
+        
         public void WakeModelList(Continuum thisInst) // Updates list on //Net Turbine Ests// tab that lists the wake models and wake maps that have been created
         {
             thisInst.okToUpdate = false;
@@ -2438,6 +2434,7 @@ namespace ContinuumNS
 
         public void TurbineUncertPlot(Continuum thisInst) // Updates plot on Uncertainty tab showing turbine uncertainty estimates
         {
+            /*
             NChartControl ChtCtrl = thisInst.chtTurbUncert_Nev;
             ChtCtrl.Charts[0].Series.Clear();
             ChtCtrl.Labels.Clear();
@@ -2568,11 +2565,12 @@ namespace ContinuumNS
                     ChtCtrl.Refresh();
                 }
             }
+            */
         }
 
         public void RoundRobinResults(Continuum thisInst) // Updates table on Uncertainty tab showing RMS error of Round Robin analyses
         {
-            int numRR = thisInst.metPairList.RoundRobinCount;
+   /*         int numRR = thisInst.metPairList.RoundRobinCount;
             MetPairCollection.RR_WS_Ests thisRR = new MetPairCollection.RR_WS_Ests();
 
             thisInst.lstRR_Results.Items.Clear();
@@ -2684,7 +2682,7 @@ namespace ContinuumNS
             RR_RMSAll_Ctrl.Charts[0].Axis(StandardAxis.PrimaryY).ScaleConfigurator = linearScaleY;
 
             RR_RMSAll_Ctrl.Refresh();
-
+*/
         }
 
         public void ModelParams(Continuum thisInst)
@@ -2986,7 +2984,7 @@ namespace ContinuumNS
 
         public void Labels(Continuum thisInst) // Updates Met and Turbine labels on thisInst.topo/SR/DH/LC map on Input tab
         {
-            Met[] checkedMets = thisInst.GetCheckedMets("Input");
+  /*          Met[] checkedMets = thisInst.GetCheckedMets("Input");
             Turbine[] checkedTurbines = thisInst.GetCheckedTurbs("Input");
             int numMets = 0;
             int turbCount = 0;
@@ -3042,11 +3040,11 @@ namespace ContinuumNS
             }
 
             thisInst.cht_NevTopo.Refresh();
-
+*/
         }
 
-        public void StepLabels(Continuum thisInst, double minX, double maxX, double minY, double maxY)
-        {
+        public void StepLabels(Continuum thisInst, double minX, double maxX, double minY, double maxY)        
+        {/*
             // Updates Met, turbine and path of nodes labels on map on Advanced tab
             //   Dim numMets = thisInst.metList.ThisCount()
 
@@ -3264,11 +3262,11 @@ namespace ContinuumNS
                         thisInst.chtTopoStep_Nev.Charts[0].Series.Add(label_Nodes[j]);
                     }
                 }
-            }
+            }*/
         }
 
         public void MapLabels(Continuum thisInst) //Updates met and turbine labels on map on Maps tab
-        {
+        {/*
             string mapToPlot = "";
             if (thisInst.lstMaps.SelectedItems.Count > 0)
             {
@@ -3363,10 +3361,12 @@ namespace ContinuumNS
 
                 }
             }
+            */
         }
 
         public void WakeMapLabels(Continuum thisInst, WakeCollection.WakeGridMap thisGrid, int plotInd, int WD_Ind)
         {
+            /*
             // Updates met and turbine labels on map on Net Turbine Ests. tab
 
             if (thisInst.metList.ThisCount == 0) return;
@@ -3426,6 +3426,7 @@ namespace ContinuumNS
 
                 thisInst.cht3DWakeLoss_Nev.Charts[0].Series.Add(labelTurbs[i]);
             }
+            */
         }
 
         public void ColoredTextBoxes(Continuum thisInst) // Updates roughness model and Flow Separation model textbox colors and text to indicate whether or not model was used
@@ -4259,6 +4260,7 @@ namespace ContinuumNS
 
         public void GrossHistogram(Continuum thisInst)
         {
+            /*
             // Creates a histogram of specified (gross) parameter (elev, WS, AEP, weibull k, weibull A) of selected met and turbines on Gross Turb Ests tab
             thisInst.lstGrossHisto.Items.Clear();
             thisInst.lstGrossHisto.Columns.Clear();
@@ -4662,10 +4664,12 @@ namespace ContinuumNS
                 objListItem.SubItems.Add(metHistoVals[i].ToString());
                 objListItem.SubItems.Add(turbHistoVals[i].ToString());
             }
+            */
         }
 
         public void RoundRobinHistogram(Continuum thisInst)
         {
+            /*
             // Creates a histogram of Math.Round Robin errors on Uncertainty tab
             NChartControl histoCtrl = thisInst.chtHistoRoundRobin_Nev;
             histoCtrl.Charts[0].Series.Clear();
@@ -4805,7 +4809,7 @@ namespace ContinuumNS
             }
 
             histoCtrl.Refresh();
-
+            */
         }
 
         public void TurbineList(Continuum thisInst) // Updates all plots and tables on all tabs that have the turbine sites to reflect new list
@@ -4945,6 +4949,7 @@ namespace ContinuumNS
 
         public void thisExpoPlot(Continuum thisInst, string plotName, int radiusIndex, int WD_Ind)
         {
+            /*
             // Updates plot on //Met and Turbine Summary// tab based on plotName
             NChartControl expoSR_ChtCtrl = new NChartControl();
             
@@ -5142,6 +5147,7 @@ namespace ContinuumNS
             linearConfiguratorX.CustomStep = customStep;         
             
             expoSR_ChtCtrl.Refresh();
+            */
         }
 
         public string GetExpoSR_ChartTitle(string plotName, int thisHeight) // Returns chart title of specified plot
@@ -5310,6 +5316,7 @@ namespace ContinuumNS
 
         public void PlotAdvancedTable(Continuum thisInst)
         {
+            /*
             // Updates the path of nodes plot on Advanced tab to show selected parameters
 
             NChartControl nodePthChtCtrl = thisInst.chtNodeWS_Nev;
@@ -5719,10 +5726,10 @@ namespace ContinuumNS
             }
 
             nodePthChtCtrl.Refresh();
-
+            */
         }
 
-        public void FormatPathToNodeLines(ref NLineSeries thisSeries)
+    /*    public void FormatPathToNodeLines(ref NLineSeries thisSeries)
         {
             // Formats series of Path to Node plot
             Color thisColor = new Color();
@@ -5768,9 +5775,11 @@ namespace ContinuumNS
             }
 
         }
+        */
 
         public void WS_or_WR_Plot(Continuum thisInst) // Updates either the wind speed distribution or wind rose plot on Gross Turb Est tab (depending on which is selected from dropdown box)
         {
+            /*
 
             string WS_or_WR = "";
             thisInst.chtWSDist_Nev.Charts[0].Series.Clear();
@@ -5802,11 +5811,12 @@ namespace ContinuumNS
                 thisInst.chtEst_Roses_Nev.Visible = true;
                 WR_Plot(thisInst);
             }
+            */
         }
 
         public void WR_Plot(Continuum thisInst) // Updates wind rose plot on 'Gross Turbine Ests' tab
         {
-
+            /*
             NChartControl chtWindRose = thisInst.chtEst_Roses_Nev;
             NRadarChart WR_Chart = new NRadarChart();
             chtWindRose.Clear();
@@ -5846,11 +5856,12 @@ namespace ContinuumNS
             }
 
             chtWindRose.Refresh();
+            */
         }
 
         public void WSDist_Plot(Continuum thisInst) // Updates wind speed distribution plot on Gross Turbine Ests tab 
         {
-
+            /*
             NChartControl WS_DistCtl = thisInst.chtWSDist_Nev;
             WS_DistCtl.Charts[0].Series.Clear();
             WS_DistCtl.Labels.Clear();
@@ -5948,6 +5959,7 @@ namespace ContinuumNS
             }
 
             WS_DistCtl.Refresh();
+            */
         }
 
         public Color GetMetOrTurbColor(int Met_Turb_Ind) // Returns color (RGB values) based on index of met or turbine for series formatting
@@ -5983,6 +5995,7 @@ namespace ContinuumNS
 
         public void WakedWSDistPlot(Continuum thisInst)
         {
+            /*
             // Updates (net/waked) wind speed distribution plot on Net Turb Ests tab
 
             if (thisInst.BW_worker.BackgroundWorker_TurbCalcs.IsBusy || thisInst.BW_worker.BackgroundWorker_Map.IsBusy)
@@ -6101,11 +6114,12 @@ namespace ContinuumNS
             wakedDist.Charts[0].Axis(StandardAxis.PrimaryY).ScaleConfigurator.Title.Text = yLabel1;
 
             wakedDist.Refresh();
+            */
         }
 
         public void PowerCrvPlot(Continuum thisInst) // Updates plot of power and thrust curves on Gross Turb Ests tab
         {
-
+            /*
             int chkPowerCurveCount = thisInst.lstPowerCurveList.CheckedItems.Count;
             int powerCurveCount = thisInst.turbineList.PowerCurveCount;
             int numMets = thisInst.metList.ThisCount;
@@ -6219,11 +6233,12 @@ namespace ContinuumNS
             }
 
             crvCtrl.Refresh();
-
+            */
         }
 
         public void DownhillLogLogPlot(Continuum thisInst, Model thisModel, string DH_plot_to_show)
         {
+            /*
             // Updates Log-Log plot : Downhill coeff vs P10 Expo on Advanced tab
             Model origModel = new Model();
             int numWD = thisInst.GetNumWD();
@@ -6552,10 +6567,12 @@ namespace ContinuumNS
                 thisInst.cht_Downhill_Nev.Legends[0].Visible = false;
 
             }
+            */
         }
 
         public void DownhillRoughPlot(Continuum thisInst, Model thisModel)
         {
+            /*
             // Updates plot on Advanced tab showing DW Stability factor (used in the surface roughness model) radar plot 
             int numWD = thisInst.GetNumWD();
             double[] DH_Stab = new double[numWD];   // DW Stability factor by WD sector
@@ -6621,11 +6638,12 @@ namespace ContinuumNS
             //  Rough_plot.Legend.Visible = false
             //  Rough_plot.ChartGroups.Group0.Radar.Degrees = true
             //  Rough_plot.ChartArea.AxisX.Reversed = true
-
+            */
         }
 
         public void UphillRoughPlot(Continuum thisInst, Model thisModel, string UW_to_show)
         {
+            /*
             // Updates plot on Advanced tab showing UW Stability factor (used in the surface roughness model) radar plot
             int numWD = thisInst.GetNumWD();
             double[] UH_Stab = new double[numWD];  // UW Stability factor by WD sector
@@ -6696,11 +6714,12 @@ namespace ContinuumNS
             ////   thisInst.cht_Uphill.Legend.Visible = false
             //   thisInst.cht_Uphill.ChartGroups.Group0.Radar.Degrees = true
             //   thisInst.cht_Uphill.ChartArea.AxisX.Reversed = true
-
+            */
         }
 
         public void UphillLogLogPlot(Continuum thisInst, Model thisModel, string UW_plot_to_show)
         {
+            /*
             //  Updates Log-Log plot : Uphill coeff vs P10 Expo on Advanced tab
             int numWD = thisInst.GetNumWD();
             int WD_Ind = thisInst.GetWD_ind("Advanced");
@@ -7002,10 +7021,12 @@ namespace ContinuumNS
             }
 
             thisInst.cht_Uphill_Nev.Legends[0].Visible = false;
+            */
         }
 
         public void ModelPlots(Continuum thisInst)
         {
+            /*
             // Reads the selected radius, WD, Expo/SRDH, UW critical and updates the plots on the Advanced tab to show either the log-log P10 exposure or stability factors on a radar plot             
             int numRadii = thisInst.radiiList.ThisCount;
 
@@ -7137,7 +7158,7 @@ namespace ContinuumNS
 
             DH_Ctl.Refresh();
             UH_Ctl.Refresh();
-
+            */
         }
 
         public string GetSelectedTopoMapParam(Continuum thisInst) // Returns either ‘Topography’ or ‘Surface roughness’ depending what is selected on ‘Input’ tab
@@ -7340,8 +7361,8 @@ namespace ContinuumNS
         {
             // Updates map on Input tab to show either elevation, SR, DH or LC
             string topoOrRough = GetSelectedTopoMapParam(thisInst);
-            if (thisInst.cht_NevTopo.Charts.Count > 0)
-                thisInst.cht_NevTopo.Charts[0].Series.Clear();
+        //    if (thisInst.cht_NevTopo.Charts.Count > 0)
+        //        thisInst.cht_NevTopo.Charts[0].Series.Clear();
 
             if (thisInst.topo.gotTopo || thisInst.topo.gotSR == true)
             {
@@ -7389,31 +7410,11 @@ namespace ContinuumNS
                 model.Series.Add(ms);
 
                 // Refresh plot
-                thisInst.plotTopo.Refresh();
-
-                NChart topoMap = thisInst.cht_NevTopo.Charts[0];
-                topoMap.Projection.SetPredefinedProjection(PredefinedProjection.OrthogonalTop);
-                topoMap.Series.Clear();
-                topoMap.Enable3D = true;
-                topoMap.Width = 85f;
-                topoMap.Depth = 85f;
-                topoMap.Height = 0.001f;
-                
-                thisInst.cht_NevTopo.Legends.Clear();
-                thisInst.cht_NevTopo.Controller.Tools.Clear();
-                NTooltipTool tooltip = new NTooltipTool();
-                thisInst.cht_NevTopo.Controller.Tools.Add(tooltip);
-                thisInst.cht_NevTopo.Controller.Tools.Add(new NSelectorTool());
-                // thisInst.cht_NevTopo.Controller.Tools.Add(new NTrackballTool())
-                //thisInst.cht_NevTopo.Controller.Tools.Add(new NCustomTooltipTool());
-
-                NMeshSurfaceSeries topoSurface = new NMeshSurfaceSeries();
-                double[,] paramToPlot = null;
-                int numX_Plot;
-                int numY_Plot;
+                thisInst.plotTopo.Refresh();                              
 
                 if ((topoOrRough == "Surface Roughness" || topoOrRough == "Displacement height" || topoOrRough == "Land Cover") && thisInst.topo.gotSR == true)
                 {
+                    double[,] paramToPlot = null;
                     // Plot land cover, surface roughness, or displacement height
                     if (topoOrRough == "Surface Roughness") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Surface Roughness");
                     if (topoOrRough == "Displacement height") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Displacement height");
@@ -7422,96 +7423,23 @@ namespace ContinuumNS
                     if (paramToPlot == null)
                         return;
 
-                    numX_Plot = paramToPlot.GetUpperBound(0);
-                    numY_Plot = paramToPlot.GetUpperBound(1);
+                    
                 }
                 else if ((topoOrRough == "Topography" && thisInst.topo.gotTopo == true))
                 { // Topography plot
-                    numX_Plot = thisInst.topo.topoNumXY.X.plot.num;
-                    numY_Plot = thisInst.topo.topoNumXY.Y.plot.num;
+                    
                 }
                 else
-                    return;
-
-                topoSurface.Data.SetGridSize(numX_Plot, numY_Plot);
-
-                int newNumLevels = 10;
-                double thisMin = GetTopoMapMin(thisInst, paramToPlot);
-                double thisMax = GetTopoMapMax(thisInst, paramToPlot);
-                double intWidth = GetTopoMapInt(thisInst, thisMin, thisMax);
-
-                if (intWidth == 0)
-                    newNumLevels = 1;
-                else
-                    newNumLevels = Convert.ToInt16((thisMax - thisMin) / intWidth + 1);
-
-                topoSurface.FillMode = SurfaceFillMode.Zone;
-                topoSurface.FrameMode = SurfaceFrameMode.Contour;
-                topoSurface.DrawFlat = true;
-
-                topoSurface.Palette.Clear();
-                topoSurface.Palette.SmoothPalette = false;
-
-                if ((topoOrRough == "Surface Roughness"))
-                    topoSurface.ValueFormatter.FormatSpecifier = "0.000";
-                else
-                    topoSurface.ValueFormatter.FormatSpecifier = "0";
-
-                topoSurface.Palette.HasCustomMin = true;
-                topoSurface.Palette.CustomMin = thisMin - thisMin * 0.05;
-                topoSurface.Palette.Mode = PaletteMode.Custom;
-                topoSurface.Palette.PaletteSteps = newNumLevels;
-
-                for (int i = 0; i < newNumLevels; i++)
-                {
-                    if (topoOrRough == "Surface Roughness")
-                        topoSurface.Palette.Add(thisMin + i * intWidth, GetRGB_Values((double)i / newNumLevels));
-                    else
-                        topoSurface.Palette.Add(Math.Round(thisMin + i * intWidth, 0), GetRGB_Values((double)i / newNumLevels));
-                }
-
-                topoSurface.Legend.Mode = SeriesLegendMode.SeriesLogic;
-                topoSurface.Legend.Format = "<zone_begin> - <zone_end>";
+                    return;             
                 
                 
-                NLegend Topo_Legend = new NLegend();
-                Topo_Legend.UseAutomaticSize = true;
-                thisInst.cht_NevTopo.Charts[0].DisplayOnLegend = Topo_Legend;
-                thisInst.cht_NevTopo.Panels.Add(Topo_Legend);
-                
-                Topo_Legend.DockMode = PanelDockMode.Right;
-
-                for (int i = 0; i < numX_Plot; i++)
-                {
-                    for (int j = 0; j < numY_Plot; j++)
-                    {
-                        if ((topoOrRough == "Surface Roughness" || topoOrRough == "Displacement height" || topoOrRough == "Land Cover"))
-                        {
-                            int thisX = Convert.ToInt32(thisInst.topo.LC_NumXY.X.plot.min + i * thisInst.topo.LC_NumXY.X.plot.reso);
-                            int thisY = (int)(thisInst.topo.LC_NumXY.Y.plot.min + j * thisInst.topo.LC_NumXY.Y.plot.reso);
-                            topoSurface.Data.SetValue(i, j, paramToPlot[i, j], thisX, thisY);                            
-                        }
-                        else
-                        {
-                            int thisX = Convert.ToInt32(thisInst.topo.topoNumXY.X.all.min + i * thisInst.topo.topoNumXY.X.plot.reso);
-                            int thisY = (int)(thisInst.topo.topoNumXY.Y.all.min + j * thisInst.topo.topoNumXY.Y.plot.reso);
-                            topoSurface.Data.SetValue(i, j, Math.Round(thisInst.topo.topoElevs[i, j], 1), thisX, thisY);
-                        }
-                    }
-                }
-
-                topoMap.Series.Add(topoSurface);
-                Labels(thisInst);
-                //  thisInst.cht_NevTopo.Controller.Tools.Add(new NCustomTooltipTool);
             }
-            else
-                thisInst.cht_NevTopo.Charts[0].Series.Clear();
-
-            thisInst.cht_NevTopo.Refresh();
+            
         }
 
         public void StepTopoMap(Continuum thisInst)
         {
+            /*
             // Updates the map on Advanced tab to show the selected start and end met and the nodes in between (if any)
             NChart stepTopoMap = thisInst.chtTopoStep_Nev.Charts[0];
             stepTopoMap.Projection.SetPredefinedProjection(PredefinedProjection.OrthogonalTop);
@@ -7795,6 +7723,7 @@ namespace ContinuumNS
             }
 
             thisInst.chtTopoStep_Nev.Refresh();
+            */
         }
 
         public void NewProject(Continuum thisInst)
@@ -7861,12 +7790,12 @@ namespace ContinuumNS
             thisInst.lstTurbUncert.Items.Clear();
             thisInst.lstRR_AllErr.Items.Clear();
             thisInst.lstRR_Results.Items.Clear();
-            thisInst.chtRR_RMSAll_Nev.Charts[0].Series.Clear();
-            thisInst.chtRR_RMSAll_Nev.Refresh();
-            thisInst.chtHistoRoundRobin_Nev.Charts[0].Series.Clear();
-            thisInst.chtHistoRoundRobin_Nev.Refresh();
-            thisInst.chtTurbUncert_Nev.Charts[0].Series.Clear();
-            thisInst.chtTurbUncert_Nev.Refresh();
+         //   thisInst.chtRR_RMSAll_Nev.Charts[0].Series.Clear();
+         //   thisInst.chtRR_RMSAll_Nev.Refresh();
+         //   thisInst.chtHistoRoundRobin_Nev.Charts[0].Series.Clear();
+         //   thisInst.chtHistoRoundRobin_Nev.Refresh();
+        //    thisInst.chtTurbUncert_Nev.Charts[0].Series.Clear();
+        //    thisInst.chtTurbUncert_Nev.Refresh();
             thisInst.cboRoundRobin.Items.Clear();
 
             // Advanced tab
@@ -7923,7 +7852,7 @@ namespace ContinuumNS
 
         public void WindRose(Continuum thisInst) // Updates wind rose plot on Input tab
         {           
-
+            /*
             NChartControl chtWindRose = thisInst.chtWindRose_Nev;
             NTooltipTool tooltip = new NTooltipTool();
 
@@ -7953,10 +7882,12 @@ namespace ContinuumNS
             }
 
             chtWindRose.Refresh();
+            */
         }
 
-        public void AddSeriesToRadarPlot(ref NRadarChart thisRadar, double[] dataToAdd, string seriesName, Color lineColor, bool showMarkers, bool isDashed)
+     /*   public void AddSeriesToRadarPlot(ref NRadarChart thisRadar, double[] dataToAdd, string seriesName, Color lineColor, bool showMarkers, bool isDashed)
         {
+            
             // Adds a data series to referenced Radar chart
             NRadarLineSeries WR_Series = new NRadarLineSeries();
             thisRadar.Series.Add(WR_Series);
@@ -7986,10 +7917,11 @@ namespace ContinuumNS
             WR_Series.FillStyle = new NColorFillStyle(lineColor);
             if (isDashed == true) WR_Series.BorderStyle.Pattern = LinePattern.Dash;
             WR_Series.InteractivityStyle.Tooltip = new NTooltipAttribute(seriesName);
-
+            
         }
+        */
 
-        public void AddAxisToRadarPlot(ref NRadarChart thisRadar, int numWD, bool isVisible, int fontSize)
+   /*     public void AddAxisToRadarPlot(ref NRadarChart thisRadar, int numWD, bool isVisible, int fontSize)
         {
             // Adds axis to referenced Radar chart
             for (int i = 0; i <= numWD - 1; i++)
@@ -8045,10 +7977,10 @@ namespace ContinuumNS
             }
 
         }
-
+        */
         public void DirectionalWS_Ratios(Continuum thisInst) // Updates directional WS ratio plot on Input tab
         {
-
+/*
             NChartControl Dir_cht_Nev = thisInst.chtDirectionalWSRatios_Nev;
             NTooltipTool tooltip = new NTooltipTool();
             Dir_cht_Nev.Controller.Tools.Clear();
@@ -8093,6 +8025,7 @@ namespace ContinuumNS
             }
 
             Dir_cht_Nev.Refresh();
+            */
         }
 
 
@@ -8145,7 +8078,7 @@ namespace ContinuumNS
 
         public void Generated2DMap(Continuum thisInst) //  Updates map on Maps tab
         {
-
+            /*
             if (thisInst.lstMaps.SelectedItems.Count == 1)
             {
                 string mapToPlot = thisInst.lstMaps.SelectedItems[0].Text;
@@ -8376,6 +8309,7 @@ namespace ContinuumNS
             }
 
             thisInst.c3DMaps_Nev.Refresh();
+            */
         }
 
         public void MapStats(Continuum thisInst) // Updates textboxes on Map tab showing statistics of selected map
@@ -8651,6 +8585,7 @@ namespace ContinuumNS
 
         public void AlphaVsWD_PlotAndTable(Continuum thisInst, Met thisMet)
         {
+            /*
             Met_Data_Filter thisData = thisMet.metData;
 
 
@@ -8769,7 +8704,7 @@ namespace ContinuumNS
             thisInst.lstAlphas.Columns[3].Width = 60;
 
             alphaWDPlot.Refresh();
-
+            */
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -8780,6 +8715,7 @@ namespace ContinuumNS
 
         public void WS_vsHeightPlot(Continuum thisInst, Met thisMet)
         {
+            /*
             Met_Data_Filter thisData = thisMet.metData;
 
             NChartControl WS_ShearCtl = thisInst.chtWS_by_H;
@@ -8893,7 +8829,7 @@ namespace ContinuumNS
 
             thisInst.chtWS_by_H.Refresh();
 
-
+            */
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9126,6 +9062,7 @@ namespace ContinuumNS
 
         public void MetWS_DiffvsWD(Continuum thisInst, Met thisMet)
         {
+            /*
             NChartControl metWS_DiffChtCtrl = thisInst.chtRatio_vs_WD;
             metWS_DiffChtCtrl.Charts[0].Series.Clear();
             metWS_DiffChtCtrl.Charts[0].Width = 220;
@@ -9190,7 +9127,7 @@ namespace ContinuumNS
             }
 
             metWS_DiffChtCtrl.Refresh();
-
+            */
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9204,6 +9141,7 @@ namespace ContinuumNS
 
         public void MetWS_DiffvsWindSpeed(Continuum thisInst, Met thisMet)
         {
+            /*
             NChartControl metWS_DiffChtCtrl = thisInst.chtWSRatiobyWS;
             metWS_DiffChtCtrl.Charts[0].Series.Clear();
             metWS_DiffChtCtrl.Charts[0].Width = 220;
@@ -9265,7 +9203,7 @@ namespace ContinuumNS
             }
 
             metWS_DiffChtCtrl.Refresh();
-
+            */
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9279,6 +9217,7 @@ namespace ContinuumNS
 
         public void MetAnemScatterplot(Continuum thisInst, Met thisMet)
         {
+            /*
             NChartControl metScatterChtCtrl = thisInst.chtWS_Scatter;
             metScatterChtCtrl.Charts[0].Series.Clear();
             metScatterChtCtrl.Labels.Clear();
@@ -9345,7 +9284,7 @@ namespace ContinuumNS
             }
 
             metScatterChtCtrl.Refresh();
-
+            */
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9356,6 +9295,7 @@ namespace ContinuumNS
 
         public void MetWindRoseOrWS_byWDPlot(Continuum thisInst, Met thisMet)
         {
+            /*
             NChartControl metRoseChtCtrl = thisInst.chtWindRoseMetQC;            
             metRoseChtCtrl.Charts.Clear();
             metRoseChtCtrl.Labels.Clear();
@@ -9406,7 +9346,7 @@ namespace ContinuumNS
             }
 
             metRoseChtCtrl.Refresh();
-
+            */
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9872,6 +9812,7 @@ namespace ContinuumNS
 
         public void MCP_Scatterplot(Continuum thisInst)
         {
+            /*
             Met thisMet = thisInst.GetSelectedMet("MCP");
             MCP thisMCP = thisMet.mcp;                     
 
@@ -10054,6 +9995,7 @@ namespace ContinuumNS
                 MCP_TextBoxes(thisInst);
                 MCP_ChtCtrl.Refresh();
             }
+            */
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -10177,6 +10119,7 @@ namespace ContinuumNS
 
         public void MCP_UncertPlot(Continuum thisInst)
         {
+            /*
             NChartControl MCP_Uncert_ChtCtrl = thisInst.chtMCP_Uncert;
             MCP_Uncert_ChtCtrl.Charts[0].Series.Clear();
             MCP_Uncert_ChtCtrl.Labels.Clear();
@@ -10302,7 +10245,7 @@ namespace ContinuumNS
             }
 
             MCP_Uncert_ChtCtrl.Refresh();
-
+            */
         }
 
         public void MERRA_AnnualTableAndPlot(Continuum thisInst)
@@ -10314,8 +10257,8 @@ namespace ContinuumNS
 
             if (thisMERRA.interpData.TS_Data == null)
             {
-                thisInst.chtMERRA_Yearly.Charts[0].Series.Clear();
-                thisInst.chtMERRA_Yearly.Refresh();
+          //      thisInst.chtMERRA_Yearly.Charts[0].Series.Clear();
+          //      thisInst.chtMERRA_Yearly.Refresh();
                 return;
             }
 
@@ -10332,8 +10275,8 @@ namespace ContinuumNS
             if (thisInst.okToUpdate == false || thisMERRA.GotWindTS(thisInst.UTM_conversions) == false || (thisMERRA.powerCurve.name == null &&
                 (selectedParam == "CF (%)" || selectedParam == "Energy Prod.")))
             {
-                thisInst.chtMERRA_Yearly.Charts[0].Series.Clear();
-                thisInst.chtMERRA_Yearly.Refresh();
+          //      thisInst.chtMERRA_Yearly.Charts[0].Series.Clear();
+          //      thisInst.chtMERRA_Yearly.Refresh();
                 return;
             }
 
@@ -10361,7 +10304,7 @@ namespace ContinuumNS
             MERRA.Wind_TS_with_Prod[] thisTS = thisMERRA.interpData.TS_Data;
             double diff = 0;
             double LT_Val = 0;
-
+            /*
             NChartControl chtMERRA_Year = thisInst.chtMERRA_Yearly;
             chtMERRA_Year.Charts[0].Series.Clear();
             chtMERRA_Year.Labels.Clear();
@@ -10385,14 +10328,15 @@ namespace ContinuumNS
             chtMERRA_Year.Charts[0].Series.Add(paramSeries);
             paramSeries.BorderStyle.Color = NColor.ColorFromString("Blue");
             paramSeries.BorderStyle.Width = new NLength(0.5f, NRelativeUnit.ParentPercentage);
+            */
 
             for (int i = firstYear; i <= lastYear; i++)
             {
                 if (thisMERRA.Have_Full_Year(thisTS, i))
                 {
                     ListViewItem lvi = new ListViewItem(i.ToString()); // Adds year to table
-                    paramSeries.UseXValues = true;
-                    paramSeries.XValues.Add(i);
+                 //   paramSeries.UseXValues = true;
+                 //   paramSeries.XValues.Add(i);
 
                     int yearInd = thisMERRA.Get_Year_Ind(i, thisAnnual);
 
@@ -10406,7 +10350,7 @@ namespace ContinuumNS
                             LT_Val = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, 100, 100);
                             diff = thisMERRA.Calc_Dev_from_LT(thisMonthly, thisAnnual, i, 100);
                             lvi.SubItems.Add(Math.Round(prod, 1).ToString());
-                            paramSeries.Values.Add(prod);
+                         //   paramSeries.Values.Add(prod);
                         }
                         else
                         {
@@ -10414,7 +10358,7 @@ namespace ContinuumNS
                             LT_Val = thisMERRA.Calc_CF(LT_Prod, 100, 100, powerCurve);
                             diff = (thisCF - LT_Val) / LT_Val;
                             lvi.SubItems.Add(Math.Round(thisCF, 4).ToString("P"));
-                            paramSeries.Values.Add(thisCF * 100);
+                          //  paramSeries.Values.Add(thisCF * 100);
                         }
                     }
                     else
@@ -10423,7 +10367,7 @@ namespace ContinuumNS
                         LT_Val = thisMERRA.Calc_Avg_or_LT(thisTS, 100, 100, selectedParam);
                         diff = (avg - LT_Val) / LT_Val;
                         lvi.SubItems.Add(Math.Round(avg, 1).ToString());
-                        paramSeries.Values.Add(avg);
+                     //   paramSeries.Values.Add(avg);
                     }
 
                     lvi.SubItems.Add((Math.Round(diff, 4)).ToString("P")); // adds % diff from the average
@@ -10435,7 +10379,7 @@ namespace ContinuumNS
 
             ListViewItem lvi2 = new ListViewItem("LT Avg"); // Adds year to table
             lvi2.SubItems.Add(Math.Round(LT_Val, 1).ToString());
-            chtMERRA_Year.Refresh();
+          //  chtMERRA_Year.Refresh();
         }
 
         public void MERRA_Param_Checkboxes(Continuum thisInst, MERRA thisMERRA)
@@ -10555,8 +10499,8 @@ namespace ContinuumNS
 
             if (thisInst.okToUpdate == false || thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
             {
-                thisInst.chtMERRA_Monthly.Charts[0].Series.Clear();
-                thisInst.chtMERRA_Monthly.Refresh();
+           //     thisInst.chtMERRA_Monthly.Charts[0].Series.Clear();
+           //     thisInst.chtMERRA_Monthly.Refresh();
                 return;
             }
                 
@@ -10566,8 +10510,8 @@ namespace ContinuumNS
             if (thisMERRA.GotMonthlyProd() == false)
             {
                 thisMERRA.Calc_MonthProdStats(thisInst.UTM_conversions);
-                thisInst.chtMERRA_Monthly.Charts[0].Series.Clear();
-                thisInst.chtMERRA_Monthly.Refresh();
+           //     thisInst.chtMERRA_Monthly.Charts[0].Series.Clear();
+           //     thisInst.chtMERRA_Monthly.Refresh();
             }
 
 
@@ -10581,8 +10525,8 @@ namespace ContinuumNS
 
             if (thisMERRA.powerCurve.name == null && (selectedParam == "CF (%)" || selectedParam == "Energy Prod."))
             {
-                thisInst.chtMERRA_Monthly.Charts[0].Series.Clear();
-                thisInst.chtMERRA_Monthly.Refresh();
+          //      thisInst.chtMERRA_Monthly.Charts[0].Series.Clear();
+          //      thisInst.chtMERRA_Monthly.Refresh();
                 return;
             }
 
@@ -10590,7 +10534,8 @@ namespace ContinuumNS
             int thisYear = 0;
             double diffFromLT = 0;
 
-            // Configure plot
+            // Configure plot 
+            /*
             NChartControl monthPlot = thisInst.chtMERRA_Monthly;
             monthPlot.Charts[0].Series.Clear();
             monthPlot.Labels.Clear();
@@ -10611,6 +10556,7 @@ namespace ContinuumNS
                 scaleConfiguratorY.Title.Text = "Energy Prod. [MWh]";
             else if (selectedParam == "Avg WS")
                 scaleConfiguratorY.Title.Text = "WS [m/s]";
+                */
 
             for (int n = 0; n < numYears; n++)
             {
@@ -10619,7 +10565,7 @@ namespace ContinuumNS
                 else
                     thisYear = Convert.ToInt16(thisInst.chkYearsToDisplay.CheckedItems[n].ToString());
 
-                NLineSeries monthlySeries = new NLineSeries();
+             /*   NLineSeries monthlySeries = new NLineSeries();
                 monthlySeries.DataLabelStyle.Visible = false;
                 monthlySeries.Name = thisYear.ToString();
                 monthPlot.Charts[0].Series.Add(monthlySeries);
@@ -10633,6 +10579,7 @@ namespace ContinuumNS
                     monthlySeries.InteractivityStyle.Tooltip = new NTooltipAttribute("LT Avg");
                     // FIGURE OUT HOW TO MAKE LINE THICKER FOR LT AVG monthlySeries.MarkerStyle = new NMarkerStyle(PointShape.Diamond, NFillStyle.c_szDefaultSize);
                 }
+                */
 
                 for (int i = 1; i <= 12; i++)
                 {
@@ -10646,7 +10593,7 @@ namespace ContinuumNS
                         else
                             lvi.SubItems.Add("LT Avg");
 
-                        monthlySeries.XValues.Add(i);
+                   //     monthlySeries.XValues.Add(i);
 
                         if (selectedParam == "CF (%)" || selectedParam == "Energy Prod.")
                         {
@@ -10659,13 +10606,13 @@ namespace ContinuumNS
                                 lvi.SubItems.Add((Math.Round(thisCF, 4)).ToString("P"));
                                 double LT_CF = thisMERRA.Calc_CF(LT_Prod, i, thisYear, powerCurve);
                                 diffFromLT = (thisCF - LT_CF) / LT_CF;
-                                monthlySeries.Values.Add(thisCF * 100);
+                          //      monthlySeries.Values.Add(thisCF * 100);
                             }
                             else
                             {
                                 lvi.SubItems.Add((Math.Round(prod, 1)).ToString());
                                 diffFromLT = (prod - LT_Prod) / LT_Prod;
-                                monthlySeries.Values.Add(prod);
+                         //       monthlySeries.Values.Add(prod);
                             }
 
                         }
@@ -10674,7 +10621,7 @@ namespace ContinuumNS
                             double LT_Val = thisMERRA.Calc_Avg_or_LT(thisTS, i, 100, selectedParam);
                             double monthVal = thisMERRA.Calc_Avg_or_LT(thisTS, i, thisYear, selectedParam);
                             lvi.SubItems.Add((Math.Round(monthVal, 2)).ToString()); // adds the monthly average 
-                            monthlySeries.Values.Add(monthVal);
+                      //      monthlySeries.Values.Add(monthVal);
                             diffFromLT = (monthVal - LT_Val) / LT_Val;
 
                         }
@@ -10690,7 +10637,7 @@ namespace ContinuumNS
             thisInst.lstMERRA_MonthlyProd.Columns[2].Width = 60;
             thisInst.lstMERRA_MonthlyProd.Columns[3].Width = 90;
 
-            monthPlot.Refresh();
+         //   monthPlot.Refresh();
         }
 
         public void MERRA_Dropdowns(Continuum thisInst)
@@ -10846,6 +10793,7 @@ namespace ContinuumNS
 
         public void MERRA_WindRosePlot(Continuum thisInst)
         {
+            /*
             MERRA thisMERRA = thisInst.GetSelectedMERRA();
 
             if (thisMERRA.interpData.TS_Data == null)
@@ -10918,7 +10866,7 @@ namespace ContinuumNS
             WR_Series.MarkerStyle.Height = new NLength(1.5f, NRelativeUnit.ParentPercentage);
 
             thisInst.chtMERRA_WR.Refresh();
-
+            */
         }
 
         public void MERRA_TAB(Continuum thisInst)
@@ -10961,10 +10909,10 @@ namespace ContinuumNS
 
             thisInst.okToUpdate = true;
             
-            thisInst.chtSiteSuitability.Charts[0].Enable3D = true;
-            thisInst.chtSiteSuitability.Charts[0].Width = 70f;
-            thisInst.chtSiteSuitability.Charts[0].Depth = 70f;
-            thisInst.chtSiteSuitability.Charts[0].Height = 0.001f;
+      //      thisInst.chtSiteSuitability.Charts[0].Enable3D = true;
+       //     thisInst.chtSiteSuitability.Charts[0].Width = 70f;
+      //      thisInst.chtSiteSuitability.Charts[0].Depth = 70f;
+       //     thisInst.chtSiteSuitability.Charts[0].Height = 0.001f;
 
             try
             {
@@ -10972,13 +10920,13 @@ namespace ContinuumNS
             }
             catch
             {
-                thisInst.chtSiteSuitability.Refresh();
+          //      thisInst.chtSiteSuitability.Refresh();
                 return;
             }
 
             if (selectedSiteSuitability == "" && thisInst.cboSiteSuitabilitySelectPlot.Items.Count == 0)
             {
-                thisInst.chtSiteSuitability.Refresh();
+          //      thisInst.chtSiteSuitability.Refresh();
                 return;
             }
             else if ((selectedSiteSuitability == "" && thisInst.cboSiteSuitabilitySelectPlot.Items.Count > 0))
@@ -11028,7 +10976,7 @@ namespace ContinuumNS
 
             Turbine thisTurb = thisInst.GetSelectedTurbine("Monthly");
 
-            NChartControl yearlyChart = thisInst.chtTurbineYearly;
+       /*     NChartControl yearlyChart = thisInst.chtTurbineYearly;
             yearlyChart.Charts[0].Series.Clear();
             yearlyChart.Charts[0].Width = 400;
             yearlyChart.Charts[0].Height = 200;
@@ -11053,7 +11001,7 @@ namespace ContinuumNS
             NLineSeries Wake_Series = new NLineSeries();
             bool plotDiff = false;
             NLineSeries Diff_Series = new NLineSeries();
-
+            
             foreach (var n in theseParams)
             {
                 if (n.ToString() == "Avg WS")
@@ -11124,19 +11072,14 @@ namespace ContinuumNS
                 NStandardScaleConfigurator scaleConfiguratorSecondY = (NStandardScaleConfigurator)(yearlyChart.Charts[0].Axis(StandardAxis.SecondaryY).ScaleConfigurator);
                 scaleConfiguratorSecondY.Title.Text = "Net AEP";
             }
+            */
 
             Wake_Model thisWakeModel = null;
             if (thisInst.wakeModelList.NumWakeModels > 0 && thisInst.cboMonthlyWakeModel.Items.Count != 0)
             {
                 string wakeModelString = thisInst.cboMonthlyWakeModel.SelectedItem.ToString();
                 thisWakeModel = thisInst.wakeModelList.GetWakeModelFromString(wakeModelString);
-            }
-       /*     else
-            {
-                yearlyChart.Refresh();
-                return;
-            }
-          */      
+            }       
             
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
 
@@ -11157,7 +11100,7 @@ namespace ContinuumNS
                 {
                     objListItem.SubItems.Add(Math.Round(avgWS, 2).ToString());
 
-                    if (plotWS == true)
+              /*      if (plotWS == true)
                     {  // Add values to plot series
                         int seriesInd = GetSeriesIndex(yearlyChart, "Avg WS");
                         WS_Series = (NLineSeries)yearlyChart.Charts[0].Series[seriesInd];
@@ -11165,13 +11108,14 @@ namespace ContinuumNS
                         WS_Series.XValues.Add(i);
                         WS_Series.Values.Add(avgWS);
                     }
+                    */
                 }
 
                 if (grossEnergy != 0)
                 {
                     objListItem.SubItems.Add(Math.Round(grossEnergy, 0).ToString());
 
-                    if (plotGross == true)
+             /*       if (plotGross == true)
                     {
                         int seriesInd = GetSeriesIndex(yearlyChart, "Gross AEP");
                         Gross_Series = (NLineSeries)yearlyChart.Charts[0].Series[seriesInd];
@@ -11189,13 +11133,14 @@ namespace ContinuumNS
                             Gross_Series.DisplayOnAxis(StandardAxis.SecondaryY, false);
                         }
                     }
+                    */
                 }
 
                 if (netEnergy != 0)
                 {
                     objListItem.SubItems.Add(Math.Round(netEnergy, 0).ToString());
 
-                    if (plotNet == true)
+                /*    if (plotNet == true)
                     {
                         int seriesInd = GetSeriesIndex(yearlyChart, "Net AEP");
                         Net_Series = (NLineSeries)yearlyChart.Charts[0].Series[seriesInd];
@@ -11213,6 +11158,7 @@ namespace ContinuumNS
                             Net_Series.DisplayOnAxis(StandardAxis.SecondaryY, false);
                         }
                     }
+                    */
                 }
                 else
                     objListItem.SubItems.Add("");
@@ -11223,13 +11169,14 @@ namespace ContinuumNS
                     thisWakeLoss = (grossEnergy - netEnergy / otherLoss) / grossEnergy;
                     objListItem.SubItems.Add(Math.Round(thisWakeLoss, 4).ToString("P"));
 
-                    if (plotWake == true)
+              /*      if (plotWake == true)
                     {
                         int seriesInd = GetSeriesIndex(yearlyChart, "Wake Loss");
                         Wake_Series = (NLineSeries)yearlyChart.Charts[0].Series[seriesInd];
                         Wake_Series.XValues.Add(i);
                         Wake_Series.Values.Add(100 * thisWakeLoss);
                     }
+                    */
                 }
                 else
                     objListItem.SubItems.Add("");
@@ -11240,13 +11187,14 @@ namespace ContinuumNS
                     double percDiff = (grossEnergy - thisGross.AEP) / thisGross.AEP;
                     objListItem.SubItems.Add(Math.Round(percDiff, 4).ToString("P"));
 
-                    if (plotDiff == true)
+              /*      if (plotDiff == true)
                     {
                         int seriesInd = GetSeriesIndex(yearlyChart, "% Diff");
                         Diff_Series = (NLineSeries)yearlyChart.Charts[0].Series[seriesInd];
                         Diff_Series.XValues.Add(i);
                         Diff_Series.Values.Add(percDiff);
                     }
+                    */
                 }
                 else if (netEnergy != 0) // Calculate % Diff in net energy
                 {
@@ -11254,19 +11202,20 @@ namespace ContinuumNS
                     double percDiff = (netEnergy - thisNet.AEP) / thisNet.AEP;
                     objListItem.SubItems.Add(Math.Round(percDiff, 4).ToString("P"));
 
-                    if (plotDiff == true)
+               /*     if (plotDiff == true)
                     {
                         int seriesInd = GetSeriesIndex(yearlyChart, "% Diff");
                         Diff_Series = (NLineSeries)yearlyChart.Charts[0].Series[seriesInd];
                         Diff_Series.XValues.Add(i);
                         Diff_Series.Values.Add(percDiff);
                     }
+                    */
                 }
 
 
             }
 
-            yearlyChart.Refresh();
+          //  yearlyChart.Refresh();
         }
 
         public void TurbineMonthlyPlotAndTable(Continuum thisInst)
@@ -11276,22 +11225,22 @@ namespace ContinuumNS
 
             Turbine thisTurb = thisInst.GetSelectedTurbine("Monthly");
 
-            NChartControl monthlyChart = thisInst.chtTurbineMonthly;
+      /*      NChartControl monthlyChart = thisInst.chtTurbineMonthly;
             monthlyChart.Charts[0].Series.Clear();
             monthlyChart.Charts[0].Width = 400;
             monthlyChart.Charts[0].Height = 200;
             monthlyChart.Labels.Clear();
             monthlyChart.Controller.Tools.Clear();
             monthlyChart.Legends[0].Visible = false;
-
+            */
             if (thisTurb.AvgWSEst_Count == 0 || thisInst.turbineList.genTimeSeries == false)
             {
-                monthlyChart.Refresh();
+             //   monthlyChart.Refresh();
                 return;
             }
 
             CheckedListBox.CheckedItemCollection theseParams = thisInst.chkSelectedTurbineParam.CheckedItems;
-            bool plotWS = false;
+      /*      bool plotWS = false;
             NLineSeries WS_Series = new NLineSeries();
             bool plotGross = false;
             NLineSeries Gross_Series = new NLineSeries();
@@ -11301,6 +11250,7 @@ namespace ContinuumNS
             NLineSeries Wake_Series = new NLineSeries();
             bool plotDiff = false;
             NLineSeries Diff_Series = new NLineSeries();
+            
 
             foreach (var n in theseParams)
             {
@@ -11358,6 +11308,7 @@ namespace ContinuumNS
                 NStandardScaleConfigurator scaleConfiguratorSecondY = (NStandardScaleConfigurator)(monthlyChart.Charts[0].Axis(StandardAxis.SecondaryY).ScaleConfigurator);
                 scaleConfiguratorSecondY.Title.Text = "AEP, MWh";
             }
+            */
 
             Wake_Model thisWakeModel = null;
             if (thisInst.wakeModelList.NumWakeModels > 0 && thisInst.cboMonthlyWakeModel.Items.Count != 0)
@@ -11396,7 +11347,7 @@ namespace ContinuumNS
 
                     objListItem.SubItems.Add(Math.Round(thisAvgEst.FS_MonthlyVals[i].avgWS, 2).ToString());
 
-                    if (plotWS == true)
+               /*     if (plotWS == true)
                     {  // Add values to plot series
                         string seriesName = "Avg WS " + thisAvgEst.FS_MonthlyVals[i].year.ToString();
                         
@@ -11408,13 +11359,13 @@ namespace ContinuumNS
                         WS_Series.XValues.Add(thisAvgEst.FS_MonthlyVals[i].month);
                         WS_Series.Values.Add(thisAvgEst.FS_MonthlyVals[i].avgWS);
                     }
-
+*/
 
                     if (thisGrossEst.AEP != 0)
                     {
                         objListItem.SubItems.Add(Math.Round(thisGrossEst.monthlyVals[i].energyProd, 0).ToString());
 
-                        if (plotGross == true)
+                /*        if (plotGross == true)
                         {
                             string seriesName = "Gross Energy " + thisAvgEst.FS_MonthlyVals[i].year.ToString();
 
@@ -11437,13 +11388,14 @@ namespace ContinuumNS
                                 Gross_Series.DisplayOnAxis(StandardAxis.SecondaryY, false);
                             }
                         }
+                        */
                     }
 
                     if (thisNetEst.AEP != 0)
                     {
                         objListItem.SubItems.Add(Math.Round(thisNetEst.monthlyVals[i].energyProd, 0).ToString());
 
-                        if (plotNet == true)
+                /*        if (plotNet == true)
                         {
                             string seriesName = "Net Energy " + thisAvgEst.FS_MonthlyVals[i].year.ToString();
 
@@ -11466,6 +11418,7 @@ namespace ContinuumNS
                                 Net_Series.DisplayOnAxis(StandardAxis.SecondaryY, false);
                             }
                         }
+                        */
                     }
                     else
                         objListItem.SubItems.Add("");
@@ -11478,7 +11431,7 @@ namespace ContinuumNS
                             double thisWakeLoss = (thisGrossEst.monthlyVals[i].energyProd - thisNetEst.monthlyVals[i].energyProd / otherLoss) / thisGrossEst.monthlyVals[i].energyProd;
                             objListItem.SubItems.Add(Math.Round(thisWakeLoss, 4).ToString("P"));
 
-                            if (plotWake == true)
+                    /*        if (plotWake == true)
                             {
                                 string seriesName = "Wake Loss " + thisAvgEst.FS_MonthlyVals[i].year.ToString();
 
@@ -11490,6 +11443,7 @@ namespace ContinuumNS
                                 Wake_Series.XValues.Add(thisAvgEst.FS_MonthlyVals[i].month);
                                 Wake_Series.Values.Add(100 * thisWakeLoss);
                             }
+                            */
                         }
                         else
                             objListItem.SubItems.Add("");
@@ -11504,7 +11458,7 @@ namespace ContinuumNS
                         double percDiff = (thisGrossEst.monthlyVals[i].energyProd - thisLTValue) / thisLTValue;
                         objListItem.SubItems.Add(Math.Round(percDiff, 4).ToString("P"));
 
-                        if (plotDiff == true)
+                   /*     if (plotDiff == true)
                         {
                             string seriesName = "% Diff " + thisAvgEst.FS_MonthlyVals[i].year.ToString();
 
@@ -11516,6 +11470,7 @@ namespace ContinuumNS
                             Diff_Series.XValues.Add(thisAvgEst.FS_MonthlyVals[i].month);
                             Diff_Series.Values.Add(percDiff);
                         }
+                        */
                     }
                     else if (thisNetEst.AEP != 0) // Calculate % Diff in net energy
                     {
@@ -11523,7 +11478,7 @@ namespace ContinuumNS
                         double percDiff = (thisNetEst.monthlyVals[i].energyProd - thisLTValue) / thisLTValue;
                         objListItem.SubItems.Add(Math.Round(percDiff, 4).ToString("P"));
 
-                        if (plotDiff == true)
+                  /*      if (plotDiff == true)
                         {
                             string seriesName = "% Diff " + thisAvgEst.FS_MonthlyVals[i].year.ToString();
 
@@ -11535,6 +11490,7 @@ namespace ContinuumNS
                             Diff_Series.XValues.Add(thisAvgEst.FS_MonthlyVals[i].month);
                             Diff_Series.Values.Add(percDiff);
                         }
+                        */
                     }
                 }
                 lastYear = thisAvgEst.FS_MonthlyVals[i].year;
@@ -11557,7 +11513,7 @@ namespace ContinuumNS
                     double LT_AvgWS = thisTurb.CalcLT_MonthlyValue("Avg WS", i, null, powerCurve);
                     objListItem.SubItems.Add(Math.Round(LT_AvgWS, 2).ToString());
 
-                    if (plotWS == true)
+             /*       if (plotWS == true)
                     {  // Add values to plot series
                         string seriesName = "LT Avg WS";
 
@@ -11569,13 +11525,13 @@ namespace ContinuumNS
                         WS_Series.XValues.Add(i);
                         WS_Series.Values.Add(LT_AvgWS);
                     }
-
+*/
                     if (thisGrossEst.AEP != 0)
                     {
                         double LT_GrossAEP = thisTurb.CalcLT_MonthlyValue("Gross AEP", i, null, powerCurve);
                         objListItem.SubItems.Add(Math.Round(LT_GrossAEP, 0).ToString());
 
-                        if (plotGross == true)
+                   /*     if (plotGross == true)
                         {
                             string seriesName = "LT Gross Energy";
 
@@ -11598,6 +11554,7 @@ namespace ContinuumNS
                                 Gross_Series.DisplayOnAxis(StandardAxis.SecondaryY, false);
                             }
                         }
+                        */
                     }
 
                     if (thisNetEst.AEP != 0)
@@ -11605,7 +11562,7 @@ namespace ContinuumNS
                         double LT_NetAEP = thisTurb.CalcLT_MonthlyValue("Net AEP", i, thisWakeModel, powerCurve);
                         objListItem.SubItems.Add(Math.Round(LT_NetAEP, 0).ToString());
 
-                        if (plotNet == true)
+                    /*    if (plotNet == true)
                         {
                             string seriesName = "LT Net Energy";
 
@@ -11628,6 +11585,7 @@ namespace ContinuumNS
                                 Net_Series.DisplayOnAxis(StandardAxis.SecondaryY, false);
                             }
                         }
+                        */
                     }
                     else
                         objListItem.SubItems.Add("");
@@ -11641,7 +11599,7 @@ namespace ContinuumNS
                         double thisWakeLoss = (LT_GrossAEP - LT_NetAEP / otherLoss) / LT_GrossAEP;
                         objListItem.SubItems.Add(Math.Round(thisWakeLoss, 4).ToString("P"));
 
-                        if (plotWake == true)
+                   /*     if (plotWake == true)
                         {
                             string seriesName = "LT Wake Loss";
 
@@ -11653,17 +11611,17 @@ namespace ContinuumNS
                             Wake_Series.XValues.Add(i);
                             Wake_Series.Values.Add(100 * thisWakeLoss);
                         }
-
+                        */
                     }
                     else
                         objListItem.SubItems.Add("");
                 }
             }
 
-            monthlyChart.Refresh();
+         //   monthlyChart.Refresh();
         }
 
-        public int GetSeriesIndex(NChartControl thisPlot, string seriesName)
+  /*      public int GetSeriesIndex(NChartControl thisPlot, string seriesName)
         {
             int thisInd = 0;
 
@@ -11678,8 +11636,8 @@ namespace ContinuumNS
 
             return thisInd;
         }
-
-        public int AddSeriesToLinePlot(ref NChartControl thisPlot, string seriesName, int ColorInt)
+*/
+  /*      public int AddSeriesToLinePlot(ref NChartControl thisPlot, string seriesName, int ColorInt)
         {
             // Adds a series to a line plot and returns the index
             NLineSeries thisSeries = new NLineSeries();
@@ -11695,7 +11653,7 @@ namespace ContinuumNS
 
             return thisInd;
         }
-
+        */
         public void ZoneList(Continuum thisInst)
         {
             thisInst.okToUpdate = false;
@@ -11732,6 +11690,7 @@ namespace ContinuumNS
 
         public void IceThrowSurfacePlot(Continuum thisInst)
         {
+            /*
             // Based on selected plot parameter, creates a surface plot showing either ice throw, shadow flicker, or sound surrounding turbines and specified zones
 
             NChart siteMap = thisInst.chtSiteSuitability.Charts[0];
@@ -11817,11 +11776,12 @@ namespace ContinuumNS
 
             SiteSuitabilitySurfacePlotLabels(thisInst, -999, false);
             thisInst.chtSiteSuitability.Refresh();
-            
+            */
         }                
 
         public void SiteSuitabilitySurfacePlotLabels(Continuum thisInst, int changedIndex, bool changedItemChecked)
         {
+            /*
             // Create point series for zones and change zoneSurface to show zone dimensions
             int numZones = thisInst.siteSuitability.GetNumZones();
             NPointSeries[] zones = new NPointSeries[numZones];
@@ -11887,7 +11847,7 @@ namespace ContinuumNS
                             for (int j = zoneMinXInd; j <= zoneMaxXInd; j++)
                                 for (int k = zoneMinYInd; k <= zoneMaxYInd; k++)
                                     zoneSurface.Data.SetValue(j, k, 3, j * surfaceReso + minX, k * surfaceReso + minY);
-                                    */
+                                    
                 }
             }
 
@@ -11918,6 +11878,7 @@ namespace ContinuumNS
 
             thisInst.chtSiteSuitability.Refresh();
             numSeries = thisInst.chtSiteSuitability.Charts[0].Series.Count;
+            */
         }
 
         public void SiteSuitabilityDropdown(Continuum thisInst, string modelToSelect)
@@ -11958,6 +11919,7 @@ namespace ContinuumNS
 
         public void ShadowFlickerSurfacePlot(Continuum thisInst)
         {
+            /*
             // Plots total shadow flicker of selected month and hour at each grid node
 
             string thisMonthStr = thisInst.cboSiteSuitMonth.SelectedItem.ToString();
@@ -12029,7 +11991,7 @@ namespace ContinuumNS
                   thisInst.chtSiteSuitability.Charts[0].DisplayOnLegend = Map_Legend;
                   thisInst.chtSiteSuitability.Panels.Add(Map_Legend);
                   Map_Legend.DockMode = PanelDockMode.Right;
-      */
+      
             thisInst.chtSiteSuitability.Controller.Tools.Clear();
             NTooltipTool tooltip = new NTooltipTool();
             thisInst.chtSiteSuitability.Controller.Tools.Add(tooltip);
@@ -12121,6 +12083,7 @@ namespace ContinuumNS
 
         public void ShadowFlickerSurfaceMovie(Continuum thisInst)
         {
+            /*
             // Plots total shadow flicker of selected month and hour at each grid node
 
             string thisMonthStr = thisInst.cboSiteSuitMonth.SelectedItem.ToString();
@@ -12200,11 +12163,12 @@ namespace ContinuumNS
 
                     lastTime = DateTime.Now;
                 }
-
+*/
         }
 
         public void UpdateShadowPlot(Continuum thisInst, SiteSuitability.FlickerGrid[] plotFlicker)
         {
+            /*
             NMeshSurfaceSeries flickerSurface = (NMeshSurfaceSeries)thisInst.chtSiteSuitability.Charts[0].Series[1];
 
             TimeSpan span = startTime - DateTime.Now;
@@ -12219,7 +12183,7 @@ namespace ContinuumNS
 
                     flickerMapInd++;
                 }
-
+                */
         }
 
         public int GetMonthInd(string monthString)
@@ -12448,6 +12412,7 @@ namespace ContinuumNS
 
         public void SoundMap(Continuum thisInst)
         {
+            /*
             // Creates a surface plot of sound model
 
             NChart siteMap = thisInst.chtSiteSuitability.Charts[0];
@@ -12493,7 +12458,7 @@ namespace ContinuumNS
                   thisInst.chtSiteSuitability.Charts[0].DisplayOnLegend = Map_Legend;
                   thisInst.chtSiteSuitability.Panels.Add(Map_Legend);
                   Map_Legend.DockMode = PanelDockMode.Right;
-      */
+      
 
             soundSurface.Data.SetGridSize(thisInst.siteSuitability.numXSound, thisInst.siteSuitability.numYSound);
             thisInst.siteSuitability.FindShadowMapBounds(thisInst, false);
@@ -12510,6 +12475,7 @@ namespace ContinuumNS
 
             SiteSuitabilitySurfacePlotLabels(thisInst, -999, true);
             thisInst.chtSiteSuitability.Refresh();
+            */
         }
 
         public void SoundAtZones(Continuum thisInst)
@@ -12599,6 +12565,7 @@ namespace ContinuumNS
 
         public void PerformanceFactorsPlot(Continuum thisInst)
         {
+            /*
             // Plots probability and cumulative density function of all (checked) defined exceedance
             
             NChartControl perfFactChart = thisInst.chtExceedDists;
@@ -12695,6 +12662,7 @@ namespace ContinuumNS
             }
 
             perfFactChart.Refresh();
+            */
         }
 
         public void PValsTable(Continuum thisInst)
@@ -12702,31 +12670,33 @@ namespace ContinuumNS
             // updates the table and plot of P values
 
             thisInst.lstPvals.Items.Clear();
-            NChartControl pValPlot = thisInst.chtPVals;
+       /*     NChartControl pValPlot = thisInst.chtPVals;
             pValPlot.Charts[0].Series.Clear();
             pValPlot.Labels.Clear();
             pValPlot.Controller.Tools.Clear();
             pValPlot.Legends[0].Visible = false;
             NTooltipTool tooltip = new NTooltipTool();
             pValPlot.Controller.Tools.Add(tooltip);
+            */
 
             if (thisInst.turbineList.exceed == null)
             {
-                pValPlot.Refresh();
+            //    pValPlot.Refresh();
                 return;
             }
 
-            pValPlot.Labels.AddHeader("Composite P-Value Distribution");
+       /*     pValPlot.Labels.AddHeader("Composite P-Value Distribution");
 
             NStandardScaleConfigurator scaleConfiguratorX = (NStandardScaleConfigurator)(pValPlot.Charts[0].Axis(StandardAxis.PrimaryX).ScaleConfigurator);
             scaleConfiguratorX.Title.Text = "Overall Performance Factor";
 
             NStandardScaleConfigurator scaleConfiguratorY = (NStandardScaleConfigurator)(pValPlot.Charts[0].Axis(StandardAxis.PrimaryY).ScaleConfigurator);
             scaleConfiguratorY.Title.Text = "P-Value";
+            */
 
             if (thisInst.turbineList.exceed.compositeLoss.isComplete == false)
             {
-                pValPlot.Refresh();
+             //   pValPlot.Refresh();
                 return;
             }
 
@@ -12746,7 +12716,7 @@ namespace ContinuumNS
             double overallP50 = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
             AEP = netEst.AEP / overallP50;
 
-            NLineSeries pVal1yr = new NLineSeries();
+       /*     NLineSeries pVal1yr = new NLineSeries();
             pVal1yr.DataLabelStyle.Visible = false;
             pVal1yr.Name = "1-year P-Values";
             pVal1yr.UseXValues = true;
@@ -12784,6 +12754,7 @@ namespace ContinuumNS
                 pVal20yrs.XValues.Add(thisInst.turbineList.exceed.compositeLoss.pVals20yrs[98 - i]);
                 pVal20yrs.Values.Add((i + 1));
             }
+            */
 
             // P1
             ListViewItem lvi_1 = new ListViewItem("P1");
@@ -12910,7 +12881,7 @@ namespace ContinuumNS
             thisInst.lstPvals.Columns[5].Width = 60;
             thisInst.lstPvals.Columns[6].Width = 70;
 
-            pValPlot.Refresh();
+      //      pValPlot.Refresh();
 
         }
 
@@ -12923,7 +12894,7 @@ namespace ContinuumNS
             if (selectedModel == "Ice Throw")
             {
                 thisInst.lstShadow12x24.Visible = false;
-                thisInst.chtIceVsDistOrHisto.Visible = true;
+          //      thisInst.chtIceVsDistOrHisto.Visible = true;
                 thisInst.lblShadowByMonthOrIceByDist.Text = "Ice Hits by Distance";
                 thisInst.lblZoneOrDirection.Text = "WD";
                 thisInst.lblShadowOrIceByDist.Text = "Ice Hits by Dist.";
@@ -12974,7 +12945,7 @@ namespace ContinuumNS
             else if (selectedModel == "Shadow Flicker")
             {
                 thisInst.lstShadow12x24.Visible = true;
-                thisInst.chtIceVsDistOrHisto.Visible = false;
+            //    thisInst.chtIceVsDistOrHisto.Visible = false;
 
                 thisInst.lblShadowByMonthOrIceByDist.Text = "Hours of Shadow Flicker by Month / Hour :";
 
@@ -13047,12 +13018,13 @@ namespace ContinuumNS
                 thisInst.cboIceDistORIceHisto.Visible = false;
             }
            
-            thisInst.chtIceVsDistOrHisto.Refresh();
+         //   thisInst.chtIceVsDistOrHisto.Refresh();
             thisInst.okToUpdate = true;
         }
 
         public void IceHitsVsDistancePlot(Continuum thisInst)
         {
+            /*
             // Updates probability vs. distance plot on Site Suitability tab
             NChartControl iceChart = thisInst.chtIceVsDistOrHisto;
             iceChart.Charts[0].Series.Clear();
@@ -13106,6 +13078,7 @@ namespace ContinuumNS
             }
 
             iceChart.Refresh();
+            */
 
         }
 
@@ -13174,6 +13147,7 @@ namespace ContinuumNS
 
         public void IceHitHistogram(Continuum thisInst)
         {
+            /*
             // Updates yearly ice hit histogram on Site Suitability tab
 
             NChart iceChart = thisInst.chtIceVsDistOrHisto.Charts[0];
@@ -13228,7 +13202,7 @@ namespace ContinuumNS
 
             iceChart.Refresh();
             thisInst.chtIceVsDistOrHisto.Refresh();
-
+            */
         }
                 
         public void TurbulenceIntensityPlotAndTable(Continuum thisInst)
@@ -13261,7 +13235,7 @@ namespace ContinuumNS
                 effectiveTI = thisTurb.CalcEffectiveTI(thisMet, wohler, thisInst, powerCurve, WD_Ind);
             }
 
-            NChartControl turbChart = thisInst.chtTurbulence;
+         /*   NChartControl turbChart = thisInst.chtTurbulence;
             turbChart.Charts[0].Series.Clear();
             turbChart.Labels.Clear();
             turbChart.Controller.Tools.Clear();
@@ -13288,6 +13262,7 @@ namespace ContinuumNS
             TISeries.InteractivityStyle.Tooltip = new NTooltipAttribute(turbType + "TI");
 
             turbChart.Charts[0].Series.Add(TISeries);
+            */
 
             Met.TIandCount[] overallTI = new Met.TIandCount[0];
             if (WD_Ind == thisInst.metList.numWD) // Calculate overall values
@@ -13312,12 +13287,12 @@ namespace ContinuumNS
                     lvi.SubItems.Add(overallTI[i].count.ToString());
                     thisInst.lstTurbulence.Items.Add(lvi);
 
-                    TISeries.XValues.Add(i);
+                //    TISeries.XValues.Add(i);
 
-                    if (turbType == "Effective")
-                        TISeries.Values.Add(effectiveTI[i]);
-                    else
-                        TISeries.Values.Add(overallTI[i].overallTI);                    
+                //    if (turbType == "Effective")
+                //        TISeries.Values.Add(effectiveTI[i]);
+                //    else
+                //        TISeries.Values.Add(overallTI[i].overallTI);                    
                 }
                 else
                 {
@@ -13330,8 +13305,8 @@ namespace ContinuumNS
                             lvi.SubItems.Add(thisMet.turbulence.count[i, WD_Ind].ToString());
                             thisInst.lstTurbulence.Items.Add(lvi);
 
-                            TISeries.XValues.Add(i);
-                            TISeries.Values.Add(thisMet.turbulence.avgSD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind]);
+                          //  TISeries.XValues.Add(i);
+                          //  TISeries.Values.Add(thisMet.turbulence.avgSD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind]);
 
                         }
                     }
@@ -13344,8 +13319,8 @@ namespace ContinuumNS
                             lvi.SubItems.Add(thisMet.turbulence.count[i, WD_Ind].ToString());
                             thisInst.lstTurbulence.Items.Add(lvi);
 
-                            TISeries.XValues.Add(i);
-                            TISeries.Values.Add(thisMet.turbulence.p90SD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind]);
+                         //   TISeries.XValues.Add(i);
+                         //   TISeries.Values.Add(thisMet.turbulence.p90SD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind]);
 
                         }
 
@@ -13359,21 +13334,22 @@ namespace ContinuumNS
                             lvi.SubItems.Add(thisMet.turbulence.count[i, WD_Ind].ToString());
                             thisInst.lstTurbulence.Items.Add(lvi);
 
-                            TISeries.XValues.Add(i);
-                            TISeries.Values.Add(effectiveTI[i]);
+                         //  TISeries.XValues.Add(i);
+                         //   TISeries.Values.Add(effectiveTI[i]);
                         }
                     }
                 }
 
             }
 
-            thisInst.chtTurbulence.Refresh();
+          //  thisInst.chtTurbulence.Refresh();
             PlotIEC_TurbModels(thisInst);
 
         }
 
         public void PlotIEC_TurbModels(Continuum thisInst)
         {
+            /*
             NChartControl turbChart = thisInst.chtTurbulence;
             NLineSeries iecA = new NLineSeries();
             NLineSeries iecB = new NLineSeries();
@@ -13414,6 +13390,7 @@ namespace ContinuumNS
             }
 
             thisInst.chtTurbulence.Refresh();
+            */
         }
 
         public void SiteConditionsMetDates(Continuum thisInst)
@@ -13451,6 +13428,7 @@ namespace ContinuumNS
 
         public void AlphaHistogram(Continuum thisInst)
         {
+            /*
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Shear");
 
             if (thisInst.cboExtremeShearRange.SelectedIndex == -1)
@@ -13500,6 +13478,7 @@ namespace ContinuumNS
             thisInst.chtAlpha_Histo.Labels.AddHeader("Shear Alpha Histogram: " + thisInst.cboExtremeShearRange.SelectedItem.ToString());
 
             thisInst.chtAlpha_Histo.Refresh();
+            */
         }
 
         public void ExtremeShearTable(Continuum thisInst)
@@ -13565,18 +13544,19 @@ namespace ContinuumNS
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
             Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst);
 
-            NChartControl extremeWSCht = thisInst.chtExtremeWSDist;
+        /*    NChartControl extremeWSCht = thisInst.chtExtremeWSDist;
             extremeWSCht.Charts[0].Series.Clear();
             extremeWSCht.Labels.Clear();
             extremeWSCht.Controller.Tools.Clear();
             extremeWSCht.Legends[0].Visible = false;
+            */
 
             thisInst.lblNoExtremeWS.Text = "";
 
             if (extremeWS.tenMin1yr == 0)
             {
                 thisInst.lblNoExtremeWS.Text = "Met data does not cover a full year (Jan. - Dec.) required for extreme WS calculations.";
-                extremeWSCht.Refresh();
+             //   extremeWSCht.Refresh();
 
                 thisInst.txt50yrExtreme10min.Text = "";
                 thisInst.txt50yrExtremeGust.Text = "";
@@ -13595,7 +13575,7 @@ namespace ContinuumNS
 
             }
 
-            NTooltipTool tooltip = new NTooltipTool();
+        /*    NTooltipTool tooltip = new NTooltipTool();
             extremeWSCht.Controller.Tools.Add(tooltip);
             extremeWSCht.Labels.AddHeader("Extreme Wind Speeds by Years of Recurrence");
 
@@ -13631,10 +13611,12 @@ namespace ContinuumNS
             }
 
             extremeWSCht.Refresh();
+            */
         }
         
         public void InflowAnglePlotAndTable(Continuum thisInst)
         {
+            /*
             // Updates the inflow angle plot and textboxes on Site Conditions tab
 
             thisInst.chtInflowAngle.Charts[0].Series.Clear();
@@ -13744,7 +13726,7 @@ namespace ContinuumNS
             turbineSite.Values.Add(thisTurb.elev);
 
             inflowCht.Refresh();
-
+            */
         }
     }
 

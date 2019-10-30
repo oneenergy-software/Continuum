@@ -20,22 +20,10 @@ using System.Globalization;
 using OSGeo.GDAL;
 using OSGeo.OGR;
 using OSGeo.OSR;
-using Nevron.Chart;
-using Nevron.Dom;
-using Nevron.UI;
-using Nevron.GraphicsCore;
-using Nevron.Editors;
-using Nevron.Chart.WinForm;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ContinuumNS
-{
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// <summary>   Software application for assessing insurance settlement based on MERRA2 data and
-    ///             project specific targets and definitions. </summary>
-    ///
-    /// <remarks>   Liz, 1/16/2018. </remarks>
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
+{    
     
     [Serializable()]
     public partial class MERRA

@@ -6,7 +6,6 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using Nevron.Chart;
 
 namespace ContinuumNS
 {
@@ -118,7 +117,7 @@ namespace ContinuumNS
         public void Update_plot()
         {
             // Plots probability and cumulative density function of defined exceedance
-            
+      /*      
             chtExceedDist.Charts[0].Series.Clear();
             chtExceedDist.Labels.Clear();
             chtExceedDist.Controller.Tools.Clear();
@@ -163,6 +162,7 @@ namespace ContinuumNS
             }
 
             chtExceedDist.Refresh();
+            */
         }
 
         public void Update_Mode_List()
