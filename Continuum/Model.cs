@@ -41,48 +41,25 @@ namespace ContinuumNS
         //  public Max_CW_Slope()  double // TO DO: FLOW AROUND HILLS / FLOW OVER HILLS ALGORITHM
         // public Max_PL_Slope()  double
 
-        public int radius;
-
-      /*  public double[] minP10ExpoPosDW;
-        public double[] minP10ExpoNegDW;
-        public double[] minP10ExpoPosUW;
-        public double[] minP10ExpoNegUW;
-
-        public double[] maxP10ExpoPosDW;
-        public double[] maxP10ExpoNegDW;
-        public double[] maxP10ExpoPosUW;
-        public double[] maxP10ExpoNegUW;
-*/
-     //   public ModelBounds[] downhillBounds;
-        public ModelBounds[] uphillBounds;
-        public ModelBounds[] spdUpBounds;
-
+        public int radius;             
+     
         public int maxElevDiff;
         public double maxP10DiffSlope;
         public double maxP10DiffOffset;
-
-        public bool isCalibrated = false;
+      
         public bool isImported = false;
 
         public string[] metsUsed;
         public double RMS_WS_Est;   // RMS error of met cross-predictions 
         public double[] RMS_Sect_WS_Est;   // RMS error of sectorwise met cross-preds 
 
-        public double minSumUWDW;   // minimum Sum UWDW for flow separation model to kick in
+        public double minSumUWDW;   // minimum Sum UWDW for flow separation model to kick in                       
 
-
-        [Serializable()]
-        public struct ModelBounds
-        {
-            public double min;
-            public Met metMinP10;
-            public double max;
-            public Met metMaxP10;
-        }
-
+        /// <summary>
+        /// Calculates and returns DW coefficient based on flow type and terrain complexity (i.e. P10_Expo)
+        /// </summary>        
         public double CalcDW_Coeff(double P10_DW_Expo, double P10_UW_Expo, int WD_sec, string flowType)
-        {
-            // Calculates and returns DW coefficient based on flowType and P10_Expo
+        {            
             double DW_Coeff = 0;
             double P10_Expo;
 
@@ -126,12 +103,14 @@ namespace ContinuumNS
             return overallDW_Coeff;
         }
 
+        /// <summary>
+        /// Calculates and returns UW coefficient based on flowType and P10_Expo
+        /// </summary>        
         public double CalcUW_Coeff(double P10_UW_Expo, double P10_DW_Expo, int WD_sec, string flowType)
-        {
-            // Calculates and returns UW coefficient based on flowType and P10_Expo
-            // if ( UW Expo > 0 ) { use uphill coeff
-            // if ( UW Expo < 0 And DW Expo > 0 ) { use downhill coeff
-            // if ( UW Expo < 0 And DW Expo < 0 ) { use UPHILL COEFFS (was overpredicting in areas with negative UW and negative DW exposure)
+        {             
+            // if ( UW Expo > 0 ) then use uphill coeff
+            // if ( UW Expo < 0 And DW Expo > 0 ) then use downhill coeff
+            // if ( UW Expo < 0 And DW Expo < 0 ) then use UPHILL COEFFS (was overpredicting in areas with negative UW and negative DW exposure)
 
             double UW_Coeff = 0;
             double P10_Expo;
@@ -302,7 +281,7 @@ namespace ContinuumNS
         }
 
         /// <summary>
-        /// Determines flow type upwind or downwind of site: Downhill, Uphill, Induced Speed-up, Valley or Turbulent
+        /// Determines and returns flow type upwind or downwind of site: Downhill, Uphill, Induced Speed-up, Valley or Turbulent
         /// </summary>        
         public string GetFlowType(double thisUW, double thisDW, int WD_sec, string UW_or_DW, NodeCollection.Sep_Nodes[] flowSepNodes, double thisWS, bool useFlowSep, 
             int radiusInd)
@@ -325,7 +304,7 @@ namespace ContinuumNS
             }
 
             if (UW_or_DW == "UW" && thisUW < 10) // can only be turbulent in UW direction if UW exposure < 10 (initially, UW exposure had to be negative
-                                                  // but found that some cases with turbulent UW conditions had a
+                                                  // but found that some cases with turbulent UW conditions had a slightly positive UW exposure)
             {
                 if (thisFS_Node.highNode == null && thisFS_Node.turbEndNode == null)
                     isTurbulent = false;
@@ -417,10 +396,10 @@ namespace ContinuumNS
 
           //      downhillBounds[i].min = -999f;
           //      downhillBounds[i].max = -999f;                
-                uphillBounds[i].min = -999f;
-                uphillBounds[i].max = -999f;
-                spdUpBounds[i].min = -999f;
-                spdUpBounds[i].max = -999f;
+         //       uphillBounds[i].min = -999f;
+          //      uphillBounds[i].max = -999f;
+          //      spdUpBounds[i].min = -999f;
+          //      spdUpBounds[i].max = -999f;
                 
             }
 
@@ -465,11 +444,7 @@ namespace ContinuumNS
             //Sep_A_UW[numWD];
             //Sep_B_UW[numWD];
             sepCrit = new double[numWD];
-            Sep_crit_WS = new double[numWD];
-
-         //   downhillBounds = new ModelBounds[numWD];
-            uphillBounds = new ModelBounds[numWD];
-            spdUpBounds = new ModelBounds[numWD];               
+            Sep_crit_WS = new double[numWD];                               
 
         }
 
@@ -497,189 +472,7 @@ namespace ContinuumNS
 
             return RMS_Err;
 
-        }
-
-  /*      public string[] IsSiteWithinMetLimitsUsedInModel(double P10_UW, double P10_DW, double UW, double DW, int WD_Ind)
-        {
-            string[] isWithinLimits = new string[2]; // index = 0, "OK" if in bounds,
-                                                       //"Downhill" if less than downhill model's Min P10
-                                                       //"Uphill" if less than uphill model's Min P10
-
-                                                       // index = 1 "OK if in bounds
-                                                       //"Downhill" if more than downhill model's Max P10 
-                                                       //"Uphill" if more than uphill model's Max P10 
-                                                       
-            isWithinLimits[0] = "OK";
-            isWithinLimits[1] = "OK";
-
-            double P10_buffer = 0.1f;
-            double thisP10 = Math.Max(P10_UW, P10_DW);
-
-            // Check downhill P10 exposure
-            if (UW < 0 || DW > 0) // Downhill flow
-            {
-                if (thisP10 < (minP10ExpoNegUW[WD_Ind] - P10_buffer * minP10ExpoNegUW[WD_Ind]) || thisP10 < (minP10ExpoPosDW[WD_Ind] - P10_buffer * minP10ExpoPosDW[WD_Ind]))
-                    isWithinLimits[0] = "Downhill";
-                else if (thisP10 > (maxP10ExpoNegUW[WD_Ind] + P10_buffer * maxP10ExpoNegUW[WD_Ind]) || thisP10 > (maxP10ExpoPosDW[WD_Ind] + P10_buffer * maxP10ExpoPosDW[WD_Ind]))
-                    isWithinLimits[1] = "Downhill";
-            }                
-            else if (UW > 0 || DW < 0) // Uphill flow
-            {
-                if (thisP10 < (minP10ExpoPosUW[WD_Ind] - P10_buffer * minP10ExpoPosUW[WD_Ind]) || thisP10 < (minP10ExpoNegDW[WD_Ind] - P10_buffer * minP10ExpoNegDW[WD_Ind]))
-                    isWithinLimits[0] = "Uphill";
-                else if (thisP10 > (maxP10ExpoPosUW[WD_Ind] + P10_buffer * maxP10ExpoPosUW[WD_Ind]) || thisP10 > (maxP10ExpoNegDW[WD_Ind] + P10_buffer * maxP10ExpoNegDW[WD_Ind]))
-                    isWithinLimits[1] = "Uphill";
-            }
-
-            return isWithinLimits;
-        }
-*/
-    /*    public double GetUncertaintyEstimate(Continuum thisInst, double P10_UW, double P10_DW, double UW, double DW, int WD_Ind, Met.TOD thisTOD, Met.Season thisSeason, double height)
-        {
-            // Not used in COntinuum 3. Using Round Robin error as uncertainty.
-            // Estimates and returns uncertainty of sectorwise wind speed estimate for site with specified P10Expo and UW/DW exposure 
-            
-            double thisUncert = 0;
-            double[] eachUncert = new double[2];
-            double P10_buffer = 0.1f;
-            double thisP10 = Math.Max(P10_UW, P10_DW);
-            MetPairCollection metPairList = thisInst.metPairList;
-
-            string UW_flowType = GetFlowType(UW, DW, WD_Ind, "UW", null, 0, false, 0); // ignoring flow separation model for now
-            string DW_flowType = GetFlowType(UW, DW, WD_Ind, "DW", null, 0, false, 0);
-            int radiusInd = thisInst.radiiList.GetRadiusInd(radius);
-            ModelBounds[] thisBound = new ModelBounds[0];
-            
-            for (int UW_or_DW = 0; UW_or_DW <= 1; UW_or_DW++)
-            {
-                string flowType = "";
-                if (UW_or_DW == 0)
-                    flowType = UW_flowType;
-                else
-                    flowType = DW_flowType;
-
-                if (flowType == "Downhill")
-                    thisBound = downhillBounds;
-                else if (flowType == "Uphill")
-                    thisBound = uphillBounds;
-                else if (flowType == "SpdUp")
-                    thisBound = spdUpBounds;
-
-                if ((thisBound[WD_Ind].min == -999) || (thisBound[WD_Ind].min == thisBound[WD_Ind].max))
-                {
-                    // no met sites had this flow type in this WD sector
-                    eachUncert[UW_or_DW] = 0.04f; // TO DO: have back-up for this number
-                    double adjFact = 1.2f; // what is this based on?
-                                           // these errors are based on overall WS errors.
-                    if (thisP10 < 15)
-                        eachUncert[UW_or_DW] = 0.0167f * adjFact;
-                    else if (thisP10 < 85)
-                        eachUncert[UW_or_DW] = 0.021f * adjFact;
-                    else
-                        eachUncert[UW_or_DW] = 0.03f * adjFact;
-                }
-                else if (thisP10 < (thisBound[WD_Ind].min - thisBound[WD_Ind].min * P10_buffer))
-                {
-                    // Get model where the metMinP10 is omitted
-                    string[] omitMet = new string[1];
-                    omitMet[0] = thisBound[WD_Ind].metMinP10.name;
-
-                    string[] metsOmitMin = thisInst.metList.GetMetsExceptThoseInList(omitMet);
-                    Met[] metsOmitMinObj = thisInst.metList.GetMets(metsUsed, omitMet);
-                    Model[] modelsOmitMin = thisInst.modelList.GetModels(thisInst, metsOmitMin, radius, radius, true, thisTOD, thisSeason, height);
-
-                    NodeCollection nodeList = new NodeCollection();
-                    Nodes omitMetNode = nodeList.GetMetNode(thisBound[WD_Ind].metMinP10);
-                    ModelCollection.ModelWeights[] thisWgts = thisInst.modelList.GetWS_EstWeights(metsOmitMinObj, omitMetNode, modelsOmitMin, 
-                        thisInst.metList.GetAvgWindRoseMetsUsed(metsOmitMin, thisTOD, thisSeason, height));
-                    double thisEst = 0;
-                    double sumWgt = 0;
-
-                    for (int i = 0; i < metsOmitMin.Length; i++)
-                    {
-                        Nodes[] pathOfNodes = null;
-
-                        for (int j = 0; j < thisInst.metPairList.PairCount; j++)
-                        {
-                            Pair_Of_Mets thisPair = thisInst.metPairList.metPairs[j];
-                            if ((thisPair.met1.name == omitMet[0] && thisPair.met2.name == metsOmitMin[i]) ||
-                                (thisPair.met2.name == omitMet[0] && thisPair.met1.name == metsOmitMin[i]))
-                            {
-                                Pair_Of_Mets.WS_CrossPreds thisCrossPred = thisPair.GetWS_CrossPred(this);
-                                pathOfNodes = thisCrossPred.nodePath;
-                            }
-                        }
-
-                        ModelCollection.WS_Est_Struct thisWS_Est = thisInst.modelList.DoWS_Estimate(metsOmitMinObj[i], omitMetNode, pathOfNodes, this, thisInst);
-                        Met thisMet = thisInst.metList.GetMet(metsOmitMin[i]);
-                        double weight = thisInst.modelList.GetWeightForMetAndModel(thisWgts, thisMet, this);
-                        thisEst = thisEst + thisWS_Est.sectorWS[WD_Ind] * weight;
-                        sumWgt = sumWgt + weight;
-                    }
-
-                    Met.WSWD_Dist thisDist = thisBound[WD_Ind].metMinP10.GetWS_WD_Dist(height, thisTOD, thisSeason);
-                    double actualSectorWS = thisDist.sectorWS_Ratio[WD_Ind] * thisDist.WS;
-
-                    if (sumWgt > 0)
-                        eachUncert[UW_or_DW] = Math.Abs((thisEst / sumWgt - actualSectorWS) / actualSectorWS);
-                }
-                else if (thisP10 > (thisBound[WD_Ind].max + thisBound[WD_Ind].max * P10_buffer))
-                {
-                    // Get model where the metMaxP10 is omitted
-                    string[] omitMet = new string[1];
-                    omitMet[0] = thisBound[WD_Ind].metMaxP10.name;
-                    string[] metsOmitMax = thisInst.metList.GetMetsExceptThoseInList(omitMet);
-                    Model[] modelsOmitMax = thisInst.modelList.GetModels(thisInst, metsOmitMax, radius, radius, true, thisTOD, thisSeason, height);
-
-                    NodeCollection nodeList = new NodeCollection();
-                    Nodes omitMetNode = nodeList.GetMetNode(thisBound[WD_Ind].metMaxP10);
-                    Met[] metsOmitMaxObj = thisInst.metList.GetMets(metsUsed, omitMet);
-                    ModelCollection.ModelWeights[] thisWgts = thisInst.modelList.GetWS_EstWeights(metsOmitMaxObj, omitMetNode, modelsOmitMax, 
-                        thisInst.metList.GetAvgWindRoseMetsUsed(metsOmitMax, thisTOD, thisSeason, height));
-                    double thisEst = 0;
-                    double sumWgt = 0;
-
-                    for (int i = 0; i < metsOmitMax.Length; i++)
-                    {
-                        Nodes[] pathOfNodes = null;
-                        
-                        for (int j = 0; j < thisInst.metPairList.PairCount; j++)
-                        {
-                            Pair_Of_Mets thisPair = thisInst.metPairList.metPairs[j];
-                            if ((thisPair.met1.name == omitMet[0] && thisPair.met2.name == metsOmitMax[i]) ||
-                                (thisPair.met2.name == omitMet[0] && thisPair.met1.name == metsOmitMax[i]))
-                            {
-                                Pair_Of_Mets.WS_CrossPreds thisCrossPred = thisPair.GetWS_CrossPred(this);
-                                pathOfNodes = thisCrossPred.nodePath;
-                                                                
-                                break;
-                            }
-                        }
-
-                        ModelCollection.WS_Est_Struct thisWS_Est = thisInst.modelList.DoWS_Estimate(metsOmitMaxObj[i], omitMetNode, pathOfNodes, this, thisInst);
-                        double weight = thisInst.modelList.GetWeightForMetAndModel(thisWgts, metsOmitMaxObj[i], this);
-                        thisEst = thisEst + thisWS_Est.sectorWS[WD_Ind] * weight;
-                        sumWgt = sumWgt + weight;
-                    }
-
-                    Met.WSWD_Dist thisDist = thisBound[WD_Ind].metMaxP10.GetWS_WD_Dist(height, thisTOD, thisSeason);
-                    double actualSectorWS = thisDist.sectorWS_Ratio[WD_Ind] * thisDist.WS;
-
-                    if (sumWgt > 0)
-                        eachUncert[UW_or_DW] = Math.Abs((thisEst / sumWgt - actualSectorWS) / actualSectorWS);
-
-                }
-                else
-                {
-                    eachUncert[UW_or_DW] = metPairList.GetRMS_SectorErr(this, WD_Ind);
-                }
-            }
-
-            thisUncert = Math.Max(eachUncert[0], eachUncert[1]);
-                                          
-            return thisUncert;
-        }
-        */
+        }         
 
         public bool IsMetUsedInModel(string metName)
         {

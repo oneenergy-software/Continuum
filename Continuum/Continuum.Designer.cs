@@ -909,6 +909,8 @@
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
+            this.plotTopo = new OxyPlot.WindowsForms.PlotView();
+            this.chtUWExpo = new OxyPlot.WindowsForms.PlotView();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pgeMetData.SuspendLayout();
@@ -959,6 +961,7 @@
             // 
             // pgeInput
             // 
+            this.pgeInput.Controls.Add(this.plotTopo);
             this.pgeInput.Controls.Add(this.chkCreateTurbTS);
             this.pgeInput.Controls.Add(this.btnModHeight);
             this.pgeInput.Controls.Add(this.label168);
@@ -4052,6 +4055,7 @@
             // 
             // pgeMetSumm
             // 
+            this.pgeMetSumm.Controls.Add(this.chtUWExpo);
             this.pgeMetSumm.Controls.Add(this.cboSummSeason);
             this.pgeMetSumm.Controls.Add(this.cboSummTOD);
             this.pgeMetSumm.Controls.Add(this.chtDW_DH_Nev);
@@ -10142,6 +10146,30 @@
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
+            // plotTopo
+            // 
+            this.plotTopo.Location = new System.Drawing.Point(121, 22);
+            this.plotTopo.Name = "plotTopo";
+            this.plotTopo.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTopo.Size = new System.Drawing.Size(657, 608);
+            this.plotTopo.TabIndex = 126;
+            this.plotTopo.Text = "plotTopo";
+            this.plotTopo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTopo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTopo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // chtUWExpo
+            // 
+            this.chtUWExpo.Location = new System.Drawing.Point(18, 10);
+            this.chtUWExpo.Name = "chtUWExpo";
+            this.chtUWExpo.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.chtUWExpo.Size = new System.Drawing.Size(387, 258);
+            this.chtUWExpo.TabIndex = 214;
+            this.chtUWExpo.Text = "plotView1";
+            this.chtUWExpo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.chtUWExpo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.chtUWExpo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
             // Continuum
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -11082,6 +11110,9 @@
         public System.Windows.Forms.SaveFileDialog sfdCFMfile;
         public System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         public System.Windows.Forms.TabControl tabContinuum;
+        public MatplotlibCS.Figure matPlotTopo;
+        public OxyPlot.WindowsForms.PlotView plotTopo;
+        public OxyPlot.WindowsForms.PlotView chtUWExpo;
     }
 }
 

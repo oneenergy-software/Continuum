@@ -157,13 +157,11 @@ namespace Continuum_Tests
             {
                 double[] windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), thisInst.turbineList.turbineEsts[i].UTMX,
                     thisInst.turbineList.turbineEsts[i].UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-                Model[] UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisInst.radiiList.investItem[0].radius, thisInst.radiiList.GetMaxRadius(),
-                    false, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+                Model[] UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), false, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
                 thisInst.turbineList.turbineEsts[i].DoTurbineCalcs(thisInst, UWDW_Mods);
                 thisInst.turbineList.turbineEsts[i].GenerateAvgWSFromTABs(thisInst, UWDW_Mods, windRose, false);
 
-                UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisInst.radiiList.investItem[0].radius, thisInst.radiiList.GetMaxRadius(), true,
-                    Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+                UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
                 thisInst.turbineList.turbineEsts[i].DoTurbineCalcs(thisInst, UWDW_Mods);
                 thisInst.turbineList.turbineEsts[i].GenerateAvgWSFromTABs(thisInst, UWDW_Mods, windRose, false);
             }

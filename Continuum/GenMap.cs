@@ -301,11 +301,7 @@ namespace ContinuumNS
             {
                 MessageBox.Show("Select parameter to map.", "Continuum 3");
                 return;
-            }                        
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1)
-                isCalibrated = true;
+            }          
 
             Map thisMap = null;
             // 0 = UW map, 1 = DW map, 2 = WS map (site-calibrated), 3 = Gross AEP map (site-calibrated), 4 = WS map (default), 5 = Gross AEP map (default)
@@ -315,8 +311,7 @@ namespace ContinuumNS
                 mapName = "Downwind Exposure";
             else if (whatToMap == 2)
             {
-                mapName = height + " m Wind Speed";
-                if (isCalibrated == false) whatToMap = 4;
+                mapName = height + " m Wind Speed";                
             }
             else if (whatToMap == 3)
             {
@@ -329,8 +324,7 @@ namespace ContinuumNS
                     MessageBox.Show("No power Curves imported.  Cannot create map of Gross AEP.", "Continuum 3");
                     return;
                 }
-                mapName = "Gross AEP with " + powerCurve;
-                if (isCalibrated == false) whatToMap = 5;
+                mapName = "Gross AEP with " + powerCurve;                
             }
 
             int mapInd = 1;
@@ -345,27 +339,10 @@ namespace ContinuumNS
             }
 
             if (mapInd > 1)
-            {
-                if (whatToMap >= 2)
-                {
-                    if (isCalibrated == false)
-                        mapName = mapName + " " + mapInd + " using default model";
-                    else
-                        mapName = mapName + " " + mapInd + " using site-calibrated model";
-                }
-                else
-                {                    
-                    mapName = mapName + " " + mapInd;
-                }
+            {                                 
+                mapName = mapName + " " + mapInd;                
             }
-            else if (whatToMap >= 2)
-            {
-                if (isCalibrated == false)
-                    mapName = mapName + " using default model";
-                else
-                    mapName = mapName + " using site-calibrated model";
-            }
-
+            
             // Check that map name hasn't been taken
             bool mapNameTaken = false;
             for (int i = 0; i < thisInst.mapList.ThisCount; i++)
@@ -375,17 +352,10 @@ namespace ContinuumNS
             while (mapNameTaken == true)
             {
                 mapInd++;
-                if (whatToMap >= 2)
-                {
-                    if (isCalibrated == false)
-                        mapName = height + " m Wind Speed " + mapInd + " using default model";
-                    else
-                        mapName = height + " m Wind Speed " + mapInd + " using site-calibrated model";
-                }
-                else
-                {                    
-                    mapName = mapName + " " + mapInd;
-                }
+                if (whatToMap >= 2)                                    
+                    mapName = height + " m Wind Speed " + mapInd;                
+                else                                    
+                    mapName = mapName + " " + mapInd;                
 
                 mapNameTaken = false;
                 for (int i = 0; i < thisInst.mapList.ThisCount; i++)
@@ -416,7 +386,7 @@ namespace ContinuumNS
                 useTimeSeries = false;
             
             if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || useTimeSeries == false)
-                models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, isCalibrated, Met.TOD.All, Met.Season.All, thisInst.modeledHeight,false);                     
+                models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight,false);                     
             
         }
                 

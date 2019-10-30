@@ -13,6 +13,7 @@ using System.Runtime.Serialization.Formatters;
 using System.Diagnostics;
 using Microsoft.VisualBasic;
 using Nevron;
+using MatplotlibCS;
 
 namespace ContinuumNS
 {
@@ -37,26 +38,20 @@ namespace ContinuumNS
         public bool fileChanged;
         public bool okToUpdate = true; // Used to determine when the GUI plots and tables should be updated
         public bool isTest = false;
-        public Continuum(string filename)
+
+        NLicense license = new NLicense("6f1902e6-0100-4903-894b-d803c09d2306");
+
+        public Continuum()
         {
             SplashScreen Splash = new SplashScreen();
             Splash.ShowDialog();
-            
-            InitializeComponent();
 
-            NLicense license = new NLicense("76104216-0103-1669-1902-82f9b34708fe");
-
+            license = new NLicense("6f1902e6-0100-4903-894b-d803c09d2306");
             NLicenseManager.Instance.SetLicense(license);
             NLicenseManager.Instance.LockLicense = true;
 
-            // StartPosition was set to FormStartPosition.Manual in the properties window.
-            // Adjust size of form
-            /*       Rectangle screen = Screen.PrimaryScreen.WorkingArea;
-                   int w = Width >= screen.Width ? screen.Width : (screen.Width + Width) / 2;
-                   int h = Height >= screen.Height ? screen.Height : (screen.Height + Height) / 2;
-                   this.Location = new Point((screen.Width - w) / 2, (screen.Height - h) / 2);
-                   this.Size = new Size(w, h);
-             */
+            InitializeComponent();      
+
             radiiList.New(); // populates with R = 4000, 6000, 8000, 10000 and invserse distance exponent = 1
             metList.NewList(); // sets MCP settings and day/night hours
             turbineList.SetExceedCurves(); // initializes Exceedance curves
@@ -76,9 +71,7 @@ namespace ContinuumNS
             cboMERRASelectedMet.SelectedIndex = 0;
             cboMCP_Type.SelectedIndex = 0;
             updateThe.MCP_Settings(this);
-
-            if (filename != "")
-                Open(filename);
+                        
             
         }               
 
@@ -295,9 +288,7 @@ namespace ContinuumNS
                 }
             }                       
                         
-            modelList.ClearAllExceptDefaultAndImported();
-            modelList.UpdateDefaultModel(this);
-
+            modelList.ClearAllExceptImported();            
             mapList.DeleteMapsUsingDeletedMets(this, metNames);                      
 
             turbineList.ClearAllWSEsts(); // clears all WS estimates
@@ -1621,7 +1612,11 @@ namespace ContinuumNS
                     thisMap.gridReso = 250;
 
                 thisMap.txtMapReso.Text = thisMap.gridReso.ToString();
-                thisMap.FindLargestArea();                
+                thisMap.FindLargestArea();
+
+                if (thisMap.minUTMX == 0)
+                    thisMap.GetBiggestArea();
+                
                 thisMap.UpdateTextboxes();
                 
                 thisMap.chkMetsToUse.Items.Clear();
@@ -2058,7 +2053,7 @@ namespace ContinuumNS
             string[] metsUsed = metList.GetMetsUsed();
 
             // check to see if RR has been conducted already
-            bool RR_done = metPairList.RR_DoneAlready(true, false, metsUsed, minRR_Size, metList);
+            bool RR_done = metPairList.RR_DoneAlready(metsUsed, minRR_Size, metList);
 
             if (RR_done == true) // Update plots and tables
                 return;
@@ -2137,7 +2132,7 @@ namespace ContinuumNS
             else
                 turbineList.genTimeSeries = false;
                   
-             turbineList.ClearWS_EstCalcs(metList);
+             turbineList.ClearWS_EstCalcs();
 
             BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
                         
@@ -2709,7 +2704,7 @@ namespace ContinuumNS
             if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
                 BW_worker = new BackgroundWork();
 
-            if (Created && metList.ThisCount > 0 && modelList.ModelCount > 1 && BW_worker.IsBusy() == false)
+            if (Created && metList.ThisCount > 0 && modelList.ModelCount > 0 && BW_worker.IsBusy() == false)
             {
                 if ((chkUseSR.Checked == false && topo.useSR == false) ||(chkUseSR.Checked == true && topo.useSR == true) ||(chkUseSR.Checked == false && topo.gotSR == false) ) 
                   return;
@@ -2723,12 +2718,15 @@ namespace ContinuumNS
                 
                 if (yes_or_no == DialogResult.Yes) {
 
-                    modelList.ClearAllExceptDefaultAndImported();
+                    modelList.ClearAllExceptImported();
                     metPairList.RemoveAllExceptDefault();
-                    turbineList.ClearWS_EstCalcs(metList);
+               //     turbineList.ClearWS_EstCalcs();
+                    turbineList.ClearAllWSEsts();
                     turbineList.ClearAllGrossEsts();
                     turbineList.ClearAllNetEsts();
-                    metPairList.ClearRoundRobin();                                    
+                    metPairList.ClearRoundRobin();
+                    mapList.ClearAllMaps();
+                    wakeModelList.ClearWakeMaps();
 
                     if (chkUseSR.Checked == true)
                         topo.useSR = true;
@@ -3160,9 +3158,8 @@ namespace ContinuumNS
                 okToClear = MessageBox.Show("Importing coefficients will delete the site-calibrated coefficients. Do you wish to continue?", "Continuum 3", MessageBoxButtons.YesNo);
 
             if (okToClear == DialogResult.Yes) {
-                modelList.ClearImported();
-                modelList.ClearAllExceptDefaultAndImported();
                 
+                modelList.ClearAll();                
                 turbineList.ClearAllGrossEsts();
                 turbineList.ClearAllNetEsts();
                 turbineList.ClearAllWSEsts();
@@ -3170,9 +3167,7 @@ namespace ContinuumNS
                 turbineList.turbineCalcsDone = false;
 
                 mapList.ClearAllMaps();
-
                 wakeModelList.ClearAll();
-
                 metPairList.RemoveAllExceptDefault();
             }
             else {
@@ -3197,9 +3192,9 @@ namespace ContinuumNS
 
                 if (yes_or_no == DialogResult.Yes) {
 
-                    modelList.ClearAllExceptDefaultAndImported();
+                    modelList.ClearAllExceptImported();
                     metPairList.ClearAll();
-                    turbineList.ClearWS_EstCalcs(metList);
+                    turbineList.ClearWS_EstCalcs();
                     turbineList.ClearAllGrossEsts();
                     turbineList.ClearAllNetEsts();
                     metPairList.ClearRoundRobin();
@@ -3312,7 +3307,7 @@ namespace ContinuumNS
 
             int geoTiffOrMap = thisRough.cboRoughnessFile.SelectedIndex;
 
-            modelList.ClearAllExceptDefaultAndImported();
+            modelList.ClearAllExceptImported();
             metPairList.ClearAll();            
             turbineList.ClearAllWSEsts();
             turbineList.ClearAllGrossEsts();
@@ -3617,15 +3612,10 @@ namespace ContinuumNS
         public Model[] GetModels(Continuum thisInst, string tabName)
         {
             // Returns models based on tabName and selected model, time of day and season on specified tab
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1)
-                isCalibrated = true;
-
+                        
             Met.TOD thisTOD = GetSelectedTOD(tabName);
             Met.Season thisSeason = GetSelectedSeason(tabName);
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisInst.radiiList.investItem[0].radius, thisInst.radiiList.GetMaxRadius(),
-                isCalibrated, thisTOD, thisSeason, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisTOD, thisSeason, thisInst.modeledHeight, false);
 
             return models;
 
@@ -6617,7 +6607,7 @@ namespace ContinuumNS
             else
                 turbineList.genTimeSeries = false;
 
-            turbineList.ClearWS_EstCalcs(metList);
+            turbineList.ClearWS_EstCalcs();
 
             BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
 

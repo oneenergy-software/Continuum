@@ -170,20 +170,9 @@ namespace ContinuumNS
 
         private void GetMapSettings()
         {
-            // Reads in map settings from form
+            // Reads in map settings from form          
             
-            // Check which model is selected (i.e. site-calibrated or default model)
-            bool isCalibrated = false;
-            whatToMap = 5; // default model
-            
-            if (thisInst.metList.ThisCount > 1)
-            {
-                isCalibrated = true;
-                whatToMap = 3; // site-calibrated model
-            }               
-
-            // Get selected wake model
-            
+            // Get selected wake model            
             try
             {
                 thisWakeModel = thisInst.wakeModelList.wakeModels[cboWakeModels.SelectedIndex];
@@ -216,8 +205,7 @@ namespace ContinuumNS
 
             // Get wind flow models            
             if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || useTimeSeries == false)
-                models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisInst.radiiList.investItem[0].radius, thisInst.radiiList.investItem[3].radius,
-                    isCalibrated, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+                models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             else
                 models = thisInst.modelList.GetAllModels(thisInst, thisInst.metList.GetMetsUsed());
                 

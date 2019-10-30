@@ -179,57 +179,8 @@ namespace ContinuumNS
 
             // Create met pairs with single met models at all radii in list.  First checks to see what pairs already exist before making new ones.
             metPairs.CreateMetPairs(thisInst);
-            int numPairs = metPairs.PairCount;
-
-            Nodes[] newNodes = null;
-
-            // Find path of nodes in between mets.  if met pairs already exist then just add new default model
-            for (int i = 0; i < numPairs; i++)
-            {
-                if (BackgroundWorker_MetCalcs.CancellationPending == true)
-                    e.Cancel = true;
-
-                textForProgBar = "Finding path of nodes at " + (i + 1).ToString() + "/" + numPairs + " pairs of met sites.";
-                BackgroundWorker_MetCalcs.ReportProgress(50 + 50 * (i + 1) / numPairs, textForProgBar);
-
-                for (int j = 0; j < numRadii; j++)
-                {
-                    if (BackgroundWorker_MetCalcs.CancellationPending == true)
-                    {
-                        e.Cancel = true;
-                        WasReturned = true;
-                        return;
-                    }
-
-                    if (metPairs.metPairs[i].WS_Pred[0, j].nodePath == null)
-                    {
-                        Nodes met1Node = nodeList.GetMetNode(metPairs.metPairs[i].met1);
-                        Nodes met2Node = nodeList.GetMetNode(metPairs.metPairs[i].met2);
-                        Nodes[] pathOfNodes = nodeList.FindPathOfNodes(met1Node, met2Node, metPairs.metPairs[i].WS_Pred[0, j].model, thisInst);
-
-                        if (pathOfNodes.Length == 200)
-                        { // couldn't find path in between mets
-                            MessageBox.Show("Continuum could not find a path of nodes in between Met: " + metPairs.metPairs[i].met1.name + " and Met: " + metPairs.metPairs[i].met2.name + ". Cannot continue with calculations.  Please remove one of these mets from the analysis", "Continuum 3");
-                            WasReturned = true;
-                            return;
-                        }
-                        metPairs.metPairs[i].WS_Pred[0, j].nodePath = pathOfNodes;
-                    }
-
-                    metPairs.metPairs[i].DoMetCrossPred(0, j, thisInst);
-                }
-            }
-
-            if (newNodes != null)
-                nodeList.AddNodes(newNodes, savedFilename);
-
-            Model[] models = new Model[numRadii];
-
-            for (int j = 0; j <= numRadii - 1; j++)
-                models[j] = modelList.models[0, j];
-
-            modelList.CalcRMS_Overall_and_Sectorwise(ref models, thisInst); // Calculates RMS error of single met model
-
+            int numPairs = metPairs.PairCount;                       
+                  
             // if imported coeffs are used, don't do site-calibration
             int importedInd = modelList.GetImportedModelInd();
             int Keep_Imported = 0;
@@ -255,53 +206,64 @@ namespace ContinuumNS
                 if (metList.isTimeSeries == false || metList.isMCPd == false)
                 {
                     BackgroundWorker_MetCalcs.ReportProgress(50, textForProgBar);
-                    modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
+                    if (thisInst.metList.ThisCount == 1)
+                        modelList.CreateDefaultModels(thisInst);
+                    else
+                        modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
                 }
                 else // seasonal and diurnal models created using long-term estimated time series
                 {
-                    // Create a model using all hours and all seasons
-                    modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-
-                    if ((thisInst.metList.numTOD != 1) || (thisInst.metList.numSeason != 1)) // uses day/night and/or seasonal models
+                    if (thisInst.metList.ThisCount == 1)
                     {
-                        if (thisInst.metList.numTOD > 1 && thisInst.metList.numSeason == 1) // use day/night model, not seasonal
+                        modelList.CreateDefaultModels(thisInst);
+                    }
+                    else
+                    {
+                        // Create a model using all hours and all seasons
+                        modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
+
+                        if ((thisInst.metList.numTOD != 1) || (thisInst.metList.numSeason != 1)) // uses day/night and/or seasonal models
                         {
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.All, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(50, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.All, thisInst.modeledHeight);
-                        }
-                        else if (thisInst.metList.numTOD == 1 && thisInst.metList.numSeason > 1) // uses seasonal models but not day/night
-                        {
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.Winter, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(25, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.Spring, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(50, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.Summer, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(75, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.Fall, thisInst.modeledHeight);
-                        }
-                        else // uses seasonal and diurnal models
-                        {
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.Winter, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(12, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.Winter, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(24, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.Spring, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(36, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.Spring, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(48, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.Summer, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(60, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.Summer, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(72, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.Fall, thisInst.modeledHeight);
-                            BackgroundWorker_MetCalcs.ReportProgress(84, textForProgBar);
-                            modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.Fall, thisInst.modeledHeight);
+                            if (thisInst.metList.numTOD > 1 && thisInst.metList.numSeason == 1) // use day/night model, not seasonal
+                            {
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.All, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(50, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.All, thisInst.modeledHeight);
+                            }
+                            else if (thisInst.metList.numTOD == 1 && thisInst.metList.numSeason > 1) // uses seasonal models but not day/night
+                            {
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.Winter, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(25, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.Spring, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(50, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.Summer, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(75, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.Fall, thisInst.modeledHeight);
+                            }
+                            else // uses seasonal and diurnal models
+                            {
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.Winter, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(12, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.Winter, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(24, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.Spring, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(36, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.Spring, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(48, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.Summer, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(60, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.Summer, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(72, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Day, Met.Season.Fall, thisInst.modeledHeight);
+                                BackgroundWorker_MetCalcs.ReportProgress(84, textForProgBar);
+                                modelList.FindSiteCalibratedModels(thisInst, Met.TOD.Night, Met.Season.Fall, thisInst.modeledHeight);
+                            }
                         }
                     }
-
                 }
             }
+
+
 
             DoWorkDone = true;
             e.Result = thisInst;
@@ -1051,9 +1013,7 @@ namespace ContinuumNS
             TurbineCollection turbList = thisInst.turbineList;
             int numTurbs = turbList.TurbineCount;
             int numWD = thisInst.metList.numWD;
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-
+            
             DoWorkDone = false;
             WasReturned = false;
 
@@ -1160,30 +1120,30 @@ namespace ContinuumNS
                     if (thisInst.turbineList.PowerCurveCount == 0) // just do Avg_WS ests
                     {
                         // Check to see if gross ests have already been done
-                        bool haveWS = turbine.HaveTS_Estimate("WS", isCalibrated, null, new TurbineCollection.PowerCurve());
+                        bool haveWS = turbine.HaveTS_Estimate("WS", null, new TurbineCollection.PowerCurve());
 
                         if (haveWS == false)
                         {
-                            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, isCalibrated, new TurbineCollection.PowerCurve(),
+                            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, new TurbineCollection.PowerCurve(),
                                 null, null, MCP_Method);
 
-                            turbine.GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), isCalibrated, false, MCP_Method, false, new TurbineCollection.PowerCurve());  // Creates and adds new Avg_Est based on time series data
+                            turbine.GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), false, MCP_Method, false, new TurbineCollection.PowerCurve());  // Creates and adds new Avg_Est based on time series data
                         }
                     }
                     else
                     {
                         for (int p = 0; p < turbList.PowerCurveCount; p++)
                         {
-                            bool haveGross = turbine.HaveTS_Estimate("Gross", isCalibrated, null, turbList.powerCurves[p]);
+                            bool haveGross = turbine.HaveTS_Estimate("Gross", null, turbList.powerCurves[p]);
                             bool wakeModelUsesCrv = thisInst.wakeModelList.HaveWakeModelWithThisCrv(turbList.powerCurves[p]);
 
                             if (haveGross == false && wakeModelUsesCrv == false)
                             {
-                                ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, isCalibrated, turbList.powerCurves[p],
+                                ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, turbList.powerCurves[p],
                                     null, null, MCP_Method);
 
-                                turbine.GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), isCalibrated, false, MCP_Method, false, turbList.powerCurves[p]);  // Creates and adds new Avg_Est based on time series data
-                                turbine.CalcGrossAEPFromTimeSeries(thisInst, isCalibrated, thisTS, turbList.powerCurves[p]); // Calculates and adds gross energy estimate based on energy production time series                                                                
+                                turbine.GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), false, MCP_Method, false, turbList.powerCurves[p]);  // Creates and adds new Avg_Est based on time series data
+                                turbine.CalcGrossAEPFromTimeSeries(thisInst, thisTS, turbList.powerCurves[p]); // Calculates and adds gross energy estimate based on energy production time series                                                                
                             }
                         }
 
@@ -1211,12 +1171,8 @@ namespace ContinuumNS
             if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0) // Gross estimates using time series calculated earlier
             {
                 textForProgBar = "Calculating gross AEP at turbine sites.";
-                BackgroundWorker_TurbCalcs.ReportProgress(90, textForProgBar);
-
-                if (thisInst.metList.ThisCount == 1)
-                    turbList.CalcGrossAEPFromTABs(thisInst, false);
-                else
-                    turbList.CalcGrossAEPFromTABs(thisInst, true);
+                BackgroundWorker_TurbCalcs.ReportProgress(90, textForProgBar);                                
+                turbList.CalcGrossAEPFromTABs(thisInst);              
 
             }
 
@@ -1226,7 +1182,7 @@ namespace ContinuumNS
             for (int w = 0; w < thisInst.wakeModelList.NumWakeModels; w++)
             {
                 Wake_Model thisWakeModel = thisInst.wakeModelList.wakeModels[w];
-                if (turbList.turbineEsts[0].EstsExistForWakeModel(thisWakeModel, isCalibrated, thisInst.wakeModelList, thisInst.topo.useSR, thisInst.topo.useSepMod) == false)
+                if (turbList.turbineEsts[0].EstsExistForWakeModel(thisWakeModel, thisInst.wakeModelList) == false)
                 {
                     // Find wake loss coeffs
                     WakeCollection.WakeLossCoeffs[] wakeCoeffs = null;
@@ -1267,23 +1223,23 @@ namespace ContinuumNS
 
                         if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0)
                         {
-                            turbList.turbineEsts[i].CalcTurbineWakeLosses(thisInst, wakeCoeffs, thisWakeModel, isCalibrated);
+                            turbList.turbineEsts[i].CalcTurbineWakeLosses(thisInst, wakeCoeffs, thisWakeModel);
                         }
                         else if (thisInst.modelList.ModelCount > 0)
                         {
                             // Default model net wind speed and energy production
                             Nodes targetNode = nodeList.GetTurbNode(turbList.turbineEsts[i]);
 
-                            bool haveNetTS = turbList.turbineEsts[i].HaveTS_Estimate("Net", isCalibrated, thisWakeModel, thisWakeModel.powerCurve);
+                            bool haveNetTS = turbList.turbineEsts[i].HaveTS_Estimate("Net", thisWakeModel, thisWakeModel.powerCurve);
 
                             if (haveNetTS == false)
                             {
-                                ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, isCalibrated, thisWakeModel.powerCurve, thisWakeModel,
+                                ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, thisWakeModel.powerCurve, thisWakeModel,
                                     wakeCoeffs, MCP_Method);
 
-                                turbList.turbineEsts[i].GenerateAvgWSTimeSeries(thisTS, thisInst, thisWakeModel, isCalibrated, false, MCP_Method, false, thisWakeModel.powerCurve);
-                                turbList.turbineEsts[i].CalcGrossAEPFromTimeSeries(thisInst, isCalibrated, thisTS, thisWakeModel.powerCurve);
-                                turbList.turbineEsts[i].CalcNetAEPFromTimeSeries(thisInst, isCalibrated, thisTS, thisWakeModel.powerCurve, thisWakeModel);
+                                turbList.turbineEsts[i].GenerateAvgWSTimeSeries(thisTS, thisInst, thisWakeModel, false, MCP_Method, false, thisWakeModel.powerCurve);
+                                turbList.turbineEsts[i].CalcGrossAEPFromTimeSeries(thisInst, thisTS, thisWakeModel.powerCurve);
+                                turbList.turbineEsts[i].CalcNetAEPFromTimeSeries(thisInst, thisTS, thisWakeModel.powerCurve, thisWakeModel);
                             }
 
                         }
@@ -1386,7 +1342,7 @@ namespace ContinuumNS
             double timeElapsed = 0;
             double avgTimePerNode = 0;
             double timeToFinish;
-            Nodes[] lastAllNodesInPath = null;
+            
             NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets = null;
 
             Nodes[] allNodesInX = new Nodes[numY];
@@ -1396,10 +1352,7 @@ namespace ContinuumNS
             Nodes[] nodesFromDB = null;
 
             WakeCollection.WakeLossCoeffs[] wakeCoeffs = null;
-            bool isCalibrated = false;
-            if (thisMap.modelType == 2 || thisMap.modelType == 3)
-                isCalibrated = true;
-
+            
             if (thisMap.isWaked == true)
             {
                 // Find wake loss coeffs
@@ -1444,9 +1397,7 @@ namespace ContinuumNS
                         thisMapNode.elev = thisNode.elev;
                         thisMapNode.expo = thisNode.expo;
                         thisMapNode.gridStats = thisNode.gridStats;
-                     //   if (thisMap.metsUsed.Count() > 1)
-                     //       thisMapNode.isCalibrated = true;
-
+                     
                         if (BackgroundWorker_Map.CancellationPending == true)
                         {
                             //  nodeList.AddNodes(Nodes_to_add, thisInst.savedParams.savedFileName);                            
@@ -1485,10 +1436,8 @@ namespace ContinuumNS
                             if (thisMap.useFlowSep == true) thisMap.GetFlowSepNodes(ref thisMapNode, thisInst);
 
                             if (thisMap.modelType == 2 || thisMap.modelType == 3)
-                                thisMap.DoMapCalcs(ref thisMapNode, thisInst, nodeList, pathsToMets, "Best");
-                            else if (thisMap.modelType == 4 || thisMap.modelType == 5)  // WS or AEP map using default model
-                                thisMap.DoMapCalcs(ref thisMapNode, thisInst, nodeList, pathsToMets, "Default");
-
+                                thisMap.DoMapCalcs(ref thisMapNode, thisInst, nodeList, pathsToMets);
+                            
                             // Combine WS ests from various mets into one average
                             if (thisMap.modelType >= 2)
                                 thisMap.GenerateAvgWS_AtOneMapNode(ref thisMapNode, thisInst);
@@ -1515,7 +1464,7 @@ namespace ContinuumNS
 
                             TurbineCollection.PowerCurve thisPowerCurve = thisInst.turbineList.GetPowerCurve(thisMap.powerCurve);
                             Nodes targetNode = nodeList.GetMapAsNode(thisMapNode);
-                            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, isCalibrated,
+                            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, 
                                 thisPowerCurve, thisMap.wakeModel, wakeCoeffs, MCP_Method);
 
                             string wakedOrFreestream = "Freestream";
@@ -1544,11 +1493,8 @@ namespace ContinuumNS
                                 else
                                 {
                                     Turbine.Net_Energy_Est thisNet = new Turbine.Net_Energy_Est();
-                                    thisNet.wakeModel = thisMap.wakeModel;
-                                    thisNet.isCalibrated = isCalibrated;
-                                    thisNet.useSRDH = thisMap.useSR;
-                                    thisNet.usesFlowSep = thisMap.useFlowSep;
-                                    thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst, thisMap.wakeModel);
+                                    thisNet.wakeModel = thisMap.wakeModel;                              
+                                    thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst);
                                     thisMapNode.netEnergyEsts.est = thisNet.AEP;
                                     thisMapNode.netEnergyEsts.sectorEnergy = thisNet.sectorEnergy;
                                     thisMapNode.netEnergyEsts.wakeLoss = thisNet.wakeLoss;
@@ -1556,7 +1502,7 @@ namespace ContinuumNS
 
                                     // Get gross estimates to calculate wake loss
                                     ModelCollection.TimeSeries[] grossTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
-                                        isCalibrated, thisPowerCurve, null, null, MCP_Method);
+                                        thisPowerCurve, null, null, MCP_Method);
                                     Met.WSWD_Dist grossDist = thisInst.modelList.CalcWSWD_Dist(grossTS, thisInst, "Freestream");
                                     Turbine.Gross_Energy_Est thisGross = new Turbine.Gross_Energy_Est();
                                     thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, grossTS, thisInst);
@@ -1665,9 +1611,8 @@ namespace ContinuumNS
 
             for (int n = metsUsed.Length - minRR_Size; n <= numMets - minRR_Size; n++)
             {
-                int numMetsInModel = metsUsed.Length - n;
-                int numMetsToPredict = numMets - numMetsInModel;
-                bool RR_Done = metPairList.RR_DoneAlready(true, false, metsUsed, numMetsInModel, metList);
+                int numMetsInModel = metsUsed.Length - n;                
+                bool RR_Done = metPairList.RR_DoneAlready(metsUsed, numMetsInModel, metList);
 
                 if (RR_Done == false)
                 {

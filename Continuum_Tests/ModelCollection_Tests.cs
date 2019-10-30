@@ -518,8 +518,7 @@ namespace Continuum_Tests
             StreamWriter overall = new StreamWriter(overallOutput);
             StreamWriter sector = new StreamWriter(sectorOutput);
 
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisInst.radiiList.investItem[0].radius,
-                thisInst.radiiList.GetMaxRadius(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
 
             // Do overall first
             for (int i = 0; i < thisInst.radiiList.ThisCount; i++)
@@ -589,7 +588,7 @@ namespace Continuum_Tests
             StreamReader srSect6000 = new StreamReader(sector6000);
             StreamReader srSect8000 = new StreamReader(sector8000);
             StreamReader srSect10000 = new StreamReader(sector10000);
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
                         
             for (int i = 0; i < thisInst.radiiList.ThisCount; i++)
             {                
@@ -698,7 +697,7 @@ namespace Continuum_Tests
             targetNode.CalcGridStatsAndExposures(thisInst);
 
             Met[] metsUsed = thisInst.metList.GetMets(thisInst.metList.GetMetsUsed(), null);
-            Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             
             ModelCollection.ModelWeights[] theseWeights = thisInst.modelList.GetWS_EstWeights(metsUsed, targetNode, Models, 
                 thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All), thisInst.radiiList);
@@ -770,7 +769,7 @@ namespace Continuum_Tests
             // Test 1: Met 474 to Met 475, Radius = 4000, WD = 270 (WD_ind = 18)
             int WD_ind = 18;
             int radInd = 0;
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             Model model = models[radInd];
             Met startMet = thisInst.metList.GetMet("Met_474");
             Met.WSWD_Dist startWSDist = startMet.GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
@@ -1056,7 +1055,7 @@ namespace Continuum_Tests
             Nodes endNode = nodeList.GetMetNode(endMet);
             Pair_Of_Mets metPair = thisInst.metPairList.GetPair_Of_Mets(startMet, endMet);
             Nodes[] pathOfNodes = metPair.WS_Pred[radInd, 0].nodePath;
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             Model model = models[radInd];
 
             ModelCollection.WS_Est_Struct thisEst = thisInst.modelList.DoWS_Estimate(startMet, endNode, pathOfNodes, model, thisInst);
@@ -1070,7 +1069,7 @@ namespace Continuum_Tests
             endNode = nodeList.GetMetNode(endMet);
             metPair = thisInst.metPairList.GetPair_Of_Mets(startMet, endMet);
             pathOfNodes = metPair.WS_Pred[radInd, 0].nodePath;
-            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             model = models[radInd];
 
             thisEst = thisInst.modelList.DoWS_Estimate(startMet, endNode, pathOfNodes, model, thisInst);
@@ -1083,7 +1082,7 @@ namespace Continuum_Tests
             Turbine endTurbine = thisInst.turbineList.GetTurbine("Turb_464");
             endNode = nodeList.GetTurbNode(endTurbine);
                         
-            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             model = models[radInd];
             Turbine.WS_Ests wsEst = endTurbine.GetWS_Est(4000, startMet.name, model);
             pathOfNodes = wsEst.pathOfNodes;
@@ -1112,7 +1111,7 @@ namespace Continuum_Tests
             thisInst.Close();
         }
 
-        [TestMethod]
+   /*     [TestMethod]
         public void GetModelWeights_Test()
         {
             Continuum thisInst = new Continuum();
@@ -1120,7 +1119,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\Testing Error Estimate.cfm";
             thisInst.Open(Filename);
 
-            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), 4000, 10000, true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             double[] theseWeights = thisInst.modelList.GetModelWeights(theseModels);
 
             Assert.AreEqual(theseWeights[0], 0.25, 0.001, "Wrong Model Weight 4000 m");
@@ -1130,7 +1129,7 @@ namespace Continuum_Tests
 
             thisInst.Close();
         }
-
+*/
         [TestMethod]
         public void CalcGrossAEP_AndMonthlyEnergy_Test()
         {

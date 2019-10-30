@@ -35,12 +35,10 @@ namespace ContinuumNS
                 sw.WriteLine(headerString);
                 sw.WriteLine(DateTime.Now);
                 sw.WriteLine("");
-
-                bool isCalibrated = false;
-                if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+                                
                 Model[] theseModels = thisInst.GetModels(thisInst, "Advanced");
 
-                if (isCalibrated == true)
+                if (thisInst.metList.ThisCount > 1)
                     headerString = "Using Site-Calibrated Model";
                 else
                     headerString = "Using Default Model";
@@ -132,12 +130,11 @@ namespace ContinuumNS
             int radiusIndex = thisInst.GetRadiusInd("Advanced");
             int radius = thisInst.radiiList.investItem[radiusIndex].radius;
             int WD_Ind = thisInst.GetWD_ind("Advanced");
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+            
             Met.TOD thisTOD = thisInst.GetSelectedTOD("Advanced");
             Met.Season thisSeason = thisInst.GetSelectedSeason("Advanced");
 
-            Model[] thisModel = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), radius, radius, isCalibrated, thisTOD, thisSeason,
+            Model[] thisModel = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisTOD, thisSeason,
                 thisInst.modeledHeight, false);
 
             string startStr = thisInst.GetStartMetAdvanced();
@@ -186,7 +183,7 @@ namespace ContinuumNS
                 else
                     sw.Write(WD_Ind.ToString() + ",");
 
-                if (isCalibrated == true)
+                if (numMets == 1)
                     sw.Write("Default,");
                 else
                     sw.Write("Site-Calibrated,");
@@ -665,10 +662,8 @@ namespace ContinuumNS
 
                 int numMetsUsed = theseModels[0].metsUsed.Length;
                 string metStr = thisInst.metList.CreateMetString(theseModels[0].metsUsed, true);
-                bool isCalibrated = false;
-                if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-
-                if (isCalibrated == false)
+                
+                if (numMetsUsed == 1)
                     sw.WriteLine("Default Continuum Model");
                 else
                     sw.WriteLine("Site-calibrated Model using " + numMetsUsed + " mets (" + metStr + ")");
@@ -758,11 +753,8 @@ namespace ContinuumNS
                 Turbine[] theseTurbines = thisInst.GetCheckedTurbs("Gross");
                 int numMets = theseMets.Count();
                 int numTurbines = theseTurbines.Count();
-
                 bool haveAEP = false;
-                bool isCalibrated = false;
-                if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-
+                
                 Export_Degs_or_UTM thisExport = new Export_Degs_or_UTM();
                 thisExport.cbo_Lats_UTMs.SelectedIndex = 0;
                 thisExport.ShowDialog();
@@ -888,7 +880,7 @@ namespace ContinuumNS
                             {
                                 for (int j = 0; j < theseTurbines[i].GrossAEP_Count; j++)
                                 {
-                                    if (theseTurbines[i].grossAEP[j].powerCurve.name == powerCurve && theseTurbines[i].grossAEP[j].isCalibrated == isCalibrated)
+                                    if (theseTurbines[i].grossAEP[j].powerCurve.name == powerCurve)
                                     {
                                         sw.Write(Math.Round(theseTurbines[i].grossAEP[j].AEP, 1).ToString() + ", ");
                                         sw.Write(Math.Round(theseTurbines[i].grossAEP[j].CF, 4).ToString("P") + ", ");
@@ -927,9 +919,8 @@ namespace ContinuumNS
                 string Wake_model_name = thisInst.wakeModelList.GetWakeModelName(thisWakeModel.wakeModelType);
 
                 string Model_type = "";
-                bool isCalibrated = false;
-                if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-                if (isCalibrated == false)
+                
+                if (thisInst.metList.ThisCount == 1)
                     Model_type = "Default Continuum Model";
                 else
                     Model_type = "Site-calibrated Continuum Model";
@@ -1009,12 +1000,12 @@ namespace ContinuumNS
 
                             sw.Write(Math.Round(thisTurb.elev, 2).ToString() + ",");
 
-                            double Avg_WS_est = thisTurb.GetAvgOrSectorWS_Est(isCalibrated, thisWakeModel, WD_Ind, "WS", thisWakeModel.powerCurve); // Net average wind speed estimate
-                            double FS_Avg_WS_est = thisTurb.GetAvgOrSectorWS_Est(isCalibrated, null, WD_Ind, "WS", thisWakeModel.powerCurve); // Gross (i.e. unwaked) average wind speed estimate
-                            double Net_Est = thisTurb.GetNetAEP(thisWakeModel, isCalibrated, WD_Ind); // Net AEP   
-                            double wakeLoss = thisTurb.GetWakeLoss(thisWakeModel, isCalibrated, WD_Ind);
-                            double Weib_k = thisTurb.GetAvgOrSectorWS_Est(isCalibrated, thisWakeModel, WD_Ind, "WeibK", thisWakeModel.powerCurve);
-                            double Weib_A = thisTurb.GetAvgOrSectorWS_Est(isCalibrated, thisWakeModel, WD_Ind, "WeibA", thisWakeModel.powerCurve);
+                            double Avg_WS_est = thisTurb.GetAvgOrSectorWS_Est(thisWakeModel, WD_Ind, "WS", thisWakeModel.powerCurve); // Net average wind speed estimate
+                            double FS_Avg_WS_est = thisTurb.GetAvgOrSectorWS_Est(null, WD_Ind, "WS", thisWakeModel.powerCurve); // Gross (i.e. unwaked) average wind speed estimate
+                            double Net_Est = thisTurb.GetNetAEP(thisWakeModel, WD_Ind); // Net AEP   
+                            double wakeLoss = thisTurb.GetWakeLoss(thisWakeModel, WD_Ind);
+                            double Weib_k = thisTurb.GetAvgOrSectorWS_Est(thisWakeModel, WD_Ind, "WeibK", thisWakeModel.powerCurve);
+                            double Weib_A = thisTurb.GetAvgOrSectorWS_Est(thisWakeModel, WD_Ind, "WeibA", thisWakeModel.powerCurve);
 
                             sw.Write(Math.Round(FS_Avg_WS_est, 3) + ",");
                             sw.Write(Math.Round(Avg_WS_est, 3) + ",");
@@ -1075,10 +1066,7 @@ namespace ContinuumNS
                 }
 
                 int numTurbines = theseTurbines.Count();
-                int numMets = theseMets.Count();
-
-                bool isCalibrated = false;
-                if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+                int numMets = theseMets.Count();                                
 
                 Export_Degs_or_UTM thisExport = new Export_Degs_or_UTM();
                 thisExport.cbo_Lats_UTMs.SelectedIndex = 0;
@@ -1350,13 +1338,10 @@ namespace ContinuumNS
                 MessageBox.Show("No Turbines have been loaded yet. Go to Input tab to import turbine sites.", "Continuum 3");
                 return;
             }
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-
+                        
             string modelStr = "";
 
-            if (isCalibrated == false)
+            if (thisInst.metList.ThisCount == 1)
                 modelStr = "Default Model";
             else
                 modelStr = "Site-Calibrated Model";
@@ -1446,7 +1431,7 @@ namespace ContinuumNS
                         {
                             for (int j = 0; j <= thisTurb.GrossAEP_Count - 1; j++)
                             {
-                                if (thisTurb.grossAEP[j].powerCurve.name == powerCurve && thisTurb.grossAEP[j].isCalibrated == isCalibrated)
+                                if (thisTurb.grossAEP[j].powerCurve.name == powerCurve) 
                                 {
                                     sw.Write(Math.Round(thisTurb.grossAEP[j].AEP, 1).ToString() + ",");
                                     sw.Write(Math.Round(thisTurb.grossAEP[j].P90, 1).ToString() + ",");
@@ -1554,10 +1539,7 @@ namespace ContinuumNS
             int numMets = theseMets.Count();
 
             if (numMets + numTurbines == 0)
-                return;
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+                return;                        
 
             if (thisInst.metList.ThisCount == 0)
                 return;
@@ -1636,11 +1618,8 @@ namespace ContinuumNS
             if (numTurbines + numMets == 0)
                 return;
 
-            int numWD = thisInst.GetNumWD();
-            double dirBin = (double)360 / numWD;
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-
+            int numWD = thisInst.GetNumWD();            
+            
             if (thisInst.metList.ThisCount == 0)
                 return;
 
@@ -3356,9 +3335,7 @@ namespace ContinuumNS
                     string wakeModelString = thisInst.cboMonthlyWakeModel.SelectedItem.ToString();
                     thisWakeModel = thisInst.wakeModelList.GetWakeModelFromString(wakeModelString);
                 }
-
-                bool isCalibrated = false;
-                if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+                                
                 TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
                 WakeCollection.WakeLossCoeffs[] wakeCoeffs = null;
                 string MCP_Method = thisInst.Get_MCP_Method();
@@ -3388,7 +3365,7 @@ namespace ContinuumNS
                 ModelCollection.TimeSeries[] thisTS = avgEst.timeSeries;
 
                 if (thisTS.Length == 0)
-                    avgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, isCalibrated,
+                    avgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, 
                         powerCurve, thisWakeModel, wakeCoeffs, MCP_Method);
 
                 if (avgEst.timeSeries == null)
@@ -3496,13 +3473,8 @@ namespace ContinuumNS
             }
             catch { }
 
-            Wake_Model wakeModel = thisInst.wakeModelList.GetWakeModelFromString(wakeString);
-            
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1)
-                isCalibrated = true;
-
-            Turbine.Net_Energy_Est netEst = thisTurb.GetNetEnergyEst(isCalibrated, wakeModel);
+            Wake_Model wakeModel = thisInst.wakeModelList.GetWakeModelFromString(wakeString); 
+            Turbine.Net_Energy_Est netEst = thisTurb.GetNetEnergyEst(wakeModel);
             double AEP = netEst.AEP;
             Exceedance.Monte_Carlo thisComp = thisInst.turbineList.exceed.compositeLoss;
 

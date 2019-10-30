@@ -117,6 +117,62 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="chtDW_DH_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
+        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
+        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
+</value>
+  </data>
+  <data name="chtUW_DH_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
+        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
+        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
+</value>
+  </data>
+  <data name="chtDW_SR_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
+        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
+        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
+</value>
+  </data>
+  <data name="chtUW_SR_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
+        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
+        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
+</value>
+  </data>
+  <data name="chtElev_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
+        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
+        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
+</value>
+  </data>
+  <data name="chtDWUWExpo_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
+        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
+        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
+</value>
+  </data>
+  <data name="chtDWExpo_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
+        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
+        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
+</value>
+  </data>
+  <data name="chtUWExpo_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
+        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
+        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
+</value>
+  </data>
   <data name="chtDirectionalWSRatios_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
@@ -6355,62 +6411,6 @@
 </value>
   </data>
   <data name="chtMCP_Scatter.State" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
-        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
-        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
-</value>
-  </data>
-  <data name="chtDW_DH_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
-        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
-        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
-</value>
-  </data>
-  <data name="chtUW_DH_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
-        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
-        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
-</value>
-  </data>
-  <data name="chtDW_SR_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
-        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
-        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
-</value>
-  </data>
-  <data name="chtUW_SR_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
-        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
-        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
-</value>
-  </data>
-  <data name="chtElev_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
-        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
-        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
-</value>
-  </data>
-  <data name="chtDWUWExpo_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
-        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
-        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
-</value>
-  </data>
-  <data name="chtDWExpo_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
-        LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
-        ZXZyb24uQ2hhcnQuV2luRm9ybS5OU3RhdGUBAAAAB21fQnl0ZXMHAgIAAAAKCw==
-</value>
-  </data>
-  <data name="chtUWExpo_Nev.State" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFpOZXZyb24uQ2hhcnQuV2luRm9ybSwgVmVyc2lvbj0xOC43LjE4
         LjEyLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWM5YmQ4OTk4ZTk4MWU0ZWUFAQAAABtO
@@ -18950,7 +18950,7 @@
     <value>17, 114</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>127</value>
+    <value>69</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

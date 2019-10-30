@@ -85,7 +85,7 @@ namespace Continuum_Tests
             Nodes Met_5_Node = nodeList.GetMetNode(thisInst.metList.metItem[4]);
             windRose = thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
 
-            bool isTerrainSame = nodeList.TerrainSame(Met_2_Node, Met_5_Node, thisInst.modelList.models[0, 0], 1, 5, windRose, 0);
+            bool isTerrainSame = nodeList.TerrainSame(Met_2_Node, Met_5_Node, thisInst.modelList.models[0, 0], 1, windRose, 0);
             Assert.AreEqual(isTerrainSame, false, "Didn't find terrain different between Met 2 and Met 5");
 
             // Confirm that Met 1 and Met 2 don't need a node in between

@@ -13,7 +13,7 @@ namespace ContinuumNS
         public double[,] parameterToMap; // Mapped parameter (overall). 
         public double[,,] sectorParamToMap; // Mapped parameter (sectorwise)  i = X ind; j = Y ind; k = WD sec (for WS maps that have sectorwise WS (so Num k = Num WD sectors) and other maps Num k = 1)
         public bool isComplete = false; // true if map is complete
-        public int modelType;   // 0 = UW map, 1 = DW map, 2 = WS map (site-calibrated), 3 = Gross AEP map (site-calibrated), 4 = WS map (default), 5 = Gross AEP map (default)
+        public int modelType;   // 0 = UW map, 1 = DW map, 2 = WS map, 3 = Gross AEP map
         public int expoMapRadius = 2; // 8000 m: Used when map is an exposure map
         public string powerCurve = ""; // if ( map is an energy map, this specifies the power curve used
         public int minUTMX;  // min UTMX coordinate of map
@@ -46,9 +46,9 @@ namespace ContinuumNS
             public double[,] sectDist; // Sectorwise wind speed distribution // i = Sector num, j = WS interval
             public double grossAEP;   // Overall gross AEP, (only if map is Gross AEP)
             public double[] sectorGross;  // Sectorwise gross AEP, (only if map is Gross AEP)
-            public bool isCalibrated;  // false if site-calibrated model is used
-            public bool useSR; // true if land cover data is used
-            public bool useFlowSep;  // true if flow separation model is used
+         //   public bool isCalibrated;  // false if site-calibrated model is used
+         //   public bool useSR; // true if land cover data is used
+         //   public bool useFlowSep;  // true if flow separation model is used
             public Net_Energy_Est netEnergyEsts;   // for wake loss maps where wind speed, wake losses and net energy are calculated
             public string powerCurve;   // if map is AEP then this is power curve used
             public bool isWaked;
@@ -78,8 +78,7 @@ namespace ContinuumNS
             public double[] sectorWakeLoss; // Sectorwise wake loss %
         }
 
-        public void DoMapCalcs(ref MapNode thisMapNode, Continuum thisInst, NodeCollection nodeList, NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets,
-                                string isCalibrated)
+        public void DoMapCalcs(ref MapNode thisMapNode, Continuum thisInst, NodeCollection nodeList, NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets)
         {
             // This sub-routine performs all necessary calculations for referenced mapNode. 
             // First, the grid statistics are calculated. Then a path of nodes from each predictor met to the map node are found
@@ -110,7 +109,7 @@ namespace ContinuumNS
                     AddWS_Estimate(ref thisMapNode, ref newWS_Est);
                     int WS_Est_ind = thisMapNode.WS_Estimates.Length - 1;
                     // Check to see if elevation and exposure difference b/w met and turbine is within allowed limits 
-                    bool isWithinModelLimit = thisInst.modelList.IsWithinModelLimit(theseMets[j].gridStats, theseMets[j].elev, thisMapNode.gridStats, thisMapNode.elev, r, thisDist.windRose);
+              //      bool isWithinModelLimit = thisInst.modelList.IsWithinModelLimit(theseMets[j].gridStats, theseMets[j].elev, thisMapNode.gridStats, thisMapNode.elev, r, thisDist.windRose);
                                         
               //      if (isWithinModelLimit == true) // Disabling this feature in 3.0
               //      {
@@ -180,8 +179,7 @@ namespace ContinuumNS
             }
             // public modelType  int // 0 = UW map, 1 = DW map, 2 = WS map (using best UWDW), 3 = Gross AEP map(using best UWDW), 4 = WS map(using default UWDW), 5 = Gross AEP map(using default UWDW)
             
-            models = modelList.GetModels(thisInst, metList.GetMetsUsed(), radiiList.investItem[0].radius, radiiList.GetMaxRadius(), thisMapNode.isCalibrated, 
-                Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            models = modelList.GetModels(thisInst, metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
                        
             NodeCollection nodeList = new NodeCollection();
             Nodes MapNode = nodeList.GetMapAsNode(thisMapNode);
@@ -292,8 +290,7 @@ namespace ContinuumNS
             }
 
             // 0 = UW map, 1 = DW map, 2 = WS map (using best UWDW), 3 = Gross AEP map (using best UWDW), 4 = WS map (using default UWDW), 5 = Gross AEP map (using default UWDW)
-            Model[] models = modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisRadius, thisRadius, thisMapNode.isCalibrated, Met.TOD.All, 
-                Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             Model thisModel = models[radiusIndex];                       
 
             Nodes endNode = nodeList.GetMapAsNode(thisMapNode);

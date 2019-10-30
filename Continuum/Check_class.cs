@@ -455,10 +455,13 @@ namespace ContinuumNS
                 if (topoIndices[0] < 0 || topoIndices[0] >= numXTopo || topoIndices[1] < 0 || topoIndices[1] >= numYTopo)                
                     indexChecks[i] = false;
 
-                if (plotOrCalcs == "Plot")
-                    if (topo.topoElevs[topoIndices[0], topoIndices[1]] == -999)
-                        indexChecks[i] = false;
-
+                if (indexChecks[i] == true)
+                {
+                    if (plotOrCalcs == "Plot")
+                        if (topo.topoElevs[topoIndices[0], topoIndices[1]] == -999)
+                            indexChecks[i] = false;
+                }
+                
                 if (topo.gotSR)
                 {
                     landCoverIndices = topo.GetXYIndices("Land cover", X_Loc, Y_Loc, plotOrCalcs);
@@ -480,9 +483,10 @@ namespace ContinuumNS
                     if (landCoverIndices[0] < 0 || landCoverIndices[0] >= numXLC || landCoverIndices[1] < 0 || landCoverIndices[1] >= numYLC)
                         indexChecks[i] = false;
 
-                    if (plotOrCalcs == "Plot")
-                        if (topo.landCover[landCoverIndices[0], landCoverIndices[1]] == -999)
-                            indexChecks[i] = false;
+                    if (indexChecks[i] == true)
+                        if (plotOrCalcs == "Plot")
+                            if (topo.landCover[landCoverIndices[0], landCoverIndices[1]] == -999)
+                                indexChecks[i] = false;
                 }
 
             }

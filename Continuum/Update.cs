@@ -11,6 +11,9 @@ using Nevron.GraphicsCore;
 using Nevron.Chart.Windows;
 using Nevron.Dom;
 using System.Globalization;
+using OxyPlot;
+using OxyPlot.Series;
+using OxyPlot.Axes;
 
 namespace ContinuumNS
 {
@@ -348,9 +351,7 @@ namespace ContinuumNS
 
             int WD_Ind = thisInst.GetWD_ind("Net");
            
-            int numWD = thisInst.GetNumWD();
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+            int numWD = thisInst.GetNumWD();            
             Wake_Model thisWakeModel = thisInst.GetSelectedWakeModel();
 
             NChartControl turbsByString = thisInst.chtTurbByString_Nev;
@@ -426,7 +427,7 @@ namespace ContinuumNS
                             {
                                 Turbine thisTurb = thisInst.turbineList.turbineEsts[j];
                                 Turbine.Avg_Est avgEst = thisTurb.GetAvgWS_Est(thisWakeModel, thisWakeModel.powerCurve);
-                                Turbine.Net_Energy_Est netEst = thisTurb.GetNetEnergyEst(isCalibrated, thisWakeModel);
+                                Turbine.Net_Energy_Est netEst = thisTurb.GetNetEnergyEst(thisWakeModel);
 
                                 if (thisTurb.stringNum == i + 1)
                                 {
@@ -571,7 +572,11 @@ namespace ContinuumNS
                 }
 
                 if (thisInst.wakeModelList.NumWakeGridMaps == 0)
+                {
+                    thisInst.cht3DWakeLoss_Nev.Refresh();
                     return;
+                }
+                    
 
                 thisWakeModel = thisInst.GetSelectedWakeModel();
                 thisGrid = thisInst.GetSelectedWakeGrid();
@@ -910,10 +915,7 @@ namespace ContinuumNS
             int WD_Ind = thisInst.GetWD_ind("Net");
             double avgWakeLoss = 0;
             
-            if (WD_Ind == -1) return;
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+            if (WD_Ind == -1) return;            
 
             for (int i = 0; i < checkedTurbCount; i++)
             {
@@ -932,9 +934,21 @@ namespace ContinuumNS
                     else
                         objListItem.SubItems.Add(Math.Round(avgEst.waked.sectorWS[WD_Ind], 3).ToString());
 
-                    objListItem.SubItems.Add(Math.Round(thisTurb.GetNetAEP(thisWakeModel, isCalibrated, WD_Ind), 0).ToString());
-                    objListItem.SubItems.Add(Math.Round(thisTurb.GetNetCF(thisWakeModel, isCalibrated, WD_Ind), 4).ToString("P"));
-                    double thisWakeLoss = thisTurb.GetWakeLoss(thisWakeModel, isCalibrated, WD_Ind);
+                    double thisNet = thisTurb.GetNetAEP(thisWakeModel, WD_Ind);
+
+                    if (thisNet != 0)
+                    {
+                        objListItem.SubItems.Add(Math.Round(thisTurb.GetNetAEP(thisWakeModel, WD_Ind), 0).ToString());
+                        objListItem.SubItems.Add(Math.Round(thisTurb.GetNetCF(thisWakeModel, WD_Ind), 4).ToString("P"));
+                        
+                    }
+                    else
+                    {
+                        objListItem.SubItems.Add("");
+                        objListItem.SubItems.Add("");
+                    }
+
+                    double thisWakeLoss = thisTurb.GetWakeLoss(thisWakeModel, WD_Ind);
                     objListItem.SubItems.Add(thisWakeLoss.ToString("P"));
                     avgWakeLoss = avgWakeLoss + thisWakeLoss;
 
@@ -1105,8 +1119,8 @@ namespace ContinuumNS
 
             int numModels = thisInst.modelList.ModelCount;
             int numRadii = thisInst.radiiList.ThisCount;
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+            
+            
             Met.TOD thisTOD = thisInst.GetSelectedTOD("Advanced");
             Met.Season thisSeason = thisInst.GetSelectedSeason("Advanced");
             string[] metsUsed = thisInst.metList.GetMetsUsed();
@@ -1119,8 +1133,7 @@ namespace ContinuumNS
             {
                 if (numPairs > 0 && numModels > 1)
                 {
-                    Model[] models = thisInst.modelList.GetModels(thisInst, metsUsed, thisInst.radiiList.investItem[0].radius, thisInst.radiiList.GetMaxRadius(),
-                        isCalibrated, thisTOD, thisSeason, thisInst.modeledHeight, false);
+                    Model[] models = thisInst.modelList.GetModels(thisInst, metsUsed, thisTOD, thisSeason, thisInst.modeledHeight, false);
 
                     for (int i = 0; i < numPairs; i++)
                     {
@@ -1210,29 +1223,21 @@ namespace ContinuumNS
             thisInst.lstPathNodes_DW.Items.Clear();
 
             int radiusIndex = thisInst.GetRadiusInd("Advanced");
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+            
             Met.TOD thisTOD = thisInst.GetSelectedTOD("Advanced");
             Met.Season thisSeason = thisInst.GetSelectedSeason("Advanced");
 
-            if (radiusIndex == -1) return;
-
-            int numModels = thisInst.modelList.ModelCount;
-
-            int numRadii = thisInst.radiiList.ThisCount;
+            if (radiusIndex == -1) return;       
             int radius = thisInst.radiiList.investItem[radiusIndex].radius;
-
             int numMets = thisInst.metList.ThisCount;
-            int numTurbines = thisInst.turbineList.TurbineCount;
-
+       
             if (thisInst.modelList.ModelCount == 0 || radiusIndex == -1 || startMetStr == "" || endMetStr == "" || thisInst.metList.expoIsCalc == false)
             {
                 thisInst.lstPathNodes.Items.Clear();
                 return;
             }
                         
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisInst.radiiList.investItem[0].radius, thisInst.radiiList.GetMaxRadius(),
-                isCalibrated, thisTOD, thisSeason, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisTOD, thisSeason, thisInst.modeledHeight, false);
             Model thisModel = models[radiusIndex];
 
             int WD_Ind = thisInst.GetWD_ind("Advanced");
@@ -1545,7 +1550,7 @@ namespace ContinuumNS
 
                     for (int j = 0; j < thisTurb.WSEst_Count; j++)
                     {
-                        if (thisTurb.WS_Estimate[j].predictorMetName == startMetStr && thisTurb.WS_Estimate[j].radius == radius && thisInst.modelList.IsSameModel(thisModel, thisTurb.WS_Estimate[j].model))
+                        if (thisTurb.WS_Estimate[j].predictorMetName == startMetStr && thisInst.modelList.IsSameModel(thisModel, thisTurb.WS_Estimate[j].model))
                         {
                             nodesSectorWS = thisTurb.WS_Estimate[j].sectorWS_at_nodes;
                             nodeWS = thisTurb.WS_Estimate[j].WS_at_nodes;
@@ -2458,10 +2463,7 @@ namespace ContinuumNS
             {
                 thisInst.cboUncert_WS_AEP.SelectedIndex = 0;
             }
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-
+                        
             if (thisInst.cboUncert_WS_AEP.SelectedIndex == 0)
                 plotWS = true;
             else
@@ -2512,7 +2514,7 @@ namespace ContinuumNS
                         if (thisTurb.AvgWSEst_Count > 0)
                         {
                             Turbine.Avg_Est avgEst = thisTurb.GetAvgWS_Est(null, powerCurve);
-                            Turbine.Gross_Energy_Est grossEnergy = thisTurb.GetGrossEnergyEst(isCalibrated, powerCurve);
+                            Turbine.Gross_Energy_Est grossEnergy = thisTurb.GetGrossEnergyEst(powerCurve);
 
                             if (plotWS == true)
                             {
@@ -2688,9 +2690,8 @@ namespace ContinuumNS
         public void ModelParams(Continuum thisInst)
         {
             // Updates four textboxes on Advanced tab: Mets used, RMS error (mets used), RMS error (all mets), sect error                         
-            int radiusIndex = thisInst.GetRadiusInd("Advanced");
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+            int radiusIndex = thisInst.GetRadiusInd("Advanced");            
+            
             int WD_Ind = thisInst.GetWD_ind("Advanced");
             Met.TOD thisTOD = thisInst.GetSelectedTOD("Advanced");
             Met.Season thisSeason = thisInst.GetSelectedSeason("Advanced");
@@ -2713,22 +2714,13 @@ namespace ContinuumNS
             if (isImported == false && (thisInst.modelList.models[0, 0].RMS_Sect_WS_Est == null || thisInst.metList.expoIsCalc == false))
                 return;
 
-            Model[] theseModels = thisInst.modelList.GetModels(thisInst, metsUsed, thisInst.radiiList.investItem[radiusIndex].radius, thisInst.radiiList.investItem[radiusIndex].radius,
-                isCalibrated, thisTOD, thisSeason, thisInst.modeledHeight, false);
+            Model[] theseModels = thisInst.modelList.GetModels(thisInst, metsUsed, thisTOD, thisSeason, thisInst.modeledHeight, false);
             Model thisModel = theseModels[0];
 
             if (thisModel == null)
                 return;
 
-            thisModel = theseModels[radiusIndex];
-
-            string metStr;
-            if (thisModel.isCalibrated == false && thisModel.isImported == false)
-                metStr = "Default Model";
-            else if (thisModel.isImported == true)
-                metStr = "Imported Model";
-            else
-                metStr = thisInst.metList.CreateMetString(thisModel.metsUsed, false);
+            thisModel = theseModels[radiusIndex];                        
 
             bool Wgt_or_No;
 
@@ -3171,10 +3163,7 @@ namespace ContinuumNS
             }
 
             if (isMetPair == true)
-            {
-                bool isCalibrated = false;
-                if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-
+            {                
                 NPointSeries[] label_Nodes = new NPointSeries[numNodes];
 
                 for (int j = 0; j < numNodes; j++)
@@ -3214,7 +3203,7 @@ namespace ContinuumNS
                         {
                             for (int j = 0; j < checkedTurbines[i].WSEst_Count; j++)
                             {
-                                if (checkedTurbines[i].WS_Estimate[j].predictorMetName == met1Str && checkedTurbines[i].WS_Estimate[j].radius == radius)
+                                if (checkedTurbines[i].WS_Estimate[j].predictorMetName == met1Str && checkedTurbines[i].WS_Estimate[j].model.radius == radius)
                                 {
                                     foundTurb = true;
                                     endTurb = checkedTurbines[i];
@@ -3236,7 +3225,7 @@ namespace ContinuumNS
 
                 for (int i = 0; i <= endTurb.WSEst_Count - 1; i++)
                 {
-                    if (endTurb.WS_Estimate[i].predictorMetName == startMet.name && endTurb.WS_Estimate[i].radius == radius)
+                    if (endTurb.WS_Estimate[i].predictorMetName == startMet.name && endTurb.WS_Estimate[i].model.radius == radius)
                     {
                         WS_PredInd = i;
                         break;
@@ -3589,10 +3578,7 @@ namespace ContinuumNS
             int radiusInd = thisInst.GetRadiusInd("Summary");
             Met.TOD thisTOD = thisInst.GetSelectedTOD("Summary");
             Met.Season thisSeason = thisInst.GetSelectedSeason("Summary");
-            bool isCalibrated = false;
-            if (thisInst.modelList.ModelCount > 1)
-                isCalibrated = true;
-
+            
             if (WD_Ind > numWD) return;
 
             Met[] checkedMets = thisInst.GetCheckedMets("Summary");
@@ -3947,10 +3933,7 @@ namespace ContinuumNS
         {
             // Updates the table on Gross Turbines Ests tab showing gross turbine estimates
             thisInst.lstGrossTurbEst.Items.Clear();
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1)
-                isCalibrated = true;
+                        
             string powerCurve = "";
             bool AEP_calc = false;
 
@@ -3969,7 +3952,7 @@ namespace ContinuumNS
             if (thisInst.metList.ThisCount == 0) return;
 
             MetCollection.Weibull_params weibull = new MetCollection.Weibull_params();
-            double metAEP = 0;
+            
             double metCF = 0;
 
             try
@@ -4004,7 +3987,7 @@ namespace ContinuumNS
 
             for (int i = 0; i <= checkedMetCount - 1; i++)
             {
-                metAEP = 0;
+                double metAEP = 0;
                 Met.WSWD_Dist thisDist = checkedMets[i].GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
                 weibull = thisInst.metList.CalcWeibullParams(thisDist.WS_Dist, thisDist.sectorWS_Dist, thisDist.WS);
 
@@ -4073,7 +4056,7 @@ namespace ContinuumNS
                             objListItem.SubItems.Add(Math.Round(avgEst.freeStream.sectorWS[WD_Ind], 3).ToString());
 
                         if (AEP_calc == true && WD_Ind == numWD)                        
-                            turbAEP = checkedTurbines[i].GetGrossAEP(powerCurve, isCalibrated, WD_Ind);
+                            turbAEP = checkedTurbines[i].GetGrossAEP(powerCurve, WD_Ind);
                         else if (AEP_calc == true && WD_Ind < numWD)
                         {
                             int numWS = avgEst.freeStream.WS_Dist.Length;
@@ -4122,9 +4105,7 @@ namespace ContinuumNS
             thisInst.lstTurbUncert.Items.Clear();
 
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Uncertainty");
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-
+            
             int turbCount = thisInst.turbineList.TurbineCount;
 
             if (thisInst.turbineList.GotEst("WS", powerCurve, null) == true && thisInst.BW_worker.BackgroundWorker_TurbCalcs.IsBusy == false)
@@ -4147,7 +4128,7 @@ namespace ContinuumNS
                     }
                     if (thisTurb.grossAEP != null && powerCurve.name != "")
                     {
-                        Turbine.Gross_Energy_Est grossEst = thisTurb.GetGrossEnergyEst(isCalibrated, powerCurve);
+                        Turbine.Gross_Energy_Est grossEst = thisTurb.GetGrossEnergyEst(powerCurve);
 
                         objListItem.SubItems.Add(Math.Round(grossEst.AEP, 0).ToString());
                         objListItem.SubItems.Add(Math.Round(grossEst.P90, 0).ToString());
@@ -4218,10 +4199,7 @@ namespace ContinuumNS
             {
                 ClearStats(thisInst);
                 return;
-            }
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+            }                       
 
             int WD_Ind = thisInst.GetWD_ind("Gross");
             if (thisInst.metList.ThisCount == 0) return;
@@ -4233,7 +4211,7 @@ namespace ContinuumNS
                 ClearStats(thisInst);
                 return;
             }
-            thisInst.turbineList.FindParamStats(thisInst, checkedTurbines, isCalibrated, WD_Ind, numWD);
+            thisInst.turbineList.FindParamStats(thisInst, checkedTurbines, WD_Ind, numWD);
         }
 
         public double FindMin(double[] theseParams) // Returns minimum of theseParams()
@@ -4323,10 +4301,7 @@ namespace ContinuumNS
 
             if (thisInst.metList.ThisCount == 0) return;
             int WD_Ind = thisInst.GetWD_ind("Gross");
-            int numWD = thisInst.GetNumWD();
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+            int numWD = thisInst.GetNumWD();                        
 
             MetCollection.Weibull_params weibull = new MetCollection.Weibull_params();
             TurbineCollection turbineList = thisInst.turbineList;
@@ -4432,7 +4407,7 @@ namespace ContinuumNS
                                 turbVals[i] = avgEst.freeStream.sectorWS[WD_Ind];
                         }
                         else if (selectParam == "Gross AEP")
-                            turbVals[i] = checkedTurbines[i].GetGrossAEP(powerCurve, isCalibrated, WD_Ind);
+                            turbVals[i] = checkedTurbines[i].GetGrossAEP(powerCurve, WD_Ind);
                         else if (selectParam == "Elevation")
                             turbVals[i] = checkedTurbines[i].elev;
                         else if (selectParam == "Weibull k")
@@ -4972,9 +4947,17 @@ namespace ContinuumNS
         {
             // Updates plot on //Met and Turbine Summary// tab based on plotName
             NChartControl expoSR_ChtCtrl = new NChartControl();
+            
+            var model = thisInst.chtUWExpo.Model;
 
             if (plotName == "UW Expo")
+            {
+                thisInst.chtUWExpo.Model = new PlotModel();
+                model = thisInst.chtUWExpo.Model;
+                model.Title = GetExpoSR_ChartTitle(plotName, Convert.ToInt16(thisInst.modeledHeight));
                 expoSR_ChtCtrl = thisInst.chtUWExpo_Nev;
+            }
+                
             else if (plotName == "DW Expo")
                 expoSR_ChtCtrl = thisInst.chtDWExpo_Nev;
             else if (plotName == "DW-UW Expo")
@@ -4989,6 +4972,8 @@ namespace ContinuumNS
                 expoSR_ChtCtrl = thisInst.chtUW_DH_Nev;
             else if (plotName == "DW DH")
                 expoSR_ChtCtrl = thisInst.chtDW_DH_Nev;
+
+            
 
             expoSR_ChtCtrl.Charts[0].Series.Clear();
             expoSR_ChtCtrl.Labels.Clear();
@@ -5037,10 +5022,29 @@ namespace ContinuumNS
             double minXValue = 10000;
             double maxXValue = -10000;
 
+            // Create label series
+            var ms = new ScatterSeries();
+            ms.BinSize = 8;
+            ms.MarkerSize = 5;
+            ms.MarkerStrokeThickness = 1;
+            ms.MarkerType = MarkerType.Circle;
+            ms.MarkerFill = OxyColors.Black;
+            ms.MarkerStroke = OxyColors.Red;
+
+            LinearAxis xAxis = new LinearAxis();
+            xAxis.Position = AxisPosition.Bottom;
+            xAxis.Title = "UW Exposure, m";
+            LinearAxis yAxis = new LinearAxis();
+            yAxis.Position = AxisPosition.Left;
+            yAxis.Title = "Wind Speed, m/s";
+
+            model.Axes.Add(xAxis);
+            model.Axes.Add(yAxis);
+
             if (checkedMets != null)
             {
                 for (int i = 0; i < checkedMets.Length; i++)
-                {
+                {                    
                     NPointSeries metDataSeries = new NPointSeries();
                     metDataSeries.DataLabelStyle.Visible = false;
                     metDataSeries.UseXValues = true;
@@ -5060,14 +5064,27 @@ namespace ContinuumNS
                             maxXValue = thisXVal;
 
                         if (WD_Ind == numWD)
+                        {
                             metDataSeries.Values.Add(thisDist.WS);
+                            ms.Points.Add(new ScatterPoint(thisXVal, thisDist.WS));
+                        }
+                            
                         else
+                        {
                             metDataSeries.Values.Add(thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind]);
+                            ms.Points.Add(new ScatterPoint(thisXVal, thisDist.WS * thisDist.sectorWS_Ratio[WD_Ind]));
+                        }
+                            
                     }
 
                     metDataSeries.InteractivityStyle.Tooltip = new NTooltipAttribute(checkedMets[i].name);
                 }
             }
+
+            model.Series.Add(ms);
+
+            // Refresh plot
+            thisInst.chtUWExpo.Refresh();
 
             if (plotTurbs == true && checkedTurbines != null)
             {
@@ -5080,17 +5097,14 @@ namespace ContinuumNS
                     turbDataSeries.FillStyle = new NColorFillStyle(Color.Red);
                     turbDataSeries.Size = new NLength(2, NRelativeUnit.ParentPercentage);
                     expoSR_ChtCtrl.Charts[0].Series.Add(turbDataSeries);
-                    bool isCalibrated = false;
-                    if (thisInst.modelList.ModelCount > 1)
-                        isCalibrated = true;
-
+                    
                     Turbine.Avg_Est avgEst = checkedTurbines[i].GetAvgWS_Est(null, new TurbineCollection.PowerCurve());
 
                     if (checkedTurbines[i].expo != null)
                     {
                         double thisXVal = GetXValForExpoSR_Plot(plotName, WD_Ind, checkedTurbines[i].expo[radiusIndex], checkedTurbines[i].elev, avgEst.freeStream.windRose);
                         turbDataSeries.XValues.Add(thisXVal);
-                        turbDataSeries.Values.Add(checkedTurbines[i].GetAvgOrSectorWS_Est(isCalibrated, null, WD_Ind, "WS", new TurbineCollection.PowerCurve()));
+                        turbDataSeries.Values.Add(checkedTurbines[i].GetAvgOrSectorWS_Est(null, WD_Ind, "WS", new TurbineCollection.PowerCurve()));
 
                         if (thisXVal < minXValue)
                             minXValue = thisXVal;
@@ -5315,22 +5329,18 @@ namespace ContinuumNS
                 return;
             }
 
-            int radiusInd = thisInst.GetRadiusInd("Advanced");
-            int radius = thisInst.radiiList.investItem[radiusInd].radius;
+            int radiusInd = thisInst.GetRadiusInd("Advanced");            
             if (thisInst.metList.ThisCount == 0) return;
-
-            int numWD = thisInst.GetNumWD();
+                        
             int WD_Ind = thisInst.GetWD_ind("Advanced");
             if (WD_Ind == -1) return;
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+                        
             Met.TOD thisTOD = thisInst.GetSelectedTOD("Advanced");
             Met.Season thisSeason = thisInst.GetSelectedSeason("Advanced");
 
-            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), radius, radius, isCalibrated, thisTOD, thisSeason,
+            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisTOD, thisSeason,
                 thisInst.modeledHeight, false);
-            Model thisModel = theseModels[0];
+            Model thisModel = theseModels[radiusInd];
 
             bool useSecondYAxis = false;
             int numSeries = 0;
@@ -5388,7 +5398,7 @@ namespace ContinuumNS
                         site2.UTMY = thisInst.turbineList.turbineEsts[i].UTMY;
 
                         for (int j = 0; j < thisInst.turbineList.turbineEsts[i].WSEst_Count; j++)
-                            if (thisInst.turbineList.turbineEsts[i].WS_Estimate[j].predictorMetName == startMetStr && thisInst.turbineList.turbineEsts[i].WS_Estimate[j].radius == thisInst.radiiList.investItem[radiusInd].radius &&
+                            if (thisInst.turbineList.turbineEsts[i].WS_Estimate[j].predictorMetName == startMetStr &&
                             thisInst.modelList.IsSameModel(thisModel, thisInst.turbineList.turbineEsts[i].WS_Estimate[j].model))
                                 pathOfNodes = thisInst.turbineList.turbineEsts[i].WS_Estimate[j].pathOfNodes;
 
@@ -5846,9 +5856,7 @@ namespace ContinuumNS
             WS_DistCtl.Labels.Clear();
             WS_DistCtl.Controller.Tools.Clear();
             WS_DistCtl.Legends[0].Visible = false;
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+                        
             if (thisInst.metList.ThisCount == 0) return;
             int numWD = thisInst.GetNumWD();
 
@@ -7037,15 +7045,12 @@ namespace ContinuumNS
             int WD_Ind = thisInst.GetWD_ind("Advanced");
             if (WD_Ind == -1 || numWD == 0)
                 return;
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
-            int radiusInd = thisInst.GetRadiusInd("Advanced");
-            int radius = thisInst.radiiList.investItem[radiusInd].radius;
+                        
+            int radiusInd = thisInst.GetRadiusInd("Advanced");          
             Met.TOD thisTOD = thisInst.GetSelectedTOD("Advanced");
             Met.Season thisSeason = thisInst.GetSelectedSeason("Advanced");
 
-            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), radius, radius, isCalibrated, thisTOD, thisSeason, 
+            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisTOD, thisSeason, 
                 thisInst.modeledHeight, false);
             Model thisModel = theseModels[radiusInd];
 
@@ -7340,6 +7345,52 @@ namespace ContinuumNS
 
             if (thisInst.topo.gotTopo || thisInst.topo.gotSR == true)
             {
+                // Create plot model
+                thisInst.plotTopo.Model = new PlotModel();
+                var model = thisInst.plotTopo.Model;
+                model.LegendPosition = LegendPosition.RightMiddle;
+                model.IsLegendVisible = true;                
+
+                // Create heat map series
+                var cs = new HeatMapSeries
+                {
+                    X0 = thisInst.topo.topoNumXY.X.plot.min,
+                    X1 = thisInst.topo.topoNumXY.X.plot.max,
+                    Y0 = thisInst.topo.topoNumXY.Y.plot.min,
+                    Y1 = thisInst.topo.topoNumXY.Y.plot.max,   
+                    
+                    Data = thisInst.topo.topoElevs
+                };
+
+                model.Axes.Add(new OxyPlot.Axes.LinearColorAxis
+                {
+                    Position = OxyPlot.Axes.AxisPosition.Right,
+                    Palette = OxyPalettes.Jet(500),
+                    HighColor = OxyColors.Red,
+                    LowColor = OxyColors.Gray,
+                    Minimum = thisInst.topo.GetMin(thisInst.topo.topoElevs, false),
+                    MinimumPadding = 10
+                }) ;
+                
+                thisInst.plotTopo.Model.Series.Add(cs);
+                
+                // Create label series
+                var ms = new ScatterSeries();
+                ms.BinSize = 8;
+                ms.MarkerSize = 5;
+                ms.MarkerStrokeThickness = 1;
+                ms.MarkerType = MarkerType.Circle;
+                ms.MarkerFill = OxyColors.Black;
+                ms.MarkerStroke = OxyColors.Red;
+                ms.Title = "Met 1";
+                
+                ms.Points.Add(new ScatterPoint(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY, 5, thisInst.metList.metItem[0].elev));
+                
+                model.Series.Add(ms);
+
+                // Refresh plot
+                thisInst.plotTopo.Refresh();
+
                 NChart topoMap = thisInst.cht_NevTopo.Charts[0];
                 topoMap.Projection.SetPredefinedProjection(PredefinedProjection.OrthogonalTop);
                 topoMap.Series.Clear();
@@ -7438,7 +7489,7 @@ namespace ContinuumNS
                         {
                             int thisX = Convert.ToInt32(thisInst.topo.LC_NumXY.X.plot.min + i * thisInst.topo.LC_NumXY.X.plot.reso);
                             int thisY = (int)(thisInst.topo.LC_NumXY.Y.plot.min + j * thisInst.topo.LC_NumXY.Y.plot.reso);
-                            topoSurface.Data.SetValue(i, j, paramToPlot[i, j], thisX, thisY);
+                            topoSurface.Data.SetValue(i, j, paramToPlot[i, j], thisX, thisY);                            
                         }
                         else
                         {
@@ -7643,7 +7694,7 @@ namespace ContinuumNS
                     int WS_PredInd = 0;
 
                     for (int i = 0; i < thisTurb.WSEst_Count; i++)
-                        if (thisTurb.WS_Estimate[i].predictorMetName == thisMet.name && thisTurb.WS_Estimate[i].radius == radius)
+                        if (thisTurb.WS_Estimate[i].predictorMetName == thisMet.name && thisTurb.WS_Estimate[i].model.radius == radius)
                         {
                             WS_PredInd = i;
                             break;
@@ -11086,8 +11137,7 @@ namespace ContinuumNS
                 return;
             }
           */      
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+            
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
 
             int firstYear = thisInst.merraList.startDate.Year;
@@ -11095,9 +11145,9 @@ namespace ContinuumNS
 
             for (int i = firstYear; i <= lastYear; i++)
             {
-                double avgWS = thisTurb.CalcYearlyValue(i, "Avg WS", isCalibrated, null, new TurbineCollection.PowerCurve());
-                double grossEnergy = thisTurb.CalcYearlyValue(i, "Gross AEP", isCalibrated, thisWakeModel, powerCurve);
-                double netEnergy = thisTurb.CalcYearlyValue(i, "Net AEP", isCalibrated, thisWakeModel, powerCurve);
+                double avgWS = thisTurb.CalcYearlyValue(i, "Avg WS", null, new TurbineCollection.PowerCurve());
+                double grossEnergy = thisTurb.CalcYearlyValue(i, "Gross AEP", thisWakeModel, powerCurve);
+                double netEnergy = thisTurb.CalcYearlyValue(i, "Net AEP", thisWakeModel, powerCurve);
                 double thisWakeLoss = 0;
 
                 // Add values to list
@@ -11186,7 +11236,7 @@ namespace ContinuumNS
 
                 if (netEnergy == 0 && grossEnergy != 0) // no net estimates so calculate % diff in gross energy
                 {
-                    Turbine.Gross_Energy_Est thisGross = thisTurb.GetGrossEnergyEst(isCalibrated, powerCurve);
+                    Turbine.Gross_Energy_Est thisGross = thisTurb.GetGrossEnergyEst(powerCurve);
                     double percDiff = (grossEnergy - thisGross.AEP) / thisGross.AEP;
                     objListItem.SubItems.Add(Math.Round(percDiff, 4).ToString("P"));
 
@@ -11200,7 +11250,7 @@ namespace ContinuumNS
                 }
                 else if (netEnergy != 0) // Calculate % Diff in net energy
                 {
-                    Turbine.Net_Energy_Est thisNet = thisTurb.GetNetEnergyEst(isCalibrated, thisWakeModel);
+                    Turbine.Net_Energy_Est thisNet = thisTurb.GetNetEnergyEst(thisWakeModel);
                     double percDiff = (netEnergy - thisNet.AEP) / thisNet.AEP;
                     objListItem.SubItems.Add(Math.Round(percDiff, 4).ToString("P"));
 
@@ -11315,14 +11365,12 @@ namespace ContinuumNS
                 string wakeModelString = thisInst.cboMonthlyWakeModel.SelectedItem.ToString();
                 thisWakeModel = thisInst.wakeModelList.GetWakeModelFromString(wakeModelString);
             }
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1) isCalibrated = true;
+                       
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
 
             Turbine.Avg_Est thisAvgEst = thisTurb.GetAvgWS_Est(null, new TurbineCollection.PowerCurve()); // Want free-stream wind speeds
-            Turbine.Gross_Energy_Est thisGrossEst = thisTurb.GetGrossEnergyEst(isCalibrated, powerCurve);
-            Turbine.Net_Energy_Est thisNetEst = thisTurb.GetNetEnergyEst(isCalibrated, thisWakeModel);
+            Turbine.Gross_Energy_Est thisGrossEst = thisTurb.GetGrossEnergyEst(powerCurve);
+            Turbine.Net_Energy_Est thisNetEst = thisTurb.GetNetEnergyEst(thisWakeModel);
 
             if (thisAvgEst.FS_MonthlyVals == null)
                 return;
@@ -11452,7 +11500,7 @@ namespace ContinuumNS
 
                     if (thisGrossEst.AEP != 0 && thisNetEst.AEP == 0) // no net estimates so calculate % diff in gross energy
                     {
-                        double thisLTValue = thisTurb.CalcLT_MonthlyValue("Gross AEP", thisAvgEst.FS_MonthlyVals[i].month, isCalibrated, null, powerCurve);
+                        double thisLTValue = thisTurb.CalcLT_MonthlyValue("Gross AEP", thisAvgEst.FS_MonthlyVals[i].month, null, powerCurve);
                         double percDiff = (thisGrossEst.monthlyVals[i].energyProd - thisLTValue) / thisLTValue;
                         objListItem.SubItems.Add(Math.Round(percDiff, 4).ToString("P"));
 
@@ -11471,7 +11519,7 @@ namespace ContinuumNS
                     }
                     else if (thisNetEst.AEP != 0) // Calculate % Diff in net energy
                     {
-                        double thisLTValue = thisTurb.CalcLT_MonthlyValue("Gross AEP", thisAvgEst.FS_MonthlyVals[i].month, isCalibrated, thisWakeModel, powerCurve);
+                        double thisLTValue = thisTurb.CalcLT_MonthlyValue("Gross AEP", thisAvgEst.FS_MonthlyVals[i].month, thisWakeModel, powerCurve);
                         double percDiff = (thisNetEst.monthlyVals[i].energyProd - thisLTValue) / thisLTValue;
                         objListItem.SubItems.Add(Math.Round(percDiff, 4).ToString("P"));
 
@@ -11506,7 +11554,7 @@ namespace ContinuumNS
                     objListItem = thisInst.lstMonthlyTurbine.Items.Add(i.ToString());
                     objListItem.SubItems.Add("LT Avg");
 
-                    double LT_AvgWS = thisTurb.CalcLT_MonthlyValue("Avg WS", i, isCalibrated, null, powerCurve);
+                    double LT_AvgWS = thisTurb.CalcLT_MonthlyValue("Avg WS", i, null, powerCurve);
                     objListItem.SubItems.Add(Math.Round(LT_AvgWS, 2).ToString());
 
                     if (plotWS == true)
@@ -11524,7 +11572,7 @@ namespace ContinuumNS
 
                     if (thisGrossEst.AEP != 0)
                     {
-                        double LT_GrossAEP = thisTurb.CalcLT_MonthlyValue("Gross AEP", i, isCalibrated, null, powerCurve);
+                        double LT_GrossAEP = thisTurb.CalcLT_MonthlyValue("Gross AEP", i, null, powerCurve);
                         objListItem.SubItems.Add(Math.Round(LT_GrossAEP, 0).ToString());
 
                         if (plotGross == true)
@@ -11554,7 +11602,7 @@ namespace ContinuumNS
 
                     if (thisNetEst.AEP != 0)
                     {
-                        double LT_NetAEP = thisTurb.CalcLT_MonthlyValue("Net AEP", i, isCalibrated, thisWakeModel, powerCurve);
+                        double LT_NetAEP = thisTurb.CalcLT_MonthlyValue("Net AEP", i, thisWakeModel, powerCurve);
                         objListItem.SubItems.Add(Math.Round(LT_NetAEP, 0).ToString());
 
                         if (plotNet == true)
@@ -11587,8 +11635,8 @@ namespace ContinuumNS
                     if (thisGrossEst.AEP != 0 && thisNetEst.AEP != 0)
                     {
                         double otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
-                        double LT_GrossAEP = thisTurb.CalcLT_MonthlyValue("Gross AEP", i, isCalibrated, null, powerCurve);
-                        double LT_NetAEP = thisTurb.CalcLT_MonthlyValue("Net AEP", i, isCalibrated, thisWakeModel, powerCurve);
+                        double LT_GrossAEP = thisTurb.CalcLT_MonthlyValue("Gross AEP", i, null, powerCurve);
+                        double LT_NetAEP = thisTurb.CalcLT_MonthlyValue("Net AEP", i, thisWakeModel, powerCurve);
                         if (LT_NetAEP == 0) return;
                         double thisWakeLoss = (LT_GrossAEP - LT_NetAEP / otherLoss) / LT_GrossAEP;
                         objListItem.SubItems.Add(Math.Round(thisWakeLoss, 4).ToString("P"));
@@ -12691,15 +12739,10 @@ namespace ContinuumNS
             {
                 wakeModelString = thisInst.cboExceedWake.SelectedItem.ToString();
                 thisWakeModel = thisInst.wakeModelList.GetWakeModelFromString(wakeModelString);
-            }
-
-            bool isCalibrated = false;
-
-            if (thisInst.metList.ThisCount > 1)
-                isCalibrated = true;
+            }                        
 
             Turbine thisTurb = thisInst.GetSelectedTurbine("Exceedance");
-            Turbine.Net_Energy_Est netEst = thisTurb.GetNetEnergyEst(isCalibrated, thisWakeModel);
+            Turbine.Net_Energy_Est netEst = thisTurb.GetNetEnergyEst(thisWakeModel);
             double overallP50 = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
             AEP = netEst.AEP / overallP50;
 
@@ -12901,7 +12944,7 @@ namespace ContinuumNS
 
                 if (plotSelected == "Ice Hit vs. Distance" || thisInst.siteSuitability.GetNumZones() > 0)
                 {
-                    for (int i = 0; i < 16; i++)
+                    for (int i = 0; i < thisInst.metList.numWD; i++)
                         thisInst.cboZoneList.Items.Add(Math.Round((double)i * 360 / thisInst.metList.numWD, 1));
 
                     thisInst.cboZoneList.Items.Add("All");

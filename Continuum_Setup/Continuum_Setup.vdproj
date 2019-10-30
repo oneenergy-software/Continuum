@@ -40,13 +40,7 @@
         "Entry"
         {
         "MsmKey" = "8:_0E01BAE05948E51BDE2E2E0E5D2789EE"
-        "OwnerKey" = "8:_CEC92A4810EE970BFC50162F4F67E9B2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0E01BAE05948E51BDE2E2E0E5D2789EE"
-        "OwnerKey" = "8:_C15069EF2A78CFD69FFB88263A5B2694"
+        "OwnerKey" = "8:_300268AAF023A26D035632066A372713"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -58,7 +52,13 @@
         "Entry"
         {
         "MsmKey" = "8:_0E01BAE05948E51BDE2E2E0E5D2789EE"
-        "OwnerKey" = "8:_300268AAF023A26D035632066A372713"
+        "OwnerKey" = "8:_C15069EF2A78CFD69FFB88263A5B2694"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0E01BAE05948E51BDE2E2E0E5D2789EE"
+        "OwnerKey" = "8:_CEC92A4810EE970BFC50162F4F67E9B2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -94,19 +94,7 @@
         "Entry"
         {
         "MsmKey" = "8:_3CF37B6C5FFD5A3DD680A53D93FCF1CA"
-        "OwnerKey" = "8:_56011E217F43DF2E8A2CAD50E99E1580"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3CF37B6C5FFD5A3DD680A53D93FCF1CA"
-        "OwnerKey" = "8:_CEC92A4810EE970BFC50162F4F67E9B2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3CF37B6C5FFD5A3DD680A53D93FCF1CA"
-        "OwnerKey" = "8:_C15069EF2A78CFD69FFB88263A5B2694"
+        "OwnerKey" = "8:_300268AAF023A26D035632066A372713"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -118,7 +106,19 @@
         "Entry"
         {
         "MsmKey" = "8:_3CF37B6C5FFD5A3DD680A53D93FCF1CA"
-        "OwnerKey" = "8:_300268AAF023A26D035632066A372713"
+        "OwnerKey" = "8:_C15069EF2A78CFD69FFB88263A5B2694"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3CF37B6C5FFD5A3DD680A53D93FCF1CA"
+        "OwnerKey" = "8:_CEC92A4810EE970BFC50162F4F67E9B2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3CF37B6C5FFD5A3DD680A53D93FCF1CA"
+        "OwnerKey" = "8:_56011E217F43DF2E8A2CAD50E99E1580"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -154,13 +154,13 @@
         "Entry"
         {
         "MsmKey" = "8:_56011E217F43DF2E8A2CAD50E99E1580"
-        "OwnerKey" = "8:_C15069EF2A78CFD69FFB88263A5B2694"
+        "OwnerKey" = "8:_65F685F7FF004C948253C2D6D2F620BC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_56011E217F43DF2E8A2CAD50E99E1580"
-        "OwnerKey" = "8:_65F685F7FF004C948253C2D6D2F620BC"
+        "OwnerKey" = "8:_C15069EF2A78CFD69FFB88263A5B2694"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -400,91 +400,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3CF37B6C5FFD5A3DD680A53D93FCF1CA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0E01BAE05948E51BDE2E2E0E5D2789EE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_56011E217F43DF2E8A2CAD50E99E1580"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CEC92A4810EE970BFC50162F4F67E9B2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C15069EF2A78CFD69FFB88263A5B2694"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_300268AAF023A26D035632066A372713"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_ECC681922040FF33B9ABC58E7F717C6E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A28C5057D65A147105C27D6F9E23F298"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_AF3DC41CE3D0A2EFEE719E89C8D5D3A9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BD94C0904BA2857D13622DA461D967CE"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7CE8BAA055CEFBAA463D9D5B670EC943"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_83D988A4A46E5AEE1236EF6B59FA131D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DE7780F8DB8D879E81C9AC99A9C840D8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EF685E9D733EACC668DC71630163DF8B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_579D903863DF3A445CD67FEECC957BB3"
+        "OwnerKey" = "8:_65F685F7FF004C948253C2D6D2F620BC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -496,7 +412,91 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_65F685F7FF004C948253C2D6D2F620BC"
+        "OwnerKey" = "8:_579D903863DF3A445CD67FEECC957BB3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EF685E9D733EACC668DC71630163DF8B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DE7780F8DB8D879E81C9AC99A9C840D8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_83D988A4A46E5AEE1236EF6B59FA131D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_7CE8BAA055CEFBAA463D9D5B670EC943"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_BD94C0904BA2857D13622DA461D967CE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_AF3DC41CE3D0A2EFEE719E89C8D5D3A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A28C5057D65A147105C27D6F9E23F298"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_ECC681922040FF33B9ABC58E7F717C6E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_300268AAF023A26D035632066A372713"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_C15069EF2A78CFD69FFB88263A5B2694"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CEC92A4810EE970BFC50162F4F67E9B2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_56011E217F43DF2E8A2CAD50E99E1580"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_0E01BAE05948E51BDE2E2E0E5D2789EE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_3CF37B6C5FFD5A3DD680A53D93FCF1CA"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -661,6 +661,11 @@
             "AssemblyAsmDisplayName" = "8:Nevron.Presentation, Version=18.7.18.12, Culture=neutral, PublicKeyToken=6656c5d1103e75cc, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_0E01BAE05948E51BDE2E2E0E5D2789EE"
+                    {
+                    "Name" = "8:Nevron.Presentation.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Nevron.Presentation.dll"
             "TargetName" = "8:"
@@ -727,6 +732,11 @@
             "AssemblyAsmDisplayName" = "8:Nevron.UI.WinForm.Docking, Version=18.7.18.12, Culture=neutral, PublicKeyToken=446d8963349a628a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_300268AAF023A26D035632066A372713"
+                    {
+                    "Name" = "8:Nevron.UI.WinForm.Docking.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Nevron.UI.WinForm.Docking.dll"
             "TargetName" = "8:"
@@ -773,6 +783,11 @@
             "AssemblyAsmDisplayName" = "8:Nevron.System, Version=18.7.18.12, Culture=neutral, PublicKeyToken=6a987feae5e496fd, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_3CF37B6C5FFD5A3DD680A53D93FCF1CA"
+                    {
+                    "Name" = "8:Nevron.System.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Nevron.System.dll"
             "TargetName" = "8:"
@@ -879,6 +894,11 @@
             "AssemblyAsmDisplayName" = "8:Nevron.GraphicsGL, Version=18.7.18.12, Culture=neutral, PublicKeyToken=2f17c6a71f852d32, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_56011E217F43DF2E8A2CAD50E99E1580"
+                    {
+                    "Name" = "8:Nevron.GraphicsGL.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Nevron.GraphicsGL.dll"
             "TargetName" = "8:"
@@ -905,6 +925,11 @@
             "AssemblyAsmDisplayName" = "8:MathNet.Numerics, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_579D903863DF3A445CD67FEECC957BB3"
+                    {
+                    "Name" = "8:MathNet.Numerics.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:MathNet.Numerics.dll"
             "TargetName" = "8:"
@@ -951,6 +976,11 @@
             "AssemblyAsmDisplayName" = "8:TimeZoneConverter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=e20ab7d0d9479841, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_5E82C7B4B65DC12556CB54E8D300A89C"
+                    {
+                    "Name" = "8:TimeZoneConverter.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:TimeZoneConverter.dll"
             "TargetName" = "8:"
@@ -1097,6 +1127,11 @@
             "AssemblyAsmDisplayName" = "8:osr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_7CE8BAA055CEFBAA463D9D5B670EC943"
+                    {
+                    "Name" = "8:osr_csharp.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:osr_csharp.dll"
             "TargetName" = "8:"
@@ -1143,6 +1178,11 @@
             "AssemblyAsmDisplayName" = "8:ogr_csharp, Version=1.0.7127.27224, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_83D988A4A46E5AEE1236EF6B59FA131D"
+                    {
+                    "Name" = "8:ogr_csharp.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:ogr_csharp.dll"
             "TargetName" = "8:"
@@ -1269,6 +1309,11 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_A28C5057D65A147105C27D6F9E23F298"
+                    {
+                    "Name" = "8:EntityFramework.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:EntityFramework.dll"
             "TargetName" = "8:"
@@ -1335,6 +1380,11 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_AF3DC41CE3D0A2EFEE719E89C8D5D3A9"
+                    {
+                    "Name" = "8:EntityFramework.SqlServer.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:EntityFramework.SqlServer.dll"
             "TargetName" = "8:"
@@ -1401,6 +1451,11 @@
             "AssemblyAsmDisplayName" = "8:gdalconst_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_BD94C0904BA2857D13622DA461D967CE"
+                    {
+                    "Name" = "8:gdalconst_csharp.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:gdalconst_csharp.dll"
             "TargetName" = "8:"
@@ -1427,6 +1482,11 @@
             "AssemblyAsmDisplayName" = "8:Nevron.Chart.WinForm, Version=18.7.18.12, Culture=neutral, PublicKeyToken=c9bd8998e981e4ee, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_C15069EF2A78CFD69FFB88263A5B2694"
+                    {
+                    "Name" = "8:Nevron.Chart.WinForm.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Nevron.Chart.WinForm.dll"
             "TargetName" = "8:"
@@ -1493,6 +1553,11 @@
             "AssemblyAsmDisplayName" = "8:Nevron.Chart, Version=18.7.18.12, Culture=neutral, PublicKeyToken=2961c51bb98125d2, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_CEC92A4810EE970BFC50162F4F67E9B2"
+                    {
+                    "Name" = "8:Nevron.Chart.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:Nevron.Chart.dll"
             "TargetName" = "8:"
@@ -1559,6 +1624,11 @@
             "AssemblyAsmDisplayName" = "8:gdal_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_DE7780F8DB8D879E81C9AC99A9C840D8"
+                    {
+                    "Name" = "8:gdal_csharp.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:gdal_csharp.dll"
             "TargetName" = "8:"
@@ -1585,6 +1655,11 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
+                    "_ECC681922040FF33B9ABC58E7F717C6E"
+                    {
+                    "Name" = "8:System.Net.Http.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
@@ -1611,6 +1686,11 @@
             "AssemblyAsmDisplayName" = "8:GeoTimeZone, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e20ab7d0d9479841, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_EF685E9D733EACC668DC71630163DF8B"
+                    {
+                    "Name" = "8:GeoTimeZone.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:GeoTimeZone.dll"
             "TargetName" = "8:"
@@ -1762,15 +1842,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Continuum 3.0"
-        "ProductCode" = "8:{3A226A1F-CF7E-4E7E-B783-A4FC4824C07A}"
-        "PackageCode" = "8:{86113C23-AA22-42D4-BFE3-091C2DABE477}"
+        "ProductCode" = "8:{01415E42-A17D-4865-B812-CCFEAA1D27C9}"
+        "PackageCode" = "8:{B26C3FFF-0AAC-466D-A03E-7BA50767BE5D}"
         "UpgradeCode" = "8:{C6A3FCE0-9B67-4431-889A-452DDBE71C27}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.1"
+        "ProductVersion" = "8:1.0.3"
         "Manufacturer" = "8:One Energy Enterprises LLC"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

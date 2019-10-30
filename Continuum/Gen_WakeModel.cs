@@ -87,11 +87,7 @@ namespace ContinuumNS
                 DW_Spacing = ReadDW_Spacing();
                 CW_Spacing = ReadCW_Spacing();
                 ambRough = ReadAmbRough();
-            }
-
-            bool isCalibrated = false;
-            if (thisInst.metList.ThisCount > 1)
-                isCalibrated = true;
+            }                        
 
             // Check to see if wake model has been added        
             bool wakeModelExists = thisInst.wakeModelList.WakeModelExists(wakeModelType, horizExp, avgTI, thisPowerCurve.name, DW_Spacing, CW_Spacing, ambRough, wakeCombo);
@@ -127,8 +123,7 @@ namespace ContinuumNS
 
             if (thisInst.turbineList.TurbineCount > 0)
             {
-                if (thisInst.turbineList.turbineEsts[0].EstsExistForWakeModel(thisInst.wakeModelList.wakeModels[wakeModelInd], isCalibrated, thisInst.wakeModelList, thisInst.topo.useSR,
-                    thisInst.topo.useSepMod))
+                if (thisInst.turbineList.turbineEsts[0].EstsExistForWakeModel(thisInst.wakeModelList.wakeModels[wakeModelInd], thisInst.wakeModelList))
                 {
                     MessageBox.Show("Wake losses have already been calculated with this model and settings.", "Continuum 3");
                     return;
@@ -140,8 +135,7 @@ namespace ContinuumNS
                 return;
             }
 
-            if (thisInst.turbineList.turbineEsts[0].EstsExistForWakeModel(thisInst.wakeModelList.wakeModels[wakeModelInd], isCalibrated, thisInst.wakeModelList,
-                thisInst.topo.useSR, thisInst.topo.useSepMod) == false)
+            if (thisInst.turbineList.turbineEsts[0].EstsExistForWakeModel(thisInst.wakeModelList.wakeModels[wakeModelInd], thisInst.wakeModelList) == false)
             {
 
                 BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();

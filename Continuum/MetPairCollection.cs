@@ -14,14 +14,14 @@ namespace ContinuumNS
 
         [Serializable()] public struct RR_WS_Ests
         {
-            public string[] metsUsed;   // all mets used in Round Robin calcs
-            public int metSubSize;   // size of subset of mets            
-            public Model[,] model;   // i = UWDW #, j = radius ind
-            public Avg_Est[,] avgWS_Ests;   // avg ests at mets not used in UW&DW model  i = predictee Met num j = UWDW num
-            public string[,] metsInModel;   // Mets used in every UW&DW model i = Num mets used j = UWDW num
-            public double[] RMS_Err;   // RMS error of every UW&DW model (i.e. average of all avgWS_Est(i,j) for each UW&DW model [j], averaged over all predictee mets
+            public string[] metsUsed;   // All mets used in Round Robin calcs
+            public int metSubSize;   // Size of subset of mets            
+            public Model[,] model;   // List of models [i, j]; i = model #, j = radius ind
+            public Avg_Est[,] avgWS_Ests;   // Avg ests. at mets not used in model  i = predictee Met num j = Model #
+            public string[,] metsInModel;   // Mets used in every model i = Num mets used j = Model num
+            public double[] RMS_Err;   // RMS error of every model (i.e. average of all avgWS_Est(i,j) for each model [j], averaged over all predictee mets
             public double RMS_All;   // RMS error overall (i.e. average over all UW&DW models (or combinations of mets))
-            public bool isWS_Weighted;            
+       //     public bool isWS_Weighted;            
         }
 
         [Serializable()] public struct Avg_Est
@@ -218,16 +218,15 @@ namespace ContinuumNS
             return thisRR;
         }
 
-        public bool RR_DoneAlready(bool isWS_Weighted, bool isCalibrated, string[] metsUsed, int metSubSize, MetCollection metList)
+        public bool RR_DoneAlready(string[] metsUsed, int metSubSize, MetCollection metList)
         {
             // Returns false if Round Robin has already been calculated
             bool alreadyDone = false;
-            bool sameMets = false;
-
+            
             for (int i = 0; i < RoundRobinCount; i++)
             {
-                sameMets = metList.sameMets(metsUsed, roundRobinEsts[i].metsUsed);
-                if (isWS_Weighted == roundRobinEsts[i].isWS_Weighted && sameMets == true && metSubSize == roundRobinEsts[i].metSubSize)
+                bool sameMets = metList.sameMets(metsUsed, roundRobinEsts[i].metsUsed);
+                if (sameMets == true && metSubSize == roundRobinEsts[i].metSubSize)
                     alreadyDone = true;                
             }
 
@@ -294,41 +293,11 @@ namespace ContinuumNS
         public void CreateMetPairs(Continuum thisInst)
         {
             // Creates a Pair_of_Mets for every combination of mets and adds to list
-            int numMets = thisInst.metList.ThisCount;
-            int numModels = thisInst.modelList.ModelCount;
+            int numMets = thisInst.metList.ThisCount;           
             int numRadii = thisInst.radiiList.ThisCount;
 
             if (numMets == 0 || numRadii == 0)
                 return;
-                                   
-            int numWD = thisInst.metList.numWD;
-
-            Model[] models = new Model[numRadii];
-            
-            if (thisInst.modelList.ModelCount == 0)
-            {
-                // Create default model if doesn't exist
-                for (int i = 0; i < numRadii; i++)
-                {
-                    models[i] = new Model();
-                    models[i].SizeArrays(numWD);
-
-                    models[i].SetDefaultModelCoeffs(numWD);
-                    models[i].SetDefaultLimits();
-                    models[i].radius = thisInst.radiiList.investItem[i].radius;
-                    models[i].metsUsed = thisInst.metList.GetMetsUsed();
-                    models[i].isCalibrated = false;
-                    models[i].season = Met.Season.All;
-                    models[i].timeOfDay = Met.TOD.All;
-                }
-
-                // Add new models to Model collection
-                thisInst.modelList.AddModel(models);
-            }
-            else {
-                for (int i = 0; i < numRadii; i++)
-                    models[i] = thisInst.modelList.models[0, i];
-            }
 
             for (int i = 0; i < numMets; i++)
             { 
@@ -349,12 +318,13 @@ namespace ContinuumNS
                     }
 
                     if (havePairAlready == false)
-                        AddMetPair(met1, met2, models); 
+                        AddMetPair(met1, met2); 
                 }
             }
+            
         }
 
-        public void AddMetPair(Met met1, Met met2, Model[] models)
+        public void AddMetPair(Met met1, Met met2)
         {
             // Adds met pair to list
             Array.Resize(ref metPairs, PairCount + 1);
@@ -371,8 +341,7 @@ namespace ContinuumNS
                 metPairs[PairCount - 1].met1 = met2;
                 metPairs[PairCount - 1].met2 = met1;
             }
-
-            metPairs[PairCount - 1].AddWS_Pred(models);
+                       
         }
 
             
@@ -2295,8 +2264,7 @@ namespace ContinuumNS
             roundRobinEsts[thisCount].model = theseModels;
             roundRobinEsts[thisCount].metsInModel = theseMetsInModel;
             roundRobinEsts[thisCount].RMS_Err = theseRMS_Err;
-            roundRobinEsts[thisCount].isWS_Weighted = IsWeighted;
-            
+                        
             CalcRR_RMS_All(thisCount);
 
         }
@@ -2367,12 +2335,10 @@ namespace ContinuumNS
                 { // Time Series model
                     NodeCollection nodeList = new NodeCollection();
                     Nodes targetNode = nodeList.GetTurbNode(thisRR_FuncObj.omittedMets[i]);
-                    bool isCalibrated = false;
-                    if (theseMetsInModel.Length > 1)
-                        isCalibrated = true;
-                    ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, theseMetsInModel, targetNode, isCalibrated,
+                    
+                    ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, theseMetsInModel, targetNode, 
                         new TurbineCollection.PowerCurve(), null, null, MCP_Method);
-                    thisRR_FuncObj.omittedMets[i].GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), isCalibrated, false, MCP_Method, true, new TurbineCollection.PowerCurve()); // Creates and adds new Avg_Est based on time series data
+                    thisRR_FuncObj.omittedMets[i].GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), false, MCP_Method, true, new TurbineCollection.PowerCurve()); // Creates and adds new Avg_Est based on time series data
                 }    
                                 
                 thisRR_FuncObj.errsAtOmittedMets[i] = (thisRR_FuncObj.omittedMets[i].avgWS_Est[0].freeStream.WS - thisRR_FuncObj.actualWS_AtMets[i]) / thisRR_FuncObj.actualWS_AtMets[i];

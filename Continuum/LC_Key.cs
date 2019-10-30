@@ -210,7 +210,7 @@ namespace ContinuumNS
 
                 if (Good_to_go == DialogResult.Yes)
                 {                   
-                    thisInst.modelList.ClearAllExceptDefaultAndImported();
+                    thisInst.modelList.ClearAllExceptImported();
                     thisInst.mapList.ClearAllMaps();
                     thisInst.turbineList.ClearAllWSEsts();
                     thisInst.turbineList.ClearAllGrossEsts();

@@ -1616,7 +1616,7 @@ namespace GUI_Test_Creator
         public void UpdateDeleteTables()
         {
             string continuumFile = cboCFNFiles.SelectedItem.ToString();
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum();
 
             try
             {
