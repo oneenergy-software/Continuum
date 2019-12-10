@@ -55,7 +55,7 @@
     </StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>iconlogoalts__1__S3C_icon.ico</ApplicationIcon>
+    <ApplicationIcon>Continuum icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -440,6 +440,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Continuum icon Hi Res.ico" />
+    <Content Include="Continuum icon.ico" />
     <Content Include="iconlogoalts__1__S3C_icon.ico" />
   </ItemGroup>
   <ItemGroup>
