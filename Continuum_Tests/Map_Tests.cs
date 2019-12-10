@@ -24,7 +24,7 @@ namespace Continuum_Tests
             Map New_Map = new Map();
             Map.MapNode New_Map_Node = new Map.MapNode();
             Met[] metsUsed = thisInst.metList.GetMets(thisInst.metList.GetMetsUsed(), null);
-            Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
 
             thisInst.mapList.AddMap("New_Map", 470000, 5105000, 250, 30, 30, 0, "None", thisInst, false, null, metsUsed, Models, false);
             thisInst.BW_worker.Close();

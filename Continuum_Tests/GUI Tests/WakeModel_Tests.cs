@@ -10,13 +10,13 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class WakeModel_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
 
         [TestMethod]
         public void WakeModelTypeAndSettings_Test()
         {
             Continuum thisInst = new Continuum();
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\OneMetTABAndGrossNet_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
             thisInst.Open(fileName + ".cfm");
             thisInst.isTest = true;
             Wake_Model wakeModel = thisInst.wakeModelList.wakeModels[0];

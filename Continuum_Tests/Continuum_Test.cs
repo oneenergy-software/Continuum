@@ -15,8 +15,8 @@ namespace Continuum_Tests
     public class Continuum_Test
     {
         // Unit tests that run through model creation
-        string testingFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum";
-        string merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
         [TestMethod]
         public void CreateModelWithOneTABAndMap()

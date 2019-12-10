@@ -379,17 +379,10 @@ namespace ContinuumNS
                         thisModel[j] = models[i, j];
 
                     break;
-                }     
-                else if (models[i, 0].metsUsed.Length == 1 && metsUsed.Length == 1)
-                {
-                    for (int j = 0; j < RadiiCount; j++)
-                        thisModel[j] = models[i, j];
-
-                    break;
                 }
             }
 
-            if (thisModel[0] == null && metsUsed.Length > 1 && createIfNeeded)
+            if (thisModel[0] == null && createIfNeeded)
             {
                 CreateModel(metsUsed, thisInst, thisTOD, thisSeason, thisHeight);
                 for (int i = 0; i < ModelCount; i++)
@@ -756,7 +749,8 @@ namespace ContinuumNS
                         thisInst.metPairList.metPairs[j].AddNodesToWS_Pred(models, pathOfNodes, models[i].radius, this);
                     }
 
-                    thisInst.metPairList.SweepFindMinError(models[i], thisInst);
+                    if (metsUsed.Length > 1)
+                        thisInst.metPairList.SweepFindMinError(models[i], thisInst);
                 }
 
                 // Do WS estimates with new models

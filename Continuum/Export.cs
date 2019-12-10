@@ -3175,6 +3175,13 @@ namespace ContinuumNS
 
             file.WriteLine();
             file.Write("Time Stamp ,");
+            file.Write("50mWS [m/s],");
+            file.Write("50mWD [degs],");            
+            file.Write("Surf. Press. [kPa],");
+            file.Write("Sea Press. [kPa],");
+            file.Write("10mTemp[deg C],");
+            
+            /*
             if (thisMERRA.MERRA_Params.Get_50mWSWD) file.Write("50mWS [m/s],");
             if (thisMERRA.MERRA_Params.Get_50mWSWD) file.Write("50mWD [degs],");
             if (thisMERRA.MERRA_Params.Get_10mWSWD) file.Write("10mWS [m/s],");
@@ -3187,19 +3194,20 @@ namespace ContinuumNS
             if (thisMERRA.MERRA_Params.Get_TotalFrac) file.Write("ISCCP Cloud Fraction,");
             if (thisMERRA.MERRA_Params.Get_Precip) file.Write("Total Precipitation,");
             if (thisMERRA.MERRA_Params.Get_Corr_Precip) file.Write("Corrected Precipitation,");
+            */
 
             file.WriteLine();
 
             for (int i = 0; i < thisMERRA.interpData.TS_Data.Length; i++)
             {
                 file.Write(thisMERRA.interpData.TS_Data[i].ThisDate + ",");
-                if (thisMERRA.MERRA_Params.Get_50mWSWD) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WS50m, 3) + ",");
-                if (thisMERRA.MERRA_Params.Get_50mWSWD) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WD50m, 2) + ",");
+                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WS50m, 3) + ",");
+                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WD50m, 2) + ",");
                 //    if (thisMERRA.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WS10m, 3) + ",");
                 //    if (thisMERRA.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WD10m, 2) + ",");
-                if (thisMERRA.MERRA_Params.Get_SurfPress) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].SurfPress / 1000, 3) + ",");
-                if (thisMERRA.MERRA_Params.Get_SurfPress) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].SeaPress / 1000, 3) + ",");
-                if (thisMERRA.MERRA_Params.Get_10mTemp) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].Temp10m - 273.15, 2) + ",");
+                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].SurfPress / 1000, 3) + ",");
+                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].SeaPress / 1000, 3) + ",");
+                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].Temp10m - 273.15, 2) + ",");
                 //   if (thisMERRA.MERRA_Params.Get_FracMean) file.Write(thisMERRA.interpData.TS_Data[i].Mean_Cloud_Fraction + ",");
                 //   if (thisMERRA.MERRA_Params.Get_OpticalThick) file.Write(thisMERRA.interpData.TS_Data[i].Optical_Thick + ",");
                 //   if (thisMERRA.MERRA_Params.Get_TotalFrac) file.Write(thisMERRA.interpData.TS_Data[i].Total_Cloud_Area_Fraction + ",");

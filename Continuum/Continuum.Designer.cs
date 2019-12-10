@@ -31,6 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
+            this.plotDirectionalWS_Ratios = new OxyPlot.WindowsForms.PlotView();
+            this.plotInputWindRose = new OxyPlot.WindowsForms.PlotView();
             this.plotTopo = new OxyPlot.WindowsForms.PlotView();
             this.chkCreateTurbTS = new System.Windows.Forms.CheckBox();
             this.btnModHeight = new System.Windows.Forms.Button();
@@ -87,6 +89,12 @@
             this.btnTurbines = new System.Windows.Forms.Button();
             this.btnLoadXYZ = new System.Windows.Forms.Button();
             this.pgeMetData = new System.Windows.Forms.TabPage();
+            this.plotWSDiffByWS = new OxyPlot.WindowsForms.PlotView();
+            this.plotWSDiffByWD = new OxyPlot.WindowsForms.PlotView();
+            this.plotAnemScatter = new OxyPlot.WindowsForms.PlotView();
+            this.plotAlphaByWD = new OxyPlot.WindowsForms.PlotView();
+            this.plotMetQC_WindRose = new OxyPlot.WindowsForms.PlotView();
+            this.plotWS_vsHeight = new OxyPlot.WindowsForms.PlotView();
             this.btnGenerateHeaders = new System.Windows.Forms.Button();
             this.chkDisableFilter = new System.Windows.Forms.CheckBox();
             this.btnViewFilters = new System.Windows.Forms.Button();
@@ -153,6 +161,19 @@
             this.columnHeader72 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader73 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgeMERRA = new System.Windows.Forms.TabPage();
+            this.label54 = new System.Windows.Forms.Label();
+            this.txtMaxLong = new System.Windows.Forms.TextBox();
+            this.label146 = new System.Windows.Forms.Label();
+            this.txtMinLong = new System.Windows.Forms.TextBox();
+            this.label52 = new System.Windows.Forms.Label();
+            this.txtMaxLat = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtMinLat = new System.Windows.Forms.TextBox();
+            this.btnChangeFolder = new System.Windows.Forms.Button();
+            this.btnDownloadMERRA2 = new System.Windows.Forms.Button();
+            this.plotMERRA_WindRose = new OxyPlot.WindowsForms.PlotView();
+            this.plotMERRA_Monthly = new OxyPlot.WindowsForms.PlotView();
+            this.plotMERRA_Yearly = new OxyPlot.WindowsForms.PlotView();
             this.btnImportCRV_MERRA = new System.Windows.Forms.Button();
             this.chkYearsToDisplayAll = new System.Windows.Forms.CheckBox();
             this.label121 = new System.Windows.Forms.Label();
@@ -165,10 +186,10 @@
             this.cboNumMERRA_Nodes = new System.Windows.Forms.ComboBox();
             this.label161 = new System.Windows.Forms.Label();
             this.label160 = new System.Windows.Forms.Label();
-            this.cboMERRA_PowerCurves = new System.Windows.Forms.ComboBox();            
+            this.cboMERRA_PowerCurves = new System.Windows.Forms.ComboBox();
             this.btn_ExportWR = new System.Windows.Forms.Button();
             this.btn_Export_All_Months_All_Years = new System.Windows.Forms.Button();
-            this.label159 = new System.Windows.Forms.Label();            
+            this.label159 = new System.Windows.Forms.Label();
             this.label156 = new System.Windows.Forms.Label();
             this.cboMERRA_PlotParam = new System.Windows.Forms.ComboBox();
             this.lstMERRAAnnualProd = new System.Windows.Forms.ListView();
@@ -181,11 +202,6 @@
             this.Diff = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Average = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_Export_Interp = new System.Windows.Forms.Button();
-            this.chkSeaLevel = new System.Windows.Forms.CheckBox();
-            this.chkPressure = new System.Windows.Forms.CheckBox();
-            this.chkTemp10m = new System.Windows.Forms.CheckBox();
-            this.chkWSWD50m = new System.Windows.Forms.CheckBox();
-            this.label146 = new System.Windows.Forms.Label();
             this.dateMERRAEnd = new System.Windows.Forms.DateTimePicker();
             this.dateMERRAStart = new System.Windows.Forms.DateTimePicker();
             this.label152 = new System.Windows.Forms.Label();
@@ -201,6 +217,8 @@
             this.btn_Import_MERRA = new System.Windows.Forms.Button();
             this.label151 = new System.Windows.Forms.Label();
             this.pgeMCP = new System.Windows.Forms.TabPage();
+            this.plotMCP_Uncertainty = new OxyPlot.WindowsForms.PlotView();
+            this.plotMCP = new OxyPlot.WindowsForms.PlotView();
             this.btnShowMCPRanges = new System.Windows.Forms.Button();
             this.label51 = new System.Windows.Forms.Label();
             this.btnDoMCPAllMets = new System.Windows.Forms.Button();
@@ -288,7 +306,14 @@
             this.cboMCP_Met = new System.Windows.Forms.ComboBox();
             this.label106 = new System.Windows.Forms.Label();
             this.pgeMetSumm = new System.Windows.Forms.TabPage();
-            this.chtUWExpo = new OxyPlot.WindowsForms.PlotView();
+            this.plotDW_DH = new OxyPlot.WindowsForms.PlotView();
+            this.plotUW_DH = new OxyPlot.WindowsForms.PlotView();
+            this.plotDW_SR = new OxyPlot.WindowsForms.PlotView();
+            this.plotUW_SR = new OxyPlot.WindowsForms.PlotView();
+            this.plotElev = new OxyPlot.WindowsForms.PlotView();
+            this.plotDWUWExpo = new OxyPlot.WindowsForms.PlotView();
+            this.plotDWExpo = new OxyPlot.WindowsForms.PlotView();
+            this.plotUWExpo = new OxyPlot.WindowsForms.PlotView();
             this.cboSummSeason = new System.Windows.Forms.ComboBox();
             this.cboSummTOD = new System.Windows.Forms.ComboBox();
             this.Label80 = new System.Windows.Forms.Label();
@@ -330,6 +355,10 @@
             this.ColumnHeader51 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Label73 = new System.Windows.Forms.Label();
             this.pgeGrossTurbs = new System.Windows.Forms.TabPage();
+            this.plotGrossHisto = new OxyPlot.WindowsForms.PlotView();
+            this.plotGross_PowerCrvs = new OxyPlot.WindowsForms.PlotView();
+            this.plotGrossWS_Dist = new OxyPlot.WindowsForms.PlotView();
+            this.plotGrossWindRose = new OxyPlot.WindowsForms.PlotView();
             this.btnGenTurbGross = new System.Windows.Forms.Button();
             this.lstPowerCurveList = new System.Windows.Forms.ListView();
             this.columnHeader186 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -392,6 +421,8 @@
             this.ColumnHeader29 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ColumnHeader32 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgeExceedance = new System.Windows.Forms.TabPage();
+            this.plotCompositeExceed = new OxyPlot.WindowsForms.PlotView();
+            this.plotExceedCurves = new OxyPlot.WindowsForms.PlotView();
             this.btnImportCurves = new System.Windows.Forms.Button();
             this.btnGetDefaultExceed = new System.Windows.Forms.Button();
             this.cboExceedWake = new System.Windows.Forms.ComboBox();
@@ -428,6 +459,9 @@
             this.columnHeader174 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_editloss = new System.Windows.Forms.Button();
             this.pgeNetEsts = new System.Windows.Forms.TabPage();
+            this.plotWakeMap = new OxyPlot.WindowsForms.PlotView();
+            this.plotTurbsByString = new OxyPlot.WindowsForms.PlotView();
+            this.plotWakedDists = new OxyPlot.WindowsForms.PlotView();
             this.txtisMCPdNet = new System.Windows.Forms.TextBox();
             this.txtOtherLosses = new System.Windows.Forms.TextBox();
             this.label88 = new System.Windows.Forms.Label();
@@ -490,6 +524,7 @@
             this.Label36 = new System.Windows.Forms.Label();
             this.pgeSiteConditions = new System.Windows.Forms.TabPage();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.plotInflowAngle = new OxyPlot.WindowsForms.PlotView();
             this.label200 = new System.Windows.Forms.Label();
             this.txtInflowAngle = new System.Windows.Forms.TextBox();
             this.label199 = new System.Windows.Forms.Label();
@@ -503,6 +538,7 @@
             this.cboInflowWD = new System.Windows.Forms.ComboBox();
             this.label171 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.plotExtremeWS = new OxyPlot.WindowsForms.PlotView();
             this.lblNoExtremeWS = new System.Windows.Forms.Label();
             this.lblExtremeWS = new System.Windows.Forms.Label();
             this.btnExtremeWS = new System.Windows.Forms.Button();
@@ -518,6 +554,7 @@
             this.label191 = new System.Windows.Forms.Label();
             this.label170 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.plotExtremeShear = new OxyPlot.WindowsForms.PlotView();
             this.dateTimeExtremeShearStart = new System.Windows.Forms.DateTimePicker();
             this.label202 = new System.Windows.Forms.Label();
             this.label203 = new System.Windows.Forms.Label();
@@ -536,6 +573,7 @@
             this.columnHeader184 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label95 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.plotTurbInt = new OxyPlot.WindowsForms.PlotView();
             this.btnExportTI = new System.Windows.Forms.Button();
             this.label188 = new System.Windows.Forms.Label();
             this.cboTurbPowerCurve = new System.Windows.Forms.ComboBox();
@@ -560,6 +598,8 @@
             this.label93 = new System.Windows.Forms.Label();
             this.label92 = new System.Windows.Forms.Label();
             this.pgeMonthlyAnalysis = new System.Windows.Forms.TabPage();
+            this.plotMonthlyTS = new OxyPlot.WindowsForms.PlotView();
+            this.plotYearlyTS = new OxyPlot.WindowsForms.PlotView();
             this.label158 = new System.Windows.Forms.Label();
             this.cboMonthlyPowerCurve = new System.Windows.Forms.ComboBox();
             this.btnExportHourlyTurbineValues = new System.Windows.Forms.Button();
@@ -592,6 +632,7 @@
             this.columnHeader130 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label163 = new System.Windows.Forms.Label();
             this.pgeMaps = new System.Windows.Forms.TabPage();
+            this.plotGenMap = new OxyPlot.WindowsForms.PlotView();
             this.Label72 = new System.Windows.Forms.Label();
             this.cboMapWD = new System.Windows.Forms.ComboBox();
             this.txtMap_MetsUsed = new System.Windows.Forms.TextBox();
@@ -638,7 +679,10 @@
             this.ColumnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader185 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgeRound = new System.Windows.Forms.TabPage();
-            this.txtisMCPdUncert = new System.Windows.Forms.TextBox();            
+            this.plotTurbUncert = new OxyPlot.WindowsForms.PlotView();
+            this.plotRR_Histo = new OxyPlot.WindowsForms.PlotView();
+            this.plotRRErrorByNumMets = new OxyPlot.WindowsForms.PlotView();
+            this.txtisMCPdUncert = new System.Windows.Forms.TextBox();
             this.txtRR_FlowSep_Used = new System.Windows.Forms.TextBox();
             this.cboRR_MinSize = new System.Windows.Forms.ComboBox();
             this.Label31 = new System.Windows.Forms.Label();
@@ -679,6 +723,10 @@
             this.btnDoRRCalcs = new System.Windows.Forms.Button();
             this.Label46 = new System.Windows.Forms.Label();
             this.pgeStepwise = new System.Windows.Forms.TabPage();
+            this.plotDHModel = new OxyPlot.WindowsForms.PlotView();
+            this.plotUHModel = new OxyPlot.WindowsForms.PlotView();
+            this.plotPathAlongNodes = new OxyPlot.WindowsForms.PlotView();
+            this.plotAdvTopo = new OxyPlot.WindowsForms.PlotView();
             this.lblTurbineTSNoAdvanced = new System.Windows.Forms.Label();
             this.txtisMCPdAdv = new System.Windows.Forms.TextBox();
             this.cboSeasonAdvanced = new System.Windows.Forms.ComboBox();
@@ -757,6 +805,8 @@
             this.Label11 = new System.Windows.Forms.Label();
             this.Label7 = new System.Windows.Forms.Label();
             this.pgeSuitability = new System.Windows.Forms.TabPage();
+            this.plotIceVsDist = new OxyPlot.WindowsForms.PlotView();
+            this.plotIceShadowSound = new OxyPlot.WindowsForms.PlotView();
             this.lblIceDistOrHisto = new System.Windows.Forms.Label();
             this.cboIceDistORIceHisto = new System.Windows.Forms.ComboBox();
             this.label91 = new System.Windows.Forms.Label();
@@ -914,6 +964,8 @@
             // 
             // pgeInput
             // 
+            this.pgeInput.Controls.Add(this.plotDirectionalWS_Ratios);
+            this.pgeInput.Controls.Add(this.plotInputWindRose);
             this.pgeInput.Controls.Add(this.plotTopo);
             this.pgeInput.Controls.Add(this.chkCreateTurbTS);
             this.pgeInput.Controls.Add(this.btnModHeight);
@@ -972,13 +1024,41 @@
             this.pgeInput.Text = "Input";
             this.pgeInput.UseVisualStyleBackColor = true;
             // 
+            // plotDirectionalWS_Ratios
+            // 
+            this.plotDirectionalWS_Ratios.Location = new System.Drawing.Point(405, 505);
+            this.plotDirectionalWS_Ratios.Name = "plotDirectionalWS_Ratios";
+            this.plotDirectionalWS_Ratios.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotDirectionalWS_Ratios.Size = new System.Drawing.Size(376, 327);
+            this.plotDirectionalWS_Ratios.TabIndex = 128;
+            this.plotDirectionalWS_Ratios.Text = "plotView2";
+            this.plotDirectionalWS_Ratios.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotDirectionalWS_Ratios.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotDirectionalWS_Ratios.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotInputWindRose
+            // 
+            this.plotInputWindRose.Location = new System.Drawing.Point(17, 505);
+            this.plotInputWindRose.Name = "plotInputWindRose";
+            this.plotInputWindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotInputWindRose.Size = new System.Drawing.Size(376, 327);
+            this.plotInputWindRose.TabIndex = 127;
+            this.plotInputWindRose.Text = "plotView1";
+            this.plotInputWindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotInputWindRose.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotInputWindRose.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
             // plotTopo
             // 
             this.plotTopo.Location = new System.Drawing.Point(824, 26);
             this.plotTopo.Name = "plotTopo";
-            this.plotTopo.Size = new System.Drawing.Size(657, 608);
+            this.plotTopo.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTopo.Size = new System.Drawing.Size(780, 608);
             this.plotTopo.TabIndex = 126;
             this.plotTopo.Text = "plotTopo";
+            this.plotTopo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTopo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTopo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // chkCreateTurbTS
             // 
@@ -1577,6 +1657,12 @@
             // 
             // pgeMetData
             // 
+            this.pgeMetData.Controls.Add(this.plotWSDiffByWS);
+            this.pgeMetData.Controls.Add(this.plotWSDiffByWD);
+            this.pgeMetData.Controls.Add(this.plotAnemScatter);
+            this.pgeMetData.Controls.Add(this.plotAlphaByWD);
+            this.pgeMetData.Controls.Add(this.plotMetQC_WindRose);
+            this.pgeMetData.Controls.Add(this.plotWS_vsHeight);
             this.pgeMetData.Controls.Add(this.btnGenerateHeaders);
             this.pgeMetData.Controls.Add(this.chkDisableFilter);
             this.pgeMetData.Controls.Add(this.btnViewFilters);
@@ -1625,6 +1711,78 @@
             this.pgeMetData.TabIndex = 14;
             this.pgeMetData.Text = "Met Data QC";
             this.pgeMetData.UseVisualStyleBackColor = true;
+            // 
+            // plotWSDiffByWS
+            // 
+            this.plotWSDiffByWS.Location = new System.Drawing.Point(1079, 529);
+            this.plotWSDiffByWS.Name = "plotWSDiffByWS";
+            this.plotWSDiffByWS.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotWSDiffByWS.Size = new System.Drawing.Size(510, 313);
+            this.plotWSDiffByWS.TabIndex = 224;
+            this.plotWSDiffByWS.Text = "plotView2";
+            this.plotWSDiffByWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotWSDiffByWS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotWSDiffByWS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotWSDiffByWD
+            // 
+            this.plotWSDiffByWD.Location = new System.Drawing.Point(541, 529);
+            this.plotWSDiffByWD.Name = "plotWSDiffByWD";
+            this.plotWSDiffByWD.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotWSDiffByWD.Size = new System.Drawing.Size(510, 313);
+            this.plotWSDiffByWD.TabIndex = 223;
+            this.plotWSDiffByWD.Text = "plotView1";
+            this.plotWSDiffByWD.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotWSDiffByWD.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotWSDiffByWD.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotAnemScatter
+            // 
+            this.plotAnemScatter.Location = new System.Drawing.Point(18, 529);
+            this.plotAnemScatter.Name = "plotAnemScatter";
+            this.plotAnemScatter.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotAnemScatter.Size = new System.Drawing.Size(500, 313);
+            this.plotAnemScatter.TabIndex = 222;
+            this.plotAnemScatter.Text = "plotView1";
+            this.plotAnemScatter.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotAnemScatter.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotAnemScatter.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotAlphaByWD
+            // 
+            this.plotAlphaByWD.Location = new System.Drawing.Point(1050, 286);
+            this.plotAlphaByWD.Name = "plotAlphaByWD";
+            this.plotAlphaByWD.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotAlphaByWD.Size = new System.Drawing.Size(406, 207);
+            this.plotAlphaByWD.TabIndex = 221;
+            this.plotAlphaByWD.Text = "plotView1";
+            this.plotAlphaByWD.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotAlphaByWD.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotAlphaByWD.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotMetQC_WindRose
+            // 
+            this.plotMetQC_WindRose.Location = new System.Drawing.Point(1348, 39);
+            this.plotMetQC_WindRose.Name = "plotMetQC_WindRose";
+            this.plotMetQC_WindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotMetQC_WindRose.Size = new System.Drawing.Size(269, 212);
+            this.plotMetQC_WindRose.TabIndex = 220;
+            this.plotMetQC_WindRose.Text = "plotView1";
+            this.plotMetQC_WindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotMetQC_WindRose.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotMetQC_WindRose.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotWS_vsHeight
+            // 
+            this.plotWS_vsHeight.Location = new System.Drawing.Point(1050, 39);
+            this.plotWS_vsHeight.Name = "plotWS_vsHeight";
+            this.plotWS_vsHeight.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotWS_vsHeight.Size = new System.Drawing.Size(292, 212);
+            this.plotWS_vsHeight.TabIndex = 219;
+            this.plotWS_vsHeight.Text = "plotView1";
+            this.plotWS_vsHeight.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotWS_vsHeight.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotWS_vsHeight.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // btnGenerateHeaders
             // 
@@ -1765,7 +1923,7 @@
             this.cboFilt_or_Not.Items.AddRange(new object[] {
             "Unfiltered",
             "Filtered"});
-            this.cboFilt_or_Not.Location = new System.Drawing.Point(948, 500);
+            this.cboFilt_or_Not.Location = new System.Drawing.Point(417, 498);
             this.cboFilt_or_Not.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboFilt_or_Not.Name = "cboFilt_or_Not";
             this.cboFilt_or_Not.Size = new System.Drawing.Size(101, 26);
@@ -1776,7 +1934,7 @@
             // cboSensorHeight
             // 
             this.cboSensorHeight.FormattingEnabled = true;
-            this.cboSensorHeight.Location = new System.Drawing.Point(877, 500);
+            this.cboSensorHeight.Location = new System.Drawing.Point(346, 498);
             this.cboSensorHeight.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboSensorHeight.Name = "cboSensorHeight";
             this.cboSensorHeight.Size = new System.Drawing.Size(61, 26);
@@ -1787,7 +1945,7 @@
             // 
             this.label103.AutoSize = true;
             this.label103.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label103.Location = new System.Drawing.Point(825, 502);
+            this.label103.Location = new System.Drawing.Point(294, 500);
             this.label103.Name = "label103";
             this.label103.Size = new System.Drawing.Size(51, 18);
             this.label103.TabIndex = 203;
@@ -1797,27 +1955,27 @@
             // 
             this.label102.AutoSize = true;
             this.label102.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label102.Location = new System.Drawing.Point(1057, 496);
+            this.label102.Location = new System.Drawing.Point(1087, 500);
             this.label102.Name = "label102";
-            this.label102.Size = new System.Drawing.Size(285, 23);
+            this.label102.Size = new System.Drawing.Size(346, 23);
             this.label102.TabIndex = 202;
-            this.label102.Text = "Anem. WS Diff. vs. Wind Speed";
+            this.label102.Text = "Anemometer WS Diff. vs. Wind Speed";
             // 
             // label70
             // 
             this.label70.AutoSize = true;
             this.label70.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label70.Location = new System.Drawing.Point(489, 496);
+            this.label70.Location = new System.Drawing.Point(551, 498);
             this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(302, 23);
+            this.label70.Size = new System.Drawing.Size(368, 23);
             this.label70.TabIndex = 199;
-            this.label70.Text = "Anem. WS Diff vs. Wind Direction";
+            this.label70.Text = "Anemometer WS Diff. vs. Wind Direction";
             // 
             // label69
             // 
             this.label69.AutoSize = true;
             this.label69.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label69.Location = new System.Drawing.Point(23, 491);
+            this.label69.Location = new System.Drawing.Point(25, 498);
             this.label69.Name = "label69";
             this.label69.Size = new System.Drawing.Size(227, 23);
             this.label69.TabIndex = 197;
@@ -1949,7 +2107,7 @@
             // 
             this.label65.AutoSize = true;
             this.label65.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label65.Location = new System.Drawing.Point(1046, 254);
+            this.label65.Location = new System.Drawing.Point(1046, 257);
             this.label65.Name = "label65";
             this.label65.Size = new System.Drawing.Size(277, 23);
             this.label65.TabIndex = 189;
@@ -2220,6 +2378,19 @@
             // 
             // pgeMERRA
             // 
+            this.pgeMERRA.Controls.Add(this.label54);
+            this.pgeMERRA.Controls.Add(this.txtMaxLong);
+            this.pgeMERRA.Controls.Add(this.label146);
+            this.pgeMERRA.Controls.Add(this.txtMinLong);
+            this.pgeMERRA.Controls.Add(this.label52);
+            this.pgeMERRA.Controls.Add(this.txtMaxLat);
+            this.pgeMERRA.Controls.Add(this.label5);
+            this.pgeMERRA.Controls.Add(this.txtMinLat);
+            this.pgeMERRA.Controls.Add(this.btnChangeFolder);
+            this.pgeMERRA.Controls.Add(this.btnDownloadMERRA2);
+            this.pgeMERRA.Controls.Add(this.plotMERRA_WindRose);
+            this.pgeMERRA.Controls.Add(this.plotMERRA_Monthly);
+            this.pgeMERRA.Controls.Add(this.plotMERRA_Yearly);
             this.pgeMERRA.Controls.Add(this.btnImportCRV_MERRA);
             this.pgeMERRA.Controls.Add(this.chkYearsToDisplayAll);
             this.pgeMERRA.Controls.Add(this.label121);
@@ -2232,20 +2403,15 @@
             this.pgeMERRA.Controls.Add(this.cboNumMERRA_Nodes);
             this.pgeMERRA.Controls.Add(this.label161);
             this.pgeMERRA.Controls.Add(this.label160);
-            this.pgeMERRA.Controls.Add(this.cboMERRA_PowerCurves);           
+            this.pgeMERRA.Controls.Add(this.cboMERRA_PowerCurves);
             this.pgeMERRA.Controls.Add(this.btn_ExportWR);
             this.pgeMERRA.Controls.Add(this.btn_Export_All_Months_All_Years);
-            this.pgeMERRA.Controls.Add(this.label159);            
+            this.pgeMERRA.Controls.Add(this.label159);
             this.pgeMERRA.Controls.Add(this.label156);
             this.pgeMERRA.Controls.Add(this.cboMERRA_PlotParam);
             this.pgeMERRA.Controls.Add(this.lstMERRAAnnualProd);
             this.pgeMERRA.Controls.Add(this.lstMERRA_MonthlyProd);
             this.pgeMERRA.Controls.Add(this.btn_Export_Interp);
-            this.pgeMERRA.Controls.Add(this.chkSeaLevel);
-            this.pgeMERRA.Controls.Add(this.chkPressure);
-            this.pgeMERRA.Controls.Add(this.chkTemp10m);
-            this.pgeMERRA.Controls.Add(this.chkWSWD50m);
-            this.pgeMERRA.Controls.Add(this.label146);
             this.pgeMERRA.Controls.Add(this.dateMERRAEnd);
             this.pgeMERRA.Controls.Add(this.dateMERRAStart);
             this.pgeMERRA.Controls.Add(this.label152);
@@ -2267,6 +2433,145 @@
             this.pgeMERRA.TabIndex = 16;
             this.pgeMERRA.Text = "MERRA2 Data";
             this.pgeMERRA.UseVisualStyleBackColor = true;
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label54.Location = new System.Drawing.Point(400, 455);
+            this.label54.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(20, 18);
+            this.label54.TabIndex = 236;
+            this.label54.Text = "to";
+            // 
+            // txtMaxLong
+            // 
+            this.txtMaxLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMaxLong.Location = new System.Drawing.Point(422, 452);
+            this.txtMaxLong.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMaxLong.Name = "txtMaxLong";
+            this.txtMaxLong.Size = new System.Drawing.Size(47, 25);
+            this.txtMaxLong.TabIndex = 235;
+            // 
+            // label146
+            // 
+            this.label146.AutoSize = true;
+            this.label146.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label146.Location = new System.Drawing.Point(238, 455);
+            this.label146.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label146.Name = "label146";
+            this.label146.Size = new System.Drawing.Size(109, 18);
+            this.label146.TabIndex = 234;
+            this.label146.Text = "Longitude range:";
+            // 
+            // txtMinLong
+            // 
+            this.txtMinLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMinLong.Location = new System.Drawing.Point(350, 452);
+            this.txtMinLong.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMinLong.Name = "txtMinLong";
+            this.txtMinLong.Size = new System.Drawing.Size(47, 25);
+            this.txtMinLong.TabIndex = 233;
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label52.Location = new System.Drawing.Point(400, 422);
+            this.label52.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(20, 18);
+            this.label52.TabIndex = 232;
+            this.label52.Text = "to";
+            // 
+            // txtMaxLat
+            // 
+            this.txtMaxLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMaxLat.Location = new System.Drawing.Point(422, 419);
+            this.txtMaxLat.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMaxLat.Name = "txtMaxLat";
+            this.txtMaxLat.Size = new System.Drawing.Size(47, 25);
+            this.txtMaxLat.TabIndex = 231;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(247, 422);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(99, 18);
+            this.label5.TabIndex = 230;
+            this.label5.Text = "Latitude range:";
+            // 
+            // txtMinLat
+            // 
+            this.txtMinLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMinLat.Location = new System.Drawing.Point(350, 419);
+            this.txtMinLat.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMinLat.Name = "txtMinLat";
+            this.txtMinLat.Size = new System.Drawing.Size(47, 25);
+            this.txtMinLat.TabIndex = 229;
+            // 
+            // btnChangeFolder
+            // 
+            this.btnChangeFolder.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.btnChangeFolder.Location = new System.Drawing.Point(381, 76);
+            this.btnChangeFolder.Name = "btnChangeFolder";
+            this.btnChangeFolder.Size = new System.Drawing.Size(104, 31);
+            this.btnChangeFolder.TabIndex = 228;
+            this.btnChangeFolder.Text = "Change Folder";
+            this.btnChangeFolder.UseVisualStyleBackColor = true;
+            this.btnChangeFolder.Click += new System.EventHandler(this.btnChangeFolder_Click);
+            // 
+            // btnDownloadMERRA2
+            // 
+            this.btnDownloadMERRA2.BackColor = System.Drawing.Color.LightCoral;
+            this.btnDownloadMERRA2.Location = new System.Drawing.Point(49, 421);
+            this.btnDownloadMERRA2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnDownloadMERRA2.Name = "btnDownloadMERRA2";
+            this.btnDownloadMERRA2.Size = new System.Drawing.Size(184, 52);
+            this.btnDownloadMERRA2.TabIndex = 227;
+            this.btnDownloadMERRA2.Text = "Download MERRA2 data";
+            this.btnDownloadMERRA2.UseVisualStyleBackColor = false;
+            this.btnDownloadMERRA2.Click += new System.EventHandler(this.btnDownloadMERRA2_Click);
+            // 
+            // plotMERRA_WindRose
+            // 
+            this.plotMERRA_WindRose.Location = new System.Drawing.Point(1290, 91);
+            this.plotMERRA_WindRose.Name = "plotMERRA_WindRose";
+            this.plotMERRA_WindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotMERRA_WindRose.Size = new System.Drawing.Size(320, 320);
+            this.plotMERRA_WindRose.TabIndex = 226;
+            this.plotMERRA_WindRose.Text = "plotView1";
+            this.plotMERRA_WindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotMERRA_WindRose.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotMERRA_WindRose.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotMERRA_Monthly
+            // 
+            this.plotMERRA_Monthly.Location = new System.Drawing.Point(1050, 421);
+            this.plotMERRA_Monthly.Name = "plotMERRA_Monthly";
+            this.plotMERRA_Monthly.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotMERRA_Monthly.Size = new System.Drawing.Size(560, 405);
+            this.plotMERRA_Monthly.TabIndex = 225;
+            this.plotMERRA_Monthly.Text = "plotView1";
+            this.plotMERRA_Monthly.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotMERRA_Monthly.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotMERRA_Monthly.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotMERRA_Yearly
+            // 
+            this.plotMERRA_Yearly.Location = new System.Drawing.Point(474, 421);
+            this.plotMERRA_Yearly.Name = "plotMERRA_Yearly";
+            this.plotMERRA_Yearly.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotMERRA_Yearly.Size = new System.Drawing.Size(560, 405);
+            this.plotMERRA_Yearly.TabIndex = 224;
+            this.plotMERRA_Yearly.Text = "plotView1";
+            this.plotMERRA_Yearly.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotMERRA_Yearly.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotMERRA_Yearly.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // btnImportCRV_MERRA
             // 
@@ -2440,37 +2745,10 @@
             this.cboMERRA_PowerCurves.TabIndex = 201;
             this.cboMERRA_PowerCurves.SelectedIndexChanged += new System.EventHandler(this.cboMERRA_PowerCurves_SelectedIndexChanged);
             // 
-            // chtMERRA_Monthly
-            // 
-      /*      this.chtMERRA_Monthly.AutoRefresh = false;
-            this.chtMERRA_Monthly.BackColor = System.Drawing.SystemColors.Control;
-            this.chtMERRA_Monthly.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtMERRA_Monthly.Location = new System.Drawing.Point(1086, 414);
-            this.chtMERRA_Monthly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtMERRA_Monthly.Name = "chtMERRA_Monthly";
-            this.chtMERRA_Monthly.Size = new System.Drawing.Size(532, 400);
-            
-            this.chtMERRA_Monthly.TabIndex = 200;
-            this.chtMERRA_Monthly.Text = "NChartControl1";
-            // 
-            // chtMERRA_Yearly
-            // 
-            this.chtMERRA_Yearly.AutoRefresh = false;
-            this.chtMERRA_Yearly.BackColor = System.Drawing.SystemColors.Control;
-            this.chtMERRA_Yearly.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtMERRA_Yearly.Location = new System.Drawing.Point(504, 414);
-            this.chtMERRA_Yearly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtMERRA_Yearly.Name = "chtMERRA_Yearly";
-            this.chtMERRA_Yearly.Size = new System.Drawing.Size(561, 400);
-            
-            this.chtMERRA_Yearly.TabIndex = 199;
-            this.chtMERRA_Yearly.Text = "NChartControl1";
-            // 
-            */
             // btn_ExportWR
             // 
             this.btn_ExportWR.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_ExportWR.Location = new System.Drawing.Point(265, 726);
+            this.btn_ExportWR.Location = new System.Drawing.Point(70, 734);
             this.btn_ExportWR.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btn_ExportWR.Name = "btn_ExportWR";
             this.btn_ExportWR.Size = new System.Drawing.Size(128, 59);
@@ -2482,7 +2760,7 @@
             // btn_Export_All_Months_All_Years
             // 
             this.btn_Export_All_Months_All_Years.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Export_All_Months_All_Years.Location = new System.Drawing.Point(265, 650);
+            this.btn_Export_All_Months_All_Years.Location = new System.Drawing.Point(70, 658);
             this.btn_Export_All_Months_All_Years.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Export_All_Months_All_Years.Name = "btn_Export_All_Months_All_Years";
             this.btn_Export_All_Months_All_Years.Size = new System.Drawing.Size(128, 58);
@@ -2501,20 +2779,6 @@
             this.label159.Size = new System.Drawing.Size(289, 20);
             this.label159.TabIndex = 151;
             this.label159.Text = "MERRA2 Wind Rose for Selected Interval:";
-            // 
-            // chtMERRA_WR
-            // 
-       /*     this.chtMERRA_WR.AutoRefresh = false;
-            this.chtMERRA_WR.BackColor = System.Drawing.SystemColors.Control;
-            this.chtMERRA_WR.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtMERRA_WR.Location = new System.Drawing.Point(1298, 105);
-            this.chtMERRA_WR.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtMERRA_WR.Name = "chtMERRA_WR";
-            this.chtMERRA_WR.Size = new System.Drawing.Size(320, 293);
-            this.chtMERRA_WR.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtMERRA_WR.State")));
-            this.chtMERRA_WR.TabIndex = 150;
-            this.chtMERRA_WR.Text = "nChartControl1";
-            */
             // 
             // label156
             // 
@@ -2620,7 +2884,7 @@
             // btn_Export_Interp
             // 
             this.btn_Export_Interp.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Export_Interp.Location = new System.Drawing.Point(232, 574);
+            this.btn_Export_Interp.Location = new System.Drawing.Point(37, 582);
             this.btn_Export_Interp.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Export_Interp.Name = "btn_Export_Interp";
             this.btn_Export_Interp.Size = new System.Drawing.Size(203, 62);
@@ -2628,74 +2892,6 @@
             this.btn_Export_Interp.Text = "Export Interpolated OE-Extracted MERRA2 Data";
             this.btn_Export_Interp.UseVisualStyleBackColor = true;
             this.btn_Export_Interp.Click += new System.EventHandler(this.btn_Export_Interp_Click);
-            // 
-            // chkSeaLevel
-            // 
-            this.chkSeaLevel.AutoSize = true;
-            this.chkSeaLevel.Checked = true;
-            this.chkSeaLevel.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkSeaLevel.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkSeaLevel.Location = new System.Drawing.Point(27, 537);
-            this.chkSeaLevel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkSeaLevel.Name = "chkSeaLevel";
-            this.chkSeaLevel.Size = new System.Drawing.Size(137, 22);
-            this.chkSeaLevel.TabIndex = 137;
-            this.chkSeaLevel.Text = "Sea Level Pressure";
-            this.chkSeaLevel.UseVisualStyleBackColor = true;
-            // 
-            // chkPressure
-            // 
-            this.chkPressure.AutoSize = true;
-            this.chkPressure.Checked = true;
-            this.chkPressure.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkPressure.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkPressure.Location = new System.Drawing.Point(27, 506);
-            this.chkPressure.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkPressure.Name = "chkPressure";
-            this.chkPressure.Size = new System.Drawing.Size(126, 22);
-            this.chkPressure.TabIndex = 130;
-            this.chkPressure.Text = "Surface Pressure";
-            this.chkPressure.UseVisualStyleBackColor = true;
-            // 
-            // chkTemp10m
-            // 
-            this.chkTemp10m.AutoSize = true;
-            this.chkTemp10m.Checked = true;
-            this.chkTemp10m.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTemp10m.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkTemp10m.Location = new System.Drawing.Point(27, 475);
-            this.chkTemp10m.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkTemp10m.Name = "chkTemp10m";
-            this.chkTemp10m.Size = new System.Drawing.Size(92, 22);
-            this.chkTemp10m.TabIndex = 129;
-            this.chkTemp10m.Text = "10 m Temp";
-            this.chkTemp10m.UseVisualStyleBackColor = true;
-            // 
-            // chkWSWD50m
-            // 
-            this.chkWSWD50m.AutoSize = true;
-            this.chkWSWD50m.Checked = true;
-            this.chkWSWD50m.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkWSWD50m.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkWSWD50m.Location = new System.Drawing.Point(27, 447);
-            this.chkWSWD50m.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkWSWD50m.Name = "chkWSWD50m";
-            this.chkWSWD50m.Size = new System.Drawing.Size(113, 22);
-            this.chkWSWD50m.TabIndex = 128;
-            this.chkWSWD50m.Text = "50 m WS&&WD";
-            this.chkWSWD50m.UseVisualStyleBackColor = true;
-            // 
-            // label146
-            // 
-            this.label146.AutoSize = true;
-            this.label146.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label146.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label146.Location = new System.Drawing.Point(26, 411);
-            this.label146.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label146.Name = "label146";
-            this.label146.Size = new System.Drawing.Size(141, 18);
-            this.label146.TabIndex = 127;
-            this.label146.Text = "Parameters to Extract:";
             // 
             // dateMERRAEnd
             // 
@@ -2819,11 +3015,11 @@
             // label154
             // 
             this.label154.AutoSize = true;
-            this.label154.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label154.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label154.Location = new System.Drawing.Point(22, 91);
             this.label154.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label154.Name = "label154";
-            this.label154.Size = new System.Drawing.Size(176, 18);
+            this.label154.Size = new System.Drawing.Size(178, 20);
             this.label154.TabIndex = 109;
             this.label154.Text = "MERRA2 Folder location:";
             // 
@@ -2836,13 +3032,12 @@
             this.txt_MERRA2_folder.ReadOnly = true;
             this.txt_MERRA2_folder.Size = new System.Drawing.Size(459, 21);
             this.txt_MERRA2_folder.TabIndex = 108;
-            this.txt_MERRA2_folder.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // btn_Import_MERRA
             // 
             this.btn_Import_MERRA.BackColor = System.Drawing.Color.LightCoral;
             this.btn_Import_MERRA.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Import_MERRA.Location = new System.Drawing.Point(244, 489);
+            this.btn_Import_MERRA.Location = new System.Drawing.Point(49, 497);
             this.btn_Import_MERRA.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Import_MERRA.Name = "btn_Import_MERRA";
             this.btn_Import_MERRA.Size = new System.Drawing.Size(184, 71);
@@ -2864,6 +3059,8 @@
             // 
             // pgeMCP
             // 
+            this.pgeMCP.Controls.Add(this.plotMCP_Uncertainty);
+            this.pgeMCP.Controls.Add(this.plotMCP);
             this.pgeMCP.Controls.Add(this.btnShowMCPRanges);
             this.pgeMCP.Controls.Add(this.label51);
             this.pgeMCP.Controls.Add(this.btnDoMCPAllMets);
@@ -2951,6 +3148,30 @@
             this.pgeMCP.Text = "MCP";
             this.pgeMCP.UseVisualStyleBackColor = true;
             this.pgeMCP.Click += new System.EventHandler(this.PgeMCP_Click);
+            // 
+            // plotMCP_Uncertainty
+            // 
+            this.plotMCP_Uncertainty.Location = new System.Drawing.Point(1008, 400);
+            this.plotMCP_Uncertainty.Name = "plotMCP_Uncertainty";
+            this.plotMCP_Uncertainty.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotMCP_Uncertainty.Size = new System.Drawing.Size(423, 311);
+            this.plotMCP_Uncertainty.TabIndex = 297;
+            this.plotMCP_Uncertainty.Text = "plotView1";
+            this.plotMCP_Uncertainty.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotMCP_Uncertainty.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotMCP_Uncertainty.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotMCP
+            // 
+            this.plotMCP.Location = new System.Drawing.Point(304, 286);
+            this.plotMCP.Name = "plotMCP";
+            this.plotMCP.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotMCP.Size = new System.Drawing.Size(678, 425);
+            this.plotMCP.TabIndex = 296;
+            this.plotMCP.Text = "plotView1";
+            this.plotMCP.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotMCP.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotMCP.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // btnShowMCPRanges
             // 
@@ -3858,7 +4079,14 @@
             // 
             // pgeMetSumm
             // 
-            this.pgeMetSumm.Controls.Add(this.chtUWExpo);
+            this.pgeMetSumm.Controls.Add(this.plotDW_DH);
+            this.pgeMetSumm.Controls.Add(this.plotUW_DH);
+            this.pgeMetSumm.Controls.Add(this.plotDW_SR);
+            this.pgeMetSumm.Controls.Add(this.plotUW_SR);
+            this.pgeMetSumm.Controls.Add(this.plotElev);
+            this.pgeMetSumm.Controls.Add(this.plotDWUWExpo);
+            this.pgeMetSumm.Controls.Add(this.plotDWExpo);
+            this.pgeMetSumm.Controls.Add(this.plotUWExpo);
             this.pgeMetSumm.Controls.Add(this.cboSummSeason);
             this.pgeMetSumm.Controls.Add(this.cboSummTOD);
             this.pgeMetSumm.Controls.Add(this.Label80);
@@ -3886,13 +4114,101 @@
             this.pgeMetSumm.Text = "Met && Turbine Summary";
             this.pgeMetSumm.UseVisualStyleBackColor = true;
             // 
-            // chtUWExpo
+            // plotDW_DH
             // 
-            this.chtUWExpo.Location = new System.Drawing.Point(20, 264);
-            this.chtUWExpo.Name = "chtUWExpo";
-            this.chtUWExpo.Size = new System.Drawing.Size(387, 258);
-            this.chtUWExpo.TabIndex = 214;
-            this.chtUWExpo.Text = "plotView1";
+            this.plotDW_DH.Location = new System.Drawing.Point(1228, 552);
+            this.plotDW_DH.Name = "plotDW_DH";
+            this.plotDW_DH.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotDW_DH.Size = new System.Drawing.Size(387, 258);
+            this.plotDW_DH.TabIndex = 221;
+            this.plotDW_DH.Text = "plotView1";
+            this.plotDW_DH.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotDW_DH.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotDW_DH.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotUW_DH
+            // 
+            this.plotUW_DH.Location = new System.Drawing.Point(826, 552);
+            this.plotUW_DH.Name = "plotUW_DH";
+            this.plotUW_DH.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotUW_DH.Size = new System.Drawing.Size(387, 258);
+            this.plotUW_DH.TabIndex = 220;
+            this.plotUW_DH.Text = "plotView1";
+            this.plotUW_DH.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotUW_DH.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotUW_DH.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotDW_SR
+            // 
+            this.plotDW_SR.Location = new System.Drawing.Point(423, 552);
+            this.plotDW_SR.Name = "plotDW_SR";
+            this.plotDW_SR.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotDW_SR.Size = new System.Drawing.Size(387, 258);
+            this.plotDW_SR.TabIndex = 219;
+            this.plotDW_SR.Text = "plotView1";
+            this.plotDW_SR.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotDW_SR.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotDW_SR.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotUW_SR
+            // 
+            this.plotUW_SR.Location = new System.Drawing.Point(20, 552);
+            this.plotUW_SR.Name = "plotUW_SR";
+            this.plotUW_SR.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotUW_SR.Size = new System.Drawing.Size(387, 258);
+            this.plotUW_SR.TabIndex = 218;
+            this.plotUW_SR.Text = "plotView1";
+            this.plotUW_SR.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotUW_SR.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotUW_SR.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotElev
+            // 
+            this.plotElev.Location = new System.Drawing.Point(1228, 263);
+            this.plotElev.Name = "plotElev";
+            this.plotElev.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotElev.Size = new System.Drawing.Size(387, 258);
+            this.plotElev.TabIndex = 217;
+            this.plotElev.Text = "plotView1";
+            this.plotElev.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotElev.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotElev.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotDWUWExpo
+            // 
+            this.plotDWUWExpo.Location = new System.Drawing.Point(826, 263);
+            this.plotDWUWExpo.Name = "plotDWUWExpo";
+            this.plotDWUWExpo.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotDWUWExpo.Size = new System.Drawing.Size(387, 258);
+            this.plotDWUWExpo.TabIndex = 216;
+            this.plotDWUWExpo.Text = "plotView1";
+            this.plotDWUWExpo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotDWUWExpo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotDWUWExpo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotDWExpo
+            // 
+            this.plotDWExpo.Location = new System.Drawing.Point(423, 264);
+            this.plotDWExpo.Name = "plotDWExpo";
+            this.plotDWExpo.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotDWExpo.Size = new System.Drawing.Size(387, 258);
+            this.plotDWExpo.TabIndex = 215;
+            this.plotDWExpo.Text = "plotView1";
+            this.plotDWExpo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotDWExpo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotDWExpo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotUWExpo
+            // 
+            this.plotUWExpo.Location = new System.Drawing.Point(20, 264);
+            this.plotUWExpo.Name = "plotUWExpo";
+            this.plotUWExpo.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotUWExpo.Size = new System.Drawing.Size(387, 258);
+            this.plotUWExpo.TabIndex = 214;
+            this.plotUWExpo.Text = "plotView1";
+            this.plotUWExpo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotUWExpo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotUWExpo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // cboSummSeason
             // 
@@ -4236,6 +4552,10 @@
             // 
             // pgeGrossTurbs
             // 
+            this.pgeGrossTurbs.Controls.Add(this.plotGrossHisto);
+            this.pgeGrossTurbs.Controls.Add(this.plotGross_PowerCrvs);
+            this.pgeGrossTurbs.Controls.Add(this.plotGrossWS_Dist);
+            this.pgeGrossTurbs.Controls.Add(this.plotGrossWindRose);
             this.pgeGrossTurbs.Controls.Add(this.btnGenTurbGross);
             this.pgeGrossTurbs.Controls.Add(this.lstPowerCurveList);
             this.pgeGrossTurbs.Controls.Add(this.txtisMCPdGross);
@@ -4292,6 +4612,54 @@
             this.pgeGrossTurbs.TabIndex = 3;
             this.pgeGrossTurbs.Text = "Gross Turbine Ests.";
             this.pgeGrossTurbs.UseVisualStyleBackColor = true;
+            // 
+            // plotGrossHisto
+            // 
+            this.plotGrossHisto.Location = new System.Drawing.Point(292, 527);
+            this.plotGrossHisto.Name = "plotGrossHisto";
+            this.plotGrossHisto.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotGrossHisto.Size = new System.Drawing.Size(531, 299);
+            this.plotGrossHisto.TabIndex = 219;
+            this.plotGrossHisto.Text = "plotView1";
+            this.plotGrossHisto.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotGrossHisto.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotGrossHisto.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotGross_PowerCrvs
+            // 
+            this.plotGross_PowerCrvs.Location = new System.Drawing.Point(1111, 440);
+            this.plotGross_PowerCrvs.Name = "plotGross_PowerCrvs";
+            this.plotGross_PowerCrvs.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotGross_PowerCrvs.Size = new System.Drawing.Size(497, 386);
+            this.plotGross_PowerCrvs.TabIndex = 218;
+            this.plotGross_PowerCrvs.Text = "plotView1";
+            this.plotGross_PowerCrvs.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotGross_PowerCrvs.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotGross_PowerCrvs.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotGrossWS_Dist
+            // 
+            this.plotGrossWS_Dist.Location = new System.Drawing.Point(1111, 39);
+            this.plotGrossWS_Dist.Name = "plotGrossWS_Dist";
+            this.plotGrossWS_Dist.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotGrossWS_Dist.Size = new System.Drawing.Size(497, 386);
+            this.plotGrossWS_Dist.TabIndex = 217;
+            this.plotGrossWS_Dist.Text = "plotView1";
+            this.plotGrossWS_Dist.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotGrossWS_Dist.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotGrossWS_Dist.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotGrossWindRose
+            // 
+            this.plotGrossWindRose.Location = new System.Drawing.Point(1111, 39);
+            this.plotGrossWindRose.Name = "plotGrossWindRose";
+            this.plotGrossWindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotGrossWindRose.Size = new System.Drawing.Size(497, 386);
+            this.plotGrossWindRose.TabIndex = 216;
+            this.plotGrossWindRose.Text = "plotView1";
+            this.plotGrossWindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotGrossWindRose.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotGrossWindRose.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // btnGenTurbGross
             // 
@@ -4893,6 +5261,8 @@
             // 
             // pgeExceedance
             // 
+            this.pgeExceedance.Controls.Add(this.plotCompositeExceed);
+            this.pgeExceedance.Controls.Add(this.plotExceedCurves);
             this.pgeExceedance.Controls.Add(this.btnImportCurves);
             this.pgeExceedance.Controls.Add(this.btnGetDefaultExceed);
             this.pgeExceedance.Controls.Add(this.cboExceedWake);
@@ -4920,6 +5290,30 @@
             this.pgeExceedance.TabIndex = 19;
             this.pgeExceedance.Text = "Exceedance Modeling";
             this.pgeExceedance.UseVisualStyleBackColor = true;
+            // 
+            // plotCompositeExceed
+            // 
+            this.plotCompositeExceed.Location = new System.Drawing.Point(1033, 485);
+            this.plotCompositeExceed.Name = "plotCompositeExceed";
+            this.plotCompositeExceed.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotCompositeExceed.Size = new System.Drawing.Size(567, 343);
+            this.plotCompositeExceed.TabIndex = 237;
+            this.plotCompositeExceed.Text = "plotView1";
+            this.plotCompositeExceed.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotCompositeExceed.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotCompositeExceed.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotExceedCurves
+            // 
+            this.plotExceedCurves.Location = new System.Drawing.Point(970, 27);
+            this.plotExceedCurves.Name = "plotExceedCurves";
+            this.plotExceedCurves.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotExceedCurves.Size = new System.Drawing.Size(630, 386);
+            this.plotExceedCurves.TabIndex = 236;
+            this.plotExceedCurves.Text = "plotView1";
+            this.plotExceedCurves.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotExceedCurves.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotExceedCurves.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // btnImportCurves
             // 
@@ -5248,6 +5642,9 @@
             // 
             // pgeNetEsts
             // 
+            this.pgeNetEsts.Controls.Add(this.plotWakeMap);
+            this.pgeNetEsts.Controls.Add(this.plotTurbsByString);
+            this.pgeNetEsts.Controls.Add(this.plotWakedDists);
             this.pgeNetEsts.Controls.Add(this.txtisMCPdNet);
             this.pgeNetEsts.Controls.Add(this.txtOtherLosses);
             this.pgeNetEsts.Controls.Add(this.label88);
@@ -5292,6 +5689,42 @@
             this.pgeNetEsts.TabIndex = 13;
             this.pgeNetEsts.Text = "Net Turbine Ests";
             this.pgeNetEsts.UseVisualStyleBackColor = true;
+            // 
+            // plotWakeMap
+            // 
+            this.plotWakeMap.Location = new System.Drawing.Point(989, 238);
+            this.plotWakeMap.Name = "plotWakeMap";
+            this.plotWakeMap.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotWakeMap.Size = new System.Drawing.Size(610, 499);
+            this.plotWakeMap.TabIndex = 240;
+            this.plotWakeMap.Text = "plotView1";
+            this.plotWakeMap.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotWakeMap.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotWakeMap.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotTurbsByString
+            // 
+            this.plotTurbsByString.Location = new System.Drawing.Point(499, 534);
+            this.plotTurbsByString.Name = "plotTurbsByString";
+            this.plotTurbsByString.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTurbsByString.Size = new System.Drawing.Size(445, 296);
+            this.plotTurbsByString.TabIndex = 239;
+            this.plotTurbsByString.Text = "plotView1";
+            this.plotTurbsByString.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTurbsByString.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTurbsByString.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotWakedDists
+            // 
+            this.plotWakedDists.Location = new System.Drawing.Point(21, 534);
+            this.plotWakedDists.Name = "plotWakedDists";
+            this.plotWakedDists.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotWakedDists.Size = new System.Drawing.Size(445, 296);
+            this.plotWakedDists.TabIndex = 238;
+            this.plotWakedDists.Text = "plotView1";
+            this.plotWakedDists.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotWakedDists.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotWakedDists.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // txtisMCPdNet
             // 
@@ -5826,6 +6259,7 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.plotInflowAngle);
             this.panel4.Controls.Add(this.label200);
             this.panel4.Controls.Add(this.txtInflowAngle);
             this.panel4.Controls.Add(this.label199);
@@ -5843,6 +6277,18 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(806, 377);
             this.panel4.TabIndex = 6;
+            // 
+            // plotInflowAngle
+            // 
+            this.plotInflowAngle.Location = new System.Drawing.Point(326, 33);
+            this.plotInflowAngle.Name = "plotInflowAngle";
+            this.plotInflowAngle.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotInflowAngle.Size = new System.Drawing.Size(444, 294);
+            this.plotInflowAngle.TabIndex = 277;
+            this.plotInflowAngle.Text = "plotView1";
+            this.plotInflowAngle.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotInflowAngle.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotInflowAngle.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // label200
             // 
@@ -5981,6 +6427,7 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.plotExtremeWS);
             this.panel3.Controls.Add(this.lblNoExtremeWS);
             this.panel3.Controls.Add(this.lblExtremeWS);
             this.panel3.Controls.Add(this.btnExtremeWS);
@@ -6000,6 +6447,18 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(797, 377);
             this.panel3.TabIndex = 5;
+            // 
+            // plotExtremeWS
+            // 
+            this.plotExtremeWS.Location = new System.Drawing.Point(328, 33);
+            this.plotExtremeWS.Name = "plotExtremeWS";
+            this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotExtremeWS.Size = new System.Drawing.Size(444, 251);
+            this.plotExtremeWS.TabIndex = 272;
+            this.plotExtremeWS.Text = "plotView1";
+            this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotExtremeWS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotExtremeWS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // lblNoExtremeWS
             // 
@@ -6127,6 +6586,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.plotExtremeShear);
             this.panel2.Controls.Add(this.dateTimeExtremeShearStart);
             this.panel2.Controls.Add(this.label202);
             this.panel2.Controls.Add(this.label203);
@@ -6144,6 +6604,18 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(806, 388);
             this.panel2.TabIndex = 4;
+            // 
+            // plotExtremeShear
+            // 
+            this.plotExtremeShear.Location = new System.Drawing.Point(32, 113);
+            this.plotExtremeShear.Name = "plotExtremeShear";
+            this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotExtremeShear.Size = new System.Drawing.Size(394, 251);
+            this.plotExtremeShear.TabIndex = 279;
+            this.plotExtremeShear.Text = "plotView1";
+            this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotExtremeShear.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotExtremeShear.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // dateTimeExtremeShearStart
             // 
@@ -6307,6 +6779,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.plotTurbInt);
             this.panel1.Controls.Add(this.btnExportTI);
             this.panel1.Controls.Add(this.label188);
             this.panel1.Controls.Add(this.cboTurbPowerCurve);
@@ -6331,6 +6804,18 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(806, 388);
             this.panel1.TabIndex = 3;
+            // 
+            // plotTurbInt
+            // 
+            this.plotTurbInt.Location = new System.Drawing.Point(259, 113);
+            this.plotTurbInt.Name = "plotTurbInt";
+            this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTurbInt.Size = new System.Drawing.Size(444, 251);
+            this.plotTurbInt.TabIndex = 269;
+            this.plotTurbInt.Text = "plotView1";
+            this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTurbInt.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTurbInt.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // btnExportTI
             // 
@@ -6566,6 +7051,8 @@
             // 
             // pgeMonthlyAnalysis
             // 
+            this.pgeMonthlyAnalysis.Controls.Add(this.plotMonthlyTS);
+            this.pgeMonthlyAnalysis.Controls.Add(this.plotYearlyTS);
             this.pgeMonthlyAnalysis.Controls.Add(this.label158);
             this.pgeMonthlyAnalysis.Controls.Add(this.cboMonthlyPowerCurve);
             this.pgeMonthlyAnalysis.Controls.Add(this.btnExportHourlyTurbineValues);
@@ -6591,6 +7078,30 @@
             this.pgeMonthlyAnalysis.TabIndex = 17;
             this.pgeMonthlyAnalysis.Text = "Time Series Analysis";
             this.pgeMonthlyAnalysis.UseVisualStyleBackColor = true;
+            // 
+            // plotMonthlyTS
+            // 
+            this.plotMonthlyTS.Location = new System.Drawing.Point(820, 437);
+            this.plotMonthlyTS.Name = "plotMonthlyTS";
+            this.plotMonthlyTS.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotMonthlyTS.Size = new System.Drawing.Size(750, 391);
+            this.plotMonthlyTS.TabIndex = 279;
+            this.plotMonthlyTS.Text = "plotView2";
+            this.plotMonthlyTS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotMonthlyTS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotMonthlyTS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotYearlyTS
+            // 
+            this.plotYearlyTS.Location = new System.Drawing.Point(15, 437);
+            this.plotYearlyTS.Name = "plotYearlyTS";
+            this.plotYearlyTS.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotYearlyTS.Size = new System.Drawing.Size(750, 391);
+            this.plotYearlyTS.TabIndex = 278;
+            this.plotYearlyTS.Text = "plotView1";
+            this.plotYearlyTS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotYearlyTS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotYearlyTS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // label158
             // 
@@ -6845,7 +7356,7 @@
             // 
             this.columnHeader125.Text = "Avg WS (m/s)";
             this.columnHeader125.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader125.Width = 90;
+            this.columnHeader125.Width = 110;
             // 
             // columnHeader132
             // 
@@ -6883,6 +7394,7 @@
             // 
             // pgeMaps
             // 
+            this.pgeMaps.Controls.Add(this.plotGenMap);
             this.pgeMaps.Controls.Add(this.Label72);
             this.pgeMaps.Controls.Add(this.cboMapWD);
             this.pgeMaps.Controls.Add(this.txtMap_MetsUsed);
@@ -6926,6 +7438,18 @@
             this.pgeMaps.TabIndex = 8;
             this.pgeMaps.Text = "Maps";
             this.pgeMaps.UseVisualStyleBackColor = true;
+            // 
+            // plotGenMap
+            // 
+            this.plotGenMap.Location = new System.Drawing.Point(646, 32);
+            this.plotGenMap.Name = "plotGenMap";
+            this.plotGenMap.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotGenMap.Size = new System.Drawing.Size(978, 800);
+            this.plotGenMap.TabIndex = 280;
+            this.plotGenMap.Text = "plotView2";
+            this.plotGenMap.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotGenMap.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotGenMap.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // Label72
             // 
@@ -7364,7 +7888,10 @@
             // 
             // pgeRound
             // 
-            this.pgeRound.Controls.Add(this.txtisMCPdUncert);            
+            this.pgeRound.Controls.Add(this.plotTurbUncert);
+            this.pgeRound.Controls.Add(this.plotRR_Histo);
+            this.pgeRound.Controls.Add(this.plotRRErrorByNumMets);
+            this.pgeRound.Controls.Add(this.txtisMCPdUncert);
             this.pgeRound.Controls.Add(this.txtRR_FlowSep_Used);
             this.pgeRound.Controls.Add(this.cboRR_MinSize);
             this.pgeRound.Controls.Add(this.Label31);
@@ -7395,6 +7922,42 @@
             this.pgeRound.Text = "Uncertainty Analysis";
             this.pgeRound.UseVisualStyleBackColor = true;
             // 
+            // plotTurbUncert
+            // 
+            this.plotTurbUncert.Location = new System.Drawing.Point(964, 517);
+            this.plotTurbUncert.Name = "plotTurbUncert";
+            this.plotTurbUncert.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTurbUncert.Size = new System.Drawing.Size(626, 302);
+            this.plotTurbUncert.TabIndex = 282;
+            this.plotTurbUncert.Text = "plotView1";
+            this.plotTurbUncert.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTurbUncert.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTurbUncert.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotRR_Histo
+            // 
+            this.plotRR_Histo.Location = new System.Drawing.Point(15, 506);
+            this.plotRR_Histo.Name = "plotRR_Histo";
+            this.plotRR_Histo.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotRR_Histo.Size = new System.Drawing.Size(427, 313);
+            this.plotRR_Histo.TabIndex = 281;
+            this.plotRR_Histo.Text = "plotView1";
+            this.plotRR_Histo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotRR_Histo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotRR_Histo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotRRErrorByNumMets
+            // 
+            this.plotRRErrorByNumMets.Location = new System.Drawing.Point(15, 95);
+            this.plotRRErrorByNumMets.Name = "plotRRErrorByNumMets";
+            this.plotRRErrorByNumMets.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotRRErrorByNumMets.Size = new System.Drawing.Size(427, 240);
+            this.plotRRErrorByNumMets.TabIndex = 280;
+            this.plotRRErrorByNumMets.Text = "plotView1";
+            this.plotRRErrorByNumMets.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotRRErrorByNumMets.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotRRErrorByNumMets.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
             // txtisMCPdUncert
             // 
             this.txtisMCPdUncert.Location = new System.Drawing.Point(464, 82);
@@ -7404,20 +7967,6 @@
             this.txtisMCPdUncert.Size = new System.Drawing.Size(180, 25);
             this.txtisMCPdUncert.TabIndex = 200;
             // 
-            // chtTurbUncert_Nev
-            // 
-      /*      this.chtTurbUncert_Nev.AutoRefresh = false;
-            this.chtTurbUncert_Nev.BackColor = System.Drawing.SystemColors.Control;
-            this.chtTurbUncert_Nev.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtTurbUncert_Nev.Location = new System.Drawing.Point(960, 516);
-            this.chtTurbUncert_Nev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtTurbUncert_Nev.Name = "chtTurbUncert_Nev";
-            this.chtTurbUncert_Nev.Size = new System.Drawing.Size(631, 303);
-            this.chtTurbUncert_Nev.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtTurbUncert_Nev.State")));
-            this.chtTurbUncert_Nev.TabIndex = 189;
-            this.chtTurbUncert_Nev.Text = "Wind Rose";
-            // 
-            */
             // txtRR_FlowSep_Used
             // 
             this.txtRR_FlowSep_Used.Location = new System.Drawing.Point(827, 82);
@@ -7771,6 +8320,10 @@
             // 
             // pgeStepwise
             // 
+            this.pgeStepwise.Controls.Add(this.plotDHModel);
+            this.pgeStepwise.Controls.Add(this.plotUHModel);
+            this.pgeStepwise.Controls.Add(this.plotPathAlongNodes);
+            this.pgeStepwise.Controls.Add(this.plotAdvTopo);
             this.pgeStepwise.Controls.Add(this.lblTurbineTSNoAdvanced);
             this.pgeStepwise.Controls.Add(this.txtisMCPdAdv);
             this.pgeStepwise.Controls.Add(this.cboSeasonAdvanced);
@@ -7829,6 +8382,54 @@
             this.pgeStepwise.TabIndex = 10;
             this.pgeStepwise.Text = "Advanced";
             this.pgeStepwise.UseVisualStyleBackColor = true;
+            // 
+            // plotDHModel
+            // 
+            this.plotDHModel.Location = new System.Drawing.Point(1060, 559);
+            this.plotDHModel.Name = "plotDHModel";
+            this.plotDHModel.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotDHModel.Size = new System.Drawing.Size(429, 279);
+            this.plotDHModel.TabIndex = 286;
+            this.plotDHModel.Text = "plotView1";
+            this.plotDHModel.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotDHModel.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotDHModel.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotUHModel
+            // 
+            this.plotUHModel.Location = new System.Drawing.Point(484, 554);
+            this.plotUHModel.Name = "plotUHModel";
+            this.plotUHModel.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotUHModel.Size = new System.Drawing.Size(429, 279);
+            this.plotUHModel.TabIndex = 285;
+            this.plotUHModel.Text = "plotView1";
+            this.plotUHModel.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotUHModel.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotUHModel.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotPathAlongNodes
+            // 
+            this.plotPathAlongNodes.Location = new System.Drawing.Point(484, 250);
+            this.plotPathAlongNodes.Name = "plotPathAlongNodes";
+            this.plotPathAlongNodes.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotPathAlongNodes.Size = new System.Drawing.Size(846, 292);
+            this.plotPathAlongNodes.TabIndex = 284;
+            this.plotPathAlongNodes.Text = "plotView1";
+            this.plotPathAlongNodes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotPathAlongNodes.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotPathAlongNodes.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotAdvTopo
+            // 
+            this.plotAdvTopo.Location = new System.Drawing.Point(25, 51);
+            this.plotAdvTopo.Name = "plotAdvTopo";
+            this.plotAdvTopo.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotAdvTopo.Size = new System.Drawing.Size(438, 397);
+            this.plotAdvTopo.TabIndex = 283;
+            this.plotAdvTopo.Text = "plotView1";
+            this.plotAdvTopo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotAdvTopo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotAdvTopo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // lblTurbineTSNoAdvanced
             // 
@@ -8538,6 +9139,8 @@
             // 
             // pgeSuitability
             // 
+            this.pgeSuitability.Controls.Add(this.plotIceVsDist);
+            this.pgeSuitability.Controls.Add(this.plotIceShadowSound);
             this.pgeSuitability.Controls.Add(this.lblIceDistOrHisto);
             this.pgeSuitability.Controls.Add(this.cboIceDistORIceHisto);
             this.pgeSuitability.Controls.Add(this.label91);
@@ -8591,6 +9194,30 @@
             this.pgeSuitability.TabIndex = 18;
             this.pgeSuitability.Text = "Site Suitability";
             this.pgeSuitability.UseVisualStyleBackColor = true;
+            // 
+            // plotIceVsDist
+            // 
+            this.plotIceVsDist.Location = new System.Drawing.Point(1003, 443);
+            this.plotIceVsDist.Name = "plotIceVsDist";
+            this.plotIceVsDist.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotIceVsDist.Size = new System.Drawing.Size(619, 371);
+            this.plotIceVsDist.TabIndex = 285;
+            this.plotIceVsDist.Text = "plotView1";
+            this.plotIceVsDist.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotIceVsDist.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotIceVsDist.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotIceShadowSound
+            // 
+            this.plotIceShadowSound.Location = new System.Drawing.Point(345, 171);
+            this.plotIceShadowSound.Name = "plotIceShadowSound";
+            this.plotIceShadowSound.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotIceShadowSound.Size = new System.Drawing.Size(623, 564);
+            this.plotIceShadowSound.TabIndex = 284;
+            this.plotIceShadowSound.Text = "plotView1";
+            this.plotIceShadowSound.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotIceShadowSound.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotIceShadowSound.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // lblIceDistOrHisto
             // 
@@ -9973,7 +10600,6 @@
         private System.Windows.Forms.Label label65;
         internal System.Windows.Forms.ComboBox cboMetWindRose;
         private System.Windows.Forms.Label label64;
-        private System.Windows.Forms.Label label62;
         private System.Windows.Forms.ColumnHeader columnHeader74;
         private System.Windows.Forms.ColumnHeader columnHeader86;
         private System.Windows.Forms.ColumnHeader columnHeader87;
@@ -10118,11 +10744,6 @@
         private System.Windows.Forms.ColumnHeader Diff;
         private System.Windows.Forms.ColumnHeader Average;
         private System.Windows.Forms.Button btn_Export_Interp;
-        public System.Windows.Forms.CheckBox chkSeaLevel;
-        public System.Windows.Forms.CheckBox chkPressure;
-        public System.Windows.Forms.CheckBox chkTemp10m;
-        public System.Windows.Forms.CheckBox chkWSWD50m;
-        private System.Windows.Forms.Label label146;
         public System.Windows.Forms.DateTimePicker dateMERRAEnd;
         public System.Windows.Forms.DateTimePicker dateMERRAStart;
         private System.Windows.Forms.Label label152;
@@ -10404,7 +11025,63 @@
         public System.Windows.Forms.TabControl tabContinuum;
         public MatplotlibCS.Figure matPlotTopo;
         public OxyPlot.WindowsForms.PlotView plotTopo;
-        public OxyPlot.WindowsForms.PlotView chtUWExpo;
+        public OxyPlot.WindowsForms.PlotView plotUWExpo;
+        public OxyPlot.WindowsForms.PlotView plotDirectionalWS_Ratios;
+        public OxyPlot.WindowsForms.PlotView plotInputWindRose;
+        public OxyPlot.WindowsForms.PlotView plotWS_vsHeight;
+        private System.Windows.Forms.Label label62;
+        public OxyPlot.WindowsForms.PlotView plotMetQC_WindRose;
+        public OxyPlot.WindowsForms.PlotView plotAlphaByWD;
+        public OxyPlot.WindowsForms.PlotView plotAnemScatter;
+        public OxyPlot.WindowsForms.PlotView plotWSDiffByWS;
+        public OxyPlot.WindowsForms.PlotView plotWSDiffByWD;
+        public OxyPlot.WindowsForms.PlotView plotMERRA_Monthly;
+        public OxyPlot.WindowsForms.PlotView plotMERRA_Yearly;
+        public OxyPlot.WindowsForms.PlotView plotMERRA_WindRose;
+        public OxyPlot.WindowsForms.PlotView plotMCP;
+        public OxyPlot.WindowsForms.PlotView plotMCP_Uncertainty;
+        public OxyPlot.WindowsForms.PlotView plotDW_DH;
+        public OxyPlot.WindowsForms.PlotView plotUW_DH;
+        public OxyPlot.WindowsForms.PlotView plotDW_SR;
+        public OxyPlot.WindowsForms.PlotView plotUW_SR;
+        public OxyPlot.WindowsForms.PlotView plotElev;
+        public OxyPlot.WindowsForms.PlotView plotDWUWExpo;
+        public OxyPlot.WindowsForms.PlotView plotDWExpo;
+        public OxyPlot.WindowsForms.PlotView plotGrossWindRose;
+        public OxyPlot.WindowsForms.PlotView plotGrossWS_Dist;
+        public OxyPlot.WindowsForms.PlotView plotGross_PowerCrvs;
+        public OxyPlot.WindowsForms.PlotView plotGrossHisto;
+        public OxyPlot.WindowsForms.PlotView plotExceedCurves;
+        public OxyPlot.WindowsForms.PlotView plotCompositeExceed;
+        public OxyPlot.WindowsForms.PlotView plotWakedDists;
+        public OxyPlot.WindowsForms.PlotView plotTurbsByString;
+        public OxyPlot.WindowsForms.PlotView plotWakeMap;
+        public OxyPlot.WindowsForms.PlotView plotTurbInt;
+        public OxyPlot.WindowsForms.PlotView plotExtremeShear;
+        public OxyPlot.WindowsForms.PlotView plotExtremeWS;
+        public OxyPlot.WindowsForms.PlotView plotInflowAngle;
+        public OxyPlot.WindowsForms.PlotView plotMonthlyTS;
+        public OxyPlot.WindowsForms.PlotView plotYearlyTS;
+        public OxyPlot.WindowsForms.PlotView plotGenMap;
+        public OxyPlot.WindowsForms.PlotView plotRRErrorByNumMets;
+        public OxyPlot.WindowsForms.PlotView plotRR_Histo;
+        public OxyPlot.WindowsForms.PlotView plotTurbUncert;
+        public OxyPlot.WindowsForms.PlotView plotAdvTopo;
+        public OxyPlot.WindowsForms.PlotView plotPathAlongNodes;
+        public OxyPlot.WindowsForms.PlotView plotDHModel;
+        public OxyPlot.WindowsForms.PlotView plotUHModel;
+        public OxyPlot.WindowsForms.PlotView plotIceShadowSound;
+        public OxyPlot.WindowsForms.PlotView plotIceVsDist;
+        internal System.Windows.Forms.Button btnDownloadMERRA2;
+        private System.Windows.Forms.Button btnChangeFolder;
+        private System.Windows.Forms.Label label54;
+        public System.Windows.Forms.TextBox txtMaxLong;
+        private System.Windows.Forms.Label label146;
+        public System.Windows.Forms.TextBox txtMinLong;
+        private System.Windows.Forms.Label label52;
+        public System.Windows.Forms.TextBox txtMaxLat;
+        private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.TextBox txtMinLat;
     }
 }
 

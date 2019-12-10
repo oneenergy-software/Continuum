@@ -35,8 +35,10 @@ namespace ContinuumNS
         ///             calculated monthly and annual energy production. </summary>
         public MERRA_Node_Data[] MERRA_Nodes = new MERRA_Node_Data[0];
         /// <summary>  Number of surrounding MERRA nodes to pull </summary>
+
+   //     public Export_Params MERRA_Params;          
+            
         
-        public Export_Params MERRA_Params;
         public bool isUserDefined; // true if not associated with a loaded met site
         
         public TurbineCollection.PowerCurve powerCurve;
@@ -354,35 +356,34 @@ namespace ContinuumNS
             int String_Len = thisString.Length;
 
             if (String_Len >= 11)
-                if (thisString.Substring(0, 11) == "PRECTOTCORR" && MERRA_Params.Get_Corr_Precip == true) // Bias-corrected precipitation
-                    Need_it = true; 
+                if (thisString.Substring(0, 11) == "PRECTOTCORR") // Bias-corrected precipitation
+                    Need_it = false; 
 
             if (String_Len >= 8)
-                if (thisString.Substring(0, 8) == "PRECTOT[" && MERRA_Params.Get_Precip == true) // Precipitation
-                    Need_it = true; 
+                if (thisString.Substring(0, 8) == "PRECTOT[") // Precipitation
+                    Need_it = false; 
 
             if (String_Len >= 9)            
-                if (thisString.Substring(0, 9) == "MDSOPTHCK" && MERRA_Params.Get_OpticalThick == true) // Optical Thickness Total Mean))
-                    Need_it = true; // Optical Thickness Total Mean))
+                if (thisString.Substring(0, 9) == "MDSOPTHCK") // Optical Thickness Total Mean))
+                    Need_it = false; // Optical Thickness Total Mean))
 
             if (String_Len >= 8)
-                if (thisString.Substring(0, 8) == "ISCCPCLD" && MERRA_Params.Get_TotalFrac == true) // Total Cloud Area Fraction )
-                    Need_it = true; // ISCCP Total Cloud Area Fraction
+                if (thisString.Substring(0, 8) == "ISCCPCLD") // Total Cloud Area Fraction )
+                    Need_it = false; // ISCCP Total Cloud Area Fraction
 
             if (String_Len >= 6)
-                if (thisString.Substring(0, 6) == "MDSCLD" && MERRA_Params.Get_FracMean == true) // Cloud Fraction Total mean))
-                    Need_it = true; // MODIS Cloud Fraction Total mean))
+                if (thisString.Substring(0, 6) == "MDSCLD") // Cloud Fraction Total mean))
+                    Need_it = false; // MODIS Cloud Fraction Total mean))
 
             if (String_Len >= 3)
-                if ((thisString.Substring(0, 3) == "U50" && MERRA_Params.Get_50mWSWD == true) ||
-                (thisString.Substring(0, 3) == "V50" && MERRA_Params.Get_50mWSWD == true) ||
-                (thisString.Substring(0, 3) == "U10" && MERRA_Params.Get_10mWSWD == true) ||
-                (thisString.Substring(0, 3) == "V10" && MERRA_Params.Get_10mWSWD == true) ||
-                (thisString.Substring(0, 2) == "PS" && MERRA_Params.Get_SurfPress == true) ||
-                (thisString.Substring(0, 3) == "SLP" && MERRA_Params.Get_SeaPress == true) ||
-                (thisString.Substring(0, 3) == "T10" && MERRA_Params.Get_10mTemp == true))                                    
+                if (thisString.Substring(0, 3) == "U50" || thisString.Substring(0, 3) == "V50" ||                
+                thisString.Substring(0, 3) == "SLP" || thisString.Substring(0, 3) == "T10")                                    
                     Need_it = true;
-            
+
+            if (String_Len >= 2)
+                if (thisString.Substring(0, 2) == "PS")
+                    Need_it = true;
+
             return Need_it;
         }
                 
@@ -636,7 +637,7 @@ namespace ContinuumNS
             return thisProd / 1000;
         }
 
-        public Export_Params Get_Export_Params(Continuum thisInst)
+  /*      public Export_Params Get_Export_Params(Continuum thisInst)
         {
             MERRA_Params = new Export_Params();
 
@@ -645,11 +646,11 @@ namespace ContinuumNS
             else
                 MERRA_Params.Get_50mWSWD = false;
             
-       /*     if (thisInst.chkWSWD10m.Checked == true)
+            if (thisInst.chkWSWD10m.Checked == true)
                 MERRA_Params.Get_10mWSWD = true;  
             else
                 MERRA_Params.Get_10mWSWD = false;
-                */
+                
             if (thisInst.chkTemp10m.Checked == true)
                 MERRA_Params.Get_10mTemp = true;
             else
@@ -664,7 +665,7 @@ namespace ContinuumNS
                 MERRA_Params.Get_SeaPress = true;
             else
                 MERRA_Params.Get_SeaPress = false;
-            /*
+            
                         if (thisInst.chkCloudFracMean.Checked == true)
                             MERRA_Params.Get_FracMean = true;                
                         else
@@ -689,10 +690,10 @@ namespace ContinuumNS
                             MERRA_Params.Get_Corr_Precip = true;
                         else
                             MERRA_Params.Get_Corr_Precip = false;
-            */
+            
             return MERRA_Params;
         }
-
+    */
         public double Calc_CF(double thisProd, int thisMonth, int thisYear, TurbineCollection.PowerCurve powerCurve) // if This_Month == 100 then it's a yearly CF calc
         {
             double thisCF = 0;
@@ -1032,7 +1033,7 @@ namespace ContinuumNS
                     if (j == 52627)
                         j = j;
 
-                    if (theseUVs[i].U50[j] != 0 && theseUVs[i].V50[j] != 0 && MERRA_Params.Get_50mWSWD)
+                    if (theseUVs[i].U50[j] != 0 && theseUVs[i].V50[j] != 0)
                     {
                         thisMERRA_Pull[i].Data[j].WS50m = Math.Pow((Math.Pow(theseUVs[i].U50[j], 2) + Math.Pow(theseUVs[i].V50[j], 2)), 0.5);
                         thisMERRA_Pull[i].Data[j].WD50m = Math.Atan2(theseUVs[i].V50[j], theseUVs[i].U50[j]) * (180 / Math.PI);

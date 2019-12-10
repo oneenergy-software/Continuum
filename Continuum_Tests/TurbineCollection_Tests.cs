@@ -81,7 +81,7 @@ namespace Continuum_Tests
             string Filename =  testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(Filename);
 
-            double This_Overall_Wake = thisInst.turbineList.GetOverallWakeLoss(thisInst.wakeModelList.wakeModels[0], 16, false);
+            double This_Overall_Wake = thisInst.turbineList.GetOverallWakeLoss(thisInst.wakeModelList.wakeModels[0], 16);
             Assert.AreEqual(This_Overall_Wake, 0.07819, 0.01, "Wrong overall wake loss");
 
             thisInst.Close();
@@ -157,18 +157,13 @@ namespace Continuum_Tests
             {
                 double[] windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), thisInst.turbineList.turbineEsts[i].UTMX,
                     thisInst.turbineList.turbineEsts[i].UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-                Model[] UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), false, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+                Model[] UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
                 thisInst.turbineList.turbineEsts[i].DoTurbineCalcs(thisInst, UWDW_Mods);
-                thisInst.turbineList.turbineEsts[i].GenerateAvgWSFromTABs(thisInst, UWDW_Mods, windRose, false);
-
-                UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
-                thisInst.turbineList.turbineEsts[i].DoTurbineCalcs(thisInst, UWDW_Mods);
-                thisInst.turbineList.turbineEsts[i].GenerateAvgWSFromTABs(thisInst, UWDW_Mods, windRose, false);
+                thisInst.turbineList.turbineEsts[i].GenerateAvgWSFromTABs(thisInst, UWDW_Mods, windRose, false);                
             }
 
-            thisInst.turbineList.CalcGrossAEPFromTABs(thisInst, true);
-            thisInst.turbineList.CalcGrossAEPFromTABs(thisInst, false);
-
+            thisInst.turbineList.CalcGrossAEPFromTABs(thisInst);
+            
             for (int i = 0; i <= 3; i++)
             {
                 Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].grossAEP, null, "Didn't calculate gross AEP");

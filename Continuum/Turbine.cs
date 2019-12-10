@@ -453,8 +453,7 @@ namespace ContinuumNS
 
             for (int i = 0; i < AvgWSEst_Count; i++)
             {
-                if ((blankWake == true || wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel)) 
-                    && (powerCurve.name == null || powerCurve.name == avgWS_Est[i].powerCurve.name))
+                if (blankWake == true || wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel))
                 {
                     thisAvgWS_Est = avgWS_Est[i];
                     break;

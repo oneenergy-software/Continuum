@@ -9,7 +9,7 @@ namespace Continuum_Tests
     public class MERRA_Tests
     {
         string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\MERRA";
-        string merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+        string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
         [TestMethod]
         public void GetMaxHourlyWindSpeeds_Test()

@@ -1411,28 +1411,29 @@ namespace ContinuumNS
 
             // Taking out, just get sensor data if toggling Met Data QC dropdown
             // Get sensor data from database
-         //   if (metList.isTimeSeries)
-         //   for (int i = 0; i < metList.ThisCount; i++)
-         //       metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
+            //   if (metList.isTimeSeries)
+            //   for (int i = 0; i < metList.ThisCount; i++)
+            //       metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
 
             // Get MCP reference and target data, if MCP done
-      /*      for (int i = 0; i < metList.ThisCount; i++)
-            {
-                Met thisMet = metList.metItem[i];
+            /*      for (int i = 0; i < metList.ThisCount; i++)
+                  {
+                      Met thisMet = metList.metItem[i];
 
-                if (thisMet.mcp != null)
-                {
-                    UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+                      if (thisMet.mcp != null)
+                      {
+                          UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
 
-                    if (thisMet.mcp.gotMCP_Est == true)
-                    {
-                        MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-                        thisMet.mcp.GetRefData(thisMERRA, ref thisMet, this);
-                        thisMet.mcp.GetTargetData(modeledHeight, thisMet);
-                    }
-                }
-            }
-          */              
+                          if (thisMet.mcp.gotMCP_Est == true)
+                          {
+                              MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                              thisMet.mcp.GetRefData(thisMERRA, ref thisMet, this);
+                              thisMet.mcp.GetTargetData(modeledHeight, thisMet);
+                          }
+                      }
+                  }
+                */
+            merraList.SetMERRA2LatLong(this);
             updateThe.AllTABs(this);
                        
             Text = savedParams.savedFileName;
@@ -1603,9 +1604,9 @@ namespace ContinuumNS
                 }
                 else                
                     thisMap.gridReso = 250;
-
-                thisMap.txtMapReso.Text = thisMap.gridReso.ToString();
+                                
                 thisMap.FindLargestArea();
+                thisMap.txtMapReso.Text = thisMap.gridReso.ToString();
 
                 if (thisMap.minUTMX == 0)
                     thisMap.GetBiggestArea();
@@ -5157,7 +5158,7 @@ namespace ContinuumNS
         {
             // Updates monthly plot and table on "Time Series Analysis" tab based on years selected in checked list
             if (okToUpdate)
-                updateThe.TurbineMonthlyPlotAndTable(this);
+                updateThe.TurbineMonthlyPlot(this);
         }
 
         private void chkSelectedTurbineParam_SelectedIndexChanged(object sender, EventArgs e)
@@ -6648,6 +6649,16 @@ namespace ContinuumNS
         private void TxtTurbineNoise_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnDownloadMERRA2_Click(object sender, EventArgs e)
+        {
+            merraList.NASA_LogInAsync(this);
+        }
+
+        private void btnChangeFolder_Click(object sender, EventArgs e)
+        {
+            merraList.ChangeMERRA2Folder(this);
         }
     }
 }

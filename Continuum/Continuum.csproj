@@ -367,7 +367,6 @@
     <EmbeddedResource Include="Pick_a_Height.resx">
       <DependentUpon>Pick_a_Height.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -390,16 +389,6 @@
     <EmbeddedResource Include="UTM_datum.resx">
       <DependentUpon>UTM_datum.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="MatplotlibCS\annotations.py" />
-    <None Include="MatplotlibCS\arc.py" />
-    <None Include="MatplotlibCS\helpers.py" />
-    <None Include="MatplotlibCS\histogram.py" />
-    <None Include="MatplotlibCS\hline.py" />
-    <None Include="MatplotlibCS\line_2d.py" />
-    <None Include="MatplotlibCS\matplotlib_cs.py" />
-    <None Include="MatplotlibCS\subplot.py" />
-    <None Include="MatplotlibCS\task.py" />
-    <None Include="MatplotlibCS\vline.py" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

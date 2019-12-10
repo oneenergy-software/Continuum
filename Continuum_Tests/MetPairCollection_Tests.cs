@@ -19,7 +19,7 @@ namespace Continuum_Tests
             string Filename =  testingFolder + "\\MetPairCollection testing.cfm";
             thisInst.Open(Filename);
 
-            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), false, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
 
             double thisErr = thisInst.metPairList.GetRMS_SectorErr(theseModels[0], 0);
             Assert.AreEqual(thisErr, 0.027926, 0.001, "Wrong RMS error");

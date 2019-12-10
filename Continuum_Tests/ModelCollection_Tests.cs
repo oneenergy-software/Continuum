@@ -518,7 +518,7 @@ namespace Continuum_Tests
             StreamWriter overall = new StreamWriter(overallOutput);
             StreamWriter sector = new StreamWriter(sectorOutput);
 
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
 
             // Do overall first
             for (int i = 0; i < thisInst.radiiList.ThisCount; i++)
@@ -588,7 +588,7 @@ namespace Continuum_Tests
             StreamReader srSect6000 = new StreamReader(sector6000);
             StreamReader srSect8000 = new StreamReader(sector8000);
             StreamReader srSect10000 = new StreamReader(sector10000);
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
                         
             for (int i = 0; i < thisInst.radiiList.ThisCount; i++)
             {                
@@ -697,7 +697,7 @@ namespace Continuum_Tests
             targetNode.CalcGridStatsAndExposures(thisInst);
 
             Met[] metsUsed = thisInst.metList.GetMets(thisInst.metList.GetMetsUsed(), null);
-            Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             
             ModelCollection.ModelWeights[] theseWeights = thisInst.modelList.GetWS_EstWeights(metsUsed, targetNode, Models, 
                 thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All), thisInst.radiiList);
@@ -769,7 +769,7 @@ namespace Continuum_Tests
             // Test 1: Met 474 to Met 475, Radius = 4000, WD = 270 (WD_ind = 18)
             int WD_ind = 18;
             int radInd = 0;
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             Model model = models[radInd];
             Met startMet = thisInst.metList.GetMet("Met_474");
             Met.WSWD_Dist startWSDist = startMet.GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
@@ -1055,7 +1055,7 @@ namespace Continuum_Tests
             Nodes endNode = nodeList.GetMetNode(endMet);
             Pair_Of_Mets metPair = thisInst.metPairList.GetPair_Of_Mets(startMet, endMet);
             Nodes[] pathOfNodes = metPair.WS_Pred[radInd, 0].nodePath;
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             Model model = models[radInd];
 
             ModelCollection.WS_Est_Struct thisEst = thisInst.modelList.DoWS_Estimate(startMet, endNode, pathOfNodes, model, thisInst);
@@ -1069,7 +1069,7 @@ namespace Continuum_Tests
             endNode = nodeList.GetMetNode(endMet);
             metPair = thisInst.metPairList.GetPair_Of_Mets(startMet, endMet);
             pathOfNodes = metPair.WS_Pred[radInd, 0].nodePath;
-            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             model = models[radInd];
 
             thisEst = thisInst.modelList.DoWS_Estimate(startMet, endNode, pathOfNodes, model, thisInst);
@@ -1082,7 +1082,7 @@ namespace Continuum_Tests
             Turbine endTurbine = thisInst.turbineList.GetTurbine("Turb_464");
             endNode = nodeList.GetTurbNode(endTurbine);
                         
-            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             model = models[radInd];
             Turbine.WS_Ests wsEst = endTurbine.GetWS_Est(4000, startMet.name, model);
             pathOfNodes = wsEst.pathOfNodes;
@@ -1101,13 +1101,12 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\Great Western ModelCollection testing.cfm";
             thisInst.Open(Filename);
 
-            thisInst.modelList.ClearAllExceptDefaultAndImported();
-            Assert.AreEqual(thisInst.modelList.ModelCount, 1, 0, "Didn't clear models");
+            thisInst.modelList.ClearAllExceptImported();
+            Assert.AreEqual(thisInst.modelList.ModelCount, 0, 0, "Didn't clear models");
 
             thisInst.modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-            Assert.AreEqual(thisInst.modelList.ModelCount, 2, 0, "Didn't create site-calibrated model");
-            Assert.AreEqual(thisInst.modelList.models[1, 0].isCalibrated, true, "Didn't create site-calibrated model");
-
+            Assert.AreEqual(thisInst.modelList.ModelCount, 1, 0, "Didn't create site-calibrated model");
+            
             thisInst.Close();
         }
 
@@ -1145,8 +1144,7 @@ namespace Continuum_Tests
             TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0]; ;
             Wake_Model wakeModel = new Wake_Model();
 
-            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, false,
-                powerCurve, wakeModel, null, MCP_Method);
+            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, powerCurve, wakeModel, null, MCP_Method);
 
             Turbine.Gross_Energy_Est thisGross = new Turbine.Gross_Energy_Est();
             thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, thisTS, thisInst);
@@ -1195,12 +1193,11 @@ namespace Continuum_Tests
             if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
             wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, wakeModel, thisInst.metList);
 
-            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, false,
-                powerCurve, wakeModel, wakeCoeffs, MCP_Method);
+            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, powerCurve, wakeModel, wakeCoeffs, MCP_Method);
 
             Turbine.Net_Energy_Est thisNet = new Turbine.Net_Energy_Est();
             thisNet.wakeModel = wakeModel;
-            thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst, wakeModel);
+            thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst);
 
             Assert.AreEqual(thisNet.AEP, 3579.53, 0.1, "Wrong average AEP Test 1");
             Assert.AreEqual(thisNet.sectorEnergy[0], 112.5738, 0.1, "Wrong sector AEP Test 2");
@@ -1278,8 +1275,7 @@ namespace Continuum_Tests
             ModelCollection.TimeSeries[] thisTS = avgEst.timeSeries;
 
             if (thisTS.Length == 0)
-                avgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, true,
-                    powerCurve, thisWakeModel, wakeCoeffs, MCP_Method);
+                avgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, powerCurve, thisWakeModel, wakeCoeffs, MCP_Method);
 
             Met.WSWD_Dist thisDist = thisInst.modelList.CalcWSWD_Dist(avgEst.timeSeries, thisInst, "Freestream");
             Assert.AreEqual(thisDist.WS, 5.953838, 0.001, "Wrong Avg WS Test 1");

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Net;
 
 namespace ContinuumNS
 {
@@ -86,6 +87,10 @@ namespace ContinuumNS
             public string MCP_type;
         }
 
+        public struct Vars_for_MERRA2_Download
+        {
+            
+        }
         public void Call_BW_MetCalcs(Vars_for_MetCalcs theArgs)
         {
             // Calls Met Calcs background worker
@@ -2568,6 +2573,12 @@ namespace ContinuumNS
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_LandCover.CancelAsync();
             }
+            else if (BackgroundWorker_MERRADownload.IsBusy == true)
+            {
+                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 download?", "Continuum 3", MessageBoxButtons.YesNo);
+                if (Yes_or_no == DialogResult.Yes)
+                    BackgroundWorker_MERRADownload.CancelAsync();
+            }
 
 
         }
@@ -3367,6 +3378,142 @@ namespace ContinuumNS
             Close();
         }
 
-        
+        public void Call_BW_MERRA2_Download(Vars_for_BW vars_For_MERRA)
+        {
+            // Calls MERRA2 download background worker
+            Show();
+            BackgroundWorker_MERRADownload.RunWorkerAsync(vars_For_MERRA);
+        }
+
+        private void BackgroundWorker_MERRADownload_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+            Vars_for_BW theArgs = (Vars_for_BW)(e.Argument);
+            Continuum thisInst = theArgs.thisInst;
+            MERRACollection merraList = thisInst.merraList;
+
+            string urs = "https://urs.earthdata.nasa.gov";
+            CookieContainer myContainer = new CookieContainer();
+
+            // Create a credential cache for authenticating when redirected to Earthdata Login
+
+            CredentialCache cache = new CredentialCache();
+            cache.Add(new Uri(urs), "Basic", new NetworkCredential(merraList.earthdataUser, merraList.earthdataPwd));
+
+            DateTime startDate = thisInst.dateMERRAStart.Value;
+            DateTime endDate = thisInst.dateMERRAEnd.Value;
+
+            int numDays = endDate.Subtract(startDate).Days + 1;
+
+            double minLat = Convert.ToDouble(thisInst.txtMinLat.Text);
+            double maxLat = Convert.ToDouble(thisInst.txtMaxLat.Text);
+            double minLong = Convert.ToDouble(thisInst.txtMinLong.Text);
+            double maxLong = Convert.ToDouble(thisInst.txtMaxLong.Text);
+
+            minLat = Math.Round(minLat / 0.5, 0) * 0.5;
+            maxLat = Math.Round(maxLat / 0.5, 0) * 0.5;
+            minLong = Math.Round(minLong / 0.625) * 0.625;
+            maxLong = Math.Round(maxLong / 0.625) * 0.625;
+
+            List<int> integerList = Enumerable.Range(0, numDays).ToList();
+            int count = 0;
+
+            Stopwatch thisStopwatch = new Stopwatch();
+            thisStopwatch.Start();
+
+            double timeElapsed = 0;
+            double avgTimePerFile = 0;
+            double timeToFinish;
+
+            Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
+            {
+                DateTime thisDate = startDate.AddDays(i);
+                bool fileExists = merraList.MERRA2FileExists(thisDate);
+
+                double Prog = Math.Min(100 * (double)count / numDays, 100);
+                if (count % 10 == 0)
+                {
+                    timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
+                    avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (count + 1));
+                    timeToFinish = (numDays - count) * avgTimePerFile / 60;                    
+                    BackgroundWorker_MERRADownload.ReportProgress((int)Prog, "Downloading MERRA2 data. Avg time/file: " + Math.Round(avgTimePerFile, 1) +
+                        " secs. Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.");
+                }
+                    
+
+                if (BackgroundWorker_MERRADownload.CancellationPending == true)
+                {
+                    e.Result = thisInst;
+                    return;
+                }
+
+                if (fileExists == false)
+                {
+                    // Execute the request
+                    string resource = merraList.GetMERRA2URL(thisDate, minLat, maxLat, minLong, maxLong);
+                                        
+                    HttpWebResponse response = null;
+
+                    while (response == null)
+                    {
+                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(resource);
+                        request.Method = "GET";
+                        request.Credentials = cache;
+                        request.CookieContainer = myContainer;
+                        request.PreAuthenticate = false;
+                        request.AllowAutoRedirect = true;
+                        request.Timeout = 10000;
+                        response = null;
+
+                        try
+                        {
+                            response = (HttpWebResponse)request.GetResponse();
+                        }
+                        catch (Exception ex)
+                        {
+                            //       MessageBox.Show(ex.ToString());
+                        }
+                    }
+
+                    if (response != null)
+                    {
+                        try
+                        {
+                            merraList.SaveMERRA2DataFile(response, thisDate);
+                        }
+                        catch (Exception ex)
+                        {
+                      //      MessageBox.Show(ex.ToString());
+                        }
+                    }
+
+                }
+
+                count++;
+            });
+
+            DoWorkDone = true;
+            e.Result = thisInst;
+        }
+
+
+
+        private void BackgroundWorker_MERRADownload_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // Updates the MERRA2 download progress bar
+            BringToFront();
+            string textForLabel = e.UserState.ToString();
+            progbar.Value = e.ProgressPercentage;
+            Text = "Continuum 3";
+            lblprogbar.Text = textForLabel;
+            Refresh();
+        }
+
+        private void BackgroundWorker_MERRADownload_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Continuum thisInst = (Continuum)e.Result;
+            thisInst.merraList.SetMERRA2LatLong(thisInst);
+            Close();
+        }
     }
 }

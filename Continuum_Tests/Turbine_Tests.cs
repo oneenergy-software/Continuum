@@ -24,13 +24,12 @@ namespace Continuum_Tests
             double[] windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), 347212, 5307579, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
 
             thisInst.turbineList.turbineEsts[0].gridStats.GetGridArrayAndCalcStats(thisInst.turbineList.turbineEsts[0].UTMX, thisInst.turbineList.turbineEsts[0].UTMY, thisInst);
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), false, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             Met thisMet = thisInst.metList.metItem[0];
             Turbine.WS_Ests New_WS_Est = new Turbine.WS_Ests();
             New_WS_Est.predictorMetName = thisMet.name;
             New_WS_Est.model = models[0];
-            New_WS_Est.radius = 4000;
-
+            
             NodeCollection nodeList = new NodeCollection();
             thisInst.turbineList.turbineEsts[0].AddWS_Estimate(New_WS_Est);
             Nodes startNode = nodeList.GetMetNode(thisMet);
@@ -78,7 +77,7 @@ namespace Continuum_Tests
             thisInst.turbineList.CalcTurbineExposures(thisInst, 8000, 1.0f, 1);
             thisInst.turbineList.CalcTurbineExposures(thisInst, 10000, 1.0f, 1);
             double[] windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), 347212, 5307579, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             thisInst.turbineList.turbineEsts[0].DoTurbineCalcs(thisInst, models);
             thisInst.turbineList.turbineEsts[0].GenerateAvgWSFromTABs(thisInst, models, windRose, false);
 
@@ -130,11 +129,8 @@ namespace Continuum_Tests
             {
                 double[] windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), thisInst.turbineList.turbineEsts[i].UTMX,
                     thisInst.turbineList.turbineEsts[i].UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-                Model[] UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), false, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
-                thisInst.turbineList.turbineEsts[i].DoTurbineCalcs(thisInst, UWDW_Mods);
-
-                UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
-                thisInst.turbineList.turbineEsts[i].DoTurbineCalcs(thisInst, UWDW_Mods);
+                Model[] UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+                thisInst.turbineList.turbineEsts[i].DoTurbineCalcs(thisInst, UWDW_Mods);                
             }
 
             for (int i = 0; i <= 3; i++)
@@ -142,8 +138,7 @@ namespace Continuum_Tests
                 Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].WS_Estimate, null, "Didn't calculate wind speed estimates");
                 Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].gridStats, null, "Didn't calculate grid stats");
                 Assert.AreEqual(thisInst.turbineList.turbineEsts[0].WSEst_Count, 32, 0, "Didn't calculate 32 wind spped estimates (4 mets, 4 radii, default/calibrated models");
-                Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].WS_Estimate[0].predictorMetName, "", "Didn't save pred met name");
-                Assert.AreNotEqual(thisInst.turbineList.turbineEsts[0].WS_Estimate[0].radius, 0, 0, "Didn't save radius");
+                Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].WS_Estimate[0].predictorMetName, "", "Didn't save pred met name");                
                 Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].WS_Estimate[0].sectorWS, null, "Didn't save sectorwse wind speeds");
                 Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].WS_Estimate[0].model, null, "Didn't save model");
                 Assert.AreNotEqual(thisInst.turbineList.turbineEsts[0].WS_Estimate[0].WS, 0, 0, "Didn't save wind speed");
@@ -178,7 +173,7 @@ namespace Continuum_Tests
             if (maxDist == 0) maxDist = 15000; // maxDist will be zero when there is only one turbine. Might be good to make this value constant
             Wake_coeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDist, maxDist, thisInst.wakeModelList.wakeModels[0], thisInst.metList);
 
-            thisInst.turbineList.turbineEsts[0].CalcTurbineWakeLosses(thisInst, Wake_coeffs, thisInst.wakeModelList.wakeModels[0], false);
+            thisInst.turbineList.turbineEsts[0].CalcTurbineWakeLosses(thisInst, Wake_coeffs, thisInst.wakeModelList.wakeModels[0]);
 
             Assert.AreNotEqual(thisInst.turbineList.turbineEsts[0].AvgWSEst_Count, 0, "Didn't add average WS est");
             int avgWS_Ind = thisInst.turbineList.turbineEsts[0].AvgWSEst_Count - 1;            
@@ -215,9 +210,8 @@ namespace Continuum_Tests
             TurbineCollection.PowerCurve powerCurve = new TurbineCollection.PowerCurve();
             Wake_Model wakeModel = new Wake_Model();
 
-            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, false,
-                powerCurve, wakeModel, null, MCP_Method);
-            thisTurb.GenerateAvgWSTimeSeries(thisTS, thisInst, wakeModel, false, false, MCP_Method, false, powerCurve);
+            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, powerCurve, wakeModel, null, MCP_Method);
+            thisTurb.GenerateAvgWSTimeSeries(thisTS, thisInst, wakeModel, false, MCP_Method, false, powerCurve);
 
             Assert.AreEqual(thisTurb.avgWS_Est[0].freeStream.WS, 5.785786, 0.01, "Wrong WS Test 1");
             Assert.AreEqual(thisTurb.avgWS_Est[0].freeStream.sectorWS[8], 4.895387, 0.01, "Wrong WS Test 2");
@@ -242,8 +236,7 @@ namespace Continuum_Tests
             TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0]; ;
             Wake_Model wakeModel = new Wake_Model();
 
-            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, false,
-                powerCurve, wakeModel, null, MCP_Method);
+            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, powerCurve, wakeModel, null, MCP_Method);
 
             Turbine.MonthlyWS_Vals[] monthlyWS = thisTurb.CalcMonthlyWS_Values(thisTS, thisInst, "Freestream");
 
@@ -266,16 +259,16 @@ namespace Continuum_Tests
             Turbine thisTurb = thisInst.turbineList.turbineEsts[0];
             Wake_Model wakeModel = thisInst.wakeModelList.wakeModels[0];
 
-            double thisVal = thisTurb.CalcYearlyValue(2005, "Avg WS", false, null, new TurbineCollection.PowerCurve());
+            double thisVal = thisTurb.CalcYearlyValue(2005, "Avg WS", null, new TurbineCollection.PowerCurve());
             Assert.AreEqual(thisVal, 5.710609, 0.01, "Wrong Avg WS Test 1");
 
-            thisVal = thisTurb.CalcYearlyValue(2007, "Gross AEP", false, wakeModel, wakeModel.powerCurve);
+            thisVal = thisTurb.CalcYearlyValue(2007, "Gross AEP", wakeModel, wakeModel.powerCurve);
             Assert.AreEqual(thisVal, 3779.421, 0.01, "Wrong Gross AEP Test 2");
 
-            thisVal = thisTurb.CalcYearlyValue(2008, "Net AEP", false, wakeModel, wakeModel.powerCurve);
+            thisVal = thisTurb.CalcYearlyValue(2008, "Net AEP", wakeModel, wakeModel.powerCurve);
             Assert.AreEqual(thisVal, 3819.539, 0.01, "Wrong Net AEP Test 3");
 
-            thisVal = thisTurb.CalcYearlyValue(2010, "Net AEP", false, wakeModel, wakeModel.powerCurve);
+            thisVal = thisTurb.CalcYearlyValue(2010, "Net AEP", wakeModel, wakeModel.powerCurve);
             Assert.AreEqual(thisVal, 3495.726, 0.01, "Wrong Net AEP Test 4");
 
             thisInst.Close();
@@ -293,19 +286,19 @@ namespace Continuum_Tests
             Wake_Model wakeModel = thisInst.wakeModelList.wakeModels[0];
 
             // Test 1 Waked WS
-            double thisVal = thisTurb.CalcLT_MonthlyValue("Avg WS", 1, false, wakeModel, wakeModel.powerCurve);
+            double thisVal = thisTurb.CalcLT_MonthlyValue("Avg WS", 1, wakeModel, wakeModel.powerCurve);
             Assert.AreEqual(thisVal, 6.372955, 0.01, "Wrong Avg WS Test 1");
 
             // Test 2 Freestream WS
-            thisVal = thisTurb.CalcLT_MonthlyValue("Avg WS", 4, false, null, new TurbineCollection.PowerCurve());
+            thisVal = thisTurb.CalcLT_MonthlyValue("Avg WS", 4, null, new TurbineCollection.PowerCurve());
             Assert.AreEqual(thisVal, 6.716374, 0.01, "Wrong Avg WS Test 2");
 
             // Test 3
-            thisVal = thisTurb.CalcLT_MonthlyValue("Gross AEP", 3, false, wakeModel, wakeModel.powerCurve);
+            thisVal = thisTurb.CalcLT_MonthlyValue("Gross AEP", 3, wakeModel, wakeModel.powerCurve);
             Assert.AreEqual(thisVal, 387.3117, 0.1, "Wrong Gross Energy Test 3");
 
             // Test 4
-            thisVal = thisTurb.CalcLT_MonthlyValue("Net AEP", 12, false, wakeModel, wakeModel.powerCurve);
+            thisVal = thisTurb.CalcLT_MonthlyValue("Net AEP", 12, wakeModel, wakeModel.powerCurve);
             Assert.AreEqual(thisVal, 381.2883, 0.1, "Wrong Net Energy Test 4");
 
 
