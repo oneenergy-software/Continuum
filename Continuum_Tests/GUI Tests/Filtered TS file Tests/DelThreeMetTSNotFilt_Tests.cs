@@ -31,11 +31,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTSNotFilt_1";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTSNotFilt_1";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -396,11 +396,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTSNotFilt_10";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTSNotFilt_10";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -761,11 +761,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTSNotFilt_11";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTSNotFilt_11";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {

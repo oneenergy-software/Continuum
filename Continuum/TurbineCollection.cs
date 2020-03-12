@@ -267,16 +267,23 @@ namespace ContinuumNS
                 firstWS = importedPower[0, 0];
 
             if (numWS_Import > 1)
-                wsInterval = importedPower[0, 1] - importedPower[0, 0];                                  
+                wsInterval = importedPower[0, 1] - importedPower[0, 0];
 
-            // Fill in blanks between cut-in and cut-out WS
-            for (int i = 0; i < numWS_Import; i++) {
-                if (importedPower[1, i] == 0 && importedPower[1, i + 1] > 0) {
-                    cutIn = importedPower[0, i + 1];
-                    break;
+            // Cut-in WS to first instance of 0 kW
+            if (importedPower[1, 0] > 0) // first entry is cut-in
+                cutIn = importedPower[0, 0];
+            else
+            {
+                for (int i = 0; i < numWS_Import - 1; i++)
+                {
+                    if (importedPower[1, i] == 0 && importedPower[1, i + 1] > 0)
+                    {
+                        cutIn = importedPower[0, i];
+                        break;
+                    }
                 }
             }
-
+            
             for (int i = numWS_Import - 1; i >= 0; i--)
             {
                 if (i > 0)
@@ -684,7 +691,7 @@ namespace ContinuumNS
             return thisAEP;
         }
 
-        public double GetOverallWakeLoss(Wake_Model thisWakeModel, int WD_Ind)
+ /*       public double GetOverallWakeLoss(Wake_Model thisWakeModel, int WD_Ind)
         {
             // Returns overall wake loss for specified wake loss model, WD sector and site-calibrated vs. default model
             double overallWakeLoss = 0;
@@ -705,7 +712,7 @@ namespace ContinuumNS
 
             return overallWakeLoss;
         }
-
+*/
         public void AssignStringNumber()
         {
             // if ( turbine string numbers were not read in, assigns string numbers to turbines based on distance between sites
@@ -1457,7 +1464,7 @@ namespace ContinuumNS
             else if (thisWS > thisPowerCurve.cutOutWS)
                 thisVal = 0;
             else
-            {
+            {              
                 double[] WS_Array = new double[3];
 
                 int middleWSInd = (int)Math.Round((thisWS - thisPowerCurve.firstWS) / thisPowerCurve.wsInt, 0);
@@ -1467,19 +1474,13 @@ namespace ContinuumNS
                 {
                     middleWS = (int)(thisPowerCurve.ratedWS - thisPowerCurve.wsInt);
                     middleWSInd = middleWSInd - 1;
-                }
-
-                if (middleWS == thisPowerCurve.cutInWS)
-                {
-                    middleWS = middleWS + thisPowerCurve.wsInt;
-                    middleWSInd = middleWSInd + 1;
-                }
+                }                
 
                 if ((middleWSInd + 1) >= thisPowerCurve.power.Length)
                 {
                     middleWSInd = thisPowerCurve.power.Length - 2;
                     middleWS = thisPowerCurve.firstWS + middleWSInd * thisPowerCurve.wsInt;
-                }
+                }                
 
                 WS_Array[0] = middleWS - thisPowerCurve.wsInt;
                 WS_Array[1] = middleWS;
@@ -1489,7 +1490,11 @@ namespace ContinuumNS
                 {
                     double[] powerArray = new double[3];
 
-                    powerArray[0] = thisPowerCurve.power[middleWSInd - 1];
+                    if (middleWSInd == 0)
+                        powerArray[0] = 0;
+                    else
+                        powerArray[0] = thisPowerCurve.power[middleWSInd - 1];
+
                     powerArray[1] = thisPowerCurve.power[middleWSInd];
                     powerArray[2] = thisPowerCurve.power[middleWSInd + 1];
 
@@ -1499,7 +1504,12 @@ namespace ContinuumNS
                 else if (powerOrThrust == "Thrust")
                 {
                     double[] thrustArray = new double[3];
-                    thrustArray[0] = thisPowerCurve.thrustCoeff[middleWSInd - 1];
+
+                    if (middleWSInd == 0)
+                        thrustArray[0] = 0;
+                    else
+                        thrustArray[0] = thisPowerCurve.thrustCoeff[middleWSInd - 1];
+                                        
                     thrustArray[1] = thisPowerCurve.thrustCoeff[middleWSInd];
                     thrustArray[2] = thisPowerCurve.thrustCoeff[middleWSInd + 1];
 

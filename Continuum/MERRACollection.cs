@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using OSGeo.GDAL;
 using OSGeo.OGR;
 using OSGeo.OSR;
+using System.Net;
+using System.IO;
 
 namespace ContinuumNS
 {
@@ -18,6 +20,8 @@ namespace ContinuumNS
         public DateTime startDate = new DateTime(1989, 1, 1, 0, 0, 0);
         public DateTime endDate = new DateTime(2018, 12, 31, 23, 0, 0);
         public string MERRAfolder = "";
+        public string earthdataUser = "";
+        public string earthdataPwd = "";
 
         public struct minMaxReq
         {
@@ -268,6 +272,8 @@ namespace ContinuumNS
                         MERRAfolder = thisInst.fbd_MERRAData.SelectedPath;
                     else
                         return;
+
+                    SetMERRA2LatLong(thisInst);
                 }
                 catch
                 {
@@ -282,7 +288,7 @@ namespace ContinuumNS
             if (gotCoords == false)
                 return;                                                        
 
-            thisMERRA.Get_Export_Params(thisInst);
+      //      thisMERRA.Get_Export_Params(thisInst);
                                    
             DialogResult doMCP = DialogResult.No;
 
@@ -353,7 +359,11 @@ namespace ContinuumNS
                     thisInst.updateThe.AllTABs(thisInst);
                 }
                 else
+                {
+                    thisInst.updateThe.MERRA_Dropdowns(thisInst);
                     thisInst.updateThe.MERRA_TAB(thisInst);
+                }
+                    
             }
         }
         
@@ -482,6 +492,276 @@ namespace ContinuumNS
                     gotIt = true;
 
             return gotIt;
+        }                
+
+        public async Task NASA_LogInAsync(Continuum thisInst)
+        {
+                                  
+            if (earthdataUser == "" || earthdataPwd == "")
+            {
+                try
+                {
+                    earthdataUser = Microsoft.VisualBasic.Interaction.InputBox("Enter your Earthdata username. If you don't have one, go to https://urs.earthdata.nasa.gov/ to create an account.", "Continuum 3").ToString();
+                }
+                catch
+                {
+                    MessageBox.Show("Invalid Earthdata username");
+                    return;
+                }
+
+                if (earthdataUser == "")
+                    return;
+                
+                try
+                {
+                    earthdataPwd = Microsoft.VisualBasic.Interaction.InputBox("Enter your Earthdata password. If you don't have one, go to https://urs.earthdata.nasa.gov/ to create an account.", "Continuum 3").ToString();
+                }
+                catch
+                {
+                    MessageBox.Show("Invalid Earthdata password");
+                    return;
+                }
+
+                if (earthdataPwd == "")
+                    return;
+            }
+
+            BackgroundWork.Vars_for_BW Vars_for_MERRA = new BackgroundWork.Vars_for_BW();
+            Vars_for_MERRA.thisInst = thisInst;
+            
+            thisInst.BW_worker = new BackgroundWork();
+            thisInst.BW_worker.Call_BW_MERRA2_Download(Vars_for_MERRA);
+
         }
+
+        public int GetLatitudeIndex(double thisLat)
+        {            
+            int latInd = (int)(2 * thisLat + 180);
+
+            return latInd;
+        }
+
+        public int GetLongitudeIndex(double thisLong)
+        {
+            int longInd = (int)(1.6 * thisLong + 288);
+
+            return longInd;
+        }
+
+        public string GetMERRA2URL(DateTime thisDay, double minLat, double maxLat, double minLong, double maxLong)
+        {
+            int dateNum = 0;
+
+            string thisYear = thisDay.Year.ToString();
+            string thisMonth = thisDay.Month.ToString();
+
+            if (thisDay.Month < 10)
+                thisMonth = "0" + thisMonth;
+
+            string thisDayStr = thisDay.Day.ToString();
+
+            if (thisDay.Day < 10)
+                thisDayStr = "0" + thisDayStr;
+
+            if (thisDay.Year <= 1991)
+                dateNum = 100;
+            else if (thisDay.Year <= 2000)
+                dateNum = 200;
+            else if (thisDay.Year <= 2010)
+                dateNum = 300;
+            else
+                dateNum = 400;
+
+            int minLatInd = GetLatitudeIndex(minLat);
+            int maxLatInd = GetLatitudeIndex(maxLat);
+            int minLongInd = GetLongitudeIndex(minLong);
+            int maxLongInd = GetLongitudeIndex(maxLong);
+
+            string URL = "https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXSLV.5.12.4/";
+            URL += thisYear + "/" + thisMonth + "/";
+            URL += "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisYear + thisMonth + thisDayStr + ".nc4.ascii?";
+            URL += "T10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+            URL += "U50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+            URL += "V50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+            URL += "SLP[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+            URL += "PS[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+            URL += "lat[" + minLatInd + ":" + maxLatInd + "]," + "time[0:23]," + "lon[" + minLongInd + ":" + maxLongInd + "]";
+
+            return URL;
+
+        }
+
+        public void ChangeMERRA2Folder(Continuum thisInst)
+        {
+            MessageBox.Show("Please select folder containing MERRA2 .ascii data files.");
+            if (thisInst.fbd_MERRAData.ShowDialog() == DialogResult.OK)
+                MERRAfolder = thisInst.fbd_MERRAData.SelectedPath;
+            else
+                return;
+
+            thisInst.txt_MERRA2_folder.Text = MERRAfolder.ToString();
+
+            SetMERRA2LatLong(thisInst);
+            
+        }
+
+        public void SetMERRA2LatLong (Continuum thisInst)
+        {
+            if (MERRAfolder == null || MERRAfolder == "")
+                return;
+
+            // If there are files, check one and get min/max lat/long
+            string[] MERRAfiles = Directory.GetFiles(MERRAfolder, "*.ascii");
+            string line;
+
+            if (MERRAfiles == null)
+            {
+                thisInst.txtMinLat.Text = "";
+                thisInst.txtMaxLat.Text = "";
+                thisInst.txtMinLong.Text = "";
+                thisInst.txtMaxLong.Text = "";
+
+                thisInst.txtMinLat.Enabled = true;
+                thisInst.txtMaxLat.Enabled = true;
+                thisInst.txtMinLong.Enabled = true;
+                thisInst.txtMaxLong.Enabled = true;
+
+                thisInst.btnDownloadMERRA2.BackColor = System.Drawing.Color.LightCoral;
+                return;
+            }
+
+
+            if (MERRAfiles.Length == 0)
+            {
+                thisInst.txtMinLat.Text = "";
+                thisInst.txtMaxLat.Text = "";
+                thisInst.txtMinLong.Text = "";
+                thisInst.txtMaxLong.Text = "";
+
+                thisInst.txtMinLat.Enabled = true;
+                thisInst.txtMaxLat.Enabled = true;
+                thisInst.txtMinLong.Enabled = true;
+                thisInst.txtMaxLong.Enabled = true;
+
+                thisInst.btnDownloadMERRA2.BackColor = System.Drawing.Color.LightCoral;
+                return;
+            }
+
+            StreamReader file = new StreamReader(MERRAfiles[0]);
+
+            char[] delims = { ',' };
+            int numLats = 0;
+            int numLongs = 0;
+            double[] lats = new double[numLats];
+            double[] longs = new double[numLongs];
+
+            while ((line = file.ReadLine()) != null)
+            {
+                string[] substrings = line.Split(delims);
+
+                if (substrings[0] == "lat") // read in all latitudes
+                {
+                    numLats = substrings.Length - 1;
+                    Array.Resize(ref lats, numLats);
+
+                    for (int i = 0; i < numLats; i++)
+                        lats[i] = Convert.ToDouble(substrings[i + 1]);
+                }
+
+                if (substrings[0] == "lon") // read in all longitudes
+                {
+                    numLongs = substrings.Length - 1;
+                    Array.Resize(ref longs, numLongs);
+
+                    for (int i = 0; i < numLongs; i++)
+                        longs[i] = Convert.ToDouble(substrings[i + 1]);
+                }
+            }
+
+            thisInst.txtMinLat.Text = lats[0].ToString();
+            thisInst.txtMaxLat.Text = lats[numLats - 1].ToString();
+            thisInst.txtMinLong.Text = longs[0].ToString();
+            thisInst.txtMaxLong.Text = longs[numLongs - 1].ToString();
+
+            thisInst.txtMinLat.Enabled = false;
+            thisInst.txtMaxLat.Enabled = false;
+            thisInst.txtMinLong.Enabled = false;
+            thisInst.txtMaxLong.Enabled = false;
+
+            thisInst.btnDownloadMERRA2.BackColor = System.Drawing.Color.MediumSeaGreen;
+
+            file.Close();
+        }
+
+        public string CreateMERRA2filename(DateTime thisDate)
+        {
+            string MERRA2name = "";
+            int dateNum = 0;
+            if (thisDate.Year <= 1991)
+                dateNum = 100;
+            else if (thisDate.Year <= 2000)
+                dateNum = 200;
+            else if (thisDate.Year <= 2010)
+                dateNum = 300;
+            else
+                dateNum = 400;
+
+            string thisMonth = thisDate.Month.ToString();
+            if (thisDate.Month < 10)
+                thisMonth = "0" + thisMonth;
+
+            string thisDay = thisDate.Day.ToString();
+            if (thisDate.Day < 10)
+                thisDay = "0" + thisDay;
+
+            MERRA2name = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
+
+            return MERRA2name;
+        }
+
+        public bool MERRA2FileExists(DateTime thisDate)
+        {
+            bool fileExists = false;
+            string fileName = CreateMERRA2filename(thisDate);
+
+            try
+            {
+                string[] thisFile = Directory.GetFiles(MERRAfolder, fileName);
+                if (thisFile.Length == 1)
+                    fileExists = true;
+                else
+                    fileExists = false;
+            }
+            catch
+            {
+                return fileExists;
+            }
+
+            return fileExists;
+        }
+
+        public void SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate)
+        {
+            // Now access the data
+
+            long length = response.ContentLength;
+            string type = response.ContentType;
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+            string MERRA2filename = CreateMERRA2filename(thisDate);
+            StreamWriter writer = new StreamWriter(MERRAfolder + "\\" + MERRA2filename);
+
+            // Save to file
+            while (reader.EndOfStream == false)
+            {
+                string thisLine = reader.ReadLine();
+                writer.WriteLine(thisLine);
+            }
+                                    
+            writer.Close();
+            stream.Close();
+            reader.Close();
+        }
+        
     }
 }

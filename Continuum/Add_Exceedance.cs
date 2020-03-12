@@ -6,7 +6,9 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using Nevron.Chart;
+using OxyPlot.Series;
+using OxyPlot.Axes;
+using OxyPlot;
 
 namespace ContinuumNS
 {
@@ -118,51 +120,49 @@ namespace ContinuumNS
         public void Update_plot()
         {
             // Plots probability and cumulative density function of defined exceedance
+
+            plotExceed.Model = new PlotModel();
+            var model = plotExceed.Model;
+            model.IsLegendVisible = false;
+
+            // Specify axes
+            LinearAxis xAxis = new LinearAxis();
+            xAxis.Position = AxisPosition.Bottom;
+            xAxis.Title = "Performance Factor";
+            LinearAxis yAxis = new LinearAxis();
+            yAxis.Position = AxisPosition.Left;
+            yAxis.Title = "PDF";
+            yAxis.Key = "PDF";
+            LinearAxis secYAxis = new LinearAxis();
+            secYAxis.Position = AxisPosition.Right;
+            secYAxis.Title = "CDF";
+            secYAxis.Key = "CDF";
             
-            chtExceedDist.Charts[0].Series.Clear();
-            chtExceedDist.Labels.Clear();
-            chtExceedDist.Controller.Tools.Clear();
-            NAxis secondaryY = chtExceedDist.Charts[0].Axis(StandardAxis.SecondaryY);
-            secondaryY.Visible = true;
+            model.Axes.Add(xAxis);
+            model.Axes.Add(yAxis);
+            model.Axes.Add(secYAxis);
 
-            // Add PDF            
-            NLineSeries pdfSeries = new NLineSeries();
-            pdfSeries.DataLabelStyle.Visible = false;
-            pdfSeries.Name = "PDF";
-            pdfSeries.UseXValues = true;
-            pdfSeries.BorderStyle.Color = Color.Red;
-            chtExceedDist.Charts[0].Series.Add(pdfSeries);
-            pdfSeries.DisplayOnAxis(StandardAxis.SecondaryY, true);
-            pdfSeries.DisplayOnAxis(StandardAxis.PrimaryY, false);
+            // Add PDF  
+            var pdfSeries = new LineSeries();
+            pdfSeries.YAxisKey = "PDF";
+            pdfSeries.Title = "PDF";
+            model.Series.Add(pdfSeries);
 
-            NLineSeries cdfSeries = new NLineSeries();
-            cdfSeries.DataLabelStyle.Visible = false;
-            cdfSeries.Name = "CDF";
-            cdfSeries.UseXValues = true;
-            cdfSeries.BorderStyle.Color = Color.Blue;
-            chtExceedDist.Charts[0].Series.Add(cdfSeries);
-            cdfSeries.DisplayOnAxis(StandardAxis.PrimaryY, true);
-            cdfSeries.DisplayOnAxis(StandardAxis.SecondaryY, false);
-
-            NStandardScaleConfigurator scaleConfiguratorX = (NStandardScaleConfigurator)(chtExceedDist.Charts[0].Axis(StandardAxis.PrimaryX).ScaleConfigurator);
-            scaleConfiguratorX.Title.Text = "Performance Factor";
-
-            NStandardScaleConfigurator scaleConfiguratorY = (NStandardScaleConfigurator)(chtExceedDist.Charts[0].Axis(StandardAxis.PrimaryY).ScaleConfigurator);
-            scaleConfiguratorY.Title.Text = "CDF";
-
-            NStandardScaleConfigurator scaleConfiguratorY2 = (NStandardScaleConfigurator)(chtExceedDist.Charts[0].Axis(StandardAxis.SecondaryY).ScaleConfigurator);
-            scaleConfiguratorY.Title.Text = "PDF";                       
+            // Add CDF
+            var cdfSeries = new LineSeries();
+            cdfSeries.YAxisKey = "CDF";
+            cdfSeries.Title = "CDF";
+            model.Series.Add(cdfSeries);
+                                        
 
             for (int i = 0; i < thisExceed.distSize; i++)
             {
-                pdfSeries.XValues.Add(thisExceed.xVals[i] * 100);
-                pdfSeries.Values.Add(thisExceed.probDist[i]);
-
-                cdfSeries.XValues.Add(thisExceed.xVals[i] * 100);
-                cdfSeries.Values.Add(thisExceed.cumulDist[i]);
+                pdfSeries.Points.Add(new DataPoint(Math.Round(thisExceed.xVals[i] * 100, 2), Math.Round(thisExceed.probDist[i], 4)));
+                cdfSeries.Points.Add(new DataPoint(Math.Round(thisExceed.xVals[i] * 100, 2), Math.Round(thisExceed.cumulDist[i], 4)));               
             }
 
-            chtExceedDist.Refresh();
+            plotExceed.Refresh();
+            
         }
 
         public void Update_Mode_List()

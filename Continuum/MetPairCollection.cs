@@ -531,8 +531,8 @@ namespace ContinuumNS
                 else if (iterType == "SU Stability")
                 {
                     adjModel.SU_Stab_A[WD_Ind] = thisVal;
-                  //  if (counter == midInt)
-                  //      midVal1 = adjModel.SU_Stab_A[WD_Ind];
+                    if (counter == midInt)
+                        midVal1 = adjModel.SU_Stab_A[WD_Ind];
                 }
              /*   else if (iterType == "Stability B")
                 {

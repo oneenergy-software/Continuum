@@ -13,7 +13,7 @@ namespace ContinuumNS
     public partial class Mod_LC_Key : Form
     {
         public Continuum thisInst;
-        public LC_Key thisLC_Key; 
+        public LC_Key thisLC_Key;
 
         public Mod_LC_Key(Continuum continuum, LC_Key lc_key)
         {
@@ -30,49 +30,61 @@ namespace ContinuumNS
             double newSR = 0;
             double newDH = 0;
 
-            try {
+            try
+            {
                 thisCode = Convert.ToInt16(txtCode.Text);
             }
-            catch  {
+            catch
+            {
                 MessageBox.Show("Invalid land cover code.", "Continuum 3");
                 return;
             }
 
-            try {
+            try
+            {
                 newDesc = txtDesc.Text;
             }
-            catch  {
+            catch
+            {
                 MessageBox.Show("Invalid land cover description.", "Continuum 3");
                 return;
             }
 
-            try {
+            try
+            {
                 newSR = Convert.ToSingle(txtSR.Text);
             }
-            catch  {
+            catch
+            {
                 MessageBox.Show("Invalid surface roughness.", "Continuum 3");
                 return;
             }
 
-            try {
+            try
+            {
                 newDH = Convert.ToSingle(txtDH.Text);
             }
-            catch  {
+            catch
+            {
                 MessageBox.Show("Invalid displacement height.", "Continuum 3");
                 return;
             }
 
             int numSR = 0;
-            try {
+            try
+            {
                 numSR = thisInst.topo.LC_Key.Length;
             }
-            catch  {
+            catch
+            {
                 numSR = 0;
                 return;
             }
 
-            for (int i = 0; i < numSR; i++) { 
-                if (thisLC_Key.LC_Key_New[i].code == thisCode) {
+            for (int i = 0; i < numSR; i++)
+            {
+                if (thisLC_Key.LC_Key_New[i].code == thisCode)
+                {
                     thisLC_Key.LC_Key_New[i].desc = newDesc;
                     thisLC_Key.LC_Key_New[i].SR = newSR;
                     thisLC_Key.LC_Key_New[i].DH = newDH;
@@ -88,6 +100,5 @@ namespace ContinuumNS
         {
             Close();
         }
-                
     }
 }

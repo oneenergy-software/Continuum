@@ -9,7 +9,7 @@ namespace ContinuumNS
     [Serializable()]
     public class Wake_Model
     {
-        public int wakeModelType;   // 0 = Eddy Viscosity, 1 = DAWM Eddy Viscosity, 3 = Jensen
+        public int wakeModelType;   // 0 = Eddy Viscosity, 1 = DAWM Eddy Viscosity, 2 = Jensen
         public double horizWakeExp;   // Horizontal wake expansion angle
                                        //  public Vert_Wake_Exp  double
         public double ambTI;   // Average ambient TI

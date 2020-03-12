@@ -7,7 +7,7 @@ namespace Continuum_Tests
     [TestClass]
     public class Stats_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Stats";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\Stats";
 
         [TestMethod]
         public void Calc_Avg_WS_Test()
@@ -20,20 +20,69 @@ namespace Continuum_Tests
             MCP thisMCP = thisMet.mcp;
 
             Stats thisStats = new Stats();
-            DateTime Start = Convert.ToDateTime("10/1/2008 12:00:00 AM");
-            DateTime End = Convert.ToDateTime("10/31/2008 11:00:00 PM");
-            // NEEDS TO BE UPDATED. CalcAvgWS no longer filters on WS
+
             // Test 1
-            double This_Avg = thisStats.CalcAvgWS(thisMCP.targetData, Start, End, 90, 270, Met.TOD.All, Met.Season.All, thisInst.metList);
-            Assert.AreEqual(This_Avg, 6.49889, 0.001, "Wrong Avg WS");
+            DateTime Start = Convert.ToDateTime("1/1/2005 12:00:00 AM");
+            DateTime End = Convert.ToDateTime("12/31/2010 11:00:00 PM");
+            double minDir = 0;
+            double maxDir = 360;
+            Met.TOD TOD = Met.TOD.All;
+            Met.Season season = Met.Season.All;
+            
+            double This_Avg = thisStats.CalcAvgWS(thisMCP.refData, Start, End, minDir, maxDir, TOD, season, thisInst.metList);
+            Assert.AreEqual(This_Avg, 6.61373, 0.001, "Wrong Avg WS Test 1");
 
             // Test 2
-            Start = Convert.ToDateTime("2/1/2009 12:00:00 AM");
-            End = Convert.ToDateTime("2/13/2009 1:00:00 PM");
-            thisMCP.numTODs = 2;
+            Start = Convert.ToDateTime("8/5/2007 1:30");
+            End = Convert.ToDateTime("11/2/2010 21:00");
+            minDir = 78.75;
+            maxDir = 101.25;
+            TOD = Met.TOD.Day;
+            season = Met.Season.Winter;
+            thisInst.metList.numTOD = 2;
+            thisInst.metList.numSeason = 4;
 
-            This_Avg = thisStats.CalcAvgWS(thisMCP.targetData, Start, End, 210, 300, Met.TOD.All, Met.Season.All, thisInst.metList);
-            Assert.AreEqual(This_Avg, 6.783322, 0.001, "Wrong Avg WS");
+            This_Avg = thisStats.CalcAvgWS(thisMCP.refData, Start, End, minDir, maxDir, TOD, season, thisInst.metList);
+            Assert.AreEqual(This_Avg, 5.853279, 0.001, "Wrong Avg WS Test 2");
+
+            // Test 3
+            Start = Convert.ToDateTime("6/24/2008 15:00");
+            End = Convert.ToDateTime("9/30/2008 23:50");
+            minDir = 0;
+            maxDir = 360;
+            TOD = Met.TOD.All;
+            season = Met.Season.All;
+            thisInst.metList.numTOD = 1;
+            thisInst.metList.numSeason = 1;
+
+            This_Avg = thisStats.CalcAvgWS(thisMCP.targetData, Start, End, minDir, maxDir, TOD, season, thisInst.metList);
+            Assert.AreEqual(This_Avg, 5.134299, 0.001, "Wrong Avg WS Test 3");
+
+            // Test 4
+            Start = Convert.ToDateTime("9/3/2008 2:40");
+            End = Convert.ToDateTime("9/7/2008 15:20");
+            minDir = 326.25;
+            maxDir = 348.75;
+            TOD = Met.TOD.Night;
+            season = Met.Season.Fall;
+            thisInst.metList.numTOD = 2;
+            thisInst.metList.numSeason = 4;
+
+            This_Avg = thisStats.CalcAvgWS(thisMCP.targetData, Start, End, minDir, maxDir, TOD, season, thisInst.metList);
+            Assert.AreEqual(This_Avg, 4.765827, 0.001, "Wrong Avg WS Test 4");
+
+            // Test 5
+            Start = Convert.ToDateTime("6/24/2008 15:00");
+            End = Convert.ToDateTime("9/30/2008 23:50");
+            minDir = 348.75;
+            maxDir = 11.25;
+            TOD = Met.TOD.All;
+            season = Met.Season.All;
+            thisInst.metList.numTOD = 1;
+            thisInst.metList.numSeason = 1;
+
+            This_Avg = thisStats.CalcAvgWS(thisMCP.targetData, Start, End, minDir, maxDir, TOD, season, thisInst.metList);
+            Assert.AreEqual(This_Avg, 5.166236, 0.001, "Wrong Avg WS Test 5");
 
             thisInst.Close();
         }
@@ -42,33 +91,71 @@ namespace Continuum_Tests
         public void Get_Data_Count_Test()
         {
             Continuum thisInst = new Continuum();
-            
+
             string Filename = testingFolder + "\\Stats testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
             MCP thisMCP = thisMet.mcp;
-            thisMCP.numWD = 16;
-            thisMCP.numTODs = 1;
-            thisMCP.numSeasons = 2;
-            
-            DateTime Start = Convert.ToDateTime("3/4/2009 4:00:00 AM");
-            DateTime End = Convert.ToDateTime("5/16/2009 4:00:00 PM");
+
             Stats thisStats = new Stats();
 
             // Test 1
-            int thisCount = thisStats.GetDataCount(thisMCP.refData, Start, End, 7, Met.TOD.All, Met.Season.All, thisInst.metList, false);
-            Assert.AreEqual(thisCount, 45, 0, "Wrong data count");
+            DateTime Start = Convert.ToDateTime("1/1/2005 12:00:00 AM");
+            DateTime End = Convert.ToDateTime("12/31/2010 11:00:00 PM");
+            int WD_Ind = 16;            
+            Met.TOD TOD = Met.TOD.All;
+            Met.Season season = Met.Season.All;
 
-            thisMCP.numWD = 4;
-            thisMCP.numTODs = 2;
-            thisMCP.numSeasons = 2;
-            
-            Start = Convert.ToDateTime("1/1/1985 12:00:00 AM");
-            End = Convert.ToDateTime("12/31/2015 12:00:00 AM");
+            int thisCount = thisStats.GetDataCount(thisMCP.refData, Start, End, WD_Ind, TOD, season, thisInst.metList, false);
+            Assert.AreEqual(thisCount, 52584, 1, "Wrong Count Test 1");
 
             // Test 2
-            thisCount = thisStats.GetDataCount(thisMCP.refData, Start, End, 0, Met.TOD.All, Met.Season.All, thisInst.metList, false);
-            Assert.AreEqual(thisCount, 14114, 0, "Wrong data count");
+            Start = Convert.ToDateTime("8/5/2007 1:30");
+            End = Convert.ToDateTime("11/2/2010 21:00");
+            WD_Ind = 4;            
+            TOD = Met.TOD.Day;
+            season = Met.Season.Winter;
+            thisInst.metList.numTOD = 2;
+            thisInst.metList.numSeason = 4;
+
+            thisCount = thisStats.GetDataCount(thisMCP.refData, Start, End, WD_Ind, TOD, season, thisInst.metList, false);
+            Assert.AreEqual(thisCount, 163, 0, "Wrong Count Test 2");
+
+            // Test 3
+            Start = Convert.ToDateTime("6/24/2008 15:00");
+            End = Convert.ToDateTime("9/30/2008 23:50");
+            WD_Ind = 16;            
+            TOD = Met.TOD.All;
+            season = Met.Season.All;
+            thisInst.metList.numTOD = 1;
+            thisInst.metList.numSeason = 1;
+
+            thisCount = thisStats.GetDataCount(thisMCP.targetData, Start, End, WD_Ind, TOD, season, thisInst.metList, false);
+            Assert.AreEqual(thisCount, 2361, 0, "Wrong Count Test 3");
+
+            // Test 4
+            Start = Convert.ToDateTime("9/3/2008 2:40");
+            End = Convert.ToDateTime("9/7/2008 15:20");
+            WD_Ind = 15;            
+            TOD = Met.TOD.Night;
+            season = Met.Season.Fall;
+            thisInst.metList.numTOD = 2;
+            thisInst.metList.numSeason = 4;
+
+            thisCount = thisStats.GetDataCount(thisMCP.targetData, Start, End, WD_Ind, TOD, season, thisInst.metList, false);
+            Assert.AreEqual(thisCount, 7, 0, "Wrong Count Test 4");
+
+            // Test 5
+            Start = Convert.ToDateTime("6/24/2008 15:00");
+            End = Convert.ToDateTime("9/30/2008 23:50");
+            WD_Ind = 0;            
+            TOD = Met.TOD.All;
+            season = Met.Season.All;
+            thisInst.metList.numTOD = 1;
+            thisInst.metList.numSeason = 1;
+
+            thisCount = thisStats.GetDataCount(thisMCP.targetData, Start, End, WD_Ind, TOD, season, thisInst.metList, false);
+            Assert.AreEqual(thisCount, 93, 0.001, "Wrong Count Test 5");
 
             thisInst.Close();
         }

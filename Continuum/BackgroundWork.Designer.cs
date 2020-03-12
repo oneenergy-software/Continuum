@@ -47,6 +47,7 @@
             this.BackgroundWorker_IceThrow = new System.ComponentModel.BackgroundWorker();
             this.BackgroundWorker_Shadow = new System.ComponentModel.BackgroundWorker();
             this.BackgroundWorker_Exceed = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_MERRADownload = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // progbar
@@ -197,6 +198,14 @@
             this.BackgroundWorker_Exceed.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_Exceed_ProgressChanged);
             this.BackgroundWorker_Exceed.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_Exceed_RunWorkerCompleted);
             // 
+            // BackgroundWorker_MERRADownload
+            // 
+            this.BackgroundWorker_MERRADownload.WorkerReportsProgress = true;
+            this.BackgroundWorker_MERRADownload.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_MERRADownload.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_MERRADownload_DoWork);
+            this.BackgroundWorker_MERRADownload.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_MERRADownload_ProgressChanged);
+            this.BackgroundWorker_MERRADownload.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_MERRADownload_RunWorkerCompleted);
+            // 
             // BackgroundWork
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -207,10 +216,10 @@
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "BackgroundWork";
-            this.UseWaitCursor = true;            
+            this.UseWaitCursor = true;
             this.ResumeLayout(false);
             this.PerformLayout();
-         //   this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(BackgroundWorker_Closed);
+
         }
 
         #endregion
@@ -233,5 +242,6 @@
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_IceThrow;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_Shadow;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_Exceed;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_MERRADownload;
     }
 }

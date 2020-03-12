@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class MetPairCollection_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\MetPairCollection";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MetPairCollection";
         
         [TestMethod]
         public void GetRMS_SectorErr_Test()
@@ -16,28 +16,26 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum();
             
 
-            string Filename =  testingFolder + "\\MetPairCollection testing.cfm";
+            string Filename =  testingFolder + "\\MetPairCollection Panhandle.cfm";
             thisInst.Open(Filename);
 
-            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), false, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
 
+            // Test 1
             double thisErr = thisInst.metPairList.GetRMS_SectorErr(theseModels[0], 0);
-            Assert.AreEqual(thisErr, 0.027926, 0.001, "Wrong RMS error");
+            Assert.AreEqual(thisErr, 0.060588, 0.001, "Wrong RMS error");
 
+            // Test 2
             thisErr = thisInst.metPairList.GetRMS_SectorErr(theseModels[0], 8);
-            Assert.AreEqual(thisErr, 0.0221153, 0.001, "Wrong RMS error");
+            Assert.AreEqual(thisErr, 0.033429, 0.001, "Wrong RMS error");
 
-            thisErr = thisInst.metPairList.GetRMS_SectorErr(theseModels[0], 21);
-            Assert.AreEqual(thisErr, 0.078873, 0.001, "Wrong RMS error");
-
+            // Test 3
             thisErr = thisInst.metPairList.GetRMS_SectorErr(theseModels[3], 3);
-            Assert.AreEqual(thisErr, 0.0207874, 0.001, "Wrong RMS error");
+            Assert.AreEqual(thisErr, 0.235717, 0.001, "Wrong RMS error");
 
-            thisErr = thisInst.metPairList.GetRMS_SectorErr(theseModels[3], 18);
-            Assert.AreEqual(thisErr, 0.0090522, 0.001, "Wrong RMS error");
-
-            thisErr = thisInst.metPairList.GetRMS_SectorErr(theseModels[3], 23);
-            Assert.AreEqual(thisErr, 0.0092268, 0.001, "Wrong RMS error");
+            // Test 4
+            thisErr = thisInst.metPairList.GetRMS_SectorErr(theseModels[3], 15);
+            Assert.AreEqual(thisErr, 0.021076, 0.001, "Wrong RMS error");                       
 
             thisInst.Close();
         }
@@ -49,7 +47,7 @@ namespace Continuum_Tests
             
             string MCP_Method = thisInst.Get_MCP_Method();
 
-            string Filename = testingFolder + "\\Testing 3.0 Great Western TAB doubles.cfm";
+            string Filename = testingFolder + "\\MetPairCollection Great Western.cfm";
             thisInst.Open(Filename);
             MetPairCollection.RR_funct_obj[] thisRR_Obj = new MetPairCollection.RR_funct_obj[3];
             string[,] Mets_for_UWDW = new string[3, 3];
@@ -78,10 +76,10 @@ namespace Continuum_Tests
             thisRR_Obj[2] = thisInst.metPairList.DoRR_Calc(theseMets, thisInst, thisInst.metList.GetMetsUsed(), MCP_Method);
 
             thisInst.metPairList.AddRoundRobinEst(thisRR_Obj, thisInst.metList.GetMetsUsed(), 2, Mets_for_UWDW, true, thisInst.metList);
-            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_All, 0.008949, 0.00005, "Wrong RMS error");
-            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[0], 0.00001, 0.00005, "Wrong error in first model");
-            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[1], 0.0035, 0.00005, "Wrong error in first model");
-            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[2], 0.0151, 0.00005, "Wrong error in first model");
+            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_All, 0.011571057, 0.0001, "Wrong RMS error");
+            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[0], 0.015460321, 0.0001, "Wrong error in first model");
+            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[1], 0.007724766, 0.0001, "Wrong error in second model");
+            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[2], 0.010147639, 0.0001, "Wrong error in third model");
 
             thisInst.Close();
         }
@@ -97,7 +95,7 @@ namespace Continuum_Tests
             
             NodeCollection nodeList = new NodeCollection();
                         
-            string Filename = testingFolder + "\\Panhandle Sweep Testing.cfm";
+            string Filename = testingFolder + "\\MetPairCollection Panhandle.cfm";
             thisInst.Open(Filename);
 
             // Clear other wind speed cross-predictions
@@ -112,12 +110,16 @@ namespace Continuum_Tests
             Modified_UWDW[0].SetDefaultModelCoeffs(numWD);
             Modified_UWDW[0].radius = 4000;
             Modified_UWDW[0].metsUsed = thisInst.metList.GetMetsUsed();
+            Modified_UWDW[0].season = Met.Season.All;
+            Modified_UWDW[0].timeOfDay = Met.TOD.All;
 
             Model[] defaultModel = new Model[1];
             defaultModel[0] = new Model();
             defaultModel[0].SizeArrays(numWD);
             defaultModel[0].metsUsed = thisInst.metList.GetMetsUsed();
             defaultModel[0].radius = 4000;
+            defaultModel[0].season = Met.Season.All;
+            defaultModel[0].timeOfDay = Met.TOD.All;
 
             // Add WS Pred with Default model
             for (int i = 0; i < thisInst.metPairList.PairCount; i++)
@@ -201,7 +203,7 @@ namespace Continuum_Tests
             
             NodeCollection nodeList = new NodeCollection();
                         
-            string Filename = testingFolder + "\\Panhandle Sweep Testing.cfm";
+            string Filename = testingFolder + "\\MetPairCollection Panhandle.cfm";
             thisInst.Open(Filename);
             int numWD = thisInst.metList.numWD;
 
@@ -229,6 +231,9 @@ namespace Continuum_Tests
             thisModel[0].metsUsed = thisInst.metList.GetMetsUsed();
             thisModel[0].SizeArrays(numWD);
             thisModel[0].SetDefaultModelCoeffs(numWD);
+            thisModel[0].season = Met.Season.All;
+            thisModel[0].timeOfDay = Met.TOD.All;
+            thisModel[0].height = 80;
 
             for (int i = 0; i < thisInst.metPairList.PairCount; i++)
             {
@@ -236,12 +241,14 @@ namespace Continuum_Tests
                 thisInst.metPairList.metPairs[i].AddWS_Pred(thisModel);
             }
 
-
             Model defaultModel = new Model();
             defaultModel.radius = 4000;
             defaultModel.metsUsed = thisInst.metList.GetMetsUsed();
             defaultModel.SizeArrays(numWD);
             defaultModel.SetDefaultModelCoeffs(numWD);
+            defaultModel.season = Met.Season.All;
+            defaultModel.timeOfDay = Met.TOD.All;
+            defaultModel.height = 80;
 
             thisInst.metPairList.Calc_MinMax_Expos(ref theseMinMax, thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All), 0, thisInst.metList, thisModel[0]); // finds min/max UW expo (used to initialize UW crit), min/max sum of UWDW (used in flow separation model), avg P10 expo and min/max WS
 
@@ -252,7 +259,7 @@ namespace Continuum_Tests
 
             double Mid_Val_1 = 0;
             double Mid_Val_2 = 0;
-            int Mid_Int = Convert.ToInt16((((2 - 0.2) / 0.2) + 1) / 2);
+            int Mid_Int = Convert.ToInt16((((2 - 0.2) / 0.2) + 1) / 2) - 1;
             bool Error_Changed = false;
             double Last_Error = 0;
 
@@ -307,7 +314,7 @@ namespace Continuum_Tests
                 Error_Changed = false;
                 Last_Error = 0;
                 Mid_Val_1 = 0;
-
+                
                 for (int i = 0; i < 10; i++)
                 {
                     double Val = 0.2 * i + 0.2;
@@ -342,7 +349,7 @@ namespace Continuum_Tests
 
             // TEST 3
             // UW Critical Exposure. Sweep params from 1 to 40 with interval = 4.875
-            Mid_Int = Convert.ToInt16((((40 - 1) / 4.875) + 1) / 2);
+            Mid_Int = Convert.ToInt16((((40 - 1) / 4.875) + 1) / 2) - 1;
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
@@ -386,7 +393,7 @@ namespace Continuum_Tests
 
             // TEST 4
             // Speed-Up flow A. Sweep params from 0.65 to 1.5 with interval = 0.2
-            Mid_Int = Convert.ToInt16((((1.5 - 0.65) / 0.2) + 1) / 2);
+            Mid_Int = Convert.ToInt16((((1.5 - 0.65) / 0.2) + 1) / 2) - 1;
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
@@ -430,7 +437,8 @@ namespace Continuum_Tests
 
             // TEST 5
             // Downhill Stability Factor. Sweep from 0 to 3 with interval = 0.5
-            Mid_Int = Convert.ToInt16((((3 - 0) / 0.5) + 1) / 2);
+            Mid_Int = Convert.ToInt16((((3 - 0) / 0.5) + 1) / 2) - 1;
+            double Max_Int = 0;
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
@@ -438,7 +446,7 @@ namespace Continuum_Tests
                 double Val_Min_1 = 0;
                 Error_Changed = false;
                 Last_Error = 0;
-                Mid_Val_1 = 0;
+                Mid_Val_1 = 0;                                
 
                 for (int i = 0; i < 7; i++)
                 {
@@ -454,6 +462,9 @@ namespace Continuum_Tests
                     if (i == Mid_Int)
                         Mid_Val_1 = This_Model_Adj_1.DH_Stab_A[WD_Ind];
 
+                    if (i == 6)
+                        Max_Int = This_Model_Adj_1.DH_Stab_A[WD_Ind];
+
                     if (Sect_Error < Min_Error)
                     {
                         Val_Min_1 = This_Model_Adj_1.DH_Stab_A[WD_Ind];
@@ -466,6 +477,9 @@ namespace Continuum_Tests
                 if (Error_Changed == false)
                     Val_Min_1 = Mid_Val_1;
 
+                if (Val_Min_1 == Max_Int)
+                    Val_Min_1 = 5;
+
                 This_Model_Adj_1.DH_Stab_A[WD_Ind] = Val_Min_1;
                 thisInst.metPairList.Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "DH Stability", ref thisModel[0], This_Model_Adj_2, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
@@ -474,7 +488,8 @@ namespace Continuum_Tests
 
             // TEST 6
             // Uphill Stability Factor. Sweep from 0 to 3 with interval = 0.5
-            Mid_Int = Convert.ToInt16((((3 - 0) / 0.5) + 1) / 2);
+            Mid_Int = Convert.ToInt16((((3 - 0) / 0.5) + 1) / 2) - 1;
+            Max_Int = 0;
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
@@ -495,8 +510,14 @@ namespace Continuum_Tests
                     if (Last_Error != 0 && Sect_Error != Last_Error)
                         Error_Changed = true;
 
+                    if (i == 6)
+                        Max_Int = This_Model_Adj_1.UH_Stab_A[WD_Ind];
+
                     if (i == Mid_Int)
                         Mid_Val_1 = This_Model_Adj_1.UH_Stab_A[WD_Ind];
+
+                    if (i == 6)
+                        Max_Int = This_Model_Adj_1.UH_Stab_A[WD_Ind];
 
                     if (Sect_Error < Min_Error)
                     {
@@ -510,6 +531,9 @@ namespace Continuum_Tests
                 if (Error_Changed == false)
                     Val_Min_1 = Mid_Val_1;
 
+                if (Val_Min_1 == Max_Int)
+                    Val_Min_1 = 5;
+
                 This_Model_Adj_1.UH_Stab_A[WD_Ind] = Val_Min_1;
                 thisInst.metPairList.Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "UH Stability", ref thisModel[0], This_Model_Adj_2, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
@@ -518,7 +542,8 @@ namespace Continuum_Tests
 
             // TEST 7
             // Speed-Up Stability Factor. Sweep from 0 to 3 with interval = 0.5
-            Mid_Int = Convert.ToInt16((((3 - 0) / 0.5) + 1) / 2);
+            Mid_Int = Convert.ToInt16((((3 - 0) / 0.5) + 1) / 2) - 1;
+            Max_Int = 0;
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
@@ -527,6 +552,9 @@ namespace Continuum_Tests
                 Error_Changed = false;
                 Last_Error = 0;
                 Mid_Val_1 = 0;
+
+                if (WD_Ind == 2)
+                    WD_Ind = WD_Ind;
 
                 for (int i = 0; i < 7; i++)
                 {
@@ -542,6 +570,9 @@ namespace Continuum_Tests
                     if (i == Mid_Int)
                         Mid_Val_1 = This_Model_Adj_1.SU_Stab_A[WD_Ind];
 
+                    if (i == 6)
+                        Max_Int = This_Model_Adj_1.SU_Stab_A[WD_Ind];
+
                     if (Sect_Error < Min_Error)
                     {
                         Val_Min_1 = This_Model_Adj_1.SU_Stab_A[WD_Ind];
@@ -554,6 +585,9 @@ namespace Continuum_Tests
                 if (Error_Changed == false)
                     Val_Min_1 = Mid_Val_1;
 
+                if (Val_Min_1 == Max_Int)
+                    Val_Min_1 = 5;
+
                 This_Model_Adj_1.SU_Stab_A[WD_Ind] = Val_Min_1;
                 thisInst.metPairList.Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "SU Stability", ref thisModel[0], This_Model_Adj_2, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
@@ -562,7 +596,7 @@ namespace Continuum_Tests
 
             // TEST 8
             // Downhill flow B Factor. Sweep from 0 to 1.4 with interval = 0.2
-            Mid_Int = Convert.ToInt16((((1.4 - 0) / 0.2) + 1) / 2);
+            Mid_Int = Convert.ToInt16((((1.4 - 0) / 0.2) + 1) / 2) - 1;
             int counter = 0;
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
@@ -573,6 +607,9 @@ namespace Continuum_Tests
                 Error_Changed = false;
                 Last_Error = 0;
                 Mid_Val_1 = 0;
+
+                if (WD_Ind == 3)
+                    WD_Ind = WD_Ind;
 
                 for (int i = 0; i < 8; i++)
                 {
@@ -627,7 +664,7 @@ namespace Continuum_Tests
 
             // TEST 9
             // Uphill flow B Factor. Sweep from 0 to 1.4 with interval = 0.2
-            Mid_Int = Convert.ToInt16((((1.4 - 0) / 0.2) + 1) / 2);
+            Mid_Int = Convert.ToInt16((((1.4 - 0) / 0.2) + 1) / 2) - 1;
             counter = 0;
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
@@ -693,7 +730,7 @@ namespace Continuum_Tests
 
             // TEST 10
             // Speed-Up flow B Factor. Sweep from 0 to 1.4 with interval = 0.2
-            Mid_Int = Convert.ToInt16((((1.4 - 0) / 0.2) + 1) / 2);
+            Mid_Int = Convert.ToInt16((((1.4 - 0) / 0.2) + 1) / 2) - 1;
             counter = 0;
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)

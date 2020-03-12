@@ -10,13 +10,13 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class WakeModel_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
 
         [TestMethod]
         public void WakeModelTypeAndSettings_Test()
         {
             Continuum thisInst = new Continuum();
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\OneMetTABAndGrossNet_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
             thisInst.Open(fileName + ".cfm");
             thisInst.isTest = true;
             Wake_Model wakeModel = thisInst.wakeModelList.wakeModels[0];
@@ -39,12 +39,14 @@ namespace Continuum_Tests.GUI_Tests
             double wakeRecharge = 0;
 
             Turbine.Avg_Est thisEst = new Turbine.Avg_Est();
-            
+
+            string outputFile = testingFolder + "\\Calc WS.csv";
+                        
             double[] wakedEsts = new double[0];
             int wakeModelInd = 0;
 
             for (int modelInd = 0; modelInd < 3; modelInd++)
-                for (int comboInd = 0; comboInd < 10; comboInd++)
+                for (int comboInd = 0; comboInd < 5; comboInd++)
                     for (int horizInd = 0; horizInd < 2; horizInd++)                        
                     {
                         if (horizInd == 0)
@@ -81,10 +83,10 @@ namespace Continuum_Tests.GUI_Tests
 
                         string comboName = thisWake.cboWakeCombo.SelectedItem.ToString();
                         wakeModel = thisInst.wakeModelList.GetWakeModel(modelInd, horizExp, ambTI, DW_Spacing, CW_Spacing, ambRough, crvName, comboName, wakeRecharge);
-                        thisEst = thisInst.turbineList.turbineEsts[10].GetAvgWS_Est(wakeModel, crvObject);                                               
-
+                        thisEst = thisInst.turbineList.turbineEsts[10].GetAvgWS_Est(wakeModel, crvObject);
+                                                
                         for (int i = 0; i < wakeModelInd; i++)                        
-                            Assert.AreNotEqual(thisEst.waked.WS, wakedEsts[i], "Same estimate calculated");
+                            Assert.AreNotEqual(thisEst.waked.WS, wakedEsts[i], "Same estimate calculated. ModelInd:" + modelInd + ", ComboInd:" + comboInd + ", HorizInd: " + horizInd);
 
                         wakeModelInd++;
                         Array.Resize(ref wakedEsts, wakeModelInd);
@@ -92,8 +94,10 @@ namespace Continuum_Tests.GUI_Tests
 
                         thisInst.updateThe.AllTABs(thisInst);
                         thisInst.BW_worker.Close();
+                        
                     }
-                                   
+
+            
             thisInst.Close();
 
         }

@@ -45,7 +45,7 @@
             this.txtExceed = new System.Windows.Forms.TextBox();
             this.btnImportCDF = new System.Windows.Forms.Button();
             this.ofdImportCFD = new System.Windows.Forms.OpenFileDialog();
-            this.chtExceedDist = new Nevron.Chart.WinForm.NChartControl();
+            this.plotExceed = new OxyPlot.WindowsForms.PlotView();
             this.SuspendLayout();
             // 
             // label2
@@ -129,6 +129,7 @@
             this.StDev,
             this.Weight});
             this.lstModes.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstModes.HideSelection = false;
             this.lstModes.Location = new System.Drawing.Point(345, 69);
             this.lstModes.Margin = new System.Windows.Forms.Padding(2);
             this.lstModes.Name = "lstModes";
@@ -201,26 +202,24 @@
             this.ofdImportCFD.DefaultExt = "txt";
             this.ofdImportCFD.FileName = "openFileDialog1";
             // 
-            // chtExceedDist
+            // plotExceed
             // 
-            this.chtExceedDist.AutoRefresh = false;
-            this.chtExceedDist.BackColor = System.Drawing.SystemColors.Control;
-            this.chtExceedDist.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chtExceedDist.InputKeys = new System.Windows.Forms.Keys[0];
-            this.chtExceedDist.Location = new System.Drawing.Point(14, 215);
-            this.chtExceedDist.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chtExceedDist.Name = "chtExceedDist";
-            this.chtExceedDist.Size = new System.Drawing.Size(538, 361);
-            this.chtExceedDist.State = ((Nevron.Chart.WinForm.NState)(resources.GetObject("chtExceedDist.State")));
-            this.chtExceedDist.TabIndex = 224;
-            this.chtExceedDist.Text = "NChartControl1";
+            this.plotExceed.Location = new System.Drawing.Point(36, 228);
+            this.plotExceed.Name = "plotExceed";
+            this.plotExceed.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotExceed.Size = new System.Drawing.Size(485, 324);
+            this.plotExceed.TabIndex = 238;
+            this.plotExceed.Text = "plotView1";
+            this.plotExceed.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotExceed.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotExceed.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // Add_Exceedance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(714, 590);
-            this.Controls.Add(this.chtExceedDist);
+            this.Controls.Add(this.plotExceed);
             this.Controls.Add(this.btnImportCDF);
             this.Controls.Add(this.txtExceed);
             this.Controls.Add(this.label1);
@@ -261,6 +260,6 @@
         public System.Windows.Forms.ListView lstModes;        
         private System.Windows.Forms.Button btnImportCDF;
         private System.Windows.Forms.OpenFileDialog ofdImportCFD;
-        public Nevron.Chart.WinForm.NChartControl chtExceedDist;
+        public OxyPlot.WindowsForms.PlotView plotExceed;
     }
 }

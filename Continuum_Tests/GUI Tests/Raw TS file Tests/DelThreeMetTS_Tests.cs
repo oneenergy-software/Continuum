@@ -12,10 +12,10 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class DelThreeMetTS_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum";
-        string saveFolder = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string saveFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
 
-        string merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+        string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
         string metTSFile;
         string metName;
         string MCP_Method;
@@ -42,11 +42,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_1";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_1";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -476,11 +476,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_10";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_10";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -910,11 +910,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_11";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_11";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -1344,11 +1344,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_12";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_12";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -1778,11 +1778,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_13";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_13";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -2212,11 +2212,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_14";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_14";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -2646,11 +2646,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_15";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_15";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -3080,11 +3080,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_16";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_16";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -3514,11 +3514,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_17";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_17";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -3948,11 +3948,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_18";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_18";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -4382,11 +4382,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_19";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_19";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -4816,11 +4816,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_2";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_2";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -5250,11 +5250,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_20";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_20";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -5684,11 +5684,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_21";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_21";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -6118,11 +6118,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_22";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_22";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -6552,11 +6552,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_23";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_23";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -6986,11 +6986,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_24";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_24";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -7420,11 +7420,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_3";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_3";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -7854,11 +7854,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_4";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_4";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -8288,11 +8288,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_5";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_5";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -8722,11 +8722,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_6";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_6";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -9156,11 +9156,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_7";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_7";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -9590,11 +9590,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_8";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_8";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -10024,11 +10024,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\ThreeMetRawTSWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\ThreeMetRawTSWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelThreeMetTS_9";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelThreeMetTS_9";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {

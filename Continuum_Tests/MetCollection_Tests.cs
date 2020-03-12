@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class MetCollection_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\MetCollection";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MetCollection";
 
         [TestMethod]
         public void CalcWS_DistForTurbOrMap_Test()
@@ -87,13 +87,13 @@ namespace Continuum_Tests
         [TestMethod]
         public void AddMetTAB_Test()
         {
-            string WR_file = testingFolder + "\\Wind_Rose.txt";
+            string WR_file = testingFolder + "\\AddMet_TAB\\Wind_Rose.txt";
             StreamReader sr = new StreamReader(WR_file);
             double[] windRose = new double[16];
             for (int i = 0; i <= 15; i++)
                 windRose[i] = Convert.ToSingle(sr.ReadLine()) / 100;
 
-            string Sect_WS_file = testingFolder + "\\Sect_WS.txt";
+            string Sect_WS_file = testingFolder + "\\AddMet_TAB\\Sect_WS.txt";
             sr = new StreamReader(Sect_WS_file);
             double[,] sectorWS = new double[16, 31];
             for (int i = 0; i <= 15; i++)

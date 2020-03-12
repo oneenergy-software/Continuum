@@ -453,8 +453,7 @@ namespace ContinuumNS
 
             for (int i = 0; i < AvgWSEst_Count; i++)
             {
-                if ((blankWake == true || wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel)) 
-                    && (powerCurve.name == null || powerCurve.name == avgWS_Est[i].powerCurve.name))
+                if (blankWake == true || wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel))
                 {
                     thisAvgWS_Est = avgWS_Est[i];
                     break;
@@ -660,7 +659,7 @@ namespace ContinuumNS
                     else
                     {
                         TurbineCollection turbineList = new TurbineCollection();
-                        This_CF = turbineList.CalcCapacityFactor(netAEP[i].sectorEnergy[WD_Ind], thisWakeModel.powerCurve.ratedPower) * numWD;
+                        This_CF = turbineList.CalcCapacityFactor(netAEP[i].sectorEnergy[WD_Ind], thisWakeModel.powerCurve.ratedPower);
                     }
                     break;
                 }
@@ -1287,7 +1286,7 @@ namespace ContinuumNS
         /// </summary>        
         public void GenerateAvgWSFromTABs(Continuum thisInst, Model[] models, double[] windRose, bool forRoundRobin)
         {             
-            if (thisInst.metList.ThisCount == 0) return;
+            if (thisInst.metList.ThisCount == 0) return;                      
 
             double avgWS = 0;
             double avgWeight = 0;
@@ -1867,7 +1866,7 @@ namespace ContinuumNS
 
                         effectiveTI[i] = Math.Pow((1 - sumWakeProb) * Math.Pow(thisMet.turbulence.p90SD[i, WD_Ind], wohler) + sumWeightedWakeProb, (1 / wohler));
 
-                        if (thisMet.turbulence.avgWS[i, WD_Ind] > 0)
+                        if (thisMet.turbulence.avgWS[i, WD_Ind] > 0 && thisMet.turbulence.p90SD[i, WD_Ind] > 0)
                             effectiveTI[i] = effectiveTI[i] / thisMet.turbulence.avgWS[i, WD_Ind];
                         else
                             effectiveTI[i] = 0;

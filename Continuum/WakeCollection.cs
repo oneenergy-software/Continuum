@@ -1758,8 +1758,6 @@ namespace ContinuumNS
             // and turbine roughness. Initial IBL height equal to top of rotor
 
             double H1 = 0;
-            WD_sector = 90 - WD_sector;                       
-
             double RD = thisWakeModel.powerCurve.RD;                        
 
             double[] DW_andLatDists = CalcDownwindAndLateralDistanceFromUW_Turb(UW_turb.UTMX, UW_turb.UTMY, UTMX, UTMY, RD, WD_sector);            
@@ -1768,23 +1766,21 @@ namespace ContinuumNS
 
             if (DW_Dist > 0)
             {
-                // Calculate height of IBL 
-                double wakeWidth = 0;
+                // Calculate height of IBL
+               
                 double initWakeWidth = 0.8f;
-                wakeWidth = CalcWakeWidth(initWakeWidth, thisWakeModel, DW_Dist);
+                double wakeWidth = CalcWakeWidth(initWakeWidth, thisWakeModel, DW_Dist);
 
                 if (latDist < wakeWidth)
                 { // it's in the IBL created by UW turbine 
                   // Initial height is top of rotor
-                    double leftSide = 0;
-                    double rightSide = 0;
-                    double diff = 0;
+                    
                     int counter = 0;
 
-                    H1 = H1 + hubHeight + RD / 2;
-                    leftSide = (H1 * (Math.Log(H1 / equivRough) - 1));
-                    rightSide = equivRough * (DW_Dist * RD / equivRough - 1);
-                    diff = leftSide - rightSide;
+                    H1 = hubHeight + RD / 2;
+                    double leftSide = (H1 * (Math.Log(H1 / equivRough) - 1));
+                    double rightSide = equivRough * (DW_Dist * RD / equivRough - 1);
+                    double diff = leftSide - rightSide;
 
                     while (Math.Abs(diff) > 0.5 && counter < 1000)
                     {
@@ -1922,8 +1918,7 @@ namespace ContinuumNS
             // Used in DAWM, this is the height of the second internal boundary layer (IBL) calculated based on distance and ambient (background) roughness.
             // Initial IBL height equal to bottom of rotor
 
-            double H2 = 1000000;
-            WD_sector = 90 - WD_sector;                       
+            double H2 = 1000000;                                
 
             double RD = thisWakeModel.powerCurve.RD;
 

@@ -31,11 +31,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_1";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_1";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -454,11 +454,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_10";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_10";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -877,11 +877,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_11";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_11";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -1300,11 +1300,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_12";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_12";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -1723,11 +1723,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_13";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_13";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -2146,11 +2146,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_14";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_14";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -2569,11 +2569,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_15";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_15";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -2992,11 +2992,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_16";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_16";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -3415,11 +3415,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_17";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_17";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -3838,11 +3838,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_18";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_18";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -4261,11 +4261,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_19";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_19";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -4684,11 +4684,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_2";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_2";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -5107,11 +5107,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_20";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_20";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -5530,11 +5530,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_21";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_21";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -5953,11 +5953,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_22";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_22";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -6376,11 +6376,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_23";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_23";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -6799,11 +6799,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_24";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_24";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -7222,11 +7222,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_3";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_3";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -7645,11 +7645,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_4";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_4";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -8068,11 +8068,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_5";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_5";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -8491,11 +8491,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_6";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_6";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -8914,11 +8914,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_7";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_7";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -9337,11 +9337,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_8";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_8";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -9760,11 +9760,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\TwoMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\TwoMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\DelTwoMetTSNotFilt_9";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelTwoMetTSNotFilt_9";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {

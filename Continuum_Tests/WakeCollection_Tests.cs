@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class WakeCollection_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\WakeCollection";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\WakeCollection";
 
         [TestMethod]
         public void CalcWakeProfileFit_Test()
@@ -175,7 +175,7 @@ namespace Continuum_Tests
 
             turbineList.AddPowerCurve("GW 1500/87", 3, 22, 1500, power, null, 87, 16, 10, 1, 0);
             wakeModelList.AddWakeModel(0, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
-
+            
             string Dist_file = testingFolder + "\\CalcNetEnergy\\WS_Dist.txt";
             sr = new StreamReader(Dist_file);
             double[] thisDist = new double[31];
@@ -184,8 +184,12 @@ namespace Continuum_Tests
                 thisDist[i] = Convert.ToSingle(sr.ReadLine());
 
             Continuum thisInst = new Continuum();
-            double This_AEP = wakeModelList.CalcNetEnergy(wakeModelList.wakeModels[0], thisDist, thisInst, 0);
-            Assert.AreEqual(This_AEP, 10199, 0.1, "Wrongt Net AEP");
+            double[] dummyRose = new double[16];
+            double[,] dummySect = new double[16, 31];
+            thisInst.metList.AddMetTAB("Dummy", 0, 0, 0, dummyRose, dummySect, 0.5, 1, thisInst);
+            double loss = 0.8782;
+            double This_AEP = wakeModelList.CalcNetEnergy(wakeModelList.wakeModels[0], thisDist, thisInst, loss);
+            Assert.AreEqual(This_AEP, 8956.778, 5, "Wrongt Net AEP");
 
         }
 
@@ -216,6 +220,9 @@ namespace Continuum_Tests
             MetCollection metList = new MetCollection();
             metList.metItem = new Met[1];
             metList.metItem[0] = new Met();
+            metList.WS_FirstInt = 0.5;
+            metList.WS_IntSize = 1;
+            metList.numWS = 30;
 
             double This_Equiv_Rough = WakeModList.CalcEquivRoughness(metList, 8, WakeModList.wakeModels[0], 80.0);
             Assert.AreEqual(This_Equiv_Rough, 1.9316, 0.01, "Wrong equivalent roughness for DAWM");
@@ -230,14 +237,14 @@ namespace Continuum_Tests
             TurbineCollection turbineList = new TurbineCollection();
 
             double[] power = new double[23];
-            string Power_file = testingFolder + "\\CalcIBL_H1\\Power.txt";
+            string Power_file = testingFolder + "\\Calc_IBL_H1\\Power.txt";
             StreamReader sr = new StreamReader(Power_file);
 
             for (int i = 0; i <= 22; i++)
                 power[i] = Convert.ToSingle(sr.ReadLine());
 
             double[] Thrust = new double[23];
-            string Thrust_file = testingFolder + "\\CalcIBL_H1\\Thrust.txt";
+            string Thrust_file = testingFolder + "\\Calc_IBL_H1\\Thrust.txt";
             sr = new StreamReader(Thrust_file);
 
             for (int i = 0; i <= 22; i++)
@@ -268,14 +275,14 @@ namespace Continuum_Tests
             TurbineCollection turbineList = new TurbineCollection();
 
             double[] power = new double[23];
-            string Power_file = testingFolder + "\\CalcIBL_H2\\Power.txt";
+            string Power_file = testingFolder + "\\Calc_IBL_H2\\Power.txt";
             StreamReader sr = new StreamReader(Power_file);
 
             for (int i = 0; i <= 22; i++)
                 power[i] = Convert.ToSingle(sr.ReadLine());
 
             double[] Thrust = new double[23];
-            string Thrust_file = testingFolder + "\\CalcIBL_H2\\Thrust.txt";
+            string Thrust_file = testingFolder + "\\Calc_IBL_H2\\Thrust.txt";
             sr = new StreamReader(Thrust_file);
 
             for (int i = 0; i <= 22; i++)
@@ -291,6 +298,9 @@ namespace Continuum_Tests
             MetCollection metList = new MetCollection();
             metList.metItem = new Met[1];
             metList.metItem[0] = new Met();
+            metList.WS_FirstInt = 0.5f;
+            metList.WS_IntSize = 1;
+            metList.numWS = 30;
 
             WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
             double This_IBL_H2 = WakeModList.Calc_IBL_H2_NEW(UW_Turbs[0], 280000, 4553500, WakeModList.wakeModels[0], 90f, metList, 8, 80.0);
@@ -329,6 +339,9 @@ namespace Continuum_Tests
             MetCollection metList = new MetCollection();
             metList.metItem = new Met[1];
             metList.metItem[0] = new Met();
+            metList.WS_FirstInt = 0.5f;
+            metList.WS_IntSize = 1;
+            metList.numWS = 30;
 
             WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
 
@@ -378,11 +391,18 @@ namespace Continuum_Tests
             }
 
             Continuum thisInst = new Continuum();
-            double[] This_Net_Energy = WakeModList.CalcNetSectEnergy(WakeModList.wakeModels[0], sectorWS, windRose, thisInst, 0);
-            Assert.AreEqual(This_Net_Energy[0], 102.5134, 0.01, "Wrong net energy calculated Sector 0");
-            Assert.AreEqual(This_Net_Energy[6], 96.69486, 0.01, "Wrong net energy calculated Sector 0");
-            Assert.AreEqual(This_Net_Energy[14], 223.3589, 0.01, "Wrong net energy calculated Sector 0");
-            Assert.AreEqual(This_Net_Energy[15], 124.5820, 0.01, "Wrong net energy calculated Sector 0");
+            thisInst.metList.WS_FirstInt = 0.5;
+            thisInst.metList.WS_IntSize = 1;
+            thisInst.metList.numWS = 30;
+            Met met = new Met();
+            thisInst.metList.AddMetTAB("dummy", 0, 0, 0, windRose, sectorWS, 0.5, 1, thisInst);
+            double noLoss = 1.0;
+
+            double[] This_Net_Energy = WakeModList.CalcNetSectEnergy(WakeModList.wakeModels[0], sectorWS, windRose, thisInst, noLoss);
+            Assert.AreEqual(This_Net_Energy[0], 102.5134, 0.1, "Wrong net energy calculated Sector 0");
+            Assert.AreEqual(This_Net_Energy[6], 96.69486, 0.1, "Wrong net energy calculated Sector 6");
+            Assert.AreEqual(This_Net_Energy[14], 223.3589, 0.1, "Wrong net energy calculated Sector 14");
+            Assert.AreEqual(This_Net_Energy[15], 124.5820, 0.1, "Wrong net energy calculated Sector 15");
 
         }
 
@@ -425,7 +445,7 @@ namespace Continuum_Tests
                     sectorWS[i, j] = Convert.ToSingle(This_Array_Split[j]);
             }
 
-            string WR_file = testingFolder + "\\CalcWakeLosses\\windRose.txt";
+            string WR_file = testingFolder + "\\CalcWakeLosses\\Wind_Rose.txt";
             sr = new StreamReader(WR_file);
             double[] windRose = new double[16];
             for (int i = 0; i <= 15; i++)
@@ -472,6 +492,20 @@ namespace Continuum_Tests
             turbineList.AddTurbine("Target Site", 280050, 4552500, 1);
             turbineList.AddTurbine("UW Site", 280000, 4553000, 1);
             Continuum thisInst = new Continuum();
+            thisInst.turbineList = turbineList;
+            thisInst.metList.WS_FirstInt = 0.5;
+            thisInst.metList.WS_IntSize = 1;
+            thisInst.metList.numWS = 30;           
+            thisInst.metList.AddMetTAB("dummy", 0, 0, 0, windRose, sectorWS, 0.5, 1, thisInst);
+
+            // Need to define exceed model
+            thisInst.turbineList.exceed = new Exceedance();
+            thisInst.turbineList.exceed.compositeLoss = new Exceedance.Monte_Carlo();
+            thisInst.turbineList.exceed.compositeLoss.pVals1yr = new double[100];
+
+            for (int i = 0; i < 100; i++)
+                thisInst.turbineList.exceed.compositeLoss.pVals1yr[i] = 1.0;
+
             WakeCollection.WakeCalcResults WakeResults = WakeModList.CalcWakeLosses(These_Coeffs, 280050, 4552500, sectorWS, 4130, Sect_AEP, thisInst, WakeModList.wakeModels[0], windRose);
 
             Assert.AreEqual(WakeResults.sectorNetEnergy[0], 79.1604, 0.1, "Wrong net AEP");
@@ -589,7 +623,7 @@ namespace Continuum_Tests
         public void CalcNetEnergyTimeSeries_Test()
         {
             Continuum thisInst = new Continuum();            
-            string fileName = testingFolder + "WakeList testing.cfm";
+            string fileName = testingFolder + "\\WakeCollection TS testing.cfm";
             thisInst.Open(fileName);
 
             Turbine thisTurb = thisInst.turbineList.turbineEsts[0];

@@ -10,12 +10,12 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class OneMetTSNotFiltWithMERRAAndMCP
     {
-        string testingFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum";
-        string saveFolder = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string saveFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
 
-        string firewheelMERRA = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
-        string ohioMERRA = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
-        string merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+        string firewheelMERRA = "C:\\Users\\Liz\\Desktop\\MERRA2\\Firewheel";
+        string ohioMERRA = "C:\\Users\\Liz\\Desktop\\MERRA2";
+        string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
         string metTSFile;
         string metName;
@@ -130,11 +130,9 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAStart.Value = Convert.ToDateTime("1/1/2010 12:00:00 AM");
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2011 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-            offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
+            offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);                       
 
-            merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
-
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -361,7 +359,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -588,7 +586,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -811,7 +809,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -1038,7 +1036,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -1265,7 +1263,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -1492,7 +1490,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -1719,7 +1717,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -1946,7 +1944,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -2173,7 +2171,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -2400,7 +2398,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -2627,7 +2625,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -2854,7 +2852,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -3085,7 +3083,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -3308,7 +3306,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -3535,7 +3533,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -3762,7 +3760,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -3989,7 +3987,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -4216,7 +4214,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -4443,7 +4441,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -4670,7 +4668,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -4897,7 +4895,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -5124,7 +5122,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -5351,7 +5349,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -5582,7 +5580,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -5805,7 +5803,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -6032,7 +6030,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -6259,7 +6257,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -6486,7 +6484,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -6713,7 +6711,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -6940,7 +6938,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -7167,7 +7165,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -7394,7 +7392,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -7621,7 +7619,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -7848,7 +7846,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -8079,7 +8077,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -8302,7 +8300,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -8529,7 +8527,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -8756,7 +8754,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -8983,7 +8981,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -9210,7 +9208,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -9437,7 +9435,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -9664,7 +9662,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -9891,7 +9889,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -10118,7 +10116,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -10345,7 +10343,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -10576,7 +10574,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -10799,7 +10797,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -11026,7 +11024,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -11253,7 +11251,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -11480,7 +11478,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -11707,7 +11705,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -11934,7 +11932,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -12161,7 +12159,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -12388,7 +12386,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -12615,7 +12613,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -12842,7 +12840,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -13073,7 +13071,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -13296,7 +13294,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -13523,7 +13521,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -13750,7 +13748,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -13977,7 +13975,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -14204,7 +14202,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -14431,7 +14429,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -14658,7 +14656,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -14885,7 +14883,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -15112,7 +15110,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -15339,7 +15337,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -15570,7 +15568,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -15793,7 +15791,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -16020,7 +16018,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -16247,7 +16245,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -16474,7 +16472,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -16701,7 +16699,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -16928,7 +16926,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -17155,7 +17153,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -17382,7 +17380,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -17609,7 +17607,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -17836,7 +17834,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -18067,7 +18065,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -18290,7 +18288,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -18517,7 +18515,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -18744,7 +18742,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -18971,7 +18969,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -19198,7 +19196,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -19425,7 +19423,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -19652,7 +19650,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -19879,7 +19877,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -20106,7 +20104,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -20333,7 +20331,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -20564,7 +20562,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -20787,7 +20785,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -20993,7 +20991,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -21220,7 +21218,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -21447,7 +21445,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -21674,7 +21672,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -21901,7 +21899,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -22128,7 +22126,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -22355,7 +22353,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -22582,7 +22580,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -22809,7 +22807,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -23061,7 +23059,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -23263,7 +23261,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -23490,7 +23488,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -23717,7 +23715,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -23944,7 +23942,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -24171,7 +24169,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -24398,7 +24396,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -24625,7 +24623,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -24852,7 +24850,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -25079,7 +25077,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -25306,7 +25304,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -25558,7 +25556,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -25785,7 +25783,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -25987,7 +25985,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -26214,7 +26212,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -26441,7 +26439,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -26668,7 +26666,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -26895,7 +26893,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -27096,7 +27094,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -27323,7 +27321,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -27546,7 +27544,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -27773,7 +27771,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -28005,7 +28003,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -28282,7 +28280,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -28459,7 +28457,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -28690,7 +28688,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -28917,7 +28915,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -29144,7 +29142,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -29371,7 +29369,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -29598,7 +29596,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -29825,7 +29823,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -30069,7 +30067,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -30296,7 +30294,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -30523,7 +30521,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -30779,7 +30777,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -30977,7 +30975,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -31204,7 +31202,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -31431,7 +31429,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -31653,7 +31651,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -31880,7 +31878,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -32086,7 +32084,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -32313,7 +32311,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -32545,7 +32543,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -32772,7 +32770,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -32998,7 +32996,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -33276,7 +33274,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -33452,7 +33450,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -33675,7 +33673,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -33927,7 +33925,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -34154,7 +34152,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 
@@ -34381,7 +34379,7 @@ namespace Continuum_Tests.GUI_Tests
 
             merraFolder = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
 
-            thisInst.merraList.MERRAfolder = merraFolder;
+            thisInst.merraList.MERRAfolder = firewheelMERRA;
 
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);
 

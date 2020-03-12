@@ -12,7 +12,7 @@ namespace Continuum_Tests
     [TestClass]
     public class TopoInfo_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\TopoInfo";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\TopoInfo";
 
         [TestMethod]
         public void ExportTopoData()
@@ -143,7 +143,7 @@ namespace Continuum_Tests
             sr.Close();
             thisInst.Close();
         }
-
+                
         [TestMethod]
         public void ReadGeoTiffTopo_Test()
         {

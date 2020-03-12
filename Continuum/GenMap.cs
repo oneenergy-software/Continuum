@@ -238,10 +238,10 @@ namespace ContinuumNS
                 numValid = 0;
             }
 
-            minUTMX_Limit = (int)(thisInst.topo.topoNumXY.X.plot.min + minXInd * thisInst.topo.topoNumXY.X.plot.reso);
-            minUTMY_Limit = (int)(thisInst.topo.topoNumXY.Y.plot.min + minYInd * thisInst.topo.topoNumXY.Y.plot.reso);
-            maxUTMX_Limit = (int)(thisInst.topo.topoNumXY.X.plot.min + maxXInd * thisInst.topo.topoNumXY.X.plot.reso);
-            maxUTMY_Limit = (int)(thisInst.topo.topoNumXY.Y.plot.min + maxYInd * thisInst.topo.topoNumXY.Y.plot.reso);
+            minUTMX_Limit = (int)(thisInst.topo.topoNumXY.X.plot.min + minXInd * thisInst.topo.topoNumXY.X.plot.reso) + 12000;
+            minUTMY_Limit = (int)(thisInst.topo.topoNumXY.Y.plot.min + minYInd * thisInst.topo.topoNumXY.Y.plot.reso) + 12000;
+            maxUTMX_Limit = (int)(thisInst.topo.topoNumXY.X.plot.min + maxXInd * thisInst.topo.topoNumXY.X.plot.reso) - 12000;
+            maxUTMY_Limit = (int)(thisInst.topo.topoNumXY.Y.plot.min + maxYInd * thisInst.topo.topoNumXY.Y.plot.reso) - 12000;
 
             TopoInfo.TopoGrid thisXY = thisInst.topo.GetClosestNodeFixedGrid(minUTMX_Limit, minUTMY_Limit, gridReso, 12000);
             minUTMX_Limit = (int)thisXY.UTMX;

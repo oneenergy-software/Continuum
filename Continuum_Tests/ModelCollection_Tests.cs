@@ -13,7 +13,7 @@ namespace Continuum_Tests
     [TestClass]
     public class ModelCollection_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\ModelCollection";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\ModelCollection";
 
         [TestMethod]
         public void GetDeltaWS_DW_Expo_Test()
@@ -509,16 +509,16 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\Great Western ModelCollection testing.cfm";
+            string Filename = testingFolder + "\\ModelCollection Great Western.cfm";
             thisInst.Open(Filename);
 
-            string overallOutput = testingFolder + "\\Overall CrossPredictions.csv";
-            string sectorOutput = testingFolder + "\\Sectorwise CrossPredictions.csv";
+            string overallOutput = testingFolder + "\\Calc_RMS_Overall_Sector\\Overall CrossPredictions.csv";
+            string sectorOutput = testingFolder + "\\Calc_RMS_Overall_Sector\\Sectorwise CrossPredictions.csv";
 
             StreamWriter overall = new StreamWriter(overallOutput);
             StreamWriter sector = new StreamWriter(sectorOutput);
 
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
 
             // Do overall first
             for (int i = 0; i < thisInst.radiiList.ThisCount; i++)
@@ -572,7 +572,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\Great Western ModelCollection testing.cfm";
+            string Filename = testingFolder + "\\ModelCollection Great Western.cfm";
             thisInst.Open(Filename);
 
             // When this model was created, the function 'CalcRMS_Overall_and_Sectorwise' was called so RMS errors exist in models. 
@@ -588,7 +588,7 @@ namespace Continuum_Tests
             StreamReader srSect6000 = new StreamReader(sector6000);
             StreamReader srSect8000 = new StreamReader(sector8000);
             StreamReader srSect10000 = new StreamReader(sector10000);
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
                         
             for (int i = 0; i < thisInst.radiiList.ThisCount; i++)
             {                
@@ -627,7 +627,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\Great Western ModelCollection testing.cfm";
+            string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
             thisInst.Open(Filename);                      
 
             Met met1 = thisInst.metList.metItem[0];
@@ -683,7 +683,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\Great Western ModelCollection testing.cfm";
+            string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
@@ -697,12 +697,12 @@ namespace Continuum_Tests
             targetNode.CalcGridStatsAndExposures(thisInst);
 
             Met[] metsUsed = thisInst.metList.GetMets(thisInst.metList.GetMetsUsed(), null);
-            Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             
             ModelCollection.ModelWeights[] theseWeights = thisInst.modelList.GetWS_EstWeights(metsUsed, targetNode, Models, 
                 thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All), thisInst.radiiList);
 
-            string weightFile = testingFolder + "\\GetWS_EstWeights\\Great Western Turb 474 Weights.csv";
+            string weightFile = testingFolder + "\\GetWS_EstWeights\\Great Western Turb 464 Weights.csv";
             StreamReader sr = new StreamReader(weightFile);
                         
             for (int i = 0; i < thisInst.radiiList.ThisCount; i++)
@@ -760,7 +760,7 @@ namespace Continuum_Tests
             // Exports values needed for DoWS_Estimate_Test
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\Great Western ModelCollection testing.cfm";
+            string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
@@ -769,7 +769,7 @@ namespace Continuum_Tests
             // Test 1: Met 474 to Met 475, Radius = 4000, WD = 270 (WD_ind = 18)
             int WD_ind = 18;
             int radInd = 0;
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             Model model = models[radInd];
             Met startMet = thisInst.metList.GetMet("Met_474");
             Met.WSWD_Dist startWSDist = startMet.GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
@@ -895,14 +895,14 @@ namespace Continuum_Tests
             sr.WriteLine("Delta WS UW SRDH," + Math.Round(deltaWS_SRDH_UW, 4));
             sr.WriteLine("Delta WS DW SRDH," + Math.Round(deltaWS_SRDH_DW, 4));                       
 
-            // Test 3: Met 475 to Turb 464, Radius = 4000, WD = 285 (WD_ind = 19)
+            // Test 3: Met 474 to Turb 532, Radius = 4000, WD = 285 (WD_ind = 19)
             WD_ind = 19;
             radInd = 0;
             model = models[radInd];
-            startMet = thisInst.metList.GetMet("Met_475");
+            startMet = thisInst.metList.GetMet("Met_474");
             startWSDist = startMet.GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
                      
-            Turbine endTurbine = thisInst.turbineList.GetTurbine("Turb_464");
+            Turbine endTurbine = thisInst.turbineList.GetTurbine("Turb_532");
             Turbine.Avg_Est avgEst = endTurbine.GetAvgWS_Est(null, new TurbineCollection.PowerCurve());
             Turbine.WS_Ests wsEst = endTurbine.GetWS_Est(4000, startMet.name, model);
             Nodes[] pathOfNodes = wsEst.pathOfNodes;
@@ -957,9 +957,9 @@ namespace Continuum_Tests
 
                 if (WD == 19)
                 {
-                    sr.WriteLine("Met 475 predicting Turb 464 R = 4000 WD = 285");
+                    sr.WriteLine("Met 474 predicting Turb 532 R = 4000 WD = 285");
 
-                    sr.WriteLine("Met 475 Equiv WS," + Math.Round(equivWS[WD], 4));
+                    sr.WriteLine("Met 474 Equiv WS," + Math.Round(equivWS[WD], 4));
 
                     for (int i = 0; i < deltaWS_UW.Length; i++)
                         if (deltaWS_UW[i].flowType != "Total")
@@ -1043,7 +1043,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\Great Western ModelCollection testing.cfm";
+            string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
             thisInst.Open(Filename);                    
 
             // Test 1: Met 474 to Met 475            
@@ -1055,11 +1055,11 @@ namespace Continuum_Tests
             Nodes endNode = nodeList.GetMetNode(endMet);
             Pair_Of_Mets metPair = thisInst.metPairList.GetPair_Of_Mets(startMet, endMet);
             Nodes[] pathOfNodes = metPair.WS_Pred[radInd, 0].nodePath;
-            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             Model model = models[radInd];
 
             ModelCollection.WS_Est_Struct thisEst = thisInst.modelList.DoWS_Estimate(startMet, endNode, pathOfNodes, model, thisInst);
-            Assert.AreEqual(thisEst.sectorWS[WD_Ind], 7.0072, 0.001, "Wrong WS Test 1");
+            Assert.AreEqual(thisEst.sectorWS[WD_Ind], 7.0258, 0.001, "Wrong WS Test 1");
 
             // Test 2: Met 3350 to Met 474            
             radInd = 3;
@@ -1069,26 +1069,26 @@ namespace Continuum_Tests
             endNode = nodeList.GetMetNode(endMet);
             metPair = thisInst.metPairList.GetPair_Of_Mets(startMet, endMet);
             pathOfNodes = metPair.WS_Pred[radInd, 0].nodePath;
-            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             model = models[radInd];
 
             thisEst = thisInst.modelList.DoWS_Estimate(startMet, endNode, pathOfNodes, model, thisInst);
-            Assert.AreEqual(thisEst.sectorWS[WD_Ind], 7.945, 0.001, "Wrong WS Test 2");
+            Assert.AreEqual(thisEst.sectorWS[WD_Ind], 7.9439, 0.001, "Wrong WS Test 2");
 
             // Test 3: Met 475 to Turb 464            
             radInd = 0;
             WD_Ind = 19;
-            startMet = thisInst.metList.GetMet("Met_475");
-            Turbine endTurbine = thisInst.turbineList.GetTurbine("Turb_464");
+            startMet = thisInst.metList.GetMet("Met_474");
+            Turbine endTurbine = thisInst.turbineList.GetTurbine("Turb_532");
             endNode = nodeList.GetTurbNode(endTurbine);
                         
-            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             model = models[radInd];
             Turbine.WS_Ests wsEst = endTurbine.GetWS_Est(4000, startMet.name, model);
             pathOfNodes = wsEst.pathOfNodes;
 
             thisEst = thisInst.modelList.DoWS_Estimate(startMet, endNode, pathOfNodes, model, thisInst);
-            Assert.AreEqual(thisEst.sectorWS[WD_Ind], 7.861, 0.001, "Wrong WS Test 3");
+            Assert.AreEqual(thisEst.sectorWS[WD_Ind], 6.856, 0.001, "Wrong WS Test 3");
 
             thisInst.Close();
         }
@@ -1098,16 +1098,15 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\Great Western ModelCollection testing.cfm";
+            string Filename = testingFolder + "\\ModelCollection Great Western.cfm";
             thisInst.Open(Filename);
 
-            thisInst.modelList.ClearAllExceptDefaultAndImported();
-            Assert.AreEqual(thisInst.modelList.ModelCount, 1, 0, "Didn't clear models");
+            thisInst.modelList.ClearAllExceptImported();
+            Assert.AreEqual(thisInst.modelList.ModelCount, 0, 0, "Didn't clear models");
 
             thisInst.modelList.FindSiteCalibratedModels(thisInst, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-            Assert.AreEqual(thisInst.modelList.ModelCount, 2, 0, "Didn't create site-calibrated model");
-            Assert.AreEqual(thisInst.modelList.models[1, 0].isCalibrated, true, "Didn't create site-calibrated model");
-
+            Assert.AreEqual(thisInst.modelList.ModelCount, 1, 0, "Didn't create site-calibrated model");
+            
             thisInst.Close();
         }
 
@@ -1135,7 +1134,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "ModelCollection testing.cfm";
+            string fileName = testingFolder + "\\ModelCollection testing.cfm";
             thisInst.Open(fileName);
 
             Turbine thisTurb = thisInst.turbineList.turbineEsts[0];
@@ -1145,21 +1144,20 @@ namespace Continuum_Tests
             TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0]; ;
             Wake_Model wakeModel = new Wake_Model();
 
-            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, false,
-                powerCurve, wakeModel, null, MCP_Method);
+            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, powerCurve, wakeModel, null, MCP_Method);
 
             Turbine.Gross_Energy_Est thisGross = new Turbine.Gross_Energy_Est();
             thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, thisTS, thisInst);
 
-            Assert.AreEqual(thisGross.AEP, 3655.705, 0.1, "Wrong average AEP Test 1");
-            Assert.AreEqual(thisGross.sectorEnergy[0], 112.5738, 0.1, "Wrong sector AEP Test 2");
-            Assert.AreEqual(thisGross.sectorEnergy[10], 427.9939, 0.1, "Wrong sector AEP Test 3");
-            Assert.AreEqual(thisGross.sectorEnergy[15], 193.6376, 0.1, "Wrong sector AEP Test 4");
+            Assert.AreEqual(thisGross.AEP, 3302.594677, 0.1, "Wrong average AEP Test 1");
+            Assert.AreEqual(thisGross.sectorEnergy[0], 104.1019456, 0.1, "Wrong sector AEP Test 2");
+            Assert.AreEqual(thisGross.sectorEnergy[10], 381.2825653, 0.1, "Wrong sector AEP Test 3");
+            Assert.AreEqual(thisGross.sectorEnergy[15], 180.9071585, 0.1, "Wrong sector AEP Test 4");
 
-            Assert.AreEqual(thisGross.monthlyVals[0].energyProd, 354.8312, 0.1, "Wrong monthly Jan 2005 Test 5");
-            Assert.AreEqual(thisGross.monthlyVals[22].energyProd, 239.3034, 0.1, "Wrong sector AEP Test 6");
-            Assert.AreEqual(thisGross.monthlyVals[29].energyProd, 181.3426, 0.1, "Wrong sector AEP Test 7");
-            Assert.AreEqual(thisGross.monthlyVals[71].energyProd, 350.6486, 0.1, "Wrong sector AEP Test 8");
+            Assert.AreEqual(thisGross.monthlyVals[0].energyProd, 328.3761571, 0.1, "Wrong monthly Jan 2005 Test 5");
+            Assert.AreEqual(thisGross.monthlyVals[22].energyProd, 213.0688251, 0.1, "Wrong sector AEP Test 6");
+            Assert.AreEqual(thisGross.monthlyVals[29].energyProd, 156.0195372, 0.1, "Wrong sector AEP Test 7");
+            Assert.AreEqual(thisGross.monthlyVals[71].energyProd, 312.4151406, 0.1, "Wrong sector AEP Test 8");
 
             thisInst.Close();
         }
@@ -1195,22 +1193,21 @@ namespace Continuum_Tests
             if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
             wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, wakeModel, thisInst.metList);
 
-            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, false,
-                powerCurve, wakeModel, wakeCoeffs, MCP_Method);
+            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, powerCurve, wakeModel, wakeCoeffs, MCP_Method);
 
             Turbine.Net_Energy_Est thisNet = new Turbine.Net_Energy_Est();
             thisNet.wakeModel = wakeModel;
-            thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst, wakeModel);
+            thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst);
 
-            Assert.AreEqual(thisNet.AEP, 3579.53, 0.1, "Wrong average AEP Test 1");
-            Assert.AreEqual(thisNet.sectorEnergy[0], 112.5738, 0.1, "Wrong sector AEP Test 2");
-            Assert.AreEqual(thisNet.sectorEnergy[5], 115.987, 0.1, "Wrong sector AEP Test 3");
-            Assert.AreEqual(thisNet.sectorEnergy[15], 193.6376, 0.1, "Wrong sector AEP Test 4");
+            Assert.AreEqual(thisNet.AEP, 3076.561197, 0.1, "Wrong average AEP Test 1");
+            Assert.AreEqual(thisNet.sectorEnergy[0], 98.88121615, 0.1, "Wrong sector AEP Test 2");
+            Assert.AreEqual(thisNet.sectorEnergy[5], 102.9205041, 0.1, "Wrong sector AEP Test 3");
+            Assert.AreEqual(thisNet.sectorEnergy[15], 171.8346352, 0.1, "Wrong sector AEP Test 4");
 
-            Assert.AreEqual(thisNet.monthlyVals[0].energyProd, 346.8543, 0.1, "Wrong monthly Jan 2005 Test 5");
-            Assert.AreEqual(thisNet.monthlyVals[22].energyProd, 237.1404, 0.1, "Wrong monthly Test 6");
-            Assert.AreEqual(thisNet.monthlyVals[29].energyProd, 179.5275, 0.1, "Wrong monthly Test 7");
-            Assert.AreEqual(thisNet.monthlyVals[71].energyProd, 349.6034, 0.1, "Wrong monthly Test 8");
+            Assert.AreEqual(thisNet.monthlyVals[0].energyProd, 305.4312399, 0.1, "Wrong monthly Jan 2005 Test 5");
+            Assert.AreEqual(thisNet.monthlyVals[22].energyProd, 200.7621586, 0.1, "Wrong monthly Test 6");
+            Assert.AreEqual(thisNet.monthlyVals[29].energyProd, 146.8461043, 0.1, "Wrong monthly Test 7");
+            Assert.AreEqual(thisNet.monthlyVals[71].energyProd, 295.9046064, 0.1, "Wrong monthly Test 8");
 
             thisInst.Close();
         }
@@ -1224,16 +1221,16 @@ namespace Continuum_Tests
             thisInst.Open(fileName);
 
             NodeCollection nodeList = new NodeCollection();
-            Nodes endNode = nodeList.GetTurbNode(thisInst.turbineList.turbineEsts[0]);
+            Nodes endNode = nodeList.GetTurbNode(thisInst.turbineList.turbineEsts[1]);
             ModelCollection.PathsOfNodes[] pathsOfNodes = new ModelCollection.PathsOfNodes[1];
             pathsOfNodes[0].met = thisInst.metList.metItem[0];
-            pathsOfNodes[0].model = thisInst.modelList.models[1, 0];
+            pathsOfNodes[0].model = thisInst.modelList.models[0, 0];
             Nodes metNode = nodeList.GetMetNode(thisInst.metList.metItem[0]);
             pathsOfNodes[0].path = nodeList.FindPathOfNodes(metNode, endNode, pathsOfNodes[0].model, thisInst);
             Nodes[] path = pathsOfNodes[0].path;
 
-            double thisWSEst = thisInst.modelList.DoWS_EstimateOneWDTimeSeries(5.5119, 11, thisInst.metList.metItem[0], endNode, path, pathsOfNodes[0].model, thisInst);
-            Assert.AreEqual(thisWSEst, 6.2023381, 0.001, "Wrong WS Estimate");
+            double thisWSEst = thisInst.modelList.DoWS_EstimateOneWDTimeSeries(6.76, 8, thisInst.metList.metItem[0], endNode, path, pathsOfNodes[0].model, thisInst);
+            Assert.AreEqual(thisWSEst, 5.3988, 0.001, "Wrong WS Estimate");
 
             thisInst.Close();
         }
@@ -1243,7 +1240,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "ModelCollection TS testing.cfm";
+            string fileName = testingFolder + "\\ModelCollection testing.cfm";
             thisInst.Open(fileName);
 
             Turbine thisTurb = thisInst.turbineList.turbineEsts[0];
@@ -1278,19 +1275,170 @@ namespace Continuum_Tests
             ModelCollection.TimeSeries[] thisTS = avgEst.timeSeries;
 
             if (thisTS.Length == 0)
-                avgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, true,
-                    powerCurve, thisWakeModel, wakeCoeffs, MCP_Method);
+                avgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, powerCurve, thisWakeModel, wakeCoeffs, MCP_Method);
 
             Met.WSWD_Dist thisDist = thisInst.modelList.CalcWSWD_Dist(avgEst.timeSeries, thisInst, "Freestream");
-            Assert.AreEqual(thisDist.WS, 5.953838, 0.001, "Wrong Avg WS Test 1");
-            Assert.AreEqual(thisDist.windRose[0], 0.045957, 0.001, "Wrong Wind Rose[0] Test 2");
-            Assert.AreEqual(thisDist.windRose[11], 0.088445, 0.001, "Wrong Wind Rose[11] Test 3");
-            Assert.AreEqual(thisDist.sectorWS_Dist[5, 7], 0.068575, 0.001, "Wrong Sector WS dist Test 4");
+            Assert.AreEqual(thisDist.WS, 5.791210254, 0.001, "Wrong Avg WS Test 1");
+            Assert.AreEqual(thisDist.windRose[0], 0.044861555, 0.001, "Wrong Wind Rose[0] Test 2");
+            Assert.AreEqual(thisDist.windRose[11], 0.08972311, 0.001, "Wrong Wind Rose[11] Test 3");
+            Assert.AreEqual(thisDist.sectorWS_Dist[5, 7], 0.155647383, 0.001, "Wrong Sector WS dist Test 4");
 
             thisDist = thisInst.modelList.CalcWSWD_Dist(avgEst.timeSeries, thisInst, "Waked");
-            Assert.AreEqual(thisDist.WS, 5.749817, 0.001, "Wrong Avg WS Test 5");
-            Assert.AreEqual(thisDist.sectorWS_Ratio[9], 1.22103, 0.001, "Wrong Sector Ratio Test 6");
+            Assert.AreEqual(thisDist.WS, 5.622261524, 0.001, "Wrong Avg WS Test 5");
+            Assert.AreEqual(thisDist.sectorWS_Ratio[9], 1.059366317, 0.001, "Wrong Sector Ratio Test 6");
 
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void ExportDeltaWS_Ests()
+        {
+            // Exports values needed for DoWS_Estimate_Test
+            Continuum thisInst = new Continuum();
+
+            string Filename = testingFolder + "\\ModelCollection TS testing.cfm";
+            thisInst.Open(Filename);
+            thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
+
+            StreamWriter sw = new StreamWriter(testingFolder + "\\DoWS_EstimateOneWD_TS\\Delta WS Ests.csv");
+            NodeCollection nodeList = new NodeCollection();
+
+            // Test 1: Ashtabula Iten to Marion W2, Radius = 4000, WD = 180 (WD_ind = 8)
+            int WD_ind = 8;
+            int radInd = 0;
+            Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
+            Model model = models[radInd];
+            Met startMet = thisInst.metList.GetMet("Ashtabula");
+            Nodes node1 = nodeList.GetMetNode(startMet);
+            Met.WSWD_Dist startWSDist = startMet.GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+
+            Turbine endTurb = thisInst.turbineList.turbineEsts[1];
+            Nodes node2 = new Nodes();
+                        
+            double[] WS_Pred = new double[thisInst.metList.numWD];
+
+            for (int i = 0; i < thisInst.metList.numWD; i++)
+                WS_Pred[i] = startWSDist.WS * startWSDist.sectorWS_Ratio[i];
+            
+            double avgP10UW = 0;
+            double avgP10DW = 0;
+            double avgUWExpo = 0;
+            double avgDWExpo = 0;
+
+            double UW_Stab1 = 0;
+            double DW_Stab1 = 0;
+            double UW_Stab2 = 0;
+            double DW_Stab2 = 0;
+
+            Turbine.WS_Ests wsEst = endTurb.GetWS_Est(4000, "Ashtabula", model);
+            Nodes[] pathOfNodes = wsEst.pathOfNodes;
+
+            sw.WriteLine("Predictor Met: Ashtabula");
+            sw.WriteLine();
+            sw.WriteLine("Node, Value");
+
+            double[] equivWS;
+            ModelCollection.Coeff_Delta_WS[] deltaWS_UW;
+            ModelCollection.Coeff_Delta_WS[] deltaWS_DW;
+            double deltaWS_SRDH_UW;
+            double deltaWS_SRDH_DW;
+
+            for (int i = 0; i < pathOfNodes.Length; i++)
+            {
+                node2 = pathOfNodes[i];   
+                equivWS = thisInst.modelList.GetWS_Equiv(startWSDist.windRose, startWSDist.windRose, WS_Pred); // only one met so wind rose is same
+                avgP10UW = (node1.gridStats.stats[radInd].P10_UW[WD_ind] + node2.gridStats.stats[radInd].P10_UW[WD_ind]) / 2;
+                avgP10DW = (node1.gridStats.stats[radInd].P10_DW[WD_ind] + node2.gridStats.stats[radInd].P10_DW[WD_ind]) / 2;
+
+                avgUWExpo = (node1.expo[radInd].expo[WD_ind] + node2.expo[radInd].expo[WD_ind]) / 2;
+                avgDWExpo = (node1.expo[radInd].GetDW_Param(WD_ind, "Expo") + node2.expo[radInd].GetDW_Param(WD_ind, "Expo")) / 2;
+
+                deltaWS_UW = thisInst.modelList.Get_DeltaWS_UW_Expo(node1.expo[radInd].expo[WD_ind], node2.expo[radInd].expo[WD_ind], node1.expo[radInd].GetDW_Param(WD_ind, "Expo"),
+                    node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW, model, WD_ind, radInd, null, null, 0, false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs());
+                deltaWS_DW = thisInst.modelList.Get_DeltaWS_DW_Expo(equivWS[WD_ind], node1.expo[radInd].expo[WD_ind], node2.expo[radInd].expo[WD_ind],
+                    node1.expo[radInd].GetDW_Param(WD_ind, "Expo"), node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW,
+                    model, WD_ind, false);
+
+                UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].SR[WD_ind], false, "UW");
+                DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW");
+                UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].SR[WD_ind], false, "UW");
+                DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW");
+
+                deltaWS_SRDH_UW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, node1.expo[radInd].SR[WD_ind], node2.expo[radInd].SR[WD_ind], node1.expo[radInd].dispH[WD_ind],
+                    node2.expo[radInd].dispH[WD_ind], UW_Stab1, UW_Stab2);
+                deltaWS_SRDH_DW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, node1.expo[radInd].GetDW_Param(WD_ind, "SR"), node2.expo[radInd].GetDW_Param(WD_ind, "SR"),
+                    node1.expo[radInd].GetDW_Param(WD_ind, "DH"), node2.expo[radInd].GetDW_Param(WD_ind, "DH"), DW_Stab1, DW_Stab2);
+
+                sw.WriteLine("Node" + (i + 1).ToString());
+                sw.WriteLine();
+                for (int j = 0; j < deltaWS_UW.Length; j++)
+                {
+                    sw.WriteLine("Delta WS UW Expo," + Math.Round(deltaWS_UW[j].deltaWS_Expo, 4));
+                    WS_Pred[WD_ind] = WS_Pred[WD_ind] + deltaWS_UW[j].deltaWS_Expo;
+                }              
+                
+                for (int j = 0; j < deltaWS_DW.Length; j++)
+                {
+                    sw.WriteLine("Delta WS DW Expo," + Math.Round(deltaWS_DW[j].deltaWS_Expo, 4));
+                    WS_Pred[WD_ind] = WS_Pred[WD_ind] + deltaWS_DW[j].deltaWS_Expo;
+                }
+
+                WS_Pred[WD_ind] = WS_Pred[WD_ind] + deltaWS_SRDH_UW;
+                WS_Pred[WD_ind] = WS_Pred[WD_ind] + deltaWS_SRDH_DW;
+
+                sw.WriteLine("Delta WS UW SRDH," + Math.Round(deltaWS_SRDH_UW, 4));
+                sw.WriteLine("Delta WS DW SRDH," + Math.Round(deltaWS_SRDH_DW, 4));
+
+                node1 = node2;
+
+                sw.WriteLine();
+            }
+
+            node2 = nodeList.GetTurbNode(endTurb);
+            equivWS = thisInst.modelList.GetWS_Equiv(startWSDist.windRose, startWSDist.windRose, WS_Pred); // only one met so wind rose is same
+            avgP10UW = (node1.gridStats.stats[radInd].P10_UW[WD_ind] + node2.gridStats.stats[radInd].P10_UW[WD_ind]) / 2;
+            avgP10DW = (node1.gridStats.stats[radInd].P10_DW[WD_ind] + node2.gridStats.stats[radInd].P10_DW[WD_ind]) / 2;
+
+            avgUWExpo = (node1.expo[radInd].expo[WD_ind] + node2.expo[radInd].expo[WD_ind]) / 2;
+            avgDWExpo = (node1.expo[radInd].GetDW_Param(WD_ind, "Expo") + node2.expo[radInd].GetDW_Param(WD_ind, "Expo")) / 2;
+
+            deltaWS_UW = thisInst.modelList.Get_DeltaWS_UW_Expo(node1.expo[radInd].expo[WD_ind], node2.expo[radInd].expo[WD_ind], node1.expo[radInd].GetDW_Param(WD_ind, "Expo"),
+                node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW, model, WD_ind, radInd, null, null, 0, false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs());
+            deltaWS_DW = thisInst.modelList.Get_DeltaWS_DW_Expo(equivWS[WD_ind], node1.expo[radInd].expo[WD_ind], node2.expo[radInd].expo[WD_ind],
+                node1.expo[radInd].GetDW_Param(WD_ind, "Expo"), node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW,
+                model, WD_ind, false);
+
+            UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].SR[WD_ind], false, "UW");
+            DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW");
+            UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].SR[WD_ind], false, "UW");
+            DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW");
+
+            deltaWS_SRDH_UW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, node1.expo[radInd].SR[WD_ind], node2.expo[radInd].SR[WD_ind], node1.expo[radInd].dispH[WD_ind],
+                node2.expo[radInd].dispH[WD_ind], UW_Stab1, UW_Stab2);
+            deltaWS_SRDH_DW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, node1.expo[radInd].GetDW_Param(WD_ind, "SR"), node2.expo[radInd].GetDW_Param(WD_ind, "SR"),
+                node1.expo[radInd].GetDW_Param(WD_ind, "DH"), node2.expo[radInd].GetDW_Param(WD_ind, "DH"), DW_Stab1, DW_Stab2);
+
+            sw.WriteLine("Turbine");
+            sw.WriteLine();
+            for (int j = 0; j < deltaWS_UW.Length; j++)
+            {
+                sw.WriteLine("Delta WS UW Expo," + Math.Round(deltaWS_UW[j].deltaWS_Expo, 4));
+                WS_Pred[WD_ind] = WS_Pred[WD_ind] + deltaWS_UW[j].deltaWS_Expo;
+            }                       
+
+            for (int j = 0; j < deltaWS_DW.Length; j++)
+            {
+                sw.WriteLine("Delta WS DW Expo," + Math.Round(deltaWS_DW[j].deltaWS_Expo, 4));
+                WS_Pred[WD_ind] = WS_Pred[WD_ind] + deltaWS_DW[j].deltaWS_Expo;
+            }
+
+            WS_Pred[WD_ind] = WS_Pred[WD_ind] + deltaWS_SRDH_UW;
+            WS_Pred[WD_ind] = WS_Pred[WD_ind] + deltaWS_SRDH_DW;
+
+            sw.WriteLine("Delta WS UW SRDH," + Math.Round(deltaWS_SRDH_UW, 4));
+            sw.WriteLine("Delta WS DW SRDH," + Math.Round(deltaWS_SRDH_DW, 4));
+
+            sw.Close();
             thisInst.Close();
         }
     }

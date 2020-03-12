@@ -1113,8 +1113,8 @@ namespace ContinuumNS
             Nodes highNode = new Nodes();
             Nodes thisNode = new Nodes();
             Check_class check = new Check_class();
-      
-            int reso = 250;
+            
+            int reso = 250;            
             
             // Adjust maxDir if it is less than minDir (i.e. if it crosses over 0 degs)
             if (maxDir < minDir) maxDir = maxDir + 360; 
@@ -1136,7 +1136,7 @@ namespace ContinuumNS
 
                     if (newOk == 100)
                     {
-                        thisNode.elev = thisInst.topo.CalcElevs(thisNode.UTMX, thisNode.UTMY);
+                        thisNode.elev = thisInst.topo.CalcElevs(thisNode.UTMX, thisNode.UTMY);                        
 
                         if (highNode == null || thisNode.elev > highNode.elev)
                         {
@@ -1147,8 +1147,8 @@ namespace ContinuumNS
                     }
                     
                 }
-            }                     
-
+            }
+            
             // Do exposure and grid stat calculations at high node
             // First check to see if it has already been calculated
             bool foundHighNode = false;

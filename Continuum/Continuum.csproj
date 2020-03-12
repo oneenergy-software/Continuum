@@ -80,30 +80,6 @@
       <HintPath>..\packages\MatplotlibCS.1.0.63\lib\netstandard2.0\MatplotlibCS.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Nevron.Chart, Version=19.7.25.12, Culture=neutral, PublicKeyToken=2961c51bb98125d2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.Chart.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.Chart.WinForm, Version=19.7.25.12, Culture=neutral, PublicKeyToken=c9bd8998e981e4ee, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.Chart.WinForm.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.GraphicsGL, Version=19.7.25.12, Culture=neutral, PublicKeyToken=2f17c6a71f852d32, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.GraphicsGL.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.Presentation, Version=19.7.25.12, Culture=neutral, PublicKeyToken=6656c5d1103e75cc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.Presentation.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.System, Version=19.7.25.12, Culture=neutral, PublicKeyToken=6a987feae5e496fd, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.System.dll</HintPath>
-    </Reference>
-    <Reference Include="Nevron.UI.WinForm.Docking, Version=19.7.25.12, Culture=neutral, PublicKeyToken=446d8963349a628a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Nevron Software\Nevron .NET Vision 2017.1 for VS2017\Bin\Nevron.UI.WinForm.Docking.dll</HintPath>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.6\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -119,6 +95,8 @@
     <Reference Include="OxyPlot.WindowsForms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.WindowsForms.2.0.0\lib\net45\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -142,6 +120,7 @@
     <Reference Include="TimeZoneConverter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=e20ab7d0d9479841, processorArchitecture=MSIL">
       <HintPath>..\packages\TimeZoneConverter.3.2.0\lib\net461\TimeZoneConverter.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutContinuum.cs">
@@ -245,6 +224,13 @@
       <DependentUpon>MCP_ValidSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="MERRA_Node_table.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="Mod_LC_Key.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mod_LC_Key.Designer.cs">
+      <DependentUpon>Mod_LC_Key.cs</DependentUpon>
+    </Compile>
     <Compile Include="SiteSuitability.cs" />
     <Compile Include="InvestCollection.cs" />
     <Compile Include="Invest_Params.cs" />
@@ -263,12 +249,6 @@
     <Compile Include="MetCollection.cs" />
     <Compile Include="MetPairCollection.cs" />
     <Compile Include="Met_Data_Filter.cs" />
-    <Compile Include="Mod_LC_Key.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Mod_LC_Key.Designer.cs">
-      <DependentUpon>Mod_LC_Key.cs</DependentUpon>
-    </Compile>
     <Compile Include="NewTurbine.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -321,7 +301,6 @@
     <Compile Include="UTM_datum.Designer.cs">
       <DependentUpon>UTM_datum.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model.cs" />
     <Compile Include="ModelCollection.cs" />
     <Compile Include="Vane_table.cs" />
     <Compile Include="WakeCollection.cs" />
@@ -391,7 +370,6 @@
     <EmbeddedResource Include="Pick_a_Height.resx">
       <DependentUpon>Pick_a_Height.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -414,16 +392,6 @@
     <EmbeddedResource Include="UTM_datum.resx">
       <DependentUpon>UTM_datum.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="MatplotlibCS\annotations.py" />
-    <None Include="MatplotlibCS\arc.py" />
-    <None Include="MatplotlibCS\helpers.py" />
-    <None Include="MatplotlibCS\histogram.py" />
-    <None Include="MatplotlibCS\hline.py" />
-    <None Include="MatplotlibCS\line_2d.py" />
-    <None Include="MatplotlibCS\matplotlib_cs.py" />
-    <None Include="MatplotlibCS\subplot.py" />
-    <None Include="MatplotlibCS\task.py" />
-    <None Include="MatplotlibCS\vline.py" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

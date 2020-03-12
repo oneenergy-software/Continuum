@@ -8,14 +8,14 @@ namespace Continuum_Tests
     [TestClass]
     public class SiteSuitability_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\SiteSuitability";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\SiteSuitability";
         
         [TestMethod]
         public void GetFlickerAngles_Test()
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "\\Site Suitability testing.cfm";
+            string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);
 
             Turbine thisTurb = thisInst.turbineList.turbineEsts[0]; // turbine W1         
@@ -210,7 +210,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "\\Site Suitability testing.cfm";
+            string fileName = testingFolder + "\\Sound\\Sound testing.cfm";
             thisInst.Open(fileName);
 
             // Test 1
@@ -359,7 +359,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "\\Site Suitability testing.cfm";
+            string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
 
             TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0];
@@ -408,33 +408,83 @@ namespace Continuum_Tests
         }
 
         [TestMethod]
+        public void ExportIceThrows()
+        {
+            Continuum thisInst = new Continuum();
+
+            string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
+            thisInst.Open(fileName);
+
+            // Test 1: W1 WD Ind = 0
+            string test1Hits = testingFolder + "\\Ice throw\\Test 1 W1 Hits.csv";
+            double turbUTMX = 277929.9674;
+            double turbUTMY = 4553360.947;
+            int test1WD_Ind = 0;
+            StreamWriter sw1 = new StreamWriter(test1Hits);
+
+            // Test 2: W1 WD Ind = 10
+            string test2Hits = testingFolder + "\\Ice throw\\Test 2 W1 Hits.csv";
+            int test2WD_Ind = 10;
+            StreamWriter sw2 = new StreamWriter(test2Hits);
+
+            // Test 3: W1 WD Ind = 15
+            string test3Hits = testingFolder + "\\Ice throw\\Test 3 W1 Hits.csv";
+            int test3WD_Ind = 15;
+            StreamWriter sw3 = new StreamWriter(test3Hits);
+
+            SiteSuitability.FinalPosition[] iceHits = thisInst.siteSuitability.yearlyIceHits[0].iceHits; // ice hits in first year of simulation
+
+            for (int i = 0; i < iceHits.Length; i++)
+            {              
+
+                if (iceHits[i].turbineName == "W1")
+                    {
+                    double thisDirection = thisInst.topo.GetDirection((iceHits[i].thisX - turbUTMX), (iceHits[i].thisZ - turbUTMY));
+                    int thisWD_Ind = thisInst.metList.GetWD_Ind(thisDirection);
+
+                    if (thisWD_Ind == test1WD_Ind)
+                        sw1.WriteLine(iceHits[i].thisX + "," + iceHits[i].thisZ + ",");
+                    else if (thisWD_Ind == test2WD_Ind)
+                        sw2.WriteLine(iceHits[i].thisX + "," + iceHits[i].thisZ + ",");
+                    else if (thisWD_Ind == test3WD_Ind)
+                        sw3.WriteLine(iceHits[i].thisX + "," + iceHits[i].thisZ + ",");
+                }                
+            }
+
+            sw1.Close();
+            sw2.Close();
+            sw3.Close();
+                                 
+        }
+
+        [TestMethod]
         public void CalcIceHitVersusDistance_Test()
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "\\Site Suitability testing.cfm";
+            string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
 
             // Test 1
             double[] iceHits = thisInst.siteSuitability.CalcIceHitVersusDistance(thisInst.siteSuitability.yearlyIceHits[0].iceHits, 0, "W1", thisInst);
 
-            Assert.AreEqual(iceHits[0], 55, 0, "Wrong number of ice hits. Test 1 Index 0");
-            Assert.AreEqual(iceHits[1], 59, 0, "Wrong number of ice hits. Test 1 Index 1");
+            Assert.AreEqual(iceHits[0], 62, 0, "Wrong number of ice hits. Test 1 Index 0");
+            Assert.AreEqual(iceHits[1], 45, 0, "Wrong number of ice hits. Test 1 Index 1");
             Assert.AreEqual(iceHits[2], 7, 0, "Wrong number of ice hits. Test 1 Index 2");
 
             // Test 2
             iceHits = thisInst.siteSuitability.CalcIceHitVersusDistance(thisInst.siteSuitability.yearlyIceHits[0].iceHits, 10, "W1", thisInst);
 
             Assert.AreEqual(iceHits[0], 43, 0, "Wrong number of ice hits. Test 2 Index 0");
-            Assert.AreEqual(iceHits[1], 17, 0, "Wrong number of ice hits. Test 2 Index 1");
-            Assert.AreEqual(iceHits[2], 1, 0, "Wrong number of ice hits. Test 2 Index 2");
+            Assert.AreEqual(iceHits[1], 20, 0, "Wrong number of ice hits. Test 2 Index 1");
+            Assert.AreEqual(iceHits[2], 0, 0, "Wrong number of ice hits. Test 2 Index 2");
 
             // Test 3
             iceHits = thisInst.siteSuitability.CalcIceHitVersusDistance(thisInst.siteSuitability.yearlyIceHits[0].iceHits, 15, "W1", thisInst);
 
-            Assert.AreEqual(iceHits[0], 58, 0, "Wrong number of ice hits. Test 3 Index 0");
-            Assert.AreEqual(iceHits[1], 57, 0, "Wrong number of ice hits. Test 3 Index 1");
-            Assert.AreEqual(iceHits[2], 15, 0, "Wrong number of ice hits. Test 3 Index 2");
+            Assert.AreEqual(iceHits[0], 65, 0, "Wrong number of ice hits. Test 3 Index 0");
+            Assert.AreEqual(iceHits[1], 53, 0, "Wrong number of ice hits. Test 3 Index 1");
+            Assert.AreEqual(iceHits[2], 13, 0, "Wrong number of ice hits. Test 3 Index 2");
 
             thisInst.Close();
         }
@@ -444,7 +494,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "\\Site Suitability testing.cfm";
+            string fileName = testingFolder + "\\Ice Throw\\Ice Throw testing.cfm";
             thisInst.Open(fileName);
 
             UTM_conversion.UTM_coords theseUTM = new UTM_conversion.UTM_coords();
@@ -466,11 +516,11 @@ namespace Continuum_Tests
 
             // Test 2: Prob of 1 or more hits
             probHits = thisInst.siteSuitability.CalcProbabilityOfHits(zone, 1, thisInst);
-            Assert.AreEqual(probHits, 0.4, 0.001, "Wrong Ice hit probability Test 2");
+            Assert.AreEqual(probHits, 0.3, 0.001, "Wrong Ice hit probability Test 2");
 
             // Test 3: Prob of 2 or more hits
             probHits = thisInst.siteSuitability.CalcProbabilityOfHits(zone, 2, thisInst);
-            Assert.AreEqual(probHits, 0.10, 0.001, "Wrong Ice hit probability Test 3");
+            Assert.AreEqual(probHits, 0.05, 0.001, "Wrong Ice hit probability Test 3");
 
             // Test 4: Prob of 3 or more hits
             probHits = thisInst.siteSuitability.CalcProbabilityOfHits(zone, 3, thisInst);
@@ -539,28 +589,20 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "\\Site Suitability testing.cfm";
+            string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);
 
             // Test 1 Jan 8:00
             SiteSuitability.FlickerGrid[] flickerHours = thisInst.siteSuitability.GetTotalFlickerHoursByMonthAndHour(0, 8);
-            Assert.AreEqual(flickerHours[350].flickerStats.totalShadowMinsPerYear, 5, 0.1, "Wrong number of flicker mins Test 1");
+            Assert.AreEqual(flickerHours[12].flickerStats.totalShadowMinsPerYear, 6, 0.1, "Wrong number of flicker mins Test 1");
 
             // Test 2 Jan 9:00
             flickerHours = thisInst.siteSuitability.GetTotalFlickerHoursByMonthAndHour(0, 9);
-            Assert.AreEqual(flickerHours[350].flickerStats.totalShadowMinsPerYear, 31, 0.1, "Wrong number of flicker mins Test 2");
+            Assert.AreEqual(flickerHours[21].flickerStats.totalShadowMinsPerYear, 2, 0.1, "Wrong number of flicker mins Test 2");
 
             // Test 3 July 6:00
             flickerHours = thisInst.siteSuitability.GetTotalFlickerHoursByMonthAndHour(6, 6);
-            Assert.AreEqual(flickerHours[17].flickerStats.totalShadowMinsPerYear, 1, 0.1, "Wrong number of flicker mins Test 3");
-
-            // Test 4 August 6:00
-            flickerHours = thisInst.siteSuitability.GetTotalFlickerHoursByMonthAndHour(7, 6);
-            Assert.AreEqual(flickerHours[17].flickerStats.totalShadowMinsPerYear, 7, 0.1, "Wrong number of flicker mins Test 4");
-
-            // Test 5 Jan 16:00
-            flickerHours = thisInst.siteSuitability.GetTotalFlickerHoursByMonthAndHour(0, 16);
-            Assert.AreEqual(flickerHours[536].flickerStats.totalShadowMinsPerYear, 21, 0.1, "Wrong number of flicker mins Test 5");
+            Assert.AreEqual(flickerHours[19].flickerStats.totalShadowMinsPerYear, 3, 0.1, "Wrong number of flicker mins Test 3");         
 
             thisInst.Close();
         }
@@ -570,7 +612,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "\\Site Suitability testing.cfm";
+            string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);
 
             // Test 1
@@ -589,7 +631,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "\\Site Suitability testing.cfm";
+            string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
 
             double[,] theseCDFs = thisInst.siteSuitability.GenerateWS_CDFs(thisInst.metList.metItem[0].WSWD_Dists[0].sectorWS_Dist); // i = WD; j = WS
@@ -608,7 +650,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = "\\Site Suitability testing.cfm";
+            string fileName = testingFolder + "\\Ice Throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
 
             double[,] theseCDFs = thisInst.siteSuitability.GenerateWS_CDFs(thisInst.metList.metItem[0].WSWD_Dists[0].sectorWS_Dist); // i = WD; j = WS
@@ -635,6 +677,41 @@ namespace Continuum_Tests
             Assert.AreEqual(thisWS, 12, 0, "Wrong WS Test 5");
 
             thisInst.Close();
+        }
+
+        [TestMethod]
+        public void ExportShadowFlickerMap12x24()
+        {
+            string exportFile = testingFolder + "\\Shadow Flicker\\Flicker Map vals.csv";
+            Continuum thisInst = new Continuum();
+
+            string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
+            thisInst.Open(fileName);
+
+            StreamWriter sw = new StreamWriter(exportFile);
+            sw.Write("UTMX, UTMY,");
+            for (int i = 1; i <= 12; i++)
+                for (int j = 0; j <= 23; j++)
+                    sw.Write("Month " + i + " Hour " + j + ",");
+
+            sw.WriteLine();
+            int totalNum = thisInst.siteSuitability.numXFlicker * thisInst.siteSuitability.numYFlicker;
+
+            for (int i = 0; i < totalNum; i++)
+            {
+                sw.Write(thisInst.siteSuitability.flickerMap[i].UTMX.ToString() + "," + thisInst.siteSuitability.flickerMap[i].UTMY.ToString() + ",");
+
+                for (int m = 0; m < 12; m++)
+                    for (int h = 0; h < 24; h++)
+                        sw.Write(thisInst.siteSuitability.flickerMap[i].flickerStats.shadowMins12x24[m, h].ToString() + ",");
+
+                sw.WriteLine();
+
+            }
+
+            sw.Close();
+            thisInst.Close();
+               
         }
     }
 }

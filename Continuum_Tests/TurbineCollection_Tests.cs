@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class TurbineCollection_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\TurbineCollection";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\TurbineCollection";
 
         [TestMethod]
         public void ExportWSDist()
@@ -73,7 +73,7 @@ namespace Continuum_Tests
 
         }
 
-        [TestMethod]
+ /*       [TestMethod] Function no longer used
         public void GetOverallWakeLoss_Test()
         {
             Continuum thisInst = new Continuum();
@@ -81,28 +81,19 @@ namespace Continuum_Tests
             string Filename =  testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(Filename);
 
-            double This_Overall_Wake = thisInst.turbineList.GetOverallWakeLoss(thisInst.wakeModelList.wakeModels[0], 16, false);
-            Assert.AreEqual(This_Overall_Wake, 0.07819, 0.01, "Wrong overall wake loss");
+            double This_Overall_Wake = thisInst.turbineList.GetOverallWakeLoss(thisInst.wakeModelList.wakeModels[0], 16);
+            Assert.AreEqual(This_Overall_Wake, 0.0306, 0.001, "Wrong overall wake loss");
 
             thisInst.Close();
         }
-
+        */
         [TestMethod]
         public void CalcTurbineExposures_Test()
         {
             Continuum thisInst = new Continuum();
             
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
-            thisInst.Open(Filename);
-
-            thisInst.turbineList.AddTurbine("Test1", 347212, 5307579, 1);
-            thisInst.turbineList.AddTurbine("Test2", 346306, 5311256, 1);
-            thisInst.turbineList.AddTurbine("Test3", 342100, 5314708, 1);
-            thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
-            thisInst.turbineList.CalcTurbineExposures(thisInst, 4000, 1.0f, 1);
-            thisInst.turbineList.CalcTurbineExposures(thisInst, 6000, 1.0f, 1);
-            thisInst.turbineList.CalcTurbineExposures(thisInst, 8000, 1.0f, 1);
-            thisInst.turbineList.CalcTurbineExposures(thisInst, 10000, 1.0f, 1);
+            thisInst.Open(Filename);                      
 
             for (int i = 0; i <= 3; i++)
             {
@@ -123,62 +114,18 @@ namespace Continuum_Tests
 
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(Filename);
-
-            thisInst.turbineList.AddTurbine("Test1", 347212, 5307579, 1);
-            thisInst.turbineList.AddTurbine("Test2", 346306, 5311256, 1);
-            thisInst.turbineList.AddTurbine("Test3", 342100, 5314708, 1);
-
-            double[] power = new double[31];
-            string Power_file = testingFolder + "\\CalcGrossAEPFromTABs\\Power.txt";
-            StreamReader sr = new StreamReader(Power_file);
-
-            for (int i = 0; i <= 22; i++)
-                power[i] = Convert.ToSingle(sr.ReadLine());
-
-            double[] Thrust = new double[31];
-            string Thrust_file = testingFolder + "\\CalcGrossAEPFromTABs\\Thrust.txt";
-            sr = new StreamReader(Thrust_file);
-
-            for (int i = 0; i <= 22; i++)
-                Thrust[i] = Convert.ToSingle(sr.ReadLine());
-
-            thisInst.turbineList.AddPowerCurve("GW 1500/87", 3, 22, 1500, power, Thrust, 87, 16, 10, 1, 0);
-            thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
-
-            for (int i = 0; i <= thisInst.radiiList.ThisCount - 1; i++)
+                       
+            
+            for (int i = 0; i < thisInst.turbineList.TurbineCount; i++)
             {
-                int radius = thisInst.radiiList.investItem[i].radius;
-                double exponent = thisInst.radiiList.investItem[i].exponent;
-
-                thisInst.turbineList.CalcTurbineExposures(thisInst, radius, exponent, 1);
-            }
-
-            for (int i = 0; i <= 2; i++)
-            {
-                double[] windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), thisInst.turbineList.turbineEsts[i].UTMX,
-                    thisInst.turbineList.turbineEsts[i].UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-                Model[] UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), false, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
-                thisInst.turbineList.turbineEsts[i].DoTurbineCalcs(thisInst, UWDW_Mods);
-                thisInst.turbineList.turbineEsts[i].GenerateAvgWSFromTABs(thisInst, UWDW_Mods, windRose, false);
-
-                UWDW_Mods = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), true, Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
-                thisInst.turbineList.turbineEsts[i].DoTurbineCalcs(thisInst, UWDW_Mods);
-                thisInst.turbineList.turbineEsts[i].GenerateAvgWSFromTABs(thisInst, UWDW_Mods, windRose, false);
-            }
-
-            thisInst.turbineList.CalcGrossAEPFromTABs(thisInst, true);
-            thisInst.turbineList.CalcGrossAEPFromTABs(thisInst, false);
-
-            for (int i = 0; i <= 3; i++)
-            {
-                Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].grossAEP, null, "Didn't calculate gross AEP");
-                Assert.AreEqual(thisInst.turbineList.turbineEsts[0].grossAEP.Length, 2, "Didn't calculate gross AEP");
-                Assert.AreNotEqual(thisInst.turbineList.turbineEsts[0].grossAEP[0].CF, 0, 0, "Didn't calculate gross AEP");
-                Assert.AreNotEqual(thisInst.turbineList.turbineEsts[0].grossAEP[0].AEP, 0, 0, "Didn't calculate gross AEP");
-                Assert.AreNotEqual(thisInst.turbineList.turbineEsts[0].grossAEP[0].P90, 0, 0, "Didn't calculate gross AEP");
-                Assert.AreNotEqual(thisInst.turbineList.turbineEsts[0].grossAEP[0].P99, 0, 0, "Didn't calculate gross AEP");
-                Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].grossAEP[0].powerCurve, 0, "Didn't calculate gross AEP");
-                Assert.AreNotSame(thisInst.turbineList.turbineEsts[0].grossAEP[0].sectorEnergy, null, "Didn't calculate gross AEP");
+                Assert.AreNotSame(thisInst.turbineList.turbineEsts[i].grossAEP, null, "Didn't calculate gross AEP");
+                Assert.AreEqual(thisInst.turbineList.turbineEsts[i].grossAEP.Length, 1, "Didn't calculate gross AEP");
+                Assert.AreNotEqual(thisInst.turbineList.turbineEsts[i].grossAEP[0].CF, 0, 0, "Didn't calculate gross AEP");
+                Assert.AreNotEqual(thisInst.turbineList.turbineEsts[i].grossAEP[0].AEP, 0, 0, "Didn't calculate gross AEP");
+                Assert.AreNotEqual(thisInst.turbineList.turbineEsts[i].grossAEP[0].P90, 0, 0, "Didn't calculate gross AEP");
+                Assert.AreNotEqual(thisInst.turbineList.turbineEsts[i].grossAEP[0].P99, 0, 0, "Didn't calculate gross AEP");
+                Assert.AreNotSame(thisInst.turbineList.turbineEsts[i].grossAEP[0].powerCurve, 0, "Didn't calculate gross AEP");
+                Assert.AreNotSame(thisInst.turbineList.turbineEsts[i].grossAEP[0].sectorEnergy, null, "Didn't calculate gross AEP");
             }
 
             thisInst.Close();
@@ -234,20 +181,20 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "\\CalcProbOfWakeForEffectiveTI\\Turbine TI testing.cfm";
+            string fileName = testingFolder + "\\CalcProbOfWakeForEffectiveTI\\Turbine Marion TI testing.cfm";
             thisInst.Open(fileName);
 
             Turbine thisTurb = thisInst.turbineList.turbineEsts[1];
             double[,] probWakes = thisInst.turbineList.CalcProbOfWakeForEffectiveTI(thisInst, thisTurb.UTMX, thisTurb.UTMY, thisInst.turbineList.powerCurves[0]);
 
-            Assert.AreEqual(probWakes[0, 12], 0.60, 0.01, "Wrong Wake Prob Test 1");
-            Assert.AreEqual(probWakes[0, 13], 0.114, 0.01, "Wrong Wake Prob Test 2");
-            Assert.AreEqual(probWakes[2, 4], 0.62235, 0.01, "Wrong Wake Prob Test 3");
-            Assert.AreEqual(probWakes[2, 5], 0.101706, 0.01, "Wrong Wake Prob Test 4");
+            Assert.AreEqual(probWakes[0, 12], 0.426, 0.01, "Wrong Wake Prob Test 1");
+            Assert.AreEqual(probWakes[0, 13], 0.288, 0.01, "Wrong Wake Prob Test 2");
+            Assert.AreEqual(probWakes[2, 4], 0.449, 0.01, "Wrong Wake Prob Test 3");
+            Assert.AreEqual(probWakes[2, 5], 0.276, 0.01, "Wrong Wake Prob Test 4");
 
             thisInst.Close();
             thisInst = new Continuum();
-            fileName = testingFolder + "\\CalcProbOfWakeForEffectiveTI\\Turbine testing Findlay turbs.cfm";
+            fileName = testingFolder + "\\CalcProbOfWakeForEffectiveTI\\Turbine Findlay TI testing.cfm";
             thisInst.Open(fileName);
             thisTurb = thisInst.turbineList.turbineEsts[4];
             probWakes = thisInst.turbineList.CalcProbOfWakeForEffectiveTI(thisInst, thisTurb.UTMX, thisTurb.UTMY, thisInst.turbineList.powerCurves[0]);
@@ -264,36 +211,30 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string fileName = testingFolder + "Bobcat Bluff TurbineCollection testing.cfm";
+            string fileName = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(fileName);
 
-            // Test 1
-            double power = thisInst.turbineList.GetInterpPowerOrThrust(3.2, thisInst.turbineList.powerCurves[0], "Power");
-            Assert.AreEqual(power, 37.24, 0.1, "Wrong power test 1");
+            string powerStr = testingFolder + "\\GetInterpPowerOrThrust\\Power by 0.1 ms.csv";
+            StreamReader srPower = new StreamReader(powerStr);
+            string thrustStr = testingFolder + "\\GetInterpPowerOrThrust\\Thrust by 0.1 ms.csv";
+            StreamReader srThrust = new StreamReader(thrustStr);
 
-            // Test 2
-            power = thisInst.turbineList.GetInterpPowerOrThrust(6.9, thisInst.turbineList.powerCurves[0], "Power");
-            Assert.AreEqual(power, 529.14, 0.1, "Wrong power test 2");
+            for (double i = 3; i < 13.5; i = i + 0.1)
+            {
+                double power = thisInst.turbineList.GetInterpPowerOrThrust(i, thisInst.turbineList.powerCurves[0], "Power");
+                double testP = Convert.ToDouble(srPower.ReadLine());
+                Assert.AreEqual(power, testP, 0.1, "Wrong power test " + i.ToString());               
+            }
 
-            // Test 3
-            power = thisInst.turbineList.GetInterpPowerOrThrust(8.3, thisInst.turbineList.powerCurves[0], "Power");
-            Assert.AreEqual(power, 921.94, 0.1, "Wrong power test 3");
+            for (double i = 3; i <= 25.0; i = i + 0.1)
+            {              
+                double thrust = thisInst.turbineList.GetInterpPowerOrThrust(i, thisInst.turbineList.powerCurves[0], "Thrust");
+                double testT = Convert.ToDouble(srThrust.ReadLine());
+                Assert.AreEqual(thrust, testT, 0.1, "Wrong thrust test " + i.ToString());
+            }
 
-            // Test 4
-            power = thisInst.turbineList.GetInterpPowerOrThrust(12.1, thisInst.turbineList.powerCurves[0], "Power");
-            Assert.AreEqual(power, 1500, 0.1, "Wrong power test 4");
-
-            // Test 5
-            power = thisInst.turbineList.GetInterpPowerOrThrust(3.1, thisInst.turbineList.powerCurves[0], "Thrust");
-            Assert.AreEqual(power, 0.965598, 0.1, "Wrong power test 5");
-
-            // Test 6
-            power = thisInst.turbineList.GetInterpPowerOrThrust(6.4, thisInst.turbineList.powerCurves[0], "Thrust");
-            Assert.AreEqual(power, 0.7993, 0.001, "Wrong power test 6");
-
-            // Test 7
-            power = thisInst.turbineList.GetInterpPowerOrThrust(13.7, thisInst.turbineList.powerCurves[0], "Thrust");
-            Assert.AreEqual(power, 0.202073, 0.001, "Wrong power test 7");
+            srPower.Close();
+            srThrust.Close();
 
             thisInst.Close();
         }

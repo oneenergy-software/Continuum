@@ -14,14 +14,14 @@ namespace GUI_Test_Creator
 {
     public partial class GUI_Creator2 : Form
     {
-        string testFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum\\Snippets";
-     //   string saveToFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum\\Tests";
-        string saveToFolder = "C:\\Users\\OEE2017_27\\Desktop\\Tests";
-        string continuumFolder = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests";
-        string combinedTestsFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum\\Combined Tests";
+        string testFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder\\Snippets";
+     
+        string saveToFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string continuumFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string combinedTestsFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder\\Combined Tests";
 
-        string firewheelMERRA = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
-        string ohioMERRA = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+        string firewheelMERRA = "C:\\Users\\Liz\\Desktop\\MERRA2\\Firewheel";
+        string ohioMERRA = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
         bool okToUpdate = true;
 

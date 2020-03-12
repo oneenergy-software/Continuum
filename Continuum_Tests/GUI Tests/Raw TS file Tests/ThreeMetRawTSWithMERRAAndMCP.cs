@@ -10,12 +10,12 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class ThreeMetRawTSWithMERRAAndMCP
     {
-        string testingFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum";
-        string saveFolder = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string saveFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
 
         string firewheelMERRA = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
-        string ohioMERRA = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
-        string merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+        string ohioMERRA = "C:\\Users\\Liz\\Desktop\\MERRA2";
+        string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
         string metTSFile;
         string metName;
@@ -171,7 +171,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -192,7 +192,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -213,7 +213,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -514,7 +514,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -535,7 +535,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -556,7 +556,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -857,7 +857,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -878,7 +878,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -899,7 +899,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1196,7 +1196,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1217,7 +1217,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1238,7 +1238,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1539,7 +1539,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1560,7 +1560,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1581,7 +1581,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1882,7 +1882,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1903,7 +1903,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1924,7 +1924,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2225,7 +2225,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2246,7 +2246,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2267,7 +2267,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2568,7 +2568,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2589,7 +2589,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2610,7 +2610,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2911,7 +2911,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2932,7 +2932,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2953,7 +2953,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3254,7 +3254,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3275,7 +3275,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3296,7 +3296,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3597,7 +3597,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3618,7 +3618,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3639,7 +3639,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3940,7 +3940,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3961,7 +3961,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3982,7 +3982,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4283,7 +4283,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4304,7 +4304,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4325,7 +4325,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4630,7 +4630,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4651,7 +4651,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4672,7 +4672,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4969,7 +4969,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4990,7 +4990,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5011,7 +5011,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5312,7 +5312,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5333,7 +5333,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5354,7 +5354,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5655,7 +5655,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5676,7 +5676,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5697,7 +5697,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5998,7 +5998,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6019,7 +6019,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6040,7 +6040,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6341,7 +6341,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6362,7 +6362,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6383,7 +6383,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6684,7 +6684,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6705,7 +6705,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6726,7 +6726,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7027,7 +7027,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7048,7 +7048,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7069,7 +7069,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7370,7 +7370,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7391,7 +7391,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7412,7 +7412,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7713,7 +7713,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7734,7 +7734,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7755,7 +7755,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8056,7 +8056,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8077,7 +8077,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8098,7 +8098,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8403,7 +8403,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8424,7 +8424,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8445,7 +8445,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8742,7 +8742,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8763,7 +8763,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8784,7 +8784,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9085,7 +9085,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9106,7 +9106,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9127,7 +9127,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9428,7 +9428,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9449,7 +9449,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9470,7 +9470,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9771,7 +9771,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9792,7 +9792,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9813,7 +9813,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10114,7 +10114,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10135,7 +10135,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10156,7 +10156,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10457,7 +10457,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10478,7 +10478,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10499,7 +10499,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10800,7 +10800,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10821,7 +10821,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10842,7 +10842,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11143,7 +11143,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11164,7 +11164,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11185,7 +11185,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11486,7 +11486,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11507,7 +11507,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11528,7 +11528,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11829,7 +11829,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11850,7 +11850,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11871,7 +11871,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12176,7 +12176,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12197,7 +12197,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12218,7 +12218,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12515,7 +12515,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12536,7 +12536,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12557,7 +12557,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12858,7 +12858,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12879,7 +12879,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12900,7 +12900,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13201,7 +13201,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13222,7 +13222,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13243,7 +13243,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13544,7 +13544,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13565,7 +13565,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13586,7 +13586,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13887,7 +13887,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13908,7 +13908,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13929,7 +13929,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14230,7 +14230,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14251,7 +14251,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14272,7 +14272,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14573,7 +14573,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14594,7 +14594,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14615,7 +14615,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14916,7 +14916,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14937,7 +14937,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14958,7 +14958,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15259,7 +15259,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15280,7 +15280,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15301,7 +15301,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15602,7 +15602,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15623,7 +15623,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15644,7 +15644,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15949,7 +15949,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15970,7 +15970,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15991,7 +15991,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16288,7 +16288,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16309,7 +16309,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16330,7 +16330,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16631,7 +16631,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16652,7 +16652,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16673,7 +16673,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16974,7 +16974,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16995,7 +16995,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17016,7 +17016,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17317,7 +17317,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17338,7 +17338,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17359,7 +17359,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17660,7 +17660,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17681,7 +17681,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17702,7 +17702,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18003,7 +18003,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18024,7 +18024,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18045,7 +18045,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18346,7 +18346,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18367,7 +18367,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18388,7 +18388,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18689,7 +18689,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18710,7 +18710,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18731,7 +18731,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19032,7 +19032,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19053,7 +19053,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19074,7 +19074,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19375,7 +19375,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19396,7 +19396,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19417,7 +19417,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19722,7 +19722,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19743,7 +19743,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19764,7 +19764,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20061,7 +20061,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20082,7 +20082,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20103,7 +20103,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20404,7 +20404,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20425,7 +20425,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20446,7 +20446,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20747,7 +20747,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20768,7 +20768,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20789,7 +20789,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21090,7 +21090,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21111,7 +21111,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21132,7 +21132,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21433,7 +21433,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21454,7 +21454,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21475,7 +21475,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21776,7 +21776,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21797,7 +21797,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21818,7 +21818,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22119,7 +22119,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22140,7 +22140,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22161,7 +22161,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22462,7 +22462,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22483,7 +22483,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22504,7 +22504,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22805,7 +22805,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22826,7 +22826,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22847,7 +22847,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23148,7 +23148,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23169,7 +23169,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23190,7 +23190,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23495,7 +23495,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23516,7 +23516,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23537,7 +23537,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23834,7 +23834,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23855,7 +23855,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23876,7 +23876,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24177,7 +24177,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24198,7 +24198,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24219,7 +24219,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24520,7 +24520,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24541,7 +24541,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24562,7 +24562,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24863,7 +24863,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24884,7 +24884,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24905,7 +24905,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25206,7 +25206,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25227,7 +25227,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25248,7 +25248,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25549,7 +25549,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25570,7 +25570,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25591,7 +25591,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25892,7 +25892,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25913,7 +25913,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25934,7 +25934,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26235,7 +26235,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26256,7 +26256,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26277,7 +26277,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26578,7 +26578,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26599,7 +26599,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26620,7 +26620,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26921,7 +26921,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26942,7 +26942,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26963,7 +26963,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27268,7 +27268,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27289,7 +27289,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27310,7 +27310,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27607,7 +27607,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27628,7 +27628,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27649,7 +27649,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27950,7 +27950,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27971,7 +27971,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27992,7 +27992,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28293,7 +28293,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28314,7 +28314,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28335,7 +28335,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28636,7 +28636,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28657,7 +28657,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28678,7 +28678,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28979,7 +28979,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29000,7 +29000,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29021,7 +29021,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29322,7 +29322,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29343,7 +29343,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29364,7 +29364,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29665,7 +29665,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29686,7 +29686,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29707,7 +29707,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30008,7 +30008,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30029,7 +30029,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30050,7 +30050,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30351,7 +30351,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30372,7 +30372,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30393,7 +30393,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30694,7 +30694,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30715,7 +30715,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30736,7 +30736,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31041,7 +31041,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31062,7 +31062,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31083,7 +31083,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31380,7 +31380,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31401,7 +31401,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31422,7 +31422,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31702,7 +31702,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31723,7 +31723,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31744,7 +31744,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32045,7 +32045,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32066,7 +32066,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32087,7 +32087,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32388,7 +32388,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32409,7 +32409,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32430,7 +32430,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32731,7 +32731,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32752,7 +32752,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32773,7 +32773,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33074,7 +33074,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33095,7 +33095,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33116,7 +33116,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33417,7 +33417,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33438,7 +33438,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33459,7 +33459,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33760,7 +33760,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33781,7 +33781,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33802,7 +33802,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34103,7 +34103,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34124,7 +34124,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34145,7 +34145,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34446,7 +34446,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34467,7 +34467,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34488,7 +34488,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34814,7 +34814,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34835,7 +34835,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34856,7 +34856,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35132,7 +35132,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35153,7 +35153,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35174,7 +35174,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35475,7 +35475,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35496,7 +35496,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35517,7 +35517,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35818,7 +35818,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35839,7 +35839,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35860,7 +35860,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36161,7 +36161,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36182,7 +36182,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36203,7 +36203,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36504,7 +36504,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36525,7 +36525,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36546,7 +36546,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36847,7 +36847,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36868,7 +36868,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36889,7 +36889,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37190,7 +37190,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37211,7 +37211,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37232,7 +37232,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37533,7 +37533,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37554,7 +37554,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37575,7 +37575,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37876,7 +37876,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37897,7 +37897,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37918,7 +37918,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38219,7 +38219,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38240,7 +38240,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38261,7 +38261,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38587,7 +38587,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38608,7 +38608,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38629,7 +38629,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38930,7 +38930,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38951,7 +38951,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38972,7 +38972,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39248,7 +39248,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39269,7 +39269,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39290,7 +39290,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39591,7 +39591,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39612,7 +39612,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39633,7 +39633,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39934,7 +39934,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39955,7 +39955,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39976,7 +39976,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40277,7 +40277,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40298,7 +40298,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40319,7 +40319,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40620,7 +40620,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40641,7 +40641,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40662,7 +40662,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40937,7 +40937,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40958,7 +40958,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40979,7 +40979,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41280,7 +41280,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41301,7 +41301,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41322,7 +41322,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41619,7 +41619,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41640,7 +41640,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41661,7 +41661,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41962,7 +41962,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41983,7 +41983,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42004,7 +42004,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42310,7 +42310,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42331,7 +42331,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42352,7 +42352,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Due Diligence - Raw Data\\MERRA Data\\Ohio\\Ohio plus - tavg data";
+            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;

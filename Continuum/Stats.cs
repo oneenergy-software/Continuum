@@ -38,7 +38,7 @@ namespace ContinuumNS
                     Met.TOD thisTOD = metList.GetTOD(thisSite.thisDate);
                     Met.Season thisSeason = metList.GetSeason(thisSite.thisDate);
                     
-                    if (TOD == thisTOD && thisSeason == season)
+                    if ((TOD == thisTOD || TOD == Met.TOD.All) && (thisSeason == season || season == Met.Season.All))
                     {
                         if (((maxWD > minWD) && (thisSite.thisWD >= minWD && thisSite.thisWD <= maxWD)) ||
                                 ((maxWD < minWD) && (thisSite.thisWD >= minWD || thisSite.thisWD <= maxWD)))
@@ -69,12 +69,12 @@ namespace ContinuumNS
                     if (getAll == true)                    
                         avgCount++;                    
                     else
-                    {                        
+                    { 
                         int thisWD_Ind = metList.GetWD_Ind(thisSite.thisWD);
                         Met.TOD thisTOD = metList.GetTOD(thisSite.thisDate);
                         Met.Season thisSeason = metList.GetSeason(thisSite.thisDate);
 
-                        if ((thisWD_Ind == WD_index) && (thisTOD == TOD) && (thisSeason == season))
+                        if (((thisWD_Ind == WD_index) || WD_index == metList.numWD) && (thisTOD == TOD) && (thisSeason == season))
                             avgCount++;
                     }                                    
                 }            

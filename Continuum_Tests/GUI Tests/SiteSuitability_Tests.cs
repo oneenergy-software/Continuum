@@ -12,8 +12,8 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class SiteSuitability_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_27\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum";
-        string saveFolder = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string saveFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
 
 
         [TestMethod]
@@ -21,7 +21,7 @@ namespace Continuum_Tests.GUI_Tests
         {
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\OneMetTABAndGrossNet_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
             thisInst.siteSuitability.RunShadowFlickerModel(thisInst);
@@ -55,7 +55,7 @@ namespace Continuum_Tests.GUI_Tests
         {
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\OneMetTABAndGrossNet_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
@@ -96,7 +96,7 @@ namespace Continuum_Tests.GUI_Tests
         {
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\OEE2017_27\\Desktop\\Continuum tests\\OneMetTABAndGrossNet_1";
+            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
             double turbineSound = thisInst.GetTurbineNoise();
