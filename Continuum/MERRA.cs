@@ -799,6 +799,10 @@ namespace ContinuumNS
                 if (Wind[i].WS50m >= 0)
                 {
                     double Scaled_WS = Wind[i].WS50m * WS_ScaleFactor;
+                    TurbineCollection turbList = new TurbineCollection();
+                    Wind[i].Prod = turbList.GetInterpPowerOrThrust(Scaled_WS, powerCurve, "Power");
+
+                    /* 2/20/2020 took this out since it is dealt with in GetInterpPowerorThrust
                     if (Scaled_WS < powerCurve.cutInWS || Scaled_WS > powerCurve.cutOutWS)
                         Wind[i].Prod = 0;
                     else if ((Scaled_WS >= powerCurve.cutInWS) && (Scaled_WS < (powerCurve.ratedWS - .5)))
@@ -813,7 +817,7 @@ namespace ContinuumNS
                     {
                         Wind[i].Prod = powerCurve.ratedPower;                        
                     }
-
+                    */
                 }
                 else
                     Wind[i].Prod = 0;
@@ -1355,13 +1359,13 @@ namespace ContinuumNS
                 }                
             }                        
 
-            if (interpData.Coords.latitude < minReqLat || interpData.Coords.latitude > maxReqLat)
+            if (interpData.Coords.latitude < (minReqLat - latReso / 2) || interpData.Coords.latitude > (maxReqLat + latReso / 2))
             {
                 MessageBox.Show("Outside of available MERRA2 data range. With " + numMERRA_Nodes + " MERRA2 nodes selected, the allowed latitude range is " + minReqLat + " to " + maxReqLat);
                 return foundInds;
             }
 
-            if (interpData.Coords.longitude < minReqLong || interpData.Coords.longitude > maxReqLong)
+            if (interpData.Coords.longitude < (minReqLong - longReso / 2) || interpData.Coords.longitude > (maxReqLong + longReso / 2))
             {                
                 MessageBox.Show("Outside of available MERRA2 data range. With " + numMERRA_Nodes + " MERRA2 nodes selected, the allowed longitude range is " + minReqLong + " to " + maxReqLong);
                 return foundInds;

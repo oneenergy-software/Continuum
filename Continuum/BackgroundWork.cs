@@ -1095,14 +1095,18 @@ namespace ContinuumNS
                 for (int i = 0; i < turbList.TurbineCount; i++)
                 {
                     Turbine turbine = turbList.turbineEsts[i];
-                    double[] windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), turbine.UTMX, turbine.UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-                    Model[] models = thisInst.modelList.GetAllModels(thisInst, thisInst.metList.GetMetsUsed());
-                    turbine.DoTurbineCalcs(thisInst, models);
-                    turbine.GenerateAvgWSFromTABs(thisInst, models, windRose, false); // calculates avg WS est at turb and uncertainty of WS   
 
-                    int prog = (int)(100.0f * (i + 1) / numTurbs);
-                    textForProgBar = "Calculating wind speeds at " + (i + 1) + "/" + turbList.TurbineCount + " turbine sites.";
-                    BackgroundWorker_TurbCalcs.ReportProgress(prog, textForProgBar);
+                    if (turbine.AvgWSEst_Count == 0)
+                    {
+                        double[] windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), turbine.UTMX, turbine.UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
+                        Model[] models = thisInst.modelList.GetAllModels(thisInst, thisInst.metList.GetMetsUsed());
+                        turbine.DoTurbineCalcs(thisInst, models);
+                        turbine.GenerateAvgWSFromTABs(thisInst, models, windRose, false); // calculates avg WS est at turb and uncertainty of WS   
+
+                        int prog = (int)(100.0f * (i + 1) / numTurbs);
+                        textForProgBar = "Calculating wind speeds at " + (i + 1) + "/" + turbList.TurbineCount + " turbine sites.";
+                        BackgroundWorker_TurbCalcs.ReportProgress(prog, textForProgBar);
+                    }
 
                     if (BackgroundWorker_TurbCalcs.CancellationPending == true)
                     {
@@ -1173,7 +1177,7 @@ namespace ContinuumNS
 
             // Combine WS ests from various mets into one average
 
-            if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0) // Gross estimates using time series calculated earlier
+            if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0 && thisInst.turbineList.PowerCurveCount > 0) // Gross estimates using time series calculated earlier
             {
                 textForProgBar = "Calculating gross AEP at turbine sites.";
                 BackgroundWorker_TurbCalcs.ReportProgress(90, textForProgBar);                                
@@ -1424,8 +1428,8 @@ namespace ContinuumNS
 
                         if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || thisMap.useTimeSeries == false || thisMap.modelType <= 1)
                         {
-                            if (mapNodeCount > 10 && mapNodeCount % 10 == 0)
-                            {
+                           // if (mapNodeCount > 0 && mapNodeCount % 10 == 0)
+                          //  {
                                 timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
                                 avgTimePerNode = (thisStopwatch.Elapsed.TotalSeconds / (mapNodeCount + 1));
                                 timeToFinish = (numMapNodes - mapNodeCount) * avgTimePerNode / 60;
@@ -1433,8 +1437,8 @@ namespace ContinuumNS
                                     " secs." + " Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.";
                                 int Prog = Convert.ToInt16(100.0f * mapNodeCount / numMapNodes);
                                 BackgroundWorker_Map.ReportProgress(Prog, textForProgBar);
-                            }
-
+                          //  }
+                            
                             if (thisMapNode.windRose == null)
                                 thisMapNode.windRose = metList.GetInterpolatedWindRose(metList.GetMetsUsed(), thisMapNode.UTMX, thisMapNode.UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
 
@@ -2645,7 +2649,7 @@ namespace ContinuumNS
             // all files have been read, the data is trimmed to the actual start and end times
             DateTime startTimeZeroHour = startTime.AddHours(-startTime.Hour);
             DateTime endTimeZeroHour = endTime.AddHours(-endTime.Hour);
-            endTimeZeroHour = endTimeZeroHour.AddDays(1); // Adding one more day to account for UTC - Local time diffs
+         //   endTimeZeroHour = endTimeZeroHour.AddDays(1); // Adding one more day to account for UTC - Local time diffs
 
             TimeSpan timeSpan = endTimeZeroHour - startTimeZeroHour;
             int numRefHours = Convert.ToInt32(timeSpan.TotalHours) + 24;
@@ -2784,6 +2788,15 @@ namespace ContinuumNS
             while (nodesToPull[0].Data[startInd].ThisDate < startTime)
                 startInd++;
 
+            if (startTime < nodesToPull[0].Data[startInd].ThisDate)
+            {
+                MessageBox.Show("Available MERRA2 data does not cover desired date range.", "Continuum 3");
+                if (thisMet != null)
+                    thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+                e.Result = thisInst;
+                return;
+            }
+
             int endInd = nodesToPull[0].Data.Length - 1;
             while (nodesToPull[0].Data[endInd].ThisDate > endTime)
                 endInd--;
@@ -2843,7 +2856,7 @@ namespace ContinuumNS
             thisMERRA.CalcAnnualProd(ref thisMERRA.interpData.Annual_Prod, thisMERRA.interpData.Monthly_Prod, thisInst.UTM_conversions);
 
             // Runs MCP at met sites if MCP_type not null
-            if (theArgs.MCP_type != null)
+            if (theArgs.MCP_type != null && theArgs.thisMet.name != null)
             {
                 thisMet.mcp = new MCP();
                 thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
@@ -3398,12 +3411,7 @@ namespace ContinuumNS
             // Create a credential cache for authenticating when redirected to Earthdata Login
 
             CredentialCache cache = new CredentialCache();
-            cache.Add(new Uri(urs), "Basic", new NetworkCredential(merraList.earthdataUser, merraList.earthdataPwd));
-
-            DateTime startDate = thisInst.dateMERRAStart.Value;
-            DateTime endDate = thisInst.dateMERRAEnd.Value;
-
-            int numDays = endDate.Subtract(startDate).Days + 1;
+            cache.Add(new Uri(urs), "Basic", new NetworkCredential(merraList.earthdataUser, merraList.earthdataPwd));                      
 
             double minLat = Convert.ToDouble(thisInst.txtMinLat.Text);
             double maxLat = Convert.ToDouble(thisInst.txtMaxLat.Text);
@@ -3415,6 +3423,17 @@ namespace ContinuumNS
             minLong = Math.Round(minLong / 0.625) * 0.625;
             maxLong = Math.Round(maxLong / 0.625) * 0.625;
 
+            int offset = thisInst.UTM_conversions.GetUTC_Offset(minLat, minLong);
+            DateTime startDate = thisInst.dateMERRAStart.Value;
+            startDate = startDate.AddHours(-offset);
+            DateTime endDate = thisInst.dateMERRAEnd.Value;
+            endDate = endDate.AddHours(-offset);
+
+            DateTime startDayOnly = new DateTime(startDate.Year, startDate.Month, startDate.Day);
+            DateTime endDayOnly = new DateTime(endDate.Year, endDate.Month, endDate.Day);
+
+            int numDays = endDayOnly.Subtract(startDayOnly).Days + 1;
+
             List<int> integerList = Enumerable.Range(0, numDays).ToList();
             int count = 0;
 
@@ -3424,6 +3443,33 @@ namespace ContinuumNS
             double timeElapsed = 0;
             double avgTimePerFile = 0;
             double timeToFinish;
+
+            // Attempt to connect and test credentials
+            string testResource = merraList.GetMERRA2URL(startDate, minLat, maxLat, minLong, maxLong);
+                       
+            HttpWebRequest testRequest = (HttpWebRequest)WebRequest.Create(testResource);
+            testRequest.Method = "GET";
+            testRequest.Credentials = cache;
+            testRequest.CookieContainer = myContainer;
+            testRequest.PreAuthenticate = false;
+            testRequest.AllowAutoRedirect = true;
+            testRequest.Timeout = 100000;
+
+            HttpWebResponse testResponse = null;
+
+            try
+            {
+                testResponse = (HttpWebResponse)testRequest.GetResponse();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+                thisInst.merraList.earthdataUser = "";
+                thisInst.merraList.earthdataPwd = "";
+                e.Result = thisInst;
+                return;
+            }
+            
 
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
             {
@@ -3438,8 +3484,7 @@ namespace ContinuumNS
                     timeToFinish = (numDays - count) * avgTimePerFile / 60;                    
                     BackgroundWorker_MERRADownload.ReportProgress((int)Prog, "Downloading MERRA2 data. Avg time/file: " + Math.Round(avgTimePerFile, 1) +
                         " secs. Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.");
-                }
-                    
+                }                    
 
                 if (BackgroundWorker_MERRADownload.CancellationPending == true)
                 {
@@ -3463,6 +3508,7 @@ namespace ContinuumNS
                         request.PreAuthenticate = false;
                         request.AllowAutoRedirect = true;
                         request.Timeout = 10000;
+                                                
                         response = null;
 
                         try
@@ -3470,8 +3516,7 @@ namespace ContinuumNS
                             response = (HttpWebResponse)request.GetResponse();
                         }
                         catch (Exception ex)
-                        {
-                            //       MessageBox.Show(ex.ToString());
+                        {                       
                         }
                     }
 
@@ -3482,9 +3527,13 @@ namespace ContinuumNS
                             merraList.SaveMERRA2DataFile(response, thisDate);
                         }
                         catch (Exception ex)
-                        {
-                      //      MessageBox.Show(ex.ToString());
+                        {                      
                         }
+                    }
+                    else if (response == null)
+                    {
+                        e.Result = thisInst;
+                        return;
                     }
 
                 }

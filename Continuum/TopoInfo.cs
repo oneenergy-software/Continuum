@@ -1854,7 +1854,7 @@ namespace ContinuumNS
             double dirBin = (double)360 / numWD;
             expo.SR_Dist = new double[numWD];
             expo.SR = new double[numWD];
-            expo.dispH = new double[numWD];                     
+            expo.dispH = new double[numWD];                       
 
             // Find square that contains radius of interest
             int minX_Ind = Convert.ToInt16((UTMX - radius - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
@@ -1885,11 +1885,11 @@ namespace ContinuumNS
                     if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
                     {
                         double thisSR = SR_ForCalcs[j, k];
-                        double thisDH = DH_ForCalcs[j, k];
+                        double thisDH = DH_ForCalcs[j, k];                        
                       
                         double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
 
-                        if (distance <= radius && distance > smallerRadius && distance != 0)
+                        if (distance <= radius && distance > smallerRadius && distance != 0)  // Zero values on edges can skew calculated values
                         {
                             int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
                             if (exponent != 1.0)
@@ -1919,7 +1919,7 @@ namespace ContinuumNS
                     {
                         double thisSR = SR_ForCalcs[j, k];
                         double thisDH = DH_ForCalcs[j, k];                     
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                               
 
                         if (distance <= radius && distance > smallerRadius && distance != 0)
                         {
@@ -1952,7 +1952,7 @@ namespace ContinuumNS
                         double thisSR = SR_ForCalcs[j, k];
                         double thisDH = DH_ForCalcs[j, k];
                       
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                               
 
                         if (distance <= radius && distance > smallerRadius && distance != 0)
                         {
@@ -1984,7 +1984,7 @@ namespace ContinuumNS
                         double thisSR = SR_ForCalcs[j, k];
                         double thisDH = DH_ForCalcs[j, k];
                         
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                               
 
                         if (distance <= radius && distance > smallerRadius && distance != 0)
                         {

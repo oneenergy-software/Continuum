@@ -1043,7 +1043,7 @@ namespace ContinuumNS
                     break;
                 
                 if (thisSim.WS_WD_data[thisInd].WS != -999 && thisSim.WS_WD_data[thisInd].WD != -999)
-                {
+                { 
                     avgWS = avgWS + thisSim.WS_WD_data[thisInd].WS;
                     WS_Count++;                                            
                 }                
@@ -2429,7 +2429,7 @@ namespace ContinuumNS
 
             while (thisSim.WS_WD_data[thisInd].timeStamp < endDate && thisInd < (thisSim.WS_WD_data.Length - 1))
             {
-                if (thisSim.WS_WD_data[thisInd].WS != -999)
+                if (thisSim.WS_WD_data[thisInd].WS != -999 && thisSim.WS_WD_data[thisInd].WD != -999)
                     numValid++;
 
                 thisInd++;

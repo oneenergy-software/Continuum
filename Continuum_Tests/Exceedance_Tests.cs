@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class Exceedance_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Exceedance";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\Exceedance";
         
         [TestMethod]
         public void Get_PF_Value_Test()

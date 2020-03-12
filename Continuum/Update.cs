@@ -139,7 +139,7 @@ namespace ContinuumNS
             // MERRA2 tab
             MERRA thisMERRA = thisInst.GetSelectedMERRA();
             if (thisMERRA.GotWindTS(thisInst.UTM_conversions))
-                thisInst.btn_Import_MERRA.BackColor = Color.Green;
+                thisInst.btn_Import_MERRA.BackColor = Color.MediumSeaGreen;
             else if (thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
                 thisInst.btn_Import_MERRA.BackColor = Color.LightCoral;
             else
@@ -569,21 +569,37 @@ namespace ContinuumNS
                 int newNumLevels = 10;
                 double intWidth = 0;
 
-                try
+                if (thisInst.txtWakeMin.Text != "")
                 {
-                    thisMin = Convert.ToSingle(thisInst.txtWakeMin.Text);
+                    try
+                    {
+                        thisMin = Convert.ToSingle(thisInst.txtWakeMin.Text);
+                    }
+                    catch
+                    {
+                        thisMin = thisInst.wakeModelList.FindMin(thisGrid, WD_Ind, plotInd) * 0.99f;
+                        thisInst.txtWakeMin.Text = Math.Round(thisMin, 3).ToString();
+                    }
                 }
-                catch
+                else
                 {
                     thisMin = thisInst.wakeModelList.FindMin(thisGrid, WD_Ind, plotInd) * 0.99f;
                     thisInst.txtWakeMin.Text = Math.Round(thisMin, 3).ToString();
                 }
 
-                try
+                if (thisInst.txtWakeMax.Text != "")
                 {
-                    thisMax = Convert.ToSingle(thisInst.txtWakeMax.Text);
+                    try
+                    {
+                        thisMax = Convert.ToSingle(thisInst.txtWakeMax.Text);
+                    }
+                    catch
+                    {
+                        thisMax = thisInst.wakeModelList.FindMax(thisGrid, WD_Ind, plotInd) * 1.01f;
+                        thisInst.txtWakeMax.Text = Math.Round(thisMax, 3).ToString();
+                    }
                 }
-                catch
+                else
                 {
                     thisMax = thisInst.wakeModelList.FindMax(thisGrid, WD_Ind, plotInd) * 1.01f;
                     thisInst.txtWakeMax.Text = Math.Round(thisMax, 3).ToString();
@@ -817,16 +833,19 @@ namespace ContinuumNS
 
             }
 
-            try
+            if (thisInst.lstWakeModels.Items.Count > 0)
             {
-                thisInst.lstWakeModels.Items[0].Selected = true;
-                thisInst.cboMonthlyWakeModel.SelectedIndex = 0;
-                thisInst.cboExceedWake.SelectedIndex = 0;
-            }
-            catch
-            {
-                thisInst.okToUpdate = true;
-                return;
+                try
+                {
+                    thisInst.lstWakeModels.Items[0].Selected = true;
+                    thisInst.cboMonthlyWakeModel.SelectedIndex = 0;
+                    thisInst.cboExceedWake.SelectedIndex = 0;
+                }
+                catch
+                {
+                    thisInst.okToUpdate = true;
+                    return;
+                }
             }
 
             ColoredButtons(thisInst);
@@ -884,7 +903,11 @@ namespace ContinuumNS
                     if (thisNet != 0)
                     {
                         objListItem.SubItems.Add(Math.Round(thisTurb.GetNetAEP(thisWakeModel, WD_Ind), 0).ToString());
-                        objListItem.SubItems.Add(Math.Round(thisTurb.GetNetCF(thisWakeModel, WD_Ind), 4).ToString("P"));
+
+                        if (WD_Ind == numWD)
+                            objListItem.SubItems.Add(Math.Round(thisTurb.GetNetCF(thisWakeModel, WD_Ind), 4).ToString("P"));
+                        else
+                            objListItem.SubItems.Add(Math.Round(thisTurb.GetNetCF(thisWakeModel, WD_Ind) / avgEst.freeStream.windRose[WD_Ind], 4).ToString("P"));
                         
                     }
                     else
@@ -1024,11 +1047,17 @@ namespace ContinuumNS
             for (int i = numMets - 1; i >= 1; i--)
                 thisInst.cboRR_MinSize.Items.Add(i + " mets");
 
-            try
+            if (thisInst.cboRR_MinSize.Items.Count > 0)
             {
-                thisInst.cboRR_MinSize.SelectedIndex = 0;
+                try
+                {
+                    thisInst.cboRR_MinSize.SelectedIndex = 0;
+                }
+                catch
+                {
+                    numMets = numMets;
+                }
             }
-            catch { }
 
             StartMet_Dropdown(thisInst);
             EndMet_Dropdown(thisInst);
@@ -1781,7 +1810,7 @@ namespace ContinuumNS
                     DWExpo_2 = node2.expo[radiusIndex].GetWgtAvg(node2WindRose, WD_Ind, "DW", "Expo");
                 }
 
-                objListItem = thisInst.lstPathNodes.Items.Add("Node " + (i + 1));
+                objListItem = thisInst.lstPathNodes.Items.Add("Node " + (i + 1).ToString());
                 AddUTMsP10sExposToPathNodeList(paramsToShow, node2.UTMX, node2.UTMY, node2.elev, P10_UW_2, P10_DW_2, UWExpo_2, DWExpo_2);
 
                 if (gotSR == true)
@@ -1859,7 +1888,7 @@ namespace ContinuumNS
                             if (Coeff_ind > 0)
                                 objList_UW = thisInst.lstPathNodes_UW.Items.Add((Coeff_ind + 1).ToString());
                             else
-                                objList_UW = thisInst.lstPathNodes_UW.Items.Add("Node " + i + 1);
+                                objList_UW = thisInst.lstPathNodes_UW.Items.Add("Node " + (i + 1));
 
                             objList_UW.SubItems.Add(UW_CoeffsDeltas[Coeff_ind].flowType);
                             objList_UW.SubItems.Add(Math.Round(UW_CoeffsDeltas[Coeff_ind].coeff, 4).ToString());
@@ -1879,7 +1908,7 @@ namespace ContinuumNS
                             if (Coeff_ind > 0)
                                 objList_DW = thisInst.lstPathNodes_DW.Items.Add((Coeff_ind + 1).ToString());
                             else
-                                objList_DW = thisInst.lstPathNodes_DW.Items.Add("Node " + i + 1);
+                                objList_DW = thisInst.lstPathNodes_DW.Items.Add("Node " + (i + 1));
 
                             objList_DW.SubItems.Add(DW_CoeffsDeltas[Coeff_ind].flowType);
                             objList_DW.SubItems.Add(Math.Round(DW_CoeffsDeltas[Coeff_ind].coeff, 4).ToString());
@@ -2269,12 +2298,16 @@ namespace ContinuumNS
                 }
             }
 
-            try
+            if (thisInst.cboRoundRobin.Items.Count > 0)
             {
-                thisInst.cboRoundRobin.SelectedIndex = 0;
-            }
-            catch
-            {
+                try
+                {
+                    thisInst.cboRoundRobin.SelectedIndex = 0;
+                }
+                catch
+                {
+                    numRR = numRR;
+                }
             }
 
             thisInst.okToUpdate = true;
@@ -2878,12 +2911,16 @@ namespace ContinuumNS
             for (int i = 0; i < numMets; i++)
                 thisInst.cboStartMet.Items.Add(metsUsed[i]);
 
-            try
+            if (thisInst.cboStartMet.Items.Count > 0)
             {
-                thisInst.cboStartMet.SelectedIndex = 0;
-            }
-            catch
-            {        
+                try
+                {
+                    thisInst.cboStartMet.SelectedIndex = 0;
+                }
+                catch
+                {
+                    numMets = numMets;
+                }
             }
 
             thisInst.okToUpdate = true;
@@ -3416,12 +3453,22 @@ namespace ContinuumNS
 
             int numSR = 0;
 
-            try
+            if (thisInst.topo.LC_Key != null)
             {
-                numSR = thisInst.topo.LC_Key.Length;
-                thisInst.btnViewModNLCD.BackColor = Color.MediumSeaGreen;
+                try
+                {
+                    numSR = thisInst.topo.LC_Key.Length;
+                    thisInst.btnViewModNLCD.BackColor = Color.MediumSeaGreen;
+                }
+                catch
+                {
+                    thisInst.txt_LC_Key_selected.Text = "Not Selected";
+                    thisInst.txt_LC_Key_selected.BackColor = Color.LightCoral;
+                    thisInst.btnViewModNLCD.BackColor = Color.LightCoral;
+                    return;
+                }
             }
-            catch
+            else
             {
                 thisInst.txt_LC_Key_selected.Text = "Not Selected";
                 thisInst.txt_LC_Key_selected.BackColor = Color.LightCoral;
@@ -5389,7 +5436,9 @@ namespace ContinuumNS
                                 thisTableVal = Convert.ToSingle(thisInst.lstPathNodes.Items[numPoints - 1].SubItems[i].Text);
                                 dataSeries.Points.Add(new DataPoint(distArr[distArr.Length - 1], thisTableVal));                                
                             }
-                            catch { }
+                            catch {
+                                numPoints = numPoints;
+                            }
                         }
                         else
                         {
@@ -6755,11 +6804,19 @@ namespace ContinuumNS
 
             string UH_Plot_to_show = "";
 
-            try
+            if (thisInst.cboUphill_to_show.SelectedItem != null)
             {
-                UH_Plot_to_show = thisInst.cboUphill_to_show.SelectedItem.ToString();
+                try
+                {
+                    UH_Plot_to_show = thisInst.cboUphill_to_show.SelectedItem.ToString();
+                }
+                catch
+                {
+                    thisInst.cboUphill_to_show.SelectedIndex = 0;
+                    UH_Plot_to_show = thisInst.cboUphill_to_show.SelectedItem.ToString();
+                }
             }
-            catch
+            else
             {
                 thisInst.cboUphill_to_show.SelectedIndex = 0;
                 UH_Plot_to_show = thisInst.cboUphill_to_show.SelectedItem.ToString();
@@ -6767,11 +6824,19 @@ namespace ContinuumNS
 
             string DH_Plot_to_show = "";
 
-            try
+            if (thisInst.cboDHplot.SelectedItem != null)
             {
-                DH_Plot_to_show = thisInst.cboDHplot.SelectedItem.ToString();
+                try
+                {
+                    DH_Plot_to_show = thisInst.cboDHplot.SelectedItem.ToString();
+                }
+                catch
+                {
+                    thisInst.cboDHplot.SelectedIndex = 0;
+                    DH_Plot_to_show = thisInst.cboDHplot.SelectedItem.ToString();
+                }
             }
-            catch
+            else
             {
                 thisInst.cboDHplot.SelectedIndex = 0;
                 DH_Plot_to_show = thisInst.cboDHplot.SelectedItem.ToString();
@@ -6785,11 +6850,19 @@ namespace ContinuumNS
 
             string Expo_or_Rough = "";
 
-            try
+            if (thisInst.cboExpo_or_Stab.SelectedItem != null)
             {
-                Expo_or_Rough = thisInst.cboExpo_or_Stab.SelectedItem.ToString();
+                try
+                {
+                    Expo_or_Rough = thisInst.cboExpo_or_Stab.SelectedItem.ToString();
+                }
+                catch
+                {
+                    thisInst.cboExpo_or_Stab.SelectedIndex = 0;
+                    return;
+                }
             }
-            catch
+            else
             {
                 thisInst.cboExpo_or_Stab.SelectedIndex = 0;
                 return;
@@ -7099,6 +7172,12 @@ namespace ContinuumNS
             var model = thisInst.plotAdvTopo.Model;
             model.IsLegendVisible = false;
 
+            if (thisInst.turbineList.genTimeSeries == true)
+            {
+                thisInst.plotAdvTopo.Refresh();
+                return;
+            }
+
             if (thisInst.topo.gotTopo == true)
             {
                 TopoInfo topo = thisInst.topo;
@@ -7126,7 +7205,7 @@ namespace ContinuumNS
                 Met thisMet = null;
                 int metPairCount = thisInst.metPairList.PairCount;
                 Pair_Of_Mets thisPair = null;
-                int numNodes;
+                int numNodes = 0;
                 Nodes thisNode;
                 int radiusIndex = thisInst.GetRadiusInd("Advanced");
 
@@ -7196,7 +7275,7 @@ namespace ContinuumNS
                         if (thisNode.UTMY > maxY) maxY = thisNode.UTMY;
                     }
                 }
-                else if (thisInst.turbineList.TurbineCount > 0)
+                else if (thisInst.turbineList.TurbineCount > 0 && thisInst.turbineList.turbineCalcsDone)
                 { // goes to a turbine
 
                     int turbCount = thisInst.turbineList.TurbineCount;
@@ -7255,13 +7334,16 @@ namespace ContinuumNS
                             break;
                         }
 
-                    try
+                    if (thisTurb.WS_Estimate[WS_PredInd].pathOfNodes != null)
                     {
-                        numNodes = thisTurb.WS_Estimate[WS_PredInd].pathOfNodes.Length;
-                    }
-                    catch
-                    {
-                        numNodes = 0;
+                        try
+                        {
+                            numNodes = thisTurb.WS_Estimate[WS_PredInd].pathOfNodes.Length;
+                        }
+                        catch
+                        {
+                            numNodes = 0;
+                        }
                     }
 
                     for (int j = 0; j < numNodes; j++)
@@ -7503,16 +7585,7 @@ namespace ContinuumNS
             model.Title = "Wind Rose at Met Sites";
             model.PlotType = PlotType.Polar;
             model.IsLegendVisible = false;
-            model.PlotAreaBorderThickness = new OxyThickness(0);
-
-            model.Axes.Add(new AngleAxis
-            {           
-                StartAngle = 90,
-                EndAngle = -270,
-                Minimum = 0,
-                Maximum = 360,
-                MajorStep = 15
-            });
+            model.PlotAreaBorderThickness = new OxyThickness(0);                       
 
             int numWD = thisInst.GetNumWD();
             Met[] checkedMets = thisInst.GetCheckedMets("Input");
@@ -7520,6 +7593,15 @@ namespace ContinuumNS
 
             if (metCount > 0)
             {
+                model.Axes.Add(new AngleAxis
+                {
+                    StartAngle = 90,
+                    EndAngle = -270,
+                    Minimum = 0,
+                    Maximum = 360,
+                    MajorStep = 15
+                });
+
                 for (int i = 0; i < metCount; i++)
                 {
                     Met.WSWD_Dist thisDist = checkedMets[i].GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
@@ -7556,15 +7638,7 @@ namespace ContinuumNS
             model.PlotType = PlotType.Polar;
             model.IsLegendVisible = false;
             model.PlotAreaBorderThickness = new OxyThickness(0);
-            
-            model.Axes.Add(new AngleAxis
-            {
-                StartAngle = 90,
-                EndAngle = -270,
-                Minimum = 0,
-                Maximum = 360,
-                MajorStep = 15
-            });
+                       
 
             Met[] checkedMets = thisInst.GetCheckedMets("Input");
 
@@ -7577,7 +7651,14 @@ namespace ContinuumNS
             if (checkedMets.Length > 0)
             {
                 int numWD = thisInst.GetNumWD();
-                
+                model.Axes.Add(new AngleAxis
+                {
+                    StartAngle = 90,
+                    EndAngle = -270,
+                    Minimum = 0,
+                    Maximum = 360,
+                    MajorStep = 15
+                });
 
                 for (int i = 0; i < checkedMets.Length; i++)
                 {
@@ -7699,21 +7780,37 @@ namespace ContinuumNS
 
                 int numWD = thisInst.GetNumWD();
 
-                try
+                if (thisInst.txtMinValue.Text != "")
                 {
-                    thisMin = Convert.ToSingle(thisInst.txtMinValue.Text);
+                    try
+                    {
+                        thisMin = Convert.ToSingle(thisInst.txtMinValue.Text);
+                    }
+                    catch
+                    {
+                        thisMin = thisMap.FindMin(WD_Ind, numWD);
+                        thisInst.txtMinValue.Text = Math.Round(thisMin, 3).ToString();
+                    }
                 }
-                catch
+                else
                 {
                     thisMin = thisMap.FindMin(WD_Ind, numWD);
                     thisInst.txtMinValue.Text = Math.Round(thisMin, 3).ToString();
                 }
 
-                try
+                if (thisInst.txtMaxValue.Text != "")
                 {
-                    thisMax = Convert.ToSingle(thisInst.txtMaxValue.Text);
+                    try
+                    {
+                        thisMax = Convert.ToSingle(thisInst.txtMaxValue.Text);
+                    }
+                    catch
+                    {
+                        thisMax = thisMap.FindMax(WD_Ind, numWD);
+                        thisInst.txtMaxValue.Text = Math.Round(thisMax, 3).ToString();
+                    }
                 }
-                catch
+                else
                 {
                     thisMax = thisMap.FindMax(WD_Ind, numWD);
                     thisInst.txtMaxValue.Text = Math.Round(thisMax, 3).ToString();
@@ -7899,13 +7996,20 @@ namespace ContinuumNS
             if (thisInst.chkMainAuto.CheckState == CheckState.Checked)
                 auto = true;
 
-            try
+            if (thisInst.txtMainMin.Text != "" && thisInst.txtMainMax.Text != "" && thisInst.txtMainInt.Text != "")
             {
-                min = Convert.ToSingle(thisInst.txtMainMin.Text);
-                max = Convert.ToSingle(thisInst.txtMainMax.Text);
-                interval = Convert.ToSingle(thisInst.txtMainInt.Text);
+                try
+                {
+                    min = Convert.ToSingle(thisInst.txtMainMin.Text);
+                    max = Convert.ToSingle(thisInst.txtMainMax.Text);
+                    interval = Convert.ToSingle(thisInst.txtMainInt.Text);
+                }
+                catch
+                {
+                    return;
+                }
             }
-            catch
+            else
             {
                 return;
             }
@@ -8162,6 +8266,7 @@ namespace ContinuumNS
             LinearAxis yAxis = new LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.Title = "Shear Exponent";
+            yAxis.MajorStep = 0.1;
             
             model.Axes.Add(xAxis);
             model.Axes.Add(yAxis);
@@ -8256,7 +8361,11 @@ namespace ContinuumNS
             double[] extrapH = new double[numSim];
             double[] extrapWS = new double[numSim];
 
+            int minHeight = 10000;
+            int maxHeight = 0;
+
             int minWS = 100;
+            int maxWS = 0;
 
             for (int i = 0; i < numAnems; i++)
             {
@@ -8264,25 +8373,39 @@ namespace ContinuumNS
                 unfiltWS[i] = Math.Round(thisData.CalcAvgWS(thisData.anems[i], false), 5);
                 filtWS[i] = Math.Round(thisData.CalcAvgWS(thisData.anems[i], true), 5);
 
+                if (heights[i] < minHeight) minHeight = (int)heights[i];
+                if (heights[i] > maxHeight) maxHeight = (int)heights[i];
+
                 if (unfiltWS[i] < minWS) minWS = (int)unfiltWS[i];
                 if (filtWS[i] < minWS) minWS = (int)filtWS[i];
+
+                if (unfiltWS[i] > maxWS) maxWS = (int)unfiltWS[i];
+                if (filtWS[i] > maxWS) maxWS = (int)filtWS[i];
             }
 
             for (int i = 0; i < numSim; i++)
             {
                 extrapH[i] = thisData.simData[i].height;
                 extrapWS[i] = Math.Round(thisData.CalcAvgExtrapolatedWS(thisData.simData[i]), 5);
+
+                if (extrapH[i] < minHeight) minHeight = (int)extrapH[i];
+                if (extrapH[i] > maxHeight) maxHeight = (int)extrapH[i];
                 if (extrapWS[i] < minWS) minWS = (int)extrapWS[i];
+                if (extrapWS[i] > maxWS) maxWS = (int)extrapWS[i];
             }
 
             // Specify axes
             LinearAxis xAxis = new LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
-            xAxis.Title = "Wind Speed, m/s";
+            xAxis.Title = "Wind Speed, m/s";           
+            xAxis.Minimum = minWS - 1;
+            xAxis.Maximum = maxWS + 1;
             LinearAxis yAxis = new LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.Title = "Height, m";
             yAxis.MajorStep = 20;
+            yAxis.Minimum = minHeight - 10;
+            yAxis.Maximum = maxHeight + 10;
 
             model.Axes.Add(xAxis);
             model.Axes.Add(yAxis);
@@ -8823,8 +8946,7 @@ namespace ContinuumNS
 
             int anemHeight = Convert.ToInt16(thisInst.cboSensorHeight.SelectedItem.ToString());
             int vaneInd = thisData.GetVaneClosestToHH(anemHeight);
-            int numWD = thisInst.metList.numWD;
-
+            
             double[] thisWR_orWS;
            
             string filtOrNotFilt = thisInst.cboFilt_or_Not.SelectedItem.ToString();
@@ -8832,7 +8954,8 @@ namespace ContinuumNS
             if (thisInst.cboMetWindRose.SelectedItem.ToString() == "Wind Rose")
             {
                 thisWR_orWS = thisData.Calc_Wind_Rose(thisData.startDate, thisData.endDate, vaneInd, filtOrNotFilt);
-                
+                int numWD = thisWR_orWS.Length;
+
                 var metSeries = new LineSeries();
                 SortedList<double, double> ii = new SortedList<double, double>();
 
@@ -8856,6 +8979,7 @@ namespace ContinuumNS
                     if (thisData.anems[i].height == anemHeight)
                     {
                         thisWR_orWS = thisData.Calc_Avg_WS_by_WD(thisData.startDate, thisData.endDate, i, filtOrNotFilt);
+                        int numWD = thisWR_orWS.Length;
                         string Series_Name = "Anem " + thisData.anems[i].height + " " + thisData.anems[i].orientation;
 
                         var metSeries = new LineSeries();
@@ -9007,10 +9131,10 @@ namespace ContinuumNS
             }
             else
             {
-                minWD = WD_Ind * 360 / Num_WD - 360 / Num_WD / 2;
+                minWD = WD_Ind * 360.0 / Num_WD - 360.0 / Num_WD / 2;
                 if (minWD < 0)
                     minWD = minWD + 360;
-                maxWD = WD_Ind * 360 / Num_WD + 360 / Num_WD / 2;
+                maxWD = WD_Ind * 360.0 / Num_WD + 360.0 / Num_WD / 2;
                 if (maxWD > 360)
                     maxWD = maxWD - 360;
             }
@@ -9826,7 +9950,7 @@ namespace ContinuumNS
                 yAxis.Title = "WS [m/s]";
             }
             else
-                model.Title = "Monthly " + selectedParam;
+                model.Title = "Yearly " + selectedParam;
 
             var paramSeries = new LineSeries();            
             
@@ -9864,7 +9988,7 @@ namespace ContinuumNS
                         double avg = thisMERRA.Calc_Avg_or_LT(thisTS, 100, i, selectedParam);
                         LT_Val = thisMERRA.Calc_Avg_or_LT(thisTS, 100, 100, selectedParam);
                         diff = (avg - LT_Val) / LT_Val;
-                        lvi.SubItems.Add(Math.Round(avg, 1).ToString());
+                        lvi.SubItems.Add(Math.Round(avg, 2).ToString());
                         paramSeries.Points.Add(new DataPoint(i, Math.Round(avg, 1)));                        
                     }
 
@@ -9877,7 +10001,7 @@ namespace ContinuumNS
             model.Series.Add(paramSeries);
 
             ListViewItem lvi2 = new ListViewItem("LT Avg"); // Adds year to table
-            lvi2.SubItems.Add(Math.Round(LT_Val, 1).ToString());
+            lvi2.SubItems.Add(Math.Round(LT_Val, 2).ToString());
             thisInst.plotMERRA_Yearly.Refresh();
         }
 
@@ -10181,9 +10305,9 @@ namespace ContinuumNS
             }            
             else
             {
-                thisInst.txtMERRA_SelectedLat.Text = "";
+           //     thisInst.txtMERRA_SelectedLat.Text = "";
                 thisInst.txtMERRA_SelectedLat.Enabled = true;
-                thisInst.txtMERRA_SelectedLong.Text = "";
+           //     thisInst.txtMERRA_SelectedLong.Text = "";
                 thisInst.txtMERRA_SelectedLong.Enabled = true;
             }
 
@@ -10296,7 +10420,7 @@ namespace ContinuumNS
             // MERRA2 tab
             MERRA thisMERRA = thisInst.GetSelectedMERRA();
             if (thisMERRA.GotWindTS(thisInst.UTM_conversions))
-                thisInst.btn_Import_MERRA.BackColor = Color.Green;
+                thisInst.btn_Import_MERRA.BackColor = Color.MediumSeaGreen;
             else if (thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
                 thisInst.btn_Import_MERRA.BackColor = Color.LightCoral;
             else
@@ -10325,22 +10449,27 @@ namespace ContinuumNS
                 thisInst.cboIceDistORIceHisto.SelectedIndex = 0;
 
             thisInst.okToUpdate = true;
-            
-      //      thisInst.chtSiteSuitability.Charts[0].Enable3D = true;
-       //     thisInst.chtSiteSuitability.Charts[0].Width = 70f;
-      //      thisInst.chtSiteSuitability.Charts[0].Depth = 70f;
-       //     thisInst.chtSiteSuitability.Charts[0].Height = 0.001f;
 
-            try
+            //      thisInst.chtSiteSuitability.Charts[0].Enable3D = true;
+            //     thisInst.chtSiteSuitability.Charts[0].Width = 70f;
+            //      thisInst.chtSiteSuitability.Charts[0].Depth = 70f;
+            //     thisInst.chtSiteSuitability.Charts[0].Height = 0.001f;
+
+            if (thisInst.cboSiteSuitabilitySelectPlot.SelectedItem != null)
             {
-                selectedSiteSuitability = thisInst.cboSiteSuitabilitySelectPlot.SelectedItem.ToString();
+                try
+                {
+                    selectedSiteSuitability = thisInst.cboSiteSuitabilitySelectPlot.SelectedItem.ToString();
+                }
+                catch
+                {
+                    //      thisInst.chtSiteSuitability.Refresh();
+                    return;
+                }
             }
-            catch
-            {
-          //      thisInst.chtSiteSuitability.Refresh();
+            else
                 return;
-            }
-
+            
             if (selectedSiteSuitability == "" && thisInst.cboSiteSuitabilitySelectPlot.Items.Count == 0)
             {
           //      thisInst.chtSiteSuitability.Refresh();
@@ -10627,22 +10756,22 @@ namespace ContinuumNS
             {
                 objListItem = thisInst.lstMonthlyTurbine.Items.Add(thisAvgEst.FS_MonthlyVals[i].month.ToString());
                 objListItem.SubItems.Add(thisAvgEst.FS_MonthlyVals[i].year.ToString());
-                objListItem.SubItems.Add(Math.Round(thisAvgEst.FS_MonthlyVals[i].avgWS, 4).ToString());
+                objListItem.SubItems.Add(Math.Round(thisAvgEst.FS_MonthlyVals[i].avgWS, 2).ToString());
 
                 if (thisGrossEst.monthlyVals != null)
                     if (thisGrossEst.monthlyVals[i].energyProd != 0)
-                        objListItem.SubItems.Add(Math.Round(thisGrossEst.monthlyVals[i].energyProd, 4).ToString());
+                        objListItem.SubItems.Add(Math.Round(thisGrossEst.monthlyVals[i].energyProd, 1).ToString());
 
                 if (thisNetEst.monthlyVals != null)
                 {
                     if (thisNetEst.monthlyVals[i].energyProd != 0)
-                        objListItem.SubItems.Add(Math.Round(thisNetEst.monthlyVals[i].energyProd, 4).ToString());
+                        objListItem.SubItems.Add(Math.Round(thisNetEst.monthlyVals[i].energyProd, 1).ToString());
 
                     if (thisGrossEst.monthlyVals[i].energyProd != 0 && thisNetEst.monthlyVals[i].energyProd != 0)
                     {
                         double otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
                         double thisWakeLoss = (thisGrossEst.monthlyVals[i].energyProd - thisNetEst.monthlyVals[i].energyProd / otherLoss) / thisGrossEst.monthlyVals[i].energyProd;
-                        objListItem.SubItems.Add(Math.Round(100 * thisWakeLoss, 4).ToString());
+                        objListItem.SubItems.Add(Math.Round(100 * thisWakeLoss, 2).ToString());
                     }
                 }
 
@@ -10651,7 +10780,7 @@ namespace ContinuumNS
                     {
                         double thisLTValue = thisTurb.CalcLT_MonthlyValue("Gross AEP", thisAvgEst.FS_MonthlyVals[i].month, null, powerCurve);
                         double percDiff = (thisGrossEst.monthlyVals[i].energyProd - thisLTValue) / thisLTValue;
-                        objListItem.SubItems.Add(Math.Round(100 * percDiff, 4).ToString());
+                        objListItem.SubItems.Add(Math.Round(100 * percDiff, 2).ToString());
                     }
                 
             }
@@ -10668,18 +10797,18 @@ namespace ContinuumNS
                 if (thisGrossEst.AEP != 0)
                 {
                     double LT_GrossAEP = thisTurb.CalcLT_MonthlyValue("Gross AEP", i, null, powerCurve);
-                    objListItem.SubItems.Add(Math.Round(LT_GrossAEP, 0).ToString());
+                    objListItem.SubItems.Add(Math.Round(LT_GrossAEP, 1).ToString());
                     
                     if (thisNetEst.AEP != 0)
                     {
-                        double LT_NetAEP = thisTurb.CalcLT_MonthlyValue("Net AEP", i, null, powerCurve);
-                        objListItem.SubItems.Add(Math.Round(LT_NetAEP, 0).ToString());
+                        double LT_NetAEP = thisTurb.CalcLT_MonthlyValue("Net AEP", i, thisWakeModel, powerCurve);
+                        objListItem.SubItems.Add(Math.Round(LT_NetAEP, 1).ToString());
 
                         double otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
                         
                         if (LT_NetAEP == 0) return;
                         double thisWakeLoss = (LT_GrossAEP - LT_NetAEP / otherLoss) / LT_GrossAEP;
-                        objListItem.SubItems.Add(Math.Round(100 * thisWakeLoss, 0).ToString());
+                        objListItem.SubItems.Add(Math.Round(100 * thisWakeLoss, 2).ToString());
                     }
                 }
             }
@@ -10807,6 +10936,8 @@ namespace ContinuumNS
                         for (int j = 0; j < thisAvgEst.FS_MonthlyVals.Length; j++)
                             if (thisAvgEst.FS_MonthlyVals[j].year == thisYear)
                                 thisSeries.Points.Add(new DataPoint(thisAvgEst.FS_MonthlyVals[j].month, Math.Round(thisAvgEst.FS_MonthlyVals[j].avgWS, 3)));
+
+                        model.Series.Add(thisSeries);
                     }
 
                     if (plotGross == true && thisGrossEst.AEP != 0)
@@ -10821,6 +10952,8 @@ namespace ContinuumNS
 
                         if (needSecondYAxis)
                             thisSeries.YAxisKey = "Secondary";
+
+                        model.Series.Add(thisSeries);
                     }
 
                     if (plotNet == true && thisNetEst.AEP != 0)
@@ -10835,6 +10968,8 @@ namespace ContinuumNS
 
                         if (needSecondYAxis)
                             thisSeries.YAxisKey = "Secondary";
+
+                        model.Series.Add(thisSeries);
                     }
 
                     if (plotWake == true && thisGrossEst.AEP != 0 && thisNetEst.AEP != 0)
@@ -10850,6 +10985,8 @@ namespace ContinuumNS
                                 double thisWakeLoss = (thisGrossEst.monthlyVals[j].energyProd - thisNetEst.monthlyVals[j].energyProd / otherLoss) / thisGrossEst.monthlyVals[j].energyProd;
                                 thisSeries.Points.Add(new DataPoint(thisNetEst.monthlyVals[j].month, Math.Round(thisWakeLoss, 4)));
                             }
+
+                        model.Series.Add(thisSeries);
                     }
 
                     if (plotDiff == true && thisGrossEst.AEP != 0 && thisNetEst.AEP == 0) // no net estimates so calculate % diff in gross energy
@@ -10865,6 +11002,8 @@ namespace ContinuumNS
                                 double percDiff = (thisGrossEst.monthlyVals[j].energyProd - thisLTValue) / thisLTValue;
                                 thisSeries.Points.Add(new DataPoint(thisNetEst.monthlyVals[j].month, Math.Round(percDiff, 4)));
                             }
+
+                        model.Series.Add(thisSeries);
                     }
                     else if (plotDiff == true && thisGrossEst.AEP != 0 && thisNetEst.AEP != 0) // Calculate % Diff in net energy
                     {
@@ -10879,6 +11018,8 @@ namespace ContinuumNS
                                 double percDiff = (thisGrossEst.monthlyVals[j].energyProd - thisLTValue) / thisLTValue;
                                 thisSeries.Points.Add(new DataPoint(thisNetEst.monthlyVals[j].month, Math.Round(percDiff, 4)));
                             }
+
+                        model.Series.Add(thisSeries);
                     }
                 }
             }     
@@ -10896,24 +11037,32 @@ namespace ContinuumNS
                 if (plotWS)
                 {
                     WS_Series.Title = "LT Avg WS";
+                    WS_Series.LineStyle = LineStyle.Dash;
+                    WS_Series.Color = OxyColors.Black;
                     model.Series.Add(WS_Series);
                 }                    
 
                 if (plotGross)
                 {
                     Gross_Series.Title = "LT Gross Energy";
+                    Gross_Series.LineStyle = LineStyle.Dash;
+                    Gross_Series.Color = OxyColors.Black;
                     model.Series.Add(Gross_Series);
                 }                    
 
                 if (plotNet)
                 {
                     Net_Series.Title = "LT Net Energy";
+                    Net_Series.LineStyle = LineStyle.Dash;
+                    Net_Series.Color = OxyColors.Black;
                     model.Series.Add(Net_Series);
                 }                    
 
                 if (plotWake)
                 {
                     Wake_Series.Title = "LT Wake Loss";
+                    Wake_Series.LineStyle = LineStyle.Dash;
+                    Wake_Series.Color = OxyColors.Black;
                     model.Series.Add(Wake_Series);
                 }         
                 
@@ -11081,8 +11230,12 @@ namespace ContinuumNS
 
         public void SiteSuitabilitySurfacePlotLabels(Continuum thisInst, int changedIndex, bool changedItemChecked)
         {
-            
+
             // Create point series for zones and change zoneSurface to show zone dimensions
+
+            if (thisInst.plotIceShadowSound.Model == null)
+                return;
+
             int numZones = thisInst.siteSuitability.GetNumZones();
             ScatterSeries[] zones = new ScatterSeries[numZones];
             var model = thisInst.plotIceShadowSound.Model;
@@ -11242,39 +11395,20 @@ namespace ContinuumNS
             SiteSuitabilitySurfacePlotLabels(thisInst, -999, true);
             thisInst.plotIceShadowSound.Refresh();
 
-            // For debugging and unit tests
-      /*      string fileName = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\Site Suitability\\Shadow Flicker\\Flicker Map vals.csv";
-
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(fileName);
-            sw.Write("UTMX, UTMY,");
-            for (int i = 1; i <= 12; i++)
-                for (int j = 0; j <= 23; j++)
-                    sw.Write("Month " + i + " Hour " + j + ",");
-
-            sw.WriteLine();
-            int totalNum = thisInst.siteSuitability.numXFlicker * thisInst.siteSuitability.numYFlicker;
-
-            for (int i = 0; i < totalNum; i++)
-            {
-                sw.Write(thisInst.siteSuitability.flickerMap[i].UTMX.ToString() + "," + thisInst.siteSuitability.flickerMap[i].UTMY.ToString() + ",");
-
-                for (int m = 0; m < 12; m++)
-                    for (int h = 0; h < 24; h++)
-                        sw.Write(thisInst.siteSuitability.flickerMap[i].flickerStats.shadowMins12x24[m, h].ToString() + ",");
-
-                sw.WriteLine();
-
-            }
-
-            sw.Close();
-         */   
+            
         }
 
         public int GetHourFromHourString(string hourStr)
         {
             int thisHour = 0;
 
-            if (hourStr == "7 am")
+            if (hourStr == "4 am")
+                thisHour = 4;
+            else if (hourStr == "5 am")
+                thisHour = 5;
+            else if (hourStr == "6 am")
+                thisHour = 6;
+            else if (hourStr == "7 am")
                 thisHour = 7;
             else if (hourStr == "8 am")
                 thisHour = 8;
@@ -11302,6 +11436,10 @@ namespace ContinuumNS
                 thisHour = 19;
             else if (hourStr == "8 pm")
                 thisHour = 20;
+            else if (hourStr == "9 pm")
+                thisHour = 21;
+            else if (hourStr == "10 pm")
+                thisHour = 22;
 
             return thisHour;
         }
@@ -12049,7 +12187,8 @@ namespace ContinuumNS
             if (selectedModel == "Ice Throw")
             {
                 thisInst.lstShadow12x24.Visible = false;
-          //      thisInst.chtIceVsDistOrHisto.Visible = true;
+                thisInst.plotIceVsDist.Visible = true;
+         
                 thisInst.lblShadowByMonthOrIceByDist.Text = "Ice Hits by Distance";
                 thisInst.lblZoneOrDirection.Text = "WD";
                 thisInst.lblShadowOrIceByDist.Text = "Ice Hits by Dist.";
@@ -12100,7 +12239,7 @@ namespace ContinuumNS
             else if (selectedModel == "Shadow Flicker")
             {
                 thisInst.lstShadow12x24.Visible = true;
-            //    thisInst.chtIceVsDistOrHisto.Visible = false;
+                thisInst.plotIceVsDist.Visible = false;
 
                 thisInst.lblShadowByMonthOrIceByDist.Text = "Hours of Shadow Flicker by Month / Hour :";
 
@@ -12124,7 +12263,9 @@ namespace ContinuumNS
                         firstInDrop = thisInst.cboZoneList.Items[0].ToString();
                         lastInDrop = thisInst.cboZoneList.Items[dropCount - 1].ToString();
                     }
-                    catch { }
+                    catch {
+                        dropCount = dropCount;
+                    }
 
                     if (firstInDrop == thisInst.siteSuitability.zones[0].name && lastInDrop == thisInst.siteSuitability.zones[numZones - 1].name)
                         hasFirstAndLastZone = true;
@@ -12423,11 +12564,17 @@ namespace ContinuumNS
 
                     lvi.SubItems.Add(overallTI[i].count.ToString());
                     thisInst.lstTurbulence.Items.Add(lvi);
-                    
+
                     if (turbType == "Effective")
-                        TISeries.Points.Add(new DataPoint(i, Math.Round(effectiveTI[i], 4)));
+                    {
+                        if (effectiveTI[i] != 0)
+                            TISeries.Points.Add(new DataPoint(i, Math.Round(effectiveTI[i], 4)));
+                    }
                     else
-                        TISeries.Points.Add(new DataPoint(i, Math.Round(overallTI[i].overallTI, 4)));                    
+                    {
+                        if (overallTI[i].overallTI != 0)
+                            TISeries.Points.Add(new DataPoint(i, Math.Round(overallTI[i].overallTI, 4)));
+                    }
                 }
                 else
                 {
@@ -12440,7 +12587,7 @@ namespace ContinuumNS
                             lvi.SubItems.Add(thisMet.turbulence.count[i, WD_Ind].ToString());
                             thisInst.lstTurbulence.Items.Add(lvi);
 
-                            TISeries.Points.Add(new DataPoint(i, Math.Round(thisMet.turbulence.avgSD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind], 4)));                            
+                            if (thisMet.turbulence.avgSD[i, WD_Ind] != 0) TISeries.Points.Add(new DataPoint(i, Math.Round(thisMet.turbulence.avgSD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind], 4)));                            
                         }
                     }
                     else if (turbType == "Representative")
@@ -12452,7 +12599,7 @@ namespace ContinuumNS
                             lvi.SubItems.Add(thisMet.turbulence.count[i, WD_Ind].ToString());
                             thisInst.lstTurbulence.Items.Add(lvi);
 
-                            TISeries.Points.Add(new DataPoint(i, Math.Round(thisMet.turbulence.p90SD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind], 4)));  
+                            if (thisMet.turbulence.p90SD[i, WD_Ind] != 0) TISeries.Points.Add(new DataPoint(i, Math.Round(thisMet.turbulence.p90SD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind], 4)));  
                         }
 
                     }
@@ -12465,21 +12612,21 @@ namespace ContinuumNS
                             lvi.SubItems.Add(thisMet.turbulence.count[i, WD_Ind].ToString());
                             thisInst.lstTurbulence.Items.Add(lvi);
 
-                            TISeries.Points.Add(new DataPoint(i, Math.Round(effectiveTI[i], 4)));                            
+                            if (effectiveTI[i] != 0) TISeries.Points.Add(new DataPoint(i, Math.Round(effectiveTI[i], 4)));                            
                         }
                     }
                 }
 
             }
 
-            thisInst.plotTurbInt.Refresh();
-            PlotIEC_TurbModels(thisInst);
+     //       thisInst.plotTurbInt.Refresh();
+      //      PlotIEC_TurbModels(thisInst);
 
-        }
+   //     }
 
-        public void PlotIEC_TurbModels(Continuum thisInst)
-        {
-            var model = thisInst.plotTurbInt.Model;
+  //      public void PlotIEC_TurbModels(Continuum thisInst)
+  //      {
+   //         var model = thisInst.plotTurbInt.Model;
                         
             LineSeries iecA = new LineSeries();
             LineSeries iecB = new LineSeries();
@@ -12676,7 +12823,10 @@ namespace ContinuumNS
 
             if (extremeWS.tenMin1yr == 0)
             {
-                thisInst.lblNoExtremeWS.Text = "Met data does not cover a full year (Jan. - Dec.) required for extreme WS calculations.";
+                if (thisInst.merraList.numMERRA_Data == 0)
+                    thisInst.lblNoExtremeWS.Text = "MERRA2 data not loaded. MERRA2 required for extreme WS calculations.";
+                else                
+                    thisInst.lblNoExtremeWS.Text = "Met data does not cover a full year (Jan. - Dec.) required for extreme WS calculations.";
              //   extremeWSCht.Refresh();
 
                 thisInst.txt50yrExtreme10min.Text = "";

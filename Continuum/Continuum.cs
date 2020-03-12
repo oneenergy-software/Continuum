@@ -1252,8 +1252,8 @@ namespace ContinuumNS
             try {
                 metList = (MetCollection)bin.Deserialize(fstream);
             }
-            catch  {
-                MessageBox.Show("Error reading the list of met sites.", "");
+            catch (Exception ex)  {
+                MessageBox.Show(ex.InnerException.ToString() + "Error reading the list of met sites.", "");
                 fstream.Close();
                 updateThe.NewProject(this);
                 return;
@@ -2880,14 +2880,21 @@ namespace ContinuumNS
             if (wakeModelList.NumWakeModels == 0)
                 return thisWakeModel;
 
-            ListViewItem objListView;
+            ListViewItem objListView = new ListViewItem();
 
-            try {                
-                objListView = lstWakeModels.SelectedItems[0];                
+            if (lstWakeModels.SelectedItems.Count != 0)
+            {
+                try
+                {
+                    objListView = lstWakeModels.SelectedItems[0];
+                }
+                catch
+                {
+                    return wakeModelList.wakeModels[0];
+                }
             }
-            catch {
+            else
                 return wakeModelList.wakeModels[0];
-            }
 
             if (objListView.Text == "Eddy Viscosity")
                 wakeModelType = 0;
@@ -2924,11 +2931,23 @@ namespace ContinuumNS
 
             ListViewItem objListView;
 
-            try {
-                objListView = lstWakeModels.SelectedItems[0];
+            if (lstWakeModels.SelectedItems.Count > 0)
+            {
+                try
+                {
+                    objListView = lstWakeModels.SelectedItems[0];
+                }
+                catch
+                {
+                    if (wakeModelList.NumWakeGridMaps != 0)
+                        thisWakeGrid = wakeModelList.wakeGridMaps[0];
+
+                    return thisWakeGrid;
+                }
             }
-            catch  {
-                if (wakeModelList.NumWakeGridMaps != 0) 
+            else
+            {
+                if (wakeModelList.NumWakeGridMaps != 0)
                     thisWakeGrid = wakeModelList.wakeGridMaps[0];
 
                 return thisWakeGrid;
@@ -3481,12 +3500,18 @@ namespace ContinuumNS
         public string GetEndSiteAdvanced() // Returns name of met site selected as "End Met" on Advanced tab
         {
             string endStr = "";
-            try
-            {
-                endStr = cboEndMet.SelectedItem.ToString();
-            }
-            catch { }
 
+            if (cboEndMet.Items.Count > 0)
+            {
+                try
+                {
+                    endStr = cboEndMet.SelectedItem.ToString();
+                }
+                catch
+                {
+                    endStr = "";
+                }
+            }
             return endStr;
         }
 
@@ -3509,7 +3534,9 @@ namespace ContinuumNS
                 {
                     radiusInd = cboMetSum_Rad.SelectedIndex;
                 }
-                catch { }
+                catch {
+                    radiusInd = 0;
+                }
             }
             else if (TAB_name == "Advanced")
             {
@@ -3517,7 +3544,9 @@ namespace ContinuumNS
                 {
                     radiusInd = cboAdvancedRad.SelectedIndex;
                 }
-                catch { }
+                catch {
+                    radiusInd = 0;
+                }
             }
 
             if (radiusInd == -1)
@@ -3529,11 +3558,18 @@ namespace ContinuumNS
         public string GetStartMetAdvanced() // Returns name of met site selected as "Start Met" on Advanced tab
         {
             string met1Str = "";
-            try
+
+            if (cboStartMet.Items.Count > 0)
             {
-                met1Str = cboStartMet.SelectedItem.ToString();
+                try
+                {
+                    met1Str = cboStartMet.SelectedItem.ToString();
+                }
+                catch
+                {
+                    met1Str = "";
+                }
             }
-            catch { }
 
             return met1Str;
         }
@@ -3549,7 +3585,9 @@ namespace ContinuumNS
                 {
                     WD_Ind = cboSummaryWD.SelectedIndex;
                 }
-                catch { }
+                catch {
+                    WD_Ind = 0;
+                }
             }
             else if (TAB_name == "MCP")
             {
@@ -3557,7 +3595,9 @@ namespace ContinuumNS
                 {
                     WD_Ind = cboMCP_WD.SelectedIndex;
                 }
-                catch { }
+                catch {
+                    WD_Ind = 0;
+                }
             }
             else if (TAB_name == "Gross")
             {
@@ -3565,7 +3605,9 @@ namespace ContinuumNS
                 {
                     WD_Ind = cboGrossWD.SelectedIndex;
                 }
-                catch { }
+                catch {
+                    WD_Ind = 0;
+                }
             }
             else if (TAB_name == "Net")
             {
@@ -3573,7 +3615,9 @@ namespace ContinuumNS
                 {
                     WD_Ind = cboNetWD.SelectedIndex;
                 }
-                catch { }
+                catch {
+                    WD_Ind = 0;
+                }
             }
             else if (TAB_name == "Maps")
             {
@@ -3581,7 +3625,9 @@ namespace ContinuumNS
                 {
                     WD_Ind = cboMapWD.SelectedIndex;
                 }
-                catch { }
+                catch {
+                    WD_Ind = 0;
+                }
             }
             else if (TAB_name == "Advanced")
             {
@@ -3589,7 +3635,9 @@ namespace ContinuumNS
                 {
                     WD_Ind = cboAdvancedWD.SelectedIndex;
                 }
-                catch { }
+                catch {
+                    WD_Ind = 0;
+                }
             }
             else if (TAB_name == "Site Conditions TI")
             {
@@ -3597,7 +3645,9 @@ namespace ContinuumNS
                 {
                     WD_Ind = cboTurbWD.SelectedIndex;
                 }
-                catch { }
+                catch {
+                    WD_Ind = 0;
+                }
             }
             
             return WD_Ind;
@@ -3852,61 +3902,81 @@ namespace ContinuumNS
             // Returns met object based on met selected on specified tab
             Met thisMet = new Met();
 
-            if (TAB_Name == "Met Data QC")
+            if (metList.ThisCount > 0)
             {
-                try
+                if (TAB_Name == "Met Data QC")
                 {
-                    string thisMetStr = cboMetQC_SelectedMet.SelectedItem.ToString();
-                    thisMet = metList.GetMet(thisMetStr);
+                    try
+                    {
+                        string thisMetStr = cboMetQC_SelectedMet.SelectedItem.ToString();
+                        thisMet = metList.GetMet(thisMetStr);
+                    }
+                    catch
+                    {
+                        thisMet = thisMet;
+                    }
                 }
-                catch { }
-            }
-            else if (TAB_Name == "MCP")
-            {
-                try
+                else if (TAB_Name == "MCP")
                 {
-                    string thisMetStr = cboMCP_Met.SelectedItem.ToString();
-                    thisMet = metList.GetMet(thisMetStr);
+                    try
+                    {
+                        string thisMetStr = cboMCP_Met.SelectedItem.ToString();
+                        thisMet = metList.GetMet(thisMetStr);
+                    }
+                    catch
+                    {
+                        thisMet = thisMet;
+                    }
                 }
-                catch { }
-            }
-            else if (TAB_Name == "MERRA")
-            {
-                try
+                else if (TAB_Name == "MERRA")
                 {
-                    string thisMetStr = cboMERRASelectedMet.SelectedItem.ToString();
-                    thisMet = metList.GetMet(thisMetStr);
+                    try
+                    {
+                        string thisMetStr = cboMERRASelectedMet.SelectedItem.ToString();
+                        thisMet = metList.GetMet(thisMetStr);
+                    }
+                    catch
+                    {
+                        thisMet = thisMet;
+                    }
                 }
-                catch { }
-            }
-            else if (TAB_Name == "Site Conditions TI")
-            {
-                try
+                else if (TAB_Name == "Site Conditions TI")
                 {
-                    string thisMetStr = cboTurbMet.SelectedItem.ToString();
-                    thisMet = metList.GetMet(thisMetStr);
+                    try
+                    {
+                        string thisMetStr = cboTurbMet.SelectedItem.ToString();
+                        thisMet = metList.GetMet(thisMetStr);
+                    }
+                    catch
+                    {
+                        thisMet = thisMet;
+                    }
                 }
-                catch { }
-            }
-            else if (TAB_Name == "Site Conditions Shear")
-            {
-                try
+                else if (TAB_Name == "Site Conditions Shear")
                 {
-                    string thisMetStr = cboExtremeShearMet.SelectedItem.ToString();
-                    thisMet = metList.GetMet(thisMetStr);
+                    try
+                    {
+                        string thisMetStr = cboExtremeShearMet.SelectedItem.ToString();
+                        thisMet = metList.GetMet(thisMetStr);
+                    }
+                    catch
+                    {
+                        thisMet = thisMet;
+                    }
                 }
-                catch { }
-            }
-            else if (TAB_Name == "Site Conditions Extreme WS")
-            {
-                try
+                else if (TAB_Name == "Site Conditions Extreme WS")
                 {
-                    string thisMetStr = cboExtremeWSMet.SelectedItem.ToString();
-                    thisMet = metList.GetMet(thisMetStr);
+                    try
+                    {
+                        string thisMetStr = cboExtremeWSMet.SelectedItem.ToString();
+                        thisMet = metList.GetMet(thisMetStr);
+                    }
+                    catch
+                    {
+                        thisMet = thisMet;
+                    }
                 }
-                catch { }
             }
-
 
             return thisMet;
         }
@@ -3916,41 +3986,57 @@ namespace ContinuumNS
             // Returns turbine object based on turbine selected on specified tab
             Turbine thisTurb = new Turbine();
 
-            if (TAB_Name == "Monthly")
+            if (turbineList.TurbineCount > 0)
             {
-                try
+
+                if (TAB_Name == "Monthly")
                 {
-                    string thisTurbStr = cboSelectedTurbine.SelectedItem.ToString();
-                    thisTurb = turbineList.GetTurbine(thisTurbStr);
+                    try
+                    {
+                        string thisTurbStr = cboSelectedTurbine.SelectedItem.ToString();
+                        thisTurb = turbineList.GetTurbine(thisTurbStr);
+                    }
+                    catch
+                    {
+                        thisTurb = thisTurb;
+                    }
                 }
-                catch { }
-            }
-            else if (TAB_Name == "Exceedance")
-            {
-                try
+                else if (TAB_Name == "Exceedance")
                 {
-                    string thisTurbStr = cboExceedTurbine.SelectedItem.ToString();
-                    thisTurb = turbineList.GetTurbine(thisTurbStr);
+                    try
+                    {
+                        string thisTurbStr = cboExceedTurbine.SelectedItem.ToString();
+                        thisTurb = turbineList.GetTurbine(thisTurbStr);
+                    }
+                    catch
+                    {
+                        thisTurb = thisTurb;
+                    }
                 }
-                catch { }
-            }
-            else if (TAB_Name == "Turbulence")
-            {
-                try
+                else if (TAB_Name == "Turbulence")
                 {
-                    string thisTurbStr = cboTurbineTI.SelectedItem.ToString();
-                    thisTurb = turbineList.GetTurbine(thisTurbStr);
+                    try
+                    {
+                        string thisTurbStr = cboTurbineTI.SelectedItem.ToString();
+                        thisTurb = turbineList.GetTurbine(thisTurbStr);
+                    }
+                    catch
+                    {
+                        thisTurb = thisTurb;
+                    }
                 }
-                catch { }
-            }
-            else if (TAB_Name == "Inflow Angle")
-            {
-                try
+                else if (TAB_Name == "Inflow Angle")
                 {
-                    string thisTurbStr = cboInflowTurbine.SelectedItem.ToString();
-                    thisTurb = turbineList.GetTurbine(thisTurbStr);
+                    try
+                    {
+                        string thisTurbStr = cboInflowTurbine.SelectedItem.ToString();
+                        thisTurb = turbineList.GetTurbine(thisTurbStr);
+                    }
+                    catch
+                    {
+                        thisTurb = thisTurb;
+                    }
                 }
-                catch { }
             }
 
             return thisTurb;
@@ -4084,7 +4170,9 @@ namespace ContinuumNS
                 MCP_Method = cboMCP_Type.SelectedItem.ToString();
             }
             catch
-            { }
+            {
+                MCP_Method = "";
+            }
 
             return MCP_Method;
         }
@@ -4525,17 +4613,21 @@ namespace ContinuumNS
             }
             else // not associated with a met
             {
-                string thisLLStr = cboMERRASelectedMet.SelectedItem.ToString();
-                int firstColon = thisLLStr.IndexOf(':');
-                int secColon = thisLLStr.LastIndexOf(':');
+                if (txtMERRA_SelectedLat.Text != "" && txtMERRA_SelectedLong.Text != "")
+                {
+                    try
+                    {
+                        double thisLat = Convert.ToDouble(txtMERRA_SelectedLat.Text.ToString());
+                        double thisLong = Convert.ToDouble(txtMERRA_SelectedLong.Text.ToString());
 
-                if (thisLLStr == "" || thisLLStr == "User-Defined Lat/Long")
-                    return thisMERRA;
-
-                double thisLat = Convert.ToDouble(thisLLStr.Substring(firstColon + 2, secColon - firstColon - 6));
-                double thisLong = Convert.ToDouble(thisLLStr.Substring(secColon + 2, thisLLStr.Length - secColon - 2));
-
-                thisMERRA = merraList.GetMERRA(thisLat, thisLong);
+                        thisMERRA = merraList.GetMERRA(thisLat, thisLong);
+                    }
+                    catch
+                    {
+                        return thisMERRA;
+                    }
+                }
+                
             }
 
             TurbineCollection.PowerCurve powerCurve = GetSelectedPowerCurve("MERRA");
@@ -4639,21 +4731,22 @@ namespace ContinuumNS
             string powerCurveString = "";
             try
             {
-                if (TAB_name == "MERRA")
+                if (TAB_name == "MERRA" && cboMERRA_PowerCurves.SelectedItem != null)
                     powerCurveString = cboMERRA_PowerCurves.SelectedItem.ToString();
-                else if (TAB_name == "Gross")
+                else if (TAB_name == "Gross" && cboPowerCrvs.SelectedItem != null)
                     powerCurveString = cboPowerCrvs.SelectedItem.ToString();
-                else if (TAB_name == "Uncertainty")
+                else if (TAB_name == "Uncertainty" && cboUncertPowerCrv.SelectedItem != null)
                     powerCurveString = cboUncertPowerCrv.SelectedItem.ToString();
-                else if (TAB_name == "Site Suitability")
+                else if (TAB_name == "Site Suitability" && cboSiteSuitPowerCurve.SelectedItem != null)
                     powerCurveString = cboSiteSuitPowerCurve.SelectedItem.ToString();
-                else if (TAB_name == "Monthly")
+                else if (TAB_name == "Monthly" && cboMonthlyPowerCurve.SelectedItem != null)
                     powerCurveString = cboMonthlyPowerCurve.SelectedItem.ToString();                
-                else if (TAB_name == "Turbulence")
+                else if (TAB_name == "Turbulence" && cboTurbPowerCurve.SelectedItem != null)
                     powerCurveString = cboTurbPowerCurve.SelectedItem.ToString();
             }
             catch
-            {                
+            {
+                powerCurveString = "";
             }                     
 
             if (powerCurveString != "No Power Curves Imported")
@@ -5958,7 +6051,16 @@ namespace ContinuumNS
             }
 
             int offset = UTM_conversions.GetUTC_Offset(thisLat, thisLong);
-            Met thisMet = GetSelectedMet("MERRA");                       
+            Met thisMet = GetSelectedMet("MERRA");
+
+            merraList.startDate = dateMERRAStart.Value;
+            merraList.endDate = dateMERRAEnd.Value;
+
+            if (merraList.endDate < merraList.startDate)
+            {
+                MessageBox.Show("MERRA2 end date cannot be earlier than start date");
+                return;
+            }
 
             merraList.AddMERRA_GetDataFromTextFiles(thisLat, thisLong, offset, this, thisMet, false);                       
           //  updateThe.MERRA_TAB(this);
@@ -6659,6 +6761,18 @@ namespace ContinuumNS
         private void btnChangeFolder_Click(object sender, EventArgs e)
         {
             merraList.ChangeMERRA2Folder(this);
+        }
+
+        private void btnExportTarget_Click(object sender, EventArgs e)
+        {
+            // Exports hourly target data from MCP tab
+            Export export = new Export();
+            export.ExportMCP_TargetData(this, metList.metItem[0].mcp.targetData);
+        }
+
+        private void plotMCP_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

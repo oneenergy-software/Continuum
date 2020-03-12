@@ -15,10 +15,10 @@ namespace ContinuumNS
             bool goodToGo = true;
 
             if (topo.gotTopo)                               
-                goodToGo = TopoCheck(topo, UTMX, UTMY, metname); 
+                goodToGo = TopoCheck(topo, UTMX, UTMY, metname, true); 
 
             if (topo.gotSR)
-                goodToGo = LandCoverCheck(topo, UTMX, UTMY, metname);         
+                goodToGo = LandCoverCheck(topo, UTMX, UTMY, metname, true);         
                       
             return goodToGo;
 
@@ -132,7 +132,7 @@ namespace ContinuumNS
         /// <summary>
         /// Checks if the elevation is available at 8 points +/- 12000 m from specified UTMX/Y and returns false if all are not available.
         /// </summary>        
-        public bool TopoCheck(TopoInfo topo, double UTMX, double UTMY, string siteName)
+        public bool TopoCheck(TopoInfo topo, double UTMX, double UTMY, string siteName, bool showMessage)
         {            
             bool goodToGo = true;
             int maxDist = 12000;
@@ -195,7 +195,8 @@ namespace ContinuumNS
                                 
                 if (indices[0] < 0 || indices[0] >= topo.topoNumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.topoNumXY.Y.plot.num)
                 {
-                    MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
+                    if (showMessage == true)
+                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
                     return goodToGo = false;
                 }
 
@@ -203,7 +204,8 @@ namespace ContinuumNS
 
                 if (topo.topoElevs[indices[0], indices[1]] == -999)
                 {
-                    MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
+                    if (showMessage == true)
+                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
                     return goodToGo = false;
                 }
 
@@ -216,7 +218,7 @@ namespace ContinuumNS
         /// <summary>
         /// Checks land cover at 8 points +/- 12000 m from UTMX/Y. If land cover = -999 or if outside range, return false
         /// </summary>        
-        public bool LandCoverCheck(TopoInfo topo, double UTMX, double UTMY, string siteName)
+        public bool LandCoverCheck(TopoInfo topo, double UTMX, double UTMY, string siteName, bool showMessage)
         {
             bool goodToGo = true;
             int maxDist = 12000;
@@ -279,13 +281,16 @@ namespace ContinuumNS
                                 
                 if (indices[0] < 0 || indices[0] >= topo.LC_NumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.LC_NumXY.Y.plot.num)
                 {
-                    MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
+                    if (showMessage == true)
+                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
+
                     return goodToGo = false;
                 }                
 
                 if (topo.landCover[indices[0], indices[1]] == -999)
                 {
-                    MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
+                    if (showMessage == true)
+                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
                     return goodToGo = false;
                 }
             }
@@ -302,10 +307,10 @@ namespace ContinuumNS
             bool goodToGo = true;
             
             for (int i = 0; i < metList.ThisCount; i++)            
-                goodToGo = TopoCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name); 
+                goodToGo = TopoCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name, true); 
             
             for (int i = 0; i < turbList.TurbineCount; i++)
-                goodToGo = TopoCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name); 
+                goodToGo = TopoCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name, true); 
 
             return goodToGo;
 
@@ -321,10 +326,10 @@ namespace ContinuumNS
             bool goodToGo = true;
 
             for (int i = 0; i < metList.ThisCount; i++)
-                goodToGo = LandCoverCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name);
+                goodToGo = LandCoverCheck(topo, metList.metItem[i].UTMX, metList.metItem[i].UTMY, metList.metItem[i].name, true);
 
             for (int i = 0; i < turbList.TurbineCount; i++)
-                goodToGo = LandCoverCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name);
+                goodToGo = LandCoverCheck(topo, turbList.turbineEsts[i].UTMX, turbList.turbineEsts[i].UTMY, turbList.turbineEsts[i].name, true);
 
             return goodToGo;
 
@@ -498,16 +503,19 @@ namespace ContinuumNS
             bool allFalse = true;
             for (int i = 0; i < 8; i++)
             {
-                if (indexChecks[i] != true)
+                if (i != 1 && i != 3 && i != 5 && i != 7) // only looking at N, E, S, W
                 {
-                    int oppSect = i - 4;
-                    if (oppSect < 0) oppSect = oppSect + 8;
+                    if (indexChecks[i] != true)
+                    {
+                        int oppSect = i - 4;
+                        if (oppSect < 0) oppSect = oppSect + 8;
 
-                    if (indexChecks[oppSect] == true)
-                        return i;
+                        if (indexChecks[oppSect] == true)
+                            return i;
+                    }
+                    else
+                        allFalse = false;
                 }
-                else
-                    allFalse = false;
 
             }
 

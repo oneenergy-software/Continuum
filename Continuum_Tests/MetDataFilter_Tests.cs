@@ -9,14 +9,14 @@ namespace Continuum_Tests
     [TestClass]
     public class MetDataFilter_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\MetDataFilter";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MetDataFilter";
 
         [TestMethod]
         public void ConvertToMPS_Test()
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter New Bremen testing.cfm";
             thisInst.Open(Filename);                       
 
             Met_Data_Filter thisQC = thisInst.metList.metItem[0].metData;
@@ -33,7 +33,7 @@ namespace Continuum_Tests
         {   
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -88,12 +88,12 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
             double[] thisWS = thisMet.metData.Calc_Avg_WS_by_WD(Convert.ToDateTime("6/24/2008 15:00"), Convert.ToDateTime("6/30/2009 23:50"), 0, "Filtered");
-            Assert.AreEqual(thisWS[12], 4.098284349, 0.0001, "Wrong avg WS Test 1");
+            Assert.AreEqual(thisWS[12], 4.09828434, 0.0001, "Wrong avg WS Test 1");
 
             thisWS = thisMet.metData.Calc_Avg_WS_by_WD(Convert.ToDateTime("10/28/2008 19:20"), Convert.ToDateTime("4/15/2009 2:50"), 0, "Unfiltered");
             Assert.AreEqual(thisWS[63], 4.670447715, 0.0001, "Wrong avg WS Test 2");
@@ -106,7 +106,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -125,7 +125,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -169,7 +169,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -213,7 +213,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -244,7 +244,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -253,10 +253,12 @@ namespace Continuum_Tests
             thisMet.metData.endDate = Convert.ToDateTime("1/22/2009 18:30");
             thisMet.metData.EstimateAlpha();
 
+            // Test 1
             thisMet.metData.ExtrapolateData(80);
             double thisAvgWS = thisMet.metData.CalcAvgExtrapolatedWS(thisMet.metData.GetSimulatedTimeSeries(80));
             Assert.AreEqual(thisAvgWS, 5.67062, 0.001, "Wrong WS Test 1");
 
+            // Test 2
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
             thisMet.metData.FilterData("All");
             thisMet.metData.startDate = Convert.ToDateTime("10/13/2008 21:30");
@@ -264,8 +266,9 @@ namespace Continuum_Tests
             thisMet.metData.EstimateAlpha();
             thisMet.metData.ExtrapolateData(100);
             thisAvgWS = thisMet.metData.CalcAvgExtrapolatedWS(thisMet.metData.GetSimulatedTimeSeries(100));
-            Assert.AreEqual(thisAvgWS, 6.676969, 0.001, "Wrong WS Test 2");
+            Assert.AreEqual(thisAvgWS, 6.69379, 0.001, "Wrong WS Test 2");
 
+            // Test 3
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
             thisMet.metData.FilterData("All");
             thisMet.metData.startDate = Convert.ToDateTime("1/6/2009");
@@ -273,8 +276,9 @@ namespace Continuum_Tests
             thisMet.metData.EstimateAlpha();
             thisMet.metData.ExtrapolateData(20);
             thisAvgWS = thisMet.metData.CalcAvgExtrapolatedWS(thisMet.metData.GetSimulatedTimeSeries(20));
-            Assert.AreEqual(thisAvgWS, 4.673068, 0.001, "Wrong WS Test 3");
+            Assert.AreEqual(thisAvgWS, 4.6989779, 0.001, "Wrong WS Test 3");
 
+            // Test 4
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
             thisMet.metData.FilterData("All");
             thisMet.metData.startDate = Convert.ToDateTime("1/1/2009 13:00");
@@ -292,7 +296,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -307,10 +311,10 @@ namespace Continuum_Tests
                 }
 
             double thisAvg = thisMet.metData.CalcAvgWS(thisAnem, false);
-            Assert.AreEqual(thisAvg, 4.397139424, 0.001, "Wrong avg 30m unfilt WS Test 1");
+            Assert.AreEqual(thisAvg, 4.39565913, 0.001, "Wrong avg 30m unfilt WS Test 1");
 
             thisAvg = thisMet.metData.CalcAvgWS(thisAnem, true);
-            Assert.AreEqual(thisAvg, 4.57072825, 0.001, "Wrong avg 30m filt WS Test 2");
+            Assert.AreEqual(thisAvg, 4.5700187, 0.001, "Wrong avg 30m filt WS Test 2");
 
             for (int i = 0; i < thisMet.metData.GetNumAnems(); i++)
                 if (thisMet.metData.anems[i].height == 40 && thisMet.metData.anems[i].ID == 'B')
@@ -320,10 +324,10 @@ namespace Continuum_Tests
                 }
 
             thisAvg = thisMet.metData.CalcAvgWS(thisAnem, false);
-            Assert.AreEqual(thisAvg, 4.688510578, 0.001, "Wrong avg 40m unfilt WS Test 3");
+            Assert.AreEqual(thisAvg, 4.68654658, 0.001, "Wrong avg 40m unfilt WS Test 3");
 
             thisAvg = thisMet.metData.CalcAvgWS(thisAnem, true);
-            Assert.AreEqual(thisAvg, 4.860878571, 0.001, "Wrong avg 40m filt WS Test 4");
+            Assert.AreEqual(thisAvg, 4.85966632, 0.001, "Wrong avg 40m filt WS Test 4");
 
             for (int i = 0; i < thisMet.metData.GetNumAnems(); i++)
                 if (thisMet.metData.anems[i].height == 50 && thisMet.metData.anems[i].ID == 'B')
@@ -333,10 +337,10 @@ namespace Continuum_Tests
                 }
 
             thisAvg = thisMet.metData.CalcAvgWS(thisAnem, false);
-            Assert.AreEqual(thisAvg, 5.023954995, 0.001, "Wrong avg 50m unfilt WS Test 5");
+            Assert.AreEqual(thisAvg, 5.02178275, 0.001, "Wrong avg 50m unfilt WS Test 5");
 
             thisAvg = thisMet.metData.CalcAvgWS(thisAnem, true);
-            Assert.AreEqual(thisAvg, 5.208619593, 0.001, "Wrong avg 50m filt WS Test 6");
+            Assert.AreEqual(thisAvg, 5.20731192, 0.001, "Wrong avg 50m filt WS Test 6");
 
             thisMet.metData.startDate = Convert.ToDateTime("10/31/2008");
             thisMet.metData.endDate = Convert.ToDateTime("4/14/2009");
@@ -358,13 +362,14 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
 
+            // Test 1
             double thisRec = thisMet.metData.CalcAnemDataRecovery(thisMet.metData.anems[0], false);
-            Assert.AreEqual(thisRec, 0.936963554, 0.001, "Wrong 30m filtered data recovery Test 1");
+            Assert.AreEqual(thisRec, 0.93586377, 0.001, "Wrong 30m unfiltered data recovery Test 1");
 
             for (int i = 0; i < thisMet.metData.GetNumAnems(); i++)
                 if (thisMet.metData.anems[i].ID == 'B' && thisMet.metData.anems[i].height == 30)
@@ -373,7 +378,7 @@ namespace Continuum_Tests
                     break;
                 }
 
-            Assert.AreEqual(thisRec, 0.805785665, 0.001, "Wrong 30m filtered data recovery Test 2");
+            Assert.AreEqual(thisRec, 0.80359589, 0.001, "Wrong 30m filtered data recovery Test 2");
 
             for (int i = 0; i < thisMet.metData.GetNumAnems(); i++)
                 if (thisMet.metData.anems[i].ID == 'B' && thisMet.metData.anems[i].height == 40)
@@ -382,7 +387,7 @@ namespace Continuum_Tests
                     break;
                 }
 
-            Assert.AreEqual(thisRec, 0.818950203, 0.001, "Wrong 40m filtered data recovery Test 3");
+            Assert.AreEqual(thisRec, 0.816799848, 0.001, "Wrong 40m filtered data recovery Test 3");
 
             for (int i = 0; i < thisMet.metData.GetNumAnems(); i++)
                 if (thisMet.metData.anems[i].ID == 'B' && thisMet.metData.anems[i].height == 50)
@@ -391,7 +396,7 @@ namespace Continuum_Tests
                     break;
                 }
 
-            Assert.AreEqual(thisRec, 0.820577071, 0.0001, "Wrong 50m filtered data recovery Test 4");
+            Assert.AreEqual(thisRec, 0.818493151, 0.0001, "Wrong 50m filtered data recovery Test 4");
 
             thisMet.metData.startDate = Convert.ToDateTime("1/1/2009");
             thisMet.metData.endDate = Convert.ToDateTime("6/14/2009 16:10");
@@ -411,7 +416,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -424,7 +429,7 @@ namespace Continuum_Tests
                     break;
                 }
 
-            Assert.AreEqual(thisRec, 0.910129588, 0.001, "Wrong 41m filtered data recovery Test 1");
+            Assert.AreEqual(thisRec, 0.908561644, 0.001, "Wrong 41m filtered data recovery Test 1");
 
             for (int i = 0; i < thisMet.metData.GetNumVanes(); i++)
                 if (thisMet.metData.vanes[i].height == 49)
@@ -433,7 +438,7 @@ namespace Continuum_Tests
                     break;
                 }
 
-            Assert.AreEqual(thisRec, 0.912841034, 0.001, "Wrong 49m filtered data recovery Test 2");
+            Assert.AreEqual(thisRec, 0.911320396, 0.001, "Wrong 49m filtered data recovery Test 2");
 
             thisMet.metData.startDate = Convert.ToDateTime("9/24/2008");
             thisMet.metData.endDate = Convert.ToDateTime("5/4/2009 5:00");
@@ -452,14 +457,14 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
 
             double thisRec = thisMet.metData.CalcTempDataRecovery(thisMet.metData.temps[0]);
 
-            Assert.AreEqual(thisRec, 0.936963554, 0.001, "Wrong temperature data recovery Test 1");
+            Assert.AreEqual(thisRec, 0.935863775, 0.001, "Wrong temperature data recovery Test 1");
 
             thisMet.metData.startDate = Convert.ToDateTime("9/24/2008");
             thisMet.metData.endDate = Convert.ToDateTime("5/4/2009 5:00");
@@ -474,7 +479,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -489,10 +494,10 @@ namespace Continuum_Tests
 
 
             double thisPercFilt = thisMet.metData.CalcPercentAnemFiltered(thisAnem, Met_Data_Filter.Filter_Flags.minAnemSD) + thisMet.metData.CalcPercentAnemFiltered(thisAnem, Met_Data_Filter.Filter_Flags.maxAnemSD);
-            Assert.AreEqual(thisPercFilt, 0.0008976, 0.00001, "Wrong SD Filt at 30m Test 1");
+            Assert.AreEqual(thisPercFilt, 0.000913, 0.00001, "Wrong SD Filt at 30m Test 1");
 
             thisPercFilt = thisMet.metData.CalcPercentAnemFiltered(thisAnem, Met_Data_Filter.Filter_Flags.Icing);
-            Assert.AreEqual(thisPercFilt, 0.0158573, 0.00001, "Wrong Icing Filt at 30m Test 2");
+            Assert.AreEqual(thisPercFilt, 0.0161339, 0.00001, "Wrong Icing Filt at 30m Test 2");
 
             thisPercFilt = thisMet.metData.CalcPercentAnemFiltered(thisAnem, Met_Data_Filter.Filter_Flags.maxAnemRange);
             Assert.AreEqual(thisPercFilt, 0.00000, 0.00001, "Wrong max Range Filt at 30m Test 3");
@@ -505,10 +510,10 @@ namespace Continuum_Tests
                 }
 
             thisPercFilt = thisMet.metData.CalcPercentAnemFiltered(thisAnem, Met_Data_Filter.Filter_Flags.minAnemSD) + thisMet.metData.CalcPercentAnemFiltered(thisAnem, Met_Data_Filter.Filter_Flags.maxAnemSD);
-            Assert.AreEqual(thisPercFilt, 0.0005984, 0.00001, "Wrong SD Filt at 40m Test 4");
+            Assert.AreEqual(thisPercFilt, 0.0006088, 0.00001, "Wrong SD Filt at 40m Test 4");
 
             thisPercFilt = thisMet.metData.CalcPercentAnemFiltered(thisAnem, Met_Data_Filter.Filter_Flags.Icing);
-            Assert.AreEqual(thisPercFilt, 0.0142678, 0.00001, "Wrong Icing Filt at 40m Test 5");
+            Assert.AreEqual(thisPercFilt, 0.0145167, 0.00001, "Wrong Icing Filt at 40m Test 5");
 
             thisPercFilt = thisMet.metData.CalcPercentAnemFiltered(thisAnem, Met_Data_Filter.Filter_Flags.maxAnemRange);
             Assert.AreEqual(thisPercFilt, 0.00000, 0.00001, "Wrong max Range Filt at 40m Test 6");
@@ -528,7 +533,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -539,14 +544,14 @@ namespace Continuum_Tests
                     This_Vane = thisMet.metData.vanes[i];
 
             double thisPercFilt = thisMet.metData.CalcPercentVaneFiltered(This_Vane, Met_Data_Filter.Filter_Flags.Icing);
-            Assert.AreEqual(thisPercFilt, 0.026833966, 0.00001, "Wrong Icing Filt at 41m Test 1");
+            Assert.AreEqual(thisPercFilt, 0.027302, 0.00001, "Wrong Icing Filt at 41m Test 1");
 
             for (int i = 0; i < thisMet.metData.GetNumVanes(); i++)
                 if (thisMet.metData.vanes[i].height == 49)
                     This_Vane = thisMet.metData.vanes[i];
 
             thisPercFilt = thisMet.metData.CalcPercentVaneFiltered(This_Vane, Met_Data_Filter.Filter_Flags.Icing);
-            Assert.AreEqual(thisPercFilt, 0.02412252, 0.00001, "Wrong Icing Filt at 49m Test 2");
+            Assert.AreEqual(thisPercFilt, 0.024543, 0.00001, "Wrong Icing Filt at 49m Test 2");
 
             thisMet.metData.startDate = Convert.ToDateTime("1/27/2009");
             thisMet.metData.endDate = Convert.ToDateTime("4/3/2009");
@@ -565,7 +570,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -584,7 +589,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
@@ -691,7 +696,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -704,11 +709,11 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
 
-            bool Is_Affected = thisMet.metData.IsAffectedByTower(15, 0);
+            bool Is_Affected = thisMet.metData.IsAffectedByTower(45, 0);
             Assert.AreEqual(Is_Affected, false, "Wrong result Test 1");
 
             Is_Affected = thisMet.metData.IsAffectedByTower(359, 0);
@@ -717,7 +722,7 @@ namespace Continuum_Tests
             Is_Affected = thisMet.metData.IsAffectedByTower(100, 1);
             Assert.AreEqual(Is_Affected, true, "Wrong result Test 3");
 
-            Is_Affected = thisMet.metData.IsAffectedByTower(350, 1);
+            Is_Affected = thisMet.metData.IsAffectedByTower(345, 1);
             Assert.AreEqual(Is_Affected, false, "Wrong result Test 4");
 
             thisInst.Close();
@@ -832,7 +837,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -857,7 +862,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -896,7 +901,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -916,7 +921,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
             thisMet.metData.FilterData("All");
@@ -939,7 +944,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
             thisMet.metData.FilterData("All");
@@ -983,7 +988,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -1003,7 +1008,7 @@ namespace Continuum_Tests
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\MetDataFilter Testing.cfm";
+            string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
@@ -1014,7 +1019,7 @@ namespace Continuum_Tests
             thisMet.metData.ExtrapolateData(80);
 
             double thisRec = thisMet.metData.CalcExtrapRecovery(thisMet.metData.simData[0]);
-            Assert.AreEqual(thisRec, 0.837229938, 0.001, "Wrong extrapolated data recovery");
+            Assert.AreEqual(thisRec, 0.823225309, 0.001, "Wrong extrapolated data recovery");
 
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
             thisMet.metData.startDate = Convert.ToDateTime("6/24/2008 0:00");
@@ -1023,7 +1028,7 @@ namespace Continuum_Tests
             thisMet.metData.EstimateAlpha();
             thisMet.metData.ExtrapolateData(80);
             thisRec = thisMet.metData.CalcExtrapRecovery(thisMet.metData.simData[0]);
-            Assert.AreEqual(thisRec, 0.845583161, 0.001, "Wrong extrapolated data recovery");
+            Assert.AreEqual(thisRec, 0.84269323, 0.001, "Wrong extrapolated data recovery");
 
         }
     }

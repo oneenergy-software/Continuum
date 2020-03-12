@@ -2,20 +2,21 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ContinuumNS;
 using System.IO;
+using System.Threading;
 
 namespace Continuum_Tests
 {
     [TestClass]
     public class MERRACollection_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\MERRACollection";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MERRACollection";
         
         [TestMethod]
         public void GetInterpData_Test()
         {
             Continuum thisInst = new Continuum();
             
-            string Filename = testingFolder + "\\GetInterpData\\GetInterpData test.cfm";
+            string Filename = testingFolder + "\\GetInterpData test.cfm";
             thisInst.Open(Filename);
 
             // Test site
@@ -25,7 +26,15 @@ namespace Continuum_Tests
 
             thisInst.merraList.numMERRA_Nodes = 4;
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(thisLat, thisLong, -5, thisInst, thisMet, true);
+
+            while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false && thisInst.BW_worker.IsBusy()) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
+            if (thisInst.BW_worker.WasReturned)
+                Assert.Fail();
+
             MERRA thisMERRA = thisInst.merraList.GetMERRA(thisLat, thisLong);
+           
 
             Assert.AreEqual(thisMERRA.interpData.TS_Data[226].WS50m, 14.60535, 0.001, "Wrong interp WS Index 226");
             Assert.AreEqual(thisMERRA.interpData.TS_Data[1000].WS50m, 6.364464, 0.001, "Wrong interp WS Index 1000");

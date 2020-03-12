@@ -272,6 +272,8 @@ namespace ContinuumNS
                         MERRAfolder = thisInst.fbd_MERRAData.SelectedPath;
                     else
                         return;
+
+                    SetMERRA2LatLong(thisInst);
                 }
                 catch
                 {
@@ -357,7 +359,11 @@ namespace ContinuumNS
                     thisInst.updateThe.AllTABs(thisInst);
                 }
                 else
+                {
+                    thisInst.updateThe.MERRA_Dropdowns(thisInst);
                     thisInst.updateThe.MERRA_TAB(thisInst);
+                }
+                    
             }
         }
         
@@ -601,6 +607,9 @@ namespace ContinuumNS
 
         public void SetMERRA2LatLong (Continuum thisInst)
         {
+            if (MERRAfolder == null || MERRAfolder == "")
+                return;
+
             // If there are files, check one and get min/max lat/long
             string[] MERRAfiles = Directory.GetFiles(MERRAfolder, "*.ascii");
             string line;

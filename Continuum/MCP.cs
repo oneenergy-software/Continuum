@@ -706,7 +706,7 @@ namespace ContinuumNS
                                 int[] WS_count = new int[100];
 
                                 for (int m = 0; m < targetWS.Length; m++)
-                                {
+                                {                                    
                                     int WS_Ind = Convert.ToInt16((targetWS[m] - targMinWS) / WS_int);
                              //       int Round_ind = (int)Math.Round((targetWS[m] - targMinWS) / WS_int, 0);
 
@@ -1847,7 +1847,57 @@ namespace ContinuumNS
                         }
                         lastDate = thisData.thisDate;
                     }
-                }      
+                }
+
+                // Average last set of data
+                if (avgCount >= 1) // need at least one record per hour
+                {
+                    // calculate avg WS
+                    for (int i = 0; i < avgCount; i++)
+                        avgWS = avgWS + WS_Arr[i];
+
+                    // first figure out if there is cross-over
+                    double max_diff = 0;
+                    for (int i = 0; i < avgCount - 1; i++)
+                    {
+                        double this_diff = Math.Abs(WD_Arr[i + 1] - WD_Arr[i]);
+                        if (this_diff > max_diff)
+                            max_diff = this_diff;
+                    }
+
+                    if (max_diff > 270)
+                    {
+                        for (int i = 0; i < avgCount; i++)
+                            if (WD_Arr[i] > 270) WD_Arr[i] = WD_Arr[i] - 360;
+                    }
+
+                    // calculate avg WD
+                    for (int i = 0; i < avgCount; i++)
+                        avgWD = avgWD + WD_Arr[i];
+
+                    avgWS = avgWS / avgCount;
+                    avgWD = avgWD / avgCount;
+
+                    if (avgWD < 0) avgWD = avgWD + 360;
+
+                    DateTime hourDate = lastDate;
+                    int thisYear = hourDate.Year;
+                    int thisMonth = hourDate.Month;
+                    int thisDay = hourDate.Day;
+                    int thisNewHour = hourDate.Hour;
+
+                    DateTime newHourDate = new DateTime(thisYear, thisMonth, thisDay);
+                    TimeSpan ts = new TimeSpan(thisNewHour, 0, 0);
+                    newHourDate = newHourDate.Date + ts;
+
+                    if (hourlyCount >= hourlyData.Length)
+                        Array.Resize(ref hourlyData, hourlyCount + 1);
+
+                    hourlyData[hourlyCount].thisDate = newHourDate;
+                    hourlyData[hourlyCount].thisWS = avgWS;
+                    hourlyData[hourlyCount].thisWD = avgWD;
+                    hourlyCount++;
+                }
                 
             }
 

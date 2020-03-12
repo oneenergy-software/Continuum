@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class MCP_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\MCP";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MCP";
 
         [TestMethod]
         public void CalcOrthoSlope_Test()
@@ -37,7 +37,7 @@ namespace Continuum_Tests
             MCP thisMCP = thisMet.mcp;
 
             // Test 1
-            thisMCP.numWD = 1;
+            thisMCP.numWD = 4;
             thisMCP.numTODs = 1;
             thisMCP.numSeasons = 1;
             thisMCP.WS_BinWidth = 1;
@@ -45,46 +45,15 @@ namespace Continuum_Tests
             MCP.CDF_Obj[] ThisCDF_Obj = thisMCP.GenerateMatrixCDFs();
 
             // check counts of each CDF
-            Assert.AreEqual(ThisCDF_Obj[0].count, 9);
-            Assert.AreEqual(ThisCDF_Obj[1].count, 214);
-            Assert.AreEqual(ThisCDF_Obj[2].count, 464);
-            Assert.AreEqual(ThisCDF_Obj[3].count, 652);
-            Assert.AreEqual(ThisCDF_Obj[4].count, 786);
-            Assert.AreEqual(ThisCDF_Obj[5].count, 1012);
-
+            Assert.AreEqual(ThisCDF_Obj[6].count, 266);
+            Assert.AreEqual(ThisCDF_Obj[32].count, 155);
+            Assert.AreEqual(ThisCDF_Obj[70].count, 147);
+            Assert.AreEqual(ThisCDF_Obj[100].count, 208);
+            
             // check CDF in three locations
-            Assert.AreEqual(ThisCDF_Obj[0].CDF[25], 0.333, 0.01, "Wrong CDF[25] for WS_ind = 0");
-            Assert.AreEqual(ThisCDF_Obj[0].CDF[50], 0.667, 0.01, "Wrong CDF[50] for WS_ind = 0");
-            Assert.AreEqual(ThisCDF_Obj[0].CDF[75], 0.778, 0.01, "Wrong CDF[75] for WS_ind = 0");
-
-            Assert.AreEqual(ThisCDF_Obj[1].CDF[25], 0.6028, 0.01, "Wrong CDF[25] for WS_ind = 1");
-            Assert.AreEqual(ThisCDF_Obj[1].CDF[50], 0.9065, 0.01, "Wrong CDF[50] for WS_ind = 1");
-            Assert.AreEqual(ThisCDF_Obj[1].CDF[75], 0.9813, 0.01, "Wrong CDF[75] for WS_ind = 1");
-
-            Assert.AreEqual(ThisCDF_Obj[2].CDF[25], 0.3987, 0.01, "Wrong CDF[25] for WS_ind = 2");
-            Assert.AreEqual(ThisCDF_Obj[2].CDF[50], 0.8836, 0.01, "Wrong CDF[50] for WS_ind = 2");
-            Assert.AreEqual(ThisCDF_Obj[2].CDF[75], 0.9935, 0.01, "Wrong CDF[75] for WS_ind = 2");
-
-            // Test 2
-            thisMCP.numWD = 16;
-            thisMCP.numTODs = 2;
-            thisMCP.numSeasons = 4;
-            thisMCP.WS_BinWidth = 1;            
-            ThisCDF_Obj = thisMCP.GenerateMatrixCDFs();
-
-            // find CDF with WS ind = 7, Hour ind = 2, Temp ind = 1, WD ind = 1
-
-            foreach (MCP.CDF_Obj CDF in ThisCDF_Obj)
-            {
-                if (CDF.WS_Ind == 7 && CDF.season == Met.Season.Winter && CDF.TOD == Met.TOD.Day && CDF.WD_Ind == 1)
-                {
-                    Assert.AreEqual(CDF.count, 7, 0, "Wrong count for Test2");
-                    Assert.AreEqual(CDF.CDF[25], 0.2857, 0.01, "Wrong CDF[25] for Test2");
-                    Assert.AreEqual(CDF.CDF[50], 0.428571, 0.01, "Wrong CDF[50] for Test2");
-                    Assert.AreEqual(CDF.CDF[75], 0.857143, 0.01, "Wrong CDF[75] for Test2");
-                }
-
-            }
+            Assert.AreEqual(ThisCDF_Obj[5].CDF[25], 0.02381, 0.01, "Wrong CDF[25] for WS_ind = 0");
+            Assert.AreEqual(ThisCDF_Obj[5].CDF[40], 0.178571, 0.01, "Wrong CDF[40] for WS_ind = 0");
+            Assert.AreEqual(ThisCDF_Obj[5].CDF[82], 0.940476, 0.01, "Wrong CDF[82] for WS_ind = 0");                                 
 
             thisInst.Close();
         }
@@ -108,9 +77,9 @@ namespace Continuum_Tests
 
             double[] Avg_WS_WD = thisMCP.GetConcAvgsCount(16, Met.TOD.Day, Met.Season.Winter);  // 0: Target WS; 1: Reference WS; 2: Data Count'
 
-            Assert.AreEqual(Avg_WS_WD[0], 3.543, 0.01, "Wrong average target wind speed in Test 1");
-            Assert.AreEqual(Avg_WS_WD[1], 4.1508, 0.01, "Wrong average reference wind speed in Test 1");
-            Assert.AreEqual(Avg_WS_WD[2], 39, 0, "Wrong data count in Test 1");
+            Assert.AreEqual(Avg_WS_WD[0], 7.590759, 0.01, "Wrong average target wind speed in Test 1");
+            Assert.AreEqual(Avg_WS_WD[1], 8.161251, 0.01, "Wrong average reference wind speed in Test 1");
+            Assert.AreEqual(Avg_WS_WD[2], 952, 0, "Wrong data count in Test 1");
 
             // Test 2
             thisMCP.numWD = 16;
@@ -119,9 +88,9 @@ namespace Continuum_Tests
             
             Avg_WS_WD = thisMCP.GetConcAvgsCount(15, Met.TOD.All, Met.Season.All);
 
-            Assert.AreEqual(Avg_WS_WD[2], 554, 0, "Wrong data count in Test 2");
-            Assert.AreEqual(Avg_WS_WD[0], 5.43388, 0.01, "Wrong average target wind speed in Test 2");
-            Assert.AreEqual(Avg_WS_WD[1], 6.2731, 0.01, "Wrong average reference wind speed in Test 2");
+            Assert.AreEqual(Avg_WS_WD[2], 524, 0, "Wrong data count in Test 2");
+            Assert.AreEqual(Avg_WS_WD[0], 5.716328, 0.01, "Wrong average target wind speed in Test 2");
+            Assert.AreEqual(Avg_WS_WD[1], 5.76551, 0.01, "Wrong average reference wind speed in Test 2");
 
             thisInst.Close();
         }
@@ -141,10 +110,10 @@ namespace Continuum_Tests
             thisMCP.numSeasons = 1;
 
             double[] theseWS = thisMCP.GetConcWS_Array("Target", 2, Met.TOD.Day, Met.Season.All, 4.5f, 5.5f, false);
-            Assert.AreEqual(theseWS.Length, 77, 0, "Wrong data count in Test 1");
+            Assert.AreEqual(theseWS.Length, 50, 0, "Wrong data count in Test 1");
 
             theseWS = thisMCP.GetConcWS_Array("Reference", 2, Met.TOD.Day, Met.Season.All, 4.5f, 5.5f, false);
-            Assert.AreEqual(theseWS.Length, 77, 0, "Wrong data count in Test 2");
+            Assert.AreEqual(theseWS.Length, 50, 0, "Wrong data count in Test 2");
 
             thisInst.Close();
         }
@@ -235,7 +204,7 @@ namespace Continuum_Tests
             Met thisMet = thisInst.metList.metItem[0];
             MCP thisMCP = thisMet.mcp;
 
-            thisMCP.numWD = 1;
+            thisMCP.numWD = 4;
             thisMCP.numTODs = 1;
             thisMCP.numSeasons = 1;
             thisMCP.WS_BinWidth = 1;
@@ -243,20 +212,20 @@ namespace Continuum_Tests
             MCP.CDF_Obj[] thisCDF_Obj = thisMCP.GenerateMatrixCDFs();
 
             float Rando = 0.2f;
-            int CDF_ind = thisMCP.FindCDF_Index(thisCDF_Obj[3], Rando);
-            Assert.AreEqual(CDF_ind, 21, 0, "Wrong CDF index");
+            int CDF_ind = thisMCP.FindCDF_Index(thisCDF_Obj[5], Rando);
+            Assert.AreEqual(CDF_ind, 42, 0, "Wrong CDF index");
 
             Rando = 0.4f;
-            CDF_ind = thisMCP.FindCDF_Index(thisCDF_Obj[3], Rando);
-            Assert.AreEqual(CDF_ind, 28, 0, "Wrong CDF index");
+            CDF_ind = thisMCP.FindCDF_Index(thisCDF_Obj[5], Rando);
+            Assert.AreEqual(CDF_ind, 51, 0, "Wrong CDF index");
 
             Rando = 0.6f;
-            CDF_ind = thisMCP.FindCDF_Index(thisCDF_Obj[3], Rando);
-            Assert.AreEqual(CDF_ind, 35, 0, "Wrong CDF index");
+            CDF_ind = thisMCP.FindCDF_Index(thisCDF_Obj[5], Rando);
+            Assert.AreEqual(CDF_ind, 58, 0, "Wrong CDF index");
 
             Rando = 0.8f;
-            CDF_ind = thisMCP.FindCDF_Index(thisCDF_Obj[3], Rando);
-            Assert.AreEqual(CDF_ind, 44, 0, "Wrong CDF index");
+            CDF_ind = thisMCP.FindCDF_Index(thisCDF_Obj[5], Rando);
+            Assert.AreEqual(CDF_ind, 69, 0, "Wrong CDF index");
 
             thisInst.Close();
         }
@@ -274,9 +243,10 @@ namespace Continuum_Tests
             thisMCP.WS_BinWidth = 1;
             thisMCP.FindSD_ChangeInWS();
 
-            Assert.AreEqual(thisMCP.SD_WS_Lag[0], 0.656435, 0.001, "Wrong Last WS Standard deviation");
-            Assert.AreEqual(thisMCP.SD_WS_Lag[1], 1.1078, 0.001, "Wrong Last WS Standard deviation");
-            Assert.AreEqual(thisMCP.SD_WS_Lag[2], 0.980807, 0.001, "Wrong Last WS Standard deviation");
+            Assert.AreEqual(thisMCP.SD_WS_Lag[0], 0.823, 0.01, "Wrong Last WS Standard deviation");
+            Assert.AreEqual(thisMCP.SD_WS_Lag[1], 1.138, 0.01, "Wrong Last WS Standard deviation");
+            Assert.AreEqual(thisMCP.SD_WS_Lag[2], 0.97996, 0.01, "Wrong Last WS Standard deviation");
+            Assert.AreEqual(thisMCP.SD_WS_Lag[3], 1.0479, 0.01, "Wrong Last WS Standard deviation");
 
             thisInst.Close();
         }
@@ -323,11 +293,12 @@ namespace Continuum_Tests
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
                         
-            thisMCP.numWD = 1;
+            thisMCP.numWD = 16;
+            thisInst.metList.numWD = 16;
             thisMCP.Do_MCP_Uncertainty(thisInst, merra, thisMet);
 
-            Assert.AreEqual(thisMCP.uncertOrtho[0].avg, 6.30065, 0.001, "Wrong calculated average of LT estimates in uncertainty analysis");
-            Assert.AreEqual(thisMCP.uncertOrtho[0].stDev, 0.211046, 0.001, "Wrong calculated standard deviation of LT estimates in uncertainty analysis");
+            Assert.AreEqual(thisMCP.uncertOrtho[0].avg, 6.411818, 0.001, "Wrong calculated average of LT estimates in uncertainty analysis");
+            Assert.AreEqual(thisMCP.uncertOrtho[0].stDev, 0.19069, 0.001, "Wrong calculated standard deviation of LT estimates in uncertainty analysis");
 
             thisInst.Close();
         }
@@ -343,7 +314,7 @@ namespace Continuum_Tests
             MCP thisMCP = thisMet.mcp;
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-            thisMCP.numWD = 1;
+            thisMCP.numWD = 16;
 
             thisMCP.Do_MCP_Uncertainty(thisInst, merra, thisMet);
 
@@ -351,7 +322,7 @@ namespace Continuum_Tests
             Assert.AreEqual(thisMCP.uncertOrtho[0].NWindows, 12, 0, "Wrong number of monthly intervals");
             Assert.AreEqual(thisMCP.uncertOrtho[7].NWindows, 5, 0, "Wrong number ofintervals");
             Assert.AreEqual(thisMCP.uncertOrtho[5].WSize, 6, 0, "Wrong wrong window size");
-            Assert.AreEqual(thisMCP.uncertOrtho[2].avg, 6.3326, 0.001, "Wrong average LT Estimate in uncertainty calculation");
+            Assert.AreEqual(thisMCP.uncertOrtho[0].avg, 6.411818, 0.001, "Wrong average LT Estimate in uncertainty calculation");
 
             thisInst.Close();
         }
@@ -367,12 +338,12 @@ namespace Continuum_Tests
             MCP thisMCP = thisMet.mcp;
 
             thisMCP.FindConcurrentData(thisMCP.concStart, thisMCP.concEnd);
-            Assert.AreEqual(thisMCP.concData.Length, 8627, 0, "Wrong concurrent data length");
+            Assert.AreEqual(thisMCP.concData.Length, 8500, 0, "Wrong concurrent data length");
             
-            double[] Conc_Avgs = thisMCP.GetConcAvgsCount(0, Met.TOD.All, Met.Season.All);
-            Assert.AreEqual(Conc_Avgs[0], 6.266685, 0.001, "Wrong average target wind speed");
-            Assert.AreEqual(Conc_Avgs[1], 6.68748, 0.001, "Wrong average reference wind speed");
-            Assert.AreEqual(Conc_Avgs[2], 8627, 0, "Wrong concurrent data count");
+            double[] Conc_Avgs = thisMCP.GetConcAvgsCount(thisInst.metList.numWD, Met.TOD.All, Met.Season.All);
+            Assert.AreEqual(Conc_Avgs[0], 6.418475, 0.001, "Wrong average target wind speed");
+            Assert.AreEqual(Conc_Avgs[1], 6.669817, 0.001, "Wrong average reference wind speed");
+            Assert.AreEqual(Conc_Avgs[2], 8500, 0, "Wrong concurrent data count");
 
             thisInst.Close();
         }
@@ -387,27 +358,61 @@ namespace Continuum_Tests
             Met thisMet = thisInst.metList.metItem[0];
             MCP thisMCP = thisMet.mcp;
 
+            thisInst.metList.numWD = 16;
+            thisInst.metList.numTOD = 1;
+            thisInst.metList.numSeason = 1;
             thisMCP.numWD = 16;
             thisMCP.numTODs = 1;
             thisMCP.numSeasons = 1;
             thisMCP.Find_Sector_Counts(thisInst.metList);
 
-            Assert.AreEqual(thisMCP.GetSectorCount(0, 0, 0, thisInst.metList), 12529, 0, "Wrong sector count in WD = 0");
-            Assert.AreEqual(thisMCP.GetSectorCount(1, 0, 0, thisInst.metList), 11360, 0, "Wrong sector count in WD = 1");
-            Assert.AreEqual(thisMCP.GetSectorCount(2, 0, 0, thisInst.metList), 12149, 0, "Wrong sector count in WD = 2");
-            Assert.AreEqual(thisMCP.GetSectorCount(3, 0, 0, thisInst.metList), 13874, 0, "Wrong sector count in WD = 3");
-            Assert.AreEqual(thisMCP.GetSectorCount(4, 0, 0, thisInst.metList), 13380, 0, "Wrong sector count in WD = 4");
-            Assert.AreEqual(thisMCP.GetSectorCount(5, 0, 0, thisInst.metList), 10538, 0, "Wrong sector count in WD = 5");
-            Assert.AreEqual(thisMCP.GetSectorCount(6, 0, 0, thisInst.metList), 9180, 0, "Wrong sector count in WD = 6");
-            Assert.AreEqual(thisMCP.GetSectorCount(7, 0, 0, thisInst.metList), 10799, 0, "Wrong sector count in WD = 7");
-            Assert.AreEqual(thisMCP.GetSectorCount(8, 0, 0, thisInst.metList), 15793, 0, "Wrong sector count in WD = 8");
-            Assert.AreEqual(thisMCP.GetSectorCount(9, 0, 0, thisInst.metList), 24231, 0, "Wrong sector count in WD = 9");
-            Assert.AreEqual(thisMCP.GetSectorCount(10, 0, 0, thisInst.metList), 29027, 0, "Wrong sector count in WD = 10");
-            Assert.AreEqual(thisMCP.GetSectorCount(11, 0, 0, thisInst.metList), 26659, 0, "Wrong sector count in WD = 11");
-            Assert.AreEqual(thisMCP.GetSectorCount(12, 0, 0, thisInst.metList), 24669, 0, "Wrong sector count in WD = 12");
-            Assert.AreEqual(thisMCP.GetSectorCount(13, 0, 0, thisInst.metList), 22260, 0, "Wrong sector count in WD = 13");
-            Assert.AreEqual(thisMCP.GetSectorCount(14, 0, 0, thisInst.metList), 19661, 0, "Wrong sector count in WD = 14");
-            Assert.AreEqual(thisMCP.GetSectorCount(15, 0, 0, thisInst.metList), 15538, 0, "Wrong sector count in WD = 15");
+            // Test 1
+            Assert.AreEqual(thisMCP.GetSectorCount(0, Met.TOD.All, Met.Season.All, thisInst.metList), 4204, 0, "Wrong sector count in Test 1");
+
+            thisInst.metList.numWD = 16;
+            thisInst.metList.numTOD = 2;
+            thisInst.metList.numSeason = 1;
+            thisMCP.numWD = 16;
+            thisMCP.numTODs = 2;
+            thisMCP.numSeasons = 1;
+            thisMCP.Find_Sector_Counts(thisInst.metList);
+
+            // Test 2
+            Assert.AreEqual(thisMCP.GetSectorCount(15, Met.TOD.Day, Met.Season.All, thisInst.metList), 2629, 0, "Wrong sector count in Test 2");
+
+            // Test 3
+            Assert.AreEqual(thisMCP.GetSectorCount(1, Met.TOD.Night, Met.Season.All, thisInst.metList), 2081, 0, "Wrong sector count in Test 3");
+
+            thisInst.metList.numWD = 8;
+            thisInst.metList.numTOD = 1;
+            thisInst.metList.numSeason = 4;
+            thisMCP.numWD = 8;
+            thisMCP.numTODs = 1;
+            thisMCP.numSeasons = 4;
+            thisMCP.Find_Sector_Counts(thisInst.metList);
+
+            // Test 4
+            Assert.AreEqual(thisMCP.GetSectorCount(6, Met.TOD.All, Met.Season.Winter, thisInst.metList), 6217, 0, "Wrong sector count in Test 4");
+
+            // Test 5
+            Assert.AreEqual(thisMCP.GetSectorCount(3, Met.TOD.All, Met.Season.Spring, thisInst.metList), 1997, 0, "Wrong sector count in Test 5");
+
+            // Test 6
+            Assert.AreEqual(thisMCP.GetSectorCount(0, Met.TOD.All, Met.Season.Summer, thisInst.metList), 2567, 0, "Wrong sector count in Test 6");
+
+            // Test 7
+            Assert.AreEqual(thisMCP.GetSectorCount(7, Met.TOD.All, Met.Season.Fall, thisInst.metList), 2811, 0, "Wrong sector count in Test 7");
+
+            thisInst.metList.numWD = 24;
+            thisInst.metList.numTOD = 2;
+            thisInst.metList.numSeason = 4;
+            thisMCP.numWD = 24;
+            thisMCP.numTODs = 2;
+            thisMCP.numSeasons = 4;
+            thisMCP.Find_Sector_Counts(thisInst.metList);
+
+            // Test 8
+            Assert.AreEqual(thisMCP.GetSectorCount(19, Met.TOD.Day, Met.Season.Fall, thisInst.metList), 686, 0, "Wrong sector count in Test 8");
 
             thisInst.Close();
         }

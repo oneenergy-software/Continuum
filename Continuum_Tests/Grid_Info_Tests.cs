@@ -13,7 +13,7 @@ namespace Continuum_Tests
     [TestClass]
     public class Grid_Info_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Grid_Info";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\Grid_Info";
 
         [TestMethod]
         public void FindSectorsForGrid_Test()
@@ -95,7 +95,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum();
             
 
-            string Filename = testingFolder + "\\Grid_Info testing Paulding.cfm";
+            string Filename = testingFolder + "\\Grid_Info testing Paulding 0206.cfm";
             
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);                             
@@ -130,7 +130,7 @@ namespace Continuum_Tests
 
             // Test 2
             thisInst = new Continuum();
-            Filename = testingFolder + "\\Grid_Info testing Great Western.cfm";
+            Filename = testingFolder + "\\Grid_Info testing Great Western 0206.cfm";
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
@@ -165,7 +165,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum();
             
 
-            string Filename = testingFolder + "\\Grid_Info testing Paulding.cfm";
+            string Filename = testingFolder + "\\Grid_Info testing Paulding 0206.cfm";
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
@@ -179,14 +179,12 @@ namespace Continuum_Tests
 
             thisInst.Close();
         }
-
-        [TestMethod]
+                
         public void ExportGridExpos()
         {
             Continuum thisInst = new Continuum();
             
-
-            string Filename = testingFolder + "\\Grid_Info testing Paulding.cfm";
+            string Filename = testingFolder + "\\Grid_Info testing Paulding 0206.cfm";
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
@@ -210,7 +208,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum();
             
 
-            string Filename = testingFolder + "\\Grid_Info testing Paulding.cfm";
+            string Filename = testingFolder + "\\Grid_Info testing Paulding 0206.cfm";
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 

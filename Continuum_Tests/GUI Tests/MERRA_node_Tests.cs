@@ -42,7 +42,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.filteringEnabled = true;
             thisInst.turbineList.genTimeSeries = true;
 
-            string metTSFile = testingFolder + "\\Met TS files\\Findlay\\Archbold TS short Findlay coords.csv";
+            string metTSFile = testingFolder + "\\Met TS files\\Findlay\\Archbold TS short 16 MERRA test.csv";
             thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);

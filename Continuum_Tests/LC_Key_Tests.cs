@@ -10,21 +10,20 @@ namespace Continuum_Tests
     [TestClass]
     public class LC_Key_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\LC_Key";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\LC_Key";
 
         [TestMethod]
         public void LCKeyOK_Test()
         {
             // Tests changing LC key after a met has been imported and a map has been created
-            string dir = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\Node_ReCalc";
-
+            
             string DB_Change_LC_Before_Met = "Test_Change_LCKey_Before_Met.cfm";
             string DB_Change_LC_After_Met = "Test_Change_LCKey_After_Met.cfm";
 
             NodeCollection nodeList = new NodeCollection();
             BinaryFormatter bin = new BinaryFormatter();
-            string connBefore = nodeList.GetDB_ConnectionString(dir + "\\" + DB_Change_LC_Before_Met);
-            string connAfter = nodeList.GetDB_ConnectionString(dir + "\\" + DB_Change_LC_After_Met);
+            string connBefore = nodeList.GetDB_ConnectionString(testingFolder + "\\" + DB_Change_LC_Before_Met);
+            string connAfter = nodeList.GetDB_ConnectionString(testingFolder + "\\" + DB_Change_LC_After_Met);
 
             Nodes[] LC_Change_Before_Met = new Nodes[0]; // array of Nodes with SRDH calcs from model where Land Cover key was changed before the met import and map generation
             Nodes[] LC_Change_After_Met = new Nodes[0]; // same as above but from model where Land Cover key was changed after the met import and map generation
@@ -112,6 +111,33 @@ namespace Continuum_Tests
                 }
             }
 
+            string filename_before = testingFolder + "\\Test_Change_LCKey_Before_Met.cfm";
+            string filename_after = testingFolder + "\\Test_Change_LCKey_After_Met.cfm";
+            Continuum thisInstBefore = new Continuum();
+            Continuum thisInstAfter = new Continuum();
+            thisInstBefore.Open(filename_before);
+            thisInstAfter.Open(filename_after);
+            // Loop through met and turbine sites and compare SR/DH
+            Met metBefore = thisInstBefore.metList.metItem[0];
+            Met metAfter = thisInstAfter.metList.metItem[0];
+
+            for (int k = 0; k < 24; k++)
+            {
+                Assert.AreEqual(metBefore.expo[0].SR[k], metAfter.expo[0].SR[k], 0.00001, "Different SR");
+                Assert.AreEqual(metBefore.expo[0].dispH[k], metAfter.expo[0].dispH[k], 0.00001, "Different displacement height");
+            }
+
+            for (int i = 0; i < thisInstAfter.turbineList.TurbineCount; i++)
+            {
+                Turbine turbineBefore = thisInstBefore.turbineList.turbineEsts[i];
+                Turbine turbineAfter = thisInstAfter.turbineList.turbineEsts[i];
+
+                for (int k = 0; k < 24; k++)
+                {
+                    Assert.AreEqual(turbineBefore.expo[0].SR[k], turbineAfter.expo[0].SR[k], 0.00001, "Different SR");
+                    Assert.AreEqual(turbineBefore.expo[0].dispH[k], turbineAfter.expo[0].dispH[k], 0.00001, "Different displacement height");
+                }
+            }
 
         }
     }

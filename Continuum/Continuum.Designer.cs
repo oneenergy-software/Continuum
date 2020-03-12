@@ -217,6 +217,7 @@
             this.btn_Import_MERRA = new System.Windows.Forms.Button();
             this.label151 = new System.Windows.Forms.Label();
             this.pgeMCP = new System.Windows.Forms.TabPage();
+            this.btnExportTarget = new System.Windows.Forms.Button();
             this.plotMCP_Uncertainty = new OxyPlot.WindowsForms.PlotView();
             this.plotMCP = new OxyPlot.WindowsForms.PlotView();
             this.btnShowMCPRanges = new System.Windows.Forms.Button();
@@ -2832,6 +2833,7 @@
             // columnHeader116
             // 
             this.columnHeader116.Text = "WS (m/s)";
+            this.columnHeader116.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.columnHeader116.Width = 63;
             // 
             // columnHeader117
@@ -3059,6 +3061,7 @@
             // 
             // pgeMCP
             // 
+            this.pgeMCP.Controls.Add(this.btnExportTarget);
             this.pgeMCP.Controls.Add(this.plotMCP_Uncertainty);
             this.pgeMCP.Controls.Add(this.plotMCP);
             this.pgeMCP.Controls.Add(this.btnShowMCPRanges);
@@ -3149,6 +3152,17 @@
             this.pgeMCP.UseVisualStyleBackColor = true;
             this.pgeMCP.Click += new System.EventHandler(this.PgeMCP_Click);
             // 
+            // btnExportTarget
+            // 
+            this.btnExportTarget.Location = new System.Drawing.Point(979, 766);
+            this.btnExportTarget.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnExportTarget.Name = "btnExportTarget";
+            this.btnExportTarget.Size = new System.Drawing.Size(113, 58);
+            this.btnExportTarget.TabIndex = 298;
+            this.btnExportTarget.Text = "Export Hourly Target Data";
+            this.btnExportTarget.UseVisualStyleBackColor = true;
+            this.btnExportTarget.Click += new System.EventHandler(this.btnExportTarget_Click);
+            // 
             // plotMCP_Uncertainty
             // 
             this.plotMCP_Uncertainty.Location = new System.Drawing.Point(1008, 400);
@@ -3172,6 +3186,7 @@
             this.plotMCP.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotMCP.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotMCP.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotMCP.Click += new System.EventHandler(this.plotMCP_Click);
             // 
             // btnShowMCPRanges
             // 
@@ -9718,6 +9733,9 @@
             this.cboSiteSuitHour.FormattingEnabled = true;
             this.cboSiteSuitHour.Items.AddRange(new object[] {
             "All",
+            "4 am",
+            "5 am",
+            "6 am",
             "7 am",
             "8 am",
             "9 am",
@@ -9731,7 +9749,9 @@
             "5 pm",
             "6 pm",
             "7 pm",
-            "8 pm"});
+            "8 pm",
+            "9 pm",
+            "10 pm"});
             this.cboSiteSuitHour.Location = new System.Drawing.Point(894, 11);
             this.cboSiteSuitHour.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboSiteSuitHour.Name = "cboSiteSuitHour";
@@ -11082,6 +11102,7 @@
         public System.Windows.Forms.TextBox txtMaxLat;
         private System.Windows.Forms.Label label5;
         public System.Windows.Forms.TextBox txtMinLat;
+        public System.Windows.Forms.Button btnExportTarget;
     }
 }
 

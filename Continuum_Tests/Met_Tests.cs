@@ -8,15 +8,14 @@ namespace Continuum_Tests
     [TestClass]
     public class Met_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Met";
+        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\Met";
 
         [TestMethod]
         public void CalcAvgWS_Test()
         {
             Continuum thisInst = new Continuum();
             
-
-            string Filename = testingFolder + "\\Met testing.cfm";
+            string Filename = testingFolder + "\\Met testing RDM.cfm";
             thisInst.Open(Filename);
             thisInst.metList.metItem[0].CalcAvgWS(thisInst);
             thisInst.metList.metItem[1].CalcAvgWS(thisInst);

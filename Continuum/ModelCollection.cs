@@ -382,7 +382,7 @@ namespace ContinuumNS
                 }
             }
 
-            if (thisModel[0] == null && createIfNeeded)
+            if (ModelCount == 0 || createIfNeeded)
             {
                 CreateModel(metsUsed, thisInst, thisTOD, thisSeason, thisHeight);
                 for (int i = 0; i < ModelCount; i++)
@@ -2698,10 +2698,13 @@ namespace ContinuumNS
 
                 if (wakeModel != null)
                 {
-                    double[] wakedValues = thisInst.wakeModelList.CalcNetEnergyTimeSeries(wakeCoeffs, targetNode.UTMX, targetNode.UTMY, thisAvg, thisInst, wakeModel, thisTS[i].WD, thisTS[i].grossEnergy, timeInt);
+                    if (wakeModel.comboMethod != null)
+                    {
+                        double[] wakedValues = thisInst.wakeModelList.CalcNetEnergyTimeSeries(wakeCoeffs, targetNode.UTMX, targetNode.UTMY, thisAvg, thisInst, wakeModel, thisTS[i].WD, thisTS[i].grossEnergy, timeInt);
 
-                    thisTS[i].wakedWS = wakedValues[0];
-                    thisTS[i].netEnergy = wakedValues[1] * thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+                        thisTS[i].wakedWS = wakedValues[0];
+                        thisTS[i].netEnergy = wakedValues[1] * thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+                    }
                 }
 
             });

@@ -3201,8 +3201,8 @@ namespace ContinuumNS
             for (int i = 0; i < thisMERRA.interpData.TS_Data.Length; i++)
             {
                 file.Write(thisMERRA.interpData.TS_Data[i].ThisDate + ",");
-                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WS50m, 3) + ",");
-                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WD50m, 2) + ",");
+                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WS50m, 4) + ",");
+                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WD50m, 3) + ",");
                 //    if (thisMERRA.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WS10m, 3) + ",");
                 //    if (thisMERRA.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WD10m, 2) + ",");
                 file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].SurfPress / 1000, 3) + ",");
@@ -3418,7 +3418,11 @@ namespace ContinuumNS
                 file.WriteLine();
 
                 int TS_length = thisTS.Length;
-                double overallP50 = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+                double overallP50 = 1;
+                
+                if (haveNet)
+                    overallP50 = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+                
                 if (overallP50 == 0)
                     overallP50 = 1;
 
@@ -4089,6 +4093,21 @@ namespace ContinuumNS
                 return;
             }
 
+        }
+
+        public void ExportMCP_TargetData(Continuum thisInst, MCP.Site_data[] targetData)
+        {
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
+                sw.WriteLine("Time Stamp, WS [m/s], WD [deg]");
+
+                for (int i = 0; i < targetData.Length; i++)
+                    sw.WriteLine(targetData[i].thisDate + "," + targetData[i].thisWS + "," + targetData[i].thisWD);
+
+                sw.Close();
+
+            }
         }
     }
 
