@@ -13,7 +13,7 @@ namespace Continuum_Tests
     [TestClass]
     public class Grid_Info_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\Grid_Info";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Grid_Info";
 
         [TestMethod]
         public void FindSectorsForGrid_Test()

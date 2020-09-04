@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class SiteSuitability_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\SiteSuitability";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\SiteSuitability";
         
         [TestMethod]
         public void GetFlickerAngles_Test()
@@ -25,55 +25,55 @@ namespace Continuum_Tests
 
             // Test 1
             SiteSuitability.FlickerAngles flickerAngles = thisInst.siteSuitability.GetFlickerAngles(thisInst, thisTurb, zones[0].latitude,
-                zones[0].longitude, zones[0].xSize, zones[0].ySize, 0, thisInst.modeledHeight, powerCurve);
+                zones[0].longitude, zones[0].xSize, zones[0].ySize, zones[0].elev, thisInst.modeledHeight, powerCurve);
 
             Assert.AreEqual(flickerAngles.targetAzimuthAngle, 63.08305, delta, "Wrong Azimuth Angle 1");
-            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 10.33228, delta, "Wrong Altitude Angle 1");
-            Assert.AreEqual(flickerAngles.angleVariance, 11.97939, delta, "Wrong Angle Variance Angle 1");
+            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 10.312314, delta, "Wrong Altitude Angle 1");
+            Assert.AreEqual(flickerAngles.angleVariance, 11.98010, delta, "Wrong Angle Variance Angle 1");
 
             // Test 2
             flickerAngles = thisInst.siteSuitability.GetFlickerAngles(thisInst, thisTurb, zones[13].latitude,
-                zones[13].longitude, zones[13].xSize, zones[13].ySize, 0, thisInst.modeledHeight, powerCurve);
+                zones[13].longitude, zones[13].xSize, zones[13].ySize, zones[13].elev, thisInst.modeledHeight, powerCurve);
 
             Assert.AreEqual(flickerAngles.targetAzimuthAngle, -45.82536, delta, "Wrong Azimuth Angle 2");
-            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 2.093368, delta, "Wrong Altitude Angle 2");
-            Assert.AreEqual(flickerAngles.angleVariance, 2.351653, delta, "Wrong Angle Variance Angle 2");
+            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 2.0928330, delta, "Wrong Altitude Angle 2");
+            Assert.AreEqual(flickerAngles.angleVariance, 2.3516538, delta, "Wrong Angle Variance Angle 2");
 
             // Test 3
             thisTurb = thisInst.turbineList.turbineEsts[1];
             flickerAngles = thisInst.siteSuitability.GetFlickerAngles(thisInst, thisTurb, zones[7].latitude,
-                zones[7].longitude, zones[7].xSize, zones[7].ySize, 0, thisInst.modeledHeight, powerCurve);
+                zones[7].longitude, zones[7].xSize, zones[7].ySize, zones[7].elev, thisInst.modeledHeight, powerCurve);
 
             Assert.AreEqual(flickerAngles.targetAzimuthAngle, -76.17705, delta, "Wrong Azimuth Angle 3");
-            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 4.4160, delta, "Wrong Altitude Angle 3");
-            Assert.AreEqual(flickerAngles.angleVariance, 4.426349, delta, "Wrong Angle Variance Angle 3");
+            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 4.5205311, delta, "Wrong Altitude Angle 3");
+            Assert.AreEqual(flickerAngles.angleVariance, 4.425766, delta, "Wrong Angle Variance Angle 3");
 
             // Test 4
             thisTurb = thisInst.turbineList.turbineEsts[9];
             flickerAngles = thisInst.siteSuitability.GetFlickerAngles(thisInst, thisTurb, zones[19].latitude,
-                zones[19].longitude, zones[19].xSize, zones[19].ySize, 0, thisInst.modeledHeight, powerCurve);
+                zones[19].longitude, zones[19].xSize, zones[19].ySize, zones[19].elev, thisInst.modeledHeight, powerCurve);
 
             Assert.AreEqual(flickerAngles.targetAzimuthAngle, -142.61909, delta, "Wrong Azimuth Angle 4");
-            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 9.6414, delta, "Wrong Altitude Angle 4");
-            Assert.AreEqual(flickerAngles.angleVariance, 9.94936, delta, "Wrong Angle Variance Angle 4");
+            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 9.6506959, delta, "Wrong Altitude Angle 4");
+            Assert.AreEqual(flickerAngles.angleVariance, 9.9490992, delta, "Wrong Angle Variance Angle 4");
 
             // Test 5
             thisTurb = thisInst.turbineList.turbineEsts[5];
             flickerAngles = thisInst.siteSuitability.GetFlickerAngles(thisInst, thisTurb, zones[19].latitude,
-                zones[19].longitude, zones[19].xSize, zones[19].ySize, 0, thisInst.modeledHeight, powerCurve);
+                zones[19].longitude, zones[19].xSize, zones[19].ySize, zones[19].elev, thisInst.modeledHeight, powerCurve);
 
             Assert.AreEqual(flickerAngles.targetAzimuthAngle, 29.920478, delta, "Wrong Azimuth Angle 5");
-            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 7.26764, delta, "Wrong Altitude Angle 5");
-            Assert.AreEqual(flickerAngles.angleVariance, 7.624026, delta, "Wrong Angle Variance Angle 5");
+            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 7.4365520, delta, "Wrong Altitude Angle 5");
+            Assert.AreEqual(flickerAngles.angleVariance, 7.6212801, delta, "Wrong Angle Variance Angle 5");
 
             // Test 6
             thisTurb = thisInst.turbineList.turbineEsts[7];
             flickerAngles = thisInst.siteSuitability.GetFlickerAngles(thisInst, thisTurb, zones[17].latitude,
-                zones[17].longitude, zones[17].xSize, zones[17].ySize, 0, thisInst.modeledHeight, powerCurve);
+                zones[17].longitude, zones[17].xSize, zones[17].ySize, zones[17].elev, thisInst.modeledHeight, powerCurve);
 
             Assert.AreEqual(flickerAngles.targetAzimuthAngle, 105.7185, delta, "Wrong Azimuth Angle 5");
-            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 29.95956, delta, "Wrong Altitude Angle 5");
-            Assert.AreEqual(flickerAngles.angleVariance, 24.07863, delta, "Wrong Angle Variance Angle 5");
+            Assert.AreEqual(flickerAngles.targetAltitudeAngle, 29.4846112, delta, "Wrong Altitude Angle 5");
+            Assert.AreEqual(flickerAngles.angleVariance, 24.1787613, delta, "Wrong Angle Variance Angle 5");
 
 
             thisInst.Close();

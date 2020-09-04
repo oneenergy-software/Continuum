@@ -14,14 +14,14 @@ namespace GUI_Test_Creator
 {
     public partial class GUI_Creator2 : Form
     {
-        string testFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder\\Snippets";
+        string testFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder\\Snippets";
      
-        string saveToFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
-        string continuumFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
-        string combinedTestsFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder\\Combined Tests";
+        string saveToFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string continuumFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string combinedTestsFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder\\Combined Tests";
 
-        string firewheelMERRA = "C:\\Users\\Liz\\Desktop\\MERRA2\\Firewheel";
-        string ohioMERRA = "C:\\Users\\Liz\\Desktop\\MERRA2";
+        string firewheelMERRA = "C:\\Users\\liz_w\\Desktop\\MERRA2\\Firewheel";
+        string ohioMERRA = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
         bool okToUpdate = true;
 

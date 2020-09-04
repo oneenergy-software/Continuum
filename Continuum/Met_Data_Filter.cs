@@ -1,73 +1,38 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-// file:	Met_Data_Filter.cs
-//
-// summary:	Implements the Met data Filter class.  
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using Microsoft.VisualBasic;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ContinuumNS
-{
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// <summary>
-    ///            The Met data QC Filter tool reads in raw MET data (as .csv), applies filters,
-    /// calculates power law shear, extrapolates to hub height, and exports filtered data to .csv.
-    /// </summary>
-    ///
-    /// <remarks>   Liz, 6/21/2017. </remarks>
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+{    
+    /// <summary> Met_Data_Filter class contains functions that read in raw MET data (as .csv), applies filters,
+    /// calculates power law shear, and extrapolates to hub height. Filters include tower shadow, icing, min/max wind speed standard deviation. </summary>
+    
     [Serializable()]
     public partial class Met_Data_Filter
     {
-        /// <summary>   WRA filtering Methodology version used in this tool. </summary>
+        /// <summary>   One Energy WRA filtering Methodology version used in this tool. </summary>
         public string WRA_Methodology = "2019.0";
-
         /// <summary>   Filename of the raw input datafile. </summary>
         public string rawFilename = "";
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Data read from .CSV file and QC'd based on specified filters. </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
         /// <summary>   List of anemometer datasets. </summary>
         public Anem_Data[] anems = new Anem_Data[0];
         /// <summary>   List of wind vane datasets. </summary>
         public Vane_Data[] vanes = new Vane_Data[0];
         /// <summary>   List of temperature sensor datasets. </summary>
         public Temp_Data[] temps = new Temp_Data[0];
-
         /// <summary>   If filtering has been conducted, this is true. </summary>
         public bool filteringDone = false;
         /// <summary>   Wind speed units, mph (miles/hour) or mps (meters/sec). </summary>
         public string WS_units;
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculated (estimated) datasets. </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        /// <summary>   All calculated shear alpha exponents and wind direction data from vane closest to 
-        ///             80 m (no WS). Used to generate alpha table and plot, not used for extrapolating </summary>
-        public Est_Alpha[] alpha = new Est_Alpha[0];
-                
-        /// <summary> Shear Power law alpha datasets with WS and WD. One is created for each anem height.
-        ///           Used to extrapolate data. </summary>
+        /// <summary>   All calculated shear alpha exponents and wind direction data from vane closest to hub height. Used to generate alpha table and plot, not used for extrapolating </summary>
+        public Est_Alpha[] alpha = new Est_Alpha[0];                
+        /// <summary> Shear Power law alpha datasets with WS and WD. One is created for each anem height. Used to extrapolate data. </summary>
         public Shear_Data[] alphaByAnem = new Shear_Data[0];
-
         /// <summary>   Simulated (estimated) wind speed, wind direction, and WS SD data. </summary>
         public Sim_TS[] simData = new Sim_TS[0];
-
         /// <summary>   First date of dataset. </summary>
         public DateTime allStartDate;
         /// <summary>   Last date of dataset. </summary>
@@ -78,115 +43,91 @@ namespace ContinuumNS
         public DateTime endDate;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Met data filtering settings. </summary>
+        // Met data filtering settings. 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary> Minimum wind speed for standard deviation filters. For WS less than 1 m/s, no WS SD filtering is applied. </summary>
+        /// <summary> Minimum wind speed for standard deviation filters. Default = 1 m/s. </summary>
         public double minWS_ForSD_Filts = 1;
-        /// <summary>   Minimum standard deviation filter slope. </summary>
+        /// <summary>   Minimum standard deviation filter slope. Default = 0.02. </summary>
         public double minSD_FiltSlope = 0.02;
-        /// <summary>   Maximum standard deviation filter slope. </summary>
+        /// <summary>   Maximum standard deviation filter slope. Default = 0.22. </summary>
         public double maxSD_FiltSlope = 0.22;
-        /// <summary>   Maximum SD filter intercept. </summary>
+        /// <summary>   Maximum SD filter intercept. Default = 1.1. </summary>
         public double maxSD_FiltInt = 1.1;
-        /// <summary>   Maximum range between min and max wind speed. </summary>
+        /// <summary>   Maximum range between min and max wind speed. Default = 20. </summary>
         public double maxRange = 20;
-        /// <summary>   Maximum temperature for Icing flag. </summary>
+        /// <summary>   Maximum temperature (deg F) for Icing flag. Default = 34 F. </summary>
         public double maxIcingTemp = 34;
-        /// <summary>   Anemometer minimum standard deviation used in Icing filter. </summary>
+        /// <summary>   Anemometer minimum standard deviation used in Icing filter. Default = 0.01. </summary>
         public double anemIcingMinSD = 0.01;
-        /// <summary>   Vane minimum standard deviation used in Icing filter. </summary>
+        /// <summary>   Vane minimum standard deviation used in Icing filter. Default = 1. </summary>
         public double vaneIcingMinSD = 1;
-        /// <summary>   max Abs. Wind Speed Difference used to define tower shadow </summary>
+        /// <summary>   Maximum absolute wind speed difference used to define tower shadow. Default = 0.2. </summary>
         public double towerShadowThresh = 0.2;
-        /// <summary>   Width of the tower shadow when have single anem at a height. </summary>
+        /// <summary>   Width of the tower shadow when have single anem at a height. Default = 36. </summary>
         public int towerShadowWidth = 36;
-        /// <summary>   Minimum wind speed filter. </summary>
+        /// <summary>   Minimum wind speed filter. Default = 0.4. </summary>
         public double minWS_Filt = 0.4;
-        /// <summary>   Minimum WS of closest anemometer to flag min WS </summary>
+        /// <summary>   Minimum WS of closest anemometer to flag min WS. Default = 1. </summary>
         public double minClosestWS = 1;                                  
               
         /// <summary> Flag showing whether file is being opened (so certain messages don't appear) </summary>
         public bool Opening_a_file = false;
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: data. Used to hold time series of average, standard deviation, min and max of
-        /// sensor plus filter flags (if any)
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary> Contains timestamp, 10-min average, 10-min wind speed standard deviation, 10-min minimum, 10-min maximum, and filter flag </summary>        
         [Serializable()]
         public struct data
         {             
             /// <summary>   Time stamp Date/Time. </summary>
             public DateTime timeStamp;
-            /// <summary>   The minimum. </summary>
+            /// <summary>   10-min minimum. </summary>
             public double min;
-            /// <summary>   The maximum. </summary>
+            /// <summary>   10-min maximum. </summary>
             public double max;
-            /// <summary>   The average. </summary>
+            /// <summary>   10-min average. </summary>
             public double avg;
-            /// <summary>   The standard deviation. </summary>
+            /// <summary>   10-min wind speed standard deviation. </summary>
             public double SD;
-            /// <summary>   The filter flag. </summary>
+            /// <summary>   QC filter flag. </summary>
             public Filter_Flags filterFlag;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: Est_Data. Used to hold time series of estimated average wind speed and
-        /// direction.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary> Contains timstamp, wind speed, wind direction, wind speed standard deviation, and estimated shear alpha exponent. </summary>
         [Serializable()]
         public struct Est_Data
-        {             
-            /// <summary>   The time stamp Date/Time. </summary>
+        {
+            /// <summary>   Time stamp Date/Time. </summary>
             public DateTime timeStamp;
-            /// <summary>   The wind speed. </summary>
+            /// <summary>   Wind speed. </summary>
             public double WS;
-            /// <summary>   The wind direction. </summary>
+            /// <summary>   Wind direction. </summary>
             public double WD;            
-            /// <summary> The WS standard deviation from anem at height closest to (but not higher than) the extrapolated height. </summary>            
+            /// <summary> WS standard deviation from anem at height closest to (but not higher than) the extrapolated height. </summary>            
             public double SD;
             /// <summary> Estimated shear alpha exponent </summary>
             public double alpha;
         }               
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>  Defined TypeL Est_Alpha Used to hold time series of estimated alpha. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>  Contains timestamp, wind speed, wind direction, and estimated shear alpha exponent. </summary>
         [Serializable()]
         public struct Est_Alpha
         {
-            /// <summary>   The time stamp Date/Time. </summary>
+            /// <summary>   Time stamp Date/Time. </summary>
             public DateTime timeStamp;
-            /// <summary>   The average power law shear exponent alpha. </summary>
+            /// <summary>   Average power law shear exponent alpha. </summary>
             public double alpha;
-            /// <summary>   The wind direction of vane closest to Modeled Height. </summary>
+            /// <summary>   Wind direction of vane closest to modeled height. </summary>
             public double WD;
-            /// <summary>   Wind speed at Modeled Height. </summary>
+            /// <summary>   Wind speed at modeled height. </summary>
             public double WS;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: Anem_data. Used to hold info about the anemometer including the sensor height,
-        /// sensor ID and windData time series.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary> Holds all anemometer information and data including the sensor height, sensor ID, tower shadow sectors, and wind time series. </summary>        
         [Serializable()]
         public struct Anem_Data
         {
@@ -203,13 +144,8 @@ namespace ContinuumNS
             /// <summary>   Wind speed time series data. </summary>
             public data[] windData;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Defined type to hold tower shadow info. </summary>
-        ///
-        /// <remarks>   Liz, 6/28/2018. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+       
+        /// <summary>   Contains defined tower shadow sector (min/max/center WD). </summary>        
         [Serializable()]
         public struct Tower_Shadow
         {
@@ -220,91 +156,50 @@ namespace ContinuumNS
             /// <summary>   Center of tower shadow. -999 if there is no tower shadow. </summary>
             public int center;            
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: Vane_Data. Used to hold the dirData time series and height of vane.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Holds wind direction time series data and height of vane. </summary>
         [Serializable()]
         public struct Vane_Data
         {
-            /// <summary>   The height of vane. </summary>
+            /// <summary>  Vane height. </summary>
             public double height;
-            /// <summary>   Array of type data which holding time series of vane data. </summary>
+            /// <summary>  Wind direction time series data. </summary>
             public data[] dirData;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: Temp_Data. Used to hold the temperature sensor time series data plus the height
-        /// of the sensor and temperature units.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Holds temperature sensor time series data plus the height of the sensor and temperature units. </summary>
         [Serializable()]
         public struct Temp_Data
         {
-            /// <summary>   The height. </summary>
+            /// <summary>   Senso height. </summary>
             public double height;
             /// <summary>   Celsius 'C' or Fahrenheit 'F'. </summary>
             public char C_or_F;
             /// <summary>   Array of type data holding time series of temperature sensor data. </summary>
             public data[] temp;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: Shear_Data. Used to hold time series of shear alpha including the wind speed
-        /// and height of sensor closest to but not higher than hub height and wind direction.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Holds anemometer height and time series of shear alpha, wind speed and wind direction data </summary>        
         [Serializable()]
         public struct Shear_Data
         {            
             /// <summary>   Anemometer height. </summary>
             public double anemHeight;
-            /// <summary>   Array of type Est_Data which holds time series of wind speed and wind direction (average of filtered data, if redundant) and estimated alpha data. </summary>
+            /// <summary>   Wind speed and wind direction (average of filtered data, if redundant) and estimated alpha data time series data. </summary>
             public Est_Data[] WS_WD_Alpha;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: Sim_TS. Used to hold estimated time series data and the height of the estimated
-        /// data.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Holds estimated time series data and the height of the estimated data. </summary>
         [Serializable()]
         public struct Sim_TS
         {             
-            /// <summary>   The height of estimated data. </summary>
+            /// <summary>  Height of estimated data. </summary>
             public double height;
-            /// <summary>   Array of type Est_Data which holds time series of estimated data. </summary>
+            /// <summary>   Estimated wind speed and wind direction time series data. </summary>
             public Est_Data[] WS_WD_data;
-        }
-
-        
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: Conc_WS_Data. Used to hold the concurrent wind speed data collected by two
-        /// anemomters at the same height.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        }              
+                
+        /// <summary> Holds the concurrent wind speed data collected by two anemomters. </summary>        
         public struct Conc_WS_Data
         {
             /// <summary>   Wind speed at Anem A. </summary>
@@ -312,44 +207,28 @@ namespace ContinuumNS
             /// <summary>   Wind speed at Anem B. </summary>
             public double[] anemB_WS;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Defined Type: Used to hold wind speed ratios and wind direction data. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Holds wind speed ratios and wind direction data for scatterplot. </summary>
         public struct WS_Ratio_WD_Data
         {
-            /// <summary>   The wind speed ratio. </summary>
+            /// <summary>   Wind speed ratios. </summary>
             public double[] WS_Ratio;
-            /// <summary>   The wind direction. </summary>
+            /// <summary>   Wind direction data. </summary>
             public double[] WD;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Defined Type: Used to hold wind speed ratio and wind speed data. </summary>
-        ///
-        /// <remarks>   OEE, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>  Holds wind speed ratio and wind speed data for scatterplot. </summary>
         public struct WS_Ratio_WS_Data
         {
-            /// <summary>   The wind speed ratio. </summary>
+            /// <summary>   Wind speed ratios. </summary>
             public double[] WS_Ratio;
-            /// <summary>   The wind speed. </summary>
+            /// <summary>   Wind speed data. </summary>
             public double[] WS;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: Yearly_Maxes which holds the maximum ten-minute and maximum gust and their
-        /// corresponding time stamps for a given year.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 7/17/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Holds the maximum ten-minute and maximum gust and their corresponding time stamps for a given year. </summary>        
         public struct Yearly_Maxes
         {
             /// <summary>   Timestamp when max WS was measured. </summary>
@@ -361,15 +240,9 @@ namespace ContinuumNS
             /// <summary>   Max 3-sec gust. </summary>
             public double maxGust;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Enum Type: Filter_Flags Used to define the different QC filtering flags.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Filter_Flags Used to define the different QC filtering flags. </summary>
+        
         public enum Filter_Flags
         {
             /// <summary>   Data outside range flag. </summary>
@@ -393,71 +266,37 @@ namespace ContinuumNS
             /// <summary>   Minimum wind speed flag (not currently implemented). </summary>
             minWS = 7
             
-        }               
-               
+        }   
 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets the number of anemometers loaded. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ///
-        /// <returns>   The number of anemometers. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary>  Gets the number of anemometers loaded. </summary>
         public int GetNumAnems()
         {
             return anems.Length;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        
         /// <summary>   Gets the number of vanes loaded. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ///
-        /// <returns>   The number of wind vanes. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
         public int GetNumVanes()
         {
             return vanes.Length;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+                
         /// <summary>   Gets the number of temperature sensors. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ///
-        /// <returns>   The number of temperature sensors. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
         public int GetNumTemps()
         {
             return temps.Length;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets the number of simulated (estimated) datasets. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ///
-        /// <returns>   The number of simulated wind datasets. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Gets the number of simulated (estimated) datasets. </summary>
         public int GetNumSimData()
         {
             return simData.Length;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets length of met dataset. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ///
-        /// <returns>   The number of data points in met dataset. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Gets length of met dataset. </summary>        
         public int GetDataLength()
         {
             int dataCount = 0;
@@ -466,28 +305,8 @@ namespace ContinuumNS
 
             return dataCount;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets number estimated shear alpha datasets. </summary>
-        ///
-        /// <remarks>   Liz, 10/18/2017. </remarks>
-        ///
-        /// <returns>   The estimated shear alpha dataset count. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public int GetNumAlphaSets()
-        {
-            return alphaByAnem.Length;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets heights of anemometers. </summary>
-        ///
-        /// <remarks>   Liz, 7/6/2018. </remarks>
-        ///
-        /// <returns>   heights of anemometers. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Gets heights of anemometers. </summary>        
         public double[] GetHeightsOfAnems()
         {
             double[] These_Heights = new double[0];
@@ -507,39 +326,12 @@ namespace ContinuumNS
             }
 
             return These_Heights;
-        }
+        }               
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Creates a new met data QC analysis. Resets tool to import new data. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public void NewAnalysis()
-        {
-            rawFilename = "";
-
-            anems = new Anem_Data[0];
-            vanes = new Vane_Data[0];
-            temps = new Temp_Data[0];
-
-            filteringDone = false;
-
-            alpha = new Est_Alpha[0];
-            alphaByAnem = new Shear_Data[0];
-            simData = new Sim_TS[0];
-                                
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Converts all wind speed data from miles per hour to meters per second. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Converts all wind speed data from miles per hour to meters per second. </summary>  
         public void ConvertToMPS()
-        {
-            // converts wind speed data from mph to m/s
+        {           
             for (int i = 0; i < GetNumAnems(); i++)
             {
                 for (int j = 0; j < anems[i].windData.Length; j++)
@@ -554,19 +346,8 @@ namespace ContinuumNS
                 }
             }
         }               
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates average alpha in WD sector for specified hourly interval. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ///
-        /// <param name="minHour"> Minimum hour to include in average calc. </param>
-        /// <param name="maxHour"> Maximum hour. </param>
-        /// <param name="numWD">   Number of wind direction sectors. </param>
-        ///
-        /// <returns>   Array of Average alpha by wind direction sector. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>   Calculates and returns average alpha in each WD sector for specified hourly interval. </summary>
         public double[] GetAvgAlpha(int minHour, int maxHour, int numWD)
         {            
             double[] avgAlpha = new double[numWD];
@@ -607,18 +388,8 @@ namespace ContinuumNS
 
             return avgAlpha;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets wind direction index. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisWD">  Wind direction (degs). </param>
-        /// <param name="numWD">   Number of wind direction sectors. </param>
-        ///
-        /// <returns>   The wind direction index. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Calculates and returns the wind direction index of specified wind direction. </summary>        
         public int GetWD_Ind(double thisWD, int numWD)
         {
             int WD_Ind = 0;
@@ -634,46 +405,39 @@ namespace ContinuumNS
             return WD_Ind;
         }
 
-        public int GetWS_ind(double thisWS, double binWidth)
+        /// <summary> Calculates and returns the wind speed index of specified wind speed. </summary>   
+        public int GetWS_ind(double thisWS, double binWidth, int numWS)
         {
             int WS_Ind = 0;
             if (binWidth != 0)
                 WS_Ind = (int)Math.Round(thisWS / binWidth, 0, MidpointRounding.AwayFromZero);
 
+            if (WS_Ind >= numWS)
+                WS_Ind = numWS - 1;
+
             return WS_Ind;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the average ws by wd. </summary>
-        ///
-        /// <remarks>   OEE, 7/6/2018. </remarks>
-        ///
-        /// <param name="startTime">   The start time. </param>
-        /// <param name="endTime">     The end time. </param>
-        /// <param name="anemInd">     Anem index. </param>
-        ///
-        /// <returns>   The calculated average ws by wd. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public double[] Calc_Avg_WS_by_WD(DateTime startTime, DateTime endTime, int anemInd, string filtOrUnfilt)
+        /// <summary> Calculates the average wind speed of specified anem in each wind direction bin (as determined by specified vane) for specified start/end time either filtered or unfiltered data (hard-coded 5 deg WD bin width) used for plotting average WS by WD on Met Data QC tab. </summary>
+        public double[] Calc_Avg_WS_by_WD(DateTime startTime, DateTime endTime, Anem_Data anem, Vane_Data vane, string filtOrUnfilt)
         {
             double[] theseWS_byWD = new double[72];
             int[] WD_count = new int[72];
 
-            int vaneInd = GetVaneClosestToHH(anems[anemInd].height);
+      //      int vaneInd = GetVaneClosestToHH(anems[anemInd].height);
             
             int timeInd = 0;
-            while (anems[anemInd].windData[timeInd].timeStamp < startTime)
+            while (anem.windData[timeInd].timeStamp < startTime)
                 timeInd++;
 
-            while (anems[anemInd].windData[timeInd].timeStamp < endTime)
+            while (anem.windData[timeInd].timeStamp < endTime)
             {
-                if ((filtOrUnfilt == "Unfiltered" && (anems[anemInd].windData[timeInd].filterFlag != Filter_Flags.missing ||
-                    anems[anemInd].windData[timeInd].filterFlag != Filter_Flags.outsideRange)) || 
-                    (anems[anemInd].windData[timeInd].filterFlag == Filter_Flags.Valid && vanes[vaneInd].dirData[timeInd].filterFlag == Filter_Flags.Valid))
+                if ((filtOrUnfilt == "Unfiltered" && (anem.windData[timeInd].filterFlag != Filter_Flags.missing ||
+                    anem.windData[timeInd].filterFlag != Filter_Flags.outsideRange)) || 
+                    (anem.windData[timeInd].filterFlag == Filter_Flags.Valid && vane.dirData[timeInd].filterFlag == Filter_Flags.Valid))
                 {
-                    int WD_Ind = GetWD_Ind(vanes[vaneInd].dirData[timeInd].avg, 72);
-                    theseWS_byWD[WD_Ind] = theseWS_byWD[WD_Ind] + anems[anemInd].windData[timeInd].avg;
+                    int WD_Ind = GetWD_Ind(vane.dirData[timeInd].avg, 72);
+                    theseWS_byWD[WD_Ind] = theseWS_byWD[WD_Ind] + anem.windData[timeInd].avg;
                     WD_count[WD_Ind]++;
                     
                 }
@@ -689,34 +453,23 @@ namespace ContinuumNS
 
             return theseWS_byWD;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the wind rose. </summary>
-        ///
-        /// <remarks>   OEE, 7/6/2018. </remarks>
-        ///
-        /// <param name="startTime">   The start time. </param>
-        /// <param name="endTime">     The end time. </param>
-        /// <param name="vaneInd">     The vane ind. </param>
-        ///
-        /// <returns>   The calculated wind rose. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public double[] Calc_Wind_Rose(DateTime startTime, DateTime endTime, int vaneInd, string filtOrUnfilt)
+                
+        /// <summary>   Calculates and returns the wind rose between start/end time using either filtered or unfiltered data. </summary>        
+        public double[] Calc_Wind_Rose(DateTime startTime, DateTime endTime, Vane_Data vane, string filtOrUnfilt)
         {
             double[] thisWR = new double[16];
             int totalCount = 0;
             
             int timeInd = 0;
-            while (vanes[vaneInd].dirData[timeInd].timeStamp < startTime)
+            while (vane.dirData[timeInd].timeStamp < startTime)
                 timeInd++;
 
-            while (vanes[vaneInd].dirData[timeInd].timeStamp < endTime && timeInd < vanes[vaneInd].dirData.Length - 1)
+            while (vane.dirData[timeInd].timeStamp < endTime && timeInd < vane.dirData.Length - 1)
             {
-                if ((vanes[vaneInd].dirData[timeInd].filterFlag != Filter_Flags.missing && vanes[vaneInd].dirData[timeInd].filterFlag != Filter_Flags.outsideRange) &&
-                        (filtOrUnfilt == "Unfiltered" || vanes[vaneInd].dirData[timeInd].filterFlag == Filter_Flags.Valid))
+                if ((vane.dirData[timeInd].filterFlag != Filter_Flags.missing && vane.dirData[timeInd].filterFlag != Filter_Flags.outsideRange) &&
+                        (filtOrUnfilt == "Unfiltered" || vane.dirData[timeInd].filterFlag == Filter_Flags.Valid))
                 {
-                    int WD_Ind = GetWD_Ind(vanes[vaneInd].dirData[timeInd].avg, 16);
+                    int WD_Ind = GetWD_Ind(vane.dirData[timeInd].avg, 16);
                     thisWR[WD_Ind]++;
                     totalCount++;
                 }
@@ -731,20 +484,8 @@ namespace ContinuumNS
             
             return thisWR;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets WS ratio or difference and wd. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="anemHeight">      height of the anemometer. </param>
-        /// <param name="filtOrUnfilt">   filtered or Unfiltered. </param>
-        /// <param name="ratioOrDiff">    Wind speed ratio or difference. </param>
-        /// <param name="allOrNot">       True if entire dataset is used. False if analysis start/end are used. </param>
-        ///
-        /// <returns>   Returns array with wind speed ratios (or difference) and wind direction. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Calculates and returns WS ratio or WS difference and wind direction time series data. Used for plots on GUI </summary> 
         public WS_Ratio_WD_Data GetWS_RatioOrDiffAndWD(double anemHeight, string filtOrUnfilt, string ratioOrDiff, bool allOrNot)
         {            
             WS_Ratio_WD_Data Ratios_WD = new WS_Ratio_WD_Data();
@@ -833,18 +574,82 @@ namespace ContinuumNS
             return Ratios_WD;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets ws ratio or difference and ws between start and end dates. </summary>
-        ///
-        /// <remarks>   OEE, 6/21/2017. </remarks>
-        ///
-        /// <param name="anemHeight">      height of the anem. </param>
-        /// <param name="filtOrUnfilt">   The filt or unfilt. </param>
-        /// <param name="ratioOrDiff">    The ratio or difference. </param>
-        ///
-        /// <returns>   Returns array with wind speed ratios (or difference) and wind speed. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary> Returns wind speed ratios calculated between two specified anemometers in WD bins as defined by specified vane </summary>        
+        public WS_Ratio_WD_Data GetWS_DiffbyWD_TwoAnems(Anem_Data anemA, Anem_Data anemB, Vane_Data selVane, string filtOrUnfilt, bool allOrNot)
+        {
+            WS_Ratio_WD_Data Ratios_WD = new WS_Ratio_WD_Data();
 
+            if (anemA.height == 0 || anemB.height == 0 || selVane.height == 0)
+                return Ratios_WD;
+            
+            // count number of concurrent data intervals
+            int concCount = 0;
+            int thisInd = 0;
+
+            DateTime thisStart;
+            DateTime thisEnd;
+
+            if (allOrNot == true)
+            {
+                thisStart = allStartDate; // Uses all met data that has been imported
+                thisEnd = allEndDate;
+            }
+            else
+            {
+                thisStart = startDate; // Uses met data analysis interval (specified either by function FindStartEndDatesWithMaxRecovery or by user)
+                thisEnd = endDate;
+            }
+
+            while (anemA.windData[thisInd].timeStamp < thisStart) // Find index at specified start time
+                thisInd++;
+
+            int startInd = thisInd;
+
+            while (thisInd < anemA.windData.Length) // Increment until end time is reached and count number of concurrent valid measurements
+            {
+                if (anemA.windData[thisInd].timeStamp > thisEnd)
+                    break;
+
+                if ((filtOrUnfilt == "Filtered") && (anemA.windData[thisInd].filterFlag == 0) && (anemB.windData[thisInd].filterFlag == 0) && (selVane.dirData[thisInd].filterFlag == 0))
+                    concCount++;
+                else if ((filtOrUnfilt == "Unfiltered") && (anemA.windData[thisInd].filterFlag >= 0) && (anemB.windData[thisInd].filterFlag >= 0) && (selVane.dirData[thisInd].filterFlag >= 0)) // unfiltered (not missing or out of range)
+                    concCount++;
+
+                thisInd++;
+            }
+
+            Array.Resize(ref Ratios_WD.WS_Ratio, concCount);
+            Array.Resize(ref Ratios_WD.WD, concCount);
+
+            concCount = 0;
+            thisInd = startInd;
+
+            while (thisInd < anemA.windData.Length)
+            {
+                if (anemA.windData[thisInd].timeStamp > thisEnd)
+                    break;
+
+                if ((filtOrUnfilt == "Filtered") && (anemA.windData[thisInd].filterFlag == 0) && (anemB.windData[thisInd].filterFlag == 0) && (selVane.dirData[thisInd].filterFlag == 0))
+                {                    
+                    Ratios_WD.WS_Ratio[concCount] = anemA.windData[thisInd].avg - anemB.windData[thisInd].avg;                    
+                    Ratios_WD.WD[concCount] = selVane.dirData[thisInd].avg;
+                    concCount++;
+
+                }
+                else if ((filtOrUnfilt == "Unfiltered") && (anemA.windData[thisInd].filterFlag >= 0) && (anemB.windData[thisInd].filterFlag >= 0) && (selVane.dirData[thisInd].filterFlag >= 0)) // unfiltered (not missing or out of range)
+                {                    
+                    Ratios_WD.WS_Ratio[concCount] = anemA.windData[thisInd].avg - anemB.windData[thisInd].avg;
+                    Ratios_WD.WD[concCount] = selVane.dirData[thisInd].avg;
+                    concCount++;
+                }
+
+                thisInd++;
+            }
+
+            return Ratios_WD;
+        }
+
+        /// <summary> Calculates and returns wind speed ratio or difference and wind speed data between start and end dates. Used in scatterplots on GUI. </summary>
         public WS_Ratio_WS_Data GetWS_RatioOrDiffAndWS(int anemHeight, string filtOrUnfilt, string ratioOrDiff)
         {            
             WS_Ratio_WS_Data ratiosWS = new WS_Ratio_WS_Data();
@@ -861,19 +666,17 @@ namespace ContinuumNS
                     thisAnemB = thisAnem;
             }
 
-
             // count number of concurrent data intervals
             int concCount = 0;
             if ((thisAnemA.height == 0) || (thisAnemB.height == 0))
                 return ratiosWS;
 
             int thisInd = 0;
-            int startInd = 0;
-
+            
             while (thisAnemA.windData[thisInd].timeStamp < startDate)
                 thisInd++;
 
-            startInd = thisInd;
+            int startInd = thisInd;
 
             while (thisInd < thisAnemA.windData.Length)
             {
@@ -922,24 +725,74 @@ namespace ContinuumNS
             return ratiosWS;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets concurrent (filtered or unfiltered) wind speeds at specified height and between
-        ///             start and end dates. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="anemHeight">      height of the anemometer. </param>
-        /// <param name="filtOrUnfilt">   filtered or Unfiltered WS. </param>
-        ///
-        /// <returns>
-        /// Returns array with concurrent wind speeds at specified height and either filtered
-        ///  or unfiltered data.
-        /// </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary> Calculates and returns wind speed difference and wind speed data between start and end dates for specified anems. Used in scatterplots on GUI. </summary>
+        public WS_Ratio_WS_Data GetWS_DiffAndWS_TwoAnems(Anem_Data anemA, Anem_Data anemB, string filtOrUnfilt)
+        {
+            WS_Ratio_WS_Data ratiosWS = new WS_Ratio_WS_Data();               
 
-        public Conc_WS_Data GetConcWS(int anemHeight, string filtOrUnfilt, Continuum thisInst, string metName)
+            // count number of concurrent data intervals
+            int concCount = 0;
+            if ((anemA.height == 0) || (anemB.height == 0))
+                return ratiosWS;
+
+            int thisInd = 0;
+
+            while (anemA.windData[thisInd].timeStamp < startDate)
+                thisInd++;
+
+            int startInd = thisInd;
+
+            while (thisInd < anemA.windData.Length)
+            {
+                if (anemA.windData[thisInd].timeStamp > endDate)
+                    break;
+
+                if ((filtOrUnfilt == "Filtered") && (anemA.windData[thisInd].filterFlag == 0) && (anemB.windData[thisInd].filterFlag == 0))
+                    concCount++;
+                else if ((filtOrUnfilt == "Unfiltered") && (anemA.windData[thisInd].filterFlag >= 0) && (anemB.windData[thisInd].filterFlag >= 0)) // unfiltered (not missing or out of range)
+                    concCount++;
+
+                thisInd++;
+
+            }
+
+            Array.Resize(ref ratiosWS.WS_Ratio, concCount);
+            Array.Resize(ref ratiosWS.WS, concCount);
+
+            concCount = 0;
+
+            thisInd = startInd;
+
+            while (thisInd < anemA.windData.Length)
+            {
+                if (anemA.windData[thisInd].timeStamp > endDate)
+                    break;
+
+                if ((filtOrUnfilt == "Filtered") && (anemA.windData[thisInd].filterFlag == 0) && (anemB.windData[thisInd].filterFlag == 0))
+                {                    
+                    ratiosWS.WS_Ratio[concCount] = anemA.windData[thisInd].avg - anemB.windData[thisInd].avg;
+                    ratiosWS.WS[concCount] = Math.Max(anemA.windData[thisInd].avg, anemB.windData[thisInd].avg);
+                    //   ratiosWS.WS[concCount] = GetMaxWS_atHeight(anemA.height, thisInd);
+                    concCount++;
+                }
+                else if ((filtOrUnfilt == "Unfiltered") && (anemA.windData[thisInd].filterFlag >= 0) && (anemB.windData[thisInd].filterFlag >= 0)) // unfiltered (not missing or out of range)
+                {                    
+                    ratiosWS.WS_Ratio[concCount] = anemA.windData[thisInd].avg - anemB.windData[thisInd].avg;
+                    ratiosWS.WS[concCount] = Math.Max(anemA.windData[thisInd].avg, anemB.windData[thisInd].avg);
+                    //   ratiosWS.WS[concCount] = GetMaxWS_atHeight(anemA.height, thisInd);
+                    concCount++;
+                }
+
+                thisInd++;
+            }
+
+            return ratiosWS;
+        }
+
+        /// <summary> Finds and returns concurrent (filtered or unfiltered) wind speeds at redundant sensors at specified height or at two specified anems and between start and end dates. </summary>
+        public Conc_WS_Data GetConcWS(int anemHeight, string filtOrUnfilt, Continuum thisInst, string metName, Anem_Data anemA, Anem_Data anemB)
         {             
-            Conc_WS_Data concWS = new Conc_WS_Data(); // index 0: WS data, index 1: Anem A or B                      
+            Conc_WS_Data concWS = new Conc_WS_Data();                      
 
             Anem_Data thisAnemA = new Anem_Data();
             Anem_Data thisAnemB = new Anem_Data();
@@ -952,27 +805,34 @@ namespace ContinuumNS
                     GetSensorDataFromDB(thisInst, metName);
             }
 
-            foreach (Anem_Data thisAnem in anems)
+            if (anemA.height == 0 && anemB.height == 0)
             {
-                if ((Math.Abs(thisAnem.height - anemHeight) < 2) && (thisAnem.ID == 'A'))
-                    thisAnemA = thisAnem;
+                foreach (Anem_Data thisAnem in anems)
+                {
+                    if ((Math.Abs(thisAnem.height - anemHeight) < 2) && (thisAnem.ID == 'A'))
+                        thisAnemA = thisAnem;
 
-                if ((Math.Abs(thisAnem.height - anemHeight) < 2) && (thisAnem.ID == 'B'))
-                    thisAnemB = thisAnem;
+                    if ((Math.Abs(thisAnem.height - anemHeight) < 2) && (thisAnem.ID == 'B'))
+                        thisAnemB = thisAnem;
+                }
+            }
+            else
+            {
+                thisAnemA = anemA;
+                thisAnemB = anemB;
             }
 
             if ((thisAnemA.height == 0) || (thisAnemB.height == 0) || thisAnemA.windData == null || thisAnemB.windData == null)
                 return concWS;
                        
             // count number of concurrent data intervals
-            int concCount = 0;
-            int startInd = 0;
+            int concCount = 0;            
             int thisInd = 0;
 
             while (thisAnemA.windData[thisInd].timeStamp < startDate)
                 thisInd++;
 
-            startInd = thisInd;
+            int startInd = thisInd;
 
             while (thisInd < thisAnemA.windData.Length)
             {
@@ -1017,17 +877,8 @@ namespace ContinuumNS
 
             return concWS;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the average extrapolated wind speed. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisSim"> Extrapolated (i.e. simulated) data time series. </param>
-        ///
-        /// <returns>   Returns average wind speed of extrapolated wind speed time series. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Calculates and returns the average extrapolated wind speed. </summary>        
         public double CalcAvgExtrapolatedWS(Sim_TS thisSim)
         {            
             double avgWS = 0;
@@ -1055,19 +906,9 @@ namespace ContinuumNS
 
             return avgWS;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the average wind speed of filtered or unfiltered data. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisAnem">    This anemometer dataset. </param>
-        /// <param name="filtered">     True if filtered. </param>
-        ///
-        /// <returns>   The calculated average wind speed. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public double CalcAvgWS(Anem_Data thisAnem, Boolean filtered)
+                
+        /// <summary> Calculates and returns the average wind speed of filtered or unfiltered data. </summary>        
+        public double CalcAvgWS(Anem_Data thisAnem, bool filtered)
         {
             double avgWS = 0;
             int dataCount = 0;
@@ -1103,21 +944,8 @@ namespace ContinuumNS
 
             return avgWS;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the anemometer data recovery. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisAnem">    This anemometer time series data. </param>
-        /// <param name="filtered">     True if filtered. </param>
-        ///
-        /// <returns>
-        /// Returns the percent data recovery of filtered or unfiltered anemometer data between specified
-        /// start and end dates.
-        /// </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Calculates and returns the anemometer data recoverybetween start and end dates. </summary>       
         public double CalcAnemDataRecovery(Anem_Data thisAnem, bool filtered)
         {            
             double dataRec = 0;
@@ -1175,18 +1003,8 @@ namespace ContinuumNS
 
             return dataRec;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the vane data recovery. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisVane">    This wind vane time series data. </param>
-        /// <param name="filtered">     True if filtered. </param>
-        ///
-        /// <returns>   The percent vane data recovery. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Calculates and returns the filtered/unfiltered vane data recovery between start and end dates. </summary>        
         public double CalcVaneDataRecovery(Vane_Data thisVane, bool filtered)
         {            
             double dataRec = 0;
@@ -1243,22 +1061,10 @@ namespace ContinuumNS
 
             return dataRec;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the temperature sensor data recovery. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisTemp">    This temperature data time series. </param>
-        ///
-        /// <returns>
-        /// Returns the data recovery of the temperature sensor. Valid reading if T > -50.
-        /// </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Calculates and returns the temperature sensor data recovery between the start and end dates. </summary>        
         public double CalcTempDataRecovery(Temp_Data thisTemp)
-        {            
-            double dataRec = 0;
+        {                        
             int dataCount = 0;
             int thisInd = 0;
 
@@ -1276,22 +1082,15 @@ namespace ContinuumNS
             }                
 
             double totesDays = endDate.Subtract(startDate).TotalDays * 24 * 6 + 1;
-            dataRec = dataCount / totesDays; // data recovery over whole period (Start to End)
+            double dataRec = 1.0;
+            
+            if (totesDays > 0)
+                dataRec = dataCount / totesDays; // data recovery over whole period (Start to End)
                         
             return dataRec;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the percent of anemometer data filtered due to specified flag. </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ///
-        /// <param name="thisAnem">    Anemometer time series. </param>
-        /// <param name="thisFlag">    Filtering flag. </param>
-        ///
-        /// <returns>   The percent of filtered anemometer data. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Calculates the percent of anemometer data filtered due to specified flag between start and end dates. </summary>        
         public double CalcPercentAnemFiltered(Anem_Data thisAnem, Filter_Flags thisFlag)
         {
             double percFilt = 0;
@@ -1314,19 +1113,9 @@ namespace ContinuumNS
                 percFilt = percFilt / (endDate.Subtract(startDate).TotalDays * 24 * 6);
             
             return percFilt;
-        }
-                
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the percent of vane data filtered due to specified flag. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisVane">    This vane time series data. </param>
-        /// <param name="thisFlag">    Filtering flag. </param>
-        ///
-        /// <returns>   The percent of vane data filtered due to specified flag. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        }                
+       
+        /// <summary> Calculates the percent of vane data filtered due to specified flag between start and end dates. </summary>        
         public double CalcPercentVaneFiltered(Vane_Data thisVane, Filter_Flags thisFlag)
         {
             double percFilt = 0;
@@ -1351,18 +1140,8 @@ namespace ContinuumNS
 
             return percFilt;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets maximum wind speed at specified height and at a given timestamp. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="anemHeight">  height of the anemometer. </param>
-        /// <param name="TS_index">     Time stamp index. </param>
-        ///
-        /// <returns>   The maximum wind speed at specified height and time. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Gets maximum wind speed at specified height and at a given timestamp. </summary>        
         public double GetMaxWS_atHeight(double anemHeight, int TS_index)
         {            
             double thisMaxWS = 0;
@@ -1386,22 +1165,29 @@ namespace ContinuumNS
                     thisMaxWS = thisAnemB.windData[TS_index].avg;
             
             return thisMaxWS;
-        }               
+        }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Quality check and filter data based on specified filtering flags. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="filtersToApply"> String specifying filters to apply. Options are "All", "Tower_Shadow",
-        ///                                 "Min_WS_SD", "Max_WS_SD", "Max_WS_Range", "minWS" and
-        ///                                 "Icing". </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary> Returns true if specified filter is in list of filters to apply or if "All" filters are applied </summary>        
+        public bool IsFilterInList(string[] filterList, string thisFilter)
+        {
+            bool isInList = false;
 
-        public void FilterData(string filtersToApply)
-        {            
-            int dataCount = GetDataLength();
+            if (filterList != null)
+            {
+                for (int i = 0; i < filterList.Length; i++)
+                    if (filterList[i] == thisFilter)
+                        isInList = true;
 
+                if (filterList[0] == "All")
+                    isInList = true;
+            }
+             
+            return isInList;
+        }
+
+        /// <summary> Quality check and filter data based on specified filtering flags ("All", "Min WS", "Icing", "Min WS SD", "Max WS SD", "Max WS Range", Tower Shadow") </summary>        
+        public void FilterData(string[] filtersToApply)
+        { 
             // clear extrapolated data
             alpha = new Est_Alpha[0];
             alphaByAnem = new Shear_Data[0];
@@ -1417,11 +1203,11 @@ namespace ContinuumNS
                         int vaneInd = GetVaneClosestToHH(anems[j].height);                                                
                                               
                         // min WS filter
-                        if ((anems[j].windData[i].avg < minWS_Filt && GetClosestWS(j,i) > minClosestWS) && ((filtersToApply == "All") || (filtersToApply == "Min_WS")))
+                        if ((anems[j].windData[i].avg < minWS_Filt && GetClosestWS(j,i) > minClosestWS) && IsFilterInList(filtersToApply, "Min WS"))
                             anems[j].windData[i].filterFlag = Filter_Flags.minWS;
                                                
                         // Icing filter
-                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (GetNumTemps() > 0) && ((filtersToApply == "All") || (filtersToApply == "Icing")))
+                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (GetNumTemps() > 0) && IsFilterInList(filtersToApply, "Icing"))
                         {
                             // find a Valid temperature reading for icing filter
                             double validTemp = -999;
@@ -1435,16 +1221,15 @@ namespace ContinuumNS
                         }                                               
 
                         // min SD filter
-                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].avg > 1) && (anems[j].windData[i].SD <= minSD_FiltSlope * anems[j].windData[i].avg) && ((filtersToApply == "All") || (filtersToApply == "Min_WS_SD")))
+                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].avg > 1) && (anems[j].windData[i].SD <= minSD_FiltSlope * anems[j].windData[i].avg) && IsFilterInList(filtersToApply, "Min WS SD"))
                             anems[j].windData[i].filterFlag = Filter_Flags.minAnemSD;                       
                                                                      
                         // max SD filter
-                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].SD >= maxSD_FiltSlope * anems[j].windData[i].avg + maxSD_FiltInt) 
-                            && ((filtersToApply == "All") || (filtersToApply == "Max_WS_SD")))
+                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].SD >= maxSD_FiltSlope * anems[j].windData[i].avg + maxSD_FiltInt) && IsFilterInList(filtersToApply, "Max WS SD"))
                             anems[j].windData[i].filterFlag = Filter_Flags.maxAnemSD;                                       
                         
                         // max - min Range filter
-                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && ((anems[j].windData[i].max - anems[j].windData[i].min) >= maxRange) && ((filtersToApply == "All") || (filtersToApply == "Max_WS_Range")))
+                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && ((anems[j].windData[i].max - anems[j].windData[i].min) >= maxRange) && IsFilterInList(filtersToApply, "Max WS Range"))
                             anems[j].windData[i].filterFlag = Filter_Flags.maxAnemRange;                                               
                                               
                     }
@@ -1455,7 +1240,7 @@ namespace ContinuumNS
                     if ((vanes[j].dirData[i].filterFlag != Filter_Flags.outsideRange) && (vanes[j].dirData[i].filterFlag != Filter_Flags.missing))
                     {
                         // Icing filter
-                        if ((GetNumTemps() > 0) && ((filtersToApply == "All") || (filtersToApply == "Icing")))
+                        if ((GetNumTemps() > 0) && IsFilterInList(filtersToApply, "Icing"))
                         {
                             // find a Valid temperature reading
                             double validTemp = -999;
@@ -1482,7 +1267,7 @@ namespace ContinuumNS
                         int vaneInd = GetVaneClosestToHH(anems[j].height);
 
                         // Tower shadow filter
-                        if (IsAffectedByTower(vanes[vaneInd].dirData[i].avg, j) && ((filtersToApply == "All") || (filtersToApply == "Tower_Shadow")))
+                        if (IsAffectedByTower(vanes[vaneInd].dirData[i].avg, j) && IsFilterInList(filtersToApply, "Tower Shadow"))
                             anems[j].windData[i].filterFlag = Filter_Flags.towerEffect;
                     }
                 }
@@ -1491,21 +1276,10 @@ namespace ContinuumNS
             filteringDone = true;
             
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets wind speed of closest anemometer. </summary>
-        ///
-        /// <remarks>   Liz, 7/6/2018. </remarks>
-        ///
-        /// <param name="anemInd"> Anem index. </param>
-        /// <param name="TS_ind">   Timestamp index. </param>
-        ///
-        /// <returns>   The closest wind speed </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Gets wind speed of closest anemometer at specified timestamp. </summary>        
         public double GetClosestWS(int anemInd, int TS_ind)
-        {
-            double closestWS = 0;
+        {            
             double minDist = 100;
             int closestInd = 0;
 
@@ -1521,22 +1295,12 @@ namespace ContinuumNS
                 }
             }
 
-            closestWS = anems[closestInd].windData[TS_ind].avg;
+            double closestWS = anems[closestInd].windData[TS_ind].avg;
             
             return closestWS;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Checks thisWD to see if it falls within the tower shadow sector defined for 
-        ///             Anem[anemInd]. </summary>
-        ///
-        /// <remarks>   Liz, 6/28/2018. </remarks>
-        ///
-        /// <param name="thisWD">  Wind direction (degs). </param>
-        /// <param name="anemInd"> Anem index. </param>
-        ///
-        /// <returns>   True if in tower shadow, false if not. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary> Checks thisWD to see if it falls within the tower shadow sector defined for Anem[anemInd]. Returns true if thisWD is in tower shadow. </summary>        
         public bool IsAffectedByTower(double thisWD, int anemInd)
         {
             bool isInShadow = false;
@@ -1558,17 +1322,10 @@ namespace ContinuumNS
                         
             return isInShadow;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Define tower shadow sectors. </summary>
-        ///
-        /// <remarks>   Liz, 7/6/2018. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Defines tower shadow sectors at each anemometer level. </summary>        
         public void DefineTowerShadowSectors()
-        {                
-
-            // Define tower shadow sectors for all anem pairs
+        {
             for (int i = 0; i < GetNumAnems(); i++)
             {
                 if (anems[i].isOnlyMet == true)
@@ -1586,12 +1343,11 @@ namespace ContinuumNS
                 }
 
                 if ((anems[i].isOnlyMet == false) && (anems[i].shadow.minWD == 0) && (anems[i].shadow.maxWD == 0)) 
-                {                   
-                   
-                    // get WS difference data
+                {                  
+                    // Get WS difference data
                     WS_Ratio_WD_Data diffsAndWD = GetWS_RatioOrDiffAndWD(anems[i].height, "Filtered", "Diff", true);
                     
-                    // calculate average WS difference
+                    // Calculate average WS difference
                     double[] avgWS_Diffs = CalcAvgWS_DiffsByWD(diffsAndWD);
 
                     // De-bias avgWS
@@ -1624,23 +1380,13 @@ namespace ContinuumNS
                         anems[indA_andB[1]].shadow.minWD = theseShadowBounds[0];
                         anems[indA_andB[1]].shadow.maxWD = theseShadowBounds[1];
                     }
-
                 }
-
-            }                       
+            }     
             
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Debias average ws difference. </summary>
-        ///
-        /// <remarks>   OEE, 7/6/2018. </remarks>
-        ///
-        /// <param name="avgWS_Diff">  The average ws difference. </param>
-        ///
-        /// <returns>   A double[]. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Reads in array of wind speed differences and normalizes to an average wind speed difference of 0.0. Returns debiased wind speed differences. </summary>        
         public double[] DebiasAvgWS_Diff(double[] avgWS_Diff)
         {
             double[] debiasedDiffs = new double[avgWS_Diff.Length];
@@ -1656,18 +1402,8 @@ namespace ContinuumNS
 
             return debiasedDiffs;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Finds the tower shadow sectors. </summary>
-        ///
-        /// <remarks>   OEE, 7/6/2018. </remarks>
-        ///
-        /// <param name="avgWS_Diffs">     The average ws diffs. </param>
-        /// <param name="shadowCenter">    The shadow center. </param>
-        ///
-        /// <returns>   The found shadow minimum maximum. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Finds the tower shadow wind direction range based on array of average wind speed difference and specified tower shadow center. </summary>        
         public int[] FindShadowMinMax(double[] avgWS_Diffs, double shadowCenter)
         {
             int[] shadowMinMax = new int[2];
@@ -1715,19 +1451,8 @@ namespace ContinuumNS
 
             return shadowMinMax;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Finds the wind direction index with either the min or max average wind speed 
-        ///             difference. Used in tower shadow sector definition. </summary>
-        ///
-        /// <remarks>   OEE, 7/6/2018. </remarks>
-        ///
-        /// <param name="avgWS_Diffs"> The average ws diffs. </param>
-        /// <param name="minOrMax">   The minimum or maximum. </param>
-        ///
-        /// <returns>   Minimum or maximum ws difference. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+       
+        /// <summary> Finds the wind direction index with either the min or max average wind speed difference. Used in tower shadow sector definition. </summary>        
         public int FindMinMaxWS_Diff(double[] avgWS_Diffs, string minOrMax)
         {
             int minOrMaxWD = 0;
@@ -1767,17 +1492,8 @@ namespace ContinuumNS
             
             return minOrMaxWD;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the average ws diffs by wd. </summary>
-        ///
-        /// <remarks>   OEE, 7/6/2018. </remarks>
-        ///
-        /// <param name="diffsAndWD"> The diffs and wd. </param>
-        ///
-        /// <returns>   The calculated average ws diffs by wd. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>  Calculates the average wind speed difference by wind direction. </summary>        
         public double[] CalcAvgWS_DiffsByWD(WS_Ratio_WD_Data diffsAndWD)
         {
             // using 2 deg bins
@@ -1802,19 +1518,8 @@ namespace ContinuumNS
 
             return avgDiffs;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Gets index of vane closest to but not higher than specified HH (hub height).
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisHH">  Specified height. </param>
-        ///
-        /// <returns>   The index of vane closest to (but not higher than) specified hH. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Gets index of vane closest to but not higher than specified HH (hub height). </summary>
         public int GetVaneClosestToHH(double thisHH)
         {
             int vaneInd = 0;
@@ -1834,20 +1539,8 @@ namespace ContinuumNS
 
             return vaneInd;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Gets indices of anemometers closest to (but not higher than) specified height.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="A_or_B">   Anemometer A or B. </param>
-        /// <param name="thisHH">  Specified height. </param>
-        ///
-        /// <returns>   The index of anemometer closest to (but not higher than) specified height. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+       
+        /// <summary> Gets indices of anemometers closest to (but not higher than) specified height. </summary>
         public int[] GetAnemsClosestToHH(double thisHH)
         {
             int[] anemInd = new int[2];
@@ -1885,17 +1578,8 @@ namespace ContinuumNS
 
             return anemInd;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets height closest to hh. </summary>
-        ///
-        /// <remarks>   OEE, 7/6/2018. </remarks>
-        ///
-        /// <param name="thisHH">  Specified height. </param>
-        ///
-        /// <returns>   The height closest to hh. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Gets anemometer height closest to modeled height. </summary>        
         public int GetHeightClosestToHH(double thisHH)
         {            
             double heightDiff = 1000;
@@ -1927,19 +1611,8 @@ namespace ContinuumNS
 
             return heightInd;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets maximum temperature that Icing occurs (in C or F). </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisTemp">    This temperature. </param>
-        ///
-        /// <returns>
-        /// Returns max temperature for Icing flag in either C or F depending on temp sensor.
-        /// </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Gets maximum temperature that Icing occurs (in C or F). </summary>        
         public double GetMaxIcingTemp(Temp_Data thisTemp)
         {          
             double thisMaxTemp = maxIcingTemp; // in F
@@ -1948,68 +1621,9 @@ namespace ContinuumNS
                 thisMaxTemp = (maxIcingTemp - 32) * 5 / 9;
 
             return thisMaxTemp;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Gets WS ratio or WS absolute difference of anemomters at specified height and time stamp.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="anemHeight">      height of the anemometer. </param>
-        /// <param name="TS_index">         Timestamp index. </param>
-        /// <param name="A_over_B">         If true, calc A/B (or A - B) otherwise B/A (or B - A). </param>
-        /// <param name="ratioOrDiff">    WS ratio or difference. </param>
-        ///
-        /// <returns>
-        /// Returns either the absolute difference or the wind speed ratio of the anemometers at level
-        /// anemHeight at index TS_index and calculated as WS_A/WS_B if A_over_B
-        ///  equals true.
-        /// </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public double GetWS_RatioOrAbsDiff(double anemHeight, int TS_index, bool A_over_B, string ratioOrDiff)
-        {            
-            double thisRatio = 0;
-
-            Anem_Data thisAnemA = new Anem_Data();
-            Anem_Data thisAnemB = new Anem_Data();
-
-            foreach (Anem_Data thisAnem in anems)
-            {
-                if ((Math.Abs(thisAnem.height - anemHeight) < 2) && (thisAnem.ID == 'A'))
-                    thisAnemA = thisAnem;
-
-                if ((Math.Abs(thisAnem.height - anemHeight) < 2) && (thisAnem.ID == 'B'))
-                    thisAnemB = thisAnem;
-            }
-
-            if ((thisAnemA.height == 0) || (thisAnemB.height == 0))
-                return thisRatio;
-
-            if ((thisAnemA.windData[TS_index].avg > 0) && (thisAnemB.windData[TS_index].avg > 0))
-            {
-                if (ratioOrDiff == "Ratio")
-                    if (A_over_B == true)
-                        thisRatio = thisAnemA.windData[TS_index].avg / thisAnemB.windData[TS_index].avg;
-                    else
-                        thisRatio = thisAnemB.windData[TS_index].avg / thisAnemA.windData[TS_index].avg;
-                if (ratioOrDiff == "Diff") thisRatio = Math.Abs(thisAnemA.windData[TS_index].avg - thisAnemB.windData[TS_index].avg);
-            }
-
-            return thisRatio;
-        }              
-           
-
-       
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Clears the filter flags and estimated data. </summary>
-        ///
-        /// <remarks>   Liz, 10/24/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        }       
+                
+        /// <summary> Clears the filter flags and estimated data. </summary>        
         public void ClearFilterFlagsAndEstimatedData()
         {
             for (int i = 0; i < GetDataLength(); i++)
@@ -2033,19 +1647,9 @@ namespace ContinuumNS
             simData = new Sim_TS[0];
 
             filteringDone = false;            
-        }      
-            
-                
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Extrapolate data. Creates simulated time series of extrapolated data at specified height.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///        
-        /// <param name="thisHeight">  height of extrapolation. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        }                
+        
+        /// <summary> Creates simulated time series of extrapolated data at specified height. </summary>
         public void ExtrapolateData(double thisHeight)
         {
             Array.Resize(ref simData, simData.Length + 1);
@@ -2057,9 +1661,9 @@ namespace ContinuumNS
             bool haveExtrapHeight = false;
 
             for (int i = 0; i < GetNumAnems(); i++)
-                if (anems[i].height == thisHeight)
-                    haveExtrapHeight = true;
-
+                if (anems[i].height == thisHeight)                
+                    haveExtrapHeight = true;                   
+                    
             if (haveExtrapHeight == true)
             {
                 // Count number of data points with both Valid anem and vane
@@ -2088,7 +1692,7 @@ namespace ContinuumNS
                         }
                     }
                 }
-                catch (Exception ex)
+                catch 
                 {
                     MessageBox.Show("Error extrapolating data.", "Continuum 3");
                 }
@@ -2139,16 +1743,9 @@ namespace ContinuumNS
 
             SortSimDataByH();
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Estimates time series of alpha (power law shear exponent). Using average of filtered wind speeds
-        /// at each height, calculates shear between each pair of heights and finds overall average shear exponent.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Estimates time series of alpha (power law shear exponent). Using average of filtered wind speeds at each height, 
+        /// calculates shear between each pair of heights and finds overall average shear exponent. </summary>
         public void EstimateAlpha()
         {
             // find heights of anemometers
@@ -2160,19 +1757,16 @@ namespace ContinuumNS
 
             // Get index of vane closest to (but not higher than) HH
             int vaneInd80 = GetVaneClosestToHH(80);
-
             int thisInd = 0;
-            int startInd = 0;
-            int endInd = 0;
-
+            
             if (GetNumAnems() == 0)
-                return;                      
-
+                return;
+            
             while (anems[0].windData[thisInd].timeStamp < startDate)
                 thisInd++;
 
-            startInd = thisInd;
-            endInd = anems[0].windData.Length - 1;
+            int startInd = thisInd;
+            int endInd = anems[0].windData.Length - 1;
 
             while (anems[0].windData[endInd].timeStamp > endDate)
                 endInd--;
@@ -2223,18 +1817,8 @@ namespace ContinuumNS
             }
                         
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets average shear exponent alpha from valid ws. </summary>
-        ///
-        /// <remarks>   OEE, 7/6/2018. </remarks>
-        ///
-        /// <param name="avgWS_ByH">  The average ws by h. </param>
-        /// <param name="anemHeights"> List of heights of the anems. </param>
-        ///
-        /// <returns>   The average alpha from Valid ws. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Gets average shear exponent alpha calculated between each pair of valid wind speed measurement heights. </summary>
         public double GetAvgAlphaFromValidWS(double[] avgWS_ByH, double[] anemHeights)
         {
             double avgAlpha = 0;
@@ -2261,19 +1845,8 @@ namespace ContinuumNS
 
             return avgAlpha;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates and returns average valid wind speed or standard deviation at each wind 
-        ///             speed measurement height at specified time series index. </summary>
-        ///
-        /// <remarks>   OEE, 7/6/2018. </remarks>
-        ///
-        /// <param name="dataInd">     The data ind. </param>
-        /// <param name="avgOrSD">    The average or SD. </param>
-        ///
-        /// <returns>   Avg wind speed at each measurement height. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+       
+        /// <summary> Calculates and returns average valid wind speed or standard deviation at each wind speed measurement height at specified time series index. </summary>       
         public double[] GetAvgValidByHeight(int dataInd, string avgOrSD)
         {
             double[] anemHeights = GetHeightsOfAnems();
@@ -2305,70 +1878,9 @@ namespace ContinuumNS
             }
                 
             return avgVal;
-        }             
-            
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets export start date. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <returns>   The export start date. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public DateTime GetExportStart(Continuum thisInst)
-        {
-            DateTime thisStart;
-
-            try
-            {
-                thisStart = thisInst.Export_Start.Value;
-            }
-            catch
-            {
-                thisStart = DateTime.Today;
-            }
-
-            return thisStart;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets export end date. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <returns>   The export end date. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public DateTime GetExportEnd(Continuum thisInst)
-        {
-            DateTime thisEnd;
-
-            try
-            {
-                thisEnd = thisInst.Export_End.Value;
-            }
-            catch
-            {
-                thisEnd = DateTime.Today;
-            }
-
-            return thisEnd;
-        }                      
-                
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets maximum wind speed and gust for specified year. </summary>
-        ///
-        /// <remarks>   Liz, 10/16/2017. </remarks>
-        ///
-        /// <param name="thisYear">    Year of interest. </param>
-        /// <param name="HH">           The hh. </param>
-        ///
-        /// <returns>   The maximum wind speed and maximum gust for specified gust. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        }    
+               
+        /// <summary> Gets maximum wind speed and gust for specified year. </summary>        
         public Yearly_Maxes GetMaxWS_AndGust(int thisYear, double HH)
         {
             Yearly_Maxes theseMaxVals = new Yearly_Maxes();
@@ -2410,17 +1922,10 @@ namespace ContinuumNS
 
             return theseMaxVals;
         }                                   
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the recovery (fraction) of the extrapolated data set </summary>
-        ///
-        /// <remarks>   Liz, 1/15/2018. </remarks>
-        ///
-        /// <param name="thisSim"> Simulated (extrapolated) time series dataset. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+                
+        /// <summary> Calculates and returns the recovery of the extrapolated data set between start and end dates. </summary>        
         public double CalcExtrapRecovery(Sim_TS thisSim)
-        {
-            double extrapRec = 1.0;
+        {            
             int numValid = 0;
             int thisInd = 0;
 
@@ -2435,26 +1940,20 @@ namespace ContinuumNS
                 thisInd++;
             }
             
-            extrapRec = numValid / (endDate.Subtract(startDate).TotalDays * 24 * 6 + 1);                       
+            double extrapRec = numValid / (endDate.Subtract(startDate).TotalDays * 24 * 6 + 1);                       
 
             return extrapRec;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Sorts the extrapolated data by height (low height first) </summary>
-        ///
-        /// <remarks>   Liz, 1/15/2018. </remarks>
-        ///
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary> Sorts the extrapolated data by height (low height first) </summary>        
         public void SortSimDataByH()
-        {
-            double minH = 1000.0;
+        {            
             int numSim = GetNumSimData();
             Sim_TS[] tempSims = new Sim_TS[numSim];
 
             for (int i = 0; i < numSim; i++)
             {
-                minH = 1000;
+                double minH = 1000.0;
                 for (int j = 0; j < numSim; j++)
                 {
                     if (i == 0)
@@ -2477,8 +1976,9 @@ namespace ContinuumNS
             }
 
             simData = tempSims;
-        }             
-            
+        }
+
+        /// <summary> Finds and returns simulated time series dataset at specified height. </summary>     
         public Sim_TS GetSimulatedTimeSeries(double extrapHeight)
         {
             Sim_TS thisSim = new Sim_TS();
@@ -2500,17 +2000,18 @@ namespace ContinuumNS
             return thisSim;
         }
 
+        /// <summary> Finds start / end dates with maximum recovery at anems and vanes. Calculates average anem and average vane recovery for each full 
+        /// year period (moving window = 1 month) and finds average of the two </summary>     
         public void FindStartEndDatesWithMaxRecovery()
         {
-            // Finds start / end dates with maximum recovery at anems and vanes. 
-            // Calculates average anem and average vane recovery for each full year period (moving window = 1 month) and finds average of the two
-
             if (GetNumAnems() == 0 || GetNumVanes() == 0) // if there is no anem or vane data then return
                 return;
 
             double maxRec = 0.0;
-            DateTime maxStart = startDate;
-            TimeSpan dataLength = endDate - startDate;
+            DateTime maxStart = allStartDate;
+            startDate = allStartDate;
+            endDate = allEndDate;
+            TimeSpan dataLength = allEndDate - allStartDate;
             int numIntYears = (int)Math.Floor((double)dataLength.Days / 365);
             DateTime maxEnd = startDate.AddYears(numIntYears);
 
@@ -2576,9 +2077,7 @@ namespace ContinuumNS
             }                
             else
                 endDate = maxEnd;            
-                        
-            
-
+                       
             while (endDate < allEndDate)
             {
                 foreach (Anem_Data thisAnem in anems)                
@@ -2609,10 +2108,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Adds anemometer, vane, and temperature data to database and then clears it from Met_Data_Filter object  </summary>  
         public void AddSensorDatatoDBAndClear(Continuum thisInst, string metName)
-        {
-            // Adds anem, vane, and temperature data to database and then clears it from object
-
+        {            
             NodeCollection nodeList = new NodeCollection();
             BinaryFormatter bin = new BinaryFormatter();
             string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
@@ -2732,6 +2230,7 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Gets sensor time series data from database. </summary>        
         public void GetSensorDataFromDB(Continuum thisInst, string metName)
         {
             NodeCollection nodeList = new NodeCollection();
@@ -2754,8 +2253,7 @@ namespace ContinuumNS
                         anems[i].windData = (data[])bin.Deserialize(MS);
                         MS.Close();
                     }
-                }                
-                
+                }               
             }
 
             // Get vane data
@@ -2793,19 +2291,19 @@ namespace ContinuumNS
                     }
                 }
             }
-        }                
+        }
 
+        /// <summary> Clears calculated alpha and extrapolated (i.e. simulated) datasets. These are not saved in the file. They're generated as needed. </summary>  
         public void ClearAlphaAndSimulatedEstimates()
-        {
-            // Clears calculated alpha and extrapolated (i.e. simulated) datasets. These are not saved in the file. They're generated as needed.
+        {             
             alpha = new Est_Alpha[0];
             alphaByAnem = new Shear_Data[0];
             simData = new Sim_TS[0]; ;
         }
-        
+
+        /// <summary> Returns met data filter string. </summary> 
         public string GetFlagString(Filter_Flags filter)
-        {
-            // Returns met data filter string
+        {             
             string fliterFlag = "";
 
             if (filter == Filter_Flags.Icing)

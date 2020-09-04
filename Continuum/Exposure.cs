@@ -1,29 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> Exposure class holds calculated exposure, surface roughness, and displacement height for each wind direction sector for a specific 
+    /// radius of investigation and inverse distance exponent </summary>
     [Serializable()]
     public class Exposure
     {
-        public double[] expo; // Exposure calculated in each WD sector
-        public double[] expoDist; // 1/dist^exponent for each WD sector (used to calculate exposures at larger radii)
-        public int radius; // radius of investigation used in exposure calculation 
-        public double exponent; // exponent in inverse distance weighting    
-        public int numSectors = 1; // Number of sectors to average exposure over (default = 1)
-        public double[] UW_P10CrossGrade; // P10 of UW crosswind slope used to determine sign of UW coeff in flow around hill algorithm
-        public double[] UW_ParallelGrade; // Highest slope parallel to wind dir
-        public double[] SR; // Surface roughness calculated in each WD sector
-        public double[]  dispH; // Displacement height calculated in each WD sector
-        public double[]  SR_Dist; // 1/dist^exponent for each WD sector (used to calculate SRDH at larger radii)
+        /// <summary> Exposure calculated in each WD sector </summary>
+        public double[] expo;
+        /// <summary>  1/dist^exponent for each WD sector (used to calculate exposures at larger radii without recalculating values) </summary>
+        public double[] expoDist; 
+        /// <summary> Radius of investigation </summary>
+        public int radius;
+        /// <summary> Exponent in inverse distance weighting  </summary>
+        public double exponent;
+        /// <summary> Number of sectors to average exposure over (default = 1) </summary>
+        public int numSectors = 1; 
+        /// <summary> P10 of UW crosswind slope (to be used in flow around hill algorithm) </summary>
+        public double[] UW_P10CrossGrade;
+        /// <summary> Highest slope parallel to WD (to be used in flow around hill algorithm) </summary>
+        public double[] UW_ParallelGrade; 
+        /// <summary> Surface roughness calculated in each WD sector </summary>
+        public double[] SR;  
+        /// <summary> Displacement height calculated in each WD sector </summary>
+        public double[]  dispH; 
+        /// <summary>  1/dist^exponent for each WD sector (used to calculate SRDH at larger radii) </summary>
+        public double[]  SR_Dist;
 
-        // add function to return overall UW, DW, SR, DH
-        
-        public double GetOverallValue(double[] windRose, string paramType, string UW_or_DW) // Param_types: 'Expo', 'SR', 'DH', "Cross", "Para"
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>  Gets overall UW or DW parameter (paramType = 'Expo', 'SR', 'DH', "Cross", "Para") </summary>
+        public double GetOverallValue(double[] windRose, string paramType, string UW_or_DW) // Param_types: 
         {
             double overallValue = 0;
             if (windRose == null)
@@ -87,12 +96,7 @@ namespace ContinuumNS
         }
 
 
-        /// <summary>
-        ///  Returns DW exposure, surface roughness or displacement for specified WD sector
-        /// </summary>
-        /// <param name="WD_Ind">Wind direction index</param>
-        /// <param name="paramType">Expo, SR, DH, Cross, or Para</param>
-        /// <returns>Downwind value</returns>
+        /// <summary> Returns DW parameter for specified WD sector (paramType = 'Expo', 'SR', 'DH', "Cross", "Para")  </summary> 
         public double GetDW_Param(int WD_Ind, string paramType)
         {            
             double DW_Param = 0;
@@ -129,12 +133,11 @@ namespace ContinuumNS
             return DW_Param;
     }
 
+        /// <summary> Returns weighted average UW or DW exposure, surface roughness or displacement height ("Expo", "SR", "DH"). The average may include the 
+        /// two neighboring sectors with weights * windRose for neighbors (currently average does not include neighboring sectors)  </summary> 
         public double GetWgtAvg(double[] windRose, int WD_sec, string UW_or_DW, string expo_SR_DH)
         {
-            double weightedAvg = 0;
-
-            // Returns weighted average UW or DW exposure, surface roughness or displacement height
-            // The average may include the two neighboring sectors with weights * windRose for neighbors
+            double weightedAvg = 0;            
 
             double sectWgtMinus1 = 0;
             double sectWgtPlus1 = 0;
@@ -189,8 +192,6 @@ namespace ContinuumNS
             return weightedAvg;
 
         }
-
-
 
     }
 }

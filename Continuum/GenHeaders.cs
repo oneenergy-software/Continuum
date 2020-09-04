@@ -1,27 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 
-// Formatting App Version 1.0 - Todd Federici - 7/18/2019
-// This app accepts a MET tower name, lat & long coordinates, wind speed units,
-//      anemometer heights & orientations, vane heights, and temperature units & sensor heights 
-//      inputed by the user.  The app then creates & formats a .csv file with the inputed data
-//      and includes the data with the correct suffixes as choosen by the user by selecting 
-//      check boxes before clicking format.
-// Example: WS Units, mph, Lat, 11.1111, Long, -22.2222,
-//          Data & Time Stamp, Anem_40_180_Avg, Anem_40_180_SD, Vane_39_Avg, Vane_39_SD, Temp_4_Avg_F, Temp_4_SD_F,
-
 namespace ContinuumNS
 {
+    /// <summary> GUI class that provides a tool to generate met data headers for time series data import. </summary>
     public partial class GenHeaders : Form
     {
+        /// <summary> GUI class initializer. </summary>
+        FolderBrowserDialog fbd = new FolderBrowserDialog(); // FolderBrowserDialog to return path to StreamWriter for saved file path
+        int checkCountTemp = 0; // Counting variable to ensure data is included for Temperature i.e.(Avg, SD, Min, Max)
+        int checkCountVane = 0; // Counting variable to ensure data is included for Vanes i.e.(Avg, SD, Min, Max)
+        int checkCountAnem = 0; // Counting variable to ensure data is included for Anemometers i.e.(Avg, SD, Min, Max)
+        bool successful = false; // boolean for formatting successful or not
+
+        /// <summary> GUI class initializer. </summary>
         public GenHeaders()
         {
             InitializeComponent();
@@ -47,24 +41,7 @@ namespace ContinuumNS
             txtNewTempHeight.TabIndex = 8;
             txtFileName.TabIndex = 9;
 
-        }
-
-        // Global variable instantiations
-        FolderBrowserDialog fbd = new FolderBrowserDialog(); // FolderBrowserDialog to return path to StreamWriter for saved file path
-        int checkCountTemp = 0; // Counting variable to ensure data is inclueded for Temperature i.e.(Avg, SD, Min, Max)
-        int checkCountVane = 0; // Counting variable to ensure data is inclueded for Vanes i.e.(Avg, SD, Min, Max)
-        int checkCountAnem = 0; // Counting variable to ensure data is inclueded for Anemometers i.e.(Avg, SD, Min, Max)
-        bool successful = false; // boolean for formatting successful or not
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMETname_TextChanged(object sender, EventArgs e)
-        {
-
-        }
+        }                    
 
         private void txtLat_TextChanged(object sender, EventArgs e)
         {
@@ -98,51 +75,11 @@ namespace ContinuumNS
             if (!String.IsNullOrWhiteSpace(message))
                 MessageBox.Show(this, message);
 
-        }
-        
-        private void cboUnits_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void cboTempUnits_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-        
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-        
-        private void label6_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label9_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        }        
+               
         private void btnAddTempHeight_Click(object sender, EventArgs e)
         {
-            bool successful = false; // Boolean for integer parse
+            bool successful = false; 
 
             // Adds a height to the temperature box when "Add" button is clicked as long as it has text in the height box
             if (!string.IsNullOrWhiteSpace(txtNewTempHeight.Text))
@@ -261,57 +198,7 @@ namespace ContinuumNS
             else
                 MessageBox.Show("Please selected data to be deleted.");
 
-        }
-
-        private void txtNewAnemHeight_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-        
-        private void txtAnemsHeight_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtVanesHeight_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-        private void txtNewAnemOrient_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtNewVaneHeight_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtNewVaneOrient_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtNewTempHeight_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtAnemsOrient_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtVanesOrient_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtTempsHeight_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-               
+        }                       
 
         private void btnFormat_Click(object sender, EventArgs e)
         {
@@ -358,113 +245,107 @@ namespace ContinuumNS
             {
                 // Calls function that allows user to select where the file will be stored
                 FolderSelected();
-                StreamWriter sm = new StreamWriter(fbd.SelectedPath + "\\" + txtFileName.Text + ".csv");
 
-                // Formats and writes top two lines to the .csv file as shown in example at the beginning of the code
-                sm.WriteLine(txtMETname.Text + ",");
-                sm.WriteLine("WS Units," + cboWindSpeedUnits.Text + ",Lat," + txtLat.Text + ",Long," + txtLong.Text + ",");
-                sm.Write("Date & Time Stamp,");
-
-                // Converts the text in the anemometor, vane, and temperature text boxes into string arrays
-                string[] AnemString = CreateArrayAnem();
-                string[] VaneString = CreateArrayVane();
-                string[] TempString = CreateArrayTemp();
-
-                // For loop that loops through the anemometor data and adds the correct suffixes based on what data the user is including in the .csv file
-                for(int i = 0; i < AnemString.Length; i++)
+                if (successful)
                 {
-                    if (chkAvgAnem.Checked == true)
-                        sm.Write(AnemString[i] + "_Avg,");
-                    if (chkSDAnem.Checked == true)
-                        sm.Write(AnemString[i] + "_SD,");
-                    if (chkMinAnem.Checked == true)
-                        sm.Write(AnemString[i] + "_Min,");
-                    if (chkMaxAnem.Checked == true)
-                        sm.Write(AnemString[i] + "_Max,");
-                }
+                    StreamWriter sm = new StreamWriter(fbd.SelectedPath + "\\" + txtFileName.Text + ".csv");
 
-                // For loop that loops through the vane data and adds the correct suffixes based on what data the user is including in the .csv file
-                for (int i = 0; i < VaneString.Length; i++)
-                {
-                    if (chkAvgVane.Checked == true)
-                        sm.Write(VaneString[i] + "_Avg,");
-                    if (chkSDVane.Checked == true)
-                        sm.Write(VaneString[i] + "_SD,");
-                    if (chkMinVane.Checked == true)
-                        sm.Write(VaneString[i] + "_Min,");
-                    if (chkMaxVane.Checked == true)
-                        sm.Write(VaneString[i] + "_Max,");
-                }
+                    // Formats and writes top two lines to the .csv file as shown in example at the beginning of the code
+                    sm.WriteLine(txtMETname.Text + ",");
+                    sm.WriteLine("WS Units," + cboWindSpeedUnits.Text + ",Lat," + txtLat.Text + ",Long," + txtLong.Text + ",");
+                    sm.Write("Date & Time Stamp,");
 
-                // For loop that loops through the temperature data and adds the correct suffixes based on what data the user is including in the .csv file
-                for (int i = 0; i < TempString.Length; i++)
-                {
-                    if (chkAvgTemp.Checked == true)
-                        sm.Write(TempString[i] + "_Avg_" + cboTempUnits.Text + ",");
-                    if (chkSDTemp.Checked == true)
-                        sm.Write(TempString[i] + "_SD_"  + cboTempUnits.Text + ",");
-                    if (chkMinTemp.Checked == true)
-                        sm.Write(TempString[i] + "_Min_" + cboTempUnits.Text + ",");
-                    if (chkMaxTemp.Checked == true)
-                        sm.Write(TempString[i] + "_Max_" + cboTempUnits.Text + ",");
+                    // Converts the text in the anemometor, vane, and temperature text boxes into string arrays
+                    string[] AnemString = CreateArrayAnem();
+                    string[] VaneString = CreateArrayVane();
+                    string[] TempString = CreateArrayTemp();
+
+                    // For loop that loops through the anemometor data and adds the correct suffixes based on what data the user is including in the .csv file
+                    for (int i = 0; i < AnemString.Length; i++)
+                    {
+                        if (chkAvgAnem.Checked == true)
+                            sm.Write(AnemString[i] + "_Avg,");
+                        if (chkSDAnem.Checked == true)
+                            sm.Write(AnemString[i] + "_SD,");
+                        if (chkMaxAnem.Checked == true)
+                            sm.Write(AnemString[i] + "_Max,");
+                        if (chkMinAnem.Checked == true)
+                            sm.Write(AnemString[i] + "_Min,");
+
+                    }
+
+                    // For loop that loops through the vane data and adds the correct suffixes based on what data the user is including in the .csv file
+                    for (int i = 0; i < VaneString.Length; i++)
+                    {
+                        if (chkAvgVane.Checked == true)
+                            sm.Write(VaneString[i] + "_Avg,");
+                        if (chkSDVane.Checked == true)
+                            sm.Write(VaneString[i] + "_SD,");
+                        if (chkMaxVane.Checked == true)
+                            sm.Write(VaneString[i] + "_Max,");
+                        if (chkMinVane.Checked == true)
+                            sm.Write(VaneString[i] + "_Min,");
+
+                    }
+
+                    // For loop that loops through the temperature data and adds the correct suffixes based on what data the user is including in the .csv file
+                    for (int i = 0; i < TempString.Length; i++)
+                    {
+                        if (chkAvgTemp.Checked == true)
+                            sm.Write(TempString[i] + "_Avg_" + cboTempUnits.Text + ",");
+                        if (chkSDTemp.Checked == true)
+                            sm.Write(TempString[i] + "_SD_" + cboTempUnits.Text + ",");
+                        if (chkMaxTemp.Checked == true)
+                            sm.Write(TempString[i] + "_Max_" + cboTempUnits.Text + ",");
+                        if (chkMinTemp.Checked == true)
+                            sm.Write(TempString[i] + "_Min_" + cboTempUnits.Text + ",");
+                    }
+
+                    sm.Close(); // Closes StreamWriter for file to be completley saved
+                    if (successful == true) MessageBox.Show(this, "Successful!"); // Let's user know the file has been saved successfully
+                    else MessageBox.Show(this, "Unsuccessful."); // Let's user know tht=e file has not been saved
                 }
-                
-                sm.Close(); // Closes StreamWriter for file to be completley saved
-                if (successful == true) MessageBox.Show(this, "Successful!"); // Let's user know the file has been saved successfully
-                else MessageBox.Show(this, "Unsuccessful."); // Let's user know tht=e file has not been saved
             }
             
         }
 
-        // CreateArrayAnem: creates a string array from anemometer data
-        // @params: none
-        // @returns: string array of anemometer data
-        public String [] CreateArrayAnem()
+        /// <summary> Creates a string array from anemometer data </summary>         
+        public string[] CreateArrayAnem()
         {
             // Makes new string length of data entered into temperature box
-            String[] ArrayHeight = new string[listAnemsHO.Items.Count];
+            string[] ArrayHeight = new string[listAnemsHO.Items.Count];
 
             // Formats string array for Continuum
-            for (int i = 0; i < listAnemsHO.Items.Count; i++)
-            {
-                ArrayHeight[i] = "Anem_" + listAnemsHO.Items[i].ToString();
-            }
+            for (int i = 0; i < listAnemsHO.Items.Count; i++)            
+                ArrayHeight[i] = "Anem_" + listAnemsHO.Items[i].ToString();            
 
             return ArrayHeight;
 
         }
 
-        // CreateArrayVane: creates a string array from vane data
-        // @params: none
-        // @returns: string array of vane data
-        public String [] CreateArrayVane()
+        /// <summary> Creates a string array from vane data. </summary>        
+        public string[] CreateArrayVane()
         {
             // Makes new string length of data entered into vane box
-            String[] ArrayHeight = new string[listVanesHeight.Items.Count];
+            string[] ArrayHeight = new string[listVanesHeight.Items.Count];
 
             // Formats string array for Continuum 
-            for (int i = 0; i < listVanesHeight.Items.Count; i++)
-            {
-                ArrayHeight[i] = "Vane_" + listVanesHeight.Items[i].ToString();
-            }
+            for (int i = 0; i < listVanesHeight.Items.Count; i++)            
+                ArrayHeight[i] = "Vane_" + listVanesHeight.Items[i].ToString();            
 
             return ArrayHeight;
 
         }
 
-        // CreateArrayTemp: creates a string array from terperature data
-        // @params: none
-        // @returns: string array of temperature data
-        public String [] CreateArrayTemp()
+        /// <summary> Creates a string array from temperature data </summary>        
+        public string[] CreateArrayTemp()
         {
             // Makes new string length of data entered into temperature box
-            String[] ArrayHeight = new string[listTempsHeight.Items.Count];
+            string[] ArrayHeight = new string[listTempsHeight.Items.Count];
 
             // Formats string array for Continuum 
-            for (int i = 0; i < listTempsHeight.Items.Count; i++)
-            {
-                ArrayHeight[i] = "Temp_" + listTempsHeight.Items[i].ToString();
-            }
+            for (int i = 0; i < listTempsHeight.Items.Count; i++)            
+                ArrayHeight[i] = "Temp_" + listTempsHeight.Items[i].ToString();            
 
             return ArrayHeight;
 
@@ -501,14 +382,8 @@ namespace ContinuumNS
 
         }
 
-        private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
-        {
-            
-        }
-
-        // FolderSelected(): Prompts user to select folder for saving the .csv file and saves the path for StreamWriter
-        // @params: none
-        // @returns: none
+        
+        /// <summary> Prompts user to select folder for saving the .csv file and saves the path for StreamWriter </summary>        
         public void FolderSelected()
         {
             // Sets default folder to desktop and adds text to tell user to select folder for where the .csv is to be saved
@@ -526,7 +401,7 @@ namespace ContinuumNS
                 }
                 else
                 {
-                    successful = false; ;
+                    successful = false;
                     return;
                 }
             }

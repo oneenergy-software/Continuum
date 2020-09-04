@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> GUI class that allows user to add a new turbine by specifying coordinates. </summary>
     public partial class NewTurbine : Form
     {
         Continuum thisInst;
 
+        /// <summary> Class initializer. </summary>
         public NewTurbine(Continuum continuum)
         {
             InitializeComponent();

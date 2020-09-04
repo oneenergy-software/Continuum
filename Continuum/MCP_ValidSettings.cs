@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
     public partial class MCP_ValidSettings : Form
     {
+        /// <summary> Form showing the allowable (i.e. valid) ranges of Matrix MCP settings </summary>
         public MCP_ValidSettings()
         {
             InitializeComponent();

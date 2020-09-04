@@ -11,12 +11,12 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class ThreeMetTABAndGrossNet
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
-        string saveFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string testingFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string saveFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
 
         string firewheelMERRA = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
-        string ohioMERRA = "C:\\Users\\Liz\\Desktop\\MERRA2";
-        string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+        string ohioMERRA = "C:\\Users\\liz_w\\Desktop\\MERRA2";
+        string merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
         string metTSFile;
         string metName;
@@ -118,9 +118,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -159,9 +159,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -200,9 +200,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -247,7 +247,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -414,9 +414,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -455,9 +455,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -496,9 +496,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -539,7 +539,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -690,9 +690,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -731,9 +731,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -772,9 +772,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -831,7 +831,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -982,9 +982,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1023,9 +1023,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1064,9 +1064,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1123,7 +1123,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -1274,9 +1274,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1315,9 +1315,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1356,9 +1356,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1415,7 +1415,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -1536,9 +1536,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1577,9 +1577,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1618,9 +1618,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1707,7 +1707,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -1833,9 +1833,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1874,9 +1874,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1915,9 +1915,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -1999,7 +1999,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2124,9 +2124,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -2165,9 +2165,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -2206,9 +2206,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -2291,7 +2291,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2412,9 +2412,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -2453,9 +2453,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -2494,9 +2494,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -2583,7 +2583,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2713,9 +2713,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -2754,9 +2754,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -2795,9 +2795,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -2875,7 +2875,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3005,9 +3005,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3046,9 +3046,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3087,9 +3087,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3167,7 +3167,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3313,9 +3313,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3354,9 +3354,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3395,9 +3395,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3459,7 +3459,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3626,9 +3626,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3667,9 +3667,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3708,9 +3708,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3751,7 +3751,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3897,9 +3897,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3938,9 +3938,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -3979,9 +3979,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4043,7 +4043,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4164,9 +4164,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4205,9 +4205,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4246,9 +4246,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4335,7 +4335,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4460,9 +4460,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4501,9 +4501,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4542,9 +4542,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4627,7 +4627,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4769,9 +4769,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4810,9 +4810,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4851,9 +4851,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -4919,7 +4919,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5040,9 +5040,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5081,9 +5081,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5122,9 +5122,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5211,7 +5211,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5332,9 +5332,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5373,9 +5373,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5414,9 +5414,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5503,7 +5503,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5645,9 +5645,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5686,9 +5686,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5727,9 +5727,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5795,7 +5795,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5921,9 +5921,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -5962,9 +5962,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6003,9 +6003,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6087,7 +6087,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6208,9 +6208,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6249,9 +6249,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6290,9 +6290,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6379,7 +6379,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6526,9 +6526,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6567,9 +6567,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6608,9 +6608,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6671,7 +6671,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6838,9 +6838,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6879,9 +6879,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6920,9 +6920,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -6963,7 +6963,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7110,9 +7110,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -7151,9 +7151,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -7192,9 +7192,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -7255,7 +7255,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7401,9 +7401,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -7442,9 +7442,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -7483,9 +7483,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -7547,7 +7547,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7693,9 +7693,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -7734,9 +7734,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -7775,9 +7775,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -7839,7 +7839,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7960,9 +7960,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8001,9 +8001,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8042,9 +8042,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8131,7 +8131,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8256,9 +8256,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8297,9 +8297,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8338,9 +8338,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8423,7 +8423,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8565,9 +8565,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8606,9 +8606,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8647,9 +8647,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8715,7 +8715,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8836,9 +8836,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8877,9 +8877,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -8918,9 +8918,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9007,7 +9007,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -9157,9 +9157,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9198,9 +9198,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9239,9 +9239,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9299,7 +9299,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -9449,9 +9449,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9490,9 +9490,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9531,9 +9531,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9591,7 +9591,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -9741,9 +9741,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9782,9 +9782,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9823,9 +9823,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -9883,7 +9883,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10025,9 +10025,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10066,9 +10066,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10107,9 +10107,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10175,7 +10175,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10325,9 +10325,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10366,9 +10366,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10407,9 +10407,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10467,7 +10467,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10617,9 +10617,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10658,9 +10658,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10699,9 +10699,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10759,7 +10759,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10909,9 +10909,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10950,9 +10950,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -10991,9 +10991,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11051,7 +11051,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -11176,9 +11176,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11217,9 +11217,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11258,9 +11258,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11343,7 +11343,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -11464,9 +11464,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11505,9 +11505,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11546,9 +11546,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11635,7 +11635,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -11764,9 +11764,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11805,9 +11805,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11846,9 +11846,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -11927,7 +11927,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12056,9 +12056,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12097,9 +12097,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12138,9 +12138,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12219,7 +12219,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12340,9 +12340,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12381,9 +12381,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12422,9 +12422,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12511,7 +12511,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12636,9 +12636,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12677,9 +12677,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12718,9 +12718,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12803,7 +12803,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12928,9 +12928,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -12969,9 +12969,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13010,9 +13010,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13095,7 +13095,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -13216,9 +13216,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13257,9 +13257,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13298,9 +13298,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13387,7 +13387,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -13508,9 +13508,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13549,9 +13549,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13590,9 +13590,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13679,7 +13679,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -13825,9 +13825,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13866,9 +13866,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13907,9 +13907,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -13971,7 +13971,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14117,9 +14117,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -14158,9 +14158,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -14199,9 +14199,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -14263,7 +14263,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14384,9 +14384,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -14425,9 +14425,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -14466,9 +14466,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -14555,7 +14555,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14697,9 +14697,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -14738,9 +14738,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -14779,9 +14779,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -14847,7 +14847,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14989,9 +14989,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15030,9 +15030,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15071,9 +15071,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15139,7 +15139,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -15260,9 +15260,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15301,9 +15301,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15342,9 +15342,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15431,7 +15431,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -15577,9 +15577,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15618,9 +15618,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15659,9 +15659,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15723,7 +15723,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -15869,9 +15869,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15910,9 +15910,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -15951,9 +15951,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16015,7 +16015,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16136,9 +16136,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16177,9 +16177,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16218,9 +16218,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16307,7 +16307,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16453,9 +16453,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16494,9 +16494,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16535,9 +16535,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16599,7 +16599,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16724,9 +16724,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16765,9 +16765,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16806,9 +16806,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -16891,7 +16891,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -17016,9 +17016,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -17057,9 +17057,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -17098,9 +17098,9 @@ namespace Continuum_Tests.GUI_Tests
                 // Call background worker to run calculations
                 // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
                 thisInst.BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_MetCalcs metArgs = new BackgroundWork.Vars_for_MetCalcs();
+                BackgroundWork.Vars_for_BW metArgs = new BackgroundWork.Vars_for_BW();
                 metArgs.thisInst = thisInst;
-                metArgs.MCP_type = thisInst.Get_MCP_Method();
+                
                 thisInst.BW_worker.Call_BW_MetCalcs(metArgs);
 
                 while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
@@ -17183,7 +17183,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;

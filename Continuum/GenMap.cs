@@ -1,17 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> GUI class that allows user to define map extent and grid resolution. Calls background worker to generate map. </summary>
     public partial class GenMap : Form
     {
+        /// <summary> Minimum UTM X coordinate. </summary>
+        public int minUTMX;
+        /// <summary> Maximum UTM X coordinate. </summary>
+        public int maxUTMX;
+        /// <summary> Minimum UTM Y coordinate. </summary>
+        public int minUTMY;
+        /// <summary> Maximum UTM Y coordinate. </summary>
+        public int maxUTMY;
+        /// <summary> Grid resolution. </summary>
+        public int gridReso;
+        /// <summary> Number of grid points. </summary>
+        public int numGrid;
+        /// <summary> Map name. </summary>
+        public string mapName = "";
+        /// <summary> Number of grid points along X. </summary>
+        public int numX;
+        /// <summary> Number of grid points along Y. </summary>
+        public int numY;
+        /// <summary> Minimum allowable X. </summary>
+        public int minUTMX_Limit;
+        /// <summary> Minimum allowable Y. </summary>
+        public int minUTMY_Limit;
+        /// <summary> Maximum allowable X. </summary>
+        public int maxUTMX_Limit;
+        /// <summary> Maximum allowable Y. </summary>
+        public int maxUTMY_Limit;
+        /// <summary> Index of selected map type. </summary>
+        public int whatToMap = 0;
+        /// <summary> Name of power curve used in map (if AEP map). </summary>
+        public string powerCurve = "";
+        /// <summary> Mets used to generate the map. </summary>
+        public Met[] metsUsed;
+        /// <summary> Wind flow model parameters. </summary>
+        public Model[] models;
+        /// <summary> Continuum instance that called GenMap. </summary>
+        public Continuum thisInst;
+        /// <summary> True if map generated from time series data otherwise WS/WD frequency distributions(i.e.TAB files) are used to create map. </summary>
+        public bool useTimeSeries;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Class initializer. </summary>
         public GenMap(Continuum continuum)
         {
             InitializeComponent();
@@ -51,33 +88,13 @@ namespace ContinuumNS
                 txtisMCPdGenMap.BackColor = Color.LightCoral;
             }
 
-        }
-
-        public int minUTMX;   // Minimum UTM X coordinate
-        public int maxUTMX;   // Maximum UTM X coordinate
-        public int minUTMY;   // Minimum UTM Y coordinate
-        public int maxUTMY;   // Maximum UTM Y coordinate
-        public int gridReso;   // Grid resolution
-        public int numGrid;   // Number of grid points
-        public string mapName = ""; // Map name
-        public int numX;   // Number of grid points along X
-        public int numY;   // Number of grid points along Y
-        public int minUTMX_Limit; // Minimum allowable X
-        public int minUTMY_Limit; // Minimum allowable Y
-        public int maxUTMX_Limit; // Maximum allowable X
-        public int maxUTMY_Limit; // Maximum allowable Y
-        public int whatToMap = 0; // Index of selected map type
-        public string powerCurve = ""; // Name of power curve used in map (if AEP map)
-        public Met[] metsUsed;
-        public Model[] models; // Wind flow model parameters
-        public Continuum thisInst;
-        public bool useTimeSeries;
-
-
+        }        
+        
         private void btnCancel_Click(object sender, EventArgs e) {
             Close();
         }
 
+        /// <summary> Updates textboxes with min/max UTMX/Y </summary>
         public void UpdateTextboxes()
         {
             txtMinUTMX.Text = minUTMX.ToString();
@@ -87,42 +104,44 @@ namespace ContinuumNS
             txtNumPoints.Text = numGrid.ToString();
         }
 
-  /*      public void UpdateLimits()
-        {
-            if (gridReso == 0)
-                UpdateGridReso();
+        /*      public void UpdateLimits()
+              {
+                  if (gridReso == 0)
+                      UpdateGridReso();
 
-            TopoInfo.Min_Max_Num minMaxX = new TopoInfo.Min_Max_Num();
-            minMaxX.min = thisInst.topo.topoNumXY.X.all.min;
-            minMaxX.max = thisInst.topo.topoNumXY.X.all.max;
+                  TopoInfo.Min_Max_Num minMaxX = new TopoInfo.Min_Max_Num();
+                  minMaxX.min = thisInst.topo.topoNumXY.X.all.min;
+                  minMaxX.max = thisInst.topo.topoNumXY.X.all.max;
 
-            TopoInfo.Min_Max_Num minMaxY = new TopoInfo.Min_Max_Num();
-            minMaxY.min = thisInst.topo.topoNumXY.Y.all.min;
-            minMaxY.max = thisInst.topo.topoNumXY.Y.all.max;
+                  TopoInfo.Min_Max_Num minMaxY = new TopoInfo.Min_Max_Num();
+                  minMaxY.min = thisInst.topo.topoNumXY.Y.all.min;
+                  minMaxY.max = thisInst.topo.topoNumXY.Y.all.max;
 
-            TopoInfo.TopoGrid minXY = thisInst.topo.GetClosestNodeFixedGrid(minMaxX.min, minMaxY.min, 250, 12000);
-            minUTMX_Limit = (int)minXY.UTMX;
-            minUTMY_Limit = (int)minXY.UTMY;
+                  TopoInfo.TopoGrid minXY = thisInst.topo.GetClosestNodeFixedGrid(minMaxX.min, minMaxY.min, 250, 12000);
+                  minUTMX_Limit = (int)minXY.UTMX;
+                  minUTMY_Limit = (int)minXY.UTMY;
 
-            TopoInfo.TopoGrid maxXY = thisInst.topo.GetClosestNodeFixedGrid(minMaxX.max, minMaxY.max, 250, 12000);
-            maxUTMX_Limit = (int)maxXY.UTMX;
-            maxUTMY_Limit = (int)maxXY.UTMY;
+                  TopoInfo.TopoGrid maxXY = thisInst.topo.GetClosestNodeFixedGrid(minMaxX.max, minMaxY.max, 250, 12000);
+                  maxUTMX_Limit = (int)maxXY.UTMX;
+                  maxUTMY_Limit = (int)maxXY.UTMY;
 
-            if (minUTMX == 0)
-                minUTMX = minUTMX_Limit;
+                  if (minUTMX == 0)
+                      minUTMX = minUTMX_Limit;
 
-            if (minUTMY == 0)
-                minUTMY = minUTMY_Limit;
+                  if (minUTMY == 0)
+                      minUTMY = minUTMY_Limit;
 
-            if (maxUTMX == 0)
-                maxUTMX = maxUTMX_Limit;
+                  if (maxUTMX == 0)
+                      maxUTMX = maxUTMX_Limit;
 
-            if (maxUTMY == 0)
-                maxUTMY = maxUTMY_Limit;
+                  if (maxUTMY == 0)
+                      maxUTMY = maxUTMY_Limit;
 
-            UpdateNumPoints();
-        }
-*/
+                  UpdateNumPoints();
+              }
+      */
+
+        /// <summary> Sets min/max UTMX/Y parameters to min/max UTMX/Y limits. </summary>
         public void GetBiggestArea()
         {
             minUTMX = minUTMX_Limit;
@@ -132,6 +151,7 @@ namespace ContinuumNS
             UpdateNumPoints();
         }
 
+        /// <summary> Finds largest allowable mapping area (min/max UTMX/Y limits) based on topo data and grid resolution. </summary>
         public void FindLargestArea()
         {
             // Find largest allowable mapping area
@@ -260,6 +280,7 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Updates grid resolution as entered by user. </summary>
         public void UpdateGridReso()
         {
             try
@@ -274,6 +295,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Updates textbox to show total number of grid points. </summary>
         public void UpdateNumPoints()
         {
             if (gridReso != 0)
@@ -287,8 +309,9 @@ namespace ContinuumNS
                         
             txtNumPoints.Text = numGrid.ToString();
         }
-               
-        
+
+        /// <summary> Reads selected model type (0 = UW map, 1 = DW map, 2 = WS map (site-calibrated), 3 = Gross AEP map (site-calibrated), 4 = WS map (default),
+        /// 5 = Gross AEP map (default)) and selected mets to use in creating map. Gets models used to create map. </summary>
         public void GetMapSettings()
         {            
             double height = thisInst.modeledHeight;
@@ -406,10 +429,9 @@ namespace ContinuumNS
             FindAreaAroundTurbines();
         }
 
+        /// <summary> Finds map area that covers all loaded turbine sites and updates Min/Max X/Y </summary>
         public void FindAreaAroundTurbines()
-        {
-            // Finds map area that covers all loaded turbine sites and updates Min/Max X/Y
-
+        {            
             double turbMinX = 0;
             double turbMinY = 0;
             double turbMaxX = 0;
@@ -492,8 +514,7 @@ namespace ContinuumNS
                 cboPowerCrvs.Items.Clear();
             }
         }
-
-
+        
         private void txtMapReso_TextChanged(object sender, EventArgs e)
         {
             // Recalculates number of grid points and updates txtNumPoints

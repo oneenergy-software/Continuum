@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class TurbineCollection_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\TurbineCollection";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\TurbineCollection";
 
         [TestMethod]
         public void ExportWSDist()

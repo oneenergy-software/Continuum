@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
     public partial class Filter_Settings : Form
     {
+        /// <summary>
+        /// GUI form which displays the Met data QC filter settings.
+        /// </summary>
         public Filter_Settings()
         {
             InitializeComponent();

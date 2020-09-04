@@ -12,8 +12,8 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class MCP_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
-        string saveFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string testingFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string saveFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
         Stats stat = new Stats();
 
         [TestMethod]
@@ -21,7 +21,7 @@ namespace Continuum_Tests.GUI_Tests
         {
             Continuum thisInst = new Continuum();                      
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltWithMERRAAndMCP_1";
 
             thisInst.Open(fileName + ".cfm");
             thisInst.isTest = true;
@@ -56,7 +56,7 @@ namespace Continuum_Tests.GUI_Tests
             // Test Variance Ratio method
 
             Continuum thisInst = new Continuum();
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltWithMERRAAndMCP_1";
             thisInst.Open(fileName + ".cfm");
             thisInst.isTest = true;
             thisInst.cboMCP_Type.SelectedIndex = 2;
@@ -88,7 +88,7 @@ namespace Continuum_Tests.GUI_Tests
             // Test Method of Bins method
             // Loop through WD, TOD, Season, and WS width (0.5 and 1.0 m/s)
             Continuum thisInst = new Continuum();
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltWithMERRAAndMCP_1";
             thisInst.Open(fileName + ".cfm");
             thisInst.isTest = true;
             thisInst.cboMCP_Type.SelectedIndex = 1;
@@ -127,7 +127,7 @@ namespace Continuum_Tests.GUI_Tests
             // Loop through WD, TOD, Season, WS width (0.5 and 1.0 m/s), WS PDF Weight (0.5, 1, 2, 10), Last WS Weight (0, 1, 2)
 
             Continuum thisInst = new Continuum();
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltWithMERRAAndMCP_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltWithMERRAAndMCP_1";
             thisInst.Open(fileName + ".cfm");
             thisInst.isTest = true;
             thisInst.cboMCP_Type.SelectedIndex = 3;

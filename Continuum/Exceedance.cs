@@ -1,56 +1,80 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary>
+    /// Exceedance class contains the defined performance factors (i.e. exceedance curves) which describe losses and uncertainty distributions.
+    /// 17 Performance Factor (PF) categories with default values are provided. The user may define PFs as a normal distribution (with one or 
+    /// many modes) and may define min/max limits (eg. Max 100% for availability). Or the user may import a cumulative density function from a CSV 
+    /// file to represent a defined PF. The PFs are combined using a Monte Carlo approach which produces a composite PF curve. The composite PF 
+    /// curve defines the P-values of the overall, combined losses.
+    /// </summary>
     [Serializable()]
     public partial class Exceedance
     {
-        public ExceedanceCurve[] exceedCurves; // List of all exceedance (i.e. performance factor) curves
-        public Monte_Carlo compositeLoss = new Monte_Carlo(); // Holds the array of P-values for 1 yr / 10 yrs / 20 yrs
-        public int numSims = 100000; // Number of Monte Carlo Simulations to run
-
+        /// <summary> List of all exceedance (i.e. performance factor) curves </summary>
+        public ExceedanceCurve[] exceedCurves;
+        /// <summary>  Holds the composite curve P-values for recurrence of 1 yr / 10 yrs / 20 yrs </summary>
+        public Monte_Carlo compositeLoss = new Monte_Carlo();
+        /// <summary> Number of Monte Carlo simulations to run </summary>
+        public int numSims = 100000; 
+                
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    
+        /// <summary> Contains exceedance curve parameters and probability distribution. </summary>
         [Serializable()]
         public struct ExceedanceCurve
         {
+            /// <summary> Upper bound of probability distribution </summary>
             public double upperBound;
+            /// <summary> Lower bound of probability distribution </summary>
             public double lowerBound;
+            /// <summary> Defined mode(s) that make up the overall distribution </summary>
             public Mode_Def[] modes;
+            /// <summary> Name of exceedance curve </summary>
             public string exceedStr;
 
+            /// <summary> Size (length) of probability distribution </summary>
             public int distSize;
+            /// <summary> X-values of probability distribution </summary>
             public double[] xVals;
+            /// <summary> Probability distribution </summary>
             public double[] probDist;
+            /// <summary> Cumulative probability distribution </summary>
             public double[] cumulDist;
         }
 
+        /// <summary> Contains mode mean, SD, and weight </summary>
         [Serializable()]
         public struct Mode_Def
         {
-            public float mean;
-            public float SD;
-            public float weight;
+            /// <summary> Mode mean </summary>
+            public double mean;
+            /// <summary> Mode standard deviation </summary>
+            public double SD;
+            /// <summary> Mode weight (1 - 100) </summary>
+            public double weight;
         }
 
+        /// <summary> Contains composite performance factor curves for 1, 10, and 20 year recurrence </summary>
         [Serializable()]
         public struct Monte_Carlo
-        {           
+        {         
+            /// <summary> 1-year Composite P-Values </summary>
             public double[] pVals1yr;
+            /// <summary> 10-year Composite P-Values </summary>
             public double[] pVals10yrs;
+            /// <summary> 20-year Composite P-Values </summary>
             public double[] pVals20yrs;
+            /// <summary> Set to true if Monte Carlo has been run </summary>
             public bool isComplete;
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Sizes the exceedance curve arrays </summary>
         public void SizeExceedCurveArrays()
         {
             for (int i = 0; i < Num_Exceed(); i++)
@@ -62,6 +86,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Sizes the composite curve arrays </summary>
         public void SizeMonteCarloArrays()
         {
             compositeLoss.pVals1yr = new double[99];
@@ -70,6 +95,7 @@ namespace ContinuumNS
             compositeLoss.isComplete = false;
         }
 
+        /// <summary> Creates default performance factor curves </summary>
         public void CreateDefaultCurve()
         {
             Array.Resize(ref exceedCurves, 17);
@@ -222,6 +248,7 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Gets number of exceedance curves </summary>        
         public int Num_Exceed()
         {
             if (exceedCurves == null)
@@ -234,7 +261,7 @@ namespace ContinuumNS
             }
         }
             
-        
+        /// <summary> Deletes specified exceedance curve from list </summary>        
         public void Delete_Exceed(string Delete_Exceed_str)
         {
             ExceedanceCurve[] newCurves = new ExceedanceCurve[Num_Exceed() - 1];
@@ -250,11 +277,12 @@ namespace ContinuumNS
             }
 
             exceedCurves = newCurves;
-        } 
+        }
 
+        /// <summary> Gets performance factor for specified exceedance curve with specified X-value (0 - 1) </summary>        
+        /// <returns> Returns performance factor </returns>
         public double Get_PF_Value(double val, ExceedanceCurve thisCurve)
-        {
-            // Returns performance factor for specified cumulative probability
+        {            
             double Exceed_Val = 0;
 
             for (int i = 0; i < thisCurve.distSize - 1; i++)
@@ -271,17 +299,17 @@ namespace ContinuumNS
             return Exceed_Val;
         }
 
+        /// <summary> Gets a random number between 0 - 1 </summary>        
         public Random GetRandomNumber()
         {
             Random rnd = new Random(DateTime.Now.Millisecond);
 
             return rnd;
         }
-               
 
+        /// <summary> Creates composite performance factor curves (for either 1, 10, or 20 year recurrence) </summary>        
         public void FindPValues(double[] totalPFs, int numYears)
-        {
-            // Creates composite performance factor curves (for either 1, 10, or 20 year recurrence)
+        {            
             if (numYears == 1) Array.Resize(ref compositeLoss.pVals1yr, 100);
             if (numYears == 10) Array.Resize(ref compositeLoss.pVals10yrs, 100);
             if (numYears == 20) Array.Resize(ref compositeLoss.pVals20yrs, 100);
@@ -294,12 +322,11 @@ namespace ContinuumNS
                 if (numYears == 10) compositeLoss.pVals10yrs[i - 1] = totalPFs[thisInd];
                 if (numYears == 20) compositeLoss.pVals20yrs[i - 1] = totalPFs[thisInd];
             }
-        }                
+        }
 
-        public void CalculateProbDist(ref Exceedance.ExceedanceCurve thisCurve)
+        /// <summary> Calculates weighted average probability and cumulative distribution with specified mean, SD and weights of defined modes </summary>        
+        public void CalculateProbDist(ref ExceedanceCurve thisCurve)
         {
-            // Calculate weighted average probability and cumulative distribution with specified mean, SD and weights
-
             double X_int;
             int numModes = thisCurve.modes.Length;
 
@@ -319,23 +346,21 @@ namespace ContinuumNS
 
                 for (int j = 0; j < numModes; j++)
                 {
-                    float thisMean = thisCurve.modes[j].mean;
-                    float thisSD = thisCurve.modes[j].SD;
-                    float thisWeight = thisCurve.modes[j].weight;
+                    double thisMean = thisCurve.modes[j].mean;
+                    double thisSD = thisCurve.modes[j].SD;
+                    double thisWeight = thisCurve.modes[j].weight;
 
                     // Probability density function of normal distribution
                     thisCurve.probDist[i] = thisCurve.probDist[i] + thisWeight *
                         (1 / Math.Pow((2 * Math.Pow(thisSD, 2) * Math.PI), 0.5) * Math.Pow(Math.E, -(Math.Pow((thisCurve.xVals[i] - thisMean), 2) / (2 * Math.Pow(thisSD, 2)))));
 
-                }             
-
+                }
             }
-
         }
 
-        public void Normalize_Dists(ref Exceedance.ExceedanceCurve thisCurve)
+        /// <summary> Normalizes PDF and CDF such that area under curve adds to 100 </summary>        
+        public void Normalize_Dists(ref ExceedanceCurve thisCurve)
         {
-            // Normalizes PDF and CDF such that area under curve adds to 100
             double pdfSum = 0;
             
             if (thisCurve.distSize <= 1)
@@ -361,9 +386,9 @@ namespace ContinuumNS
                             
         }
 
+        /// <summary> Used when importing CDF from a .CSV file. Fills in all Performance factors by interpolating between points in file. </summary>
         public void Interpolate_CDF(ref ExceedanceCurve thisCurve, double[,] Imported_CDF)
-        {
-            // With imported CDF, fills in all Perf factors by interpolating between points
+        {             
             thisCurve.lowerBound = Imported_CDF[0, 0];
             thisCurve.upperBound = Imported_CDF[Imported_CDF.GetUpperBound(0), 0];
 
@@ -388,9 +413,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates the probability density function from the cumulative distribution function </summary>        
         public void Calc_PDF_from_CDF(ref ExceedanceCurve thisExceed)
-        {
-            // calculates the probability density function = delta CDF (change in cumulative distribution function)                    
+        {                                 
             double distInt = (thisExceed.upperBound - thisExceed.lowerBound) / (thisExceed.distSize - 1);
 
             thisExceed.probDist[0] = thisExceed.cumulDist[0] * distInt;
@@ -402,22 +427,8 @@ namespace ContinuumNS
                 thisExceed.probDist[i] = (thisExceed.cumulDist[i + 1] - thisExceed.cumulDist[i]) / distInt;
             
         }
-
-        public ExceedanceCurve GetExceedanceCurve(string exceedCurveName)
-        {
-            ExceedanceCurve thisCurve = new ExceedanceCurve();
-
-            for (int i = 0; i < Num_Exceed(); i++)
-                if (exceedCurveName == exceedCurves[i].exceedStr)
-                {
-                    thisCurve = exceedCurves[i];
-                    break;
-                }
-
-
-            return thisCurve;
-        }
-
+                
+        /// <summary> Gets overall P-Value for 1-year recurrence </summary>        
         public double GetOverallPValue_1yr(int pVal)
         {
             double thisVal = 0;
@@ -428,10 +439,10 @@ namespace ContinuumNS
             return thisVal;
         }
 
+
+        /// <summary> Imports exeedance curves </summary>        
         public void ImportExceedCurves(Continuum thisInst)
         {
-            // Imports exeedance curves that were exported
-
             if (thisInst.ofdExceedCurves.ShowDialog() == DialogResult.OK)
             {
                 string fileName = thisInst.ofdExceedCurves.FileName;

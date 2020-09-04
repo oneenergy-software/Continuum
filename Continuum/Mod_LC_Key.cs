@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> Class allows user to modify the land cover key which converts land cover codes to surface roughness and displacement height. </summary>
     public partial class Mod_LC_Key : Form
     {
+        /// <summary> Continuum instance that called Mod_LC_Key. </summary>
         public Continuum thisInst;
+        /// <summary> Land cover key to modify. </summary>
         public LC_Key thisLC_Key;
-
+                
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       
+        /// <summary> Class initializer </summary>            
         public Mod_LC_Key(Continuum continuum, LC_Key lc_key)
         {
             InitializeComponent();

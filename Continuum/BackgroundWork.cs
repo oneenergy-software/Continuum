@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -14,84 +12,119 @@ using System.Net;
 
 namespace ContinuumNS
 {
+    /// <summary>
+    /// Class that executes lengthy processes on a separate (background) thread so that the GUI doesn't appear unresponsive.
+    /// Background tasks include: 
+    /// 1) Topography and Land Cover import
+    /// 2) MERRA2 data download and extracting
+    /// 3) Met site calcs and model creation
+    /// 4) Turbine site calcs and estimates
+    /// 5) Round Robin analysis
+    /// 6) Map and WRG file creation
+    /// 7) Exceedance Monte Carlo analysis
+    /// 8) Shadow flicker model
+    /// 9) Ice throw model
+    /// 10) Save As file and node SRDH recalculation (if land cover key changed)
+    /// </summary>
     public partial class BackgroundWork : Form
     {
         Update updateThe = new Update();
+        /// <summary> Set to true when task is finished. Checked during unit tests </summary>
         public bool DoWorkDone = false;
+        /// <summary> Set to true if Background worker did not finish and was cancelled  </summary>
         public bool WasReturned = false;
 
+        /// <summary> Class initializer </summary>
         public BackgroundWork()
         {
             InitializeComponent();
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Struct containing Continuum instance and filename </summary>
         public struct Vars_for_BW
         {
+            /// <summary> Continuum instance </summary>
             public Continuum thisInst;
+            /// <summary> File to be imported </summary>
             public string Filename;
         }
 
+        /// <summary> Struct containg info needed to create WRG file </summary>
         public struct Vars_for_WRG_file
         {
+            /// <summary> Continuum instance </summary>
             public Continuum thisInst;
+            /// <summary> Map used to generate WRG file </summary>
             public string mapName;
+            /// <summary> User-entered mean air density </summary>
             public double density;
+            /// <summary> WRG filename </summary>
             public string outputFile;
         }
 
+        /// <summary> Struct containing new/old filename used in 'Save As' </summary>
         public struct Vars_for_Save_As
         {
+            /// <summary> Old Continuum filename </summary>
             public string oldFilename;
+            /// <summary> New Continuum filename </summary>
             public string newFilename;
         }
 
+        /// <summary> Contains Continuum instance and Map object </summary>
         public struct Vars_for_Gen_Map
         {
+            /// <summary> Continuum instance </summary>
             public Continuum thisInst;
+            /// <summary> Map to be generated </summary>
             public Map thisMap;
+            /// <summary> Selected MCP method </summary>
             public string MCP_Method;
         }
 
-        public struct Vars_for_Turbine_and_Node_Calcs
+        /// <summary> Contains Continuum instance and wake model </summary>
+        public struct Vars_for_TurbCalcs
         {
+            /// <summary> Continuum instance </summary>
             public Continuum thisInst;
+            /// <summary> Wake model to use in net calcs </summary>
             public Wake_Model thisWakeModel;
+            /// <summary> Selected MCP method </summary>
             public string MCP_Method;
         }
 
+        /// <summary> Contains Continuum instance and selected subset size </summary>
         public struct Vars_for_RoundRobin
         {
+            /// <summary> Round Robin met subset size </summary>
             public int Min_RR_Size;
+            /// <summary> Continuum instance </summary>
             public Continuum thisInst;
+            /// <summary> Selected MCP method </summary>
             public string MCP_Method;
-        }
+        }               
 
-        public struct Topo_struct
-        {
-            public double UTMX;
-            public double[,] UTMYs_and_Elevs;
-        }
-
+        /// <summary> Contains MERRA2 object to extract from local files </summary>
         public struct Vars_for_MERRA
         {
+            /// <summary> MERRA2 object to fill with data </summary>
             public MERRA thisMERRA;
+            /// <summary> MERRA2 nodes to pull from local files </summary>
             public MERRA.MERRA_Pull[] nodesToPull;
+            /// <summary> Continuum instance </summary>
             public Continuum thisInst;
+            /// <summary> Selected MCP method </summary>
             public string MCP_type;
+            /// <summary> Selected met (if any) to conduct MCP </summary>
             public Met thisMet;
-        }
+        }          
+        
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public struct Vars_for_MetCalcs
-        {
-            public Continuum thisInst;
-            public string MCP_type;
-        }
-
-        public struct Vars_for_MERRA2_Download
-        {
-            
-        }
-        public void Call_BW_MetCalcs(Vars_for_MetCalcs theArgs)
+        /// <summary> Calls Met Calcs background worker and runs background task </summary>        
+        public void Call_BW_MetCalcs(Vars_for_BW theArgs)
         {
             // Calls Met Calcs background worker
             Show();
@@ -104,22 +137,18 @@ namespace ContinuumNS
             // updates turbine calculations (if any)
             DoWorkDone = false;
             WasReturned = false;
-            Vars_for_MetCalcs theArgs = (Vars_for_MetCalcs)e.Argument;
+            Vars_for_BW theArgs = (Vars_for_BW)e.Argument;
             Continuum thisInst = theArgs.thisInst;
-            string MCP_Method = theArgs.MCP_type;
+     
             MetCollection metList = thisInst.metList;
-            TopoInfo topo = thisInst.topo;
-            InvestCollection radiiList = thisInst.radiiList;
+            TopoInfo topo = thisInst.topo;      
             MetPairCollection metPairs = thisInst.metPairList;
             ModelCollection modelList = thisInst.modelList;
-            NodeCollection nodeList = new NodeCollection();
-
-            string savedFilename = thisInst.savedParams.savedFileName;
-            TurbineCollection turbList = thisInst.turbineList;
+            NodeCollection nodeList = new NodeCollection();                 
 
             string textForProgBar = "Importing Met Sites";
             BackgroundWorker_MetCalcs.ReportProgress(0, textForProgBar);
-            int numMets = thisInst.metList.ThisCount;
+            int numMets = metList.ThisCount;
             int numRadii = thisInst.radiiList.ThisCount;
 
             textForProgBar = "Calculating exposures at met sites.";
@@ -268,8 +297,6 @@ namespace ContinuumNS
                 }
             }
 
-
-
             DoWorkDone = true;
             e.Result = thisInst;
         }
@@ -303,9 +330,9 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Calls topography file import background worker and runs background task </summary>        
         public void Call_BW_TopoImport(Vars_for_BW Args)
-        {
-            // Calls topo import background worker
+        {            
             Show();
             BackgroundWorker_Topo.RunWorkerAsync(Args);
         }
@@ -313,8 +340,7 @@ namespace ContinuumNS
         private void BackgroundWorker_Topo_DoWork(object sender, DoWorkEventArgs e)
         {
             // Opens and reads topography data from a .XYZ, .TIF, or .ADF file. Saves elevation data to local database.
-            NodeCollection nodeList = new NodeCollection();
-            //  Dim The_args  Vars_for_Topo_load = DirectCast(e.Argument, Vars_for_Topo_load)
+            NodeCollection nodeList = new NodeCollection();            
             Vars_for_BW args = (Vars_for_BW)e.Argument;
             Continuum thisInst = args.thisInst;
             DoWorkDone = false;
@@ -460,9 +486,10 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Calls land cover file import background worker and runs background task      /// </summary>
+        /// <param name="Args"></param>
         public void Call_BW_LandCoverImport(Vars_for_BW Args)
-        {
-            // Calls land cover import background worker
+        {            
             Show();
             BackgroundWorker_LandCover.RunWorkerAsync(Args);
         }
@@ -510,7 +537,6 @@ namespace ContinuumNS
                 WasReturned = true; // for unit tests
                 return;
             }
-
 
             int thisCount = 0;
             int numAll = topo.LC_NumXY.X.all.num * topo.LC_NumXY.Y.all.num;
@@ -573,7 +599,6 @@ namespace ContinuumNS
 
             // Recalculates SR/DH with new land cover key (or calculates SR/DH with newly imported land cover)
             Nodes nodeFromDB = new Nodes();
-
             int nodeCount = 0;
 
             try
@@ -684,9 +709,9 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Calls .MAP roughness file import background worker and runs background task </summary>        
         public void Call_BW_WAsP_Map(Vars_for_BW Args)
-        {
-            // Calls .MAP import background worker
+        {            
             Show();
             BackgroundWorker_WAsP_Map.RunWorkerAsync(Args);
         }
@@ -704,7 +729,7 @@ namespace ContinuumNS
             string savedFilename = thisInst.savedParams.savedFileName;
             NodeCollection nodeList = new NodeCollection();
 
-            bool Is_TIF = false;
+        /*    bool Is_TIF = false;
             bool Is_SHP = false;
 
             if (fileName.Substring(fileName.Length - 3) == "TIF" || fileName.Substring(fileName.Length - 3) == "tif")
@@ -717,6 +742,7 @@ namespace ContinuumNS
                 UTM_conversion UTM = new UTM_conversion();
                 topo.Read_SHP_Roughness(fileName, UTM); //// this doesn;t work yet
             }
+*/
 
             StreamReader sr = new StreamReader(fileName);
 
@@ -725,8 +751,7 @@ namespace ContinuumNS
 
             TopoInfo.Roughness_Map_Struct[] theseShapes = null;
             int shapeCount = 0;
-            int pointCount = 0;
-
+            
             string textForProgBar = "";
             BackgroundWorker_WAsP_Map.ReportProgress(20, textForProgBar);
 
@@ -785,7 +810,7 @@ namespace ContinuumNS
 
                 theseShapes[shapeCount].isClosed = true;
 
-                pointCount = 0;
+                int pointCount = 0;
                 theseShapes[shapeCount].points = new TopoInfo.UTM_X_Y[theseShapes[shapeCount].numPoints];
 
                 while (pointCount < theseShapes[shapeCount].numPoints)
@@ -999,25 +1024,24 @@ namespace ContinuumNS
 
         }
 
-        public void Call_BW_TurbCalcs(Vars_for_Turbine_and_Node_Calcs Args)
-        {
-            // Calls Turbine Calcs background worker
+        /// <summary> Calls Turbine Calcs and Estimates background worker and runs background task. Calculates exposure and SRDH at each turbine site, calls DoTurbineCalcs, 
+        /// generates avg WS estimates and energy estimate and wake loss calcs (if net calcs) </summary>        
+        public void Call_BW_TurbCalcs(Vars_for_TurbCalcs Args)
+        {            
             Show();
             BackgroundWorker_TurbCalcs.RunWorkerAsync(Args);
         }
 
         private void BackgroundWorker_TurbCalcs_DoWork(object sender, DoWorkEventArgs e)
         {
-            // Calculates exposure and SRDH at each turbine site, calls DoTurbineCalcs, generates avg WS estimates and energy estimate and wake loss calcs (if net calcs)
-            
-            Vars_for_Turbine_and_Node_Calcs theArgs = (Vars_for_Turbine_and_Node_Calcs)(e.Argument);
+            Vars_for_TurbCalcs theArgs = (Vars_for_TurbCalcs)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
-            string MCP_Method = theArgs.MCP_Method;
+            string MCP_Method = theArgs.MCP_Method; 
             Wake_Model wakeModel = theArgs.thisWakeModel;
             NodeCollection nodeList = new NodeCollection();
             TurbineCollection turbList = thisInst.turbineList;
             int numTurbs = turbList.TurbineCount;
-            int numWD = thisInst.metList.numWD;
+         //   int numWD = thisInst.metList.numWD;
             
             DoWorkDone = false;
             WasReturned = false;
@@ -1025,14 +1049,10 @@ namespace ContinuumNS
             string textForProgBar = "Turbine calculations starting...";
             BackgroundWorker_TurbCalcs.ReportProgress(0, textForProgBar);
 
-            if (wakeModel != null)
-            {
-                textForProgBar = "Calculating wake losses at turbine sites.";
-            }
-            else
-            {
-                textForProgBar = "Calculating exposures at turbine sites.";
-            }
+            if (wakeModel != null)            
+                textForProgBar = "Calculating wake losses at turbine sites.";            
+            else            
+                textForProgBar = "Calculating exposures at turbine sites.";            
 
             BackgroundWorker_TurbCalcs.ReportProgress(0, textForProgBar);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false); // Get elevs for calcs           
@@ -1172,17 +1192,13 @@ namespace ContinuumNS
                         return;
                     }
                 }
-            }
-
-
-            // Combine WS ests from various mets into one average
+            }                        
 
             if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0 && thisInst.turbineList.PowerCurveCount > 0) // Gross estimates using time series calculated earlier
             {
                 textForProgBar = "Calculating gross AEP at turbine sites.";
                 BackgroundWorker_TurbCalcs.ReportProgress(90, textForProgBar);                                
-                turbList.CalcGrossAEPFromTABs(thisInst);              
-
+                turbList.CalcGrossAEPFromTABs(thisInst);
             }
 
             BackgroundWorker_TurbCalcs.ReportProgress(0, textForProgBar);
@@ -1193,8 +1209,7 @@ namespace ContinuumNS
                 Wake_Model thisWakeModel = thisInst.wakeModelList.wakeModels[w];
                 if (turbList.turbineEsts[0].EstsExistForWakeModel(thisWakeModel, thisInst.wakeModelList) == false)
                 {
-                    // Find wake loss coeffs
-                    WakeCollection.WakeLossCoeffs[] wakeCoeffs = null;
+                    // Find wake loss coeffs                    
                     int minDistance = 10000000;
                     int maxDistance = 0;
 
@@ -1207,9 +1222,8 @@ namespace ContinuumNS
 
                     minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
                     if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
-                    wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, thisInst.metList);
-
-
+                    WakeCollection.WakeLossCoeffs[] wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, thisInst.metList);
+                    
                     //   counter = 0;
                     //   integerList = Enumerable.Range(0, thisInst.turbineList.TurbineCount).ToList();
                     //   Parallel.ForEach(integerList, i =>
@@ -1223,7 +1237,7 @@ namespace ContinuumNS
                         if (BackgroundWorker_TurbCalcs.CancellationPending == true)
                         {
                             thisInst.wakeModelList.RemoveWakeModel(thisInst.turbineList, thisInst.mapList, wakeModel);
-                            turbList.CleanUpEsts(thisInst.wakeModelList);
+                            turbList.CleanUpEsts();
                             thisInst.wakeModelList.CleanUpWakeModelsAndGrid();
                             e.Result = thisInst;
                             WasReturned = true;
@@ -1250,7 +1264,6 @@ namespace ContinuumNS
                                 turbList.turbineEsts[i].CalcGrossAEPFromTimeSeries(thisInst, thisTS, thisWakeModel.powerCurve);
                                 turbList.turbineEsts[i].CalcNetAEPFromTimeSeries(thisInst, thisTS, thisWakeModel.powerCurve, thisWakeModel);
                             }
-
                         }
 
                         //   counter++;
@@ -1287,19 +1300,18 @@ namespace ContinuumNS
             {
                 updateThe.AllTABs(thisInst);
                 thisInst.ChangesMade();
-            }
-            
+            }            
 
             Close();
         }
 
+        /// <summary> Calls background worker to generate map </summary>        
         public void Call_BW_GenMap(Vars_for_Gen_Map Args)
-        {
-            // Calls Map background worker
+        {            
             Show();
             BackgroundWorker_Map.RunWorkerAsync(Args);
         }
-
+        
         private void BackgroundWorker_Map_DoWork(object sender, DoWorkEventArgs e)
         {
             // for each map node, calculates exposure, SRDH, grid stats, and calls DoMapCalcs
@@ -1310,18 +1322,12 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             TopoInfo topo = thisInst.topo;
             Map thisMap = theArgs.thisMap;
-            string MCP_Method = theArgs.MCP_Method;
-            MapCollection mapList = thisInst.mapList;
+            string MCP_Method = theArgs.MCP_Method;      
             MetCollection metList = thisInst.metList;
-            NodeCollection nodeList = new NodeCollection();
-
-            ModelCollection modelList = thisInst.modelList;
-            TurbineCollection turbList = thisInst.turbineList;
-
-            MetPairCollection metPairList = thisInst.metPairList;
+            NodeCollection nodeList = new NodeCollection();        
+            TurbineCollection turbList = thisInst.turbineList;        
             WakeCollection wakeModelList = thisInst.wakeModelList;
-
-            int numMaps = mapList.ThisCount;
+                  
             int numWD = thisInst.metList.numWD;
 
             int numX = thisMap.numX;
@@ -1348,17 +1354,16 @@ namespace ContinuumNS
             Stopwatch thisStopwatch = new Stopwatch();
             thisStopwatch.Start();
 
-            double timeElapsed = 0;
-            double avgTimePerNode = 0;
+            double timeElapsed = 0;            
             double timeToFinish;
             
-            NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets = null;
+     //       NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets = null;
 
-            Nodes[] allNodesInX = new Nodes[numY];
-            Nodes firstNodeLastCol = new Nodes();
+      //      Nodes[] allNodesInX = new Nodes[numY];
+      //      Nodes firstNodeLastCol = new Nodes();
 
             Nodes[] nodesToAdd = new Nodes[1];
-            Nodes[] nodesFromDB = null;
+       //     Nodes[] nodesFromDB = null;
 
             WakeCollection.WakeLossCoeffs[] wakeCoeffs = null;
             
@@ -1387,10 +1392,10 @@ namespace ContinuumNS
             for (int xind = 0; xind < numX; xind++)
             {
                 double thisX = thisMap.minUTMX + xind * thisMap.reso;
-                int minY = thisMap.minUTMY;
-                int maxY = thisMap.minUTMY + thisMap.numY * thisMap.reso;
+             //   int minY = thisMap.minUTMY;
+             //   int maxY = thisMap.minUTMY + thisMap.numY * thisMap.reso;
 
-                nodesFromDB = nodeList.GetNodes(thisX, minY, thisX, maxY, thisInst, false); // To do: this isn't used anywhere...
+              //  nodesFromDB = nodeList.GetNodes(thisX, minY, thisX, maxY, thisInst, false); // To do: this isn't used anywhere...
 
                 for (int yind = 0; yind <= numY - 1; yind++)
                 {
@@ -1431,7 +1436,7 @@ namespace ContinuumNS
                            // if (mapNodeCount > 0 && mapNodeCount % 10 == 0)
                           //  {
                                 timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
-                                avgTimePerNode = (thisStopwatch.Elapsed.TotalSeconds / (mapNodeCount + 1));
+                                double avgTimePerNode = (thisStopwatch.Elapsed.TotalSeconds / (mapNodeCount + 1));
                                 timeToFinish = (numMapNodes - mapNodeCount) * avgTimePerNode / 60;
                                 textForProgBar = "Node " + mapNodeCount + "/" + numMapNodes + " Avg time/node: " + Math.Round(avgTimePerNode, 1) +
                                     " secs." + " Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.";
@@ -1445,7 +1450,7 @@ namespace ContinuumNS
                             if (thisMap.useFlowSep == true) thisMap.GetFlowSepNodes(ref thisMapNode, thisInst);
 
                             if (thisMap.modelType == 2 || thisMap.modelType == 3)
-                                thisMap.DoMapCalcs(ref thisMapNode, thisInst, nodeList, pathsToMets);
+                                thisMap.DoMapCalcs(ref thisMapNode, thisInst);
                             
                             // Combine WS ests from various mets into one average
                             if (thisMap.modelType >= 2)
@@ -1464,7 +1469,7 @@ namespace ContinuumNS
                         else // Time Series model
                         {
                             timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
-                            avgTimePerNode = (thisStopwatch.Elapsed.TotalSeconds / (mapNodeCount + 1));
+                            double avgTimePerNode = (thisStopwatch.Elapsed.TotalSeconds / (mapNodeCount + 1));
                             timeToFinish = (numMapNodes - mapNodeCount) * avgTimePerNode / 60;
                             textForProgBar = "Node " + mapNodeCount + "/" + numMapNodes + " Avg time/node: " + Math.Round(avgTimePerNode, 1) +
                                 " secs." + " Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.";
@@ -1511,16 +1516,15 @@ namespace ContinuumNS
 
                                     // Get gross estimates to calculate wake loss
                                     ModelCollection.TimeSeries[] grossTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
-                                        thisPowerCurve, null, null, MCP_Method);
-                                    Met.WSWD_Dist grossDist = thisInst.modelList.CalcWSWD_Dist(grossTS, thisInst, "Freestream");
+                                        thisPowerCurve, null, null, MCP_Method);                                    
                                     Turbine.Gross_Energy_Est thisGross = new Turbine.Gross_Energy_Est();
                                     thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, grossTS, thisInst);
                                     thisMapNode.grossAEP = thisGross.AEP;
                                     thisMapNode.sectorGross = thisGross.sectorEnergy;
                                     thisMapNode.sectDist = thisDist.sectorWS_Dist;
                                     double otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
-                                    thisMapNode.netEnergyEsts.wakeLoss = thisInst.wakeModelList.CalcThisWakeLoss(thisMap.wakeModel, thisNet.AEP, thisGross.AEP, otherLoss);
-                                    thisMapNode.netEnergyEsts.sectorWakeLoss = thisInst.wakeModelList.CalcThisSectWakeLoss(thisMap.wakeModel, thisNet.sectorEnergy, thisGross.sectorEnergy, otherLoss);
+                                    thisMapNode.netEnergyEsts.wakeLoss = thisInst.wakeModelList.CalcThisWakeLoss(thisNet.AEP, thisGross.AEP, otherLoss);
+                                    thisMapNode.netEnergyEsts.sectorWakeLoss = thisInst.wakeModelList.CalcThisSectWakeLoss(thisNet.sectorEnergy, thisGross.sectorEnergy, otherLoss);
                                 }
                             }
                         }
@@ -1588,18 +1592,15 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Calls Round Robin ucertainty analysis background worker </summary>        
         public void Call_BW_RoundRobin(Vars_for_RoundRobin Args)
-        {
-            // Calls Round Robin background worker
+        {            
             Show();
             BackgroundWorker_RoundRobin.RunWorkerAsync(Args);
         }
 
         private void BackgroundWorker_RoundRobin_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // Conducts Round Robin analysis for specified met subset size
-
-            //  Dim The_args  Vars_for_RoundRobin = DirectCast(e.Argument, Vars_for_RoundRobin)
+        {           
             Vars_for_RoundRobin theArgs = (Vars_for_RoundRobin)e.Argument;
 
             Continuum thisInst = theArgs.thisInst;
@@ -1610,9 +1611,7 @@ namespace ContinuumNS
             int minRR_Size = theArgs.Min_RR_Size;
             string[] metsUsed = metList.GetMetsUsed();
 
-            int numMets = metsUsed.Length;
-
-            MetPairCollection.RR_funct_obj thisRR_obj = new MetPairCollection.RR_funct_obj();
+            int numMets = metsUsed.Length;                        
             MetPairCollection.RR_funct_obj[] RR_obj_coll = new MetPairCollection.RR_funct_obj[1];
 
             string textForProgBar = "Preparing for Round Robin Analysis";
@@ -1638,7 +1637,7 @@ namespace ContinuumNS
                         textForProgBar = "Calculating model error using " + (metsUsed.Length - n).ToString() + " met sites : " + i + "/" + numModels;
                         BackgroundWorker_RoundRobin.ReportProgress(100 * i / numModels, textForProgBar);
 
-                        thisRR_obj = metPairList.DoRR_Calc(metsForThisModel, thisInst, metsUsed, MCP_Method);
+                        MetPairCollection.RR_funct_obj thisRR_obj = metPairList.DoRR_Calc(metsForThisModel, thisInst, metsUsed, MCP_Method);
                         Array.Resize(ref RR_obj_coll, i + 1);
                         RR_obj_coll[i] = thisRR_obj;
 
@@ -1649,7 +1648,7 @@ namespace ContinuumNS
                         }
                     }
 
-                    metPairList.AddRoundRobinEst(RR_obj_coll, metsUsed, numMetsInModel, metsForModels, true, metList);
+                    metPairList.AddRoundRobinEst(RR_obj_coll, metsUsed, numMetsInModel, metsForModels);
                 }
             }
 
@@ -1671,10 +1670,7 @@ namespace ContinuumNS
         {
             // Updates Round Robin dropdown menu on main form
 
-            if (e.Cancelled)
-            {
-            }
-            else
+            if (e.Cancelled == false)            
             {
                 Continuum thisInst = (Continuum)e.Result;
                 if (thisInst.IsDisposed == false)
@@ -1687,16 +1683,15 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Calls Save As background worker. Saves CFM file and a copy of database at new save location </summary>        
         public void Call_BW_SaveAs(Vars_for_Save_As Args)
-        {
-            // Calls //Save // background worker
+        {            
             Show();
             BackgroundWorker_SaveAs.RunWorkerAsync(Args);
         }
 
         private void BackgroundWorker_SaveAs_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // Saves a copy of database at new save location
+        {            
             NodeCollection nodeList = new NodeCollection();
             DoWorkDone = false;
             Vars_for_Save_As The_args = (Vars_for_Save_As)e.Argument;
@@ -2119,7 +2114,6 @@ namespace ContinuumNS
             DoWorkDone = true;
         }
 
-
         private void BackgroundWorker_SaveAs_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             // Updates the 'Save As' progress bar
@@ -2139,9 +2133,10 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Calls node surface roughness and displacement height (SRDH) recalculation background worker. (When land cover key changes) </summary>
+        /// <param name="thisInst"></param>
         public void Call_BW_Node_Recalc(Continuum thisInst)
-        {
-            // Calls Node SR Recalc
+        {            
             Show();
             BackgroundWorker_Node_SR_Recalc.RunWorkerAsync(thisInst);
         }
@@ -2259,9 +2254,9 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Calls WRG file creation background worker </summary>        
         public void Call_BW_WRG_create(Vars_for_WRG_file Args)
-        {
-            // Calls WRG file creator background worker
+        {            
             Show();
             BackgroundWorker_WRG.RunWorkerAsync(Args);
 
@@ -2274,18 +2269,13 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             MetCollection metList = thisInst.metList;
             MapCollection mapList = thisInst.mapList;
-            string mapName = theArgs.mapName;
-            string savedFilename = thisInst.savedParams.savedFileName;
-            TurbineCollection turbList = thisInst.turbineList;
-            double density = theArgs.density;
-            ModelCollection modelList = thisInst.modelList;
-            string outputFile = theArgs.outputFile;
-            InvestCollection radiiList = thisInst.radiiList;
+            string mapName = theArgs.mapName;           
+            double density = theArgs.density;     
+            string outputFile = theArgs.outputFile;     
             TopoInfo topo = thisInst.topo;
             double[] windRose = metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
             Map thisMap = new Map();
-            double height = 0;
-
+     
             if (mapList.ThisCount > 0)
             {
                 for (int i = 0; i < mapList.ThisCount; i++)
@@ -2319,20 +2309,12 @@ namespace ContinuumNS
             {
                 MessageBox.Show("No maps defined.", "Continuum 3");
                 return;
-            }
-
-            if (metList.ThisCount > 0)
-                height = thisInst.modeledHeight;
-            else
-            {
-                MessageBox.Show("There are no met sites loaded.", "Continuum 3");
-                return;
-            }
+            }                        
 
             StreamWriter sw = new StreamWriter(outputFile);
 
-            double weibull_A_10 = 0;
-            double weibull_k_100 = 0;
+            double weibull_A_10;
+            double weibull_k_100;
 
             int numX = thisMap.numX;
             int numY = thisMap.numY;
@@ -2361,16 +2343,14 @@ namespace ContinuumNS
             sw.Write(resoString);
             sw.WriteLine();
 
-            double[] power = null;
+         //   double[] power = null;
 
-            if (turbList.PowerCurveCount > 0)
-                power = turbList.powerCurves[0].power;
+         //   if (turbList.PowerCurveCount > 0)
+         //       power = turbList.powerCurves[0].power;
 
             int numPoints = numX * numY;
             int pointInd = 0;
-            string[] metsUsed = metList.GetMetsUsed();
-
-            double[,] thisSectDist = null;
+            string[] metsUsed = metList.GetMetsUsed();                      
 
             // Get elevs for calcs
             topo.GetElevsAndSRDH_ForCalcs(thisInst, thisMap, false);
@@ -2378,8 +2358,8 @@ namespace ContinuumNS
             for (int xind = 0; xind <= numX - 1; xind++)
             {
                 double thisX = thisMap.minUTMX + xind * thisMap.reso;
-                double minY = thisMap.minUTMY;
-                double maxY = thisMap.minUTMY + (numY - 1) * thisMap.reso;
+            //    double minY = thisMap.minUTMY;
+            //    double maxY = thisMap.minUTMY + (numY - 1) * thisMap.reso;
 
                 for (int yind = 0; yind <= numY - 1; yind++)
                 {
@@ -2402,12 +2382,12 @@ namespace ContinuumNS
                     string elev = Math.Round(topo.CalcElevs(thisX, thisY), 2).ToString();
                     elev = elev.PadRight(8);
 
-                    string heightString = height.ToString();
+                    string heightString = thisInst.modeledHeight.ToString();
                     heightString = heightString.PadRight(5);
 
                     int numWS = metList.numWS;
                     int numWD = metList.numWD;
-                    thisSectDist = new double[numWD, numWS];
+                    double[,] thisSectDist = new double[numWD, numWS];
                     double[] thisWindRose = metList.GetInterpolatedWindRose(metsUsed, thisX, thisY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
 
                     for (int WD = 0; WD <= numWD - 1; WD++)
@@ -2501,95 +2481,90 @@ namespace ContinuumNS
             else
                 Close();
         }
-
-
-
+               
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            // Cancels background worker and closes progress bar
-            DialogResult Yes_or_no = new DialogResult();
+            // Cancels background worker and closes progress bar           
 
             if (BackgroundWorker_Map.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel this map generation?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel this map generation?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_Map.CancelAsync();
-
             }
             else if (BackgroundWorker_TurbCalcs.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the turbine estimate calculations?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the turbine estimate calculations?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_TurbCalcs.CancelAsync();
-
             }
             else if (BackgroundWorker_RoundRobin.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the round robin uncertainty analysis?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the round robin uncertainty analysis?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_RoundRobin.CancelAsync();
             }
             else if (BackgroundWorker_MetCalcs.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel this met exposure and statistics calculation?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel this met exposure and statistics calculation?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_MetCalcs.CancelAsync();
             }
             else if (BackgroundWorker_Topo.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the topo data import?  All data loaded in so far will be removed from database.", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the topo data import?  All data loaded in so far will be removed from database.", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_Topo.CancelAsync();
             }
             else if (BackgroundWorker_WAsP_Map.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the roughness data import?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the roughness data import?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_WAsP_Map.CancelAsync();
             }
             else if (BackgroundWorker_MERRA.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 data import?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 data import?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_MERRA.CancelAsync();
             }
             else if (BackgroundWorker_Shadow.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the shadow flicker calculations?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the shadow flicker calculations?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_Shadow.CancelAsync();
             }
             else if (BackgroundWorker_IceThrow.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the ice throw model calculations?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the ice throw model calculations?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_IceThrow.CancelAsync();
             }
             else if (BackgroundWorker_Exceed.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the Monte Carlo model calculations?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the Monte Carlo model calculations?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_Exceed.CancelAsync();
             }
             else if (BackgroundWorker_LandCover.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the land cover / surface roughness import?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the land cover / surface roughness import?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_LandCover.CancelAsync();
             }
             else if (BackgroundWorker_MERRADownload.IsBusy == true)
             {
-                Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 download?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 download?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_MERRADownload.CancelAsync();
             }
 
-
         }
 
+        /// <summary> Checks to see if BackgroundWorkers are currently running  </summary>
+        /// <returns> True if background worker is busy</returns>
         public bool IsBusy()
-        {
-            // Checks to see if BackgroundWorker's are being used and checks to see if a cancellation is pending
+        {            
             bool Busy = false;
                        
             if (BackgroundWorker_LandCover.IsBusy || BackgroundWorker_Map.IsBusy || BackgroundWorker_MetCalcs.IsBusy || BackgroundWorker_Node_SR_Recalc.IsBusy
@@ -2601,22 +2576,9 @@ namespace ContinuumNS
             return Busy;
         }
 
-        public bool WasForceClosed()
-        {
-            bool wasClosed = false;
-
-            if (BackgroundWorker_Exceed.CancellationPending && BackgroundWorker_Exceed.IsBusy)
-                wasClosed = true;
-            else if (BackgroundWorker_Map.CancellationPending && BackgroundWorker_Map.IsBusy)
-                wasClosed = true;
-
-
-            return wasClosed;
-        }
-
+        /// <summary> Calls MERRA2 import background worker (extracts required data from local MERRA2 files) </summary>        
         public void Call_BW_MERRA2_Import(Vars_for_MERRA vars_For_MERRA)
-        {
-            // Calls MERRA2 import background worker
+        {            
             Show();
             BackgroundWorker_MERRA.RunWorkerAsync(vars_For_MERRA);
         }
@@ -2679,7 +2641,7 @@ namespace ContinuumNS
                 TimeSpan Num_Days_Total = endTime.Subtract(startTime);
                 double Prog = 100 * Num_Days_Processed.TotalDays / Num_Days_Total.TotalDays;
 
-                if (counter % 500 == 0)
+                if (counter % 50 == 0)
                     BackgroundWorker_MERRA.ReportProgress((int)Prog, "Importing MERRA2 data");
 
                 if (BackgroundWorker_MERRA.CancellationPending == true)
@@ -2723,7 +2685,7 @@ namespace ContinuumNS
 
                                 int ThisHour = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));
                                 int thisInd = lastInd + ThisHour;
-                                DateTime thisTimeStamp = thisDate.AddHours(ThisHour);
+                         //       DateTime thisTimeStamp = thisDate.AddHours(ThisHour);
 
                                 open_bracket = file_strings[file_ind].LastIndexOf("[");
                                 close_bracket = file_strings[file_ind].LastIndexOf("]");
@@ -2830,7 +2792,7 @@ namespace ContinuumNS
             }
 
             // Check that MERRA data was read in
-            bool gotItAll = thisMERRA.WasDataFullyLoaded(nodesToPull, thisInst.merraList.MERRAfolder);
+            bool gotItAll = thisMERRA.WasDataFullyLoaded(nodesToPull);
             if (gotItAll == false)
             {
                 if (thisMet != null)
@@ -2900,9 +2862,10 @@ namespace ContinuumNS
             Refresh();
         }
 
+        /// <summary>  Calls Ice Throw model background worker </summary>
+        /// <param name="varsForBW"></param>
         public void Call_BW_IceThrow(Vars_for_BW varsForBW)
-        {
-            // Calls Ice Throw background worker
+        {             
             Show();
             BackgroundWorker_IceThrow.RunWorkerAsync(varsForBW);
         }
@@ -2924,7 +2887,6 @@ namespace ContinuumNS
 
             int numYearlyHits = siteSuit.iceThrowsPerIceDay * siteSuit.numIceDaysPerYear;
             int totalIceHits = numYearlyHits * thisInst.turbineList.TurbineCount; // Only used to calculate progress for progress bar
-            int iceHitCount = 0;
             int totalCount = 0;
 
             //     string fileName = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\Site Suitability\\Ice Throw\\Ice Throw Hits Findlay Turbines.txt";
@@ -2933,12 +2895,12 @@ namespace ContinuumNS
             for (int y = 0; y < siteSuit.numYearsToModel; y++)
             {
                 siteSuit.yearlyIceHits[y].iceHits = new SiteSuitability.FinalPosition[totalIceHits];
-                iceHitCount = 0;
+                int iceHitCount = 0;
 
                 for (int i = 0; i < thisInst.turbineList.TurbineCount; i++)
                 {
                     Turbine thisTurbine = thisInst.turbineList.turbineEsts[i];
-                    Turbine.Avg_Est thisAvgEst = thisTurbine.GetAvgWS_Est(null, powerCurve);
+                    Turbine.Avg_Est thisAvgEst = thisTurbine.GetAvgWS_Est(null);
                     double[,] sectorDists = thisAvgEst.freeStream.sectorWS_Dist;
                     double[] windRose = thisAvgEst.freeStream.windRose;
 
@@ -3060,21 +3022,19 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary>  Calls Shadow Flicker model background worker </summary>               
         public void Call_BW_Shadow(Vars_for_BW varsForBW)
-        {
-            // Calls Shadow Flicker background worker
+        {            
             Show();
             BackgroundWorker_Shadow.RunWorkerAsync(varsForBW);
         }
 
         private void BackgroundWorker_Shadow_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // Runs Shadow Flicker Model
+        {           
             Vars_for_BW theArgs = (Vars_for_BW)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
             SiteSuitability siteSuit = thisInst.siteSuitability;
-            int flickerInd = 0;
-
+            
             DateTime dateTime = new DateTime(2019, 1, 1);
             DateTime stopTime = new DateTime(2020, 1, 1);
             DateTime lastDay = dateTime;
@@ -3085,8 +3045,7 @@ namespace ContinuumNS
             //     SiteSuitability.FlickerAngles minFlickerAngles = siteSuit.FindMinSolarAngles(thisInst); // not quite working. taking out for now
 
             while (dateTime < stopTime)
-            {
-                DateTime[] lastFlickerTime = new DateTime[siteSuit.GetNumZones()]; // 
+            {             
                 if (dateTime.Day != lastDay.Day)
                 {
                     // Calculate sunrise and sunset time
@@ -3107,8 +3066,6 @@ namespace ContinuumNS
                 // Only check sun position if time is between 6 am and 10 pm.
                 if (dateTime.Hour >= sunRiseAndSet[0].Hour && dateTime.Hour <= sunRiseAndSet[1].Hour)
                 {
-                    // Check to see if sun is up using first zone as location and check angleError of first grid node compared to first turbine. 
-
                     bool sunIsUp = siteSuit.isSunUp(dateTime, UTC_offset, siteSuit.flickerMap[0].latitude,
                         siteSuit.flickerMap[0].longitude);
 
@@ -3118,12 +3075,7 @@ namespace ContinuumNS
 
                         if (sunPosition.altitude > 0)
                         {
-                            // Checks the sun position compared to the min azimuth and altitude and max angle variance                            
-                            double aziDiff = 0; // = sunPosition.azimuth - minFlickerAngles.targetAzimuthAngle;
-                            double altDiff = 0; // = sunPosition.altitude - minFlickerAngles.targetAltitudeAngle;
-                            double angleErrorSqr = 0; // aziDiff * aziDiff + altDiff * altDiff;
-                            double angleVarSqr = 0; // minFlickerAngles.angleVariance * minFlickerAngles.angleVariance;
-
+                            // Checks the sun position compared to the min azimuth and altitude and max angle variance                    
                             if (sunPosition.isSunUp)
                             {
                                 for (int z = 0; z < siteSuit.GetNumZones(); z++)
@@ -3131,17 +3083,11 @@ namespace ContinuumNS
                                     // loop through zones and calculate flicker statistics
                                     for (int i = 0; i < thisInst.turbineList.TurbineCount; i++)
                                     {
-                                        Turbine thisTurbine = thisInst.turbineList.turbineEsts[i];
-
-                                        aziDiff = sunPosition.azimuth - siteSuit.zones[z].flickerAngles[i].targetAzimuthAngle;
-                                        altDiff = sunPosition.altitude - siteSuit.zones[z].flickerAngles[i].targetAltitudeAngle;
-                                        angleErrorSqr = aziDiff * aziDiff + altDiff * altDiff;
-                                        angleVarSqr = siteSuit.zones[z].flickerAngles[i].angleVariance * siteSuit.zones[z].flickerAngles[i].angleVariance;
-
-                                        //     double angleError = Math.Sqrt(Math.Pow(sunPosition.azimuth - siteSuit.zones[z].flickerAngles[i].targetAzimuthAngle, 2) 
-                                        //         + Math.Pow(sunPosition.altitude - siteSuit.zones[z].flickerAngles[i].targetAltitudeAngle, 2));
-
-                                        //     if (sunPosition.isSunUp && (angleError <= siteSuit.zones[z].flickerAngles[i].angleVariance))
+                                        double aziDiff = sunPosition.azimuth - siteSuit.zones[z].flickerAngles[i].targetAzimuthAngle;
+                                        double altDiff = sunPosition.altitude - siteSuit.zones[z].flickerAngles[i].targetAltitudeAngle;
+                                        double angleErrorSqr = aziDiff * aziDiff + altDiff * altDiff;
+                                        double angleVarSqr = siteSuit.zones[z].flickerAngles[i].angleVariance * siteSuit.zones[z].flickerAngles[i].angleVariance;
+                                                                               
                                         if (sunPosition.isSunUp && (angleErrorSqr <= angleVarSqr))
                                         {
                                             int monthInd = dateTime.Month - 1;
@@ -3150,31 +3096,23 @@ namespace ContinuumNS
                                             siteSuit.zones[z].flickerStats.totalShadowMinsPerMonth[monthInd]++;
                                             siteSuit.zones[z].flickerStats.totalShadowMinsPerYear++;
                                             totalDailyMins[z]++;
-                                            break; // A turbine causes flicker so exit loop so no double counting for other turbines than cause flicker
+                                            break; // A turbine causes flicker so exit loop so no double counting for other turbines that cause flicker
                                         }
                                     }
-
                                 }
 
-                                flickerInd = 0;
+                                int flickerInd = 0;
 
                                 for (int i = 0; i < siteSuit.numXFlicker; i++)
                                     for (int j = 0; j < siteSuit.numYFlicker; j++)
                                     {
                                         for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
                                         {
-                                            Turbine thisTurbine = thisInst.turbineList.turbineEsts[t];
-                                            //  sunPosition = GetSunPosition(dateTime, UTC_offset, flickerMap[flickerInd].latitude, flickerMap[flickerInd].longitude);
-
-                                            aziDiff = sunPosition.azimuth - siteSuit.flickerMap[flickerInd].flickerAngles[t].targetAzimuthAngle;
-                                            altDiff = sunPosition.altitude - siteSuit.flickerMap[flickerInd].flickerAngles[t].targetAltitudeAngle;
-                                            angleErrorSqr = aziDiff * aziDiff + altDiff * altDiff;
-                                            angleVarSqr = siteSuit.flickerMap[flickerInd].flickerAngles[t].angleVariance * siteSuit.flickerMap[flickerInd].flickerAngles[t].angleVariance;
-
-                                            //      double angleError = Math.Sqrt(Math.Pow(sunPosition.azimuth - siteSuit.flickerMap[flickerInd].flickerAngles[t].targetAzimuthAngle, 2) 
-                                            //          + Math.Pow(sunPosition.altitude - siteSuit.flickerMap[flickerInd].flickerAngles[t].targetAltitudeAngle, 2));
-
-                                            //      if (sunPosition.isSunUp && (angleError <= siteSuit.flickerMap[flickerInd].flickerAngles[t].angleVariance))
+                                            double aziDiff = sunPosition.azimuth - siteSuit.flickerMap[flickerInd].flickerAngles[t].targetAzimuthAngle;
+                                            double altDiff = sunPosition.altitude - siteSuit.flickerMap[flickerInd].flickerAngles[t].targetAltitudeAngle;
+                                            double angleErrorSqr = aziDiff * aziDiff + altDiff * altDiff;
+                                            double angleVarSqr = siteSuit.flickerMap[flickerInd].flickerAngles[t].angleVariance * siteSuit.flickerMap[flickerInd].flickerAngles[t].angleVariance;
+                                                                                        
                                             if (sunPosition.isSunUp && (angleErrorSqr <= angleVarSqr))
                                             {
                                                 int monthInd = dateTime.Month - 1;
@@ -3242,9 +3180,10 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Calls Monte Carlo exceedance background worker </summary>
+        /// <param name="varsForBW"></param>
         public void Call_BW_Exceed(Vars_for_BW varsForBW)
-        {
-            // Calls Monte Carlo exceedance background worker
+        {            
             Show();
             BackgroundWorker_Exceed.RunWorkerAsync(varsForBW);
         }
@@ -3261,31 +3200,23 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             Exceedance exceedance = thisInst.turbineList.exceed;
             int numSims = exceedance.numSims;
-            Turbine thisTurb = thisInst.GetSelectedTurbine("Exceedance");
-
+            
             int numYears = 1;
             int count = 0;
             int totalCount = numSims * exceedance.Num_Exceed() + numSims * exceedance.Num_Exceed() * 10 + numSims * exceedance.Num_Exceed() * 20;
 
             for (int yearInd = 0; yearInd < 3; yearInd++)
-            {
-                double totalPF = 1;
-                double thisPF = 1;
-                double lastRand = 0;
-                double randNum = 0;
+            {               
                 Random thisRand = exceedance.GetRandomNumber();
-                double avgPF = 1;
-
+                
                 double[] totalPFs = new double[numSims];
 
                 for (int i = 0; i < numSims; i++)
-                {
-                    totalPF = 1;
-                    avgPF = 0;
+                {                    
+                    double avgPF = 0;
 
                     double Prog = Math.Min(100 * (double)count / totalCount, 100);
-
-                    if (i % 1000 == 0)
+                    if (i % 500 == 0)
                         BackgroundWorker_Exceed.ReportProgress((int)Prog, "Running Exceedance Monte Carlo Model");
 
                     if (BackgroundWorker_Exceed.CancellationPending == true)
@@ -3296,23 +3227,18 @@ namespace ContinuumNS
 
                     for (int y = 0; y < numYears; y++)
                     {
-                        totalPF = 1;
+                        double totalPF = 1;
                         for (int j = 0; j < exceedance.Num_Exceed(); j++)
                         {
-                            randNum = thisRand.NextDouble();
-                            thisPF = exceedance.Get_PF_Value(randNum, exceedance.exceedCurves[j]);
-                            totalPF = totalPF * thisPF;
-                            lastRand = randNum;
-                            count++;
-
-                            if (thisPF > 1.5)
-                                thisPF = thisPF;
+                            double randNum = thisRand.NextDouble();
+                            double thisPF = exceedance.Get_PF_Value(randNum, exceedance.exceedCurves[j]);
+                            totalPF = totalPF * thisPF;                            
+                            count++;                                                        
                         }
                         avgPF = avgPF + totalPF;
                     }
 
                     avgPF = avgPF / numYears;
-
                     totalPFs[i] = avgPF;
                 }
 
@@ -3391,16 +3317,15 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Calls MERRA2 download background worker. Connects to NASA website and downloads daily files to local PC. </summary>        
         public void Call_BW_MERRA2_Download(Vars_for_BW vars_For_MERRA)
-        {
-            // Calls MERRA2 download background worker
+        {            
             Show();
             BackgroundWorker_MERRADownload.RunWorkerAsync(vars_For_MERRA);
         }
 
         private void BackgroundWorker_MERRADownload_DoWork(object sender, DoWorkEventArgs e)
         {
-
             Vars_for_BW theArgs = (Vars_for_BW)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
             MERRACollection merraList = thisInst.merraList;
@@ -3468,8 +3393,7 @@ namespace ContinuumNS
                 thisInst.merraList.earthdataPwd = "";
                 e.Result = thisInst;
                 return;
-            }
-            
+            }            
 
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
             {
@@ -3515,7 +3439,7 @@ namespace ContinuumNS
                         {
                             response = (HttpWebResponse)request.GetResponse();
                         }
-                        catch (Exception ex)
+                        catch
                         {                       
                         }
                     }
@@ -3526,7 +3450,7 @@ namespace ContinuumNS
                         {
                             merraList.SaveMERRA2DataFile(response, thisDate);
                         }
-                        catch (Exception ex)
+                        catch 
                         {                      
                         }
                     }
@@ -3544,9 +3468,7 @@ namespace ContinuumNS
             DoWorkDone = true;
             e.Result = thisInst;
         }
-
-
-
+               
         private void BackgroundWorker_MERRADownload_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             // Updates the MERRA2 download progress bar

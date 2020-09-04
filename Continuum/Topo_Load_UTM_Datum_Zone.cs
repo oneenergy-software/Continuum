@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
     public partial class Topo_Load_UTM_Datum_Zone : Form
     {
+        /// <summary> Class initializer </summary>
         public Topo_Load_UTM_Datum_Zone()
         {
             InitializeComponent();

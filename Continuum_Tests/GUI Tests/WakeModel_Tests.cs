@@ -10,13 +10,13 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class WakeModel_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string testingFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
 
         [TestMethod]
         public void WakeModelTypeAndSettings_Test()
         {
             Continuum thisInst = new Continuum();
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
             thisInst.Open(fileName + ".cfm");
             thisInst.isTest = true;
             Wake_Model wakeModel = thisInst.wakeModelList.wakeModels[0];
@@ -82,8 +82,8 @@ namespace Continuum_Tests.GUI_Tests
                             Thread.Sleep(100);                        
 
                         string comboName = thisWake.cboWakeCombo.SelectedItem.ToString();
-                        wakeModel = thisInst.wakeModelList.GetWakeModel(modelInd, horizExp, ambTI, DW_Spacing, CW_Spacing, ambRough, crvName, comboName, wakeRecharge);
-                        thisEst = thisInst.turbineList.turbineEsts[10].GetAvgWS_Est(wakeModel, crvObject);
+                        wakeModel = thisInst.wakeModelList.GetWakeModel(modelInd, horizExp, ambTI, DW_Spacing, CW_Spacing, ambRough, crvName, comboName);
+                        thisEst = thisInst.turbineList.turbineEsts[10].GetAvgWS_Est(wakeModel);
                                                 
                         for (int i = 0; i < wakeModelInd; i++)                        
                             Assert.AreNotEqual(thisEst.waked.WS, wakedEsts[i], "Same estimate calculated. ModelInd:" + modelInd + ", ComboInd:" + comboInd + ", HorizInd: " + horizInd);

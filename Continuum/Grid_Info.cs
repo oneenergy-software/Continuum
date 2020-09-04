@@ -1,41 +1,25 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-// file:	Grid_Info.cs
-//
-// summary:	Implements the grid information class
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
 namespace ContinuumNS
-{
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// <summary>   (Serializable) information about the grid. </summary>
-    ///
-    /// <remarks>   OEE, 7/15/2019. </remarks>
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
+{   
+    /// <summary> Class that holds grid statistics (i.e. terrain complexity / P10 Exposure) for a specific radius of investigation and functions
+    /// to find the grid surrounding a given point and P10 exposure. </summary>    
 
     [Serializable()]
     public class Grid_Info
-    {
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// radius of investigation to use in grid statistics (terrain complexity) calculation.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    {        
+        /// <summary> Radius of investigation to use in grid statistics (terrain complexity) calculation. Default = 750 m. </summary>
         public int gridRadius = 750;
-        /// <summary>   Grid resolution to use in grid statistics. </summary>
+        /// <summary>   Grid resolution to use in grid statistics. Default = 250 m. </summary>
         public int reso = 250;
-        /// <summary>   Terrain complexity statistics. </summary>
+        /// <summary>   Array of Terrain complexity (i.e. P10 Exposure) statistics. </summary>
         public Grid_Avg_SD[] stats;
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         /// <summary>  Holds the radius of investigation and arrays of upwind and downwind P10 exposures. </summary>        
         [Serializable()]
@@ -50,11 +34,8 @@ namespace ContinuumNS
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+        
         /// <summary>   Gets the number of stats. </summary>
-        ///
-        /// <value> The number of stats. </value>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
         public int StatCount
         {
             get { if (stats == null)
@@ -64,72 +45,16 @@ namespace ContinuumNS
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Adds the statistics. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="radius">   The radius. </param>
-        /// <param name="P10_UW">   The 10 uw. </param>
-        /// <param name="P10_DW">   The 10 double-word. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public void AddStats(int radius, double[] P10_UW, double[] P10_DW)
-        {
-            // Adds Grid_Avg_SD to list of stats
-
-            // First check to see if stats have already been calculated
-            
-            int numStats = 0;
-
-            try {
-                numStats = stats.Length;
-            }
-            catch  {
-                numStats = 0;
-            }
-
-            if (numStats > 0)
-            {
-                for (int i = 0; i < numStats; i++)
-                    if (stats[i].radius == radius)
-                    {                        
-                        MessageBox.Show("Grid stats have already been calculated at this radius and exponent.", "Continuum 2.2");
-                        return;
-                    }
-            }
-            
-            int numWD = P10_UW.Length;
-
-            Array.Resize(ref stats, numStats + 1);
-
-            stats[numStats] = new Grid_Avg_SD();
-            stats[numStats].radius = radius;
-
-            Array.Resize(ref stats[numStats].P10_UW, numWD);
-            Array.Resize(ref stats[numStats].P10_DW, numWD);
-
-            for (int i = 0; i < numWD; i++)
-            {
-                stats[numStats].P10_UW[i] = P10_UW[i];
-                stats[numStats].P10_DW[i] = P10_DW[i];
-            }
-
-        }
+                 
                 
         /// <summary>   Finds wind direction sectors with the highest frequency and that account for 60% of wind rose. 
         /// Returns array of boolean with the top sectors flagged as true. Used to define the grid for P10 calculations. </summary>        
         public bool[] FindSectorsForGrid(double[] windRose)
-        {            
-            int numWD = 0;
-
-            try {
-                numWD = windRose.Length;
-            }
-            catch {
-                MessageBox.Show("Error occurred while trying to find sectors in grid area", "Continuum 2.2");
+        {
+            if (windRose == null)
                 return null;
-            }
 
+            int numWD = windRose.Length;
             int midRose = numWD / 2;
             double sectSum = 0;             
             int sectInd = 0;
@@ -167,7 +92,7 @@ namespace ContinuumNS
             return sectorsToUse;
         }
 
-        /// <summary>  Returns array of grid points surrounding met/node for P10 exposure calculation. </summary>
+        /// <summary>  Finds and returns array of grid points surrounding met/node for P10 exposure calculation. </summary>
         public TopoInfo.TopoGrid[] GetGridArray(double UTMX, double UTMY, Continuum thisInst) // 
         {                        
             double minX = UTMX - gridRadius;
@@ -221,21 +146,10 @@ namespace ContinuumNS
             return gridArray;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets overall p 10. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="windRose">     The wind rose. </param>
-        /// <param name="radiusIndex">  Zero-based index of the radius. </param>
-        /// <param name="UW_or_DW">     The uw or double-word. </param>
-        ///
-        /// <returns>   The overall p 10. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Gets Overall P10 UW or DW exposure for specified radius. </summary>
         public double GetOverallP10(double[] windRose, int radiusIndex, string UW_or_DW)
-        {
-            // Calculates and returns the overall P10 UW or DW exposure
+        {            
             double overallP10 = 0;
             int numWD = windRose.Length;
 
@@ -250,57 +164,10 @@ namespace ContinuumNS
             return overallP10;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Query if this object is new grid point. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">             The utmx. </param>
-        /// <param name="UTMY">             The utmy. </param>
-        /// <param name="thisRadius">       this radius. </param>
-        /// <param name="savedFileName">    Filename of the saved file. </param>
-        ///
-        /// <returns>   True if new grid point, false if not. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public bool IsNewGridPoint(int UTMX, int UTMY, int thisRadius, string savedFileName)
-        {
-            // Returns true if grid point is new (i.e. exposure not stored in DB)
-            bool isNew = true;
-            NodeCollection nodeList = new NodeCollection();
-            string connString = nodeList.GetDB_ConnectionString(savedFileName);
-
-            try {
-                using (var ctx = new Continuum_EDMContainer(connString))
-                {
-                    var allNodes = from N in ctx.Node_table where N.UTMX == UTMX & N.UTMY == UTMY select N;
-                    
-                    if (allNodes.Count() == 0)
-                        isNew = true;
-                    else
-                        isNew = false;
-                }
-            }
-            catch (Exception ex) {
-                MessageBox.Show(ex.InnerException.ToString());                
-                return isNew;
-            }
-
-            return isNew;
-        }     
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Adds the nodes database to 'savedFileName'. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="theseNodes">       The these nodes. </param>
-        /// <param name="savedFileName">    Filename of the saved file. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary>   Adds the nodes (calculated exposures) to the local SQL database. </summary>        
         public void AddNodesDB(Node_table[] theseNodes, string savedFileName)
-        { 
-            // Adds calculated exposures to database
+        {             
             if (theseNodes == null) 
                 return;
 
@@ -322,29 +189,17 @@ namespace ContinuumNS
             }
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates P10 UW and P10 DW exposure in each WD sector for specified radius. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="radiusInd">        The radius ind. </param>
-        /// <param name="gridArray">        [in,out] Array of grids. </param>
-        /// <param name="allNodesForDB">    [in,out] all nodes for database. </param>
-        /// <param name="nodesFromDB">      The nodes from database. </param>
-        /// <param name="thisInst">         this instance. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>   Calculates P10 UW and P10 DW exposure in each WD sector for specified radius. List of nodes pulled from database (nodesFromDB) are passed to function
+        /// and are used when possible. If a grid point is not in nodesFromDB, the exposure is calculated and is added to the referenced list of nodes allNodesForDB.</summary>        
         public void CalcGridStats(int radiusInd, ref TopoInfo.TopoGrid[] gridArray, ref Node_table[] allNodesForDB, Nodes[] nodesFromDB, Continuum thisInst,
             bool isTest, string outFilename)
         {            
             Grid_Avg_SD thisStats = new Grid_Avg_SD();
             int gridCount = gridArray.Length;            
             int numWD = thisInst.metList.numWD;
-
-       //     double[] P10_GridUW = new double[numWD]; // P10 UW exposure in each WD sector            
-            double[] thisGridUW = new double[gridCount]; // UW exposure at each grid point for specific WD sector
-
-       //     double[] P10_Grid_DW = new double[numWD];            
+                  
+            double[] thisGridUW = new double[gridCount]; // UW exposure at each grid point for specific WD sector                          
             double[] thisGridDW = new double[gridCount];
 
             Exposure[] gridExpos = new Exposure[gridCount];
@@ -489,21 +344,12 @@ namespace ContinuumNS
                 wrUW.Close();
                 wrDW.Close();
             }
-        }                
+        }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets grid array and calculate statistics. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">     The utmx. </param>
-        /// <param name="UTMY">     The utmy. </param>
-        /// <param name="thisInst"> this instance. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary>  Gets grid array surrounding UTMX and UTMY and calculate grid statistics (i.e. P10 exposure). Adds newly calculated nodes to database. </summary>       
         public void GetGridArrayAndCalcStats(double UTMX, double UTMY, Continuum thisInst)
-        {
-            // Get grid array surrounding UTMX and UTMY
+        {            
             TopoInfo.TopoGrid[] gridArray = GetGridArray(UTMX, UTMY, thisInst);
 
             if (gridArray.Length < 2)
@@ -539,7 +385,7 @@ namespace ContinuumNS
             NodeCollection nodeList = new NodeCollection();
             Nodes[] nodesFromDB = nodeList.GetNodes(minX, minY, maxX, maxY, thisInst, true);
 
-            stats = new Grid_Info.Grid_Avg_SD[thisInst.radiiList.ThisCount];
+            stats = new Grid_Avg_SD[thisInst.radiiList.ThisCount];
             // Calculate grid statistics (i.e. P10 UW and P10 DW exposure) for each radius 
             for (int r = 0; r <= thisInst.radiiList.ThisCount - 1; r++)
                 CalcGridStats(r, ref gridArray, ref allNodesForDB, nodesFromDB, thisInst, false, "");

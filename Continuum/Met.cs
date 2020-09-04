@@ -1,53 +1,128 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that holds all met site information and calculated/estimated values generated at met site. Class contains the met site location and the terrain
+    /// exposure, surface roughness, displacement, and terrain complexity calculated in each wind direction sector and using a range of radius of investigation. Class
+    /// contains the time series met data (if any) including the applied QC filters, shear exponents, and extrapolated estimates. Class contains results of MCP (long-term
+    /// estimation) analysis and turublence intensity calcuated from time series data.</summary>
     [Serializable()]
     public class Met
     {
-        public string name; // Name of met site        
-        public WSWD_Dist[] WSWD_Dists; // list of long-term wind speed and wind direction distributions for different heights, time of day, and season       
-        
-        public double UTMX; // UTM X Coordinate, m
-        public double UTMY; // UTM Y Coordinate, m
-        public double elev; // Elevation
-        public Exposure[] expo; // Calculated exposure and SR/DH
-        public Grid_Info gridStats = new Grid_Info(); // Calculated terrain complexity
-        public NodeCollection.Sep_Nodes[] flowSepNodes; // If flow separation model enabled, nodes surrounding met where flow separation occurs
+        /// <summary> Name of met site </summary>
+        public string name;
+        /// <summary> List of wind speed and wind direction distributions (for each height, time of day, and season) </summary>
+        public WSWD_Dist[] WSWD_Dists;
+        /// <summary> UTM X Coordinate, m </summary>
+        public double UTMX;
+        /// <summary> UTM Y Coordinate, m </summary>
+        public double UTMY;
+        /// <summary> Elevation, m </summary>
+        public double elev;
+        /// <summary> Calculated exposure, surface roughness, and displacement height calculated using a range of ROI </summary>
+        public Exposure[] expo;
+        /// <summary> Calculated terrain complexity (P10 Exposure) using a range of ROI </summary>
+        public Grid_Info gridStats = new Grid_Info();
+        /// <summary>  If flow separation model enabled, nodes surrounding met where flow separation occurs </summary>
+        public NodeCollection.Sep_Nodes[] flowSepNodes;
+        /// <summary> Met time series data </summary>
         public Met_Data_Filter metData;
+        /// <summary> MCP (Measure-Correlate-Predict) long-term estimate </summary>
         public MCP mcp;
+        /// <summary> Measured turbulence intensity (from time series data) </summary>
         public Turbulence turbulence;
-
+                
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary> Contains wind speed and wind direction distributions for each WD sector for specified time of day, season, and extrapolated height </summary>
         [Serializable()]
         public struct WSWD_Dist
         {
-            public TOD timeOfDay; // Day or Night
-            public Season season; // Winter, Spring, Summer, or Fall            
-            public double WS; // Overall average wind speed
-            public double height; // Height of WS/WD
-            public double[] sectorWS_Ratio; // Directional wind speed ratios
-            public double[] windRose; // Wind direction frequency (wind rose)
-            public double[,] sectorWS_Dist; // Sectorwise wind speed distribution i = Sector num, j = WS interval
-            public double[] WS_Dist; // Overall Wind speed distribution
+            /// <summary> Time of day: Day, Night, or All </summary>
+            public TOD timeOfDay;
+            /// <summary> Season :Winter, Spring, Summer, Fall, or All </summary>
+            public Season season;
+            /// <summary> Overall average wind speed </summary>
+            public double WS;
+            /// <summary> Height of WS/WD </summary>
+            public double height;
+            /// <summary>  Directional wind speed ratios </summary>
+            public double[] sectorWS_Ratio;
+            /// <summary>  Wind direction frequency (wind rose) </summary>
+            public double[] windRose;
+            /// <summary>  Sectorwise wind speed distribution i = Sector num, j = WS interval </summary>
+            public double[,] sectorWS_Dist;
+            /// <summary>  Overall Wind speed distribution </summary>
+            public double[] WS_Dist;
         }
 
+        /// <summary> Holds average and representative turbulence intensity (calculated between start/end times) in each direction sector </summary>
         [Serializable()]
         public struct Turbulence
         {
+            /// <summary>  Interval start time </summary>
             public DateTime startTime;
+            /// <summary>  Interval end time </summary>
             public DateTime endTime;
-            public double[,] avgSD; // numWS, numWD
+            /// <summary>  Wind speed standard deviation in each WS and WD bin (i = WS; j = WD) </summary>
+            public double[,] avgSD;
+            /// <summary>  Average wind speed in each WS and WD bin (i = WS; j = WD) </summary>
             public double[,] avgWS;
+            /// <summary>  Average plus 1.28 * wind speed standard deviation in each WS and WD bin (i = WS; j = WD) </summary>
             public double[,] avgPlus1_28SD;
+            /// <summary>  P90 wind speed standard deviation in each WS and WD bin (i = WS; j = WD) </summary>
             public double[,] p90SD;
+            /// <summary>  Data count in each WS and WD bin (i = WS; j = WD) </summary>
             public int[,] count;
         }
 
+        /// <summary> Holds array of wind speed standard deviations </summary>
+        public struct Array_of_SDs
+        {
+            /// <summary> Array of wind speed standard deviations </summary>
+            public double[] SDs;
+        }
+
+        /// <summary> Holds overall TI and data count </summary>
+        public struct TIandCount
+        {
+            /// <summary> Overall turbulence intensity </summary>
+            public double overallTI;
+            /// <summary> Data count </summary>
+            public int count;
+        }
+
+        /// <summary> Holds array of measured maximum wind speeds and 1-year/50-year estimated long-term extreme wind speed. </summary>
+        public struct Extreme_WindSpeed
+        {
+            /// <summary> 50-year extreme 10-minute wind speed estimate </summary>
+            public double tenMin50yr;
+            /// <summary> 1-year extreme 10-minute wind speed estimate </summary>
+            public double tenMin1yr;
+            /// <summary> 50-year extreme gust estimate </summary>
+            public double gust50yr;
+            /// <summary> 1-year extreme gust estimate </summary>
+            public double gust1yr;
+            /// <summary> Full years of met data </summary>
+            public double[] yearsOfOcc;
+            /// <summary> Maximum ten-minute WS by year </summary>
+            public double[] maxTenMin;
+            /// <summary> Maximum WS gusts by year </summary>
+            public double[] maxGust;
+        }
+
+        /// <summary> Holds maximum wind speed and year of measurement. </summary>
+        public struct MaxYearlyWind
+        {
+            /// <summary> Maximum measured wind speed. </summary>
+            public double maxWS;
+            /// <summary> Year of measurement. </summary>
+            public int thisYear; 
+        }
+
+        
+        /// <summary> Season enumeration: Winter, Spring, Summer, Fall, All </summary>
         public enum Season
         {
             Winter,
@@ -57,6 +132,7 @@ namespace ContinuumNS
             All
         }
 
+        /// <summary> Time of day enumeration: Day, Night, All </summary>
         public enum TOD
         {
             Day, // If hour >= MetCollection.dayStartHour and <= hour < MetCollection.dayEndHour
@@ -64,6 +140,9 @@ namespace ContinuumNS
             All // All hours
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Returns number of exposures calculated at met site </summary>
         public int ExposureCount
         {
             get { if (expo == null)
@@ -72,6 +151,7 @@ namespace ContinuumNS
                     return expo.Length; }
         }
 
+        /// <summary> Returns number of wind speed/wind direction distributions calculated at met site </summary>
         public int WSWD_DistCount
         {
             get
@@ -83,22 +163,9 @@ namespace ContinuumNS
             }
         }
 
-        public int ExtrapDataCount
-        {
-            get
-            {
-                if (metData == null)
-                    return 0;
-                else if (metData.simData == null)
-                    return 0;
-                else
-                    return metData.simData.Length;
-            }
-        }
-
+        /// <summary> Adds an exposure with specified radius of investigation and inverse distance weight exponent to list of exposures </summary>
         public void AddExposure(int radius, double exponent, int numSectors)
-        {
-            // Add exposure to list
+        {            
             int expCount = 0;
             if (expo != null) expCount = expo.Length;
             int insertIndex = 0;
@@ -147,9 +214,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Adds wind speed / wind direction distribution to Met's list of WSWD_Dists from TAB file input </summary>
         public void AddWSWD_DistFromTAB(TOD thisTOD, Season thisSeason, double height, double[,] sectorWS_Dist, double[] windRose)
-        {
-            // Adds wind speed / wind direction distribution to Met's list of WSWD_Dists
+        {            
             
             if (AlreadyHaveWSWD_Dist(thisTOD, thisSeason, height) == false)
             {
@@ -163,9 +230,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Adds wind speed / wind direction distribution to Met's list of WSWD_Dists from met time series input </summary>
         public void AddWSWD_Dist(WSWD_Dist thisDist)
-        {
-            // Adds wind speed / wind direction distribution to Met's list of WSWD_Dists
+        {            
             if (AlreadyHaveWSWD_Dist(thisDist.timeOfDay, thisDist.season, thisDist.height) == false)
             {
                 Array.Resize(ref WSWD_Dists, WSWD_DistCount + 1);
@@ -173,6 +240,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns true if WSWD distribution with specified height, time of day, and season has been created already. </summary>
         public bool AlreadyHaveWSWD_Dist(TOD thisTOD, Season thisSeason, double height)
         {
             bool alreadyGotIt = false;
@@ -184,16 +252,16 @@ namespace ContinuumNS
             return alreadyGotIt;
         }
 
+        /// <summary> Clears all calculated exposures, surface roughness, and displacement height. </summary>
         public void ClearExposures()
         {
             // Clear all calculated exposure and SRDH
             expo = null;
         }
 
+        /// <summary> Returns true if the exposure with specified radius and exponent has not been calculated </summary>
         public bool IsNewExposure(int radius, double exponent, int numSectors)
         {
-            // Returns true if the exposure with specified radius and exponent has not been calculated
-
             bool isNew = true;
             if (expo == null)
                 isNew = true;
@@ -213,6 +281,7 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Returns true if the SRDH with specified radius and exponent has not been calculated </summary>
         public bool IsNewSRDH(int radius, double exponent, int numSectors)
         {
 
@@ -232,14 +301,13 @@ namespace ContinuumNS
                 }
             }
             return isNew;
-        }   
-          
+        }
+
+        /// <summary> Calculates overall average wind speed and wind speed distribution using sectorwise wind speed distribution and wind rose (i.e. TAB file). 
+        /// ONLY USED FOR TAB FILE CALCS (i.e. all time of day and all seasons) </summary>
         public void CalcAvgWS(Continuum thisInst)
-        {
-            // Calculates overall average wind speed and wind speed distribution using sectorwise wind speed distribution and wind rose (i.e. TAB file)
-            // ONLY USED FOR TAB FILE CALCS (i.e. all time of day and all seasons)
-             
-            int WSWDind = GetWS_WD_DistInd(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);                      
+        {                         
+            int WSWDind = GetWS_WD_DistInd(thisInst.modeledHeight, TOD.All, Season.All);                      
             WSWD_Dists[WSWDind].WS_Dist = new double[thisInst.metList.numWS];
                        
             // Calculate overall wind speed distribution
@@ -268,11 +336,10 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculate directional wind speed ratios from TAB file. ONLY USED FOR TAB FILE CALCS (i.e. all time of day and all seasons) </summary>
         public void CalcSectorWS_Ratios(Continuum thisInst)
-        {
-            // Calculate directional wind speed ratios from TAB file
-            // ONLY USED FOR TAB FILE CALCS
-            int WSWD_ind = GetWS_WD_DistInd(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+        {            
+            int WSWD_ind = GetWS_WD_DistInd(thisInst.modeledHeight, TOD.All, Season.All);
             if (WSWD_Dists[WSWD_ind].windRose == null || WSWD_Dists[WSWD_ind].WS == 0) return;
 
             int numWS = thisInst.metList.numWS;
@@ -295,12 +362,10 @@ namespace ContinuumNS
             for (int i = 0; i < numWD; i++)
                 WSWD_Dists[WSWD_ind].sectorWS_Ratio[i] = WS_by_dir[i] / WSWD_Dists[WSWD_ind].WS;
         }
-            
 
+        /// <summary> If flow separation model is enabled, this function searches for points surrounding met where flow separation is estimated to occur  </summary>
         public void GetFlowSepNodes(NodeCollection nodeList, Continuum thisInst)
-        {
-
-            // if flow separation model is enabled, this function searches for points surrounding met where flow separation will occur             
+        {                    
             int numWD = thisInst.GetNumWD();
 
             Nodes thisNode = nodeList.GetMetNode(this);           
@@ -308,6 +373,7 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Gets WS/WD distribution for specified height, time of day, and season  </summary>
         public WSWD_Dist GetWS_WD_Dist(double thisHeight, TOD thisTOD, Season thisSeason)
         {
             WSWD_Dist thisDist = new WSWD_Dist();
@@ -319,6 +385,7 @@ namespace ContinuumNS
             return thisDist;
         }
 
+        /// <summary> Gets index of WS/WD distribution for specified height, time of day, and season  </summary>
         public int GetWS_WD_DistInd(double thisHeight, TOD thisTOD, Season thisSeason)
         {
             int thisInd = 0;
@@ -330,20 +397,7 @@ namespace ContinuumNS
             return thisInd;
         }
 
-        public int GetSimDataInd(double modeledHeight)
-        {
-            int simInd = 0;
-
-            for (int i = 0; i < ExtrapDataCount; i++)
-                if (modeledHeight == metData.simData[i].height)
-                    simInd = i;
-
-            return simInd;
-        }
-
-        
-
-        //  Calculates and returns the wind speed and wind direction distribution based on a long-term time series estimate
+        /// <summary> Calculates and returns the wind speed and wind direction distribution based on a long-term time series estimate  </summary>        
         public WSWD_Dist CalcLT_WSWD_Dists(double thisHeight, TOD thisTOD, Season thisSeason, Continuum thisInst, MCP.Site_data[] LT_WS_Ests)
         {            
             WSWD_Dist thisDist = new WSWD_Dist();
@@ -360,10 +414,10 @@ namespace ContinuumNS
             
             for (int i = 0; i < LT_WS_Ests.Length; i++)            
             {
-                Met.TOD siteDataTOD = thisInst.metList.GetTOD(LT_WS_Ests[i].thisDate); 
-                Met.Season siteDataSeason = thisInst.metList.GetSeason(LT_WS_Ests[i].thisDate);
+                TOD siteDataTOD = thisInst.metList.GetTOD(LT_WS_Ests[i].thisDate); 
+                Season siteDataSeason = thisInst.metList.GetSeason(LT_WS_Ests[i].thisDate);
                 
-                if ((thisTOD == Met.TOD.All || thisTOD == siteDataTOD) && (thisSeason == Met.Season.All || thisSeason == siteDataSeason))
+                if ((thisTOD == TOD.All || thisTOD == siteDataTOD) && (thisSeason == Season.All || thisSeason == siteDataSeason))
                 {
                     int WS_ind = mcp.Get_WS_ind(LT_WS_Ests[i].thisWS, 1);
                     int WD_ind = mcp.Get_WD_ind(LT_WS_Ests[i].thisWD);
@@ -410,7 +464,7 @@ namespace ContinuumNS
             return thisDist;
         }
 
-        //  Calculates and returns the wind speed and wind direction distribution based on simulated (extrapolated) time series estimate
+        /// <summary> Calculates and returns the wind speed and wind direction distribution based on simulated (extrapolated) time series estimate  </summary>        
         public WSWD_Dist CalcMeas_WSWD_Dists(double thisHeight, TOD thisTOD, Season thisSeason, Continuum thisInst, Met_Data_Filter.Sim_TS extrapData)
         {
             WSWD_Dist thisDist = new WSWD_Dist();
@@ -432,11 +486,11 @@ namespace ContinuumNS
 
             for (int i = 0; i < extrapData.WS_WD_data.Length; i++)
             {
-                Met.TOD siteDataTOD = thisInst.metList.GetTOD(extrapData.WS_WD_data[i].timeStamp);
-                Met.Season siteDataSeason = thisInst.metList.GetSeason(extrapData.WS_WD_data[i].timeStamp);
+                TOD siteDataTOD = thisInst.metList.GetTOD(extrapData.WS_WD_data[i].timeStamp);
+                Season siteDataSeason = thisInst.metList.GetSeason(extrapData.WS_WD_data[i].timeStamp);
 
                 if (extrapData.WS_WD_data[i].WS != -999 && extrapData.WS_WD_data[i].WD != -999 && 
-                    (thisTOD == Met.TOD.All || thisTOD == siteDataTOD) && (thisSeason == Met.Season.All || thisSeason == siteDataSeason))
+                    (thisTOD == TOD.All || thisTOD == siteDataTOD) && (thisSeason == Season.All || thisSeason == siteDataSeason))
                 {
                     int WS_ind = thisMCP.Get_WS_ind(extrapData.WS_WD_data[i].WS, 1);
                     int WD_ind = thisMCP.Get_WD_ind(extrapData.WS_WD_data[i].WD);
@@ -481,12 +535,12 @@ namespace ContinuumNS
             }           
 
             return thisDist;
-        }               
+        }
 
+        /// <summary> Calculates all long-term (i.e. based on MCP'd data) wind speed / wind direction distributions and saves to list  </summary>   
         public void CalcAllLT_WSWD_Dists(Continuum thisInst, MCP.Site_data[] LT_WS_Ests)
-        {
-            // Calculates all wind speed / wind direction distributions and saves to list
-            if (mcp.gotMCP_Est == false)
+        {            
+            if (mcp.HaveMCP_Estimate("Any") == false)
                 return;
 
             WSWD_Dist thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.All, Season.All, thisInst, LT_WS_Ests);
@@ -543,9 +597,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Calculates all measured (i.e. based on extrapolated data not adjusted for LT) wind speed / wind direction distributions and saves to list  </summary>
         public void CalcAllMeas_WSWD_Dists(Continuum thisInst, Met_Data_Filter.Sim_TS extrapData)
-        {
-            // Calculates all wind speed / wind direction distributions and saves to list
+        {            
             if (extrapData.WS_WD_data == null)
                 return;
 
@@ -603,22 +657,7 @@ namespace ContinuumNS
 
         }
 
-        public double CalcWS_inOneSectorFromWSWD_Dist(WSWD_Dist thisDist, int WD_Ind)
-        {
-            // Calculates and returns the average wind speed in wind direction sector, WD_Ind
-            double thisWS = 0;
-
-            if (thisDist.sectorWS_Ratio == null)
-                return thisWS;
-
-            if (thisDist.sectorWS_Ratio.Length <= WD_Ind)
-                return thisWS;
-
-            thisWS = thisDist.sectorWS_Ratio[WD_Ind] * thisDist.WS;
-            
-            return thisWS;
-        }
-
+        /// <summary> Gets time of day index. Day = 0; Night = 1  </summary>
         public int GetTOD_Ind(int numTODs, TOD thisTOD)
         {
             int thisInd = 0;
@@ -632,6 +671,7 @@ namespace ContinuumNS
             return thisInd;
         }
 
+        /// <summary> Gets seasonal index (Winter: 0, Spring: 1, Summer: 2, Fall: 3)  </summary>
         public int GetSeasonInd(int numSeasons, Season thisSeaon)
         {
             int thisInd = 0;
@@ -651,16 +691,10 @@ namespace ContinuumNS
             return thisInd;
         }
 
-        public struct Array_of_SDs
-        {
-            public double[] SDs;
-        }
-
+        /// <summary> Calculates average and representative turbulence intensity. Bins the data by WS and WD and calculates the average standard deviation, average WS, avg + 1.28 SD, and P90 SD
+        /// Uses extrapolated wind speed and standard deviation at height closest to extrapolated height.  </summary>
         public void CalcTurbulenceIntensity(DateTime startTime, DateTime endTime, double height, Continuum thisInst)
-        {
-            // Bins the data by WS and WD and calculates the average standard deviation, average WS, avg + 1.28 SD, and P90 SD
-            // Uses extrapolated wind speed and standard deviation at height closest to extrapolated height
-
+        {            
             turbulence.startTime = startTime;
             turbulence.endTime = endTime;                       
 
@@ -689,7 +723,7 @@ namespace ContinuumNS
                     && extrapData.WS_WD_data[timeInd].SD != -999 && extrapData.WS_WD_data[timeInd].SD < extrapData.WS_WD_data[timeInd].WS / 3)
                 {
                     int WD_ind = metData.GetWD_Ind(extrapData.WS_WD_data[timeInd].WD, numWD);                    
-                    int WS_ind = metData.GetWS_ind(extrapData.WS_WD_data[timeInd].WS, thisInst.metList.WS_IntSize);                                      
+                    int WS_ind = metData.GetWS_ind(extrapData.WS_WD_data[timeInd].WS, thisInst.metList.WS_IntSize, thisInst.metList.numWS);                                      
 
                     turbulence.avgSD[WS_ind, WD_ind] = turbulence.avgSD[WS_ind, WD_ind] + extrapData.WS_WD_data[timeInd].SD;
                     turbulence.avgWS[WS_ind, WD_ind] = turbulence.avgWS[WS_ind, WD_ind] + extrapData.WS_WD_data[timeInd].WS;
@@ -723,15 +757,9 @@ namespace ContinuumNS
                 }
         }
 
-        public struct TIandCount
-        {
-            public double overallTI;
-            public int count;
-        } 
-
+        /// <summary> Calculates and returns overall (i.e. wind direction sectors) turbulence intensity in each wind speed bin. turbType: "Average" or "Representative"  </summary>
         public TIandCount[] CalcOverallTurbulenceIntensity(string turbType, Continuum thisInst)
-        {
-            // Calculates and returns overall (i.e. wind direction sectors) turbulence intensity. Either average or representative
+        {            
             TIandCount[] overallTI = new TIandCount[thisInst.metList.numWS];
 
             if (turbulence.count == null)
@@ -769,6 +797,8 @@ namespace ContinuumNS
             return overallTI;
         }
 
+        /// <summary> Calculates and returns histogram of power law exponent (alpha) calculated between start/end dates and for specified WS range ("5 - 10 m/s", "10 - 15 m/s", "15+ m/s", "All > Cut-In"). 
+        /// Uses an alpha range of -0.5 to 1.5 with an interval size of 0.02.</summary>
         public double[] GetAlphaHistogram(string WS_Range, Continuum thisInst, DateTime startTime, DateTime endTime)
         {            
             double minAlpha = -0.5;
@@ -824,10 +854,9 @@ namespace ContinuumNS
             return alphaHisto;
         }
 
+        /// <summary> Finds all alpha exponents for wind speeds within the specified minimum/maximum range and within specified start/end times and returns the alpha at the specified P-value  </summary>
         public double GetAlphaPValue(double minWS, double maxWS, int pLevel, Continuum thisInst, DateTime startTime, DateTime endTime)
-        {
-            // Finds all alpha exponents for wind speeds within the specified minimum/maximum range and within specified start/end times
-            //  and returns the alpha at the specified P-value
+        {            
             double alphaPVal = 0;
             int alphaCount = 0;
 
@@ -883,27 +912,7 @@ namespace ContinuumNS
             return alphaPVal;
         }
 
-        /// <summary>
-        /// Holds array of measured maximum wind speeds and 1-year/50-year estimated long-term extreme wind speed
-        /// </summary>
-        public struct Extreme_WindSpeed
-        {
-            public double tenMin50yr; // 50-year extreme 10-minute wind speed estimate
-            public double tenMin1yr; // 1-year extreme 10-minute wind speed estimate
-            public double gust50yr; // 50-year extreme gust estimate
-            public double gust1yr; // 1-year extreme gust estimate
-
-            public double[] yearsOfOcc;
-            public double[] maxTenMin;
-            public double[] maxGust;
-        }
-
-        public struct MaxYearlyWind
-        {
-            public double maxWS; // maximum measured wind speed 
-            public int thisYear; // year of measurement
-        }
-
+        /// <summary> Finds and returns maximum 10-minute or gust for each full year of data.  </summary>
         public MaxYearlyWind[] GetMaxYearlyWinds(string tenMinOrGust, Continuum thisInst)
         {
             MaxYearlyWind[] maxYearlyWinds = new MaxYearlyWind[0];
@@ -992,9 +1001,9 @@ namespace ContinuumNS
             return maxYearlyWinds;
         }
 
+        /// <summary> Calculates and returns extreme wind speeds estimates (1 yr and 50 yr, 10-min and Gust).  </summary>
         public Extreme_WindSpeed CalcExtremeWindSpeeds(Continuum thisInst)
-        {
-            // Calculates and returns extreme wind speeds estimates (1 yr and 50 yr, 10-min and Gust)
+        {            
             Extreme_WindSpeed extremeWinds = new Extreme_WindSpeed();                                 
 
             // Get MERRA2 data used for this met

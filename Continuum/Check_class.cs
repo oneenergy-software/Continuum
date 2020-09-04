@@ -1,32 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> Check_class contains Boolean functions that check new met sites, turbine sites and other files that the user is trying to import. </summary>
     public class Check_class
     {
+        /// <summary> Checks the distance between the mets/turbines and edges of topo data to make sure they all fit within defined radii. </summary>
+        /// <returns> Returns false if outside bounds.</returns>
         public bool NewTurbOrMet(TopoInfo topo, string metname, double UTMX, double UTMY, bool showMsg)
-        {
-            // Checks the distance between the mets/turbines and edges of topo data to make sure they all fit within defined radii. Returns false if outside bounds.
+        {            
             bool goodToGo = true;
 
             if (topo.gotTopo)                               
-                goodToGo = TopoCheck(topo, UTMX, UTMY, metname, true); 
+                goodToGo = TopoCheck(topo, UTMX, UTMY, metname, showMsg); 
 
             if (topo.gotSR)
-                goodToGo = LandCoverCheck(topo, UTMX, UTMY, metname, true);         
+                goodToGo = LandCoverCheck(topo, UTMX, UTMY, metname, showMsg);         
                       
             return goodToGo;
 
         }
 
+        /// <summary> Compares turbine name to met site names to ensure there are no duplicate names. </summary>        
+        /// <returns> Returns false if a turbine with same name exists </returns>
         public bool CheckTurbName(string turbineName, MetCollection metList)
-        { 
-            // Returns false if a turbine with same name exists
+        {              
             bool inputTurbine = true;
             int numMets = metList.ThisCount;
 
@@ -41,9 +40,10 @@ namespace ContinuumNS
             return inputTurbine;
         }
 
+        /// <summary> Compares met name to turbine names to ensure there are no duplicate names. </summary>        
+        /// <returns> Returns false if a met with the same name exists </returns>
         public bool CheckMetName(string metName, TurbineCollection turbineList)
-        {
-            // Returns false if a met with the same name exists
+        { 
             bool inputMet = true;
             int numTurbines = turbineList.TurbineCount;
 
@@ -58,15 +58,14 @@ namespace ContinuumNS
             return inputMet;
         }
 
+        /// <summary> Checks that TAB file has unique met name, each WD sector dist adds to 1000, wind rose adds to 100, and bins align with other mets' bins </summary>        
+        /// <returns> Returns true if TAB file has unique met name, each WD sector dist adds to 1000, wind rose adds to 100 </returns>
         public bool NewTAB(double[,] sectorWS_Dist, double WS_FirstInt, double WS_IntSize, double[] windRose, string metName, Continuum thisInst)
-        {
-            // Returns true if TAB file has unique met name, each WD sector dist adds to 1000, wind rose adds to 100, and is defined on same WS bin interval as power curve
+        {            
             bool TAB_ok = true;
 
             int numWD = windRose.Length;
-            int numWS = sectorWS_Dist.GetUpperBound(1) + 1;
-
-            double WS_Total = 0;
+            int numWS = sectorWS_Dist.GetUpperBound(1) + 1;                        
             double WR_Total = 0;
 
             for (int i = 0; i < thisInst.metList.ThisCount; i++) { 
@@ -87,7 +86,7 @@ namespace ContinuumNS
 
             for (int i = 0; i < numWD; i++) {
                 WR_Total = WR_Total + windRose[i];
-                WS_Total = 0;
+                double WS_Total = 0;
 
                 for (int j = 0; j < numWS; j++) 
                     WS_Total = WS_Total + sectorWS_Dist[i, j];
@@ -102,36 +101,12 @@ namespace ContinuumNS
             if (WR_Total< 0.99 || WR_Total > 1.01) {
                 MessageBox.Show("Error reading in TAB file :" + metName + ".  Wind Rose must add to 100");
                 TAB_ok = false;
-            }
+            }                       
                         
-
-            // Check the WS distribution first interval and WS bin and make sure the same as the power curves (if any)
-            for (int i = 0; i < thisInst.turbineList.PowerCurveCount; i++) {
-                TurbineCollection.PowerCurve thisPowerCurve = new TurbineCollection.PowerCurve();
-                bool sameInt = false;
-                double thisWS = 0;
-
-                for (int j = 0; j < numWS; j++) {
-                    thisWS = WS_FirstInt + WS_IntSize * j - WS_IntSize / 2;
-                    if (thisWS == thisPowerCurve.cutInWS) {
-                        sameInt = true;
-                        break; ;
-                    }
-                }
-
-                if (sameInt == false) {
-                    MessageBox.Show("Error reading in TAB file: " + metName + " WS distribution bins and bin size must line up with the power curves that are currently loaded. " +
-                        "Recall that TAB files use WS bins that represent the max value in that bin while the power curve files use WS bins that represent the mid value of the bin.");
-                    TAB_ok = false;
-                }
-            }
-
             return TAB_ok;
         }
 
-        /// <summary>
-        /// Checks if the elevation is available at 8 points +/- 12000 m from specified UTMX/Y and returns false if all are not available.
-        /// </summary>        
+        /// <summary> Checks if the elevation is available at 8 points +/- 12000 m from specified UTMX/Y and returns false if all are not available. </summary>        
         public bool TopoCheck(TopoInfo topo, double UTMX, double UTMY, string siteName, bool showMessage)
         {            
             bool goodToGo = true;
@@ -144,8 +119,18 @@ namespace ContinuumNS
             // Check that there is topography data
             if (indices[0] == -999 && indices[1] == -999)
             {
-                MessageBox.Show("Topography data not loaded.", "Continuum 3");
-                return goodToGo = false;
+                goodToGo = false;
+                if (showMessage)
+                    MessageBox.Show("Topography data not loaded.", "Continuum 3");
+                return goodToGo;
+            }
+
+            if (indices[0] == -888 && indices[1] == -888)
+            {
+                goodToGo = false;
+                if (showMessage)
+                    MessageBox.Show("Error reading file.", "Continuum 3");
+                return goodToGo;
             }
 
             for (int i = 0; i < 8; i++)
@@ -192,32 +177,36 @@ namespace ContinuumNS
                 }
 
                 indices = topo.GetXYIndices("Topo", X_Loc, Y_Loc, "Plot"); 
+
+                if (indices[0] == -888)
+                {
+                    goodToGo = false;
+                    return goodToGo;
+                }
                                 
                 if (indices[0] < 0 || indices[0] >= topo.topoNumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.topoNumXY.Y.plot.num)
                 {
+                    goodToGo = false;
                     if (showMessage == true)
                         MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
-                    return goodToGo = false;
+                    return goodToGo;
                 }
 
                 double thisElev = topo.topoElevs[indices[0], indices[1]];
 
-                if (topo.topoElevs[indices[0], indices[1]] == -999)
+                if (thisElev == -999)
                 {
+                    goodToGo = false;
                     if (showMessage == true)
                         MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
-                    return goodToGo = false;
+                    return goodToGo;
                 }
-
             }
 
             return goodToGo;
-
         }
 
-        /// <summary>
-        /// Checks land cover at 8 points +/- 12000 m from UTMX/Y. If land cover = -999 or if outside range, return false
-        /// </summary>        
+        /// <summary> Checks land cover at 8 points +/- 12000 m from UTMX/Y. If land cover = -999 or if outside range, return false </summary>        
         public bool LandCoverCheck(TopoInfo topo, double UTMX, double UTMY, string siteName, bool showMessage)
         {
             bool goodToGo = true;
@@ -227,11 +216,19 @@ namespace ContinuumNS
             
             int[] indices = topo.GetXYIndices("Land Cover", UTMX, UTMY, "Plot"); // Site location
 
+            if (indices[0] == -888)
+            {
+                goodToGo = false;
+                return goodToGo;
+            }                
+
             // Check that there is land cover  data
             if (indices[0] == -999 && indices[1] == -999)
             {
-                MessageBox.Show("Land Cover data not loaded.", "Continuum 3");
-                return goodToGo = false;
+                goodToGo = false;
+                if (showMessage)
+                    MessageBox.Show("Land Cover data not loaded.", "Continuum 3");
+                return goodToGo;
             }
 
             for (int i = 0; i <= 8; i++)
@@ -277,21 +274,29 @@ namespace ContinuumNS
                     Y_Loc = UTMY + maxDist * 0.7071;
                 }
 
-                indices = topo.GetXYIndices("Land Cover", X_Loc, Y_Loc, "Plot"); 
+                indices = topo.GetXYIndices("Land Cover", X_Loc, Y_Loc, "Plot");
+
+                if (indices[0] == -888)
+                {
+                    goodToGo = false;
+                    return goodToGo;
+                }                    
                                 
                 if (indices[0] < 0 || indices[0] >= topo.LC_NumXY.X.plot.num || indices[1] < 0 || indices[1] >= topo.LC_NumXY.Y.plot.num)
                 {
+                    goodToGo = false;
                     if (showMessage == true)
                         MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
 
-                    return goodToGo = false;
+                    return goodToGo;
                 }                
 
                 if (topo.landCover[indices[0], indices[1]] == -999)
                 {
+                    goodToGo = false;
                     if (showMessage == true)
                         MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
-                    return goodToGo = false;
+                    return goodToGo;
                 }
             }
 
@@ -299,9 +304,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Go through each met and turbine site and check elev at 8 points +/- 12000 m. If elev = -999, return false
-        /// </summary>        
+        /// <summary> Goes through each met and turbine site and check elev at 8 points +/- 12000 m. If elev = -999, return false </summary>        
         public bool NewTopo(TopoInfo topo, MetCollection metList, TurbineCollection turbList)
         {            
             bool goodToGo = true;
@@ -316,9 +319,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Go through each met and turbine site and check land cover at 8 points +/- 12000 m. If elev = -999, return false
-        /// </summary>   
+        /// <summary> Goes through each met and turbine site and check land cover at 8 points +/- 12000 m. If elev = -999, return false </summary>   
         public bool NewLandCover(TopoInfo topo, MetCollection metList, TurbineCollection turbList)
         {
             // Go through each met and turbine site and check land cover at 8 points +/- 12000 m. If elev = -999, return false
@@ -335,17 +336,19 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Checks that the Method of Bins and Matrix settings are within allowable limits. </summary>        
+        /// <returns> Returns true if valid. Shows error message if not. </returns>
         public bool CheckBinsAndMatrixSettings(Continuum thisInst)
-        {
-            // Checks the Method of Bins and Matrix settings. Returns true if valid. Shows error message if not.
+        {            
             bool goodToGo = true;
 
             if (thisInst.Get_MCP_Method() == "Method of Bins" || thisInst.Get_MCP_Method() == "Matrix")
             {
                 if (thisInst.metList.mcpWS_BinWidth < 0.1 || thisInst.metList.mcpWS_BinWidth > 2)
                 {
+                    goodToGo = false;
                     MessageBox.Show("Invalid wind speed bin width. Enter a value between 0.1 and 2.", "Continuum 3.0");
-                    return goodToGo = false;
+                    return goodToGo;
                 }
 
             }
@@ -353,30 +356,29 @@ namespace ContinuumNS
             {
                 if (thisInst.metList.mcpMatrixWgt < 0 || thisInst.metList.mcpMatrixWgt > 10)
                 {
+                    goodToGo = false;
                     MessageBox.Show("Invalid matrix weight. Enter a value between 0 and 10.", "Continuum 3.0");
-                    return goodToGo = false;
+                    return goodToGo;
                 }
                 else if (thisInst.metList.mcpLastWS_Wgt < 0 || thisInst.metList.mcpLastWS_Wgt > 10)
                 {
+                    goodToGo = false;
                     MessageBox.Show("Invalid last wind speed weight. Enter a value between 0 and 10.", "Continuum 3.0");
-                    return goodToGo = false;
+                    return goodToGo;
                 }
                 else if (thisInst.metList.mcpMatrixWgt == 0 && thisInst.metList.mcpLastWS_Wgt == 0)
                 {
+                    goodToGo = false;
                     MessageBox.Show("Both Matrix weights cannot be zero.", "Continuum 3.0");
-                    return goodToGo = false;
+                    return goodToGo;
                 }
             }
-
-
 
             return goodToGo;
         }
 
-        /// <summary>
-        /// Checks if the 8 points +/- specified distance from specified UTMX/Y on specified grid (plot vs calcs) fall within bounds. 
-        /// Returns 100 if all points are within defined area and returns index of point outside range if all are not available.
-        /// </summary>        
+        /// <summary> Checks if the 8 points +/- specified distance from specified UTMX/Y on specified grid (plot vs calcs) fall within bounds. /// </summary> 
+        /// <returns> Returns 100 if all points are within defined area and returns index of point outside range if all are not available. </returns>
         public int NewNodeCheck(TopoInfo topo, double UTMX, double UTMY, int minDist, string plotOrCalcs)
         {
             int goodToGo = 100;
@@ -391,10 +393,28 @@ namespace ContinuumNS
             
             // Check that there is topography data
             if (topoIndices[0] == -999 && topoIndices[1] == -999)
-                return goodToGo = -999;
+            {
+                goodToGo = -999;
+                return goodToGo;
+            }                
 
             if (topo.gotSR && landCoverIndices[0] == -999 && landCoverIndices[1] == -999)
-                return goodToGo = -999;
+            {
+                goodToGo = -999;
+                return goodToGo;
+            }                
+
+            if (topoIndices[0] == -888)
+            {
+                goodToGo = -888;
+                return goodToGo;
+            }                
+
+            if (landCoverIndices[0] == -888)
+            {
+                goodToGo = -888;
+                return goodToGo;
+            }                
 
             for (int i = 0; i < 8; i++)
             {
@@ -542,6 +562,34 @@ namespace ContinuumNS
 
             return goodToGo;
 
+        }
+
+        /// <summary> Checks the raster data contained in TIFF file. Sometimes users accidentally create TIFF files that contain the RGB color codes and not the elevation.
+        ///           If there is no decimal point, max value is 255, it is likely not elevation data so it returns false </summary>              
+        public bool IsGeoTIFF(double[] elevData)
+        {             
+            bool IsGeoTiff = true;
+            double maxValue = 0;
+            bool hasDecimal = false;
+            
+            if (elevData != null)
+            {
+                int numData = elevData.Length;
+                
+                for (int i = 0; i < numData; i++)
+                {
+                    if (elevData[i] > maxValue)                    
+                        maxValue = elevData[i];
+
+                    if (elevData[i] % 1 != 0)
+                        hasDecimal = true;
+                }
+            }
+
+            if (maxValue == 255 && hasDecimal == false)
+                IsGeoTiff = false;
+            
+            return IsGeoTiff;
         }
     }
 }

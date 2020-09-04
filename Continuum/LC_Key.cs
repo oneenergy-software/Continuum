@@ -1,27 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
 namespace ContinuumNS
 {
+    /// <summary> GUI class where user can modify the land cover key or import a land cover key from a CSV file. The land cover key converts
+    /// land cover codes to surface roughness and displacement heights used in the roughness model. </summary>
     public partial class LC_Key : Form
     {
+        /// <summary> Continuum instance that called LC_Key. </summary>  
+        public Continuum thisInst;
+        /// <summary> Original (i.e unaltered) land cover key. </summary>
+        public TopoInfo.LC_SR_DH[] LC_Key_Orig;
+        /// <summary> New (modified) land cover key. </summary>
+        public TopoInfo.LC_SR_DH[] LC_Key_New;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Initializes GUI form. </summary>        
         public LC_Key(Continuum continuum)
         {
             InitializeComponent();
             thisInst = continuum;
-        }
-
-        public Continuum thisInst;
-        public TopoInfo.LC_SR_DH[] LC_Key_Orig;   // Original (i.e unaltered) land cover key
-        public TopoInfo.LC_SR_DH[] LC_Key_New; // new (modified) land cover key
+        }        
 
         private void btnModKey_Click(object sender, EventArgs e)
         {
@@ -68,9 +69,6 @@ namespace ContinuumNS
 
                 StreamReader sr = new StreamReader(wholePath);
                 
-                // MyReader.SetDelimiters(",", vbTab)
-                //  MyReader.TrimWhiteSpace = true
-
                 string[] fileRow;
                 TopoInfo.LC_SR_DH[] newLC_Key = null;
                 int LC_Count = 0;
@@ -126,12 +124,11 @@ namespace ContinuumNS
             Update_LC_table();
         }
 
+        /// <summary> Clears and populates land cover key table based on key selected from dropdown </summary>
         public void Update_LC_table()
-        {
-            // Clears and populates land cover key table based on key selected from dropdown
+        {            
             string thisKey = "";
-            ListViewItem objListItem = new ListViewItem();
-            
+                       
             lstLC_SR_DH.Items.Clear();
 
             try {
@@ -184,7 +181,7 @@ namespace ContinuumNS
             int numSR = LC_Key_New.Length;
             for (int i = 0; i < numSR; i++)
             {
-                objListItem = lstLC_SR_DH.Items.Add(LC_Key_New[i].code.ToString());
+                ListViewItem objListItem = lstLC_SR_DH.Items.Add(LC_Key_New[i].code.ToString());
                 objListItem.SubItems.Add(LC_Key_New[i].desc);
                 objListItem.SubItems.Add(Math.Round(LC_Key_New[i].SR, 2).ToString());
                 objListItem.SubItems.Add(Math.Round(LC_Key_New[i].DH, 2).ToString());
@@ -196,8 +193,7 @@ namespace ContinuumNS
         {
 
             // if the LC key was changed and calcs have been done already then clears UWDW + Round Robin models, turbine WS/AEP ests gross/net, and all 
-            // maps and recalculates SR/DH at Mets, Turbines, Nodes in DB 
-            NodeCollection nodeList = new NodeCollection();
+            // maps and recalculates SR/DH at Mets, Turbines, Nodes in DB             
             Update updateThe = new Update();
 
             if (Orig_and_New_LC_Same() == false ) {
@@ -244,9 +240,9 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Returns true if LC_Key_Orig and LC_Key_New are the same </summary>        
         public bool Orig_and_New_LC_Same()
-        {
-            // Returns true if LC_Key_Orig and LC_Key_New are the same
+        {             
             bool sameKey = true;
 
             try {
@@ -268,11 +264,10 @@ namespace ContinuumNS
 
             return sameKey;
         }
-        
-        public void Read_Orig_and_New(TopoInfo.LC_SR_DH[] thisLC_Key)
-        {  
-            // Populates LC_Key_Orig and LC_Key_New with LC_Key
 
+        /// <summary> Populates LC_Key_Orig and LC_Key_New with specified LC_Key. </summary>
+        public void Read_Orig_and_New(TopoInfo.LC_SR_DH[] thisLC_Key)
+        {              
             int numCodes = 0;
 
             try {

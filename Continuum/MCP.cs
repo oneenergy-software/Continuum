@@ -1,233 +1,94 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-// file:	MCP.cs
-//
-// summary:	Imports reference and target WS and WD data and performs Measure-Correlate-Predict
-// to estimate long-term wind speeds at target site. 
-// Authors: Liz Walls, Andrew Rapin
-// Reviewer: Liz Walls
-// Version Number: 1.0
-// Release Date: 10/19/2017
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Forms;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-
 
 namespace ContinuumNS
-{
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// <summary>   Main Form of MCP tool. </summary>
-    ///
-    /// <remarks>   OEE, 10/19/2017. </remarks>
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+{   
+    /// <summary>
+    ///  MCP (Measure-Correlate-Predict) class.  This class holds the reference and target site wind speed and
+    ///  wind direction time series data.  It finds the concurrent data within specified start/end 
+    ///  dates and within  specified WD bin, time-of-day bin, and seasonal bin. It conducts MCP analysis using 
+    ///  specified MCP method. It conducts MCP uncertainty analysis using subsets of data to find average and standard
+    ///  deviation of MCP estimates as function of subset size.
+    /// </summary>
     [Serializable()]
     public partial class MCP
-    {
-        /// <summary>   Start Date/Time of Reference site data. </summary>
-        public DateTime refStart;
-        /// <summary>   End Date/Time of Reference site data. </summary>
-        public DateTime refEnd;
-        /// <summary>   Start Date/Time of Target site data. </summary>
-        public DateTime targetStart;
-        /// <summary>   End Date/Time of Target site data. </summary>
-        public DateTime targetEnd;
+    {       
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Start Date/Time of the concurrent data (i.e. overlap between Reference and Target) .
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public DateTime concStart;
-        /// <summary>   End Date/Time of the concurrent data. </summary>
-        public DateTime concEnd;
-        /// <summary>   Start Date/Time of export interval. </summary>
-        public DateTime exportStart;
-        /// <summary>   End Date/Time of the export interval. </summary>
-        public DateTime exportEnd;
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Array of type Site_data for Reference site. Each Site_data entry contains Date, WS, WD and
-        /// Temp.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public Site_data[] refData = new Site_data[0]; // Not saved with file. Regenerated as needed.
-        /// <summary>   True if reference data has been imported. </summary>
-        public bool gotRef = false;
-        
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Array of type Site_data for Target site. Each Site_data entry contains Date/Time, WS, WD and
-        /// Temp.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public Site_data[] targetData = new Site_data[0]; // Not saved with file. Regenerated as needed.
-        /// <summary>   True if target data has been imported. </summary>
-        public bool gotTarg = false;
-                
-        /// <summary> Array of type Concurrent_data for a specified window (i.e. not necessarily all concurrent data) </summary>        
-        public Concurrent_data[] concData = new Concurrent_data[0];
-
-        /// <summary>   True if conccurent data is defined. </summary>
-        public bool gotConc = false;
-
-        /// <summary>   Array of type Concurrent_data which holds ALL concurrent data. </summary>
-        Concurrent_data[] concDataAll = new Concurrent_data[0];
-
-        public Site_data[] LT_WS_Ests = new Site_data[0];
-
-        public bool gotMCP_Est = false;
-                
-        /// <summary>   Number of Wind Direction sectors to conduct MCP. </summary>
-        public int numWD { get; set; }
-
-        public int numTODs { get; set; } // either 1 or 2 (Day / Night) 
-
-        public int numSeasons { get; set; } // either 1 or 4
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Width of the Wind Speed bin used in Method of Bins and Matrix-LastWS methods.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Reference site time series data. </summary>
+        public Site_data[] refData = new Site_data[0];  // Not saved with file. Regenerated as needed.        
+        /// <summary> Target site time series data. </summary>
+        public Site_data[] targetData = new Site_data[0]; // Not saved with file. Regenerated as needed.        
+        /// <summary> Concurrent time series data for a specified window (i.e. not necessarily all concurrent data) </summary>
+        public Concurrent_data[] concData = new Concurrent_data[0];       
+        /// <summary>   Concurrent time series for ALL concurrent data. </summary>
+        Concurrent_data[] concDataAll = new Concurrent_data[0]; 
+        /// <summary> Long-term estimated wind speed time series </summary>
+        public Site_data[] LT_WS_Ests = new Site_data[0];        
+        /// <summary> Contains the data count in each WD, time of day, and seasonal bin. </summary>        
+        SectorCountBin[] sectors = new SectorCountBin[0];
+        /// <summary> Width of WS bin used in Method of Bins and Matrix-LastWS methods. </summary>        
         public double WS_BinWidth = 1;
-                
-        // Matrix-LastWS weights
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Weight factor to apply to estimate from defined Reference-Target WS Matrix.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Weight factor to apply to estimate from defined Reference-Target WS Matrix. Used in Matrix-LastWS method. </summary>        
         public double matrixWgt = 1;
-        /// <summary>   Weight factor to apply to estiamte from defined WS-LastWS Matrix. </summary>
+        /// <summary>   Weight factor to apply to estiamte from defined WS-LastWS Matrix. Used in Matrix-LastWS method. </summary>
         public double lastWS_Wgt = 1;
-          
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Array containing standard deviation of wind speed change at target site for each WS interval.
-        /// Used to create Last WS CDF to multiply with Matrix WS PDF in Matrix-LastWS method.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Array containing standard deviation of wind speed change at target site for each WS interval.
+        /// Used to create Last WS CDF to multiply with Matrix WS PDF in Matrix-LastWS method. </summary>      
         public double[] SD_WS_Lag = new double[0];
 
-        /// <summary>   Object of type Lin_MCP conatining results of orthogonal regression MCP. </summary>
+        /// <summary>   Results of orthogonal regression MCP. </summary>
         public Lin_MCP MCP_Ortho = new Lin_MCP();
-        /// <summary>   Object of type Method_of_Bins containing results of Method Of Bin MCP. </summary>
+        /// <summary>  Results of Method Of Bin MCP. </summary>
         public Method_of_Bins MCP_Bins = new Method_of_Bins();
-        /// <summary>   Object of type Lin_MCP conatining results of variance MCP. </summary>
+        /// <summary>   Results of variance MCP. </summary>
         public Lin_MCP MCP_Varrat = new Lin_MCP();
-        /// <summary>   Object of type Matrix_Obj containing results of Matrix-LastWS MCP. </summary>
+        /// <summary>   Results of Matrix-LastWS MCP. </summary>
         public Matrix_Obj MCP_Matrix = new Matrix_Obj();
 
         /// <summary>   Size of the window step size (in months) used in uncertainty calculations. </summary>
         public int uncertStepSize = 1;
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Array of type MCP_Uncert containing results of uncertainty analysis using orthogonal
-        /// regression.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary>  Results of uncertainty analysis using orthogonal regression. </summary>       
         public MCP_Uncert[] uncertOrtho = new MCP_Uncert[0];
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Array of type MCP_Uncert containing results of uncertainty analysis using Method of Bins.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Results of uncertainty analysis using Method of Bins. </summary> 
         public MCP_Uncert[] uncertBins = new MCP_Uncert[0];
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Array of type MCP_Uncert containing results of uncertainty analysis using variance method.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Results of uncertainty analysis using Variance method. </summary> 
         public MCP_Uncert[] uncertVarrat = new MCP_Uncert[0];
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Array of type MCP_Uncert containing results of uncertainty analysis using Matrix-LastWS.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Results of uncertainty analysis using Matrix-LastWS. </summary>   
         public MCP_Uncert[] uncertMatrix = new MCP_Uncert[0];
 
-        
-        /// <summary> Array of SectorCountBin containing the data count in each WD, time of day, and seasonal bin. </summary>        
-        SectorCountBin[] sectors = new SectorCountBin[0];
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Number of Wind direction bins defined to conduct MCP. </summary>
+        public int numWD { get; set; }
+        /// <summary> Number of time of day bins. Either 1 or 2 (Day: 7am - 6pm) /Night (7pm - 6am) </summary>
+        public int numTODs { get; set; } 
+        /// <summary> Number of seasonal bins. Either 1 or 4 (Winter: NOV-FEB; Spring: MAR-MAY; Summer: JUN-AUG; Fall: SEP-NOV) </summary>
+        public int numSeasons { get; set; }
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Object of type Stats used to perform statistics calcs such as variance and co-variance
-        /// calculations.
-        /// </summary>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public Stats stat = new Stats();
-        
-        /// <summary>   True if this analysis is a newly opened file. </summary>
-        bool Is_Newly_Opened_File = false;
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Structure defined for uncertainty calculation where multiple windows of varying sizes are
-        /// used to generate LT Ests.
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Contains results of uncertainty analysis for a specified window size. </summary>
         [Serializable()]
         public struct MCP_Uncert
         {
             /// <summary>   Window size of concurrent WS data interval in months. </summary>
-            public int WSize; 
-            
+            public int WSize;             
             /// <summary>   Number of concurrent WS windows. </summary>
-            public int NWindows;
-                        
-            /// <summary>   Array of long-term WS estimates generated from each concurrent WS window. </summary>
+            public int NWindows;                        
+            /// <summary>   Long-term WS estimates generated from each concurrent WS window. </summary>
             public double[] LT_Ests;
-
             /// <summary>   Average LT WS Estimates. </summary>
-            public double avg;
-            
+            public double avg;            
             /// <summary>   Standard deviation of LT WS Estimates. </summary>
             public double stDev;
-
-            /// <summary>   Start of data period used in uncertainty analysis. </summary>
+            /// <summary>   Start of each data period used in uncertainty analysis. </summary>
             public DateTime[] start;
-
-            /// <summary>   End of data period used in uncertainty analysis. </summary>
+            /// <summary>   End of each data period used in uncertainty analysis. </summary>
             public DateTime[] end;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>   Clears this MCP_Uncert object to its blank/initial state. </summary>
-            ///
-            /// <remarks>   OEE, 10/19/2017. </remarks>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            public void Clear()
+           
+            /// <summary>   Clears this MCP_Uncert object to its blank/initial state. </summary>                        
+            public void Clear() 
             {
                 WSize = 0;
                 NWindows = 0;
@@ -237,17 +98,9 @@ namespace ContinuumNS
                 start = null;
                 end = null;                
             }
-
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        ///  Struct containing time stamp, wind speed, and wind direction.
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Contains time stamp, wind speed, and wind direction. </summary>    
         [Serializable()]
         public struct Site_data
         {
@@ -258,15 +111,8 @@ namespace ContinuumNS
             /// <summary>   Wind direction (degs). </summary>
             public double thisWD;            
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Structure defined to hold concurrent reference and target wind speed and wind direction time series
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Contains timestamp and concurrent reference and target wind speed and wind direction </summary>        
         [Serializable()]
         public struct Concurrent_data
         {
@@ -282,123 +128,48 @@ namespace ContinuumNS
             public double targetWD;            
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Struture defined to hold linear MCP statistics (such as orthogonol or variance methods)
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Contains MCP slope, intercept, and R^2 of linear methods (Orthogonal or Variance Ratio methods) in all bins </summary>        
         [Serializable()]
         public struct Lin_MCP
         {
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>
-            /// slope of linear MCP methods for each WD sector, each time of day interval and each season
-            /// interval.
-            /// </summary>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            public double[,,] slope;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>
-            /// intercept of linear MCP methods for each WD sector, each time of day interval and each season
-            /// interval.
-            /// </summary>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            public double[,,] intercept;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>
-            /// R^2 of linear MCP methods for WD and each hourly interval, each time of day interval and each season
-            /// interval.
-            /// </summary>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+            /// <summary> Slope of MCP relationship for each WD sector [i], each time of day bin [j] and each season bin [k]. </summary>            
+            public double[,,] slope;          
+            /// <summary> Intercept of MCP relationship for each WD sector [i], each time of day bin [j] and each season bin [k]. </summary>   
+            public double[,,] intercept;            
+            /// <summary> R^2 of linear MCP methods for WD and each hourly interval, each time of day interval and each season interval. </summary>
             public double[,,] R_sq;
-            /// <summary>   slope of linear MCP methods for all data (WD, TOD, Season) </summary>
+            /// <summary> Average slope of linear MCP relationship for all data </summary>
             public double allSlope;
-            /// <summary>   intercept of linear MCP methods for all data (WD, TOD, Season) </summary>
+            /// <summary>  Average intercept of linear MCP relationship for all data  </summary>
             public double allIntercept;
-            /// <summary>   R^2 of linear MCP methods for all data (WD, TOD, Season) </summary>
+            /// <summary>   Average R^2 of linear MCP relationship for all data </summary>
             public double allR_Sq;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>
-            /// Time series of wind speed estimated at target site based on linear MCP methods and reference
-            /// WS and WD (WD is same as Ref site WD)
-            /// </summary>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-      //      public Site_data[] LT_WS_Est;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>   Clears Lin_MCP object to its blank state. </summary>
-            ///
-            /// <remarks>   OEE, 10/19/2017. </remarks>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            public void Clear()
+            
+            /// <summary>   Clears Lin_MCP object to its blank state. </summary>            
+            public void Clear() 
             {
                 slope = null;
                 intercept = null;
-                R_sq = null;
-             //   LT_WS_Est = null;
+                R_sq = null;            
             }
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Structure defined to hold Method of Bins MCP statistics. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>   Contains Method of Bins MCP statistics. </summary>        
         [Serializable()]
         public struct Method_of_Bins
-        {
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>
-            /// Array of type Bin_Object containing average ratio, standard deviation of ratio and bin count
-            /// for each WS and WD bin (i = WS bin, j = WD bin.)
-            /// </summary>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            public Bin_Object[,] binAvgSD_Cnt;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>
-            /// Array of type Site_data containing time series of wind speed and wind direction estimated at
-            /// target site based on method of bins (WD is same as Ref site WD)
-            /// </summary>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-       //     public Site_data[] LT_WS_Est;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>   Clears this Method_of_Bins object to its blank state. </summary>
-            ///
-            /// <remarks>   OEE, 10/19/2017. </remarks>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            public void Clear()
+        {            
+            /// <summary> Contains average ratio, standard deviation of ratio and bin count for each WS and WD bin (i = WS bin, j = WD bin.) </summary>            
+            public Bin_Object[,] binAvgSD_Cnt;                    
+                        
+            /// <summary>   Clears this Method_of_Bins object to its blank state. </summary>            
+            public void Clear() 
             {
-                binAvgSD_Cnt = null;
-              //  LT_WS_Est = null;
+                binAvgSD_Cnt = null;              
             }
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Structure defined to contain average and standard deviation of wind speed ratio and data
-        /// count used in Method of Bins MCP.
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Contains average and standard deviation of wind speed ratio and data count used in Method of Bins MCP. </summary>        
         [Serializable()]
         public struct Bin_Object
         {
@@ -409,59 +180,22 @@ namespace ContinuumNS
             /// <summary>   Bin count. </summary>
             public double count;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Structure defined to hold Matrix cumulative distribution functions and long-term estimated
-        /// wind speeds.
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Contains cumulative distribution functions used in Matrix method. </summary>        
         [Serializable()]
         public struct Matrix_Obj
-        {
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>
-            /// Array of type CDF_Obj which contain wind speed cumulative distribution functions which define
-            /// probability of a WS at target occurring given a WS at the reference site.
-            /// </summary>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            public CDF_Obj[] WS_CDFs;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>
-            /// Array of type Site_data containing time series of wind speed and wind direction estimated at
-            /// target site based on Matrix-LastWS method (WD is same as Ref site WD)
-            /// </summary>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-       //     public Site_data[] LT_WS_Est;
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            /// <summary>   Clears this object to its initial state. </summary>
-            ///
-            /// <remarks>   OEE, 10/19/2017. </remarks>
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            public void Clear()
+        {            
+            /// <summary> Contains wind speed CDFs which define probability of a WS at target occurring given a WS at the reference site. </summary> 
+            public CDF_Obj[] WS_CDFs;                 
+                        
+            /// <summary>   Clears this object to its initial state. </summary> 
+            public void Clear() 
             {
-                WS_CDFs = null;
-          //      LT_WS_Est = null;
+                WS_CDFs = null;          
             }
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Structure defined to hold statistics and variables associated with cumulative distribution
-        /// functions.
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                        
+        /// <summary> Contains Cumulative Distribution function and statistics and variables associated with cumulative distribution functions. </summary>        
         [Serializable()]
         public struct CDF_Obj
         {
@@ -501,92 +235,126 @@ namespace ContinuumNS
             public Met.Season season;
             /// <summary>   Data count in bin. </summary>
             public int count;
-        }  
-                  
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+
         /// <summary>
-        /// Gets the wind speed width entered on form for Method of Bins or Matrix-LastWS MCP.
+        ///  Finds and returns the timestamp of either the start or end of specified dataset (reference, target,
+        ///  concurrent, or subset of concurrent)
         /// </summary>
-        ///
-        /// <remarks>   Liz, 5/26/2017. </remarks>
-        ///
-        /// <returns>   The wind speed interval to use in Method of Bins or Matrix-LastWS MCP. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <param name="refTargConcOrSubset">Enter "Reference", "Target", "Concurrent", or "Subset"  </param>
+        /// <param name="startOrEnd">Enter "Start" or "End"</param>
+        /// <returns>Start/End timestamp of target/reference/concurrent/subset dataset</returns>
+        public DateTime GetStartOrEndDate(string refTargConcOrSubset, string startOrEnd)
+        {
+            DateTime thisTime = new DateTime();
 
+            if (refTargConcOrSubset == "Reference")
+            {                
+                if (refData.Length > 0)
+                {
+                    if (startOrEnd == "Start")
+                        thisTime = refData[0].thisDate;
+                    else if (startOrEnd == "End")
+                        thisTime = refData[refData.Length - 1].thisDate;                        
+                }                        
+            }
+            else if (refTargConcOrSubset == "Target")
+            {               
+                if (targetData.Length > 0)
+                {
+                    if (startOrEnd == "Start")
+                        thisTime = targetData[0].thisDate;
+                    else if (startOrEnd == "End")
+                        thisTime = targetData[targetData.Length - 1].thisDate;                       
+                }                        
+            }
+            else if (refTargConcOrSubset == "Concurrent")
+            {               
+                if (concDataAll.Length > 0)
+                {
+                    if (startOrEnd == "Start")
+                        thisTime = concDataAll[0].thisDate;
+                    else if (startOrEnd == "End")
+                        thisTime = concDataAll[concDataAll.Length - 1].thisDate;                        
+                }                        
+            }
+            else if (refTargConcOrSubset == "Subset")
+            {                
+                if (concData.Length > 0)
+                {
+                    if (startOrEnd == "Start")
+                        thisTime = concData[0].thisDate;
+                    else if (startOrEnd == "End")
+                        thisTime = concData[concData.Length - 1].thisDate;
+                }                        
+            }
+
+            return thisTime;
+        }
+
+        /// <summary>
+        ///  Returns true if specified MCP method has been calculated 
+        /// </summary>
+        /// <param name="MCP_Method">"Orth. Regression", "Variance Ratio", "Method of Bins", "Matrix"</param>
+        /// <returns></returns>
+        public bool HaveMCP_Estimate(string MCP_Method)
+        {
+            bool gotIt = false;
+
+            if (MCP_Method == "Orth. Regression")
+            {
+                if (MCP_Ortho.allSlope != 0)
+                    gotIt = true;
+            }
+            else if (MCP_Method == "Variance Ratio")
+            {
+                if (MCP_Varrat.allSlope != 0)
+                    gotIt = true;
+            }
+            else if (MCP_Method == "Method of Bins")
+            {
+                if (MCP_Bins.binAvgSD_Cnt != null)
+                    gotIt = true;                    
+            }
+            else if (MCP_Method == "Matrix")
+            {
+                if (MCP_Matrix.WS_CDFs != null)
+                    gotIt = true;
+            }
+            else if (MCP_Method == "Any")
+            {
+                if (MCP_Ortho.allSlope != 0 || MCP_Varrat.allSlope != 0 || MCP_Bins.binAvgSD_Cnt != null || MCP_Matrix.WS_CDFs != null)
+                    gotIt = true;
+            }
+
+            return gotIt;
+        }
+
+        /// <summary> Gets the wind speed width entered on form for Method of Bins or Matrix-LastWS MCP. </summary>        
+        /// <returns>   The wind speed interval to use in Method of Bins or Matrix-LastWS MCP. </returns>        
         public double Get_WS_width_for_MCP()
         {            
             return WS_BinWidth;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets the wind speed interval to use in TAB file export. </summary>
-        ///
-        /// <remarks>   Liz, 5/26/2017, Not tested since it is a simple textbox to. </remarks>
-        ///
-        /// <returns>   The wind speed interval used in TAB file export. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public double Get_TAB_export_WS_width(Continuum thisInst)
-        {            
-            double TAB_WS_bin = Convert.ToSingle(thisInst.txtTAB_WS_bin.Text);
-            return TAB_WS_bin;
-        }      
-              
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets the number of wind direction sectors used in MCP. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <returns>   The number of wind direction sectors. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public int Get_Num_WD()
-        {                        
-            return numWD;
-        }              
-
+        }                
         
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets the WS Matrix PDF weight to use in Matrix-LastWS method. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <returns>   The Matrix WS PDF weight. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary>   Gets the WS Matrix PDF weight to use in Matrix-LastWS method. </summary>        
+        /// <returns>   The Matrix WS PDF weight. </returns>        
         public double Get_WS_PDF_Weight()
-        {
-            // Returns WS PDF weight to be used in Matrix-lastWS method            
+        {                  
             return matrixWgt;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets the LastWS PDF weight to use in Matrix-LastWS method. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <returns>   The LastWS PDF weight. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary>   Gets the LastWS PDF weight to use in Matrix-LastWS method. </summary>        
+        /// <returns>   The LastWS PDF weight. </returns>  
         public double Get_Last_WS_Weight()
-        {
-            // Returns Last WS weight to be used in Matrix-lastWS method            
+        {                     
             return lastWS_Wgt;            
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates WD index of entered wind direction . </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <param name="thisWD">  Wind direction in degrees. </param>
-        /// <param name="numWD">   Number of wind direction sectors. </param>
-        ///
-        /// <returns>   The wind direction index corresponding to entered wind direction. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary>   Calculates WD index of specified wind direction . </summary>        
+        /// <returns>   The wind direction index corresponding to specified wind direction. </returns>        
         public int Get_WD_ind(double thisWD)
         {            
             int WD_Ind = (int)Math.Round(thisWD / (360 / (double)numWD),0, MidpointRounding.AwayFromZero);
@@ -596,17 +364,8 @@ namespace ContinuumNS
             return WD_Ind;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates WS index of entered wind speed. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <param name="thisWS">      Wind Speed. </param>
-        /// <param name="binWidth">    Width of WS bin. </param>
-        ///
-        /// <returns>   The wind speed index corresponding to entered wind speed. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary>   Calculates WS index of specified wind speed. </summary>        
+        /// <returns>   The wind speed index corresponding to specified wind speed. </returns>        
         public int Get_WS_ind(double thisWS, double binWidth)
         {
             int WS_Ind = 0;
@@ -615,31 +374,17 @@ namespace ContinuumNS
             
             return WS_Ind;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets uncertainty analysis step size as entered on form. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <returns>   The step size (in months) of uncertainty analysis. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+               
+        /// <summary>   Gets uncertainty analysis step size as selected on form. </summary>        
+        /// <returns>   The step size (in months) of uncertainty analysis. </returns>        
         public int Get_Uncert_Step_Size()
         {            
             return uncertStepSize;
         }                
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Generates a cumulative distribution function (CDF) of target wind speed distribution for
-        /// each specified wind direction, time of day and seasonal bin.
-        /// </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <returns>   An array of type CDF_Obj which contains the CDF, bin indices, etc. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Generates a cumulative distribution function (CDF) of target wind speed distribution for
+        /// each specified wind direction, time of day and seasonal bin. </summary>        
+        /// <returns>  Array of CDF_Obj objects which contains the CDF, bin indices, etc. </returns>        
         public CDF_Obj[] GenerateMatrixCDFs()
         {                        
             double WS_width = Get_WS_width_for_MCP();          
@@ -707,9 +452,7 @@ namespace ContinuumNS
 
                                 for (int m = 0; m < targetWS.Length; m++)
                                 {                                    
-                                    int WS_Ind = Convert.ToInt16((targetWS[m] - targMinWS) / WS_int);
-                             //       int Round_ind = (int)Math.Round((targetWS[m] - targMinWS) / WS_int, 0);
-
+                                    int WS_Ind = Convert.ToInt16((targetWS[m] - targMinWS) / WS_int);   
                                     WS_count[WS_Ind]++;
                                 }
 
@@ -725,7 +468,6 @@ namespace ContinuumNS
                                 for (int m = 1; m < 100; m++)                                
                                     theseCDFs[CDF_Count].CDF[m] = theseCDFs[CDF_Count].CDF[m - 1] + thisPDF[m] * theseCDFs[CDF_Count].WS_interval;
                                 
-
                                 // interpolate between plateaus in CDF
                                 //CDF = InterpolateCDF(CDF);
 
@@ -746,16 +488,14 @@ namespace ContinuumNS
                                 theseCDFs[CDF_Count].WS_interval = 0;
                             }
 
-                            CDF_Count++;
-                        
+                            CDF_Count++;                        
             }
 
             return theseCDFs;
         }
-          
-        /// <summary>
-        /// Calculates and returns the average wind speeds at the target site and the reference site, and the concurrent data count 
-        /// </summary>
+
+        /// <summary> Calculates the average wind speeds at the target site and the reference site, and the concurrent data count </summary>
+        /// <returns> Target Avg WS [0], Reference Avg WS [1], Concurrent data count [2]</returns>
         public double[] GetConcAvgsCount(int WD_Ind, Met.TOD TOD, Met.Season Season)
         {
             double[] avgWS_Count = { 0, 0, 0 }; // 0: Target WS; 1: Reference WS; 2: Data count'
@@ -763,7 +503,9 @@ namespace ContinuumNS
             metList.numWD = numWD;
             metList.numTOD = numTODs;
             metList.numSeason = numSeasons;
-                                   
+            DateTime concStart = GetStartOrEndDate("Subset", "Start");
+            DateTime concEnd = GetStartOrEndDate("Subset", "End");
+
             foreach (Concurrent_data Conc in concData)
                 if (Conc.thisDate >= concStart && Conc.thisDate <= concEnd)
                 {
@@ -789,11 +531,10 @@ namespace ContinuumNS
             }
 
             return avgWS_Count;
-        }              
+        }
 
-        /// <summary>
-        /// Finds and returns array of either reference and target wind speeds during concurrent period for specified wind direction, TOD, season, and wind speed range
-        /// </summary>        
+        /// <summary> Finds array of either reference and target wind speeds during concurrent period for specified wind direction, TOD, season, and wind speed range </summary>    
+        /// <returns> Array of wind speeds for specified period</returns>
         public double[] GetConcWS_Array(string targetOrRef, int WD_Ind, Met.TOD TOD, Met.Season season, double minWS, double maxWS, bool getAll)
         {
             double[] theseWS = null;            
@@ -805,7 +546,7 @@ namespace ContinuumNS
             metList.numTOD = numTODs;
             metList.numSeason = numSeasons;
                         
-            if (gotConc)
+            if (concData.Length > 0)
             {
                 if (getAll == true) //|| ((minWS == 0) && (maxWS == 30) && ((WD_Ind == 0) && (Get_Num_WD() == 1)) && ((hourlyInd == 0) && (Get_Num_Hourly_Ints() == 1)) && ((tempInd == 0) && (Get_Num_Temp_Ints() == 1))))            
                 {
@@ -834,7 +575,6 @@ namespace ContinuumNS
 
                         if ((These_Conc.refWS > minWS) && (These_Conc.refWS <= maxWS) && (thisWD_Ind == WD_Ind) && (thisTOD == TOD) && (thisSeason == season))
                             WD_count++;
-
                     }
 
                     Array.Resize(ref theseWS, WD_count);
@@ -866,17 +606,13 @@ namespace ContinuumNS
 
             return theseWS;
         }
-        
-        
-        /// <summary> Creates array of Concurrent_data containing WS and WD at reference and target sites. </summary>        
+
+        /// <summary> Defines concDataAll array which contains all concurrent WS and WD at reference and target sites. Also creates concData (are both needed?) </summary>       
         public void FindConcurrentData(DateTime start, DateTime end)
         {            
             int concCount = 0;
             int refStartInd = 0;
-            int targStartInd = 0;                      
-                                               
-            concStart = start;
-            concEnd = end;
+            int targStartInd = 0;
             
             if (refData == null || targetData == null)            
                 return;   
@@ -885,7 +621,7 @@ namespace ContinuumNS
 
             foreach (Site_data RefSite in refData)
             {
-                if (RefSite.thisDate < concStart)
+                if (RefSite.thisDate < start)
                     refStartInd++;
                 else
                     break;
@@ -893,7 +629,7 @@ namespace ContinuumNS
 
             foreach (Site_data TargSite in targetData)
             {
-                if (TargSite.thisDate < concStart)
+                if (TargSite.thisDate < start)
                     targStartInd++;
                 else
                     break;
@@ -903,7 +639,7 @@ namespace ContinuumNS
             {
                 for (int j = refStartInd; j < refData.Length; j++)
                 {
-                    if (targetData[i].thisDate == refData[j].thisDate && targetData[i].thisDate <= concEnd)
+                    if (targetData[i].thisDate == refData[j].thisDate && targetData[i].thisDate <= end)
                     {                        
                         concCount = concCount + 1;
                         Array.Resize(ref concDataAll, concCount);
@@ -917,7 +653,7 @@ namespace ContinuumNS
 
                 }
 
-                if (targetData[i].thisDate >= concEnd)                
+                if (targetData[i].thisDate >= end)                
                     break;
                 
             }
@@ -926,13 +662,11 @@ namespace ContinuumNS
 
             if (concCount == 0)
                 MessageBox.Show("There is no concurrent data between the reference and target site for the selected start and end dates.");
-            else
-                gotConc = true;
-            
+                        
         }
         
         /// <summary>   Gets and returns minimum and maximum wind direction for specified wind direction bin. </summary>        
-        /// <returns>   An array of type double containing min and max wind direction in degs. </returns>        
+        /// <returns>   Min [0] and max [1] wind direction [degs]. </returns>        
         public double[] GetMinMaxWD(int WD_Ind)
         {
             double[] minMaxWD = new double[2];
@@ -952,9 +686,7 @@ namespace ContinuumNS
             }
 
             return minMaxWD;
-
         }
-
         
         /// <summary> Redefines concurrent data (concData) by copying data from concDataAll between specified start and end dates. </summary> 
         public void GetSubsetConcData(DateTime thisConcStart, DateTime thisConcEnd)
@@ -965,7 +697,6 @@ namespace ContinuumNS
 
             for (int i = 0; i < concDataAll.Length; i++)
             {               
-
                 if (concDataAll[i].thisDate.Year == thisConcStart.Year && concDataAll[i].thisDate.Month == thisConcStart.Month
                     && concDataAll[i].thisDate.Day == thisConcStart.Day && concDataAll[i].thisDate.Hour == thisConcStart.Hour)
                     startInd = i;
@@ -987,9 +718,9 @@ namespace ContinuumNS
             Array.Resize(ref concData, subLength);
             Array.ConstrainedCopy(concDataAll, startInd, concData, 0, subLength);
         }
-
         
         /// <summary>   Gets the sector count of specified wind speed, time of day, and seasonal bin. </summary>
+        /// <returns> Sector count for specified bins </returns>
         public int GetSectorCount(int WD_Ind, Met.TOD TOD, Met.Season season, MetCollection metList)
         {            
             if (sectors.Length == 0)
@@ -1007,25 +738,11 @@ namespace ContinuumNS
 
             return sectorCount;
         }
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Executes the mcp operation. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <param name="thisConcStart">  Start Date/Time of concurrent data to use in MCP. </param>
-        /// <param name="thisConcEnd">    End Date/Time of concurrent data to use in MCP. </param>
-        /// <param name="Use_All_Data">     True to use all data. </param>
-        /// <param name="MCP_Method">       The mcp method. </param>
-        ///
-        /// <returns>   A double. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Conducts MCP using specified start/end date and MCP method. </summary>        
+        /// <returns>   LT estimated wind speed at target site. </returns>        
         public double DoMCP(DateTime thisConcStart, DateTime thisConcEnd, bool Use_All_Data, string MCP_Method, Continuum thisInst, Met thisMet)
-        {
-            // Performs MCP using a linear model (i.e orthogonal regression or variance ratio) or a method of bins or a Matrix method
-            // Orth. Reg. minimizes the distance between both the reference and target site wind speeds from the regression line
+        {           
 
             // Build array of conccurent data for specified dates
             GetSubsetConcData(thisConcStart, thisConcEnd);
@@ -1062,8 +779,11 @@ namespace ContinuumNS
 
             MetCollection metList = thisInst.metList;
 
+            DateTime refStart = GetStartOrEndDate("Reference", "Start");
+            DateTime refEnd = GetStartOrEndDate("Reference", "End");
+            
             // find total data count
-            totalCount = totalCount + stat.GetDataCount(refData, exportStart, exportEnd, 0, 0, 0, thisInst.metList, true);
+            totalCount = totalCount + stat.GetDataCount(refData, refStart, refEnd, 0, 0, 0, thisInst.metList, true);
 
             // if this is not an uncertainty analysis, then calculate the slope, intercept and R^2 for all WD (this is not used in LT WS Estimation, just GUI)
             if (Use_All_Data == true && MCP_Method == "Orth. Regression")
@@ -1231,9 +951,8 @@ namespace ContinuumNS
                         }
                     }
 
-            }                                
-                        
-            gotMCP_Est = true;
+            }                     
+            
             LT_WS_Ests = GenerateLT_WS_TS(thisInst, thisMet, MCP_Method);
 
             if (MCP_Method == "Method of Bins" || MCP_Method == "Matrix")
@@ -1242,14 +961,14 @@ namespace ContinuumNS
             return LT_WS_Est;
         }
 
+        /// <summary> Estimates time series at met site using MERRA2 data and selected MCP type. </summary>        
+        /// <returns> Estimated long-term wind speed time series </returns>
         public Site_data[] GenerateLT_WS_TS(Continuum thisInst, Met thisMet, string MCP_Method)
-        { 
-            // Estimate time series at met site using MERRA2 data and selected MCP type
-            
+        {            
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
 
-            if (gotMCP_Est == false && MCP_Method != "Matrix")
+            if (HaveMCP_Estimate(MCP_Method) == false && MCP_Method != "Matrix")
                 thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method); // Reads in MERRA data and extrapolated filtered data and runs MCP using settings on form                    
 
             if (thisMet.mcp.refData.Length == 0)
@@ -1395,13 +1114,12 @@ namespace ContinuumNS
                 }
                 
             }
-
             
             return LT_WS_Est_TS;
         }
-
         
-        /// <summary> Finds and returns the CDF index that corresponds to random number between 0 and 1 </summary>        
+        /// <summary> Finds CDF index that corresponds to random number between 0 and 1 </summary> 
+        /// <returns> CDF index corresponding to random number </returns>
         public int FindCDF_Index(CDF_Obj thisCDF, double randomNum)
         {
             double minDiff = 100;
@@ -1426,20 +1144,11 @@ namespace ContinuumNS
             return minInd;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// When creating a CDF from discrete data, plateaus are present in CDF, this function
-        /// interpolates between points so the estimated WS ramps up with random number instead of being
-        /// step-wise.
-        /// </summary>
-        ///
-        /// <remarks>   NOT CURRENTLY USED. NOT TESTED. </remarks>
-        ///
-        /// <param name="thisCDF"> this cdf. </param>
-        ///
-        /// <returns>   Interpolated CDF as array of type double. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> When creating a CDF from discrete data, plateaus are present in CDF, this function interpolates 
+        /// between points so the estimated WS ramps up with random number instead of being step-wise. </summary>        
+        /// <remarks>   NOT CURRENTLY USED. NOT TESTED. </remarks>        
+        /// <returns>   Interpolated CDF as array of type double. </returns>        
         public double[] InterpolateCDF(double[] thisCDF)
         {           
             double[] interpCDF = new double[1000];
@@ -1479,8 +1188,9 @@ namespace ContinuumNS
             return interpCDF;
         }
 
-        /// <summary> Calculates and returns a CDF corresponding to the last WS estimate and the standard deviation
+        /// <summary> Calculates a CDF corresponding to the last WS estimate and the standard deviation
         /// of change in WS from one hour to next. </summary>
+        /// <returns> Last WS CDF </returns>
         public double[] GetLagWS_CDF(double lastWS, double CDF_MinWS, double CDF_WS_Int)
         {             
             double[] lagWS_CDF = new double[100];
@@ -1524,7 +1234,7 @@ namespace ContinuumNS
         }
                 
         /// <summary> Calculates the standard deviation of change in wind speed (from one hour to the next) as a function of 
-        /// wind speed at target site for specified concurrent period. </summary>  
+        /// wind speed at target site for specified concurrent period. Used in Matrix method. </summary>  
         public void FindSD_ChangeInWS()
         {    
             DateTime lastRecord = DateTime.Today;
@@ -1566,43 +1276,26 @@ namespace ContinuumNS
             }                     
            
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets a random number between 0 and 1. </summary>
-        ///
-        /// <remarks>   OEE, 10/19/2017. </remarks>
-        ///
-        /// <returns>   Random number. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+               
+        /// <summary>   Gets a random number between 0 and 1. </summary>        
+        /// <returns>   Random number (0 - 1). </returns>        
         public Random GetRandomNumber()
         {
             Random rnd = new Random(DateTime.Now.Millisecond);
-
             return rnd;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the slope of the orthogonal regression. </summary>
-        ///
-        /// <remarks>   Liz, 5/16/2017. </remarks>
-        ///
-        /// <param name="var_x">    Variance of concurrent reference wind speed. </param>
-        /// <param name="var_y">    Variance of concurrent target wind speed. </param>
-        /// <param name="covar_xy"> Covariance of concurrent reference and target wind speed. </param>
-        ///
-        /// <returns>   The calculated slope of orthogonal regression. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>   Calculates the slope of the orthogonal regression. </summary>        
+        /// <returns>  Slope of orthogonal regression. </returns>       
         public double CalcOrthoSlope(double var_x, double var_y, double covar_xy)
         {    
-            double slope = (var_y - var_x + Math.Pow((Math.Pow((var_y - var_x), 2) + 4 * Math.Pow(covar_xy, 2)), 0.5)) / (2 * covar_xy);
-            
+            double slope = (var_y - var_x + Math.Pow((Math.Pow((var_y - var_x), 2) + 4 * Math.Pow(covar_xy, 2)), 0.5)) / (2 * covar_xy);           
             return slope;
         }
                 
         /// <summary> Calculates the slope of variance ratio method where slope is defined as ratio of standard
-        /// deviation of reference and target concurrent wind speeds. </summary>        
+        /// deviation of reference and target concurrent wind speeds. </summary>  
+        /// <returns> Slope of variance ratio. </returns>
         public double CalcVarianceRatioSlope(double var_x, double var_y)
         {            
             double slope = 0;
@@ -1614,52 +1307,15 @@ namespace ContinuumNS
             
             return slope;
         }        
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Resets the export dates with start/end date of reference dataset. </summary>
-        ///
-        /// <remarks>   Liz, 5/16/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Resets the export dates with start/end date of reference dataset. </summary>        
         public void ResetExportDates(Continuum thisInst)
         {            
-            thisInst.dateMCPExportStart.Value = refStart;
-            thisInst.dateMCPExportEnd.Value = refEnd;            
+            thisInst.dateMCPExportStart.Value = GetStartOrEndDate("Reference","Start");
+            thisInst.dateMCPExportEnd.Value = GetStartOrEndDate("Reference", "End");            
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Find start and end dates of full concurrent period and updates the form dates.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 5/16/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public void Set_Conc_Dates_On_Form(Continuum thisInst)
-        {            
-            if (gotTarg != true || gotRef != true)
-                return;
-                   
-            thisInst.dateConcurrentStart.Value = concStart;
-            thisInst.dateConcurrentEnd.Value = concEnd;
-        }               
-                
-
         
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Resets the MCP analysis and clears all calculated onjects. </summary>
-        ///
-        /// <remarks>
-        /// Liz, 5/16/2017. This is different from New_MCP in that it clears the calculated values but it
-        /// keeps the user-specified number of bins, weights.
-        /// </remarks>
-        ///
-        /// <param name="All_or_Matrix_or_Bin"> If 'All', clears entire analysis, 'Matrix_and_Bins' clear
-        ///                                     Matrix-LastWS and Method_of_Bins objects only, 'Matrix'
-        ///                                     clears only Matrix-LasatWS object. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary>   Resets the MCP analysis and clears all calculated objects. </summary>
         public void ResetMCP(string All_or_Matrix_or_Bin, MetCollection metList)
         {
             if (All_or_Matrix_or_Bin == "All")
@@ -1673,16 +1329,12 @@ namespace ContinuumNS
                 uncertOrtho = new MCP_Uncert[0];
                 uncertBins = new MCP_Uncert[0];
                 uncertVarrat = new MCP_Uncert[0];
-                uncertMatrix = new MCP_Uncert[0];
-                                
-                gotConc = false;
-                gotMCP_Est = false;
+                uncertMatrix = new MCP_Uncert[0]; 
                 
                 numWD = metList.numWD;
                 numTODs = metList.numTOD;
                 numSeasons = metList.numSeason;
-                WS_BinWidth = 1;
-                                
+                WS_BinWidth = 1;                                
             }
             else if (All_or_Matrix_or_Bin == "Matrix_and_Bins") // this is called if the WS bin width is changed since it only affects Matrix and Method of Bins
             {
@@ -1697,26 +1349,12 @@ namespace ContinuumNS
                 MCP_Matrix.Clear();
                 uncertMatrix = new MCP_Uncert[0];
             }                        
-        }
-        
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Event handler. Called when 'Convert to Hourly' button is clicked.  Reads in 10-minute time
-        /// series WS and WD data, converts to hourly data and saves .CSV file.
-        /// </summary>
-        ///
-        /// <remarks>
-        /// Liz, 5/16/2017. Tested outside of Visual Studio by comparing to excel VBA tool output.
-        /// </remarks>
-        ///
-        /// <param name="sender">   Source of the event. </param>
-        /// <param name="e">        Event information. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        }       
+                
+        /// <summary> Converts ten-minute time series data to hourly time series data </summary>
+        /// <returns> Hourly time series data </returns>
         public Site_data[] ConvertToHourly(Site_data[] tenMinData)
-        {
-            // Prompt user to find reference data file            
+        {                     
             Site_data[] hourlyData = new Site_data[0];
 
             try
@@ -1903,21 +1541,18 @@ namespace ContinuumNS
 
             Array.Resize(ref hourlyData, hourlyCount);
             return hourlyData;
-        }            
+        }           
        
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Executes the MCP uncertainty analysis. </summary>
-        ///
-        /// <remarks>   Liz, 5/24/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+       
+        /// <summary>   Runs the MCP uncertainty analysis. </summary>        
         public void Do_MCP_Uncertainty(Continuum thisInst, MERRA thisMERRA, Met thisMet)
         {
             int uncertStepSize = Get_Uncert_Step_Size(); // Step size (in months) that defines the next start date. 
-                                                           // Default is 1 month but for large datasets, increasing this 
-                                                           // helps to reduce the number of calculations. Possible choices are 1, 2, 3 or 4 month step size.
+                                                         // Default is 1 month but for large datasets, increasing this 
+                                                         // helps to reduce the number of calculations. Possible choices are 1, 2, 3 or 4 month step size.
 
+            DateTime concStart = GetStartOrEndDate("Concurrent", "Start");
+            DateTime concEnd = GetStartOrEndDate("Concurrent", "End");
             // how many months in Conc -> Number of MCP_Uncert objects to create
             int numObj = ((concEnd.Year - concStart.Year) * 12) + concEnd.Month - concStart.Month;
 
@@ -2070,17 +1705,9 @@ namespace ContinuumNS
                         
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Calculates the average and standard deviation of long-term estimates generated for an
-        /// uncertainty object (i.e. certain window size, start and end dates)
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 5/16/2017. </remarks>
-        ///
-        /// <param name="thisUncert">  [in,out] MCP Uncertainty object, MCP_Uncert. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Calculates the average and standard deviation of long-term estimates generated for
+        /// specified uncertainty object (i.e. certain window size, start and end dates) </summary>        
         public void CalcAvgSD_Uncert(ref MCP_Uncert thisUncert)
         {
             double sum_x = 0;
@@ -2100,41 +1727,22 @@ namespace ContinuumNS
                 thisUncert.stDev = Math.Pow(var_x, 0.5);
 
             }
-        }
-         
-          
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Creates a new MCP analysis and sets all fields to default values. </summary>
-        ///
-        /// <remarks>   Liz, 5/16/2017. Tested outside of Visual Studio. </remarks>
-        ///
-        /// <param name="Clear_Ref">    True to clear reference. </param>
-        /// <param name="Clear_Target"> True to clear target. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        }        
+                  
+        /// <summary>   Creates a new MCP analysis and sets all fields to default values. </summary>        
         public void New_MCP(bool Clear_Ref, bool Clear_Target, Continuum thisInst)
         {
             // Creates a MCP analysis
 
-            if (Clear_Ref == true)
-            {
-                gotRef = false;
-                refData = new Site_data[0];
-            }                
+            if (Clear_Ref == true)                           
+                refData = new Site_data[0];                         
             
-            if (Clear_Target == true)
-            {
-                gotTarg = false;
-                targetData = new Site_data[0];
-            }               
+            if (Clear_Target == true) 
+                targetData = new Site_data[0];                           
                         
             concData = new Concurrent_data[0];
-            gotConc = false;
-
-            exportStart = thisInst.dateMERRAStart.Value;
-            exportEnd = thisInst.dateMERRAEnd.Value;
-
+            concDataAll = new Concurrent_data[0];
+            
             numWD = thisInst.GetNumWD();
             numTODs = thisInst.metList.numTOD;
             numSeasons = thisInst.metList.numSeason;
@@ -2154,25 +1762,21 @@ namespace ContinuumNS
             uncertVarrat = new MCP_Uncert[0];
             uncertMatrix = new MCP_Uncert[0];                  
 
-            Is_Newly_Opened_File = false;   // this is set to true and then set to false to avoid messages that appear to ask the user 
+          //  Is_Newly_Opened_File = false;   // this is set to true and then set to false to avoid messages that appear to ask the user 
                                             // if they are sure that they want to clear the calculations
             
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Gets data counts for every WD, hourly and temperature bin in reference dataset.
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 5/16/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Defines sectors which hold data counts for every WD, time of day and seasonal bin in reference dataset. </summary>        
         public void Find_Sector_Counts(MetCollection metList)
         {
-            int Total_comb = numWD * numTODs * numSeasons;
+            int totalComb = numWD * numTODs * numSeasons;
             int counter = 0;
+            Stats stat = new Stats();
+            DateTime refStart = GetStartOrEndDate("Reference", "Start");
+            DateTime refEnd = GetStartOrEndDate("Reference", "End");
 
-            Array.Resize(ref sectors,Total_comb);
+            Array.Resize(ref sectors, totalComb);
 
             for (int i = 0; i < numWD; i++)
                 for (int j = 0; j < numTODs; j++)
@@ -2198,20 +1802,18 @@ namespace ContinuumNS
                         else if (k == 3)
                             sectors[counter].season = Met.Season.Fall;
 
-                        sectors[counter].count = stat.GetDataCount(refData, exportStart, exportEnd, i, sectors[counter].TOD, sectors[counter].season, metList, false);
+                        sectors[counter].count = stat.GetDataCount(refData, refStart, refEnd, i, sectors[counter].TOD, sectors[counter].season, metList, false);
                         counter = counter + 1;
                     }
         }  
 
-
+        /// <summary> Extracts 10-minute data from specified met site at specified height and defines hourly data </summary>        
+        /// <returns> Hourly time series data </returns>
         public Site_data[] GetTargetData(double height, Met thisMet)
-        {
-            // Reads in Target data for MCP from Filtered Met Data 
-            
+        {          
             Met_Data_Filter.Sim_TS targetDataTenMin = thisMet.metData.GetSimulatedTimeSeries(height);
-            int tenMinCount = targetDataTenMin.WS_WD_data.Length;
-            // Convert to hourly data
-            MCP.Site_data[] tenMinData = new MCP.Site_data[tenMinCount];
+            int tenMinCount = targetDataTenMin.WS_WD_data.Length;            
+            Site_data[] tenMinData = new MCP.Site_data[tenMinCount];
 
             for (int i = 0; i < tenMinCount; i++)
             {
@@ -2220,33 +1822,13 @@ namespace ContinuumNS
                 tenMinData[i].thisWD = targetDataTenMin.WS_WD_data[i].WD;
             }
 
-            MCP.Site_data[] targetData = thisMet.mcp.ConvertToHourly(tenMinData);
-            thisMet.mcp.targetStart = targetData[0].thisDate;
-            thisMet.mcp.targetEnd = targetData[targetData.Length - 1].thisDate;
-            thisMet.mcp.gotTarg = true;
+            Site_data[] targetData = thisMet.mcp.ConvertToHourly(tenMinData);                       
 
             return targetData;
-        }
-
-        public int GetTargetDataLength(DateTime thisStart, DateTime thisEnd)
-        {
-            int numDays = 0;
-            DateTime thisDate = targetStart;
-            
-            while (thisDate < thisStart)
-                thisDate.AddDays(1);
-
-            while (thisDate <= thisEnd)
-            {
-                numDays++;
-                thisDate = thisDate.AddDays(1);
-            }
-
-
-            return numDays;
-        }             
+        }      
               
-
+        /// <summary> Extracts reference data for specified met site. </summary>        
+        /// <returns> MERRA2 reference time series data </returns>
         public Site_data[] GetRefData(MERRA thisMERRA, ref Met thisMet, Continuum thisInst)
         {
             if (thisMERRA.interpData.TS_Data == null)
@@ -2262,11 +1844,8 @@ namespace ContinuumNS
             }
 
             int refDataLen = thisMERRA.interpData.TS_Data.Length;
-            refData = new MCP.Site_data[refDataLen];
-            thisMet.mcp.refStart = thisMERRA.interpData.TS_Data[0].ThisDate;
-            thisMet.mcp.refEnd = thisMERRA.interpData.TS_Data[refDataLen - 1].ThisDate;
-            thisMet.mcp.gotRef = true;
-
+            refData = new Site_data[refDataLen];            
+           
             for (int i = 0; i < refDataLen; i++)
             {
                 refData[i].thisDate = thisMERRA.interpData.TS_Data[i].ThisDate;
@@ -2275,10 +1854,8 @@ namespace ContinuumNS
             }
 
             return refData;
-        }
-        
-        
-        
+        }     
+                
     }
 }
 

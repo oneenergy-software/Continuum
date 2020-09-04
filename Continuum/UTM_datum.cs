@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> GUI class that allows user to select UTM datum to use. <summary>
     public partial class UTM_datum : Form
     {
+        /// <summary> Class initializer. </summary>
         public UTM_datum()
         {
             InitializeComponent();

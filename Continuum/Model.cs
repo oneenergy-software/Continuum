@@ -1,63 +1,71 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContinuumNS
 {
+    /// <summary> Class with Continuum wind flow model coefficients and functions to calculate model coefficients. </summary>
     [Serializable()]
     public class Model
     {
-        public Met.TOD timeOfDay; // enum: All / Day / Night
-        public Met.Season season; // enum: All / Winter / Spring / Summer / Fall
+        /// <summary> Time of day: All / Day / Night. </summary>
+        public Met.TOD timeOfDay;
+        /// <summary> Season: All / Winter / Spring / Summer / Fall. </summary>
+        public Met.Season season;
+        /// <summary> Modeled height. </summary>
         public double height;
-
-        public double[] downhill_A;  // 'A' coefficient of Downhill power law of each WD sector model
-        public double[] downhill_B;  // 'B' coefficient of Downhill power law of each WD sector model
-
-        public double[] uphill_A;   // 'A' coefficient of Uphill power law of each WD sector model
-        public double[] uphill_B;   // 'B' coefficient of Uphill power law of each WD sector model
-
-        public double[] UW_crit;  //for (int positive UW expo only, UW exposure cut-off: if UW expo > cut-off then muw is negative, if UW expo < cut-off then muw is positive (due to speed-up over a small hill!)  
-        public double[] spdUp_A;   // 'A' coefficient of UW power law when UW < UWcrit
-        public double[] spdUp_B;   // 'B' coefficient of UW power law when UW < UWcrit
-
-        public double[] DH_Stab_A;   // 'A' coefficient of Stability correction (for Downhill flow) power law of each WD sector model
-        public double[] UH_Stab_A;   // 'A' coefficient of Stability correction (for Uphill flow) power law of each WD sector model
-        public double[] SU_Stab_A;   // 'A' coefficient of Stability correction (for Induced Speed Up flow) power law of each WD sector model
-        public double[] stabB;   // 'B' coefficient of Stability correction power law of each WD sector model
-
-        public double[] sep_A_DW;   // //A' coefficient of Flow separation model when flow sep occurs downwind Sum UW+DW > sepCrit & UW>0 & DW>0 
-        public double[] sep_B_DW;   // //B' coefficient of Flow separation model when flow sep occurs downwind Sum UW+DW > sepCrit & UW>0 & DW>0
-        public double[] turbWS_Fact;   // Turbulent WS factor for each WD sector where WS is modeled as a linear decrease in wind speed as a function of distance * turbWS_Fact
-        public double[] sepCrit;   // When UW>0 & DW>0 & UW+DW > sepCrit, flow separation occurs, mdw is negative and is found using Sep_A & Sep_B
-        public double[] Sep_crit_WS;   // critical WS for flow separation to occur 
-
-        //  public Block_A()  double // //A' coefficient of Hill Blockage power law(which describes positive muw when UW<0 or negative mdw when DW>0 (i.e.on back side of hill) when UW crosswind slope is greater than Max_CW_Slope)
-        //  public Block_B()  double
-        //  public Diverge_A()  double // //A' coefficient of Hill Divergence power law(which describes negative muw when UW>0 or positive mdw when DW<0 (i.e.on front side of hill) when UW crosswind slope is greater than Max_CW_Slope)
-        //  public Diverge_B()  double
-        //  public Max_CW_Slope()  double // TO DO: FLOW AROUND HILLS / FLOW OVER HILLS ALGORITHM
-        // public Max_PL_Slope()  double
-
-        public int radius;             
-     
+        /// <summary> 'A' model coefficient for Downhill flow in each WD sector (m = A*P10Expo^B) </summary>
+        public double[] downhill_A;
+        /// <summary> 'B' model coefficient for Downhill flow in each WD sector (m = A*P10Expo^B)</summary>
+        public double[] downhill_B;
+        /// <summary> 'A' model coefficient for Uphill flow in each WD sector (m = A*P10Expo^B) </summary>
+        public double[] uphill_A;
+        /// <summary> 'B' model coefficient for Uphill flow in each WD sector (m = A*P10Expo^B) </summary>
+        public double[] uphill_B;
+        /// <summary> Critical upwind exposure in each WD sector </summary>
+        public double[] UW_crit;
+        /// <summary> 'A' model coefficient for Induced Speed-up flow in each WD sector (m = A*P10Expo^B) </summary>
+        public double[] spdUp_A;
+        /// <summary> 'B' model coefficient for Induced Speed-up flow in each WD sector (m = A*P10Expo^B) </summary>
+        public double[] spdUp_B;
+        /// <summary> Downhill flow stability correction coefficient 'A' in each WD sector (Stab. Corr. = 10^A) </summary>
+        public double[] DH_Stab_A;
+        /// <summary> Uphill flow stability correction coefficient 'A' in each WD sector (Stab. Corr. = 10^A) </summary>
+        public double[] UH_Stab_A;
+        /// <summary> Induced speed-up flow stability correction coefficient 'A' in each WD sector (Stab. Corr. = 10^A) </summary>
+        public double[] SU_Stab_A;
+        /// <summary> 'B' coefficient of Stability correction (not currently used) </summary>
+        public double[] stabB;
+        /// <summary> 'A' model coefficient for Separated flow in each WD sector (m = A*P10Expo^B)  </summary>
+        public double[] sep_A_DW;
+        /// <summary> 'B' model coefficient for Separated flow in each WD sector (m = A*P10Expo^B)  </summary>
+        public double[] sep_B_DW;
+        /// <summary> Turbulent WS factor for each WD sector where WS is modeled as a linear decrease in wind speed as a function of distance * turbWS_Fact  </summary>
+        public double[] turbWS_Fact;
+        /// <summary> Crtical sum of UW and DW exposure which defines wehn flow separation occurs. </summary>
+        public double[] sepCrit;
+        /// <summary> Crtical wind speed which defines wehn flow separation occurs. </summary>
+        public double[] Sep_crit_WS;
+        /// <summary> Model radius of investigation. </summary>
+        public int radius;
+        /// <summary> Maximum allowed elevation difference between nodes when finding path of nodes. </summary>
         public int maxElevDiff;
+        /// <summary> Slope that defines the maximum allowed difference in P10 exposure when finding a path of nodes. </summary>
         public double maxP10DiffSlope;
+        /// <summary> Intercept that defines the maximum allowed difference in P10 exposure when finding a path of nodes. </summary>
         public double maxP10DiffOffset;
-      
+        /// <summary> True if model coefficeints were imported by user. </summary>
         public bool isImported = false;
-
+        /// <summary> List of met sites used to define model. </summary>
         public string[] metsUsed;
-        public double RMS_WS_Est;   // RMS error of met cross-predictions 
-        public double[] RMS_Sect_WS_Est;   // RMS error of sectorwise met cross-preds 
+        /// <summary> RMS error of met cross-predictions. </summary>
+        public double RMS_WS_Est;
+        /// <summary> RMS error of sectorwise met cross-predictions </summary>
+        public double[] RMS_Sect_WS_Est;
+        /// <summary> Minimum Sum of UW and DW exposure which defines start of flow separation. </summary>
+        public double minSumUWDW;                       
 
-        public double minSumUWDW;   // minimum Sum UWDW for flow separation model to kick in                       
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary>
-        /// Calculates and returns DW coefficient based on flow type and terrain complexity (i.e. P10_Expo)
-        /// </summary>        
+        /// <summary> Calculates and returns DW coefficient based on flow type (Downhill, Uphill, or Turbulent) and terrain complexity (i.e. P10_Expo) </summary>        
         public double CalcDW_Coeff(double P10_DW_Expo, double P10_UW_Expo, int WD_sec, string flowType)
         {            
             double DW_Coeff = 0;
@@ -86,32 +94,10 @@ namespace ContinuumNS
             return DW_Coeff;
 
         }
-
-        public double CalcOverallDW_Coeff(double[] P10_DW_Expo, double[] P10_UW_Expo, double[] avgDW, double[] avgUW, double[] windRose,
-                                          double[] windSpeed, bool useFlowSep, NodeCollection.Sep_Nodes[] flowSepNodes)
-        {
-            // Calculates and returns overall DW coefficient (for Advacned tab plot/table)            
-            double overallDW_Coeff = 0;
-            
-            for (int WD_sec = 0; WD_sec < windRose.Length; WD_sec++)
-            {
-                string flowType = GetFlowType(avgUW[WD_sec], avgDW[WD_sec], WD_sec, "DW", flowSepNodes, windSpeed[WD_sec], useFlowSep, 0);
-                double DW_Coeff = CalcDW_Coeff(P10_DW_Expo[WD_sec], P10_UW_Expo[WD_sec], WD_sec, flowType);
-                overallDW_Coeff = overallDW_Coeff + DW_Coeff * windRose[WD_sec];
-            }
-
-            return overallDW_Coeff;
-        }
-
-        /// <summary>
-        /// Calculates and returns UW coefficient based on flowType and P10_Expo
-        /// </summary>        
+                
+        /// <summary> Calculates and returns UW coefficient based on flowType (Downhill, Uphill, SpdUp, Valley, or Turbulent) and P10_Expo. </summary>        
         public double CalcUW_Coeff(double P10_UW_Expo, double P10_DW_Expo, int WD_sec, string flowType)
-        {             
-            // if ( UW Expo > 0 ) then use uphill coeff
-            // if ( UW Expo < 0 And DW Expo > 0 ) then use downhill coeff
-            // if ( UW Expo < 0 And DW Expo < 0 ) then use UPHILL COEFFS (was overpredicting in areas with negative UW and negative DW exposure)
-
+        {              
             double UW_Coeff = 0;
             double P10_Expo;
 
@@ -121,13 +107,7 @@ namespace ContinuumNS
             if (P10_DW_Expo > P10_UW_Expo)
                 P10_Expo = P10_DW_Expo;
             else
-                P10_Expo = P10_UW_Expo;
-
-            // flowType = "Downhill"
-            // flowType = "Uphill"
-            //  flowType = "SpdUp"
-            //  flowType = "Valley"
-            //  flowType = "Turbulent"
+                P10_Expo = P10_UW_Expo;            
 
             if (flowType == "Turbulent") { } // there's flow separation
                                               //   if there is upwind turbulence, the UW exposure is not used to estimate the change in wind speed
@@ -170,32 +150,9 @@ namespace ContinuumNS
             return UW_Coeff;
         }
 
-        public double CalcOverallUW_Coeff(double[] windRose, double[] P10_UW, double[] P10_DW, double[] UW_CW_Grade, double[] UW_PL_Grade,
-                                                          double[] UWExpo, double[] DWExpo, NodeCollection.Sep_Nodes[] flowSepNodes, double[] WS, bool useFlowSep)
-        {
-            // Calculates and returns overall UW coefficient (for Advanced tab plot/table)
-            double UW_Coeff = 0;            
-            double overallUW_Coeff = 0;
-            string flowType;
-            NodeCollection.Sep_Nodes[] Sep_nodes;
-            NodeCollection nodeList = new NodeCollection();
-            
-            for (int WD_sec = 0; WD_sec < windRose.Length; WD_sec++)
-            {
-                Sep_nodes = nodeList.GetSepNodes1and2(flowSepNodes, flowSepNodes, WD_sec);
-                flowType = GetFlowType(UWExpo[WD_sec], DWExpo[WD_sec], WD_sec, "UW", flowSepNodes, WS[WD_sec], useFlowSep, 0);
-                UW_Coeff = CalcUW_Coeff(P10_UW[WD_sec], P10_DW[WD_sec], WD_sec, flowType);
-
-                overallUW_Coeff = overallUW_Coeff + UW_Coeff * windRose[WD_sec];
-            }
-
-            return overallUW_Coeff;
-
-        }               
-
+        /// <summary> Calculates and returns overall UW critical </summary>         
         public double CalcOverallUWCrit(double[] windRose)
-        {
-            //  Calculates and returns overall UW critical
+        {            
             double overallUWCrit = 0;
 
             if (windRose != null)
@@ -220,9 +177,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates and returns overall critical flow separation </summary>  
         public double CalcOverallSepCrit(double[] windRose)
-        {
-            //  Calculates and returns overall critical flow separation
+        {             
             double overallSepCrit = 0;
 
             int numWD = windRose.Length;
@@ -240,9 +197,9 @@ namespace ContinuumNS
             return overallSepCrit;
         }
 
+        /// <summary> Calculates and returns overall flow separation critical wind speed </summary>  
         public double CalcOverallSepCritWS(double[] windRose)
-        {
-            //  Calculates and returns overall flow separation critical wind speed
+        {           
             double overallSepCritWS = 0;
             int numWD = windRose.Length;
             double sumRose = 0;
@@ -259,10 +216,9 @@ namespace ContinuumNS
             return overallSepCritWS;
         }
 
+        /// <summary> Calculates and returns stability correction factor used in surface roughness model </summary> 
         public double GetStabilityCorrection(double UW_Expo, double DW_Expo, int WD_Ind, double SR, bool useFlowSep, string UW_or_DW)
-        {
-            // Calculates and returns stability correction factor used in surface roughness model
-            
+        {             
             double Stab_corr = 0;
             NodeCollection.Sep_Nodes[] Flow_Sep_Node = null;
 
@@ -280,11 +236,8 @@ namespace ContinuumNS
             return Stab_corr;
         }
 
-        /// <summary>
-        /// Determines and returns flow type upwind or downwind of site: Downhill, Uphill, Induced Speed-up, Valley or Turbulent
-        /// </summary>        
-        public string GetFlowType(double thisUW, double thisDW, int WD_sec, string UW_or_DW, NodeCollection.Sep_Nodes[] flowSepNodes, double thisWS, bool useFlowSep, 
-            int radiusInd)
+        /// <summary> Determines and returns flow type upwind or downwind of site: Downhill, Uphill, Induced Speed-up, Valley or Turbulent </summary>        
+        public string GetFlowType(double thisUW, double thisDW, int WD_sec, string UW_or_DW, NodeCollection.Sep_Nodes[] flowSepNodes, double thisWS, bool useFlowSep, int radiusInd)
         {             
             string flowType = "";
             bool isTurbulent = false;
@@ -341,9 +294,9 @@ namespace ContinuumNS
             return flowType;
         }
 
+        /// <summary> Calculates and returns length of upwind turbulent zone </summary> 
         public double CalcTurbulentZoneLength(double sumUWDW)
-        {
-            // Calculates and returns length of upwind turbulent zone
+        {            
             double Turb_zone_length = 8 * sumUWDW;
 
             if (Turb_zone_length > 2000)
@@ -352,18 +305,17 @@ namespace ContinuumNS
             return Turb_zone_length;
         }
 
+        /// <summary> Calculates and returns change in wind speed from either upwind high node to site or from upwind high node to upwind end of turbulent zone </summary> 
         public double GetDeltaWS_TurbulentZone(double turbLength, int WD_Ind)
-        {
-            // Calculates and returns change in wind speed from either upwind high node to site or from upwind high node to upwind end of turbulent zone
+        {            
             double Delta_WS = -turbWS_Fact[WD_Ind] * turbLength / 1500;
 
             return Delta_WS;
         }
 
-
+        /// <summary> Sets the model coefficients to default values </summary> 
         public void SetDefaultModelCoeffs(int numWD)
-        {
-            // Sets the model coefficients to default values
+        {            
             for (int i = 0; i < numWD; i++)
             {
                 downhill_A[i] = 0.1432f; // old DW_A = 0.2551
@@ -374,14 +326,7 @@ namespace ContinuumNS
 
                 spdUp_A[i] = 0.0165f; // old SU A = 0.03
                 spdUp_B[i] = -0.5966f; // old SU B = -0.774
-                UW_crit[i] = 21f;
-
-                //   Block_A[i] = 0.001
-                //'   Block_B[i] = 0.1
-                //  Diverge_A[i] = 0.001
-                //  Diverge_B[i] = -0.1
-                //  Max_CW_Slope[i] = 0.1
-                //  Max_PL_Slope[i] = 0.1
+                UW_crit[i] = 21f;                               
 
                 DH_Stab_A[i] = 2f;
                 UH_Stab_A[i] = 2f;
@@ -392,43 +337,27 @@ namespace ContinuumNS
                 sep_B_DW[i] = -0.6242f;
                 turbWS_Fact[i] = 2f;
                 sepCrit[i] = 250f;
-                Sep_crit_WS[i] = 4f;
-
-          //      downhillBounds[i].min = -999f;
-          //      downhillBounds[i].max = -999f;                
-         //       uphillBounds[i].min = -999f;
-          //      uphillBounds[i].max = -999f;
-          //      spdUpBounds[i].min = -999f;
-          //      spdUpBounds[i].max = -999f;
+                Sep_crit_WS[i] = 4f;                          
                 
             }
-
         }
 
+        /// <summary> Sets default maximum elevation and max exposure difference and minimum flow separation point </summary> 
         public void SetDefaultLimits()
-        {
-            // Sets default maximum elevation and max exposure difference and minimum flow separation point
+        {            
             maxElevDiff = 50;
             maxP10DiffSlope = 0.4f;
             maxP10DiffOffset = 10f;
             minSumUWDW = 150f;
         }
 
+        /// <summary> Sizes model coefficient arrays </summary> 
         public void SizeArrays(int numWD)
-        {
-            // Sizes model coefficient arrays
+        {            
             downhill_A = new double[numWD];
             downhill_B = new double[numWD];
-
             uphill_A = new double[numWD];
-            uphill_B = new double[numWD];
-
-            //  Block_A[numWD];
-            //  Block_B[numWD];
-            //  Diverge_A[numWD];
-            //  Diverge_B[numWD];
-            //  Max_CW_Slope[numWD];
-            //  Max_PL_Slope[numWD];
+            uphill_B = new double[numWD];                        
             UW_crit = new double[numWD];
             spdUp_A = new double[numWD];
             spdUp_B = new double[numWD];
@@ -440,17 +369,15 @@ namespace ContinuumNS
 
             sep_A_DW = new double[numWD];
             sep_B_DW = new double[numWD];
-            turbWS_Fact = new double[numWD];
-            //Sep_A_UW[numWD];
-            //Sep_B_UW[numWD];
+            turbWS_Fact = new double[numWD];            
             sepCrit = new double[numWD];
             Sep_crit_WS = new double[numWD];                               
 
         }
 
+        /// <summary> Calculates and returns RMS of sectorwise wind speed estimate error either weighted by wind rose or not </summary> 
         public double CalcRMS_SectorsEstError(bool isWeighted, double[] windRose)
-        {
-            // Calculates and returns RMS of sectorwise wind speed estimate error either weighted by wind rose or not
+        {            
             double RMS_Err = 0;
             double RMS_Err_count = 0;
             int numWD = windRose.Length;
@@ -474,6 +401,7 @@ namespace ContinuumNS
 
         }         
 
+        /// <summary> Returns true if specified met site was used to generate model. </summary>        
         public bool IsMetUsedInModel(string metName)
         {
             bool isUsed = false;

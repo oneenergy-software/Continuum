@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -10,45 +7,36 @@ using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> Class with functions to find path of nodes between two sites and to add/access nodes in database. Also has functions to find flow separation nodes.  </summary>
     public class NodeCollection
     {
+        /// <summary> Holds UTM X and Y coordinates.  </summary>
         [Serializable()]
         public struct Node_UTMs
         {
+            /// <summary> UTM X coordinate. </summary>
             public double UTMX;
+            /// <summary> UTM Y coordinate. </summary>
             public double UTMY;
         }
 
+        /// <summary> Holds flow separation model nodes. </summary>
         [Serializable()]
         public struct Sep_Nodes
         {
+            /// <summary> Node where point of separation occurs. </summary>
             public Nodes highNode;
+            /// <summary> Node where turbulent zone ends. </summary>
             public Nodes turbEndNode;
+            /// <summary> Wind direction where flow separation occurs. </summary>
             public int flowSepWD;
         }
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public struct Path_of_Nodes_w_Rad_and_Met_Name
-        {
-            public double distToClosestNode;
-            public string predMet;
-            public int radius;
-            public Nodes[] pathOfNodes;
-        }
-
-        /// <summary>
-        /// Holds min/max X/Y values
-        /// </summary>
-        public struct MinMax_XY
-        {
-            public double minX;
-            public double minY;
-            public double maxX;
-            public double maxY;
-        }
-
+        /// <summary> Returns connection string to database. </summary>
         public string GetDB_ConnectionString(string savedFileName)
-        {
-            // Returns connection string to database
+        {            
             string fileName = savedFileName;
             string serverName = "(localdb)\\MSSQLLocalDB";
             string databaseName = "";
@@ -68,14 +56,12 @@ namespace ContinuumNS
             string thisDirectory;
 
             if (fileName != "" && fileName != null)
-            {
-                int dotInd = savedFileName.LastIndexOf(".");
+            {               
                 int slashInd = savedFileName.LastIndexOf("\\");
-
                 thisDirectory = savedFileName.Substring(0, slashInd);
             }
             else
-                thisDirectory = System.IO.Directory.GetCurrentDirectory();
+                thisDirectory = Directory.GetCurrentDirectory();
 
             sqlBuilder.DataSource = serverName;            
             sqlBuilder.AttachDBFilename = thisDirectory + "\\" + databaseName;
@@ -85,9 +71,9 @@ namespace ContinuumNS
             return sqlBuilder.ToString();
         }
 
+        /// <summary> Adds a node to database including exposure, SRDH and grid stats. </summary>
         public void AddNodes(Nodes[] newNodes, string savedFileName)
-        {
-            // Adds a node to database including exposure, SRDH and grid stats
+        {            
             string connString = GetDB_ConnectionString(savedFileName);
             int numNewNodes = 0;
 
@@ -174,9 +160,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary>  Finds a node in database and updates exposure, SRDH and grid stats or adds new node. </summary>
         public void AddNodeOrUpdateNodeGridStat(Nodes nodeToUpdate, string savedFileName)
-        {
-            // Finds a node in database and updates exposure, SRDH and grid stats
+        {            
             string connString = GetDB_ConnectionString(savedFileName);
             
             if (nodeToUpdate == null)
@@ -236,9 +222,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Returns a node with met expos, stats, flow sep nodes. </summary>
         public Nodes GetMetNode(Met thisMet)
-        {
-            // Returns a node with met expos, stats, flow sep nodes
+        {            
             Nodes metNode = new Nodes();
             metNode.UTMX = thisMet.UTMX;
             metNode.UTMY = thisMet.UTMY;
@@ -250,9 +236,9 @@ namespace ContinuumNS
             return metNode;
         }
 
+        /// <summary> Returns a node with turbine expos, stats, flow sep nodes. </summary>
         public Nodes GetTurbNode(Turbine thisTurb)
-        {
-            // Returns a node with turbine expos, stats, flow sep nodes
+        {             
             Nodes turbNode = new Nodes();
             turbNode.UTMX = thisTurb.UTMX;
             turbNode.UTMY = thisTurb.UTMY;
@@ -264,9 +250,7 @@ namespace ContinuumNS
             return turbNode;
         }
 
-        /// <summary>
-        /// Returns a node with map node exposure, grid stats (P10 exposures), and flow separation nodes (if flow sep. model used)
-        /// </summary>
+        /// <summary> Returns a node with map node exposure, grid stats (P10 exposures), and flow separation nodes (if flow sep. model used). </summary>
         public Nodes GetMapAsNode(Map.MapNode thisMapNode)
         {            
             Nodes mapNode = new Nodes();
@@ -280,9 +264,9 @@ namespace ContinuumNS
             return mapNode;
         }
 
+        /// <summary> Searches database for node with specified UTMX/Y and returns it. </summary>
         public Nodes GetANode(double UTMX, double UTMY, Continuum thisInst)
-        {
-            // Searches database for node with specified UTMX/Y and returns it
+        {            
             Nodes newNode = new Nodes();
             newNode.gridStats = new Grid_Info();
             int numRadii = 0;
@@ -417,9 +401,9 @@ namespace ContinuumNS
             return newNode;
         }
 
+        /// <summary> Searches database for nodes within specified Min/Max UTMX/Y and returns array of nodes. </summary>
         public Nodes[] GetNodes(double minX, double minY, double maxX, double maxY, Continuum thisInst, bool forGridStatCalcs)
-        {
-            // Searches database for nodes within specified Min/Max UTMX/Y and returns array of nodes
+        {            
             Nodes[] nodesFromDB = new Nodes[0];
             
             int numRadii = thisInst.radiiList.ThisCount;
@@ -565,134 +549,9 @@ namespace ContinuumNS
             }            
 
             return nodesFromDB;
-        }
+        }               
 
-        /// <summary>
-        /// Recalculates surface roughness and displacement height for all nodes in the database with new land cover key
-        /// This function is not called. It was copied to BackgroundWorker in order to have a responsive progress bar 
-        /// </summary>
-        /// <param name="thisInst"></param>
-        public void ReCalcNodeSRDH(Continuum thisInst)
-        {                        
-            int numWD = thisInst.metList.numWD;
-            if (numWD == 0) return;
-            
-            Nodes nodeFromDB = new Nodes();
-            string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);
-            MessageBox.Show(thisInst.savedParams.savedFileName + "," + "ReCalcNodeSRDH");
-            
-            try {
-                using (var context = new Continuum_EDMContainer(connString)) {
-                    var node_db = from N in context.Node_table.Include("expo") select N;
-
-                    foreach (var N in node_db)
-                    {
-                        int numExpo = N.expo.Count;
-                        nodeFromDB.UTMX = N.UTMX;
-                        nodeFromDB.UTMY = N.UTMY;
-
-                        nodeFromDB.expo = new Exposure[numExpo];
-
-                        for (int i = 0; i < numExpo; i++)
-                        {
-                            nodeFromDB.expo[i] = new Exposure();
-                            nodeFromDB.expo[i].radius = N.expo.ElementAt(i).radius;
-                            nodeFromDB.expo[i].exponent = N.expo.ElementAt(i).exponent;
-                            int numSectors = 1;
-                            int smallerRadius = thisInst.topo.GetSmallerRadius(nodeFromDB.expo, nodeFromDB.expo[i].radius, nodeFromDB.expo[i].exponent, numSectors);
-
-                            if (smallerRadius == 0 || numSectors > 1)
-                            { // when sector avg is used, can//t add on to exposure calcs...so gotta do it the long way
-                                if (thisInst.topo.gotSR == true)
-                                    thisInst.topo.CalcSRDH(ref nodeFromDB.expo[i], nodeFromDB.UTMX, nodeFromDB.UTMY, nodeFromDB.expo[i].radius, nodeFromDB.expo[i].exponent, thisInst.metList.numWD);
-                            }
-                            else
-                            {
-                                Exposure smallerExpo = thisInst.topo.GetSmallerRadiusExpo(nodeFromDB.expo, smallerRadius, nodeFromDB.expo[i].exponent, numSectors);
-                                if (thisInst.topo.gotSR == true)
-                                    thisInst.topo.CalcSRDHwithSmallerRadius(ref nodeFromDB.expo[i], nodeFromDB.UTMX, nodeFromDB.UTMY, nodeFromDB.expo[i].radius, nodeFromDB.expo[i].exponent, numSectors, smallerRadius, smallerExpo, thisInst.metList.numWD);
-
-                            }
-
-                            // Write back to expo_db
-                            MemoryStream MS7 = new MemoryStream();
-                            MemoryStream MS8 = new MemoryStream();
-                            BinaryFormatter bin = new BinaryFormatter();
-
-                            if (nodeFromDB.expo[i].SR != null)
-                            {
-                                bin.Serialize(MS7, nodeFromDB.expo[i].SR);
-                                N.expo.ElementAt(i).SR_Array = MS7.ToArray();
-                            }
-
-                            if (nodeFromDB.expo[i].dispH != null)
-                            {
-                                bin.Serialize(MS8, nodeFromDB.expo[i].dispH);
-                                N.expo.ElementAt(i).DH_Array = MS8.ToArray();
-                            }
-                        }
-                    }
-                                        
-                    context.SaveChanges(); // Save DB                    
-                }
-            }
-            catch (Exception ex) {
-                MessageBox.Show(ex.InnerException.ToString());                
-                return;
-            }
-
-        }
-
-        public Nodes[] GetPathOfNodesFromUTMs(Node_UTMs[] pathOfNodesUTMs, Continuum thisInst)
-        {
-            // Returns path of nodes using path of UTM coords
-            Nodes[] pathOfNodes = null;
-            int numWD = thisInst.metList.numWD;
-            
-            if (pathOfNodesUTMs == null)
-                return pathOfNodes;
-
-            int numNodes = pathOfNodesUTMs.Length;
-            string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);
-            
-            try {
-                using (var context = new Continuum_EDMContainer(connString)) {
-                    for (int nodeInd = 0; nodeInd < numNodes; nodeInd++) {
-                        Array.Resize(ref pathOfNodes, nodeInd + 1);
-                        pathOfNodes[nodeInd] = GetANode(pathOfNodesUTMs[nodeInd].UTMX, pathOfNodesUTMs[nodeInd].UTMY, thisInst);
-                    }
-                }
-            }
-            catch (Exception ex) {
-                MessageBox.Show(ex.InnerException.ToString());
-                return pathOfNodes;
-            }
-
-            for (int nodeInd = 0; nodeInd < numNodes; nodeInd++)
-            {
-                if (pathOfNodes[nodeInd].expo != null)
-                {
-                    for (int i = 0; i < pathOfNodes[nodeInd].expo.Length; i++)
-                    {
-                        if (thisInst.topo.gotSR == true && pathOfNodes[nodeInd].expo[i].SR == null)
-                            thisInst.topo.CalcSRDH(ref pathOfNodes[nodeInd].expo[i], pathOfNodes[nodeInd].UTMX, pathOfNodes[nodeInd].UTMY, pathOfNodes[nodeInd].expo[i].radius,
-                                pathOfNodes[nodeInd].expo[i].exponent, numWD);
-                    }                    
-                }
-                                
-            }
-
-            return pathOfNodes;
-        }
-
-        /// <summary>
-        /// Finds and returns a path of nodes between start and end node
-        /// </summary>
-        /// <param name="startNode"></param>
-        /// <param name="endNode"></param>
-        /// <param name="model"></param>
-        /// <param name="thisInst"></param>
-        /// <returns></returns>
+        /// <summary> Finds and returns a path of nodes between start and end node. </summary>        
         public Nodes[] FindPathOfNodes(Nodes startNode, Nodes endNode, Model model, Continuum thisInst)
         {  
             Nodes[] nodePath1to2 = null;
@@ -904,18 +763,9 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Calculates the average slope of terrain from the start node to the target node within specified radius
-        /// and returns the WD sector with minimum grade
-        /// </summary>
-        /// <param name="startNode"></param>
-        /// <param name="targetNode"></param>        
-        /// <param name="topo"></param>   
-        /// <param name="maxRadius"></param>
-        /// <returns></returns>
+        /// <summary> Calculates the average slope of terrain from the start node to the target node within specified radius and returns the WD sector with minimum grade. </summary>        
         public double GetWD_MinGrade(Nodes startNode, Nodes targetNode, int maxRadius, TopoInfo topo)
-        {
-          
+        {          
             bool posGrade; // If true then looking for minimum positive grade   
             if (targetNode.elev > startNode.elev)
                 posGrade = true;
@@ -996,118 +846,15 @@ namespace ContinuumNS
                 return minPosSlopeDir;            
         }
 
-
+        /// <summary> Calculates and returns distance between the two nodes. </summary>
         public double Calc_Dist(Nodes node1, Nodes node2)
-        {
-            // Calculates and returns distance between the two nodes
+        {            
             double dist = Math.Sqrt((node1.UTMX - node2.UTMX) * (node1.UTMX - node2.UTMX) + (node1.UTMY - node2.UTMY) * (node1.UTMY - node2.UTMY));
             return dist;
         }
 
-
-        /*       public MinMax_XY GetMinMax_X_Y(Nodes startNode, double minDir, double maxDir, int radiusStep, TopoInfo topo)
-               {
-                   // Returns min and max UTMX/Y of search area with specified min/max WD sector and radius
-                   MinMax_XY thisMinMax_XY = new MinMax_XY();
-
-                   if (minDir >= 0 && minDir < 180)
-                       thisMinMax_XY.minX = startNode.UTMX + radiusStep * Math.Abs(Math.Cos((minDir + 90) * Math.PI / 180));
-                   else
-                       thisMinMax_XY.minX = startNode.UTMX - radiusStep * Math.Abs(Math.Cos((minDir + 90) * Math.PI / 180));                   
-
-                   if (minDir >= 90 && minDir < 270)
-                       thisMinMax_XY.minY = startNode.UTMY - radiusStep * Math.Abs(Math.Sin((minDir + 90) * Math.PI / 180));
-                   else
-                       thisMinMax_XY.minY = startNode.UTMY + radiusStep * Math.Abs(Math.Sin((minDir + 90) * Math.PI / 180));
-
-                   if (maxDir >= 0 && maxDir < 180)
-                       thisMinMax_XY.maxX = startNode.UTMX + radiusStep * Math.Abs(Math.Cos((maxDir + 90) * Math.PI / 180));
-                   else
-                       thisMinMax_XY.maxX = startNode.UTMX - radiusStep * Math.Abs(Math.Cos((maxDir + 90) * Math.PI / 180));
-
-                   if (maxDir >= 90 && maxDir < 270)
-                       thisMinMax_XY.maxY = startNode.UTMY - radiusStep * Math.Abs(Math.Sin((maxDir + 90) * Math.PI / 180));
-                   else
-                       thisMinMax_XY.maxY = startNode.UTMY + radiusStep * Math.Abs(Math.Sin((maxDir + 90) * Math.PI / 180));
-
-                   if (thisMinMax_XY.minX > thisMinMax_XY.maxX)
-                   {
-                       double tempX = thisMinMax_XY.minX;
-                       thisMinMax_XY.minX = thisMinMax_XY.maxX;
-                       thisMinMax_XY.maxX = tempX;
-                   }
-
-                   if (thisMinMax_XY.minX < startNode.UTMX && thisMinMax_XY.maxX < startNode.UTMX)
-                       thisMinMax_XY.maxX = startNode.UTMX;
-                   else if (thisMinMax_XY.minX > startNode.UTMX && thisMinMax_XY.maxX > startNode.UTMX)
-                       thisMinMax_XY.minX = startNode.UTMX;
-
-                   if (thisMinMax_XY.minY > thisMinMax_XY.maxY)
-                   {
-                       double tempY = thisMinMax_XY.minY;
-                       thisMinMax_XY.minY = thisMinMax_XY.maxY;
-                       thisMinMax_XY.maxY = tempY;
-                   }
-
-                   if (thisMinMax_XY.minY < startNode.UTMY && thisMinMax_XY.maxY < startNode.UTMY)
-                       thisMinMax_XY.maxY = startNode.UTMY;
-                   else if (thisMinMax_XY.minY > startNode.UTMY && thisMinMax_XY.maxY > startNode.UTMY)
-                       thisMinMax_XY.minY = startNode.UTMY;
-
-                   TopoInfo.TopoGrid minXY = topo.GetClosestNode(thisMinMax_XY.minX, thisMinMax_XY.minY, "Topography");
-                   thisMinMax_XY.minX = (int)minXY.UTMX;
-                   thisMinMax_XY.minY = (int)minXY.UTMY;
-
-                   TopoInfo.TopoGrid maxXY = topo.GetClosestNode(thisMinMax_XY.maxX, thisMinMax_XY.maxY, "Topography");
-                   thisMinMax_XY.maxX = (int)maxXY.UTMX;
-                   thisMinMax_XY.maxY = (int)maxXY.UTMY;
-
-                   return thisMinMax_XY;
-
-               }
-
-               /// <summary>
-               /// 
-               /// </summary>
-               /// <param name="startNode"></param>
-               /// <param name="minDir"></param>
-               /// <param name="maxDir"></param>
-               /// <param name="radiusStep"></param>
-               /// <param name="topo"></param>
-               /// <returns></returns>
-               public MinMax_XY GetMinMax_X_Y_NEW(Nodes startNode, double minDir, double maxDir, int radiusStep, TopoInfo topo)
-               {
-                   // Returns min and max UTMX/Y of search area with specified min/max WD sector and radius
-                   MinMax_XY thisMinMax_XY = new MinMax_XY();
-
-                   thisMinMax_XY.minX = startNode.UTMX + radiusStep * Math.Cos((90 - minDir) * Math.PI / 180);            
-                   thisMinMax_XY.minY = startNode.UTMY + radiusStep * Math.Sin((90 - minDir) * Math.PI / 180);
-
-                   thisMinMax_XY.maxX = startNode.UTMX + radiusStep * Math.Cos((90 - maxDir) * Math.PI / 180);            
-                   thisMinMax_XY.maxY = startNode.UTMY + radiusStep * Math.Sin((90 - maxDir) * Math.PI / 180);
-
-                   TopoInfo.TopoGrid minXY = topo.GetClosestNodeFixedGrid(thisMinMax_XY.minX, thisMinMax_XY.minY, 250, 12000);
-                   thisMinMax_XY.minX = (int)minXY.UTMX;
-                   thisMinMax_XY.minY = (int)minXY.UTMY;
-
-                   TopoInfo.TopoGrid maxXY = topo.GetClosestNodeFixedGrid(thisMinMax_XY.maxX, thisMinMax_XY.maxY, 250, 12000);
-                   thisMinMax_XY.maxX = (int)maxXY.UTMX;
-                   thisMinMax_XY.maxY = (int)maxXY.UTMY;
-
-                   return thisMinMax_XY;
-
-               }
-       */
-        /// <summary>
-        /// Finds and returns a node with highest elvation within min/max WD and min/max radius
-        /// </summary>
-        /// <param name="thisInst"></param>
-        /// <param name="startNode"></param>
-        /// <param name="minDir"></param>
-        /// <param name="maxDir"></param>
-        /// <param name="maxRadius"></param>
-        /// <param name="minRadius"></param>        
-        /// <returns></returns>
+                
+        /// <summary> Finds and returns a node with highest elvation within min/max WD and min/max radius. </summary>        
         public Nodes FindNodeInSectorHighSpot(Continuum thisInst, Nodes startNode, double minDir, double maxDir, int maxRadius, int minRadius)
         {             
             Nodes highNode = new Nodes();
@@ -1180,10 +927,9 @@ namespace ContinuumNS
             return highNode;
         }
 
-
+        /// <summary> Returns flow separation nodes for specified WD sector. </summary> 
         public Sep_Nodes[] GetSepNodes1and2(Sep_Nodes[] flowSep1, Sep_Nodes[] flowSep2, int WD_Ind)
-        {
-            // Returns flow separation nodes for specified WD sector
+        {            
             Sep_Nodes[] pairSepNodes = new Sep_Nodes[2];
 
             int numSep1;
@@ -1223,56 +969,41 @@ namespace ContinuumNS
             return pairSepNodes;
         }
 
-
+        /// <summary> Returns Flow_sep nodes for every WD where UW is negative and DW is positive. </summary> 
         public Sep_Nodes[] FindAllFlowSeps(Nodes thisNode, Continuum thisInst, int numWD)
-        {
-
-            // Returns Flow_sep nodes for every WD where UW is < 0 and DW > 0 
-            int numSepNodes = 0;
-            Nodes highNode = new Nodes();
-            Nodes endZoneNode = new Nodes();
-            int turbZoneLength;
-            Model thisModel = new Model();
-            int minDir;
-            int maxDir;
-            double sumUWDW;
-            double distToSep;
-            Sep_Nodes[] flowSepNodes = null;
-            MetCollection metList = thisInst.metList;
-            ModelCollection modelList = thisInst.modelList;
-            string savedFileName = thisInst.savedParams.savedFileName;
-            TopoInfo topo = thisInst.topo;
-            InvestCollection radiiList = thisInst.radiiList;
+        {            
+            int numSepNodes = 0;                      
+            Model thisModel = new Model();           
+            Sep_Nodes[] flowSepNodes = null;            
 
             // Check to see if either met is upwind of flow separation
 
             for (int WD = 0; WD < numWD; WD++)
             {
                 if (thisNode.expo[3].expo[WD] < 0 && thisNode.expo[0].GetDW_Param(WD, "Expo") > 0)
-                { // if ( UW expo @ 10,000 m < 0 and DW expo @ 4000 m > 0 ) { flow sep could occur. 
+                { // if UW expo @ 10,000 m < 0 and DW expo @ 4000 m > 0, flow sep could occur. 
                   // The idea is to look further UW for point of separation and use shorter length DW to ensure downhill flow (i.e. it could start to slope up at greater distances and have a negative DW expo but still be in turbulent zone)
 
                     // Find node at highest point
-                    minDir = (int)(WD * (double)360 / numWD - 5);
+                    int minDir = (int)(WD * (double)360 / numWD - 5);
                     if (minDir < 0) minDir = minDir + 360;
-                    maxDir = (int)(WD * (double)360 / numWD + 5);
+                    int maxDir = (int)(WD * (double)360 / numWD + 5);
                     if (maxDir > 360) maxDir = maxDir - 360;
-                    Nodes[] blankNodes = null;
-
-                    highNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, 5000, 0);
-                    sumUWDW = Math.Abs(highNode.expo[3].expo[WD]) + highNode.expo[0].GetDW_Param(WD, "Expo");
+                    
+                    Nodes highNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, 5000, 0);
+                    double sumUWDW = Math.Abs(highNode.expo[3].expo[WD]) + highNode.expo[0].GetDW_Param(WD, "Expo");
                     Array.Resize(ref flowSepNodes, numSepNodes + 1);
 
                     flowSepNodes[numSepNodes].highNode = highNode;
 
-                    turbZoneLength = (int)thisModel.CalcTurbulentZoneLength(sumUWDW);
-                    distToSep = Calc_Dist(thisNode, highNode);
+                    double turbZoneLength = (int)thisModel.CalcTurbulentZoneLength(sumUWDW);
+                    double distToSep = Calc_Dist(thisNode, highNode);
 
                     flowSepNodes[numSepNodes].flowSepWD = WD;
 
                     if (distToSep > turbZoneLength)
                     { // outside of turbulent zone
-                        endZoneNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, (int)((distToSep - turbZoneLength) * 1.1), 
+                        Nodes endZoneNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, (int)((distToSep - turbZoneLength) * 1.1), 
                             (int)((distToSep - turbZoneLength) * 0.9));
                         flowSepNodes[numSepNodes].turbEndNode = endZoneNode;
 
@@ -1290,10 +1021,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Returns true if elevation difference between two nodes is lower than max allowed
-        /// </summary>        
-        /// <returns></returns>
+        /// <summary> Returns true if elevation difference between two nodes is lower than max allowed. </summary>  
         public bool ElevClose(Nodes node1, Nodes node2, Model model, double adjFac)
         {            
             bool isClose = false;
@@ -1309,12 +1037,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Compares the terrain complexity (P10 Exposure) at two sites and returns true if P10 exposure difference between two nodes 
-        /// is lower than max allowed
-        /// </summary>
-
-        /// <returns></returns>
+        /// <summary> Compares the terrain complexity (P10 Exposure) at two sites and returns true if P10 exposure difference between two nodes is lower than max allowed. </summary>
         public bool TerrainSame(Nodes node1, Nodes node2, Model model, double adjFac, double[] windRose, int radiusIndex)
         {            
             bool isSame = false;
@@ -1347,12 +1070,11 @@ namespace ContinuumNS
             }
 
             return isSame;
-        }           
+        }
 
+        /// <summary> Clears all exposure and grid stat calculations from database. Called when the number of WD bins is changed on the MCP tab. </summary>
         public void ClearExposGridStatsFromDB(Continuum thisInst)
-        {
-            // Clears all exposure and grid stat calculations from database. Called when the number of WD bins is changed on the MCP tab
-
+        {            
             string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);
 
             try

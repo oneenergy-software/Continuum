@@ -10,8 +10,8 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class MERRA_node_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
-        string saveFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string testingFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string saveFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
 
         [TestMethod]
         public void Changing_Num_MERRA_Nodes_Test()
@@ -19,7 +19,7 @@ namespace Continuum_Tests.GUI_Tests
             Continuum thisInst = new Continuum();
             thisInst.isTest = true;
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\MERRA_Node_Test";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\MERRA_Node_Test";
             thisInst.savedParams.savedFileName = fileName + ".cfm";
 
             if (File.Exists(fileName + ".cfm"))
@@ -43,7 +43,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             string metTSFile = testingFolder + "\\Met TS files\\Findlay\\Archbold TS short 16 MERRA test.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -64,7 +64,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2009 11:00:00 PM");
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             int offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            string merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
             thisInst.merraList.MERRAfolder = merraFolder;
             
             thisInst.merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, offset, thisInst, thisMet, true);

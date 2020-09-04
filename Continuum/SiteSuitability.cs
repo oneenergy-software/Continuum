@@ -1,122 +1,186 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that holds information and function to generate site suitability models which include: shadow flicker, ice throw, and turbine sound. </summary>
     [Serializable()]
     public class SiteSuitability
     {
         // Ice Throw Model constants
+        /// <summary> Acceleration due to gravity. (-9.80665 m/s^2) </summary>
         double gravity = -9.80665;
+        /// <summary> Air density for ice throw model (1.225 kg/m^3). </summary>
         double airDensity = 1.225;
-        double iceDensity = 917.9;
-        double timeUnit = 0.001;
+        /// <summary> Ice density (917.9 kg/m^3). </summary>
+        double iceDensity = 917.9;        
+        /// <summary> Largest ice mass (2.5 kg). </summary>
         double largestIce = 2.5;
+        /// <summary> Smallest ice mass (0.025 kg). </summary>
         double smallestIce = 0.025;
+        /// <summary> Minimum ice shape parameter (0.4). </summary>
         double shapeLow = 0.4;
+        /// <summary> Maximum ice shape parameter. (6) </summary>
         double shapeHigh = 6;
-        public int iceThrowsPerIceDay = 300; // Number of ice throws per turbine per year. Default is 300, user-defined.
-        public int numIceDaysPerYear = 5; // Default is 5, User-defined
-        public int numYearsToModel = 20; // Constant, not user-defined
+        /// <summary> Number of ice throws per turbine per year. Default is 300, user-defined. </summary>
+        public int iceThrowsPerIceDay = 300;
+        /// <summary> Number of ice days per year. Default is 5, User-defined. </summary>
+        public int numIceDaysPerYear = 5;
+        /// <summary> Number of years to model. Default = 20. </summary>
+        public int numYearsToModel = 20;
+        /// <summary> List of yearly ice hits. Each entry holds the final positions of each ice throw for a year. </summary>
         public YearlyHits[] yearlyIceHits = new YearlyHits[0];
 
         // Shadow Flicker constants
+        /// <summary> Shadow flicker map minimum UTM values. </summary>
         public TopoInfo.UTM_X_Y mapMinBounds = new TopoInfo.UTM_X_Y();
+        /// <summary> Shadow flicker map maximum UTM values. </summary>
         public TopoInfo.UTM_X_Y mapMaxBounds = new TopoInfo.UTM_X_Y();
+        /// <summary> Shadow flicker map grid resolution (250 m). </summary>
         public int flickerGridReso = 250;
-        public int flickerGridDimension = 20; // Assume zone is 20 m x 20 m in flicker map (i.e. close to zone dimensions) 
+        /// <summary> Assumed zone dimensions to use in flicker map calculations (20 m x 20 m) . </summary>
+        public int flickerGridDimension = 20;
+        /// <summary> Shadow flicker map. </summary>
         public FlickerGrid[] flickerMap = new FlickerGrid[0];
+        /// <summary> Number of X grid nodes of Shadow flicker map. </summary>
         public int numXFlicker;
+        /// <summary> Number of Y grid nodes of Shadow flicker map. </summary>
         public int numYFlicker;
+        /// <summary> Angle from center of sun to its edge based on minimum distance from sun (0.2725 degrees). </summary>
+        double sunVariation = 0.2725;
 
         // Sound Model constants
+        /// <summary> Turbine sound level (dBA). </summary>
         public double turbineSound = 105;
+        /// <summary> Turbine sound map grid resolution (50 m). </summary>
         public int soundGridReso = 50;
+        /// <summary> Number of X grid nodes of Turbine Sound map. </summary>
         public int numXSound;
+        /// <summary> Number of Y grid nodes of Turbine Sound map. </summary>
         public int numYSound;
+        /// <summary> Sound attenuation, default = 0.005 dBa/m. </summary>
         public double noiseAlpha = 0.005;
+        /// <summary> Turbine Sound level map. </summary>
         public double[,] soundMap = new double[0,0];
 
         // Angle converters
+        /// <summary> Factor to convert degrees to radians. </summary>
         double degsToRad = Math.PI / 180;
+        /// <summary> Factor to convert radians to degrees. </summary>
         double radToDegs = 180 / Math.PI;
-
-        double sunVariation = 0.2725;       // angle from center of sun to its edge based on minimum distance from sun (in degrees)
-
+                
+        /// <summary> List of zones (i.e. sites of interest) to include in site suitability models </summary>
         public Zone[] zones = new Zone[0];
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Holds list of yearly ice hits. </summary>
         [Serializable()]
         public struct YearlyHits
         {
+            /// <summary> List of yearly ice hits (which includes coordinates of ice throw final position). </summary>
             public FinalPosition[] iceHits; 
         }
 
+        /// <summary> Holds UTM coordinates of final position of an ice throw and name of the turbine where ice was thrown. </summary>
         [Serializable()]
         public struct FinalPosition
         {
+            /// <summary> UTMX coordinate. </summary>
             public double thisX;
+            /// <summary> UTMY coordinate. </summary>
             public double thisZ;
-            public string turbineName; // Name of turbine that threw the ice
+            /// <summary> Name of turbine that threw the ice. </summary>
+            public string turbineName;
         }
 
+        /// <summary> Holds location, elevation, and dimensions of a zone (i.e. site of interest) and shadow flicker results and turbine flicker angles. </summary>
         [Serializable()]
         public struct Zone
         {
+            /// <summary> Zone name. </summary>
             public string name;
+            /// <summary> Zone latitude. </summary>
             public double latitude;
+            /// <summary> Zone longitude. </summary>
             public double longitude;
+            /// <summary> Zone elevation. </summary>
             public double elev;
+            /// <summary> Zone X dimension. </summary>
             public int xSize;
+            /// <summary> Zone Y dimension. </summary>
             public int ySize;
-            public ShadowFlickerStats flickerStats; 
-            public FlickerAngles[] flickerAngles; // azimuth, altitude, and angle variance between zone and each turbine
+            /// <summary> Shadow flicker statistics at zone. </summary>
+            public ShadowFlickerStats flickerStats;
+            /// <summary> Azimuth, altitude, and angle variance between zone and each turbine. </summary>
+            public FlickerAngles[] flickerAngles;
         }
 
+        /// <summary> Holds a shadow flicker map grid node including shadow flicker statistics and shadow flicker angles. </summary>
         [Serializable()]
         public struct FlickerGrid
         {
+            /// <summary> Grid node UTMX coordinate. </summary>
             public double UTMX;
+            /// <summary> Grid node UTMY coordinate. </summary>
             public double UTMY;
+            /// <summary> Grid node latitude. </summary>
             public double latitude;
+            /// <summary> Grid node longitude. </summary>
             public double longitude;
+            /// <summary> Grid node elevation. </summary>
             public double elev;
+            /// <summary> Grid node shadow flicker statistics. </summary>
             public ShadowFlickerStats flickerStats;
-            public FlickerAngles[] flickerAngles; // azimuth, altitude, and angle variance between grid point and each turbine
+            /// <summary> Azimuth, altitude, and angle variance between grid point and each turbine. </summary>
+            public FlickerAngles[] flickerAngles;
         }
 
+        /// <summary> Holds shadow flicker statistics including yearly, monthly, and 12x24 shadow flicker hours and day with maximum shadow flicker. </summary>
         [Serializable()]
         public struct ShadowFlickerStats
         {
+            /// <summary> Total shadow flicker minutes per year. </summary>
             public int totalShadowMinsPerYear;
+            /// <summary> Total shadow flicker minutes per month. </summary>
             public int[] totalShadowMinsPerMonth;
-            public int[,] shadowMins12x24; // total number of shadow flicker minutes, i = month index; j = hour index
+            /// <summary> Total number of shadow flicker minutes by month and hour, i = month index; j = hour index. </summary>
+            public int[,] shadowMins12x24;
+            /// <summary> Maximum daily shadow flicker (minutes). </summary>
             public int maxDailyShadowMins;
+            /// <summary> Day of maximum shadow flicker. </summary>
             public DateTime maxShadowDay;            
         }
 
+        /// <summary> Holds azimuth, altitude, and angle variance between site and turbine. </summary>
         [Serializable()]
         public struct FlickerAngles
         {
+            /// <summary> Azimuth angle between site and turbine. </summary>
             public double targetAzimuthAngle;
+            /// <summary> Altitude angle between site and turbine. </summary>
             public double targetAltitudeAngle;
+            /// <summary> Angle variance between site and turbine. </summary>
             public double angleVariance;
         }
 
+        /// <summary> Holds sun altitude, azimuth, and a boolean flag stating whether the sun is up. </summary>
         public struct SunPosition
         {
+            /// <summary> Sun altitude angle. </summary>
             public double altitude;
+            /// <summary> Sun azimuth angle. </summary>
             public double azimuth;
+            /// <summary> True if sun is up. </summary>
             public bool isSunUp;
         }
 
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Defines bounds of map to calculate shadow flicker, sizes and initializes flickerMap, and calls BackgroundWorker to run shadow flicker model </summary>
         public void RunShadowFlickerModel(Continuum thisInst)
-        {
-            // Define bounds of map to calculate shadow flicker and size flickerMap
+        {            
             if (zones == null)
             {
                 DialogResult goodToGo = MessageBox.Show("No zones have been imported. Are you sure you want to run shadow flicker model? " +
@@ -207,8 +271,9 @@ namespace ContinuumNS
             varsForBW.thisInst = thisInst;
             thisInst.BW_worker.Call_BW_Shadow(varsForBW);
             
-        }              
+        }
 
+        /// <summary> Calculates and returns shadow flicker angles between specified turbine and zone. </summary>
         public FlickerAngles GetFlickerAngles(Continuum thisInst, Turbine thisTurb, double zoneLat, double zoneLong, int xSize, int ySize, double zoneElev, double hubHeight, TurbineCollection.PowerCurve powerCurve)
         {
             FlickerAngles flickerAngles = new FlickerAngles();
@@ -237,43 +302,7 @@ namespace ContinuumNS
             return flickerAngles;
         }
 
-        public FlickerAngles FindMinSolarAngles(Continuum thisInst)
-        {
-            // Finds and returns min target altitude and azimuth and max angle variance of flicker map
-            FlickerAngles minFlickerAngles = new FlickerAngles();
-            minFlickerAngles.targetAltitudeAngle = 360; // Finds min azimuth and altitude
-            minFlickerAngles.targetAzimuthAngle = 360; 
-            minFlickerAngles.angleVariance = 0; // Finding max angle variance for shadow flicker
-
-            int flickerInd = 0;
-
-            if (flickerMap == null)
-                return minFlickerAngles;
-
-            for (int i = 0; i < thisInst.siteSuitability.numXFlicker; i++)
-                for (int j = 0; j < thisInst.siteSuitability.numYFlicker; j++)
-                {
-                    FlickerAngles[] theseAngles = thisInst.siteSuitability.flickerMap[flickerInd].flickerAngles;
-
-                    for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
-                    {
-                        if (theseAngles[t].targetAltitudeAngle < minFlickerAngles.targetAltitudeAngle)
-                            minFlickerAngles.targetAltitudeAngle = theseAngles[t].targetAltitudeAngle;
-
-                        if (theseAngles[t].targetAzimuthAngle < minFlickerAngles.targetAzimuthAngle)
-                            minFlickerAngles.targetAzimuthAngle = theseAngles[t].targetAzimuthAngle;
-
-                        if (theseAngles[t].angleVariance > minFlickerAngles.angleVariance)
-                            minFlickerAngles.angleVariance = theseAngles[t].angleVariance;
-
-                    }
-
-                    flickerInd++;
-                }
-
-            return minFlickerAngles;
-        }
-
+        /// <summary> Defines shadow flicker or ice throw map extent based on turbine locations or ice throw final positions. </summary>
         public void FindShadowMapBounds(Continuum thisInst, bool isIceMap)
         {
             double minX = 10000000;
@@ -346,7 +375,8 @@ namespace ContinuumNS
             mapMaxBounds.UTMX = maxX + 500;
             mapMaxBounds.UTMY = maxY + 500;
         }
-        
+
+        /// <summary> Reads in lat/long coordinates and timestamp and returns true if sun is up. </summary>
         public bool isSunUp(DateTime dateTime, int UTC_offset, double thisLat, double thisLong)
         {
             bool sunIsUp = false;
@@ -378,6 +408,7 @@ namespace ContinuumNS
             return sunIsUp;
         }
 
+        /// <summary> Reads in lat/long coordinates and timestamp and returns sun position (i.e. azimuth, altitude, and angle variance). </summary>
         public SunPosition GetSunPosition(DateTime dateTime, int UTC_offset, double thisLat, double thisLong)
         {
             // 4/24/2019 After translating to C#, the formulas in TAILS were not producing the correct solar altitude or azimuth values
@@ -446,9 +477,9 @@ namespace ContinuumNS
             return sunPosition;
         }
 
+        /// <summary> Calculates and returns sunrise and sunset time at specified lat/long on specified day. In local time. </summary>
         public DateTime[] GetSunriseAndSunsetTimes(double thisLat, double thisLong, int offset, DateTime thisDate)
-        {
-            // Calculates and returns sunrise and sunset time at specified lat/long on specified day. In local time
+        {            
             DateTime[] sunTimes = new DateTime[2];
 
             double julianDay = ((thisDate.Year - 1900) * 365.2422) + (thisDate.DayOfYear + 1) + 2415018.5 + thisDate.Hour / 24.0 + thisDate.Minute / (24.0 * 60) - offset / 24.0;
@@ -479,8 +510,8 @@ namespace ContinuumNS
 
             return sunTimes;
         }
-                       
 
+        /// <summary> Returns the number of zones. </summary>
         public int GetNumZones()
         {
             int numZones = 0;
@@ -492,8 +523,9 @@ namespace ContinuumNS
             catch { }
 
             return numZones;
-        }               
+        }
 
+        /// <summary> Finds and returns total number of ice hits at a specified zone for a specific year. </summary>
         public int GetTotalNumberOfIceHitsAtZone(int yearInd, Zone zone, Continuum thisInst)
         {
             int numberOfHits = 0;
@@ -513,6 +545,7 @@ namespace ContinuumNS
             return numberOfHits;
         }
 
+        /// <summary> Calculates and returns the final position of an ice piece thrown for a specified turbines with specified ice throw parameters. </summary>
         public FinalPosition ModelIceThrow(double degrees, double hubHeight, double elevDiff, double radius, double iceSpeed, double Cd, double iceArea, 
             double iceMass, double thisWS, double thisWD, Turbine thisTurb)
         {
@@ -596,8 +629,9 @@ namespace ContinuumNS
          //   file.Close();
 
             return finalPosition;
-        }               
+        }
 
+        /// <summary> Calculates and returns the drag coefficient of ice piece based on ice piece shape. </summary>
         public double GetCd(double iceShape)
         {
             double Cd;
@@ -610,6 +644,7 @@ namespace ContinuumNS
             return Cd;
         }
 
+        /// <summary> Calculates and returns the cross-sectional area of ice piece based on ice piece shape and mass. </summary>
         public double GetIceCrossSecArea(double iceMass, double iceShape)
         {
             double volume = iceMass / iceDensity;
@@ -617,12 +652,14 @@ namespace ContinuumNS
             return iceCrossArea;
         }
 
+        /// <summary> Calculates and returns the shape of ice piece between the minimum and maximum shape and a random number. </summary>
         public double GetIceShape(double thisRand)
         {
             double thisShape = thisRand * (shapeHigh - shapeLow) + shapeLow;
             return thisShape;
         }
 
+        /// <summary> Calculates and returns the mass of ice piece based on minimum and maximum ice mass and a random number. </summary>
         public double GetIceMass(double thisRand)
         {
             double thisMass = thisRand * (largestIce - smallestIce) + smallestIce;
@@ -630,9 +667,9 @@ namespace ContinuumNS
             return thisMass;
         }
 
+        /// <summary> Calculates and returns the angle the ice came off the blade in the plane of the blade rotation in radians. </summary>
         public int GetDegrees(double thisRand)
-        {
-            // Angle the ice came off the blade in the plane of the blade rotation in radians
+        {            
             double n = thisRand * 2 - 1;
             double angle = Math.Asin(n);
             int degrees = (int)(angle * 180 / Math.PI + 270);
@@ -640,17 +677,17 @@ namespace ContinuumNS
             return degrees;
         }
 
+        /// <summary> Calculates and returns the Y-axis component of point where ice left blade - reference to center of turbine base. </summary>
         public double GetRandomRadius(double thisRand, TurbineCollection.PowerCurve powerCurve)
-        {
-            //  Y-axis component of point where ice left blade - reference to center of turbine base
+        {            
             double randomRadius = thisRand * powerCurve.RD / 2 + 1;
 
             return randomRadius;
         }
 
+        /// <summary> Calculates and returns the tip speed as ice leaves blade. </summary>
         public double GetTipSpeed(TurbineCollection.PowerCurve powerCurve, double thisWS)
-        {
-            // tip speed as ice leaves blade
+        {            
             TurbineCollection turbList = new TurbineCollection();
             
             double thisPower = turbList.GetInterpPowerOrThrust(thisWS, powerCurve, "Power");
@@ -659,12 +696,14 @@ namespace ContinuumNS
             return tipSpeed;
         }
 
+        /// <summary> Calculates and returns the speed of the ice as it leaves blade. </summary>
         public double GetIceSpeed(double tipSpeed, double randRadius, TurbineCollection.PowerCurve powerCurve)
         {
             double iceSpeed = tipSpeed * randRadius / (powerCurve.RD / 2);
             return iceSpeed;
         }
 
+        /// <summary> Returns the wind speed cumulative density function for specified wind direction. </summary>
         public double[] GetOneWS_CDF(double[,] theseCDFs, int WD_Ind)
         {
             int numWS = theseCDFs.GetUpperBound(1) + 1;
@@ -676,19 +715,18 @@ namespace ContinuumNS
             return thisCDF;
         }
 
+        /// <summary> Finds and returns random number. </summary>
         public Random GetRandomNumber()
         {
             Random rnd = new Random(DateTime.Now.Millisecond);
             return rnd;
         }
 
+        /// <summary> Returns wind speed corresponding to random number and CDF. </summary>
         public double FindCDF_WS(double[] thisCDF, double randomNum, MetCollection metList)
-        {
-            // Returns wind speed corresponding to random number on CDF
-
+        {            
             double minDiff = 100;
-            int minInd = 10000;
-            double thisWS = 0;
+            int minInd = 10000;           
             int numWS = thisCDF.Length;
             
             // find CDF index that most closely corresponds to random number
@@ -707,11 +745,12 @@ namespace ContinuumNS
             if (minInd == 10000)
                 minInd = numWS - 1;
                         
-            thisWS = metList.WS_FirstInt + minInd * metList.WS_IntSize - metList.WS_IntSize / 2;                
+            double thisWS = metList.WS_FirstInt + minInd * metList.WS_IntSize - metList.WS_IntSize / 2;                
 
             return thisWS;
         }
 
+        /// <summary> Generates and returns sectorwise wind speed cumulative density functions based on specified sectorwise wind speed distributions. </summary>
         public double[,] GenerateWS_CDFs(double[,] sectorDist)
         {
             int numWD = sectorDist.GetUpperBound(0) + 1;
@@ -730,9 +769,9 @@ namespace ContinuumNS
             return theseCDFs;
         }
 
+        /// <summary> Deletes zone from list with specified name. </summary>
         public void DeleteZone(string name)
-        {
-            // Deletes turbine object with specified name
+        {           
             int newCount = GetNumZones() - 1;
 
             if (newCount > 0)
@@ -756,9 +795,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Creates and returns grid array with total number of shadow flicker hours. </summary>
         public FlickerGrid[] GetTotalFlickerHoursByMonthAndHour(int monthInd, int hourInd)
-        {
-            // Creates and returns grid array with total number of shadow flicker hours            
+        {                        
             FlickerGrid[] plotFlickerMap = new FlickerGrid[flickerMap.Length];
 
             for (int i = 0; i < flickerMap.Length; i++)
@@ -782,11 +821,9 @@ namespace ContinuumNS
             return plotFlickerMap;
         }
 
+        /// <summary> Calculates and returns the total number of shadow flicker hours at a zone for specified hour and month. All months : monthInd = 100; All hours : hourInd = 100. </summary>
         public double GetTotalFlickerHours(Zone thisZone, int monthInd, int hourInd)
-        {
-            // Calculates and returns the total number of shadow flicker hours at a zone for specified hour and month
-            // All months : monthInd = 100; All hours : hourInd = 100
-
+        {            
             double totalHours = 0;
 
             if (thisZone.flickerStats.shadowMins12x24 == null)
@@ -802,10 +839,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates and returns the noise level at specified UTMX/Y caused by all turbines </summary>
         public double CalcNoiseLevel(int UTMX, int UTMY, Continuum thisInst)
-        {
-            // Calculates and returns the noise level at specified UTMX/Y caused by all turbines
-            
+        {                        
             double noiseAtZone = 0;
             double totalLps = 0;
            
@@ -823,23 +859,17 @@ namespace ContinuumNS
                     totalLps = totalLps + Math.Pow(10, thisLp / 10);
             }
 
-            if (totalLps == 0)
-            {
-                noiseAtZone = 0;
-            }
-            else
-            {
-                noiseAtZone = 10 * Math.Log10(totalLps);
-            }
-            
+            if (totalLps == 0)            
+                noiseAtZone = 0;            
+            else            
+                noiseAtZone = 10 * Math.Log10(totalLps);                     
 
             return noiseAtZone;
         }
 
+        /// <summary> Creates turbine sound map. </summary>
         public void CreateSoundMap(Continuum thisInst)
-        {
-            // Creates sound map
-
+        {            
             if (mapMinBounds.UTMX == 0)
                 FindShadowMapBounds(thisInst, false);
 
@@ -860,10 +890,9 @@ namespace ContinuumNS
                 }
         }
 
+        /// <summary> Calculates and returns probability of ice hit versus distance for specified WD. </summary>
         public double[] CalcIceHitVersusDistance(FinalPosition[] iceHits, int WD_Ind, string turbineName, Continuum thisInst)
-        {
-            // Calculates and returns probability of ice hit versus distance for specified WD
-
+        {            
             double[] probIceHit = new double[21];
 
             Turbine thisTurb = thisInst.turbineList.GetTurbine(turbineName);
@@ -899,15 +928,15 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Clears all ice hit estimates. </summary>
         public void ClearIceThrow()
-        {
-            // Clears all ice hit estimates
+        {            
             yearlyIceHits = new YearlyHits[0];            
         }
 
+        /// <summary> Clears all shadow flicker estimates. </summary>
         public void ClearShadowFlicker()
-        {
-            // Clears all shadow flicker estimates
+        {            
             mapMinBounds = new TopoInfo.UTM_X_Y();
             mapMaxBounds = new TopoInfo.UTM_X_Y();
             numXFlicker = 0;
@@ -921,14 +950,15 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Clears sound model. </summary>
         public void ClearSound()
-        {
-            // Clears sound model
+        {            
             numXSound = 0;
             numYSound = 0;
             soundMap = new double[0, 0];
         }
-        
+
+        /// <summary> Clears all site suitability models. </summary>
         public void ClearAll()
         {
             ClearIceThrow();
@@ -936,14 +966,15 @@ namespace ContinuumNS
             ClearSound();
         }
 
+        /// <summary> Clears all zones (sites of interest). </summary>
         public void ClearAllZones()
         {
             zones = new Zone[0];
         }
 
+        /// <summary> Calculates and returns probability of more than minNumHits ice hits in a given year. </summary>
         public double CalcProbabilityOfHits(Zone zone, int minNumHits, Continuum thisInst)
-        {
-            // Calculates and returns probability of more than minNumHits ice hits in a given year
+        {            
             double prob = 0;
 
             // Calculate the histogram

@@ -1,119 +1,189 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using MathNet.Numerics;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that holds all information and modeled data for a single turbine. Stored data includes the calculated exposures, SRDH, and P10 Exposure (complexity). Modeled
+    /// estimates include free-stream and waked wind speeds and gross/net energy production estimates.</summary>
     [Serializable()]
     public class Turbine
     {
-        public string name; // name of turbine
-        public double UTMX; // UTM X coordinate
-        public double UTMY; // UTM Y coordinate
-        public double elev; // Elevation
-        public int stringNum; // Turbine string number (either imported or found in turbineList.AssignStringNumber)
-        public Exposure[] expo; // Exposure and SRDH at turbine site
-        public Grid_Info gridStats = new Grid_Info(); // Terrain complexity
-        public WS_Ests[] WS_Estimate; // Wind speed estimates: One for each predictor met and each UWDW model (4 radii)
-        public Avg_Est[] avgWS_Est; // Combination of WS_Estimate() to form overall average and sectorwise wind speed estimates
-        public Gross_Energy_Est[] grossAEP; // Gross Energy Estimates: One for each power curve entered and for default and site-calibrated model
-        public Net_Energy_Est[] netAEP; // Net Energy Estimates: One for each power curve entered and for default and site-calibrated model DOES NOT INCLUDE OTHER LOSSES
-                                            // Other losses are applied to Waked Turb List, Net Exports
-        public NodeCollection.Sep_Nodes[] flowSepNodes; // If flow separation model enabled, nodes where flow separation will occur surrounding turbine
+        /// <summary> Name of turbine </summary>
+        public string name;
+        /// <summary> UTM X coordinate </summary>
+        public double UTMX;
+        /// <summary> UTM Y coordinate </summary>
+        public double UTMY;
+        /// <summary> Turbine site elevation </summary>
+        public double elev;
+        /// <summary> Turbine string number (either imported or found in turbineList.AssignStringNumber) </summary>
+        public int stringNum;
+        /// <summary> List of exposure and SRDH at turbine site </summary>
+        public Exposure[] expo;
+        /// <summary> List of terrain complexity at turbine site </summary>
+        public Grid_Info gridStats = new Grid_Info();
+        /// <summary> Wind speed estimates: One for each predictor met and each Continuum model (4 radii) </summary>
+        public WS_Ests[] WS_Estimate;
+        /// <summary> Combination of WS_Estimate() to form overall average and sectorwise wind speed estimates </summary>
+        public Avg_Est[] avgWS_Est;
+        /// <summary> Gross Energy Estimates: One for each power curve entered. </summary>
+        public Gross_Energy_Est[] grossAEP;
+        /// <summary> Net Energy Estimates: One for each wake loss model. DOES NOT INCLUDE OTHER LOSSES. Other losses are applied to Waked Turb List and Net Exports. </summary>
+        public Net_Energy_Est[] netAEP;
+        /// <summary> If flow separation model enabled, nodes where flow separation will occur surrounding turbine. </summary>                                 
+        public NodeCollection.Sep_Nodes[] flowSepNodes;
         
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Holds waked/unwaked wind speed and energy production estimates at turbine site based on combined WS_Ests. Also contains calculated shear and time series estimates if time series met data imported. </summary>
         [Serializable()] public struct Avg_Est
         {
+            /// <summary> Free-stream wind speed estimate </summary> 
             public EstWS_Data freeStream;
-            public EstWS_Data waked;           
-            public double uncert;           
-            public bool isImported;            
-            public bool haveGrossTS; // true if gross energy TS has been calculated
-            public bool haveNetTS; // true if net energy TS has been calculated
+            /// <summary> Waked wind speed estimate </summary>
+            public EstWS_Data waked;
+            /// <summary> Wind speed estimate uncertainty </summary>
+            public double uncert;
+            /// <summary> True if estimate generated from imported wind flow model coefficients. </summary>
+            public bool isImported;
+            /// <summary> True if gross energy TS has been calculated. </summary>
+            public bool haveGrossTS;
+            /// <summary> True if net energy TS has been calculated. </summary>
+            public bool haveNetTS;
+            /// <summary> Power curve used to calculate energy production </summary>
             public TurbineCollection.PowerCurve powerCurve;
+            /// <summary> Wake loss model used to calculate wake losses </summary>
             public Wake_Model wakeModel;
-            public MonthlyWS_Vals[] FS_MonthlyVals; // freestream average and distribution of WS by month 
-            public MonthlyWS_Vals[] wakedMonthlyVals; // freestream average and distribution of WS by month 
-            public double[] alpha; // directional average power law shear exponent, alpha
-            public TurbIntensity TI; // ambient, representative, and effective TI
-            public ModelCollection.TimeSeries[] timeSeries; // array of time series data (Timestamp, WS, Gross, Net). Clears on save. Is regenerated when needed.
+            /// <summary> Free-stream average WS and WS distribution by month </summary>
+            public MonthlyWS_Vals[] FS_MonthlyVals;
+            /// <summary> Waked average WS and waked WS distribution by month </summary>
+            public MonthlyWS_Vals[] wakedMonthlyVals;
+            /// <summary> Directional average power law shear exponent, alpha </summary>
+            public double[] alpha;
+            /// <summary> Ambient, representative, and effective turbulence intensity (calculated from met time series data) </summary>
+            public TurbIntensity TI;
+            /// <summary> Array of time series data (Timestamp, WS, Gross, Net). Clears on save. Is regenerated when needed. </summary>
+            public ModelCollection.TimeSeries[] timeSeries;
         }
 
+        /// <summary> Holds average, representative, and effective sectorwise turbulence intensity. </summary> 
         [Serializable()] public struct TurbIntensity
         {
-            public double[] TI; // directional turbulence intensity
-            public double[] repTI; // representative turbulence intensity
-            public double[] effectiveTI; // Effective TI
+            /// <summary> Sectorwise average turbulence intensity. </summary> 
+            public double[] TI;
+            /// <summary> Sectorwise representative turbulence intensity. </summary>
+            public double[] repTI;
+            /// <summary> Sectorwise effective turbulence intensity. </summary>
+            public double[] effectiveTI;
         }
 
-        [Serializable()] public struct WS_Ests {
+        /// <summary> Holds overall and sectorwise wind speed estimate at turbine site based on specified wind flow model and predictor met </summary>
+        [Serializable()] public struct WS_Ests 
+        {
+            /// <summary> Name of Predictor met site </summary>
             public string predictorMetName;
+            /// <summary> Path of nodes between predictor met and turbine (if any) </summary>
             public Nodes[] pathOfNodes;
+            /// <summary> Overall wind speed estimated at nodes between predictor met and turbine </summary>
             public double[] WS_at_nodes;
+            /// <summary> Sectorwise wind speed estimated at nodes between predictor met and turbine </summary>
             public double[,] sectorWS_at_nodes;   // i = Node num j = WD sector
-            public double[] sectorWS;   // Sectorwise WS estimates at turbine
+            /// <summary> Sectorwise WS estimates at turbine </summary>
+            public double[] sectorWS;
+            /// <summary> Wind flow model used to generate estimate. </summary>
             public Model model;
+            /// <summary> Overall wind speed estimate at turbine. </summary>
             public double WS;
-            public double WS_weight;
-          //  public int radius;
-         //   public bool elevDiffTooBig;
-         //   public bool expoDiffTooBig;
+            /// <summary> Wind speed estimate weight (calculated from wind flow model cross-prediction error and similarity in terrain complexity between predictor met and turbine). </summary>
+            public double WS_weight;          
         }
 
-        /// <summary>
-        /// Contains total and sectorwise gross energy estimate values, capacity factors, and monthly values for given power curve.
-        /// </summary>
-        [Serializable()] public struct Gross_Energy_Est {
+        /// <summary> Contains total and sectorwise gross energy estimate values, capacity factors, and monthly values for given power curve. </summary>
+        [Serializable()] public struct Gross_Energy_Est 
+        {
+            /// <summary> Power curve used to generate energy estimate. </summary>
             public TurbineCollection.PowerCurve powerCurve;
-            public double AEP;   // Gross annual energy estimate
-            public double[] sectorEnergy;   // Sectorwise gross annual energy estimate (sectorws dist * power curve * 8760 * wind_rose[i])
+            /// <summary> Gross annual energy estimate. </summary>
+            public double AEP;
+            /// <summary> Sectorwise gross annual energy estimate (sectorws dist * power curve * 8760 * wind_rose[i]). </summary>
+            public double[] sectorEnergy;
+            /// <summary> P90 gross AEP. </summary>
             public double P90;
+            /// <summary> P90 gross AEP. </summary>
             public double P99;
-            public double CF;   // Gross annual capacity factor     
-            public MonthlyEnergyVals[] monthlyVals; // Gross energy by month 
+            /// <summary> Gross annual capacity factor. </summary>
+            public double CF;
+            /// <summary> Monthly gross energy estimates. </summary>
+            public MonthlyEnergyVals[] monthlyVals;  
         }
 
-        [Serializable()] public struct Net_Energy_Est {
+        /// <summary> Contains total and sectorwise net energy estimate values, capacity factors, and monthly values for given power curve and wake loss model. </summary>
+        [Serializable()] public struct Net_Energy_Est 
+        {
+            /// <summary> Wake loss model used to calculate wake losses. </summary>
             public Wake_Model wakeModel;
-            public double AEP;   // Net annual energy estimate (including both wake and all other losses)
-            public double[] sectorEnergy;   // Sectorwise Net annual energy estimate (including sectorwise wake and all other losses)
+            /// <summary> Net annual energy estimate (includes wake loss; does not include all other losses). </summary>
+            public double AEP;
+            /// <summary> Sectorwise Net annual energy estimate (includes wake loss; does not include all other losses). </summary>
+            public double[] sectorEnergy;
+            /// <summary> P90 net AEP. </summary>
             public double P90;
+            /// <summary> P99 net AEP. </summary>
             public double P99;
-            public double CF;   // Net capacity factor
+            /// <summary> Net capacity factor. </summary>
+            public double CF;
+            /// <summary> Overall wake loss. </summary>
             public double wakeLoss;
-            public double[] sectorWakeLoss;       
-            public MonthlyEnergyVals[] monthlyVals; // Net energy by month 
+            /// <summary> Sectorwise wake loss. </summary>
+            public double[] sectorWakeLoss;
+            /// <summary> Monthly net energy estimates. </summary>
+            public MonthlyEnergyVals[] monthlyVals; 
         }
 
+        /// <summary> Contains month, year, average wind speed and WS distribution. </summary>
         [Serializable()] public struct MonthlyWS_Vals
         {
+            /// <summary> Month. </summary>
             public int month;
+            /// <summary> Year. </summary>
             public int year;
+            /// <summary> Average wind speed. </summary>
             public double avgWS;
-            public Met.WSWD_Dist WS_Dist; // Gross wind speed / wind direction distribution            
+            /// <summary> Wind speed / Wind direction distribution. </summary>
+            public Met.WSWD_Dist WS_Dist;             
         }
 
+        /// <summary> Contains month, year, and monthly energy production. </summary>
         [Serializable()] public struct MonthlyEnergyVals
         {
+            /// <summary> Month. </summary>
             public int month;
+            /// <summary> Year. </summary>
             public int year;
-            public double energyProd; // Energy Production over month, MWh           
-
+            /// <summary> Energy Production over month, MWh. </summary>
+            public double energyProd;
         }
 
+        /// <summary> Contains estimated overall and sectorwise wind speeds and WS distributions. </summary>
         [Serializable()] public struct EstWS_Data
         {
-            public double WS;     
-            public double[] WS_Dist;            
+            /// <summary> Overall wind speed estimate. </summary>
+            public double WS;
+            /// <summary> Overall wind speed distribution. </summary>
+            public double[] WS_Dist;
+            /// <summary> Estimated Weibull parameters. </summary>
             public MetCollection.Weibull_params weibullParams;
-            public double[] sectorWS;   // Overall Sectorwise WS estimate at turbine
-            public double[,] sectorWS_Dist;   // i = Sector num, j = WS interval    
+            /// <summary> Sectorwise WS estimates. </summary>
+            public double[] sectorWS;
+            /// <summary> Sectorwise WS distributions i = Sector num, j = WS interval . </summary>
+            public double[,] sectorWS_Dist; 
+            /// <summary> Estimated wind rose </summary>
             public double[] windRose;
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Returns number of calculated exposure. </summary>
         public int ExposureCount {
             get {
                 if (expo == null)
@@ -123,6 +193,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns number of wind speed estimates with a given predicting met and model. </summary>
         public int WSEst_Count {
 
             get {
@@ -134,6 +205,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns number of average wind speed estimates (weighted average of wind speed estimates). </summary>
         public int AvgWSEst_Count {
 
             get {
@@ -144,6 +216,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns number of gross energy production estimates. </summary>
         public int GrossAEP_Count {
             get {
                 if (grossAEP == null)
@@ -153,6 +226,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns number of net energy production estimates. </summary>
         public int NetAEP_Count {
             get {
                 if (netAEP == null)
@@ -162,9 +236,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns false if exposure has already been calculated with specified radius and exponent. </summary>
         public bool IsNewExposure(int radius, double exponent, int numSectors)
-        {
-            // Returns false if exposure has already been calculated
+        {            
             int thisCount = ExposureCount;
             bool isNew = false;
 
@@ -186,9 +260,9 @@ namespace ContinuumNS
             return isNew;
         }
 
+        /// <summary> Returns false if surface roughness and displacement height have already been calculated. </summary>
         public bool IsNewSRDH(int radius, double exponent, int numSectors)
-        {
-            //  Returns false if surface roughness & displacement height have already been calculated            
+        {           
             bool isNew = true;
 
             for (int i = 0; i < ExposureCount; i++)
@@ -204,9 +278,9 @@ namespace ContinuumNS
             return isNew;
         }
 
+        /// <summary> Returns true if estimates have already been formed for specified wake model. </summary>
         public bool EstsExistForWakeModel(Wake_Model thisWakeModel, WakeCollection WakeList)
-        {
-            // Returns true if estimates have already been formed for This_wake_mod and UWDW model
+        {           
             bool estsExist = false;
 
             for (int i = 0; i <= AvgWSEst_Count - 1; i++)
@@ -233,10 +307,9 @@ namespace ContinuumNS
             return estsExist;
         }
 
+        /// <summary> Adds exposure to list with specified radius of investigation and weighting exponent. </summary>
         public void AddExposure(int radius, double exponent, int numSectors, int numWD)
-        {
-            // Adds exposure to list
-
+        {            
             int insertIndex = 0;
             int thisExpoCount = ExposureCount;
 
@@ -288,9 +361,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Add specified wind speed estimate to list. </summary>
         public void AddWS_Estimate(WS_Ests newWS_Est)
-        {
-            // Add WS_Estimate to  list
+        {            
             int newCount = WSEst_Count;
             int numWD = newWS_Est.model.downhill_A.Length;
 
@@ -306,9 +379,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Add specified average wind speed estimate to list. </summary>
         public void AddAvgWS_Estimate(Avg_Est newAvgEst)
-        {
-            //  Add Avg_Est to  list
+        {            
             int newCount = AvgWSEst_Count;
 
             if (AvgWSEst_Count > 0)
@@ -323,6 +396,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Add specified gross energy time series estimate to list. </summary>
         public void AddGrossEstTimeSeries(Gross_Energy_Est thisGross)
         {
             int newCount = GrossAEP_Count;
@@ -330,6 +404,7 @@ namespace ContinuumNS
             grossAEP[newCount] = thisGross;
         }
 
+        /// <summary> Add specified net energy time series estimate to list. </summary>
         public void AddNetEstTimeSeries(Net_Energy_Est thisNet)
         {
             int newCount = NetAEP_Count;
@@ -337,10 +412,10 @@ namespace ContinuumNS
             netAEP[newCount] = thisNet;
         }
 
-        public void AddGrossAEP(Continuum thisInst, TurbineCollection.PowerCurve ThisPowerCurve, double P50_AEP, double P50_CF, double P90_AEP,
+        /// <summary> Adds gross energy estimate to list. </summary>
+        public void AddGrossAEP(TurbineCollection.PowerCurve thisPowerCurve, double P50_AEP, double P50_CF, double P90_AEP,
                                  double P99_AEP, double[] P50_Sect_AEP)
-        {
-            // Adds gross energy estimate to list of grossAEP()
+        {           
             // See if there is an empty Gross AEP
             bool haveEmpty = false;
             int emptyIndex = 0;
@@ -357,7 +432,7 @@ namespace ContinuumNS
 
             if (haveEmpty == true)
             {
-                grossAEP[emptyIndex].powerCurve = ThisPowerCurve;
+                grossAEP[emptyIndex].powerCurve = thisPowerCurve;
                 grossAEP[emptyIndex].sectorEnergy = P50_Sect_AEP;
                 grossAEP[emptyIndex].AEP = P50_AEP;
                 grossAEP[emptyIndex].CF = P50_CF;
@@ -367,7 +442,7 @@ namespace ContinuumNS
             else {
                 int newCount = GrossAEP_Count;
                 Array.Resize(ref grossAEP, newCount + 1);
-                grossAEP[newCount].powerCurve = ThisPowerCurve;
+                grossAEP[newCount].powerCurve = thisPowerCurve;
                 grossAEP[newCount].sectorEnergy = P50_Sect_AEP;
                 grossAEP[newCount].AEP = P50_AEP;
                 grossAEP[newCount].CF = P50_CF;
@@ -377,11 +452,9 @@ namespace ContinuumNS
 
         }
 
-        public void AddNetAEP(Wake_Model thisWakeModel, double P50_AEP, double P50_CF, double P90_AEP, double P99_AEP,
-                           double wakeLoss, double[] P50_Sect_AEP, bool useSR, bool usesFlowSep)
-        {
-            // Adds net energy estimate to list of netAEP()
-
+        /// <summary> Adds net energy estimate to list. </summary>
+        public void AddNetAEP(Wake_Model thisWakeModel, double P50_AEP, double P50_CF, double P90_AEP, double P99_AEP, double wakeLoss, double[] P50_Sect_AEP)
+        {            
             // See if there is an empty Net AEP
             bool haveEmpty = false;
             int Empty_Ind = 0;
@@ -420,9 +493,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Returns wind speed estimate at specified radius, using specified met and model. </summary>
         public WS_Ests GetWS_Est(int radius, string predMet, Model This_Model)
-        {
-            // Returns wind speed estimate at specified radius, using specified met and model
+        {            
             WS_Ests thisWS_Est = new WS_Ests();
             ModelCollection Model_List = new ModelCollection();
 
@@ -438,11 +511,10 @@ namespace ContinuumNS
             return thisWS_Est;
         }
 
-        public Avg_Est GetAvgWS_Est(Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
-        {
-            // Returns wind speed estimate at specified radius, using specified met and model
-            Avg_Est thisAvgWS_Est = new Avg_Est();
-            ModelCollection modelList = new ModelCollection();
+        /// <summary> Returns average wind speed estimate found using specified wake model or unwaked (i.e. no wake model specified). </summary>
+        public Avg_Est GetAvgWS_Est(Wake_Model thisWakeModel)
+        {            
+            Avg_Est thisAvgWS_Est = new Avg_Est();            
             WakeCollection wakeList = new WakeCollection();
             bool blankWake = false;
 
@@ -463,9 +535,9 @@ namespace ContinuumNS
             return thisAvgWS_Est;
         }
 
+        /// <summary> Returns gross energy estimate using specified power curve. </summary>
         public Gross_Energy_Est GetGrossEnergyEst(TurbineCollection.PowerCurve powerCurve)
-        {
-            // Returns wind speed estimate at specified radius, using specified met and model
+        {            
             Gross_Energy_Est thisGrossEst = new Gross_Energy_Est();
 
             for (int i = 0; i < GrossAEP_Count; i++)
@@ -480,29 +552,25 @@ namespace ContinuumNS
             return thisGrossEst;
         }
 
+        /// <summary> Returns net energy estimate using specified wake model. </summary>
         public Net_Energy_Est GetNetEnergyEst(Wake_Model thisWakeModel)
-        {
-            // Returns wind speed estimate at specified radius, using specified met and model
-            Net_Energy_Est thisNetEst = new Net_Energy_Est();
-            ModelCollection modelList = new ModelCollection();
+        {            
+            Net_Energy_Est thisNetEst = new Net_Energy_Est();            
             WakeCollection wakeList = new WakeCollection();
 
-            for (int i = 0; i < NetAEP_Count; i++)
-            {
+            for (int i = 0; i < NetAEP_Count; i++)            
                 if (wakeList.IsSameWakeModel(thisWakeModel, netAEP[i].wakeModel)) 
                 {
                     thisNetEst = netAEP[i];
                     break;
-                }
-            }
+                }            
 
             return thisNetEst;
         }
 
+        /// <summary> Returns average WS, Weibull A, or Weibull K estimate of wake model (if specified) and for specified WD. Specify "WS", "WeibA" or "Weibk" </summary>
         public double GetAvgOrSectorWS_Est(Wake_Model thisWakeModel, int WD_Ind, string WS_WeibA_WeibK, TurbineCollection.PowerCurve powerCurve)
-        {
-            // Gets average WS or weibull A or weibull K estimate of specified model and for specified WD 
-
+        {  
             double thisValue = 0;
             WakeCollection wakeList = new WakeCollection();
 
@@ -564,10 +632,9 @@ namespace ContinuumNS
             return thisValue;
         }
 
-
+        /// <summary> Returns gross AEP estimate for specified power curve and WD sector. </summary>
         public double GetGrossAEP(string powerCurve, int WD_Ind)
-        {
-            // Returns Gross AEP estimate for specified power curve, WD sector and model (default vs. site-calibrated)
+        {            
             double thisAEP = 0;
             int numWD = 0;
 
@@ -601,9 +668,9 @@ namespace ContinuumNS
             return thisAEP;
         }
 
+        /// <summary> Returns net AEP estimate for specified wake loss model and WD sector. </summary>
         public double GetNetAEP(Wake_Model thisWakeModel, int WD_Ind)
-        {
-            // Returns Net AEP estimate for specified wake loss model, WD sector and Continuum model (default vs. site-calibrated)
+        {            
             double thisAEP = 0;
             WakeCollection wakeList = new WakeCollection();
             int numWD = 0;
@@ -632,9 +699,9 @@ namespace ContinuumNS
             return thisAEP;
         }
 
+        /// <summary> Returns net capacity factor estimate for specified wake loss model and WD sector. </summary>
         public double GetNetCF(Wake_Model thisWakeModel, int WD_Ind)
-        {
-            //  Returns Net Capacity factor for specified wake loss model, WD sector and Continuum model (default vs. site-calibrated)
+        {            
             double This_CF = 0;
             int numWD = 0;
             WakeCollection wakeList = new WakeCollection();
@@ -668,9 +735,9 @@ namespace ContinuumNS
             return This_CF;
         }
 
+        /// <summary> Returns wake loss estimate for specified wake loss model and WD sector. </summary>
         public double GetWakeLoss(Wake_Model thisWakeModel, int WD_Ind)
-        {
-            //  Returns wake loss for specified wake loss model, WD sector and Continuum model (default vs. site-calibrated)
+        {            
             double thisWakeLoss = 0;
             WakeCollection wakeList = new WakeCollection();
             int numWD;
@@ -698,9 +765,9 @@ namespace ContinuumNS
             return thisWakeLoss;
         }
 
+        /// <summary> Finds all flow separation nodes (used in flow sep. model) and populates flowSepNodes. </summary>
         public void GetFlowSepNodes(Continuum thisInst)
-        {
-            // Finds all flow separation nodes (used in flow sep. model)
+        {            
             int numWD = thisInst.metList.numWD;
             NodeCollection nodeList = new NodeCollection();
                      
@@ -709,59 +776,9 @@ namespace ContinuumNS
 
         }
 
-        public void RemoveWS_Estimate(int WS_Est_ind)
-        {
-            // Removes WS_Estimate with specified WS_Est_ind
-            int newCount = WSEst_Count - 1;
-
-            if (newCount > 0)
-            {
-                WS_Ests[] tempList = new WS_Ests[newCount];
-                int tempindex = 0;
-
-                for (int i = 0; i < WSEst_Count; i++)
-                {
-                    if (i != WS_Est_ind)
-                    {
-                        tempList[tempindex] = WS_Estimate[i];
-                        tempindex++;
-                    }
-                }
-
-                WS_Estimate = tempList;
-            }
-            else
-                WS_Estimate = null;
-
-        }
-
-        public void RemoveWS_EstimateByMet(string metName)
-        {
-            //  Removes WS_Estimate that use specified Met site
-            if (WSEst_Count > 0)
-            {
-                WS_Ests[] tempList = new WS_Ests[1];
-                int tempindex = 0;
-
-                for (int i = 0; i < WSEst_Count; i++)
-                {
-                    if (WS_Estimate[i].predictorMetName != metName)
-                    {
-                        tempList[tempindex] = WS_Estimate[i];
-                        tempindex++;
-                    }
-                }
-
-                WS_Estimate = tempList;
-            }
-            else
-                WS_Estimate = null;
-
-        }
-
+        /// <summary> Removes avgWS with specified avgWS_Ind. </summary>
         public void RemoveAvgWS(int avgWS_index)
-        {
-            // Removes avgWS with specified avgWS_Ind
+        {            
             int newCount = AvgWSEst_Count - 1;
 
             if (newCount > 0)
@@ -785,10 +802,9 @@ namespace ContinuumNS
 
         }
 
-        public void ClearNetEstsFromAvgWS(Wake_Model thisWakeModel, WakeCollection wakeList) // ClearNetEstsFromAvgWS
-        {
-            //  Clears waked WS and net energy time series ests from avgWS with specified wake loss model and sets haveNetTS to false.
-
+        /// <summary> Clears waked WS and net energy time series ests from avgWS with specified wake loss model and sets haveNetTS to false. </summary>
+        public void ClearNetEstsFromAvgWS(Wake_Model thisWakeModel, WakeCollection wakeList) 
+        {          
             for (int i = 0; i < AvgWSEst_Count; i++)
                 if (wakeList.IsSameWakeModel(thisWakeModel, avgWS_Est[i].wakeModel))
                 {
@@ -805,10 +821,9 @@ namespace ContinuumNS
                 }
         }
 
+        /// <summary> Clears gross energy time series ests from avgWS with specified power curve and sets haveGrossTS to false. </summary>
         public void ClearGrossEstsFromAvgWS(string powerCurveName)
-        {
-            //  Clears gross energy time series ests from avgWS with specified power curve and sets haveGrossTS to false.
-
+        {            
             for (int i = 0; i < AvgWSEst_Count; i++)
                 if (avgWS_Est[i].powerCurve.name == powerCurveName)
                 {
@@ -822,9 +837,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Removes net AEP with specified power curve name. </summary>
         public void RemoveNetAEP_byPowerCurve(string powerCurveName)
-        {
-            //  Removes netAEP estimate(s) with specified power curve
+        {           
             int newCount = 0;
 
             for (int i = 0; i <= NetAEP_Count - 1; i++)
@@ -852,9 +867,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Removes netAEP estimate(s) with specified wake loss model. </summary>
         public void RemoveNetAEP_byWakeModel(Wake_Model thisWakeModel, WakeCollection wakeList)
-        {
-            //  Removes netAEP estimate(s) with specified wake loss model
+        {            
             int newCount = 0;
 
             for (int i = 0; i < NetAEP_Count; i++)
@@ -882,9 +897,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Removes grossAEP with specified Gross_ind. </summary>
         public void RemoveGrossAEP(int grossIndex)
-        {
-            //  Removes grossAEP with specified Gross_ind
+        {            
             int newCount = GrossAEP_Count - 1;
 
             if (newCount > 0)
@@ -908,9 +923,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Removes netAEP with specified Net_ind. </summary>
         public void RemoveNetAEP(int netIndex)
-        {
-            //  Removes netAEP with specified Net_ind
+        {            
             int newCount = NetAEP_Count - 1;
 
             if (newCount > 0)
@@ -934,9 +949,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Resets all calculated values (including elev, exposure, grid stats, WS_Ests, AEP_ests). </summary>
         public void ClearAllCalcs()
-        {
-            // Resets all calculated values (including elev, exposure, grid stats, WS_Ests, AEP_ests
+        {            
             elev = 0;
             expo = null;
             gridStats.stats = null;
@@ -953,7 +968,6 @@ namespace ContinuumNS
         /// </summary>        
         public void CalcTurbineWakeLosses(Continuum thisInst, WakeCollection.WakeLossCoeffs[] wakeCoeffs, Wake_Model thisWakeModel)
         {           
-            
             bool foundAvgEst = false;
             int avgWS_index = 0;
             // Check to see if need to create one or if one exists with only free-stream WS
@@ -976,14 +990,13 @@ namespace ContinuumNS
 
             Gross_Energy_Est grossEst = GetGrossEnergyEst(thisWakeModel.powerCurve);
 
-            AddNetAEP(thisWakeModel, 0, 0, 0, 0, 0, null, thisInst.topo.useSR, thisInst.topo.useSepMod);
+            AddNetAEP(thisWakeModel, 0, 0, 0, 0, 0, null);
             int netEstInd = NetAEP_Count - 1;
             
             avgWS_Est[avgWS_index].wakeModel = thisWakeModel;
 
             WakeCollection.WakeCalcResults wakeResults = thisInst.wakeModelList.CalcWakeLosses(wakeCoeffs, UTMX, UTMY, avgWS_Est[avgWS_index].freeStream.sectorWS_Dist, grossEst.AEP, grossEst.sectorEnergy,
-                                                     thisInst, avgWS_Est[avgWS_index].wakeModel, avgWS_Est[avgWS_index].freeStream.windRose);
-                       
+                                                     thisInst, avgWS_Est[avgWS_index].wakeModel, avgWS_Est[avgWS_index].freeStream.windRose);                       
             
             avgWS_Est[avgWS_index].waked.WS = wakeResults.wakedWS;
             avgWS_Est[avgWS_index].waked.WS_Dist = wakeResults.WS_Dist;
@@ -1011,10 +1024,8 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        ///  For each predictor met and each model (i.e. 4 Radii), finds a path of nodes to turbine site, 
-        ///  does wind speed estimate along nodes using specified model and creates WS_Ests() for each met and each model 
-        /// </summary>        
+        /// <summary> For each predictor met and each model (i.e. 4 Radii), finds a path of nodes to turbine site, 
+        ///  does wind speed estimate along nodes using specified model and creates WS_Ests() for each met and each model. </summary>        
         public void DoTurbineCalcs(Continuum thisInst, Model[] models)
         {    
             NodeCollection nodeList = new NodeCollection();           
@@ -1070,65 +1081,11 @@ namespace ContinuumNS
             }
 
         }
+               
 
-        public Nodes[] GetPathFromList(NodeCollection.Node_UTMs[] pathToMetUTM, Nodes[] allNodesInPath, Continuum thisInst)
-        {
-            // Returns pathToMet()  Nodes based on Path_to_Met_UTM()  NodeCollection.Node_UTMs
-            Nodes[] pathToMet = null;
-            int numNodes;
-            int numAllNodes;
-            NodeCollection nodeList = new NodeCollection();
-
-            if (allNodesInPath == null)
-                numAllNodes = 0;
-            else
-                numAllNodes = allNodesInPath.Length;
-
-            if (pathToMetUTM == null)
-                numNodes = 0;
-            else
-                numNodes = pathToMetUTM.Length;
-
-            if (numNodes > 0 && numAllNodes > 0)
-            {
-                pathToMet = new Nodes[numNodes];
-                double thisUTMX;
-                double thisUTMY;
-
-                for (int nodeIndex = 0; nodeIndex <= numNodes - 1; nodeIndex++)
-                {
-                    thisUTMX = pathToMetUTM[nodeIndex].UTMX;
-                    thisUTMY = pathToMetUTM[nodeIndex].UTMY;
-
-                    for (int allNodeIndex = 0; allNodeIndex <= numAllNodes - 1; allNodeIndex++)
-                    {
-                        if (thisUTMX == allNodesInPath[allNodeIndex].UTMX && thisUTMY == allNodesInPath[allNodeIndex].UTMY) {
-                            pathToMet[nodeIndex] = allNodesInPath[allNodeIndex];
-                            break;
-                        }
-                    }
-
-                    Nodes[] blank = null;
-                    if (pathToMet[nodeIndex] == null) {
-                        pathToMet[nodeIndex] = nodeList.GetANode(thisUTMX, thisUTMY, thisInst);
-                        if (thisInst.topo.useSepMod == true) pathToMet[nodeIndex].GetFlowSepNodes(nodeList, thisInst, null, thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All));
-                    }
-
-                }
-            }
-
-            if (numNodes == 0)
-                pathToMet = null;
-
-            return pathToMet;
-        }
-
-        /// <summary>
-        /// Performs and calculates wind speed estimate along path of nodes from Met to turbine using specified model and predictor met
-        /// </summary>        
+        /// <summary> Calculates and returns wind speed estimate along path of nodes (from Met to turbine) using specified model and predictor met. </summary>        
         public WS_Ests DoWS_EstAlongNodes(Met predMet, Model model, Nodes[] pathOfNodes, Continuum thisInst, double[] windRose)
-        {            
-            //  Returns WS_Ests
+        {                       
             WS_Ests thisWS_Est = new WS_Ests();
 
             if (thisInst.metList.ThisCount == 0)
@@ -1172,10 +1129,7 @@ namespace ContinuumNS
             return thisWS_Est;
         }
 
-        /// <summary>
-        /// Creates and adds new Avg_Est based on time series data
-        /// If forRoundRobin is true then doesn't assign uncertainty
-        /// </summary>        
+        /// <summary> Creates and adds new Avg_Est based on time series data. If forRoundRobin is true then doesn't assign uncertainty. </summary>        
         public void GenerateAvgWSTimeSeries(ModelCollection.TimeSeries[] thisTS, Continuum thisInst, Wake_Model wakeModel, bool isImported,
             string MCP_Method, bool forRoundRobin, TurbineCollection.PowerCurve powerCurve)
         {
@@ -1237,8 +1191,7 @@ namespace ContinuumNS
             // Calculate weibull params  
             avgWS_Est[avgWS_index].freeStream.weibullParams = thisInst.metList.CalcWeibullParams(avgWS_Est[avgWS_index].freeStream.WS_Dist, avgWS_Est[avgWS_index].freeStream.sectorWS_Dist,
                                                                             avgWS_Est[avgWS_index].freeStream.WS);
-
-            
+                        
             if (isWaked)
             {
                 Met.WSWD_Dist wakedDist = thisInst.modelList.CalcWSWD_Dist(thisTS, thisInst, "Waked");
@@ -1375,9 +1328,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Calculates and returns default estimated uncertainty. Based on results of single met study using Continuum 1. Needs to be revisited. </summary>
         public double GetDefaultUncertainty(double[] windRose)
-        {
-            // Calculates and returns default estimated uncertainty. Based on results of single met study using Continuum 1. Needs to be revisited.
+        {            
             double overallUncert = 0;
                         
             double adjFact = 1.2f; // what is this based on?
@@ -1391,33 +1344,11 @@ namespace ContinuumNS
 
             return overallUncert;
             
-        }
+        }              
 
-                
+        
 
-        public double GetWeightForMetAndModel(ModelCollection.ModelWeights[] weights, Met thisMet, Model thisModel)
-        {
-            double thisWeight = 0;
-
-            if (weights == null)
-                return thisWeight;
-
-            int numWeights = weights.Length;
-            ModelCollection modelList = new ModelCollection();
-
-            for (int i = 0; i < numWeights; i++)
-                if (weights[i].met.name == thisMet.name && modelList.IsSameModel(weights[i].model, thisModel))
-                {
-                    thisWeight = weights[i].weight;
-                    break;
-                }
-
-            return thisWeight;
-        }
-
-        /// <summary>
-        /// Calculate and returns mean monthly wind speed estimates using time series of either waked or freestream wind speed estimates
-        /// </summary>        
+        /// <summary> Calculate and returns mean monthly wind speed estimates using time series of either waked or freestream wind speed estimates. </summary>        
         public MonthlyWS_Vals[] CalcMonthlyWS_Values(ModelCollection.TimeSeries[] thisTS, Continuum thisInst, string wakedOrFreestream)
         {            
             MonthlyWS_Vals[] monthlyWS_Vals = new MonthlyWS_Vals[0];
@@ -1540,20 +1471,16 @@ namespace ContinuumNS
             return monthlyWS_Vals;
 
         }
-           
 
+        /// <summary> Calculates and adds gross energy estimate based on energy production time series. </summary>
         public void CalcGrossAEPFromTimeSeries(Continuum thisInst, ModelCollection.TimeSeries[] thisTS, TurbineCollection.PowerCurve powerCurve)
-        {
-            // Calculates and adds gross energy estimate based on energy production time series
+        {            
             if (thisInst.metList.numWD == 0) return;
             int numWD = thisInst.metList.numWD;
-            int numWS = thisInst.metList.numWS;                                          
-                        
-            bool alreadyCalc = false;
-                
-            double[] P50_AEP_Sect = new double[numWD];
+            int numWS = thisInst.metList.numWS;                                      
+                                                        
             // Check to see if energy calc already done
-            alreadyCalc = false;
+            bool alreadyCalc = false;
             for (int k = 0; k < GrossAEP_Count; k++)
             {
                 if (grossAEP[k].powerCurve.name == powerCurve.name) 
@@ -1563,15 +1490,14 @@ namespace ContinuumNS
                 }
             }
 
-            Avg_Est avgEst = GetAvgWS_Est(new Wake_Model(), powerCurve);
+            Avg_Est avgEst = GetAvgWS_Est(new Wake_Model());
             EstWS_Data estData = avgEst.freeStream;
 
             if (alreadyCalc == false)
             {
-
                 Gross_Energy_Est thisGross = new Gross_Energy_Est();
                 thisGross.powerCurve = powerCurve;          
-                thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, thisTS, thisInst); // calculates long-term AEP, sectorwise energy, and monthly values
+                thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, thisTS, thisInst); // calculates long-term P50 AEP, sectorwise energy, and monthly values
 
                 // P90 and P99 estimates
                 double[,] sectorDist = new double[numWD, numWS];
@@ -1604,14 +1530,13 @@ namespace ContinuumNS
 
                 AddGrossEstTimeSeries(thisGross);
             }               
-        }               
+        }
 
+        /// <summary> Calculates and adds net energy estimate based on energy production time series. </summary>
         public void CalcNetAEPFromTimeSeries(Continuum thisInst, ModelCollection.TimeSeries[] thisTS, TurbineCollection.PowerCurve powerCurve, Wake_Model wakeModel)
-        {
-            // Calculates and adds net energy estimate based on energy production time series
+        {            
             if (thisInst.metList.numWD == 0) return;
-            int numWD = thisInst.metList.numWD;
-            
+                        
             // Check to see if energy calc already done
             bool alreadyCalc = false;
             for (int k = 0; k < NetAEP_Count; k++)
@@ -1632,16 +1557,14 @@ namespace ContinuumNS
                 thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst); // calculates long-term AEP, sectorwise energy, and monthly values
 
                 double otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
-                thisNet.sectorWakeLoss = thisInst.wakeModelList.CalcThisSectWakeLoss(wakeModel, thisNet.sectorEnergy, thisGross.sectorEnergy, otherLoss);
-                thisNet.wakeLoss = thisInst.wakeModelList.CalcThisWakeLoss(wakeModel, thisNet.AEP, thisGross.AEP, otherLoss);
+                thisNet.sectorWakeLoss = thisInst.wakeModelList.CalcThisSectWakeLoss(thisNet.sectorEnergy, thisGross.sectorEnergy, otherLoss);
+                thisNet.wakeLoss = thisInst.wakeModelList.CalcThisWakeLoss(thisNet.AEP, thisGross.AEP, otherLoss);
 
                 AddNetEstTimeSeries(thisNet);
             }
         }
 
-        /// <summary>
-        /// Calculates and returns annual value (wind speed, net AEP, wake loss)
-        /// </summary>        
+        /// <summary> Calculates and returns annual value (thisParam = "Avg WS", "Gross AEP", "Net AEP") </summary>        
         public double CalcYearlyValue(int thisYear, string thisParam, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
         {            
             double thisAnnual = 0;
@@ -1660,7 +1583,7 @@ namespace ContinuumNS
                     return thisAnnual;
                 else
                 {
-                    Avg_Est thisAvgEst = GetAvgWS_Est(thisWakeModel, powerCurve);
+                    Avg_Est thisAvgEst = GetAvgWS_Est(thisWakeModel);
                     MonthlyWS_Vals[] thisMonthly;
 
                     if (isWaked == false)
@@ -1722,9 +1645,7 @@ namespace ContinuumNS
             return thisAnnual;
         }
 
-        /// <summary>
-        /// Calculates and returns long-term monthly value (Avg WS, Gross AEP, Net AEP, or Wake Loss)
-        /// </summary>        
+        /// <summary> Calculates and returns long-term monthly value ("Avg WS", "Gross AEP", "Net AEP", or "Wake Loss"). </summary>        
         public double CalcLT_MonthlyValue(string thisParam, int thisMonth, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
         {           
             double thisLT_Value = 0;
@@ -1738,7 +1659,7 @@ namespace ContinuumNS
 
             if (thisParam == "Avg WS")
             {
-                Avg_Est thisAvgEst = GetAvgWS_Est(thisWakeModel, powerCurve);
+                Avg_Est thisAvgEst = GetAvgWS_Est(thisWakeModel);
                 MonthlyWS_Vals[] thisMonthly = null;
 
                 if (isWaked)
@@ -1820,9 +1741,7 @@ namespace ContinuumNS
             return thisLT_Value;
         }
 
-        /// <summary>
-        /// Calculates and returns the waked wind speed standard deviation used in Effective TI calculations
-        /// </summary>        
+        /// <summary> Calculates and returns the waked wind speed standard deviation used in Effective TI calculations. </summary>        
         public double CalcWakedStDev(double thisX, double thisY, TurbineCollection.PowerCurve powerCurve, double ambSD, double avgWS, Continuum thisInst)
         {             
             double wakedSD = 0;
@@ -1835,9 +1754,7 @@ namespace ContinuumNS
             return wakedSD;
         }
 
-        /// <summary>
-        /// Calculates and returns effective TI at turbine site for a specified wind direction sector using ambient TI measured at met site
-        /// </summary>        
+        /// <summary> Calculates and returns effective TI at turbine site for a specified wind direction sector using ambient TI measured at met site. </summary>        
         public double[] CalcEffectiveTI(Met thisMet, double wohler, Continuum thisInst, TurbineCollection.PowerCurve powerCurve, int WD_Ind)
         {            
             double[] effectiveTI = new double[thisInst.metList.numWS];
@@ -1938,9 +1855,9 @@ namespace ContinuumNS
             return effectiveTI;
         }
 
+        /// <summary>  Checks to see if time series estimates have already been generated ("WS", "Gross", "Net"). Returns true if they have been. </summary> 
         public bool HaveTS_Estimate(string estType, Wake_Model wakeModel, TurbineCollection.PowerCurve powerCurve)
-        {
-            // Checks to see if time series estimates have already been generated. Returns true if they have been.
+        {            
             bool haveEst = false;
 
             if (estType == "WS")

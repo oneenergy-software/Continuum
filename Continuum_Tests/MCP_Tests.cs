@@ -8,7 +8,8 @@ namespace Continuum_Tests
     [TestClass]
     public class MCP_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MCP";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MCP";
+        string MERRA2Folder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
         [TestMethod]
         public void CalcOrthoSlope_Test()
@@ -291,6 +292,7 @@ namespace Continuum_Tests
             Met thisMet = thisInst.metList.metItem[0];
             MCP thisMCP = thisMet.mcp;
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+            thisInst.merraList.MERRAfolder = MERRA2Folder;
             MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
                         
             thisMCP.numWD = 16;
@@ -337,7 +339,7 @@ namespace Continuum_Tests
             Met thisMet = thisInst.metList.metItem[0];
             MCP thisMCP = thisMet.mcp;
 
-            thisMCP.FindConcurrentData(thisMCP.concStart, thisMCP.concEnd);
+            thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"));
             Assert.AreEqual(thisMCP.concData.Length, 8500, 0, "Wrong concurrent data length");
             
             double[] Conc_Avgs = thisMCP.GetConcAvgsCount(thisInst.metList.numWD, Met.TOD.All, Met.Season.All);

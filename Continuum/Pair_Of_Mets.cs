@@ -1,32 +1,48 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that holds a pair of met sites and the cross-predictions between the two sites. </summary>
     [Serializable()]
     public class Pair_Of_Mets
     {
+        /// <summary> Met 1 of pair. </summary>
         public Met met1;
+        /// <summary> Met 2 of pair. </summary>
         public Met met2;
-        public WS_CrossPreds[,] WS_Pred; // Wind speed cross predictions; i = Model num j = radius ind
+        /// <summary> Wind speed cross predictions between pair of mets; i = Model num j = radius ind. </summary>
+        public WS_CrossPreds[,] WS_Pred; 
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Holds wind speed cross-predictions, wind speed errors, and wind speeds estimated along path of nodes. </summary>
         [Serializable()] public struct WS_CrossPreds
         {
-            public double[] WS_Ests; // cross-predicted wind speeds, index 0 : Est at Met 2; index 1: Est at Met 1
-            public double[] percErr; // error of cross-predicted wind speeds. 0 (Est at Met 2) or 1 (Est at Met 1)
-            public double[,] percErrSector; // error of cross-predicted sectorwise wind speeds i = 0 (Est at Met 2) or 1 (Est at Met 1); j = WD sector
-            public Nodes[] nodePath; // Path of nodes from Met 1 to Met 2
-            public double[,] nodeSectorWS_Ests1to2; // Estimated WS from Met 1 to 2 in each WD sector; i = Node num j = WD sector
-            public double[,] nodeSectorWS_Ests2to1; // Estimated WS from Met 2 to 1; i = Node num j = WD sector
-            public double[] nodeWS_Ests1to2; // Overall Estimated WS from Met 1 to 2
-            public double[] nodeWS_Ests2to1; // Overall Estimated WS from Met 1 to 2
-            public double[,] sectorWS_Ests; // Sectorwise cross-predicted wind speeds i = Met ind (0 = Est at met2, 1 = Est at met1)  j = WD sector
-            public Model model; // Model used to generate cross-prediction
+            /// <summary> Cross-predicted wind speeds, index 0 : Est at Met 2; index 1: Est at Met 1. </summary>
+            public double[] WS_Ests;
+            /// <summary> Error of cross-predicted wind speeds. 0 (Est at Met 2) or 1 (Est at Met 1). </summary>
+            public double[] percErr;
+            /// <summary> Error of cross-predicted sectorwise wind speeds i = 0 (Est at Met 2) or 1 (Est at Met 1); j = WD sector. </summary>
+            public double[,] percErrSector;
+            /// <summary> Path of nodes from Met 1 to Met 2. </summary>
+            public Nodes[] nodePath;
+            /// <summary> Estimated WS from Met 1 to 2 in each WD sector; i = Node num j = WD sector. </summary>
+            public double[,] nodeSectorWS_Ests1to2;
+            /// <summary> Estimated WS from Met 2 to 1; i = Node num j = WD sector. </summary>
+            public double[,] nodeSectorWS_Ests2to1;
+            /// <summary> Overall Estimated WS from Met 1 to 2. </summary>
+            public double[] nodeWS_Ests1to2;
+            /// <summary> Overall Estimated WS from Met 2 to 1. </summary>
+            public double[] nodeWS_Ests2to1;
+            /// <summary> Sectorwise cross-predicted wind speeds i = Met ind (0 = Est at met2, 1 = Est at met1)  j = WD sector. </summary>
+            public double[,] sectorWS_Ests;
+            /// <summary> Model used to generate wind speed cross-prediction. </summary>
+            public Model model;
         }
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Returns the number of wind speed cross-predictions. </summary>
         public int WS_PredCount
         {
             get
@@ -38,9 +54,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Adds a WS_CrossPreds to WS_Pred(,) list. </summary>
         public void AddWS_Pred(Model[] model)
-        {
-            // Adds a WS_CrossPreds to WS_Pred(,) list
+        {            
             int numRadii = model.Length;
             int numWD = model[0].downhill_A.Length;
             WS_CrossPreds[,] tempWS_Pred = new WS_CrossPreds[WS_PredCount, numRadii];
@@ -78,10 +94,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Assigns pathOfNodes to WS_Cross_Pred's nodePath </summary>
         public void AddNodesToWS_Pred(Model[] model, Nodes[] pathOfNodes, int radius, ModelCollection modelList)
-        {
-            // Assigns pathOfNodes to WS_Cross_Pred's nodePath
-            // Find WS_Pred with same UWDW model
+        {           
             bool isSameModel;
 
             for (int i = 0; i < WS_PredCount; i++)
@@ -99,9 +114,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Conducts wind speed estimate from Met 1 to Met 2 and vice-versa and calculates WS cross-prediction struct (WS_CrossPreds[,]) </summary>
         public void DoMetCrossPred(int crossPredInd, int radiusIndex, Continuum thisInst)
-        {
-            // Conducts wind speed estimate from Met 1 to Met 2 and vice-versa and calculates WS cross-prediction struct (WS_CrossPreds[,])
+        {            
             int numWD = thisInst.metList.numWD;
             int numNodes = 0;
             NodeCollection nodeList = new NodeCollection();
@@ -227,28 +242,13 @@ namespace ContinuumNS
 
         }
 
-        public bool HaveWS_Pred(Model[] model, ModelCollection modelList)
-        {
-            // Returns true if WS Estimate exists
-            bool gotIt = false;
-
-            for (int i = 0; i < WS_PredCount; i++) {
-                gotIt = modelList.IsSameModel(model[0], WS_Pred[i, 0].model);
-                if (gotIt == true)
-                    break;
-            }
-
-            return gotIt;
-        }
-
+        /// <summary> Returns index of WS estimate with specified model </summary>
         public int GetWS_PredInd(Model[] model, ModelCollection modelList)
-        {
-            //  Returns index of WS estimate with specified model()
+        {            
             int WS_PredInd = -1;
-            bool isSameModel = false;
-
+            
             for (int i = 0; i < WS_PredCount; i++) {
-                isSameModel = modelList.IsSameModel(model[0], WS_Pred[i, 0].model); // just comparing with first radii to find WS_PredInd
+                bool isSameModel = modelList.IsSameModel(model[0], WS_Pred[i, 0].model); // just comparing with first radii to find WS_PredInd
 
                 if (isSameModel == true) {
                     WS_PredInd = i;
@@ -259,18 +259,17 @@ namespace ContinuumNS
             return WS_PredInd;
         }
 
+        /// <summary>  Returns wind speed cross-prediction estimate with specified model. </summary>
         public WS_CrossPreds GetWS_CrossPred(Model model)
-        {
-            //  Returns index of WS estimate with specified model()
+        {            
             WS_CrossPreds thisCrossPred = new WS_CrossPreds();
             ModelCollection modelList = new ModelCollection();
-            bool isSameModel = false;
-
+            
             for (int i = 0; i < WS_PredCount; i++)
             {
                 for (int j = 0; j <= WS_Pred.GetUpperBound(1); j++)
                 {
-                    isSameModel = modelList.IsSameModel(model, WS_Pred[i, j].model); 
+                    bool isSameModel = modelList.IsSameModel(model, WS_Pred[i, j].model); 
 
                     if (isSameModel == true)
                     {
@@ -283,18 +282,16 @@ namespace ContinuumNS
             return thisCrossPred;
         }
 
+        /// <summary>  Returns wind speed cross-prediction estimate index that used specified model. </summary>
         public int GetWS_PredIndOneModel(Model model, ModelCollection modelList)
-        {
-            //  Returns index of WS estimate with default model
-            int WS_PredInd = -1;
-            bool isSameModel = false;
-            int numRadii = 0;
+        {            
+            int WS_PredInd = -1;                        
             bool gotWS_PredInd = false;
 
             for (int i = WS_PredCount - 1; i >= 0; i--) {
-                numRadii = WS_Pred.GetUpperBound(1) + 1;
+                int numRadii = WS_Pred.GetUpperBound(1) + 1;
                 for (int j = 0; j <= numRadii - 1; j++) {
-                    isSameModel = modelList.IsSameModel(model, WS_Pred[i, j].model);
+                    bool isSameModel = modelList.IsSameModel(model, WS_Pred[i, j].model);
                     if (isSameModel == true) {
                         WS_PredInd = i;
                         gotWS_PredInd = true;
@@ -307,87 +304,12 @@ namespace ContinuumNS
             }
 
             return WS_PredInd;
-        }
-
-        public void RemoveWS_PredByMet(string metName)
-        {
-            //  Deletes WS_Estimates that were formed with specified met
-            WS_CrossPreds[,] newWS_Preds = null;
-            int newWS_count = 0;
-            bool keepWS_Pred = false;
-            int numRadii = 0;
-
-            for (int i = 0; i < WS_PredCount; i++) { 
-                for (int j = 0; j <= WS_Pred.GetUpperBound(1); j++) {
-                    keepWS_Pred = true;
-                    numRadii = WS_Pred.GetUpperBound(1);
-                    for (int k = 0; k < WS_Pred[i, j].model.metsUsed.Length; k++) { 
-                        if (WS_Pred[i, j].model.metsUsed[k] == metName) {
-                            keepWS_Pred = false;
-                            break;
-                        }
-                    }
-
-                    if (keepWS_Pred == true) {
-                        Continuum thisInst = new Continuum();
-                        newWS_Preds = thisInst.ResizeArray(ref newWS_Preds, newWS_count + 1, numRadii);
-                        newWS_Preds[newWS_count, numRadii - 1] = WS_Pred[i, j];
-                        newWS_count++;
-
-                    }
-                }
-            }
-
-            WS_Pred = new WS_CrossPreds[newWS_count, numRadii];
-
-            for (int i = 0; i < newWS_count; i++)  
-                for (int j = 0; j < numRadii; j++) 
-                    WS_Pred[i, j] = newWS_Preds[i, j];
-
-        }
-
-        public void RemoveWS_Pred(int WS_PredInd)
-        {
-            // Deletes WS_Estimate with specified index
-            int newCount = WS_PredCount - 1;
-            int numRadii = 0;
-
-            if (newCount > 0) {
-                numRadii = WS_Pred.GetUpperBound(1) + 1;
-                WS_CrossPreds[,] tempList = new WS_CrossPreds[newCount, numRadii];   // Create list of radii that you're keeping(so size one less than before)
-                int tempIndex = 0;
-
-                for (int i = 0; i < WS_PredCount; i++) {
-                    if (i != WS_PredInd) {
-                        for (int j = 0; j <= numRadii - 1; j++)
-                            tempList[tempIndex, j] = WS_Pred[i, j];
-
-                        tempIndex++;
-                    }
-                }
-
-                WS_Pred = tempList;
-            }
-            else 
-                WS_Pred = new WS_CrossPreds[newCount + 1, numRadii];
-        }
-
-        public void RemoveWS_PredExceptDefault() // this doesn't look like it does anything
-        {
-            // Deletes all WS_Estimate except default model
-            int newCount = 1;
-            int numRadii = WS_Pred.GetUpperBound(1) + 1;
-
-            WS_CrossPreds[,] tempList = new WS_CrossPreds[newCount, numRadii];
-            int tempIndex = 0;
-
-            for (int j = 0; j <= numRadii - 1; j++)
-                tempList[0, j] = WS_Pred[0, j];
-
-            tempIndex = tempIndex + 1;
-
-            WS_Pred = tempList;
-
+        }          
+       
+        /// <summary> Clears all wind speed cross-predictions for pair of mets. </summary>
+        public void ClearWS_Preds()
+        {            
+            WS_Pred = null;
         }
 
         

@@ -9,7 +9,7 @@ namespace Continuum_Tests
     [TestClass]
     public class MetDataFilter_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MetDataFilter";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MetDataFilter";
 
         [TestMethod]
         public void ConvertToMPS_Test()
@@ -41,7 +41,9 @@ namespace Continuum_Tests
             Assert.AreEqual(theseAvgAlphas[0], 0.297582647, 0.001, "Wrong average alpha for Test 1");
 
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
-            thisMet.metData.FilterData("All");
+            string[] filtsToApply = new string[1];
+            filtsToApply[0] = "All";
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.startDate = Convert.ToDateTime("8/1/2008");
             thisMet.metData.endDate = Convert.ToDateTime("10/31/2008");
             thisMet.metData.EstimateAlpha();
@@ -49,7 +51,7 @@ namespace Continuum_Tests
             Assert.AreEqual(theseAvgAlphas[0], 0.320117958, 0.001, "Wrong average alpha for Test 2");
 
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
-            thisMet.metData.FilterData("All");
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.startDate = Convert.ToDateTime("6/25/2008");
             thisMet.metData.endDate = Convert.ToDateTime("6/24/2009 23:50");
             thisMet.metData.EstimateAlpha();
@@ -57,7 +59,7 @@ namespace Continuum_Tests
             Assert.AreEqual(theseAvgAlphas[0], 0.33187482, 0.001, "Wrong average alpha for Test 3");
 
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
-            thisMet.metData.FilterData("All");
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.startDate = Convert.ToDateTime("6/25/2008");
             thisMet.metData.endDate = Convert.ToDateTime("6/24/2009 23:50");
             thisMet.metData.EstimateAlpha();
@@ -65,7 +67,7 @@ namespace Continuum_Tests
             Assert.AreEqual(theseAvgAlphas[2], 0.160170555, 0.001, "Wrong average alpha for Test 4");
 
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
-            thisMet.metData.FilterData("All");
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.startDate = Convert.ToDateTime("1/1/2009");
             thisMet.metData.endDate = Convert.ToDateTime("3/15/2009");
             thisMet.metData.EstimateAlpha();
@@ -73,7 +75,7 @@ namespace Continuum_Tests
             Assert.AreEqual(theseAvgAlphas[0], 0.347682384, 0.001, "Wrong average alpha for Test 5");
 
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
-            thisMet.metData.FilterData("All");
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.startDate = Convert.ToDateTime("12/30/2008");
             thisMet.metData.endDate = Convert.ToDateTime("2/1/2009");
             thisMet.metData.EstimateAlpha();
@@ -92,10 +94,12 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            double[] thisWS = thisMet.metData.Calc_Avg_WS_by_WD(Convert.ToDateTime("6/24/2008 15:00"), Convert.ToDateTime("6/30/2009 23:50"), 0, "Filtered");
+            Met_Data_Filter.Anem_Data anem = thisMet.metData.anems[0];
+            Met_Data_Filter.Vane_Data vane = thisMet.metData.vanes[0];
+            double[] thisWS = thisMet.metData.Calc_Avg_WS_by_WD(Convert.ToDateTime("6/24/2008 15:00"), Convert.ToDateTime("6/30/2009 23:50"), anem, vane, "Filtered");
             Assert.AreEqual(thisWS[12], 4.09828434, 0.0001, "Wrong avg WS Test 1");
 
-            thisWS = thisMet.metData.Calc_Avg_WS_by_WD(Convert.ToDateTime("10/28/2008 19:20"), Convert.ToDateTime("4/15/2009 2:50"), 0, "Unfiltered");
+            thisWS = thisMet.metData.Calc_Avg_WS_by_WD(Convert.ToDateTime("10/28/2008 19:20"), Convert.ToDateTime("4/15/2009 2:50"), anem, vane, "Unfiltered");
             Assert.AreEqual(thisWS[63], 4.670447715, 0.0001, "Wrong avg WS Test 2");
 
             thisInst.Close();
@@ -111,10 +115,11 @@ namespace Continuum_Tests
 
             Met thisMet = thisInst.metList.metItem[0];
 
-            double[] thisWR = thisMet.metData.Calc_Wind_Rose(Convert.ToDateTime("6/24/2008 15:00"), Convert.ToDateTime("6/30/2009 23:50"), 0, "Filtered");
+            Met_Data_Filter.Vane_Data vane = thisMet.metData.vanes[0];
+            double[] thisWR = thisMet.metData.Calc_Wind_Rose(Convert.ToDateTime("6/24/2008 15:00"), Convert.ToDateTime("6/30/2009 23:50"), vane, "Filtered");
             Assert.AreEqual(thisWR[4], 0.066466684, 0.0001, "Wrong wind rose Test 1");
 
-            thisWR = thisMet.metData.Calc_Wind_Rose(Convert.ToDateTime("11/2/2008 2:40"), Convert.ToDateTime("2/2/2009 13:00"), 0, "Filtered");
+            thisWR = thisMet.metData.Calc_Wind_Rose(Convert.ToDateTime("11/2/2008 2:40"), Convert.ToDateTime("2/2/2009 13:00"), vane, "Filtered");
             Assert.AreEqual(thisWR[10], 0.143694678, 0.0001, "Wrong wind rose Test 2");
 
             thisInst.Close();
@@ -217,23 +222,25 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            
+            Met_Data_Filter.Anem_Data anemA = new Met_Data_Filter.Anem_Data();
+            Met_Data_Filter.Anem_Data anemB = new Met_Data_Filter.Anem_Data();
+
             thisMet.metData.startDate = Convert.ToDateTime("1/6/2009 3:00");
             thisMet.metData.endDate = Convert.ToDateTime("4/15/2009 16:00");
 
-            Met_Data_Filter.Conc_WS_Data thisConcData = thisMet.metData.GetConcWS(30, "Filtered", thisInst, thisMet.name);
+            Met_Data_Filter.Conc_WS_Data thisConcData = thisMet.metData.GetConcWS(30, "Filtered", thisInst, thisMet.name, anemA, anemB);
             Assert.AreEqual(thisConcData.anemA_WS.Length, 11166, 0, "Wrong number in Test 1");
 
             thisMet.metData.startDate = Convert.ToDateTime("12/15/2008 18:00");
             thisMet.metData.endDate = Convert.ToDateTime("2/16/2009 4:00");
 
-            thisConcData = thisMet.metData.GetConcWS(40, "Filtered", thisInst, thisMet.name);
+            thisConcData = thisMet.metData.GetConcWS(40, "Filtered", thisInst, thisMet.name, anemA, anemB);
             Assert.AreEqual(thisConcData.anemA_WS.Length, 7369, 0, "Wrong number in Test 2");
 
             thisMet.metData.startDate = Convert.ToDateTime("3/3/2009 22:00");
             thisMet.metData.endDate = Convert.ToDateTime("3/31/2009 1:00");
 
-            thisConcData = thisMet.metData.GetConcWS(50, "Filtered", thisInst, thisMet.name);
+            thisConcData = thisMet.metData.GetConcWS(50, "Filtered", thisInst, thisMet.name, anemA, anemB);
             Assert.AreEqual(thisConcData.anemA_WS.Length, 2895, 0, "Wrong number in Test 3");
 
             thisInst.Close();
@@ -248,6 +255,8 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
+            string[] filtsToApply = new string[1];
+            filtsToApply[0] = "All";
 
             thisMet.metData.startDate = Convert.ToDateTime("6/24/2008 15:00");
             thisMet.metData.endDate = Convert.ToDateTime("1/22/2009 18:30");
@@ -260,7 +269,7 @@ namespace Continuum_Tests
 
             // Test 2
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
-            thisMet.metData.FilterData("All");
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.startDate = Convert.ToDateTime("10/13/2008 21:30");
             thisMet.metData.endDate = Convert.ToDateTime("6/30/2009 23:50");
             thisMet.metData.EstimateAlpha();
@@ -270,7 +279,7 @@ namespace Continuum_Tests
 
             // Test 3
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
-            thisMet.metData.FilterData("All");
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.startDate = Convert.ToDateTime("1/6/2009");
             thisMet.metData.endDate = Convert.ToDateTime("6/1/2009");
             thisMet.metData.EstimateAlpha();
@@ -280,7 +289,7 @@ namespace Continuum_Tests
 
             // Test 4
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
-            thisMet.metData.FilterData("All");
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.startDate = Convert.ToDateTime("1/1/2009 13:00");
             thisMet.metData.endDate = Convert.ToDateTime("1/2/2009 12:00");
             thisMet.metData.EstimateAlpha();
@@ -594,7 +603,9 @@ namespace Continuum_Tests
 
             Met thisMet = thisInst.metList.metItem[0];
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
-            thisMet.metData.FilterData("All");
+            string[] filtsToApply = new string[1];
+            filtsToApply[0] = "All";
+            thisMet.metData.FilterData(filtsToApply);
 
             int SD_Flag_Count = 0;
             int Icing_Flag_Count = 0;
@@ -924,7 +935,9 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            thisMet.metData.FilterData("All");
+            string[] filtsToApply = new string[1];
+            filtsToApply[0] = "All";
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.EstimateAlpha();
 
             thisMet.metData.ExtrapolateData(80);
@@ -947,7 +960,9 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            thisMet.metData.FilterData("All");
+            string[] filtsToApply = new string[1];
+            filtsToApply[0] = "All";
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.EstimateAlpha();
 
             Assert.AreEqual(thisMet.metData.alpha[0].alpha, 2.231940771, 0.001, "Wrong alpha Test 1");
@@ -1014,7 +1029,9 @@ namespace Continuum_Tests
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
             thisMet.metData.startDate = Convert.ToDateTime("8/1/2008 0:00");
             thisMet.metData.endDate = Convert.ToDateTime("1/28/2009 0:00");
-            thisMet.metData.FilterData("All");
+            string[] filtsToApply = new string[1];
+            filtsToApply[0] = "All";
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.EstimateAlpha();
             thisMet.metData.ExtrapolateData(80);
 
@@ -1024,7 +1041,7 @@ namespace Continuum_Tests
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
             thisMet.metData.startDate = Convert.ToDateTime("6/24/2008 0:00");
             thisMet.metData.endDate = Convert.ToDateTime("12/2/2008 0:00");
-            thisMet.metData.FilterData("All");
+            thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.EstimateAlpha();
             thisMet.metData.ExtrapolateData(80);
             thisRec = thisMet.metData.CalcExtrapRecovery(thisMet.metData.simData[0]);

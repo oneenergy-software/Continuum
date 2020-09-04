@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary>
+    /// Class that adds an exceedance curve (i.e. performance factor) curve
+    /// </summary>
     public partial class AddPFCurve : Form
     {
+        /// <summary> True if exceedance curve is successfully defined </summary>
         public bool goodToGo = false;
 
+        /// <summary> Class initializer </summary>
         public AddPFCurve()
         {
             InitializeComponent();
@@ -30,9 +28,9 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Updates dropdown menu to show curves that have yet to be defined </summary>        
         public void UpdateDropdown(Exceedance.ExceedanceCurve[] exceedanceCurves)
-        {
-            // Updates dropdown menu to only show curves that have yet to be defined
+        {            
             cboCurves.Items.Clear();
             string exceedStr = "";
 
@@ -90,9 +88,10 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Checks list of curves to see if exceedance curve is defined </summary>        
+        /// <returns> True if specified exceedance curve is defined </returns>
         public bool CurveIsDefined(Exceedance.ExceedanceCurve[] exceedanceCurves, string exceedStr)
-        {
-            // Returns true if exceedance curve is defined
+        {            
             bool isDefined = false;
 
             if (exceedanceCurves == null)

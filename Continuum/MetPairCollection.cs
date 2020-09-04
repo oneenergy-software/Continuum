@@ -1,141 +1,150 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that holds collection of met pairs and list of Round Robin analyses results. Class includes functions to generate site-calibrated model and to 
+    /// conduct Round Robin uncertainty analysis. </summary>
     [Serializable()]
     public class MetPairCollection
     {
-        public Pair_Of_Mets[] metPairs; // List of met pairs
-        public RR_WS_Ests[] roundRobinEsts;   // List of Round Robin estimates
+        /// <summary> List of met pairs </summary>
+        public Pair_Of_Mets[] metPairs;
+        /// <summary> List of Round Robin estimates </summary>
+        public RR_WS_Ests[] roundRobinEsts;
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Holds all data for a Round Robin estimate including mets used, site-calibrated models, wind speed estimates and RMS errors (overall and sectorwise). </summary>
         [Serializable()] public struct RR_WS_Ests
         {
-            public string[] metsUsed;   // All mets used in Round Robin calcs
-            public int metSubSize;   // Size of subset of mets            
-            public Model[,] model;   // List of models [i, j]; i = model #, j = radius ind
-            public Avg_Est[,] avgWS_Ests;   // Avg ests. at mets not used in model  i = predictee Met num j = Model #
-            public string[,] metsInModel;   // Mets used in every model i = Num mets used j = Model num
-            public double[] RMS_Err;   // RMS error of every model (i.e. average of all avgWS_Est(i,j) for each model [j], averaged over all predictee mets
-            public double RMS_All;   // RMS error overall (i.e. average over all UW&DW models (or combinations of mets))
-       //     public bool isWS_Weighted;            
+            /// <summary> All mets used in Round Robin calcs </summary>
+            public string[] metsUsed;
+            /// <summary> Met subset size </summary>
+            public int metSubSize;
+            /// <summary> List of models [i, j]; i = model #, j = radius ind </summary>
+            public Model[,] model;
+            /// <summary> Avg ests. at mets not used in model  i = predictee Met num j = Model # </summary>
+            public Avg_Est[,] avgWS_Ests;
+            /// <summary> Mets used in every model i = Num mets used j = Model num </summary>
+            public string[,] metsInModel;
+            /// <summary> RMS error of every model (i.e. average of all avgWS_Est(i,j) for each model [j], averaged over all predictee mets </summary>
+            public double[] RMS_Err;
+            /// <summary> RMS error overall (i.e. average over all UW&DW models (or combinations of mets)) </summary>
+            public double RMS_All;            
         }
 
+        /// <summary> Holds the results of a Round Robin estimate at a met site </summary>
         [Serializable()] public struct Avg_Est
         {
-            public string predictee;  // Met site being predicted in Round Robin
-            public double avgWS;   // 
-            public double estError;   // 
-            public int WS_Count;   // Number of WS estimates that formed average
+            /// <summary> Met site being predicted in Round Robin </summary>
+            public string predictee;
+            /// <summary> Average wind speed estimate </summary>
+            public double avgWS;
+            /// <summary> Average wind speed estimate error </summary>
+            public double estError;
+            /// <summary> Number of WS estimates that formed average </summary>
+            public int WS_Count;
         }
 
-        /// <summary>
-        /// Holds inputs and results of Round Robin analysis 
-        /// </summary>
+        /// <summary> Holds inputs and results of Round Robin analysis  </summary>
         public struct RR_funct_obj
         {
-            /// <summary> Models used in Round Robin /// </summary>
+            /// <summary> Models used in Round Robin. </summary>
             public Model[] models; 
-
-            /// <summary> Mets omitted from model. Using Turbine class to hold estimates. /// </summary>
+            /// <summary> Mets omitted from model. Using Turbine class to hold estimates. </summary>
             public Turbine[] omittedMets;
-
             /// <summary> Actual wind speeds at omitted met sites </summary>
             public double[] actualWS_AtMets;
-
             /// <summary> Wind speed estimate error at omitted met sites </summary>
-            public double[] errsAtOmittedMets;            
-
+            public double[] errsAtOmittedMets; 
             /// <summary> RMS error of Round Robin estimates </summary>
             public double errRMS;
         }
 
+        /// <summary> Holds min/max overall/sectorwise UW/DW exposure/P10 Exposure and sum of UW & DW exposure </summary>
         public struct MinMax_Expos
         {
+            /// <summary> Overall average P10 exposure </summary>
             public double avgP10Expo;
+            /// <summary> Minimum overall upwind exposure </summary>
             public double minUW_Expo;
+            /// <summary> Maximum overall upwind exposure </summary>
             public double maxUW_Expo;
-            public double[] minUW_ExpoWD  ;
-            public double[] maxUW_ExpoWD  ;
-
-            public double minSumUWDW_Expo ;
-            public double maxSumUWDW_Expo ;
+            /// <summary> Minimum sectorwise upwind exposure </summary>
+            public double[] minUW_ExpoWD;
+            /// <summary> Maximum sectorwise upwind exposure </summary>
+            public double[] maxUW_ExpoWD;
+            /// <summary> Minimum overall sum of upwind and downwind exposure </summary>
+            public double minSumUWDW_Expo;
+            /// <summary> Maximum overall sum of upwind and downwind exposure </summary>
+            public double maxSumUWDW_Expo;
+            /// <summary> Minimum sectorwise sum of upwind and downwind exposure </summary>
             public double[] minSumUWDW_ExpoWD;
+            /// <summary> Maximum sectorwise sum of upwind and downwind exposure </summary>
             public double[] maxSumUWDW_ExpoWD;
-
+            /// <summary> Minimum sectorwise wind speed </summary>
             public double[] minWS_WD;
+            /// <summary> Maximum sectorwise wind speed </summary>
             public double[] maxWS_WD;
-
+            /// <summary> Sectorwise average P10 exposure </summary>
             public double[] avgP10ExpoWD;
         }
 
-        /// <summary>
-        /// Adjusted model coefficients
-        /// </summary>
+        /// <summary> Continuum adjusted model coefficients for each flow type (downhill, uphill, induced speed-up, and flow separation). </summary>
         public struct Model_Adj
         {
             /// <summary> Downhill model parameter, A, multiplier by direction sector </summary>
             public double[] DH_A_Adj;
             /// <summary> Downhill model parameter, B, multiplier by direction sector </summary>
             public double[] DH_B_Adj;
-
             /// <summary> Uphill model parameter, A, multiplier by direction sector </summary>
             public double[] UH_A_Adj;
             /// <summary> Uphill model parameter, B, multiplier by direction sector </summary>
             public double[] UH_B_Adj;
-
             /// <summary> Speed-up model parameter, A, multiplier by direction sector </summary>
             public double[] SU_A_Adj;
             /// <summary> Speed-up model parameter, B, multiplier by direction sector </summary>
             public double[] SU_B_Adj;
-
             /// <summary> Critical UW exposure by direction sector </summary>
             public double[] UW_Crit;
-
             /// <summary> Flow separation model parameter, A, multiplier by direction sector </summary>
             public double[] sepA_DW_Adj;
             /// <summary> Flow separation model parameter, B, multiplier by direction sector </summary>
             public double[] sepB_DW_Adj;
-
             /// <summary> Flow separation model turbulent zone wind speed factor </summary>
             public double[] turbWS_Fact;
             /// <summary> Flow separation model critical UWDW exposure sum </summary>
             public double[] sepCrit;
             /// <summary> Flow separation model critical wind speed </summary>
             public double[] sepCritWS;
-
             /// <summary> Downhill roughness model stability parameter </summary>
             public double[] DH_Stab_A;
             /// <summary> Uphill roughness model stability parameter </summary>
             public double[] UH_Stab_A;
             /// <summary> Speed-up roughness model stability parameter </summary>
-            public double[] SU_Stab_A;
-
-          //  public double[] stabB;
+            public double[] SU_Stab_A;          
         }
 
-        /// <summary>
-        /// Best-fit model coefficients found from regression analysis. Used as starting point for site calibration
-        /// </summary>
+        /// <summary> Holds Continuum model coefficients found from regression analysis. Used as starting point for site calibration. </summary>
         public struct Init_Params
         { 
-            /// <summary> Downhill coefficient /// </summary>
+            /// <summary> Downhill coefficient </summary>
             public double DH;
-            /// <summary> Uphill coefficient /// </summary>
+            /// <summary> Uphill coefficient </summary>
             public double UH;
-            /// <summary> Speed-up coefficient /// </summary>
+            /// <summary> Speed-up coefficient </summary>
             public double SU;
-            /// <summary> Flow separation model downhill coefficient /// </summary>
+            /// <summary> Flow separation model downhill coefficient </summary>
             public double FS_DW;
-            /// <summary> Critical upwind exposure /// </summary>
+            /// <summary> Critical upwind exposure </summary>
             public double UW_Crit;
-            /// <summary> Flow separation critical UWDW exposure sum /// </summary>
+            /// <summary> Flow separation critical UWDW exposure sum </summary>
             public double sepCrit;
         }
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Returns number of met pairs. </summary>
         public int PairCount
         {
             get
@@ -147,6 +156,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns number of Round Robin estimates. </summary>
         public int RoundRobinCount
         {
             get
@@ -158,6 +168,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns met pair for specified two mets. </summary>
         public Pair_Of_Mets GetPair_Of_Mets(Met met1, Met met2)
         {
             Pair_Of_Mets thisPair = new Pair_Of_Mets();
@@ -170,9 +181,9 @@ namespace ContinuumNS
             return thisPair;
         }
 
+        /// <summary> Finds and returns Round Robin analysis results using specified subset size. </summary>
         public RR_WS_Ests GetRoundRobinEst(int numMetsInModel, Continuum thisInst, string MCP_Method)
-        {
-            // Finds and returns RR_WS_Ests object with Round Robin analysis results using numMets
+        {            
             RR_WS_Ests thisRR = new RR_WS_Ests();
 
             for (int i = 0; i < RoundRobinCount; i++)
@@ -203,7 +214,7 @@ namespace ContinuumNS
                                         
                 }
 
-                AddRoundRobinEst(RR_obj_coll, thisInst.metList.GetMetsUsed(), numMetsInModel, metsForModels, true, thisInst.metList);
+                AddRoundRobinEst(RR_obj_coll, thisInst.metList.GetMetsUsed(), numMetsInModel, metsForModels);
             }
 
             for (int i = 0; i < RoundRobinCount; i++)
@@ -218,9 +229,9 @@ namespace ContinuumNS
             return thisRR;
         }
 
+        /// <summary> Returns false if Round Robin has already been calculated. </summary>
         public bool RR_DoneAlready(string[] metsUsed, int metSubSize, MetCollection metList)
-        {
-            // Returns false if Round Robin has already been calculated
+        {           
             bool alreadyDone = false;
             
             for (int i = 0; i < RoundRobinCount; i++)
@@ -233,66 +244,30 @@ namespace ContinuumNS
             return alreadyDone;
         }
 
+        /// <summary> Clears all met pairs and Round Robin estimates. </summary>
         public void ClearAll()
-        {
-            // Clears all met pairs and Round Robin estimates
+        {             
             metPairs = null;
             roundRobinEsts = null;
-        }                
-
-        public void RemoveAllWithDeletedMets(MetCollection metList)
-        {
-            // Deletes met pairs with mets that have been deleted
-            int numMets = metList.ThisCount;
-            bool haveMet1 = false;
-            bool haveMet2 = false;
-            Pair_Of_Mets[] newMetPairs = null;
-            int keepPairCount = 0;
-
-            for (int i = 0; i < PairCount; i++)
-            {
-                haveMet1 = false;
-                haveMet2 = false;
-                for (int j = 0; j < numMets; j++)
-                {
-                    if (metPairs[i].met1.name == metList.metItem[j].name)
-                        haveMet1 = true;
-
-                    if (metPairs[i].met2.name == metList.metItem[j].name)
-                        haveMet2 = true;
-                    
-                }
-
-                if (haveMet1 == true && haveMet2 == true)
-                {
-                    Array.Resize(ref newMetPairs, keepPairCount + 1);
-                    newMetPairs[keepPairCount] = metPairs[i];
-                    keepPairCount++;
-                }
-            }
-
-            metPairs = null;
-            metPairs = newMetPairs;                     
-
         }
 
+        /// <summary> Delete wind speed estimates except for default model. </summary>
         public void RemoveAllExceptDefault()
-        {
-            // Delete wind speed estimates except for default model
+        {            
             for (int i = 0; i < PairCount; i++)
-                metPairs[i].RemoveWS_PredExceptDefault();
+                metPairs[i].ClearWS_Preds();
             
         }
 
+        /// <summary> Clears all Round Robin estimates. </summary>
         public void ClearRoundRobin()
-        {
-            // Clears all Round Robin estimates
+        {           
             roundRobinEsts = null;
         }
 
+        /// <summary> Creates a Pair_of_Mets for every combination of mets and adds to list. </summary>
         public void CreateMetPairs(Continuum thisInst)
-        {
-            // Creates a Pair_of_Mets for every combination of mets and adds to list
+        {            
             int numMets = thisInst.metList.ThisCount;           
             int numRadii = thisInst.radiiList.ThisCount;
 
@@ -324,9 +299,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Adds met pair to list. </summary>
         public void AddMetPair(Met met1, Met met2)
-        {
-            // Adds met pair to list
+        {           
             Array.Resize(ref metPairs, PairCount + 1);
 
             metPairs[PairCount - 1] = new Pair_Of_Mets();
@@ -344,15 +319,10 @@ namespace ContinuumNS
                        
         }
 
-            
+        /// <summary> Finds min/max UW expo (used to initialize UW crit), min/max sum of UWDW (used in flow separation model), avg P10 expo and min/max WS. </summary>
         public void Calc_MinMax_Expos(ref MinMax_Expos theseMinMax, double[] windRose, int radiusIndex, MetCollection metList, Model thisModel)
-        {
-            // Finds min/max UW expo (used to initialize UW crit), min/max sum of UWDW (used in flow separation model), avg P10 expo and min/max WS
-                   
-            int numWD = windRose.Length;
-            double UW_Expo = 0;
-            double DW_Expo = 0;
-                        
+        {                               
+            int numWD = windRose.Length;                                    
             int numMetsUsed = thisModel.metsUsed.Length;           
             
             for (int i = 0; i < numMetsUsed; i++)
@@ -360,8 +330,8 @@ namespace ContinuumNS
                 Met thisMet = metList.GetMet(thisModel.metsUsed[i]);
                 Met.WSWD_Dist thisDist = thisMet.GetWS_WD_Dist(thisModel.height, thisModel.timeOfDay, thisModel.season);
 
-                UW_Expo = thisMet.expo[radiusIndex].GetOverallValue(thisDist.windRose, "Expo", "UW");
-                DW_Expo = thisMet.expo[radiusIndex].GetOverallValue(thisDist.windRose, "Expo", "DW");
+                double UW_Expo = thisMet.expo[radiusIndex].GetOverallValue(thisDist.windRose, "Expo", "UW");
+                double DW_Expo = thisMet.expo[radiusIndex].GetOverallValue(thisDist.windRose, "Expo", "DW");
 
                 theseMinMax.avgP10Expo = theseMinMax.avgP10Expo + Math.Max(thisMet.gridStats.GetOverallP10(windRose, radiusIndex, "UW"), thisMet.gridStats.GetOverallP10(windRose, radiusIndex, "DW"));
                 if (UW_Expo < theseMinMax.minUW_Expo)
@@ -413,21 +383,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Performs all wind speed cross-estimates for all met pairs with modified model
-        /// Finds value that generates lowest error (sectorwise)
-        /// </summary>
-        /// <param name="thisInst"></param>
-        /// <param name="minVal">Minimum value to sweep</param>
-        /// <param name="maxVal">Maximum value to sweep</param>
-        /// <param name="valInt">Interval size to sweep</param>
-        /// <param name="WD_Ind">Wind direction index</param>
-        /// <param name="iterType">Model parameter to sweep</param>
-        /// <param name="model">Referenced model</param>
-        /// <param name="adjModel">Adjusted model coefficients</param>
-        /// <param name="maxSumUWDW_ExpoWD">Max UWDW exposure sum by wind direction</param>
-        /// <param name="avgP10ExpoWD">Average P10 Exposure by wind direction</param>
-        /// <param name="theseInit">Initial best-fit model parameters</param>
+        /// <summary> Performs all wind speed cross-estimates for all met pairs with modified model. Finds value that generates lowest error (sectorwise) </summary>       
         public void Sweep_a_Param(Continuum thisInst, double minVal, double maxVal, double valInt, int WD_Ind, string iterType, ref Model model, Model_Adj adjModel, 
                                     double[] maxSumUWDW_ExpoWD, double[] avgP10ExpoWD, Init_Params theseInit)
         {
@@ -703,10 +659,10 @@ namespace ContinuumNS
             }
             
         }
-         
+
+        /// <summary> Sizes arrays in modified wind flow model </summary>    
         public void SizeAdjModel(ref Model_Adj thisAdjModel, int numWD)
-        {
-            // Sizes arrays in modified wind flow model
+        {            
             thisAdjModel.DH_A_Adj = new double[numWD];
             thisAdjModel.DH_B_Adj = new double[numWD];
             thisAdjModel.UH_A_Adj = new double[numWD];
@@ -727,9 +683,9 @@ namespace ContinuumNS
           //  thisAdjModel.stabB = new double[numWD];
         }
 
+        /// <summary> If more than three mets used in model, finds the overall UW and DW exposure and fits a linear regression. if R^2 less 0.7 or if mdw less 0 and muw > 0 then uses default model. </summary>    
         public void FindBestInitCoeffs(Model thisModel, ref Init_Params theseInitParams, ref double[] initCoeffs, MetCollection metList, int radiusIndex, MinMax_Expos theseMinMax)
-        {
-            // if more than three mets used in model, finds the overall UW and DW exposure and fits a linear regression. if R^2 < 0.7 or if mdw < 0 and muw > 0 then uses default model.
+        {            
             int WS_ind = 0;
             int numMetsUsed = thisModel.metsUsed.Length;
             double[,] UW_DW_array = new double[numMetsUsed, 3];
@@ -811,11 +767,10 @@ namespace ContinuumNS
             }
 
         }
-        
 
+        /// <summary> Initializes the Min/Max Exposure values used in site-calibration sweep. </summary> 
         public void InitMinMaxExpos(ref MinMax_Expos theseMinMax, int numWD)
-        {
-            // Initializes the Min/Max Exposure values used in site-calibration sweep
+        {            
             theseMinMax.avgP10Expo = 0;
             theseMinMax.minUW_Expo = 1000;
             theseMinMax.maxUW_Expo = 0;
@@ -841,14 +796,11 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Using coarse step sizes and broad ranges, this function: Sweeps downhill, uphill and speed-up 'A coeffs' (which modifies the magnitude of the coeffs) and UW_crit. 
+        /// If surface roughness model is used, sweeps UH/DH/SU stability exponents. If flow separation model is used, sweeps critical UWDW, turbulent 'A' coeff and turbulent zone WS 
+        /// factor (which affects the wind speed in the turbulent zone downwind of point of separation). Finds coeffs that yield the lowest cross-prediction error and stores them in referenced Model_Adj object. </summary> 
         public void DoCoarseSweep(Continuum thisInst, Model thisModel, ref Model_Adj thisAdjModel, Init_Params theseInitParams, MinMax_Expos theseMinMax)
         {
-            // Using coarse step sizes and broad ranges, this function: 
-            // Sweeps downhill, uphill and speed-up //A coeffs// (which modifies the magnitude of the coeffs) and UW_crit
-            // if surface roughness model is used, sweeps UH/DH/SU stability exponents
-            // if flow separation model is used, sweeps critical UWDW, turbulent //A// coeff and turbulent zone WS factor (which affects the wind speed in the turbulent zone downwind of point of separation)
-            // && finds coeffs that yield the lowest cross-prediction error and stores them as Model_Adj object
-
             double overallRMS_err;
             double RMS_Err;
             int numWD = thisInst.metList.numWD;
@@ -929,14 +881,11 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Using finer step sizes and smaller ranges, this function: Sweeps downhill, uphill and speed-up 'A coeffs' (which modifies the magnitude of the coeffs) and UW_crit. 
+        /// If surface roughness model is used, sweeps UH/DH/SU stability exponents. If flow separation model is used, sweeps critical UWDW, turbulent 'A' coeff and turbulent zone WS factor 
+        /// (which affects the wind speed in the turbulent zone downwind of point of separation) and finds coeffs that yield the lowest cross-prediction error and stores them in referenced Model_Adj object </summary>        
         public void DoFineSweep(Continuum thisInst, Model thisModel, ref Model_Adj thisAdjModel, Init_Params theseInitParams, MinMax_Expos theseMinMax)
-        {
-            // Using finer step sizes and smaller ranges, this function: 
-            // Sweeps downhill, uphill and speed-up //A coeffs// (which modifies the magnitude of the coeffs) and UW_crit
-            // if ( surface roughness model is used, sweeps UH/DH/SU stability exponents
-            // if ( flow separation model is used, sweeps critical UWDW, turbulent //A// coeff and turbulent zone WS factor (which affects the wind speed in the turbulent zone downwind of point of separation)
-            // && finds coeffs that yield the lowest cross-prediction error and stores them as Model_Adj object
-
+        {            
             double lowLim;
             double upperLim;
             double overallRMS_err;
@@ -949,9 +898,6 @@ namespace ContinuumNS
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
-                if (WD_Ind == 11)
-                    WD_Ind = WD_Ind;
-
                 // 1) Sweep UW Crit
 
                 lowLim = 0.7f * thisAdjModel.UW_Crit[WD_Ind];
@@ -1056,6 +1002,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Initializes the referenced adjusted model (Model_Adj) with the initial coefficients. </summary>        
         public void InitializeAdjModel(ref Model_Adj thisAdjModel, int numWD, Init_Params theseInitParams, double[] initCoeffs, Model thisModel, MinMax_Expos theseMinMax)
         {
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
@@ -1085,15 +1032,12 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Finds site-calibrated model by sweeping parameters and finding model that minimizes cross-prediction error. </summary>   
         public void SweepFindMinError(Model thisModel, Continuum thisInst)
-        {
-            // Finds site-calibrated model by sweeping parameters and finding model that minimizes cross-prediction error          
-                        
+        {                       
             double[] windRose = thisInst.metList.GetAvgWindRoseMetsUsed(thisModel.metsUsed, thisModel.timeOfDay, thisModel.season, thisModel.height);
             MetCollection metList = thisInst.metList;
-            ModelCollection modelList = thisInst.modelList;            
-            NodeCollection nodeList = new NodeCollection();
-
+            
             int radiusIndex = thisInst.radiiList.GetRadiusInd(thisModel.radius);      
             int numWD = thisInst.metList.numWD;
             Model_Adj thisAdjModel = new Model_Adj();
@@ -1191,12 +1135,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Conducts linear regression and calculates the initial UW and DW coefficients (based on overall wind speed and overall UW/DW exposure) before doing site-calibration
-        /// </summary>
-        /// <param name="UW_DW_array"></param>
-        /// <param name="WS_array"></param>
-        /// <returns></returns>
+        /// <summary> Conducts linear regression and calculates the initial UW and DW coefficients (based on overall wind speed and overall UW/DW exposure) before doing site-calibration. </summary>        
         public double[] FindInitCoeffs(double[,] UW_DW_array, double[] WS_array)
         {             
             double[] coeffs = new double[4];
@@ -1229,11 +1168,10 @@ namespace ContinuumNS
 
 
             // Now find inverse of X'X: Inv(X'X)
-            // First check to make sure that it is invertible
-            double det = 0;
+            // First check to make sure that it is invertible            
             double[,] invXprimeX = new double[numParams, numParams];
 
-            det = (XprimeX[0, 0] * XprimeX[1, 1] * XprimeX[2, 2]) + (XprimeX[1, 0] * XprimeX[2, 1] * XprimeX[0, 2]) +
+            double det = (XprimeX[0, 0] * XprimeX[1, 1] * XprimeX[2, 2]) + (XprimeX[1, 0] * XprimeX[2, 1] * XprimeX[0, 2]) +
                     (XprimeX[2, 0] * XprimeX[0, 1] * XprimeX[1, 2]) - (XprimeX[0, 0] * XprimeX[2, 1] * XprimeX[1, 2]) -
                     (XprimeX[2, 0] * XprimeX[1, 1] * XprimeX[0, 2]) - (XprimeX[1, 0] * XprimeX[0, 1] * XprimeX[2, 2]);
 
@@ -1314,165 +1252,18 @@ namespace ContinuumNS
 
         }
 
-        public double[,] GetMinAndMaxP10Expo(Model model, InvestCollection radiiList, int WD_Ind, int numWD)
-        {
-            // Finds the min and max P10 expo for Pos and Neg UW and DW exposure of mets and nodes (if any)
-            double[,] minMaxP10Expo = new double[4, 2]; // i = 0 Pos DW, 1 Neg DW, 2 Pos UW, 3 Neg UW; j = 0 Min, 1 Max
-            double minPosDW = 1000;
-            double maxPosDW = 0;
-            double minNegDW = 1000;
-            double maxNegDW = 0;
-            double minPosUW = 1000;
-            double maxPosUW = 0;
-            double minNegUW = 1000;
-            double maxNegUW = 0;
-                                    
-            int radiusIndex = 0;
-            double P10Expo = 0;
-            
-            for (int i = 0; i < radiiList.ThisCount; i++)
-                if (radiiList.investItem[i].radius == model.radius)
-                {
-                    radiusIndex = i;
-                    break;
-                }
-            
-            for (int i = 0; i < PairCount; i++)
-            {
-                // See if mets in pair are used in UW&DW model
-                bool bothMetsUsed = BothInModel(metPairs[i], model);
-
-                if (bothMetsUsed == true)
-                {
-                    // Met 1 P10 expo
-                    if (metPairs[i].met1.gridStats.stats[radiusIndex].P10_DW[WD_Ind] > metPairs[i].met1.gridStats.stats[radiusIndex].P10_UW[WD_Ind])
-                        P10Expo = metPairs[i].met1.gridStats.stats[radiusIndex].P10_DW[WD_Ind];
-                    else
-                        P10Expo = metPairs[i].met1.gridStats.stats[radiusIndex].P10_UW[WD_Ind];                    
-
-                    if (metPairs[i].met1.expo[radiusIndex].expo[WD_Ind] > 0)
-                    {
-                        if (P10Expo < minPosUW) minPosUW = P10Expo;
-                        if (P10Expo > maxPosUW) maxPosUW = P10Expo;
-                    }
-                    else {
-                        if (P10Expo < minNegUW) minNegUW = P10Expo;
-                        if (P10Expo > maxNegUW) maxNegUW = P10Expo;
-                    }
-
-                    if (metPairs[i].met1.expo[radiusIndex].GetDW_Param(WD_Ind, "Expo") > 0)
-                    {
-                        if (P10Expo < minPosDW) minPosDW = P10Expo;
-                        if (P10Expo > maxPosDW) maxPosDW = P10Expo;
-                    }
-                    else {
-                        if (P10Expo < minNegDW) minNegDW = P10Expo;
-                        if (P10Expo > maxNegDW) maxNegDW = P10Expo;
-                    }
-
-                    // Met 2 P10 Expo
-                    if (metPairs[i].met2.gridStats.stats[radiusIndex].P10_DW[WD_Ind] > metPairs[i].met2.gridStats.stats[radiusIndex].P10_UW[WD_Ind])
-                        P10Expo = metPairs[i].met2.gridStats.stats[radiusIndex].P10_DW[WD_Ind];
-                    else
-                        P10Expo = metPairs[i].met2.gridStats.stats[radiusIndex].P10_UW[WD_Ind];
-
-                    if (metPairs[i].met2.expo[radiusIndex].expo[WD_Ind] > 0) {
-                        if (P10Expo < minPosUW) minPosUW = P10Expo;
-                        if (P10Expo > maxPosUW) maxPosUW = P10Expo;
-                    }
-                    else {
-                        if (P10Expo < minNegUW) minNegUW = P10Expo;
-                        if (P10Expo > maxNegUW) maxNegUW = P10Expo;
-                    }
-
-                    if (metPairs[i].met2.expo[radiusIndex].GetDW_Param(WD_Ind, "Expo") > 0)
-                    {
-                        if (P10Expo < minPosDW) minPosDW = P10Expo;
-                        if (P10Expo > maxPosDW) maxPosDW = P10Expo;
-                    }
-                    else {
-                        if (P10Expo < minNegDW) minNegDW = P10Expo;
-                        if (P10Expo > maxNegDW) maxNegDW = P10Expo;
-                    }
-
-                    int numWSEsts = metPairs[i].WS_PredCount;
-
-                    for (int WSEst = 0; WSEst < numWSEsts; WSEst++)
-                    {
-                        int numNodes = metPairs[i].WS_Pred[WSEst, radiusIndex].nodePath.Length;
-
-                        for (int nodeInd = 0; nodeInd < numNodes; nodeInd++)
-                        {
-                            Nodes thisNode = metPairs[i].WS_Pred[WSEst, radiusIndex].nodePath[nodeInd];
-
-                            if (thisNode.gridStats.stats[radiusIndex].P10_DW[WD_Ind] > thisNode.gridStats.stats[radiusIndex].P10_UW[WD_Ind])
-                                P10Expo = thisNode.gridStats.stats[radiusIndex].P10_DW[WD_Ind];
-                            else
-                                P10Expo = thisNode.gridStats.stats[radiusIndex].P10_UW[WD_Ind];
-
-                            if (thisNode.expo[radiusIndex].expo[WD_Ind] > 0)
-                            {
-                                if (P10Expo < minPosUW) minPosUW = P10Expo;
-                                if (P10Expo > maxPosUW) maxPosUW = P10Expo;
-                            }
-                            else {
-                                if (P10Expo < minNegUW) minNegUW = P10Expo;
-                                if (P10Expo > maxNegUW) maxNegUW = P10Expo;
-                            }
-
-                            if (thisNode.expo[radiusIndex].GetDW_Param(WD_Ind, "Expo") > 0)
-                            {
-                                if (P10Expo < minPosDW) minPosDW = P10Expo;
-                                if (P10Expo > maxPosDW) maxPosDW = P10Expo;
-                            }
-                            else {
-                                if (P10Expo < minNegDW) minNegDW = P10Expo;
-                                if (P10Expo > maxNegDW) maxNegDW = P10Expo;
-                            }
-                        }
-                    }
-                }
-            }
-            
-            // i = 0 Pos DW, 1 Neg DW, 2 Pos UW, 3 Neg UW; j = 0 Min, 1 Max
-            minMaxP10Expo[0, 0] = minPosDW;
-            minMaxP10Expo[0, 1] = maxPosDW;
-            minMaxP10Expo[1, 0] = minNegDW;
-            minMaxP10Expo[1, 1] = maxNegDW;
-            minMaxP10Expo[2, 0] = minPosUW;
-            minMaxP10Expo[2, 1] = maxPosUW;
-            minMaxP10Expo[3, 0] = minNegUW;
-            minMaxP10Expo[3, 1] = maxNegUW;
-
-            return minMaxP10Expo;
-
-        }
-
+        /// <summary> Calculates and returns the RMS of the cross-prediction estimates at specified wind direction index. </summary>  
         public double GetRMS_SectorErr(Model model, int WD_Ind)
         {
-            // Calculates and returns the RMS of the cross-prediction estimates at specified wind direction index
-
             double RMS_Err   = 0;
             int RMS_Count   = 0;            
-            int radiusIndex = 0;
-
+            
             for (int i = 0; i < PairCount; i++)
-            {
-                // See if mets in pair are used in UW&DW model
+            {                
                 bool bothMetsUsed = BothInModel(metPairs[i], model);
 
                 if (bothMetsUsed == true)
-                {
-                    for (int m = 0; m <= metPairs[i].WS_Pred.GetUpperBound(1); m++)
-                    { 
-                        if (metPairs[i].WS_Pred[0, m].model.radius == model.radius)
-                        {
-                            radiusIndex = m;
-                            break;
-                        }
-                    }
-                                        
-                    // Find WS prediction using same model 
+                {                    
                     Pair_Of_Mets.WS_CrossPreds thisCrossPred = metPairs[i].GetWS_CrossPred(model);                                      
 
                     RMS_Err = RMS_Err + Math.Pow(thisCrossPred.percErrSector[0, WD_Ind], 2);
@@ -1485,13 +1276,7 @@ namespace ContinuumNS
             return RMS_Err;
         }
 
-        /// <summary>
-        /// Conducts met cross-prediction using modified model and returns RMS error of cross-prediction estimates
-        /// </summary>
-        /// <param name="model">Model used</param>
-        /// <param name="adjModel">Adjusted Model</param>
-        /// <param name="thisInst"></param>
-        /// <returns></returns>
+        /// <summary> Conducts met cross-prediction using modified model and returns RMS error of cross-prediction estimates. </summary>        
         public double SweepGetRMSWithAdjModel(ref Model model, Model_Adj adjModel, Continuum thisInst)
         {            
             double RMS_Err = 0;            
@@ -1562,13 +1347,12 @@ namespace ContinuumNS
             return RMS_Err;
         }
 
+        /// <summary> Returns P10 expo and coefficients for log-log plot on Advanced tab. </summary>
         public double[,] GetCoeffsForLogLogPlot(Model model, Continuum thisInst, NodeCollection nodeList, int WD_sec, string UW_or_DW, string flowType)
-        {
-            // Returns P10 expo and coefficients for log-log plot on Advanced tab
+        {            
             double[,] coeffsAndP10Expos = new double[2, 1]; // Col 1: coeff; Col 2: P10 Expo
             int coeffCount = 0;
-
-            
+                        
             int numWD = thisInst.GetNumWD();
             if (numWD == 0)
                 return coeffsAndP10Expos;                        
@@ -1986,163 +1770,9 @@ namespace ContinuumNS
             return coeffsAndP10Expos;
         }
 
-        public double[,] GetSRandStabCorrsPlot(Model model, ModelCollection modelList, NodeCollection nodeList, int WD_sec, string flowType, string UW_or_DW)
-        {
-            // Returns surface roughness and stability correction for specified flow type and WD sector
-            double[,] stabCorrsAndSurfaceRough = new double[2, 1];   // Col 1: Surface roughness; Col 2: Stability correction
-            int coeffCount = 0;
-            // Dim Last_count  int = 0
-            int numWD = 0;
-
-            try {
-                numWD = model.downhill_A.Length;
-            }
-            catch 
-            {
-                return null;
-            }
-                       
-
-            double[] SR = null;
-            double[] Stab_corr = null;                        
-
-            if (PairCount == 0)
-                return null;
-                        
-            Pair_Of_Mets.WS_CrossPreds thisWS_Est = new Pair_Of_Mets.WS_CrossPreds();
-            int radiusIndex = 0;
-            bool foundWS_Est = false;            
-            double thisDW;
-            double thisUW;
-            
-            for (int i = 0; i < PairCount; i++)
-            {
-                // Check to see if met pair is in UWDW model
-                bool bothMetsUsed = BothInModel(metPairs[i], model);
-
-                if (bothMetsUsed == true)
-                {
-                    foundWS_Est = false;
-                    for (int j = 0; j < metPairs[i].WS_PredCount; j++)
-                    {
-                        for (int k = 0; k <= metPairs[i].WS_Pred.GetUpperBound(1); k++)
-                            if (modelList.IsSameModel(metPairs[i].WS_Pred[j, k].model, model))
-                            {
-                                thisWS_Est = metPairs[i].WS_Pred[j, k];
-                                radiusIndex = k;
-                                foundWS_Est = true;
-                                break;
-                            }
-
-                        if (foundWS_Est == true)
-                            break;
-                    }
-
-                    if (WD_sec < numWD)
-                    {
-                        thisUW = metPairs[i].met1.expo[radiusIndex].expo[WD_sec];
-                        thisDW = metPairs[i].met1.expo[radiusIndex].GetDW_Param(WD_sec, "Expo");
-
-                        Array.Resize(ref SR, coeffCount + 1);
-                        Array.Resize(ref Stab_corr, coeffCount + 1);
-
-                        SR[coeffCount] = metPairs[i].met1.expo[radiusIndex].SR[WD_sec];
-                        Stab_corr[coeffCount] = model.GetStabilityCorrection(thisUW, thisDW, WD_sec, SR[coeffCount], false, UW_or_DW);
-
-                        coeffCount++;
-
-                        if (thisWS_Est.nodePath.Length > 0)
-                        {
-                            for (int n = 0; n < thisWS_Est.nodePath.Length; n++)
-                            {
-                                thisUW = thisWS_Est.nodePath[n].expo[radiusIndex].expo[WD_sec];
-                                thisDW = thisWS_Est.nodePath[n].expo[radiusIndex].GetDW_Param(WD_sec, "Expo");
-
-                                Array.Resize(ref SR, coeffCount + 1);
-                                Array.Resize(ref Stab_corr, coeffCount + 1);
-
-                                SR[coeffCount] = thisWS_Est.nodePath[n].expo[radiusIndex].SR[WD_sec];
-                                Stab_corr[coeffCount] = model.GetStabilityCorrection(thisUW, thisDW, WD_sec, SR[coeffCount], false, UW_or_DW);
-                                coeffCount++;
-                            }
-
-                        }
-
-                        thisUW = metPairs[i].met2.expo[radiusIndex].expo[WD_sec];
-                        thisDW = metPairs[i].met2.expo[radiusIndex].GetDW_Param(WD_sec, "Expo");
-
-                        Array.Resize(ref SR, coeffCount + 1);
-                        Array.Resize(ref Stab_corr, coeffCount + 1);
-
-                        SR[coeffCount] = metPairs[i].met2.expo[radiusIndex].SR[WD_sec];
-                        Stab_corr[coeffCount] = model.GetStabilityCorrection(thisUW, thisDW, WD_sec, SR[coeffCount], false, UW_or_DW);
-                    }
-                    else
-                    {
-                        for (int WD = 0; WD < numWD; WD++)
-                        {
-                            thisUW = metPairs[i].met2.expo[radiusIndex].expo[WD];
-                            thisDW = metPairs[i].met2.expo[radiusIndex].GetDW_Param(WD, "Expo");
-
-                            Array.Resize(ref SR, coeffCount + 1);
-                            Array.Resize(ref Stab_corr, coeffCount + 1);
-
-                            SR[coeffCount] = metPairs[i].met1.expo[radiusIndex].SR[WD];
-                            Stab_corr[coeffCount] = model.GetStabilityCorrection(thisUW, thisDW, WD, SR[coeffCount], false, UW_or_DW);
-                            coeffCount++;
-
-                            if (thisWS_Est.nodePath.Length > 0)
-                            { 
-                                for (int n = 0; n < thisWS_Est.nodePath.Length; n++)
-                                {
-                                    thisUW = thisWS_Est.nodePath[n].expo[radiusIndex].expo[WD];
-                                    thisDW = thisWS_Est.nodePath[n].expo[radiusIndex].GetDW_Param(WD, "Expo");
-
-                                    Array.Resize(ref SR, coeffCount + 1);
-                                    Array.Resize(ref Stab_corr, coeffCount + 1);
-
-                                    SR[coeffCount] = thisWS_Est.nodePath[n].expo[radiusIndex].SR[WD];
-                                    Stab_corr[coeffCount] = model.GetStabilityCorrection(thisUW, thisDW, WD, SR[coeffCount], false, UW_or_DW);
-                                    coeffCount++;
-                                }
-                            }
-
-                            thisUW = metPairs[i].met2.expo[radiusIndex].expo[WD];
-
-                            if (WD < numWD / 2)
-                                thisDW = metPairs[i].met2.expo[radiusIndex].expo[WD + numWD / 2];
-                            else 
-                                thisDW = metPairs[i].met2.expo[radiusIndex].expo[WD - numWD / 2];
-
-                            Array.Resize(ref SR, coeffCount + 1);
-                            Array.Resize(ref Stab_corr, coeffCount + 1);
-
-                            SR[coeffCount] = metPairs[i].met2.expo[radiusIndex].SR[WD];
-                            Stab_corr[coeffCount] = model.GetStabilityCorrection(thisUW, thisDW, WD, SR[coeffCount], false, UW_or_DW);
-                            coeffCount++;
-                        }
-                    }
-                }
-
-            }
-
-            if (SR != null)
-            {
-                stabCorrsAndSurfaceRough = new double[2, SR.Length];
-
-                for (int i = 0; i < SR.Length; i++)
-                {
-                    stabCorrsAndSurfaceRough[0, i] = Stab_corr[i];
-                    stabCorrsAndSurfaceRough[1, i] = SR[i];
-                }
-            }
-
-            return stabCorrsAndSurfaceRough;
-        }
-
+        /// <summary> Returns true if both mets are used in model. </summary>        
         public bool BothInModel(Pair_Of_Mets thisPair, Model model)
-        {
-            // Returns true if both mets are used in model
+        {            
             bool bothInModel = false;
             bool met1InModel = false;
             bool met2InModel = false;
@@ -2162,9 +1792,9 @@ namespace ContinuumNS
             return bothInModel;
         }
 
+        /// <summary> Returns all possible combinations of met sites with specified subset size. </summary>  
         public string[,] GetAllCombos(string[] listOfMets, int numAllMets, int numMetsInModel, int numModels)
-        {
-            // Returns all possible combinations of met sites with specified subset size
+        {           
             string[,] metsForModel = new string[numMetsInModel, numModels];
             int[,] metIndForModel = new int[numMetsInModel, numModels];
             int modelInd = 0;
@@ -2228,9 +1858,9 @@ namespace ContinuumNS
             return metsForModel;
         }
 
-        public void AddRoundRobinEst(RR_funct_obj[] thisRR_Obj, string[] theseMetsUsed, int metSubSize, string[,] theseMetsInModel, bool IsWeighted, MetCollection metList)
-        {
-            // Adds a Round Robin estimate to list
+        /// <summary> Adds a Round Robin estimate to list. </summary> 
+        public void AddRoundRobinEst(RR_funct_obj[] thisRR_Obj, string[] theseMetsUsed, int metSubSize, string[,] theseMetsInModel)
+        {            
             int thisCount = RoundRobinCount;
             Array.Resize(ref roundRobinEsts, thisCount + 1);
 
@@ -2269,11 +1899,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Does one RR calc: One set of mets out of bigger set. Gets (or creates) UWDW models to use then uses them to estimate at all mets not included in set
-        ///Conducts Round Robin calculations using sub-set of mets.metsUsed is list of all mets in Continuum model and theseMetsInModel is list of subset of mets which
-        /// are used to create a model. A temporary turbine object is created for the predicted met and the wind speed is predicted at temp turbine site
-        /// </summary>
+        /// <summary> Conducts Round Robin calculations using sub-set of mets to generate models and all mets not included in model generation are predicted. </summary>
         public RR_funct_obj DoRR_Calc(string[] theseMetsInModel, Continuum thisInst, string[] metsUsed, string MCP_Method)
         {           
             RR_funct_obj thisRR_FuncObj = new RR_funct_obj();
@@ -2352,9 +1978,9 @@ namespace ContinuumNS
             return thisRR_FuncObj;
         }
 
+        /// <summary> Calculates the RMS of Round Robin estimate errors. </summary>
         public void CalcRR_RMS_All(int RR_ind)
-        {
-            // Calculates the RMS of Round Robin estimate errors
+        {            
             int numModels = roundRobinEsts[RR_ind].RMS_Err.Length;
             double RMS_All = 0;
 
@@ -2366,10 +1992,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates and returns the number of models in Round Robin for specified met subset size. </summary>
         public int GetNumModelsForRoundRobin(int numMets, int numMetsInModel)
-        {
-            int numModels = 1;
-
+        {  
             double N_fact = 1;
 
             for (int i = numMets; i >= 1; i--)
@@ -2383,7 +2008,7 @@ namespace ContinuumNS
             for (int j = (numMets - numMetsInModel); j >= 1; j--)
                 N_minus_k_fact = N_minus_k_fact * j;
 
-            numModels = (int)(N_fact / (K_fact * N_minus_k_fact));
+            int numModels = (int)(N_fact / (K_fact * N_minus_k_fact));
             return numModels;
         }
         

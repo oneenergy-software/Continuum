@@ -9,8 +9,9 @@ namespace Continuum_Tests
     [TestClass]
     public class MERRACollection_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MERRACollection";
-        
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MERRACollection";
+        string MERRA2Folder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
+
         [TestMethod]
         public void GetInterpData_Test()
         {
@@ -18,6 +19,7 @@ namespace Continuum_Tests
             
             string Filename = testingFolder + "\\GetInterpData test.cfm";
             thisInst.Open(Filename);
+            thisInst.merraList.MERRAfolder = MERRA2Folder;
 
             // Test site
             double thisLat = 41.23;

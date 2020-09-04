@@ -1,36 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using OSGeo.GDAL;
-using OSGeo.OGR;
-using OSGeo.OSR;
 using System.Net;
 using System.IO;
 
 namespace ContinuumNS
 {
+    /// <summary> MERRA2 object collection which contain interpolated (or closest if 1 node used) MERRA2 time series data and site location. </summary>
     [Serializable()]
     public class MERRACollection
     {
+        /// <summary> List of MERRA objects which contain interpolated (or closest if 1 node used) MERRA2 time series data and site location. </summary>
         public MERRA[] merraData = new MERRA[0];
-        public int numMERRA_Nodes = 1; // OE Methodology 2017.1 uses closest MERRA2 node (future methodology to incorporate interpolated data)
+        /// <summary> Number of MERRA2 nodes: 1, 4, or 16. Default = 1 node. </summary>
+        public int numMERRA_Nodes = 1;
+        /// <summary> Start of MERRA2 dataset. </summary>
         public DateTime startDate = new DateTime(1989, 1, 1, 0, 0, 0);
+        /// <summary> End of MERRA2 dataset. </summary>
         public DateTime endDate = new DateTime(2018, 12, 31, 23, 0, 0);
+        /// <summary> MERRA2 data file location. </summary>
         public string MERRAfolder = "";
+        /// <summary> NASA Earth Data system username. </summary>
         public string earthdataUser = "";
+        /// <summary> NASA Earth Data system password. </summary>
         public string earthdataPwd = "";
-
-        public struct minMaxReq
-        {
-            public double minReqLat;
-            public double maxReqLat;
-            public double minReqLong;
-            public double maxReqLong;
-        }
-
+                
+        /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
         public int numMERRA_Data
         {
             get
@@ -42,11 +39,13 @@ namespace ContinuumNS
             }            
         }
 
+        /// <summary> Clears all MERRA2 data. </summary>
         public void ClearMERRA()
         {
             merraData = new MERRA[0];
         }
 
+        /// <summary> Sets number of MERRA2 data based on dropdown selection. </summary>
         public void Set_Num_MERRA_Nodes(Continuum thisInst)
         {            
             if (merraData == null)
@@ -59,15 +58,7 @@ namespace ContinuumNS
 
                 {                    
                     numMERRA_Nodes = Convert.ToInt16(thisInst.cboNumMERRA_Nodes.SelectedItem.ToString());
-                    merraData = null;
-
-                  /*  for (int i = 0; i < numMERRA_Data; i++)
-                    {
-                        Array.Resize(ref merraData[i].MERRA_Nodes, numMERRA_Nodes);
-                        merraData[i].numMERRA_Nodes = numMERRA_Nodes;
-                        merraData[i].ClearAll(true);                        
-                    }                    
-                      */                    
+                    merraData = null;                                     
 
                 }
                 else
@@ -169,10 +160,9 @@ namespace ContinuumNS
             return theseReqCoords;
         }
 
+        /// <summary> Finds the min/max lat/long of MERRA nodes needed for specified latitude and longitude. Returns coordinates of additional MERRA data needed (if any). </summary>
         public UTM_conversion.Lat_Long[] GetRequiredNewMERRANodeCoords(double latitude, double longitude, Continuum thisInst)
-        {
-            // Finds the min/max lat/long of MERRA nodes needed for specified latitude and longitude. Loops through existing MERRA data to see
-            // if additional MERRA data is needed
+        {             
             UTM_conversion.Lat_Long[] newRequiredMERRANodes = new UTM_conversion.Lat_Long[0];
             int numNewReqNodes = 0;
 
@@ -222,24 +212,9 @@ namespace ContinuumNS
             return newRequiredMERRANodes;
         }
 
-        public bool areSameMERRAData(MERRA merra1, MERRA merra2)
-        {
-            // Compares the two MERRA objects and returns true if they are identical
-            bool areSame = true;
-
-            if (merra1.MERRA_Nodes == null && merra2.MERRA_Nodes == null)
-                return areSame;
-            else if ((merra1.MERRA_Nodes == null && merra2.MERRA_Nodes != null) || (merra1.MERRA_Nodes != null && merra2.MERRA_Nodes == null))
-                areSame = false;
-            else if (merra1.MERRA_Nodes.Length != merra2.MERRA_Nodes.Length)
-                areSame = false;
-
-            return areSame;
-        }        
-        
+        /// <summary> Returns MERRA object with specified latitude and longitude. </summary>
         public MERRA GetMERRA(double latitude, double longitude)
-        {
-            // Returns MERRA object with specified latitude and longitude
+        {            
             MERRA thisMERRA = new MERRA();
 
             for (int i = 0; i < numMERRA_Data; i++)
@@ -249,11 +224,10 @@ namespace ContinuumNS
             return thisMERRA;
         }
 
+        /// <summary> Adds new MERRA object to list. Figures out if additional MERRA nodes need to be uploaded from textfiles.
+        ///    Runs MCP at Met site (if thisMet not null) if have all MERRA node data. Calls BW worker to upload additional data if needed. </summary>
         public void AddMERRA_GetDataFromTextFiles(double thisLat, double thisLong, int offset, Continuum thisInst, Met thisMet, bool isTest)
-        {
-            // Adds new MERRA object to list. Figures out if additional MERRA nodes need to be uploaded from textfiles.
-            // Runs MCP at Met site (if thisMet not null) if have all MERRA node data. Calls BW worker to uploaded additional data if needed.
-
+        {            
             // Create new MERRA object and assign lat, long, and node lat/long            
             MERRA thisMERRA = new MERRA();
             thisMERRA.Set_Interp_LatLon_Dates_Offset(thisLat, thisLong, offset, thisInst);
@@ -286,10 +260,8 @@ namespace ContinuumNS
             bool gotCoords = thisMERRA.Find_MERRA_Coords(MERRAfolder); 
 
             if (gotCoords == false)
-                return;                                                        
-
-      //      thisMERRA.Get_Export_Params(thisInst);
-                                   
+                return;                                                       
+                                                    
             DialogResult doMCP = DialogResult.No;
 
             if (thisMet.name != null && isTest == false && (thisInst.metList.ThisCount == 1 || thisInst.metList.isMCPd == false))
@@ -366,10 +338,10 @@ namespace ContinuumNS
                     
             }
         }
-        
-        public void deleteMERRA(double latitude, double longitude, Continuum thisInst)
-        {
-            // Deletes MERRA data from list
+
+        /// <summary> Deletes MERRA data from list. </summary>        
+        public void deleteMERRA(double latitude, double longitude)
+        {            
             int newCount = numMERRA_Data - 1;
 
             if (newCount > 0)
@@ -393,9 +365,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Clears all MERRA data from DB. </summary> 
         public void DeleteAllMERRADataFromDB(Continuum thisInst)
-        {
-            // clears all MERRA data from DB
+        {            
             NodeCollection nodeList = new NodeCollection();
             string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
 
@@ -414,9 +386,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Deletes MERRA Node data with specified lat/long from DB. </summary> 
         public void DeleteMERRANodeDataFromDB(double latitude, double longitude, Continuum thisInst)
-        { 
-            // Deletes MERRA Node data from DB
+        {              
             NodeCollection nodeList = new NodeCollection();
             string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
             try
@@ -439,18 +411,17 @@ namespace ContinuumNS
 
         }
 
-        public int GetLTRefLength(Continuum thisInst)
-        {
-            // returns number of hours in long-term ref data
-            int thisLength = 0;
-
+        /// <summary> Returns number of hours in long-term ref data. </summary> 
+        public int GetLTRefLength()
+        {           
             TimeSpan timeSpan = endDate - startDate;
-            thisLength = timeSpan.Days * 24 + timeSpan.Hours + 1;
+            int thisLength = timeSpan.Days * 24 + timeSpan.Hours + 1;
 
             return thisLength;
         }
 
-        public void ClearMERRA_Data(Continuum thisInst)
+        /// <summary> Clears all MERRA2 node and interpolated data. </summary> 
+        public void ClearMERRA_Data()
         {
             for (int i = 0; i < numMERRA_Data; i++)
             {
@@ -458,22 +429,10 @@ namespace ContinuumNS
                 merraData[i].interpData.TS_Data = new MERRA.Wind_TS_with_Prod[0];
             }
         }
-        
-        public void ApplyPC_ToAllMERRA(Continuum thisInst, TurbineCollection.PowerCurve powerCurve)
-        {
-            // Calculates MERRA2 energy production using power curve at each MERRA2 interpolated node
-            
-            for (int i = 0; i < numMERRA_Data; i++)
-            {
-                merraData[i].powerCurve = powerCurve;
-                merraData[i].ApplyPC(ref merraData[i].interpData.TS_Data);
-            }
-        }
 
+        /// <summary> Clears monthly and annual energy production estimates. Called after a power curve is deleted. </summary> 
         public void ClearMERRA_ProdStats()
-        {
-            // Clears monthly and annual energy production estimates. Called after a power curve is deleted
-            
+        {                        
             for (int i = 0; i < numMERRA_Data; i++)
             {
                 merraData[i].Reset_MonthProdStats();
@@ -482,9 +441,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns true if have MERRA with specified latitude and longitude in list. </summary> 
         public bool GotMERRA(double latitude, double longitude)
-        {
-            // Returns true if have MERRA with specified latitude and longitude in list
+        {           
             bool gotIt = false;
 
             for (int i = 0; i < numMERRA_Data; i++)
@@ -492,8 +451,9 @@ namespace ContinuumNS
                     gotIt = true;
 
             return gotIt;
-        }                
+        }
 
+        /// <summary> Logs user into NASA's EarthData system and begins MERRA2 data download (in background worker). </summary> 
         public async Task NASA_LogInAsync(Continuum thisInst)
         {
                                   
@@ -534,6 +494,7 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Returns MERRA2 data file latitude index. </summary> 
         public int GetLatitudeIndex(double thisLat)
         {            
             int latInd = (int)(2 * thisLat + 180);
@@ -541,6 +502,7 @@ namespace ContinuumNS
             return latInd;
         }
 
+        /// <summary> Returns MERRA2 data file longitude index. </summary> 
         public int GetLongitudeIndex(double thisLong)
         {
             int longInd = (int)(1.6 * thisLong + 288);
@@ -548,6 +510,7 @@ namespace ContinuumNS
             return longInd;
         }
 
+        /// <summary> Returns URL of MERRA2 data file to download. </summary> 
         public string GetMERRA2URL(DateTime thisDay, double minLat, double maxLat, double minLong, double maxLong)
         {
             int dateNum = 0;
@@ -591,6 +554,7 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Prompts user for new MERRA2 data file folder. </summary> 
         public void ChangeMERRA2Folder(Continuum thisInst)
         {
             MessageBox.Show("Please select folder containing MERRA2 .ascii data files.");
@@ -605,10 +569,30 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Updates textboxes showing MERRA2 data bounds on GUI. </summary>
         public void SetMERRA2LatLong (Continuum thisInst)
         {
             if (MERRAfolder == null || MERRAfolder == "")
                 return;
+
+            // Check to see if MERRA folder exists
+            bool folderExists = Directory.Exists(MERRAfolder);
+            if (folderExists == false)
+            {
+                MERRAfolder = "";
+                thisInst.txtMinLat.Text = "";
+                thisInst.txtMaxLat.Text = "";
+                thisInst.txtMinLong.Text = "";
+                thisInst.txtMaxLong.Text = "";
+
+                thisInst.txtMinLat.Enabled = true;
+                thisInst.txtMaxLat.Enabled = true;
+                thisInst.txtMinLong.Enabled = true;
+                thisInst.txtMaxLong.Enabled = true;
+
+                thisInst.btnDownloadMERRA2.BackColor = System.Drawing.Color.LightCoral;
+                return;
+            }
 
             // If there are files, check one and get min/max lat/long
             string[] MERRAfiles = Directory.GetFiles(MERRAfolder, "*.ascii");
@@ -693,9 +677,9 @@ namespace ContinuumNS
             file.Close();
         }
 
+        /// <summary> Creates filename for exported MERRA2 data. </summary>
         public string CreateMERRA2filename(DateTime thisDate)
-        {
-            string MERRA2name = "";
+        {            
             int dateNum = 0;
             if (thisDate.Year <= 1991)
                 dateNum = 100;
@@ -714,11 +698,12 @@ namespace ContinuumNS
             if (thisDate.Day < 10)
                 thisDay = "0" + thisDay;
 
-            MERRA2name = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
+            string MERRA2name = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
 
             return MERRA2name;
         }
 
+        /// <summary> Returns true if MERRA2 daily datafile exists in folder. </summary>
         public bool MERRA2FileExists(DateTime thisDate)
         {
             bool fileExists = false;
@@ -740,6 +725,7 @@ namespace ContinuumNS
             return fileExists;
         }
 
+        /// <summary> Downloads and save MERRA2 datafile for specified day. </summary>
         public void SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate)
         {
             // Now access the data

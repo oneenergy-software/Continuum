@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that holds radius of investigation and inverse distance weighting exponent used in exposure and SRDH calculations. </summary>
     [Serializable()]
     public class Invest_Params
     {
-        public int radius; // radius of investigation
-        public double exponent; // Inverse distance weighting exponent
+        /// <summary> Radius of investigation  </summary>
+        public int radius;
+        /// <summary> Inverse distance weighting exponent </summary>
+        public double exponent; 
                 
     }
 }

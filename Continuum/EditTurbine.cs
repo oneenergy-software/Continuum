@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
     public partial class EditTurbine : Form
     {
+        /// <summary> Continuum instance that calls EditTurbine </summary>
         public Continuum thisInst;
 
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Class initializer </summary>
         public EditTurbine(Continuum continuum)
         {
             InitializeComponent();

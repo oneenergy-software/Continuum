@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using OxyPlot.Series;
 using OxyPlot.Axes;
@@ -12,34 +7,31 @@ using OxyPlot;
 
 namespace ContinuumNS
 {
+    /// <summary>
+    ///  This class defines a GUI where the user can define an exceedance (i.e. performance factor) curve and adds it to the collection of curves
+    /// </summary>
     public partial class Add_Exceedance : Form        
     {
+        /// <summary> Exceedance curve that is being defined </summary>
         public Exceedance.ExceedanceCurve thisExceed;
+        /// <summary> True if exceedance curve was successfully created </summary>
         public bool goodToGo;
 
-        public int Get_numModes(ref Exceedance.ExceedanceCurve thisExceed)
-        {
-            int numModes = 0;
+        ////////////////////////////////////////////////////////////////////////////////
 
-            if (thisExceed.modes == null)            
-                numModes = 0;            
-            else            
-                numModes = thisExceed.modes.Length;
-            
-            return numModes;
-        }
-            
+        /// <summary> Initializes class</summary>            
         public Add_Exceedance()
         {
             InitializeComponent();
         }
-                
+              
+        /// <summary> "Add Mode" button clicked </summary>        
         public void btn_AddMode_Click(object sender, EventArgs e)
         {
-
             Add_Edit_Mode(true);
         }
 
+        /// <summary> Adds or edits one mode of exceedance curve. (Exceedance curves may be defined as multimodal distributions.) </summary>        
         public void Add_Edit_Mode(bool isAddMode)
         {          
             Add_Mode formMode = new Add_Mode();
@@ -117,10 +109,9 @@ namespace ContinuumNS
             Update_plot();
         }
 
+        /// <summary> Updates plots on form. Plots probability and cumulative density function of defined exceedance </summary>
         public void Update_plot()
-        {
-            // Plots probability and cumulative density function of defined exceedance
-
+        {                        
             plotExceed.Model = new PlotModel();
             var model = plotExceed.Model;
             model.IsLegendVisible = false;
@@ -165,10 +156,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Adds mode to list and updates GUI </summary>
         public void Update_Mode_List()
-        {
-             // Add to table on form
-            
+        {          
             lstModes.Items.Clear();
 
             if (thisExceed.modes == null)
@@ -214,38 +204,9 @@ namespace ContinuumNS
             }
             
         }
-
         
-        public float Get_Lower_Bound()
-        {
-            float lowerBound = -999;
-            try
-            {
-                lowerBound = Convert.ToSingle(txt_LowerBound.Text);
-            }
-            catch
-            {
-                lowerBound = -999;
-            }
-
-            return lowerBound;
-        }
-
-        public float Get_Upper_Bound()
-        {
-            float upperBound = 999;
-            try
-            {
-                upperBound = Convert.ToSingle(txt_UpperBound.Text);
-            }
-            catch
-            {
-                upperBound = 999;
-            }
-
-            return upperBound;
-        }
-
+        
+        /// <summary> Cancel button </summary>        
         private void btnCancel_Click(object sender, EventArgs e)
         {
             thisExceed.exceedStr = "";
@@ -254,6 +215,7 @@ namespace ContinuumNS
             Close();
         }
 
+        /// <summary> Opens dialog box to import CSV file with CDF </summary>        
         private void btnImportCDF_Click(object sender, EventArgs e)
         {
             string filename = "";
@@ -292,13 +254,14 @@ namespace ContinuumNS
 
             }           
 
-        }               
+        }
 
+        /// <summary> Reads CSV file with defined CDF. Expected file format: Perf factor, CDF. </summary> 
+        /// <returns> double[,] Import_PF_CDF = new double[num_pts, 2]; i = Perf Fact, j = CDF </returns>
         public double[,] Read_CDF_file(string filename)
         {
             // Import user-defined CFD instead of specifying mean and SD
-            // Expected file format: Perf factor, CDF
-            
+                        
             string line = "";
             double thisPF = 0;
             double thisCDF = 0;
@@ -358,6 +321,7 @@ namespace ContinuumNS
             return Import_PF_CDF;
         }
 
+        /// <summary> User edits a defined mode used to define CDF </summary>        
         private void btn_EditMode_Click(object sender, EventArgs e)
         {
             Add_Edit_Mode(false);

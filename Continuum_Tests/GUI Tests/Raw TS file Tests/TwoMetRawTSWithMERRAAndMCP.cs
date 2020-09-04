@@ -10,12 +10,12 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class TwoMetRawTSWithMERRAAndMCP
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
-        string saveFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string testingFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string saveFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
 
         string firewheelMERRA = "C:\\Users\\OEE2017_27\\Desktop\\MERRA2";
-        string ohioMERRA = "C:\\Users\\Liz\\Desktop\\MERRA2";
-        string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+        string ohioMERRA = "C:\\Users\\liz_w\\Desktop\\MERRA2";
+        string merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
         string metTSFile;
         string metName;
@@ -98,7 +98,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -118,7 +118,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -151,7 +151,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -172,7 +172,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -239,7 +239,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -387,7 +387,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -407,7 +407,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -436,7 +436,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -457,7 +457,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -524,7 +524,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -656,7 +656,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -676,7 +676,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -721,7 +721,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -742,7 +742,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -809,7 +809,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -911,7 +911,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -931,7 +931,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1002,7 +1002,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1023,7 +1023,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1094,7 +1094,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -1238,7 +1238,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1258,7 +1258,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1287,7 +1287,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1308,7 +1308,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1379,7 +1379,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -1523,7 +1523,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1543,7 +1543,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1572,7 +1572,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1593,7 +1593,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1664,7 +1664,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -1813,7 +1813,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1833,7 +1833,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1857,7 +1857,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1878,7 +1878,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -1949,7 +1949,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2098,7 +2098,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2118,7 +2118,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2142,7 +2142,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2163,7 +2163,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2234,7 +2234,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2383,7 +2383,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2403,7 +2403,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2427,7 +2427,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2448,7 +2448,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2519,7 +2519,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2668,7 +2668,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2688,7 +2688,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2712,7 +2712,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2733,7 +2733,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -2804,7 +2804,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2953,7 +2953,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2973,7 +2973,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2997,7 +2997,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3018,7 +3018,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3089,7 +3089,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3238,7 +3238,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3258,7 +3258,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3282,7 +3282,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3303,7 +3303,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3374,7 +3374,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3522,7 +3522,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3542,7 +3542,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3567,7 +3567,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3588,7 +3588,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3659,7 +3659,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3791,7 +3791,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3811,7 +3811,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3856,7 +3856,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3877,7 +3877,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -3944,7 +3944,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4092,7 +4092,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4112,7 +4112,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4137,7 +4137,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4158,7 +4158,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4229,7 +4229,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4377,7 +4377,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4397,7 +4397,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4422,7 +4422,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4443,7 +4443,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4514,7 +4514,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4662,7 +4662,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4682,7 +4682,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4707,7 +4707,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4728,7 +4728,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -4799,7 +4799,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4947,7 +4947,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4967,7 +4967,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4992,7 +4992,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5013,7 +5013,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5084,7 +5084,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5232,7 +5232,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5252,7 +5252,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5277,7 +5277,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5298,7 +5298,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5369,7 +5369,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5471,7 +5471,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5491,7 +5491,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5562,7 +5562,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5583,7 +5583,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5654,7 +5654,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5777,7 +5777,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5797,7 +5797,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5847,7 +5847,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5868,7 +5868,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -5939,7 +5939,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6045,7 +6045,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6065,7 +6065,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6132,7 +6132,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6153,7 +6153,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6224,7 +6224,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6326,7 +6326,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6346,7 +6346,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6417,7 +6417,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6438,7 +6438,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6509,7 +6509,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6636,7 +6636,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6656,7 +6656,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6702,7 +6702,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6723,7 +6723,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -6794,7 +6794,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6926,7 +6926,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6946,7 +6946,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6991,7 +6991,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7012,7 +7012,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7079,7 +7079,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7206,7 +7206,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7226,7 +7226,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7272,7 +7272,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7293,7 +7293,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7364,7 +7364,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7491,7 +7491,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7511,7 +7511,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7557,7 +7557,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7578,7 +7578,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7649,7 +7649,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7776,7 +7776,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7796,7 +7796,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7842,7 +7842,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7863,7 +7863,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -7934,7 +7934,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8036,7 +8036,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8056,7 +8056,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8127,7 +8127,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8148,7 +8148,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8219,7 +8219,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8325,7 +8325,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8345,7 +8345,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8412,7 +8412,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8433,7 +8433,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8504,7 +8504,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8627,7 +8627,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8647,7 +8647,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8697,7 +8697,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8718,7 +8718,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -8789,7 +8789,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8891,7 +8891,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8911,7 +8911,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8982,7 +8982,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9003,7 +9003,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9074,7 +9074,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -9176,7 +9176,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9196,7 +9196,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9267,7 +9267,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9288,7 +9288,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9359,7 +9359,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -9482,7 +9482,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9502,7 +9502,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9552,7 +9552,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9573,7 +9573,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9644,7 +9644,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -9767,7 +9767,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9787,7 +9787,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9837,7 +9837,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9858,7 +9858,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -9929,7 +9929,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10031,7 +10031,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10051,7 +10051,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10126,7 +10126,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10147,7 +10147,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10214,7 +10214,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10316,7 +10316,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10336,7 +10336,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10407,7 +10407,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10428,7 +10428,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10499,7 +10499,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10643,7 +10643,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10663,7 +10663,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10692,7 +10692,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10713,7 +10713,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10784,7 +10784,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10928,7 +10928,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10948,7 +10948,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10977,7 +10977,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -10998,7 +10998,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11069,7 +11069,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -11197,7 +11197,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11217,7 +11217,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11262,7 +11262,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11283,7 +11283,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11354,7 +11354,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -11482,7 +11482,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11502,7 +11502,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11547,7 +11547,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11568,7 +11568,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11639,7 +11639,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -11741,7 +11741,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11761,7 +11761,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11832,7 +11832,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11853,7 +11853,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -11924,7 +11924,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12031,7 +12031,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12051,7 +12051,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12117,7 +12117,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12138,7 +12138,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12209,7 +12209,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12332,7 +12332,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12352,7 +12352,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12402,7 +12402,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12423,7 +12423,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12494,7 +12494,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12596,7 +12596,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12616,7 +12616,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12687,7 +12687,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12708,7 +12708,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12779,7 +12779,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12911,7 +12911,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12931,7 +12931,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12972,7 +12972,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -12993,7 +12993,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13064,7 +13064,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -13171,7 +13171,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13191,7 +13191,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13261,7 +13261,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13282,7 +13282,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13349,7 +13349,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -13481,7 +13481,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13501,7 +13501,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13542,7 +13542,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13563,7 +13563,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13634,7 +13634,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -13766,7 +13766,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13786,7 +13786,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13827,7 +13827,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13848,7 +13848,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -13919,7 +13919,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14051,7 +14051,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14071,7 +14071,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14112,7 +14112,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14133,7 +14133,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14204,7 +14204,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14336,7 +14336,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14356,7 +14356,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14397,7 +14397,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14418,7 +14418,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14489,7 +14489,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14621,7 +14621,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14641,7 +14641,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14682,7 +14682,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14703,7 +14703,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14774,7 +14774,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14881,7 +14881,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14901,7 +14901,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14967,7 +14967,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -14988,7 +14988,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15059,7 +15059,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -15161,7 +15161,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15181,7 +15181,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15252,7 +15252,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15273,7 +15273,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15344,7 +15344,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -15455,7 +15455,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15475,7 +15475,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15537,7 +15537,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15558,7 +15558,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15629,7 +15629,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -15740,7 +15740,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15760,7 +15760,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15822,7 +15822,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15843,7 +15843,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -15914,7 +15914,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16016,7 +16016,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16036,7 +16036,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16107,7 +16107,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16128,7 +16128,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16199,7 +16199,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16305,7 +16305,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16325,7 +16325,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16396,7 +16396,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16417,7 +16417,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16484,7 +16484,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16590,7 +16590,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16610,7 +16610,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16677,7 +16677,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16698,7 +16698,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16769,7 +16769,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16875,7 +16875,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16895,7 +16895,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16962,7 +16962,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -16983,7 +16983,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17054,7 +17054,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -17156,7 +17156,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17176,7 +17176,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17247,7 +17247,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17268,7 +17268,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17339,7 +17339,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -17466,7 +17466,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17486,7 +17486,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17532,7 +17532,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17553,7 +17553,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17624,7 +17624,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -17751,7 +17751,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17771,7 +17771,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17817,7 +17817,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17838,7 +17838,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -17909,7 +17909,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -18011,7 +18011,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18031,7 +18031,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18102,7 +18102,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18123,7 +18123,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18194,7 +18194,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -18317,7 +18317,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18337,7 +18337,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18387,7 +18387,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18408,7 +18408,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18479,7 +18479,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -18602,7 +18602,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18622,7 +18622,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18672,7 +18672,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18693,7 +18693,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18764,7 +18764,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -18866,7 +18866,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18886,7 +18886,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18957,7 +18957,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -18978,7 +18978,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19049,7 +19049,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -19176,7 +19176,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19196,7 +19196,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19242,7 +19242,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19263,7 +19263,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19334,7 +19334,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -19436,7 +19436,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19456,7 +19456,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19531,7 +19531,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19552,7 +19552,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19619,7 +19619,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -19746,7 +19746,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19766,7 +19766,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19812,7 +19812,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19833,7 +19833,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -19904,7 +19904,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -20006,7 +20006,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20026,7 +20026,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20097,7 +20097,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20118,7 +20118,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20189,7 +20189,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -20295,7 +20295,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20315,7 +20315,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20382,7 +20382,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20403,7 +20403,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20474,7 +20474,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -20581,7 +20581,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20601,7 +20601,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20667,7 +20667,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20688,7 +20688,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20759,7 +20759,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -20861,7 +20861,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20881,7 +20881,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20952,7 +20952,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -20973,7 +20973,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21044,7 +21044,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -21172,7 +21172,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21192,7 +21192,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21237,7 +21237,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21258,7 +21258,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21329,7 +21329,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -21457,7 +21457,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21477,7 +21477,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21522,7 +21522,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21543,7 +21543,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21614,7 +21614,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -21716,7 +21716,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21736,7 +21736,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21807,7 +21807,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21828,7 +21828,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -21899,7 +21899,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -22022,7 +22022,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22042,7 +22042,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22092,7 +22092,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22113,7 +22113,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22184,7 +22184,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -22316,7 +22316,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22336,7 +22336,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22377,7 +22377,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22398,7 +22398,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22469,7 +22469,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -22580,7 +22580,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22600,7 +22600,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22666,7 +22666,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22687,7 +22687,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22754,7 +22754,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -22886,7 +22886,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22906,7 +22906,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22947,7 +22947,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -22968,7 +22968,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23039,7 +23039,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -23171,7 +23171,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23191,7 +23191,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23232,7 +23232,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23253,7 +23253,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23324,7 +23324,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -23456,7 +23456,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23476,7 +23476,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23517,7 +23517,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23538,7 +23538,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23609,7 +23609,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -23741,7 +23741,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23761,7 +23761,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23802,7 +23802,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23823,7 +23823,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -23894,7 +23894,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -24026,7 +24026,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24046,7 +24046,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24087,7 +24087,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24108,7 +24108,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24179,7 +24179,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -24290,7 +24290,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24310,7 +24310,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24372,7 +24372,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24393,7 +24393,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24464,7 +24464,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -24575,7 +24575,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24595,7 +24595,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24657,7 +24657,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24678,7 +24678,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24749,7 +24749,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -24851,7 +24851,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24871,7 +24871,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24942,7 +24942,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -24963,7 +24963,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25034,7 +25034,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -25141,7 +25141,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25161,7 +25161,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25227,7 +25227,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25248,7 +25248,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25319,7 +25319,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -25425,7 +25425,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25445,7 +25445,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25512,7 +25512,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25533,7 +25533,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25604,7 +25604,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -25715,7 +25715,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25735,7 +25735,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25801,7 +25801,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25822,7 +25822,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -25889,7 +25889,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -25991,7 +25991,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26011,7 +26011,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26082,7 +26082,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26103,7 +26103,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26174,7 +26174,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -26276,7 +26276,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26296,7 +26296,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26346,7 +26346,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26367,7 +26367,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26459,7 +26459,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -26582,7 +26582,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26602,7 +26602,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26631,7 +26631,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26652,7 +26652,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26744,7 +26744,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -26850,7 +26850,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26870,7 +26870,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26916,7 +26916,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -26937,7 +26937,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27029,7 +27029,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -27131,7 +27131,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27151,7 +27151,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27201,7 +27201,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27222,7 +27222,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27314,7 +27314,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -27441,7 +27441,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27461,7 +27461,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27486,7 +27486,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27507,7 +27507,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27599,7 +27599,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -27726,7 +27726,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27746,7 +27746,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27771,7 +27771,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27792,7 +27792,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -27884,7 +27884,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -28012,7 +28012,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28032,7 +28032,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28056,7 +28056,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28077,7 +28077,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28169,7 +28169,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -28297,7 +28297,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28317,7 +28317,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28341,7 +28341,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28362,7 +28362,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28454,7 +28454,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -28556,7 +28556,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28576,7 +28576,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28626,7 +28626,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28647,7 +28647,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28739,7 +28739,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -28866,7 +28866,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28886,7 +28886,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28936,7 +28936,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -28957,7 +28957,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29024,7 +29024,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -29131,7 +29131,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29151,7 +29151,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29196,7 +29196,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29217,7 +29217,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29309,7 +29309,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -29432,7 +29432,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29452,7 +29452,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29481,7 +29481,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29502,7 +29502,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29594,7 +29594,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -29696,7 +29696,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29716,7 +29716,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29766,7 +29766,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29787,7 +29787,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -29879,7 +29879,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -29981,7 +29981,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30001,7 +30001,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30051,7 +30051,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30072,7 +30072,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30164,7 +30164,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -30270,7 +30270,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30290,7 +30290,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30336,7 +30336,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30357,7 +30357,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30449,7 +30449,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -30556,7 +30556,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30576,7 +30576,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30621,7 +30621,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30642,7 +30642,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30734,7 +30734,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -30836,7 +30836,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30856,7 +30856,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30906,7 +30906,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -30927,7 +30927,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31019,7 +31019,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -31130,7 +31130,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31150,7 +31150,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31191,7 +31191,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31212,7 +31212,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31304,7 +31304,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -31415,7 +31415,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31435,7 +31435,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31476,7 +31476,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31497,7 +31497,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31589,7 +31589,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -31721,7 +31721,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31741,7 +31741,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31761,7 +31761,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31782,7 +31782,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -31874,7 +31874,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -32022,7 +32022,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32042,7 +32042,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32071,7 +32071,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32092,7 +32092,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32159,7 +32159,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -32286,7 +32286,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32306,7 +32306,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32356,7 +32356,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32377,7 +32377,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32444,7 +32444,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -32576,7 +32576,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32596,7 +32596,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32616,7 +32616,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32637,7 +32637,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32729,7 +32729,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -32861,7 +32861,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32881,7 +32881,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32901,7 +32901,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -32922,7 +32922,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33014,7 +33014,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -33146,7 +33146,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33166,7 +33166,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33186,7 +33186,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33207,7 +33207,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33299,7 +33299,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -33431,7 +33431,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33451,7 +33451,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33471,7 +33471,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33492,7 +33492,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33584,7 +33584,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -33716,7 +33716,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33736,7 +33736,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33756,7 +33756,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33777,7 +33777,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -33869,7 +33869,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -33971,7 +33971,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33991,7 +33991,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34015,7 +34015,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34036,7 +34036,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34154,7 +34154,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -34260,7 +34260,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34280,7 +34280,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34300,7 +34300,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34321,7 +34321,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34439,7 +34439,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -34541,7 +34541,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34561,7 +34561,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34581,7 +34581,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34602,7 +34602,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34724,7 +34724,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -34826,7 +34826,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34846,7 +34846,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34866,7 +34866,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -34887,7 +34887,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35009,7 +35009,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -35116,7 +35116,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35136,7 +35136,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35156,7 +35156,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35177,7 +35177,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35294,7 +35294,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -35396,7 +35396,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35416,7 +35416,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35491,7 +35491,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35512,7 +35512,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35579,7 +35579,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -35681,7 +35681,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35701,7 +35701,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35726,7 +35726,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35747,7 +35747,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -35864,7 +35864,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -35966,7 +35966,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35986,7 +35986,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36015,7 +36015,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36036,7 +36036,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36149,7 +36149,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -36256,7 +36256,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36276,7 +36276,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36300,7 +36300,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36321,7 +36321,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36434,7 +36434,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -36540,7 +36540,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36560,7 +36560,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36585,7 +36585,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36606,7 +36606,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36719,7 +36719,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -36821,7 +36821,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36841,7 +36841,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36870,7 +36870,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -36891,7 +36891,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37004,7 +37004,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -37115,7 +37115,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37135,7 +37135,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37155,7 +37155,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37176,7 +37176,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37289,7 +37289,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -37400,7 +37400,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37420,7 +37420,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37440,7 +37440,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37461,7 +37461,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37574,7 +37574,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -37702,7 +37702,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37722,7 +37722,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37742,7 +37742,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37763,7 +37763,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -37859,7 +37859,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -37987,7 +37987,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38007,7 +38007,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38027,7 +38027,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38048,7 +38048,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38144,7 +38144,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -38246,7 +38246,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38266,7 +38266,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38312,7 +38312,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38333,7 +38333,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38429,7 +38429,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -38535,7 +38535,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38555,7 +38555,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38626,7 +38626,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38647,7 +38647,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38714,7 +38714,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -38837,7 +38837,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38857,7 +38857,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38882,7 +38882,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38903,7 +38903,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -38999,7 +38999,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -39106,7 +39106,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39126,7 +39126,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39167,7 +39167,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39188,7 +39188,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39284,7 +39284,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -39386,7 +39386,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39406,7 +39406,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39452,7 +39452,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39473,7 +39473,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39569,7 +39569,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -39692,7 +39692,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39712,7 +39712,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39732,7 +39732,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39753,7 +39753,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -39854,7 +39854,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -39956,7 +39956,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39976,7 +39976,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40017,7 +40017,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40038,7 +40038,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40139,7 +40139,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -40241,7 +40241,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40261,7 +40261,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40281,7 +40281,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40302,7 +40302,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40424,7 +40424,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -40526,7 +40526,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40546,7 +40546,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40566,7 +40566,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40587,7 +40587,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40709,7 +40709,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -40811,7 +40811,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40831,7 +40831,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40856,7 +40856,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40877,7 +40877,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -40994,7 +40994,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -41101,7 +41101,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41121,7 +41121,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41141,7 +41141,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41162,7 +41162,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41279,7 +41279,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -41385,7 +41385,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41405,7 +41405,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41425,7 +41425,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41446,7 +41446,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41564,7 +41564,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -41687,7 +41687,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41707,7 +41707,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41761,7 +41761,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41782,7 +41782,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -41849,7 +41849,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -41951,7 +41951,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41971,7 +41971,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41995,7 +41995,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42016,7 +42016,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42134,7 +42134,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -42236,7 +42236,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42256,7 +42256,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42276,7 +42276,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42297,7 +42297,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42419,7 +42419,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -42542,7 +42542,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42562,7 +42562,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42586,7 +42586,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42607,7 +42607,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42704,7 +42704,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -42806,7 +42806,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42826,7 +42826,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42871,7 +42871,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42892,7 +42892,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -42989,7 +42989,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -43116,7 +43116,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43136,7 +43136,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43156,7 +43156,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -43177,7 +43177,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -43274,7 +43274,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -43401,7 +43401,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43421,7 +43421,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43441,7 +43441,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -43462,7 +43462,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -43559,7 +43559,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -43661,7 +43661,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43681,7 +43681,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43726,7 +43726,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -43747,7 +43747,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -43844,7 +43844,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -43950,7 +43950,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43970,7 +43970,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -44011,7 +44011,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -44032,7 +44032,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -44129,7 +44129,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -44231,7 +44231,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -44251,7 +44251,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -44292,7 +44292,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -44313,7 +44313,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -44414,7 +44414,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -44537,7 +44537,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -44557,7 +44557,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -44577,7 +44577,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -44598,7 +44598,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -44699,7 +44699,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -44801,7 +44801,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -44821,7 +44821,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -44896,7 +44896,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -44917,7 +44917,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -44984,7 +44984,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -45086,7 +45086,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -45106,7 +45106,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -45126,7 +45126,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -45147,7 +45147,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -45269,7 +45269,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -45405,7 +45405,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -45425,7 +45425,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -45445,7 +45445,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -45466,7 +45466,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -45554,7 +45554,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -45690,7 +45690,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -45710,7 +45710,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -45730,7 +45730,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -45751,7 +45751,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -45839,7 +45839,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -45975,7 +45975,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -45995,7 +45995,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -46015,7 +46015,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -46036,7 +46036,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -46124,7 +46124,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -46260,7 +46260,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -46280,7 +46280,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -46300,7 +46300,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -46321,7 +46321,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -46409,7 +46409,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -46545,7 +46545,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -46565,7 +46565,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -46585,7 +46585,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -46606,7 +46606,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -46694,7 +46694,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -46830,7 +46830,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -46850,7 +46850,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -46870,7 +46870,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -46891,7 +46891,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -46979,7 +46979,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -47115,7 +47115,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -47135,7 +47135,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -47155,7 +47155,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -47176,7 +47176,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -47264,7 +47264,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -47400,7 +47400,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -47420,7 +47420,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -47440,7 +47440,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -47461,7 +47461,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -47549,7 +47549,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -47685,7 +47685,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -47705,7 +47705,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -47725,7 +47725,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -47746,7 +47746,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -47834,7 +47834,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -47936,7 +47936,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -47956,7 +47956,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -48031,7 +48031,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -48052,7 +48052,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -48119,7 +48119,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -48255,7 +48255,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -48275,7 +48275,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -48295,7 +48295,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -48316,7 +48316,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -48404,7 +48404,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -48540,7 +48540,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -48560,7 +48560,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -48580,7 +48580,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -48601,7 +48601,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -48689,7 +48689,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -48825,7 +48825,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -48845,7 +48845,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -48865,7 +48865,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -48886,7 +48886,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -48974,7 +48974,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -49110,7 +49110,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -49130,7 +49130,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -49150,7 +49150,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -49171,7 +49171,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -49259,7 +49259,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -49395,7 +49395,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -49415,7 +49415,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -49435,7 +49435,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -49456,7 +49456,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -49544,7 +49544,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -49680,7 +49680,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -49700,7 +49700,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -49720,7 +49720,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -49741,7 +49741,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -49829,7 +49829,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -49965,7 +49965,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -49985,7 +49985,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -50005,7 +50005,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -50026,7 +50026,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -50114,7 +50114,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -50250,7 +50250,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -50270,7 +50270,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -50290,7 +50290,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -50311,7 +50311,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -50399,7 +50399,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -50535,7 +50535,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -50555,7 +50555,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -50575,7 +50575,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -50596,7 +50596,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -50684,7 +50684,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -50820,7 +50820,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -50840,7 +50840,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -50860,7 +50860,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -50881,7 +50881,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -50969,7 +50969,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -51092,7 +51092,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -51112,7 +51112,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -51166,7 +51166,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -51187,7 +51187,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -51254,7 +51254,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -51390,7 +51390,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -51410,7 +51410,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -51430,7 +51430,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -51451,7 +51451,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -51539,7 +51539,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -51675,7 +51675,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -51695,7 +51695,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -51715,7 +51715,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -51736,7 +51736,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -51824,7 +51824,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -51960,7 +51960,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -51980,7 +51980,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -52000,7 +52000,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -52021,7 +52021,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -52109,7 +52109,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -52245,7 +52245,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -52265,7 +52265,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -52285,7 +52285,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -52306,7 +52306,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -52394,7 +52394,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -52530,7 +52530,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -52550,7 +52550,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -52570,7 +52570,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -52591,7 +52591,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -52679,7 +52679,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -52781,7 +52781,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -52801,7 +52801,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -52855,7 +52855,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -52876,7 +52876,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -52964,7 +52964,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -53070,7 +53070,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -53090,7 +53090,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -53140,7 +53140,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -53161,7 +53161,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -53249,7 +53249,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -53356,7 +53356,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\Ashtabula Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -53376,7 +53376,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Findlay\\New Bremen Findlay coords.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -53425,7 +53425,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -53446,7 +53446,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.dateMERRAEnd.Value = Convert.ToDateTime("12/31/2010 11:00:00 PM");
             theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+            merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
 
             thisInst.merraList.MERRAfolder = merraFolder;
@@ -53534,7 +53534,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;

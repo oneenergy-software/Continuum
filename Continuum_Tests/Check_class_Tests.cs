@@ -2,14 +2,17 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ContinuumNS;
 using System.IO;
+using OSGeo.GDAL;
+using OSGeo.OGR;
+using OSGeo.OSR;
 
 namespace Continuum_Tests
 {
     [TestClass]
     public class Check_class_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\Check_class";
-        
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Check_class";
+       
         [TestMethod]
         public void TopoCheck_Test()
         {
@@ -64,6 +67,66 @@ namespace Continuum_Tests
             Assert.AreEqual(isOk, false, "Wrong TopoCheck Test 4");
 
             thisInst.Close();
+
+        }
+
+        [TestMethod]
+        public void IsGeoTiff_Test()
+        {
+            // Opens a GeoTiff with elevation data. IsGeoTiff should return true. Then opens Tiff with color RGB values. IsGeoTiff should return false
+            string goodTiffName = testingFolder + "Findlay Topo.tif";
+            string badTiffName = testingFolder + "DEM JM.tif";
+
+            TopoInfo topo = new TopoInfo();
+            Check_class check = new Check_class();
+
+            GdalConfiguration.ConfigureGdal();
+            Gdal.AllRegister();
+            Dataset GDAL_obj;
+
+            // Test function with GeoTiff file 
+            try
+            {
+                GDAL_obj = Gdal.Open(goodTiffName, Access.GA_ReadOnly);
+            }
+            catch
+            {
+                return;
+            }
+            
+            int width = GDAL_obj.RasterXSize;
+            int height = GDAL_obj.RasterYSize;                       
+
+            Band GD_Raster = GDAL_obj.GetRasterBand(1);
+
+            double[] buff = new double[width * height];
+            GD_Raster.ReadRaster(0, 0, width, height, buff, width, height, 0, 0);
+
+            bool isGeoTiff = check.IsGeoTIFF(buff);
+            Assert.AreSame(true, isGeoTiff);
+
+            // Test function with a TIF (color RGB) file
+            try
+            {
+                GDAL_obj = Gdal.Open(goodTiffName, Access.GA_ReadOnly);
+            }
+            catch
+            {
+                return;
+            }
+
+            width = GDAL_obj.RasterXSize;
+            height = GDAL_obj.RasterYSize;
+
+            GD_Raster = GDAL_obj.GetRasterBand(1);
+
+            buff = new double[width * height];
+            GD_Raster.ReadRaster(0, 0, width, height, buff, width, height, 0, 0);
+
+            isGeoTiff = check.IsGeoTIFF(buff);
+            Assert.AreSame(false, isGeoTiff);
+
+
 
         }
     }

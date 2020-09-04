@@ -10,7 +10,7 @@ namespace Continuum_Tests
     [TestClass]
     public class NodeCollection_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\NodeCollection";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\NodeCollection";
 
         [TestMethod]        public void CreateTestFilesForFindHighNodes()
         {            

@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> GUI form where user can create a wake loss model and define its parameters. </summary>
     public partial class Gen_WakeModel : Form
     {
+        /// <summary> Continuum instance to add new wake loss model and do turbine calcs. </summary> 
+        public Continuum thisInst;
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Gen_WakeModel class initializer </summary>        
         public Gen_WakeModel(Continuum continuum)
         {
             InitializeComponent();
@@ -62,20 +63,14 @@ namespace ContinuumNS
             if (cboPowerCrvs.Items.Count > 0) cboPowerCrvs.SelectedIndex = 0;
 
         }
-
-        public Continuum thisInst;
-
+        
+        /// <summary> Reads wake loss model settings from form and adds wake model to list and calls background_worker to conduct turbine calcs. </summary>    
         public void GenWakeModel()
         {
-            // Reads wake loss model settings from form and adds wake model to list and calls background_worker to conduct turbine calcs                     
-
             int wakeModelType = ReadWakeModelType();
             double horizExp = ReadHorizExp();
-            TurbineCollection.PowerCurve thisPowerCurve = GetPowerCurve();
-         //   double WRR = ReadWRR();
-         //   double WRR_Exp = ReadWRR_Exp();
+            TurbineCollection.PowerCurve thisPowerCurve = GetPowerCurve();         
             double avgTI = ReadTI();
-
             string wakeCombo = ReadWakeCombo();
 
             double DW_Spacing = 0;
@@ -138,7 +133,7 @@ namespace ContinuumNS
             if (thisInst.turbineList.turbineEsts[0].EstsExistForWakeModel(thisInst.wakeModelList.wakeModels[wakeModelInd], thisInst.wakeModelList) == false)
             {
 
-                BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+                BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
                 if (thisInst.metList.ThisCount > 0)
                 {
@@ -165,11 +160,11 @@ namespace ContinuumNS
         private void btnGenMap_Click(object sender, EventArgs e)
         {
             GenWakeModel();
-        }               
+        }
 
+        /// <summary> Reads selected turbine power curve from form and gets power curve object. </summary> 
         public TurbineCollection.PowerCurve GetPowerCurve()
-        {
-            // Reads selected turbine power curve from form and gets power curve object 
+        {            
             TurbineCollection.PowerCurve thisPowerCurve = new TurbineCollection.PowerCurve();
             string powerCurve = "";
 
@@ -193,9 +188,9 @@ namespace ContinuumNS
             return thisPowerCurve;
         }
 
+        /// <summary> Reads and returns ambient TI. </summary> 
         public double ReadTI()
-        {
-            // Reads and returns ambient TI
+        {           
             double thisTI = 10;
 
             try {
@@ -209,9 +204,9 @@ namespace ContinuumNS
             return thisTI;
         }
 
+        /// <summary> Reads and returns selected wake combination method. </summary> 
         public string ReadWakeCombo()
-        {
-            // Reads and returns selected wake combination method
+        {             
             string thisCombo = "";
 
             try {
@@ -225,9 +220,9 @@ namespace ContinuumNS
             return thisCombo;
         }
 
+        /// <summary> Reads and returns wake horizontal expansion angle. </summary> 
         public double ReadHorizExp()
-        {
-            // Reads and returns wake horizontal expansion angle
+        {             
             double horizExp = 5;
 
             try {
@@ -241,39 +236,39 @@ namespace ContinuumNS
             return horizExp;
         }
 
- /*       public double ReadWRR()
-        {
-            // Reads and returns wake recharge rate
-            double WRR = 0;
+        /*       public double ReadWRR()
+               {
+                   // Reads and returns wake recharge rate
+                   double WRR = 0;
 
-            try {
-                WRR = Convert.ToSingle(numWRR.Value);
-            }
-            catch {
-                WRR = 0;
-            }
+                   try {
+                       WRR = Convert.ToSingle(numWRR.Value);
+                   }
+                   catch {
+                       WRR = 0;
+                   }
 
-            return WRR;
-        }
+                   return WRR;
+               }
 
-        public double ReadWRR_Exp()
-        { 
-            // Reads and returns wake recharge distance weight exponent
-            double WRR_Exp = 0;
+               public double ReadWRR_Exp()
+               { 
+                   // Reads and returns wake recharge distance weight exponent
+                   double WRR_Exp = 0;
 
-            try {
-                WRR_Exp = Convert.ToSingle(numWakeExp.Value);
-            }
-            catch {
-                WRR_Exp = 0;
-            }
+                   try {
+                       WRR_Exp = Convert.ToSingle(numWakeExp.Value);
+                   }
+                   catch {
+                       WRR_Exp = 0;
+                   }
 
-            return WRR_Exp;
-        }
-*/
+                   return WRR_Exp;
+               }
+       */
+        /// <summary> Reads and returns the downwind spacing. </summary>        
         public double ReadDW_Spacing()
-        { 
-            // Reads and returns the downwind spacing
+        {              
             double DW_Spacing = 10;
 
             try {
@@ -287,9 +282,9 @@ namespace ContinuumNS
             return DW_Spacing;
         }
 
+        /// <summary> Reads and returns the crosswind spacing. </summary> 
         public double ReadCW_Spacing()
-        {
-            // Reads and returns the crosswind spacing
+        {             
             double CW_Spacing = 3.5f;
 
             try {
@@ -303,9 +298,9 @@ namespace ContinuumNS
             return CW_Spacing;
         }
 
+        /// <summary> Reads and returns ambient surface roughness. </summary> 
         public double ReadAmbRough()
-        { 
-            // Reads and returns ambient surface roughness
+        {              
             double ambRough = 0.03f;
 
             try {
@@ -319,9 +314,9 @@ namespace ContinuumNS
             return ambRough;
         }
 
+        /// <summary> Reads and returns the selected wake model type (0: Eddy Viscosity; 1: DAWM, 2: Jensen). </summary> 
         public int ReadWakeModelType()
-        {
-            // Reads and returns the selected wake model
+        {             
             int modelType = 0;
             string wakeModel = "";
 

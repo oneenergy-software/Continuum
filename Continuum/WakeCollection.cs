@@ -1,68 +1,105 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that holds list of wake models and list of wake maps. Contains functions for calculating wake losses and wake loss coefficients. </summary>
     [Serializable()]
     public class WakeCollection
     {
-        public Wake_Model[] wakeModels;   // List of wake models
-        public WakeGridMap[] wakeGridMaps;   // List of wake maps
-        public double vonKarman = 0.4f; // von Karman constant
+        /// <summary> List of wake models. </summary>
+        public Wake_Model[] wakeModels;
+        /// <summary> List of wake maps. </summary>
+        public WakeGridMap[] wakeGridMaps;
+        /// <summary> von Karman constant = 0.4. </summary>
+        public double vonKarman = 0.4f;
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Holds all information related to a waked map. </summary>
         [Serializable()] public struct WakeGridMap
         {
+            /// <summary> Wake map name. </summary>
             public string name;
+            /// <summary> Minimum UTMX of map. </summary>
             public int minUTMX;
+            /// <summary> Minimum UTMY of map. </summary>
             public int minUTMY;
+            /// <summary> Number of grid points along X. </summary>
             public int numX;
+            /// <summary> Number of grid points along Y. </summary>
             public int numY;
+            /// <summary> Grid resolution. </summary>
             public int wakeGridReso;
+            /// <summary> Wake model used. </summary>
             public Wake_Model wakeModel;
+            /// <summary> Wake map nodes. </summary>
             public WakeGridObj[,] wakeGrids;
+            /// <summary> True if map generation was completed. </summary>
             public bool isComplete;
             
         }
 
+        /// <summary> Holds all information related to a waked map node. </summary>
         [Serializable()] public struct WakeGridObj
         {
-            public double wakedWS;  // Overall
+            /// <summary> Overall waked wind speed. </summary>
+            public double wakedWS;
+            /// <summary> Overall wake loss. </summary>
             public double wakeLoss;
+            /// <summary> Net energy production. </summary>
             public double netEnergy;
 
-            public double[] sectorWakedWS;   // By direction
+            /// <summary> Sectorwise waked wind speed. </summary>
+            public double[] sectorWakedWS;
+            /// <summary> Sectorwise wake loss. </summary>
             public double[] sectorWakeLoss;
+            /// <summary> Sectorwise net energy production. </summary>
             public double[] sectorNetEnergy;
         }
 
+        /// <summary> Holds estimated overall and sectorwise wind speed and energy production found from wake loss calculation. </summary>
         public struct WakeCalcResults
         {
+            /// <summary> Overall wind speed distribution. </summary>
             public double[] WS_Dist;
+            /// <summary> Sectorwise wind speed distribution. </summary>
             public double[,] sectorDist;
-
+            /// <summary> Overall wind speed. </summary>
             public double wakedWS;
+            /// <summary> Overall wake loss. </summary>
             public double wakeLoss;
+            /// <summary> Overall net energy production. </summary>
             public double netEnergy;
-
+            /// <summary> Sectorwise wind speed. </summary>
             public double[] sectorWakedWS;
+            /// <summary> Sectorwise wake loss. </summary>
             public double[] sectorWakeLoss;
+            /// <summary> Sectorwise net energy production. </summary>
             public double[] sectorNetEnergy;
         }
 
+        /// <summary> Holds wake loss profile polynomial coefficients for a specific free-stream wind speed and distance, X, downwind of turbine. </summary>
         public struct WakeLossCoeffs
         {
+            /// <summary> Free-stream wind speed. </summary>
             public double freeStream;
+            /// <summary> Distance downwind of turbine in rotor diameters [RDs]. </summary>
             public double X_LengthRD;
+            /// <summary> Regression coefficient 1. </summary>
             public double linCoeff1;
+            /// <summary> Regression coefficient 2. </summary>
             public double linCoeff2;
+            /// <summary> Regression coefficient 3. </summary>
             public double linCoeff3;
+            /// <summary> Regression coefficient 4. </summary>
             public double linCoeff4;
+            /// <summary> Regression intercept. </summary>
             public double linRegInt;
         }
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Returns number of defined wake models in list. </summary>
         public int NumWakeModels {
             get {
                 if (wakeModels == null)
@@ -72,6 +109,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns number of wake maps in list. </summary>
         public int NumWakeGridMaps
         {
             get
@@ -82,7 +120,8 @@ namespace ContinuumNS
                     return wakeGridMaps.Length;
             }
         }
-        
+
+        /// <summary> Returns number of wake maps in list. </summary>
         public int NumCompleteWakeGridMaps
         {
             get
@@ -102,22 +141,22 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Clears all wake models and wake maps. </summary>
         public void ClearAll()
-        {
-            // Clears all wake models and wake maps
+        {           
             wakeModels = null;
             wakeGridMaps = null;
         }
 
+        /// <summary> Clears all wake maps. </summary>
         public void ClearWakeMaps()
-        {
-            // Clears all wake maps
+        {            
             wakeGridMaps = null;
         }
 
+        /// <summary> Returns true if two wake models are identical. </summary>
         public bool IsSameWakeModel(Wake_Model wakeModel1, Wake_Model wakeModel2)
-        {
-            // Returns true if two wake models are identical
+        {           
             bool isSame = false;
 
             if (wakeModel1 == null && wakeModel2 == null)
@@ -141,9 +180,9 @@ namespace ContinuumNS
                 return isSame;
         }
 
+        /// <summary> Returns true if two wake maps are identical. </summary>
         public bool IsSameWakeGrid(WakeGridMap wakeGrid1, WakeGridMap wakeGrid2)
-        {
-            //    Returns true if two wake maps are identical
+        {            
             bool isSame = false;
 
         if (wakeGrid1.minUTMX == wakeGrid2.minUTMX && wakeGrid1.minUTMY == wakeGrid2.minUTMY && wakeGrid1.numX == wakeGrid2.numX && wakeGrid1.numY == wakeGrid2.numY &&
@@ -152,10 +191,10 @@ namespace ContinuumNS
 
             return isSame;
         }
-        
+
+        /// <summary> Returns minimum value of wake loss map for specified WD sector and selected parameter. </summary>
         public double FindMin(WakeGridMap thisGrid, int WD_Ind, int plotInd)
-        {
-            // Returns minimum value of wake loss map for specified WD sector and selected parameter
+        {            
             double thisMin = 100000;
             int numWD = 0;
 
@@ -214,9 +253,9 @@ namespace ContinuumNS
             return thisMin;
         }
 
+        /// <summary> Returns maximum value of wake loss map for specified WD sector and selected parameter. </summary>
         public double FindMax(WakeGridMap thisGrid, int WD_Ind, int plotInd)
-        {
-            // Returns maximum value of wake loss map for specified WD sector and selected parameter
+        {            
             double thisMax = 0;
             int numWD = 0;
 
@@ -269,59 +308,20 @@ namespace ContinuumNS
                         }
 
                     }
-
-
                 }
             }
 
             return thisMax;
         }
 
-        public void CleanUpWakeModels(Continuum thisInst)
-        {
-            // if calculations were interrupted then some turbines may not have all the wake models. This checks to see what
-            // wake models each turbine has and deletes wake models that were interrupted.
-            TurbineCollection turbineList = thisInst.turbineList;
-
-            if (turbineList.TurbineCount == 0) 
-                return;
-
-            Turbine lastTurbine = turbineList.turbineEsts[turbineList.TurbineCount - 1];
-            Wake_Model thisWakeModel;
-            bool haveTurbCalcs = false;
-
-            for (int j = 0; j < NumWakeModels; j++)
-            {
-                haveTurbCalcs = false;
-                for (int i = 0; i < lastTurbine.NetAEP_Count; i++)
-                {
-                    thisWakeModel = lastTurbine.netAEP[i].wakeModel;
-                    if (IsSameWakeModel(thisWakeModel, wakeModels[j]) == true) {
-                        haveTurbCalcs = true;
-                        break;
-                    }
-
-                }
-
-                if (haveTurbCalcs == false)
-                    RemoveWakeModel(turbineList, thisInst.mapList, wakeModels[j]);
-                
-                if (j == NumWakeModels) 
-                return;
-
-            }
-        }
-
+        /// <summary> If the calculations get cancelled, there could be wake grids with no wake model so this compares the wake grids and wake models and deletes wake grids with no wake model. </summary>
         public void CleanUpWakeModelsAndGrid()
-        { 
-            // if the calculations get cancelled, there could be wake grids with no wake model so this compares the wake grids and wake
-            // models and deletes wake grids with no wake model
+        {             
             if (NumWakeGridMaps > 0 || NumWakeModels > 0)
-            {
-                bool wakeGridHasModel = false;
+            {                
                 for (int i = 0; i < NumWakeGridMaps; i++)
                 {
-                    wakeGridHasModel = false;
+                    bool wakeGridHasModel = false;
                     for (int j = 0; j < NumWakeModels; j++)
                     { 
                         if (IsSameWakeModel(wakeGridMaps[i].wakeModel, wakeModels[j]))
@@ -341,9 +341,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns true if Wake Map has already been created. </summary>
         public bool WakeGridExists(WakeGridMap wakeGrid)
-        {
-            // Returns true if Wake Map has already been created
+        {           
             bool existsAlready = false;
 
             for (int i = 0; i < NumWakeGridMaps; i++)
@@ -356,9 +356,9 @@ namespace ContinuumNS
             return existsAlready;
         }
 
+        /// <summary> Returns wake model name based on model_type index. </summary>
         public string GetWakeModelName(int modelType)
-        {
-            // Returns wake model name based on model_type index
+        {           
             string modelName = "";
 
             if (modelType == 0)
@@ -371,14 +371,14 @@ namespace ContinuumNS
             return modelName;
         }
 
-        public Wake_Model GetWakeModel(int wakeModelType, double horizExp, double ambTI, double DW_Spacing, double CW_Spacing, double ambRough, string powerCurveName, string comboMethod, double wakeRechargeRate)
-        {
-            // Returns wake model with specified settings
+        /// <summary> Returns wake model with specified settings. </summary>
+        public Wake_Model GetWakeModel(int wakeModelType, double horizExp, double ambTI, double DW_Spacing, double CW_Spacing, double ambRough, string powerCurveName, string comboMethod)
+        {            
             Wake_Model thisWakeModel = null;
 
             for (int i = 0; i < NumWakeModels; i++)
             { 
-                if ( wakeModels[i].wakeModelType == wakeModelType && wakeModels[i].ambTI == ambTI && wakeModels[i].horizWakeExp == horizExp && wakeModels[i].DW_Spacing == DW_Spacing && 
+                if (wakeModels[i].wakeModelType == wakeModelType && wakeModels[i].ambTI == ambTI && wakeModels[i].horizWakeExp == horizExp && wakeModels[i].DW_Spacing == DW_Spacing && 
                     wakeModels[i].powerCurve.name == powerCurveName && wakeModels[i].CW_Spacing == CW_Spacing && Math.Round(wakeModels[i].ambRough, 4) == Math.Round(ambRough, 4)
                     && wakeModels[i].comboMethod == comboMethod) {
                     thisWakeModel = wakeModels[i];
@@ -389,9 +389,9 @@ namespace ContinuumNS
             return thisWakeModel;
         }
 
+        /// <summary> Returns wake model with same string. </summary>
         public Wake_Model GetWakeModelFromString(string wakeModelString)
-        {
-            // Returns wake model with same string
+        {            
             Wake_Model thisWakeModel = null;
 
             for (int i = 0; i < NumWakeModels; i++)
@@ -404,9 +404,9 @@ namespace ContinuumNS
             return thisWakeModel;
         }
 
+        /// <summary> Returns wake map with specified settings. </summary>
         public WakeGridMap GetWakeGrid(Wake_Model thisWakeModel, int minX, int minY, int numX, int numY, int reso)
-        {
-            // Returns wake map with specified settings
+        {            
             WakeGridMap thisWakeGrid = new WakeGridMap();
 
             for (int i = 0; i < NumWakeGridMaps; i++)
@@ -422,9 +422,9 @@ namespace ContinuumNS
             return thisWakeGrid;
         }
 
+        /// <summary> Returns index of wake map with specified settings. </summary>
         public int GetWakeGridInd(Wake_Model thisWakeModel, int minX, int minY, int numX, int numY, int reso)
-        {
-            // Returns index of wake map with specified settings
+        {            
             int thisInd = 0;
 
             for (int i = 0; i < NumWakeGridMaps; i++)
@@ -440,9 +440,9 @@ namespace ContinuumNS
             return thisInd;
         }
 
+        /// <summary> Creates a new wake map with specified X/Y bounds. </summary>
         public WakeGridMap CreateNewWakeGrid(int minX, int minY, int numX, int numY, Wake_Model thisWakeModel)
-        {
-            // Creates a new wake map with specified X/Y bounds
+        {            
             WakeGridMap thisWakeGrid = new WakeGridMap();
 
             thisWakeGrid.minUTMX = minX;
@@ -456,10 +456,10 @@ namespace ContinuumNS
             return thisWakeGrid;
         }
 
+        /// <summary> Returns true a wake model with same specified parameters already exists. </summary>
         public bool WakeModelExists(int wakeModelType, double horizExp, double ambTI, string powerCurveName, double DW_Spacing, double CW_Spacing,
                                           double ambRough, string Wake_Combo)
-        {
-            // Returns true a wake model with same specified parameters already exists
+        {           
             bool existsAlready = false;
 
             for (int i = 0; i < NumWakeModels; i++)
@@ -486,10 +486,10 @@ namespace ContinuumNS
             return existsAlready;
         }
 
+        /// <summary> Add wake model to list. </summary>
         public void AddWakeModel(int wakeModelType, double horizExp, double ambTI, TurbineCollection.PowerCurve powerCurve,
                                   double DW_Spacing, double CW_Spacing, double ambRough, string combo)
-        {
-            // Add wake model to list
+        {            
             int numExistingModels = NumWakeModels;
 
             Array.Resize(ref wakeModels, numExistingModels + 1);
@@ -511,9 +511,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Add wake map to list. </summary>
         public void AddWakeGridMap(string mapName, int minX, int minY, int NumX, int NumY, int gridReso, Wake_Model thisWakeModel)
-        {
-            // Add wake map to list
+        {            
             int numGridMaps = NumWakeGridMaps;
 
             Array.Resize(ref wakeGridMaps, numGridMaps + 1);
@@ -529,9 +529,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Removes wake map from list. </summary>
         public void RemoveWakeGridMap(WakeGridMap thisGridMap)
-        {
-            // Removes wake map from list
+        {           
             int newCount = NumWakeGridMaps - 1;
 
             if (newCount > 0) {
@@ -554,9 +554,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Deletes waked map(s) from collection. </summary>
         public void RemoveWakeGridMapByName(string[] mapnames)
-        {
-            // Deletes map(s) from collection
+        {           
             int numMapsToDelete = mapnames.Length;
             int newCount = NumWakeGridMaps - numMapsToDelete;
 
@@ -590,9 +590,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Removes wake model from list and removes turbine estimates and maps that used the deleted wake model. </summary>
         public void RemoveWakeModel(TurbineCollection turbineList, MapCollection mapList, Wake_Model thisWakeModel)
-        {
-            // Removes wake model from list and removes turbine estimates and maps that used the deleted wake model
+        {            
             int newCount = NumWakeModels - 1;
 
             if (newCount > 0) {
@@ -650,9 +650,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Remove wake models based on power curve and delete turbine estimates and maps which used the wake model. </summary>
         public void RemoveWakeModelByPowerCurve(TurbineCollection turbineList, MapCollection mapList, string powerCurve)
-        {
-            // Remove wake models based on power curve and delete turbine estimates and maps which used the wake model
+        {            
             int newCount = 0;
 
             for (int i = 0; i < NumWakeModels; i++) 
@@ -717,9 +717,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Populates wake grid with calculated wind speed, wake loss, and energy production. </summary>
         public void PopulateWakeGrid(Map.MapNode mapNode, int wakeGridInd)
-        {
-            // Populates wake grid with calculated wind speed, wake loss, and energy production 
+        {            
             int xind = (int)(mapNode.UTMX - wakeGridMaps[wakeGridInd].minUTMX) / wakeGridMaps[wakeGridInd].wakeGridReso;
             int yind = (int)(mapNode.UTMY - wakeGridMaps[wakeGridInd].minUTMY) / wakeGridMaps[wakeGridInd].wakeGridReso;
 
@@ -733,11 +733,11 @@ namespace ContinuumNS
             wakeGridMaps[wakeGridInd].wakeGrids[xind, yind].sectorNetEnergy = mapNode.netEnergyEsts.sectorEnergy;
             wakeGridMaps[wakeGridInd].wakeGrids[xind, yind].sectorWakeLoss = mapNode.netEnergyEsts.sectorWakeLoss;
 
-        }               
+        }
 
+        /// <summary> Creates string containing wake model parameters for wake model list. </summary>
         public string CreateWakeModelString(Wake_Model thisWakeModel)
-        {
-            // Creates string containing wake model parameters for wake model list
+        {            
             string wakeString = "";
 
             if (thisWakeModel.wakeModelType == 0)
@@ -760,9 +760,9 @@ namespace ContinuumNS
             return wakeString;
         }
 
+        /// <summary> Fits a 4th order polynomial to velocity deficit profile for each X_LengthRD (distance downwind of turbine) and returns 4th order poly coefficients. </summary>
         public double[] CalcWakeProfileFit(double[] velDeficit, double[] R_RD)
-        {
-            // Fits a 4th order polynomial to velocity deficit profile for each X_LengthRD (distance downwind of turbine) and returns 4th order poly coefficients
+        {            
             int numParams = 4;
 
             double[,] xMatrix = new double[numParams + 1, numParams + 2];
@@ -845,9 +845,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Returns wake loss profile 4th order poly for specified eddy viscosity wake loss model and distance range. </summary>
         public WakeLossCoeffs[] GetWakeLossesCoeffs(int minDistance, int maxDistance, Wake_Model thisWakeModel, MetCollection metList)
-        {
-            // Returns wake loss profile 4th order poly for specified eddy viscosity wake loss model and distance range
+        {            
             WakeLossCoeffs[] wakeCoeffs = null;
             int numWakeCoeffs = 0;
             double[,] velDef;
@@ -909,10 +909,10 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates and returns waked WS and net energy for time series estimates. Time int is time interval in hours.
+        /// Finds distance to all UW turbines and wake widths and calculates wind speed deficit. Combines wind speed deficits of all UW turbines based on combo method. </summary>
         public double[] CalcNetEnergyTimeSeries(WakeLossCoeffs[] wakeCoeffs, double thisX, double thisY, double freeStream,  
-                                         Continuum thisInst, Wake_Model thisWakeModel, double WD, double grossEnergy, int timeInt)
-        // Calculates and returns waked WS and net energy for time series estimates. Time int is in time interval in hours.
-        // Finds distance to all UW turbines and wake widths and calculates wind speed deficit. Combines wind speed deficits of all UW turbines based on combo method.
+                                         Continuum thisInst, Wake_Model thisWakeModel, double WD, double grossEnergy, int timeInt)        
         {
             double[] wakedResults = new double[2]; // 0 = Waked WS, 1 = Net Energy 
             double netEnergy = 0;
@@ -1132,9 +1132,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> For each WD sector, finds distance to all UW turbines and wake widths and calculates wind speed deficit. Combines wind speed deficits of all UW turbines based on combo method. </summary>        
         public WakeCalcResults CalcWakeLosses(WakeLossCoeffs[] wakeCoeffs, double thisX, double thisY, double[,] freeSectorWS_Dist, double grossAEP, double[] grossAEPSect,
-                                         Continuum thisInst, Wake_Model thisWakeModel, double[] windRose)
-        // for each WD sector, finds distance to all UW turbines and wake widths and calculates wind speed deficit. Combines wind speed deficits of all UW turbines based on combo method.
+                                         Continuum thisInst, Wake_Model thisWakeModel, double[] windRose)         
         {
             WakeCalcResults wakeResults = new WakeCalcResults();
             
@@ -1372,26 +1372,25 @@ namespace ContinuumNS
             // Now calculate Waked overall WS dist, sector WS and overall avg WS
 
             wakeResults.sectorWakedWS = CalcAvgSectorWaked(wakeResults.sectorDist, thisInst.metList);
-            wakeResults.WS_Dist = CalcAvgWakedWS_Dists(wakeResults.sectorDist, thisInst.metList, windRose);
+            wakeResults.WS_Dist = CalcAvgWakedWS_Dists(wakeResults.sectorDist, windRose);
             wakeResults.wakedWS = CalcAvgWakedWS(wakeResults.WS_Dist, thisInst.metList);
 
             double otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
 
             wakeResults.netEnergy = CalcNetEnergy(thisWakeModel, wakeResults.WS_Dist, thisInst, otherLoss);
             wakeResults.sectorNetEnergy = CalcNetSectEnergy(thisWakeModel, wakeResults.sectorDist, windRose, thisInst, otherLoss);            
-            wakeResults.sectorWakeLoss = CalcThisSectWakeLoss(thisWakeModel, wakeResults.sectorNetEnergy, grossAEPSect, otherLoss);
-            wakeResults.wakeLoss = CalcThisWakeLoss(thisWakeModel, wakeResults.netEnergy, grossAEP, otherLoss);
+            wakeResults.sectorWakeLoss = CalcThisSectWakeLoss(wakeResults.sectorNetEnergy, grossAEPSect, otherLoss);
+            wakeResults.wakeLoss = CalcThisWakeLoss(wakeResults.netEnergy, grossAEP, otherLoss);
 
             return wakeResults;
 
-        }       
+        }
 
+        /// <summary> Calculates and returns P50 net annual energy production (wake and other losses included) </summary>
         public double CalcNetEnergy(Wake_Model thisWakeModel, double[] WS_Dist, Continuum thisInst, double otherLoss)
-        {
-            // Calculates and returns P50 net annual energy production (wake and other losses included)
+        {            
             int numWS = 0;
-            TurbineCollection.PowerCurve thisPowerCurve = thisWakeModel.powerCurve;
-            
+                        
             try {
                 numWS = WS_Dist.Length;
             }
@@ -1414,9 +1413,9 @@ namespace ContinuumNS
             return P50_AEP;
         }
 
+        /// <summary> Calculates and returns P50 net AEP by wind direction sector (wake and other losses included) </summary>
         public double[] CalcNetSectEnergy(Wake_Model thisWakeModel, double[,] sectorWS_Dist, double[] windRose, Continuum thisInst, double otherLoss)
-        {
-            // Calculates and returns P50 net AEP by wind direction sector (wake and other losses included)
+        {            
             int numWS = 0;
             int numWD = 0;
             TurbineCollection.PowerCurve thisPowerCurve = thisWakeModel.powerCurve;
@@ -1436,10 +1435,9 @@ namespace ContinuumNS
             }
 
             double[] P50_AEP = new double[numWD];
-            double sumWS = 0;
-            
+                        
             for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++) {
-                sumWS = 0;
+                double sumWS = 0;
                 for (int k = 0; k <= numWS - 1; k++) {
                     double thisWS = thisInst.metList.GetWS_atWS_Ind(k);
                     double thisPower = thisInst.turbineList.GetInterpPowerOrThrust(thisWS, thisPowerCurve, "Power");
@@ -1452,9 +1450,9 @@ namespace ContinuumNS
             return P50_AEP;
         }
 
-        public double CalcThisWakeLoss(Wake_Model thisWakeModel, double P50_AEP, double grossAEP, double otherLoss)
-        {
-            // Calculates and returns the wake loss (%)
+        /// <summary> Calculates and returns the wake loss (%) </summary>
+        public double CalcThisWakeLoss(double P50_AEP, double grossAEP, double otherLoss)
+        {            
             double wakeLoss = 1 - P50_AEP / otherLoss / grossAEP;
 
             if (wakeLoss < 0) wakeLoss = 0;
@@ -1462,9 +1460,9 @@ namespace ContinuumNS
             return wakeLoss;
         }
 
-        public double[] CalcThisSectWakeLoss(Wake_Model thisWakeModel, double[] P50_AEP, double[] grossAEP, double otherLoss)
-        {
-            // Calculates and returns sectorwise wake loss
+        /// <summary> Calculates and returns sectorwise wake loss </summary>
+        public double[] CalcThisSectWakeLoss(double[] P50_AEP, double[] grossAEP, double otherLoss)
+        {            
             double[] wakeLoss = null;
             int numWD = 0;
 
@@ -1485,9 +1483,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates and returns the average waked wind speed in each sector </summary>
         public double[] CalcAvgSectorWaked(double[,] sectorWS_Dist, MetCollection metList)
-        {
-            // Calculates and returns the average waked wind speed in each sector
+        {            
             int numWD = 0;
             int numWS = 0;
             double WS_First;
@@ -1507,21 +1505,16 @@ namespace ContinuumNS
             catch {
                 return null;
             }
-
-            double sumWS_Freq = 0;
-            double sumFreq = 0;
-            double thisWS = 0;
-            double thisFreq = 0;
-
+                       
             double[] sectorWS = new double[numWD];  
 
             //Calculate sectorwise wind speeds
             for (int i = 0; i < numWD; i++) {
-                sumWS_Freq = 0;
-                sumFreq = 0;
+                double sumWS_Freq = 0;
+                double sumFreq = 0;
                 for (int j = 0; j <= numWS - 1; j++) {
-                    thisWS = WS_First + j * WS_Int - WS_Int / 2;
-                    thisFreq = sectorWS_Dist[i, j];
+                    double thisWS = WS_First + j * WS_Int - WS_Int / 2;
+                    double thisFreq = sectorWS_Dist[i, j];
                     sumFreq = sumFreq + thisFreq;
                     sumWS_Freq = sumWS_Freq + thisWS * thisFreq;
                 }
@@ -1532,10 +1525,9 @@ namespace ContinuumNS
             return sectorWS;
         }
 
-        public double[] CalcAvgWakedWS_Dists(double[,] sectorWS_Dist, MetCollection metList, double[] windRose)
-        {
-
-            // Calculate and returns overall waked WS distribution
+        /// <summary> Calculate and returns overall waked WS distribution </summary>
+        public double[] CalcAvgWakedWS_Dists(double[,] sectorWS_Dist, double[] windRose)
+        {            
             int numWD = 0;
             int numWS = 0;
 
@@ -1546,14 +1538,12 @@ namespace ContinuumNS
             catch  {
 
             }
-
-            double sumRose;
+                        
             double[] WS_Dist = new double[numWS];
-            double thisFreq = 0;
-
+            
             for (int i = 0; i <= numWS - 1; i++) {
-                sumRose = 0;
-                thisFreq = 0;
+                double sumRose = 0;
+                double thisFreq = 0;
                 for (int j = 0; j <= numWD - 1; j++) {
                     thisFreq = thisFreq + sectorWS_Dist[j, i] * windRose[j];
                     sumRose = sumRose + windRose[j];
@@ -1564,9 +1554,9 @@ namespace ContinuumNS
             return WS_Dist;
         }
 
+        /// <summary> Calculates and returns average overall waked wind speed. </summary>
         public double CalcAvgWakedWS(double[] WS_Dist, MetCollection metList)
-        {
-            // Calculates and returns average overall waked wind speed
+        {            
             int numWS = 0;
             double WS_First = 0;
             double WS_Int = 0;
@@ -1598,10 +1588,9 @@ namespace ContinuumNS
             return thisWS;
         }
 
+        /// <summary> Takes wake deficit distribution for each wind speed and calculates and returns resulting wind speed distribution. </summary>
         public double[] InterpolateFindWakedDist(double[] wakedDistWS, double[] unwakedDist, MetCollection metList)
-        {
-            // Takes wake deficit distribution for each wind speed and calculates and returns resulting wind speed distribution
-
+        {          
             int numWS = 0;            
             double WS_int = 0;
             double WS_first = 0;
@@ -1621,12 +1610,11 @@ namespace ContinuumNS
             catch  {
                 return interpDist;
             }
-                        
-            double thisWS = 0;
+                                    
             interpDist = new double[numWS];
 
             for (int i = 0; i < numWS; i++) {
-                thisWS = WS_first + WS_int * i - WS_int / 2;
+                double thisWS = WS_first + WS_int * i - WS_int / 2;
                                 
                 // Loop through wakedDistWS and find all with same WS at thisWS
                 for (int j = 0; j <= numWS - 1; j++) {
@@ -1647,9 +1635,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculate and return "equivalent" roughness used in DAWM. </summary>
         public double CalcEquivRoughness(MetCollection metList, double freeStream, Wake_Model thisWakeModel, double hubHeight)
-        {
-            // Calculate and return "equivalent" roughness used in DAWM   
+        {            
             double WS_First = 0;
             double WS_Int = 0;
             int numWS = metList.numWS;
@@ -1682,81 +1670,10 @@ namespace ContinuumNS
             return equivRough;
         }
 
-        public double Calc_IBL_H1(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector,
-                                    double equivRough, MetCollection metList, double freeStream, double hubHeight)
+        /// <summary> Used in DAWM, this is the height of the first internal boundary layer (IBL) calculated based on distance, distributed thrust coeff,
+        /// and turbine roughness. Initial IBL height equal to top of rotor. </summary>
+        public double Calc_IBL_H1(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector, double equivRough, double hubHeight)
         {
-            // Used in DAWM, this is the height of the first internal boundary layer (IBL) calculated based on distance, distributed thrust coeff,
-            // and turbine roughness. Initial IBL height equal to top of rotor
-
-            double H1 = 0;
-            WD_sector = 90 - WD_sector;
-
-            double X_Length = 0;
-            double R_Length = 0;
-            int UW_X_Length = 0;
-            int UW_R_Length = 0;
-            int waked_X_Length = 0;
-            int waked_R_Length = 0;
-
-            double RD = thisWakeModel.powerCurve.RD;                        
-
-            double thisTheta = WD_sector - ((Math.Atan2(UW_turb.UTMY, UW_turb.UTMX)) * 180 / Math.PI);
-            UW_X_Length = (int)(Math.Pow(Math.Pow(UW_turb.UTMX, 2) + Math.Pow(UW_turb.UTMY, 2), 0.5) * Math.Cos(thisTheta * Math.PI / 180));
-            UW_R_Length = (int)(Math.Pow(Math.Pow(UW_turb.UTMX, 2) + Math.Pow(UW_turb.UTMY, 2), 0.5) * Math.Sin(thisTheta * Math.PI / 180));
-
-            thisTheta = WD_sector - ((Math.Atan2(UTMY, UTMX)) * 180 / Math.PI);
-            waked_X_Length = (int)(Math.Pow((Math.Pow(UTMX, 2) + Math.Pow(UTMY, 2)), 0.5) * Math.Cos(thisTheta * Math.PI / 180));
-            waked_R_Length = (int)(Math.Pow((Math.Pow(UTMX, 2) + Math.Pow(UTMY, 2)), 0.5) * Math.Sin(thisTheta * Math.PI / 180));
-
-            X_Length = Math.Abs(UW_X_Length - waked_X_Length);
-            R_Length = Math.Abs(UW_R_Length - waked_R_Length);
-
-            X_Length = X_Length / RD;
-            R_Length = R_Length / RD;
-
-            // Calculate height of IBL 
-            double wakeWidth = 0;
-            double initWakeWidth = 0.8f;
-            wakeWidth = CalcWakeWidth(initWakeWidth, thisWakeModel, X_Length);
-
-            if (R_Length < wakeWidth)
-            { // it's in the IBL created by UW turbine 
-                // Initial height is top of rotor
-                double leftSide = 0;
-                double rightSide = 0;
-                double diff = 0;
-                int counter = 0;
-
-                H1 = H1 + hubHeight + RD / 2;
-                leftSide = (H1 * (Math.Log(H1 / equivRough) - 1));
-                rightSide = equivRough * (X_Length * RD / equivRough - 1);
-                diff = leftSide - rightSide;
-
-                while (Math.Abs(diff) > 0.5 && counter < 1000) {
-
-                    if (diff < 0)  // increase H1
-                        H1 = H1 + Math.Abs(diff) / 10;
-                    else  // decrease H1
-                        H1 = H1 - Math.Abs(diff) / 10;
-
-                    leftSide = (H1 * (Math.Log(H1 / equivRough) - 1));
-                    rightSide = equivRough * (X_Length * RD / equivRough - 1);
-                    diff = leftSide - rightSide;
-                    counter++;
-                }
-
-                H1 = H1 + hubHeight + RD / 2;
-
-            }
-            return H1;
-        }
-
-        public double Calc_IBL_H1_New(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector,
-                                    double equivRough, MetCollection metList, double freeStream, double hubHeight)
-        {
-            // Used in DAWM, this is the height of the first internal boundary layer (IBL) calculated based on distance, distributed thrust coeff,
-            // and turbine roughness. Initial IBL height equal to top of rotor
-
             double H1 = 0;
             double RD = thisWakeModel.powerCurve.RD;                        
 
@@ -1766,8 +1683,7 @@ namespace ContinuumNS
 
             if (DW_Dist > 0)
             {
-                // Calculate height of IBL
-               
+                // Calculate height of IBL               
                 double initWakeWidth = 0.8f;
                 double wakeWidth = CalcWakeWidth(initWakeWidth, thisWakeModel, DW_Dist);
 
@@ -1801,6 +1717,7 @@ namespace ContinuumNS
             return H1;
         }
 
+        /// <summary> Calculate and return downwind and lateral distance from specified upwind turbine. </summary>
         public double[] CalcDownwindAndLateralDistanceFromUW_Turb(double UW_UTMX, double UW_UTMY, double Site_UTMX, double Site_UTMY, double RD, double WD)
         {
             TopoInfo topo = new TopoInfo();
@@ -1822,106 +1739,12 @@ namespace ContinuumNS
             return Results;
         }
 
-        public double Calc_IBL_H2(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector,
-                                MetCollection metList, double freeStream, double hubHeight)
-        {
-            // Used in DAWM, this is the height of the second internal boundary layer (IBL) calculated based on distance and ambient (background) roughness.
+        /// <summary> Used in DAWM, this is the height of the second internal boundary layer (IBL) calculated based on distance and ambient (background) roughness. </summary>
+        public double Calc_IBL_H2(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector, MetCollection metList, double hubHeight)
+        {            
             // Initial IBL height equal to bottom of rotor
-
             double H2 = 1000000;
-            WD_sector = 90 - WD_sector;
-
-            double X_Length = 0;
-            double R_Length = 0;
-            int UW_X_Length = 0;
-            int UW_R_Length = 0;
-            int waked_X_Length = 0;
-            int waked_R_Length = 0;
-
             double RD = thisWakeModel.powerCurve.RD;
-
-            double WS_First = 0;
-            double WS_Int = 0;
-
-            try {
-                WS_First = metList.WS_FirstInt;
-                WS_Int = metList.WS_IntSize;
-            }
-            catch  {
-                return 0;
-            }
-
-            int numWS = metList.numWS;
-            double thrustCoeff = 0;                                   
-            
-            for (int i = 0; i < numWS; i++) { 
-                if (freeStream == WS_First + i * WS_Int - WS_Int / 2)
-                {
-                    thrustCoeff = thisWakeModel.powerCurve.thrustCoeff[i];
-                    break;
-                }
-            }
-
-            double thisTheta = WD_sector - ((Math.Atan2(UW_turb.UTMY, UW_turb.UTMX)) * 180 / Math.PI);
-            UW_X_Length = (int)(Math.Pow((Math.Pow(UW_turb.UTMX, 2) + Math.Pow(UW_turb.UTMY, 2)), 0.5) * Math.Cos(thisTheta * Math.PI / 180));
-            UW_R_Length = (int)(Math.Pow((Math.Pow(UW_turb.UTMX, 2) + Math.Pow(UW_turb.UTMY, 2)), 0.5) * Math.Sin(thisTheta * Math.PI / 180));
-
-            thisTheta = WD_sector - ((Math.Atan2(UTMY, UTMX)) * 180 / Math.PI);
-            waked_X_Length = (int)(Math.Pow((Math.Pow(UTMX, 2) + Math.Pow(UTMY, 2)), 0.5) * Math.Cos(thisTheta * Math.PI / 180));
-            waked_R_Length = (int)(Math.Pow((Math.Pow(UTMX, 2) + Math.Pow(UTMY, 2)), 0.5) * Math.Sin(thisTheta * Math.PI / 180));
-
-            X_Length = Math.Abs(UW_X_Length - waked_X_Length);
-            R_Length = Math.Abs(UW_R_Length - waked_R_Length);
-
-            X_Length = X_Length / RD;
-            R_Length = R_Length / RD;
-
-            // Calculate height of IBL 
-            double wakeWidth = 0;
-            double initWakeWidth = 0.8f;
-            wakeWidth = CalcWakeWidth(initWakeWidth, thisWakeModel, X_Length);
-
-            if (R_Length<wakeWidth) { // it//s in the IBL created by UW turbine 
-                // Initial height is bottom of rotor
-                double leftSide = 0;
-                double rightSide = 0;
-                double diff = 0;
-                int counter = 0;
-
-                H2 = hubHeight - RD / 2;
-                leftSide = H2 * (Math.Log(H2 / thisWakeModel.ambRough) - 1);
-                rightSide = thisWakeModel.ambRough * (X_Length * RD / thisWakeModel.ambRough - 1);
-                diff = leftSide - rightSide;
-
-                while (Math.Abs(diff) > 0.5 && counter < 1000)
-                {
-                    if (diff < 0)  // increase H1
-                        H2 = H2 + Math.Abs(diff) / 10;
-                    else  // decrease H1
-                        H2 = H2 - Math.Abs(diff) / 10;
-
-                    leftSide = H2 * (Math.Log(H2 / thisWakeModel.ambRough) - 1);
-                    rightSide = thisWakeModel.ambRough * (X_Length * RD / thisWakeModel.ambRough - 1);
-                    diff = leftSide - rightSide;
-                    counter++;
-                }
-
-                H2 = H2 + hubHeight - RD / 2;
-
-            }
-            return H2;
-        }
-
-        public double Calc_IBL_H2_NEW(Turbine UW_turb, double UTMX, double UTMY, Wake_Model thisWakeModel, double WD_sector,
-                                MetCollection metList, double freeStream, double hubHeight)
-        {
-            // Used in DAWM, this is the height of the second internal boundary layer (IBL) calculated based on distance and ambient (background) roughness.
-            // Initial IBL height equal to bottom of rotor
-
-            double H2 = 1000000;                                
-
-            double RD = thisWakeModel.powerCurve.RD;
-
             double WS_First = 0;
             double WS_Int = 0;
 
@@ -1933,20 +1756,7 @@ namespace ContinuumNS
             catch 
             {
                 return 0;
-            }
-
-            int numWS = metList.numWS;
-            double thrustCoeff = 0;
-            TurbineCollection turbList = new TurbineCollection();
-
-            for (int i = 0; i < numWS; i++)
-            {
-                if (freeStream == WS_First + i * WS_Int - WS_Int / 2)
-                {
-                    thrustCoeff = turbList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Thrust");
-                    break;
-                }
-            }
+            }                       
 
             double[] DW_andLatDists = CalcDownwindAndLateralDistanceFromUW_Turb(UW_turb.UTMX, UW_turb.UTMY, UTMX, UTMY, RD, WD_sector);
             double DW_Dist = DW_andLatDists[0];
@@ -1954,23 +1764,19 @@ namespace ContinuumNS
 
             if (DW_Dist > 0)
             {
-                // Calculate height of IBL 
-                double wakeWidth = 0;
+                // Calculate height of IBL                 
                 double initWakeWidth = 0.8f;
-                wakeWidth = CalcWakeWidth(initWakeWidth, thisWakeModel, DW_Dist);
+                double wakeWidth = CalcWakeWidth(initWakeWidth, thisWakeModel, DW_Dist);
 
                 if (latDist < wakeWidth)
                 { // it's in the IBL created by UW turbine 
                     // Initial height is bottom of rotor
-                    double leftSide = 0;
-                    double rightSide = 0;
-                    double diff = 0;
+                    
                     int counter = 0;
-
                     H2 = hubHeight - RD / 2;
-                    leftSide = H2 * (Math.Log(H2 / thisWakeModel.ambRough) - 1);
-                    rightSide = thisWakeModel.ambRough * (DW_Dist * RD / thisWakeModel.ambRough - 1);
-                    diff = leftSide - rightSide;
+                    double leftSide = H2 * (Math.Log(H2 / thisWakeModel.ambRough) - 1);
+                    double rightSide = thisWakeModel.ambRough * (DW_Dist * RD / thisWakeModel.ambRough - 1);
+                    double diff = leftSide - rightSide;
 
                     while (Math.Abs(diff) > 0.5 && counter < 1000)
                     {
@@ -1992,30 +1798,27 @@ namespace ContinuumNS
             return H2;
         }
 
+        /// <summary> Calculate and return the wind speed deficit based on DAWM. </summary>
         public double Calc_DAWM_Deficit(Turbine[] UW_turbs, double UTMX, double UTMY, double WD_sector, double freeStream, Wake_Model thisWakeModel, MetCollection metList, double hubHeight)
-        {
-            // Calculate and return the wind speed deficit based on DAWM
-            double velDeficit = 0;
-            double equivRough = 0;
-           
+        {            
+            double velDeficit = 0;                       
             double IBL_H1 = 0;
             double IBL_H2 = 1000000;
             int numUW_turbs = 0;
-            double WS_Ratio = 0;
-
+            
             try {
                 numUW_turbs = UW_turbs.Length;
             }
             catch {
                 return velDeficit;
-            }                      
+            }
 
-            equivRough = CalcEquivRoughness(metList, freeStream, thisWakeModel, hubHeight);
+            double equivRough = CalcEquivRoughness(metList, freeStream, thisWakeModel, hubHeight);
 
             // Find the maximum IBL H1 and the minimum IBL H2 (greater than hub height)
             for (int i = 0; i < numUW_turbs; i++) {
-                double This_H1 = Calc_IBL_H1_New(UW_turbs[i], UTMX, UTMY, thisWakeModel, WD_sector, equivRough, metList, freeStream, hubHeight);
-                double This_H2 = Calc_IBL_H2_NEW(UW_turbs[i], UTMX, UTMY, thisWakeModel, WD_sector, metList, freeStream, hubHeight);
+                double This_H1 = Calc_IBL_H1(UW_turbs[i], UTMX, UTMY, thisWakeModel, WD_sector, equivRough, hubHeight);
+                double This_H2 = Calc_IBL_H2(UW_turbs[i], UTMX, UTMY, thisWakeModel, WD_sector, metList, hubHeight);
 
                 if (This_H1 > IBL_H1)
                     IBL_H1 = This_H1;
@@ -2026,7 +1829,7 @@ namespace ContinuumNS
             }
 
             if (IBL_H1!= 0 && IBL_H2!= 1000000 ) {
-                WS_Ratio = (Math.Log(IBL_H1 / thisWakeModel.ambRough) * Math.Log(IBL_H2 / equivRough) / (Math.Log(IBL_H2 / thisWakeModel.ambRough) * Math.Log(IBL_H1 / equivRough)));
+                double WS_Ratio = (Math.Log(IBL_H1 / thisWakeModel.ambRough) * Math.Log(IBL_H2 / equivRough) / (Math.Log(IBL_H2 / thisWakeModel.ambRough) * Math.Log(IBL_H1 / equivRough)));
                 //  velDeficit = freeStream - WS_Ratio * freeStream
                 velDeficit = 1 - WS_Ratio;
             }
@@ -2034,10 +1837,9 @@ namespace ContinuumNS
             return velDeficit;
         }
 
-        public double[,] CalcWS_DeficitEddyViscosityGrid(double minDistRD, double maxDistRD, double X_Reso_RD, double R_Reso_RD, double freeStream,
-                                                        Wake_Model thisWakeModel, MetCollection metList)
-        {
-            // Calculate and return grid of wind speed deficit based on eddy viscosity model. i = distance behind rotor, j = distance away from centerline
+        /// <summary> Calculate and return grid of wind speed deficit based on eddy viscosity model. i = distance behind rotor, j = distance away from centerline. </summary>
+        public double[,] CalcWS_DeficitEddyViscosityGrid(double minDistRD, double maxDistRD, double X_Reso_RD, double R_Reso_RD, double freeStream, Wake_Model thisWakeModel, MetCollection metList)
+        {            
             double[,] velDeficit = null;
             double k1 = 0.015f;
 
@@ -2054,51 +1856,34 @@ namespace ContinuumNS
                 return velDeficit;
             }
 
-            int numWS = 0;
-            double thrustCoeff = 0;
+            int numWS = 0;            
 
             try {
                 numWS = thisWakeModel.powerCurve.thrustCoeff.Length;
             }
             catch  {
                 return velDeficit;
-            }
-
-            for (int i = 0; i <= numWS - 1; i++) { 
-                if (freeStream == WS_First + i * WS_Int - WS_Int / 2 ) {
-                    thrustCoeff = thisWakeModel.powerCurve.thrustCoeff[i];
-                    break;
-                }
-            }
+            }            
 
             TurbineCollection turbList = new TurbineCollection();
-            thrustCoeff = turbList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Thrust");
-
-            int Num_Rs;
-            double initWakeWidth;
-            double Max_Wake_Width;
-            double initVelDef;
-            double wakeWidth = 0;
-            double F = 0;
-            double b = 0;
+            double thrustCoeff = turbList.GetInterpPowerOrThrust(freeStream, thisWakeModel.powerCurve, "Thrust");
+           
             double k = X_Reso_RD;
             double h = R_Reso_RD;
             double r = 0;
             double Km = Math.Pow(vonKarman, 2) * thisWakeModel.ambTI / 100;
-            double Eps = 0;
-
+            
             // Ainslie's initial deficit
-            initVelDef = (thrustCoeff - 0.05 - (16 * thrustCoeff - 0.5) * thisWakeModel.ambTI / 1000);
+            double initVelDef = (thrustCoeff - 0.05 - (16 * thrustCoeff - 0.5) * thisWakeModel.ambTI / 1000);
 
             // Liz's initial deficit(Horns Rev validation)
             //initVelDef = thrustCoeff - (thrustCoeff - 0.5) * thisWakeModel.ambTI / 1000
 
             if (initVelDef < 0) initVelDef = 0.0001f;
-            
-            initWakeWidth = Math.Pow((3.56 * thrustCoeff) / (8 * initVelDef * (1 - 0.5 * initVelDef)), 0.5); // Full width of wake
-            initWakeWidth = initWakeWidth / 2; // Half width of wake (which is what is modeled)
-            Max_Wake_Width = CalcWakeWidth(initWakeWidth, thisWakeModel, maxDistRD) / 2;
-            Num_Rs = Convert.ToInt16(1 / R_Reso_RD / 2); // why is this divided by 2??
+
+            double initWakeWidth = Math.Pow((3.56 * thrustCoeff) / (8 * initVelDef * (1 - 0.5 * initVelDef)), 0.5); // Full width of wake
+            initWakeWidth = initWakeWidth / 2; // Half width of wake (which is what is modeled)            
+            int Num_Rs = Convert.ToInt16(1 / R_Reso_RD / 2); // why is this divided by 2??
             if (minDistRD < 2) minDistRD = 2;
 
             int X_ind = 1 + Convert.ToInt16((maxDistRD - minDistRD) / X_Reso_RD);
@@ -2114,9 +1899,7 @@ namespace ContinuumNS
             double[] r_mtrx = new double[Num_Rs];  
             double[] c_prime = new double[Num_Rs];  
             double[] r_prime = new double[Num_Rs];
-
-            double X_Length;
-            double WS_Recharge = 0;
+                              
             int Vel_Def_Count = 0;
 
             // First calculate the U_spd at RD = 2
@@ -2134,15 +1917,15 @@ namespace ContinuumNS
                 if (minDistRD == 2) velDeficit[0, r_ind] = 1 - U_spd_last[r_ind] / freeStream;
             }
 
-            F = (0.65 - Math.Pow((-(2 - 4.5) / 23.32), 1f/3));
-            b = initWakeWidth;
-            Eps = F * (k1 * b * (freeStream - U_spd_last[0]) + Km);
+            double F = (0.65 - Math.Pow((-(2 - 4.5) / 23.32), 1f/3));
+            double b = initWakeWidth;
+            double Eps = F * (k1 * b * (freeStream - U_spd_last[0]) + Km);
 
             if (maxDistRD > 2) {
                 // Steps along axial direction from UW turbine to waked turbine
                 for (double i = 2 + X_Reso_RD; i <= maxDistRD; i = i + X_Reso_RD) {
 
-                    X_Length = (2 + i) * RD;
+                    double X_Length = (2 + i) * RD;
                     a_mtrx[0] = -k * Eps;
                     b_mtrx[0] = 2 * (Math.Pow(h, 2) * U_spd_last[0] + k * Eps);
                     c_mtrx[0] = -2 * k * Eps;
@@ -2205,7 +1988,7 @@ namespace ContinuumNS
 
                     for (int r_ind = 0; r_ind <= Num_Rs - 1; r_ind++) {
 
-                        WS_Recharge = (Math.Pow(thisWakeModel.wakeRechargeRate, 0.5) * Math.Pow(X_Length, thisWakeModel.wakeRechargeExp * freeStream));
+                        double WS_Recharge = (Math.Pow(thisWakeModel.wakeRechargeRate, 0.5) * Math.Pow(X_Length, thisWakeModel.wakeRechargeExp * freeStream));
 
                         if (U_spd[r_ind] + WS_Recharge < freeStream)
                             U_spd[r_ind] = U_spd[r_ind] + WS_Recharge;
@@ -2229,19 +2012,17 @@ namespace ContinuumNS
             return velDeficit;
         }
 
+        /// <summary> Calculates and returns the width of wake based on horizontal expansion angle, distance from rotor, and initial wake width. </summary>
         public double CalcWakeWidth(double initWakeWidth, Wake_Model thisWakeModel, double X_Length)
-        {
-            // Calculates and returns the width of wake based on horizontal expansion angle, distance from rotor, and initial wake width
+        {            
             double wakeWidth = initWakeWidth + (X_Length - 2) * Math.Atan(thisWakeModel.horizWakeExp * Math.PI / 180); // Subtract 2 since initial wake width is at RD = 2
 
             return wakeWidth;
         }
 
+        /// <summary> For given WD sector and turbine, returns list of all upwind turbines sorted with furthest away first. Calculates dot product of wind direction sector vector and turbine coordinate vector. </summary>
         public Turbine[] FindAllUW_Turbines(double WD_Sector, double gridX, double gridY, TurbineCollection turbineList)
         {
-            // for (int given WD sector and turbine, returns list of all upwind turbines sorted with furthest away first
-            // Calculates dot product of wind direction sector vector and turbine coordinate vector
-
             Turbine[] UW_Turbines = null;
 
             int numTurbs = turbineList.TurbineCount;            
@@ -2284,9 +2065,7 @@ namespace ContinuumNS
             UW_Turbines[0] = firstTurbine;
             turbInd = 1;
 
-            // find next turbine
-            bool gotIt = false;
-
+            // Find next turbine           
             while (turbInd < numUW_turbs) {
                 firstVectLen = -100000000.0f;
                 for (int i = 0; i < numTurbs; i++) {
@@ -2297,9 +2076,9 @@ namespace ContinuumNS
                     thisDot = (thisLength * Math.Cos(thisTheta * Math.PI / 180));
 
                     if (thisDot > firstVectLen) {
-                        gotIt = false;
+                        bool gotIt = false;
                         for (int j = 0; j <= turbInd - 1; j++) { 
-                            if ( UW_Turbines[j].name == thisTurbine.name ) {
+                            if (UW_Turbines[j].name == thisTurbine.name) {
                                 gotIt = true;
                                 break;
                             }
@@ -2320,9 +2099,9 @@ namespace ContinuumNS
             return UW_Turbines;
         }
 
+        /// <summary> Checks to see if there is a defined wake loss model that uses specified power curve. </summary>
         public bool HaveWakeModelWithThisCrv(TurbineCollection.PowerCurve powerCurve)
-        {
-            // Checks to see if there is a defined wake loss model that uses specified power curve
+        {            
             bool haveModelWithCrv = false;
 
             for (int i = 0; i < NumWakeModels; i++)

@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class MetPairCollection_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MetPairCollection";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MetPairCollection";
         
         [TestMethod]
         public void GetRMS_SectorErr_Test()
@@ -75,11 +75,11 @@ namespace Continuum_Tests
             theseMets[1] = "Met_3350";
             thisRR_Obj[2] = thisInst.metPairList.DoRR_Calc(theseMets, thisInst, thisInst.metList.GetMetsUsed(), MCP_Method);
 
-            thisInst.metPairList.AddRoundRobinEst(thisRR_Obj, thisInst.metList.GetMetsUsed(), 2, Mets_for_UWDW, true, thisInst.metList);
-            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_All, 0.011571057, 0.0001, "Wrong RMS error");
-            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[0], 0.015460321, 0.0001, "Wrong error in first model");
-            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[1], 0.007724766, 0.0001, "Wrong error in second model");
-            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[2], 0.010147639, 0.0001, "Wrong error in third model");
+            thisInst.metPairList.AddRoundRobinEst(thisRR_Obj, thisInst.metList.GetMetsUsed(), 2, Mets_for_UWDW);
+            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_All, 0.011393858, 0.0005, "Wrong RMS error");
+            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[0], 0.015460321, 0.0005, "Wrong error in first model");
+            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[1], 0.007049366, 0.0005, "Wrong error in second model");
+            Assert.AreEqual(thisInst.metPairList.roundRobinEsts[0].RMS_Err[2], 0.010037177, 0.0005, "Wrong error in third model");
 
             thisInst.Close();
         }

@@ -1,17 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> GUI form where user specifies map settings and creates a waked map. </summary>
     public partial class GenWakeMap : Form
     {
+        /// <summary> Minimum UTM X coordinate of map </summary>
+        public int minUTMX = 0; 
+        /// <summary> Maximum UTM X coordinate of map </summary>
+        public int maxUTMX = 0;
+        /// <summary> Minimum UTM Y coordinate of map </summary>
+        public int minUTMY = 0;
+        /// <summary> Maximum UTM X coordinate of map </summary>
+        public int maxUTMY = 0;
+        /// <summary> Map grid resolution </summary>
+        public int gridReso = 0;
+        /// <summary> Total number of grid points </summary>
+        int numGrid = 0;
+        /// <summary> Number of grid points along X </summary>
+        public int numX = 0;
+        /// <summary> Number of grid points along Y </summary>
+        public int numY = 0;
+        /// <summary> Name of map </summary>
+        string mapName = "";
+        /// <summary> Mets used to create map </summary>
+        Met[] metsUsed;
+        /// <summary> 3 for site-calibrated model; 5 for default model </summary>
+        int whatToMap = 3;
+
+        /// <summary> Minimum allowable X </summary>
+        public int minUTMX_Limit;
+        /// <summary> Minimum allowable Y </summary>
+        public int minUTMY_Limit; 
+        /// <summary> Maximum allowable X </summary>
+        public int maxUTMX_Limit; 
+        /// <summary> Maximum allowable Y </summary>
+        public int maxUTMY_Limit;
+
+        /// <summary> Wind flow models used to create map </summary>
+        Model[] models;
+        /// <summary>Wake loss model used to create waked map </summary>
+        Wake_Model thisWakeModel = null;
+        /// <summary> True if map generated from time series data otherwise WS/WD frequency distributions (i.e. TAB files) are used to create map. </summary>
+        bool useTimeSeries;
+
+        /// <summary> Continuum instance that called Gen_Wake_Map </summary>
+        Continuum thisInst;
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> GUI form initializer. </summary>
         public GenWakeMap(Continuum continuum)
         {
             InitializeComponent();
@@ -55,45 +95,22 @@ namespace ContinuumNS
             int metCount = thisInst.metList.ThisCount;
             
             if (metCount > 0)
-            {
-                Met thisMet = thisInst.metList.metItem[0];                
+            {                             
                 for (int j = 0; j < metCount; j++) // Now repopulate it with met towers
                 {
-                    thisMet = thisInst.metList.metItem[j];                    
+                    Met thisMet = thisInst.metList.metItem[j];                    
                     chkMetsToUse.Items.Add(thisMet.name, true);
                 }
-            }                       
+            }                  
 
-        }
-
-        public int minUTMX = 0; // Minimum UTM X coordinate of map
-        public int maxUTMX = 0; // Maximum UTM X coordinate of map
-        public int minUTMY = 0; // Minimum UTM Y coordinate of map
-        public int maxUTMY = 0; // Maximum UTM X coordinate of map
-        public int gridReso = 0; // Map grid resolution
-        int numGrid = 0; // Total number of grid points
-        public int numX = 0; // Grid size along X
-        public int numY = 0; // Grid size along Y
-        string mapName = "";
-        Met[] metsUsed; // Mets used to create map
-        int whatToMap = 3; // 3 for site-calibrated model; 5 for default model
-
-        public int minUTMX_Limit; // Minimum allowable X
-        public int minUTMY_Limit; // Minimum allowable Y
-        public int maxUTMX_Limit; // Maximum allowable X
-        public int maxUTMY_Limit; // Maximum allowable Y
-
-        Model[] models; // Wind flow model parameters
-        Wake_Model thisWakeModel = null;
-        bool useTimeSeries; 
-
-        Continuum thisInst;
+        }               
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
             Close();
         }
 
+        /// <summary> Updates textboxes with min/max UTMX/Y and grid count. </summary>
         public void UpdateTextboxes()
         {
             txtMinUTMX.Text = minUTMX.ToString();
@@ -103,6 +120,7 @@ namespace ContinuumNS
             txtNumPoints.Text = numGrid.ToString();
         }
 
+        /// <summary> Updates allowable UTM X/Y limits based on grid resolution and minimum required radius of 12000 m. </summary>
         public void UpdateLimits()
         {
             if (gridReso == 0)
@@ -131,15 +149,7 @@ namespace ContinuumNS
             UpdateNumPoints();
         }
 
-        public void GetBiggestArea()
-        {
-            minUTMX = minUTMX_Limit;
-            maxUTMX = maxUTMX_Limit;
-            minUTMY = minUTMY_Limit;
-            maxUTMY = maxUTMY_Limit;
-            UpdateNumPoints();
-        }
-
+        /// <summary> Updates grid resolution as entered by user. </summary>
         public void UpdateGridReso()
         {
             try
@@ -154,6 +164,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Updates textbox to show total number of grid points. </summary>
         public void UpdateNumPoints()
         {
             if (gridReso != 0)
@@ -168,10 +179,9 @@ namespace ContinuumNS
             txtNumPoints.Text = numGrid.ToString();
         }
 
+        /// <summary> Reads selected wake model and selected mets to use in creating map. </summary>
         private void GetMapSettings()
-        {
-            // Reads in map settings from form          
-            
+        {           
             // Get selected wake model            
             try
             {
@@ -207,8 +217,7 @@ namespace ContinuumNS
             if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || useTimeSeries == false)
                 models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             else
-                models = thisInst.modelList.GetAllModels(thisInst, thisInst.metList.GetMetsUsed());
-                
+                models = thisInst.modelList.GetAllModels(thisInst, thisInst.metList.GetMetsUsed());               
             
             int Waked_map_ind = 0;
 
@@ -219,7 +228,6 @@ namespace ContinuumNS
             }
 
             mapName = "Waked Map " + (Waked_map_ind + 1);
-
             
         }
 
@@ -228,9 +236,9 @@ namespace ContinuumNS
             GenerateWakeMap();
         }
 
+        /// <summary> Gets map settings then adds map to list (which calls background worker to generate map). </summary>
         public void GenerateWakeMap()
-        {
-            // Gets map settings then adds map to list (which calls background worker to generate map)
+        {            
             GetMapSettings();
 
             // Check to see if this wake loss has already been done
@@ -245,11 +253,10 @@ namespace ContinuumNS
             Close();
         }
 
-        
 
+        /// <summary> Finds Min/Max XY that contain all turbine sites and updates textboxes. </summary>
         public void GetCoordsAroundTurbs()
-        {
-            // Finds Min/Max XY that contain all turbine sites and updates textboxes
+        {             
             double turbMinX = 0;
             double turbMinY = 0;
             double turbMaxX = 0;

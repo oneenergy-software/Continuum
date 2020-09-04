@@ -30,11 +30,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_1";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_1";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -79,7 +79,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -353,11 +353,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_10";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_10";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -402,7 +402,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -676,11 +676,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_11";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_11";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -725,7 +725,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -999,11 +999,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_12";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_12";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -1048,7 +1048,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -1322,11 +1322,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_13";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_13";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -1371,7 +1371,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -1645,11 +1645,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_14";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_14";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -1694,7 +1694,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -1968,11 +1968,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_15";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_15";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -2017,7 +2017,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -2291,11 +2291,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_16";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_16";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -2340,7 +2340,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -2614,11 +2614,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_17";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_17";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -2663,7 +2663,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -2937,11 +2937,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_18";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_18";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -2986,7 +2986,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -3260,11 +3260,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_19";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_19";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -3309,7 +3309,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -3583,11 +3583,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_2";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_2";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -3632,7 +3632,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -3906,11 +3906,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_20";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_20";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -3955,7 +3955,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -4229,11 +4229,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_21";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_21";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -4278,7 +4278,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -4552,11 +4552,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_22";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_22";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -4601,7 +4601,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -4875,11 +4875,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_23";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_23";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -4924,7 +4924,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -5198,11 +5198,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_24";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_24";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -5247,7 +5247,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -5521,11 +5521,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_3";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_3";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -5570,7 +5570,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -5844,11 +5844,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_4";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_4";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -5893,7 +5893,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -6167,11 +6167,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_5";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_5";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -6216,7 +6216,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -6490,11 +6490,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_6";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_6";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -6539,7 +6539,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -6813,11 +6813,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_7";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_7";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -6862,7 +6862,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -7136,11 +7136,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_8";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_8";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -7185,7 +7185,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -7459,11 +7459,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_9";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRA_9";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -7508,7 +7508,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -7782,11 +7782,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_1";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_1";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -7831,7 +7831,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -8041,11 +8041,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_10";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_10";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -8090,7 +8090,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -8300,11 +8300,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_11";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_11";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -8349,7 +8349,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -8559,11 +8559,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_12";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_12";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -8608,7 +8608,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -8818,11 +8818,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_13";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_13";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -8867,7 +8867,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -9077,11 +9077,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_14";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_14";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -9126,7 +9126,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -9336,11 +9336,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_15";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_15";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -9385,7 +9385,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -9595,11 +9595,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_16";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_16";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -9644,7 +9644,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -9854,11 +9854,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_17";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_17";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -9903,7 +9903,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -10113,11 +10113,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_18";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_18";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -10162,7 +10162,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -10372,11 +10372,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_19";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_19";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -10421,7 +10421,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -10631,11 +10631,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_2";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_2";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -10680,7 +10680,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -10890,11 +10890,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_20";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_20";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -10939,7 +10939,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -11149,11 +11149,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_21";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_21";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -11198,7 +11198,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -11408,11 +11408,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_22";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_22";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -11457,7 +11457,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -11667,11 +11667,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_23";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_23";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -11716,7 +11716,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -11926,11 +11926,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_24";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_24";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -11975,7 +11975,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -12185,11 +12185,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_3";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_3";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -12234,7 +12234,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -12444,11 +12444,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_4";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_4";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -12493,7 +12493,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -12703,11 +12703,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_5";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_5";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -12752,7 +12752,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -12962,11 +12962,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_6";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_6";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -13011,7 +13011,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -13221,11 +13221,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_7";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_7";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -13270,7 +13270,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -13480,11 +13480,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_8";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_8";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -13529,7 +13529,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();
@@ -13739,11 +13739,11 @@ namespace Continuum_Tests.GUI_Tests
 
             Continuum thisInst = new Continuum();
 
-            string fileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
+            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTSNotFiltLTAndGrossNet_1";
 
             thisInst.Open(fileName + ".cfm");
 
-            thisInst.sfdCFMfile.FileName = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_9";
+            thisInst.sfdCFMfile.FileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\DelOneMetTSNoMERRADelOneTurb_9";
 
             if (File.Exists(thisInst.sfdCFMfile.FileName + ".cfm"))
             {
@@ -13788,7 +13788,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.metList.ClearMCPRefTargetConcLTEstData();
 
             // Clear all MERRA interp data and node data
-            thisInst.merraList.ClearMERRA_Data(thisInst);
+            thisInst.merraList.ClearMERRA_Data();
 
             // Clear turbine time series data
             thisInst.turbineList.ClearTimeSeries();

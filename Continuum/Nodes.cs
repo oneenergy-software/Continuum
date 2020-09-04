@@ -1,22 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that defines Nodes which is a location used in the wind flow model calculation (i.e. along path of nodes). </summary>
     [Serializable()]
     public class Nodes
     {
+        /// <summary> Node UTM X Coordinate </summary>
         public double UTMX;
+        /// <summary> Node UTM Y Coordinate </summary>
         public double UTMY;
+        /// <summary> Node elevation </summary>
         public double elev;
+        /// <summary> Terrain exposure at node location </summary>
         public Exposure[] expo;
-        public Grid_Info gridStats;     
+        /// <summary> Terrain complexity (P10 exposure) at node location </summary>
+        public Grid_Info gridStats;
+        /// <summary> Flow separation nodes </summary>
         public NodeCollection.Sep_Nodes[] flowSepNodes;
 
-        // Properties
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Returns the number of exposures in array. </summary>
         public int ExposureCount { 
             get {
 
@@ -25,11 +30,11 @@ namespace ContinuumNS
                 else
                     return expo.Length;
             }
-        }            
+        }
 
+        /// <summary> Adds exposure to expo() list. </summary>
         public void AddExposure(int radius, double exponent, int numSectors, int numWD)
-        {
-            // Adds exposure to expo() list
+        {            
             int expCount = ExposureCount;
             int insertInd = 0;
 
@@ -74,9 +79,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates and returns average wind speed weighted by wind rose. </summary>
         public double CalcAvgWS(double[] sectorWS, double[] windRose)
-        {
-            // Calculates and returns average wind speed weighted by Nodes' wind rose
+        {            
             double avgWS = 0;
             int numWD = 0;
 
@@ -90,9 +95,7 @@ namespace ContinuumNS
             return avgWS;
         }
 
-        /// <summary>
-        /// Calculates the grid stats (i.e. P10 exposure), exposure, surface roughness and disp. height at node for each radius of investigation
-        /// </summary>        
+        /// <summary> Calculates the grid stats (i.e. P10 exposure), exposure, surface roughness and disp. height at node for each radius of investigation. </summary>        
         public void CalcGridStatsAndExposures(Continuum thisInst)
         {   
             int numWD = thisInst.metList.numWD;                        
@@ -144,63 +147,18 @@ namespace ContinuumNS
 
             for (int WD_sec = 0; WD_sec < numWD; WD_sec++)
             {
-                double UW_CW_Grade = thisInst.topo.CalcP10_UW_CrosswindGrade(UTMX, UTMY, thisInst.radiiList, WD_sec, numWD);
-                double UW_PL_Grade = thisInst.topo.CalcP10_UW_ParallelGrade(UTMX, UTMY, thisInst.radiiList, WD_sec, numWD);
+                double UW_CW_Grade = thisInst.topo.CalcP10_UW_CrosswindGrade(UTMX, UTMY, WD_sec, numWD);
+                double UW_PL_Grade = thisInst.topo.CalcP10_UW_ParallelGrade(UTMX, UTMY, WD_sec, numWD);
                 for (int expInd = 0; expInd <= thisInst.radiiList.ThisCount - 1; expInd++) {
                     expo[expInd].UW_P10CrossGrade[WD_sec] = UW_CW_Grade;
                     expo[expInd].UW_ParallelGrade[WD_sec] = UW_PL_Grade;
                 }
             }
-        }        
-
-        public void CalcP10UW_Grade(TopoInfo topo, InvestCollection radiiList, string savedFileName)
-        {
-            // Calculates the upwind crossing and parallel terrain grade - to be used in flow around vs. flow over hills algorithm
-            int numRadii = ExposureCount;
-
-            if (numRadii == 0) 
-                return;
-
-            int numWD = 0;
-            try {
-                numWD = expo[0].expo.Length;
-            }
-            catch  { 
-                return;
-            }
-
-            bool Calc_Grade = false;
-
-            try {
-                if (expo[0].UW_P10CrossGrade[0] == 0 || expo[0].UW_ParallelGrade[0] == 0)
-                    Calc_Grade = true;
-            }
-            catch  {
-                return;
-            }
-
-            if (Calc_Grade == true )
-            {
-                for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
-                {
-                    double UW_CW_Grade = topo.CalcP10_UW_CrosswindGrade(UTMX, UTMY, radiiList, WD_Ind, numWD);
-                    double UW_PL_Grade = topo.CalcP10_UW_ParallelGrade(UTMX, UTMY, radiiList, WD_Ind, numWD);
-                    
-                    for (int i = 0; i < numRadii; i++)
-                    {
-                        if (WD_Ind == 0) expo[i].UW_P10CrossGrade = new double[numWD];
-                        if (WD_Ind == 0) expo[i].UW_ParallelGrade = new double[numWD];
-                        expo[i].UW_P10CrossGrade[WD_Ind] = UW_CW_Grade;
-                        expo[i].UW_ParallelGrade[WD_Ind] = UW_PL_Grade;
-                    }
-                }
-            }
-            
         }
 
-        public void GetFlowSepNodes(NodeCollection nodeList, Continuum thisInst, Nodes[] newNodes, double[] windRose)
-        {
-            // Gets nodes for upwind flow separation model
+        /// <summary> Gets nodes for upwind flow separation model. </summary>
+        public void GetFlowSepNodes(NodeCollection nodeList, Continuum thisInst, double[] windRose)
+        {            
             int numWD = 0;
 
             try {

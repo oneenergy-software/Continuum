@@ -9,7 +9,7 @@ namespace Continuum_Tests
     [TestClass]
     public class Turbine_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\Turbine";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Turbine";
 
         [TestMethod]
         public void DoWS_EstAlongNodes_Test()

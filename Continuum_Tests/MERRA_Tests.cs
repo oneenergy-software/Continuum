@@ -9,8 +9,8 @@ namespace Continuum_Tests
     [TestClass]
     public class MERRA_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\MERRA";
-        string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MERRA";
+        string merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
         [TestMethod]
         public void GetMaxHourlyWindSpeeds_Test()

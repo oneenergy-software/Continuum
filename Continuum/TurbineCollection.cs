@@ -1,38 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
 using MathNet.Numerics;
 using System.IO;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that holds list of Turbine objects, list of PowerCurve objects, and Exceedance object.  Also, contains functions to add, get, and clear estimates at turbine sites. </summary>
     [Serializable()]
     public class TurbineCollection
     {
+        /// <summary> List of Turbine objects. </summary>
         public Turbine[] turbineEsts;
+        /// <summary> True if calculations at turbine sites have been done. </summary>
         public bool turbineCalcsDone;
+        /// <summary> List of turbine power and thrust curves. </summary>
         public PowerCurve[] powerCurves;
-        public Exceedance exceed; // List of Project Performance curves and composite P-values
+        /// <summary> Exceedance (uncertainty) model. </summary>
+        public Exceedance exceed;
+        /// <summary> True if time series estimates have been generated. </summary>
         public bool genTimeSeries = false;
 
+        /// <summary> Holds power and thrust curve and all other info for a turbine model. </summary>
         [Serializable()] public struct PowerCurve
         {
+            /// <summary> Name of turbine model. </summary>
             public string name;
+            /// <summary> Cut-in wind speed. </summary>
             public double cutInWS;
+            /// <summary> Cut-out wind speed. </summary>
             public double cutOutWS;
+            /// <summary> Rated power. </summary>
             public double ratedPower;
+            /// <summary> Rated wind speed. </summary>
             public double ratedWS;
+            /// <summary> Power production (by WS). </summary>
             public double[] power;
+            /// <summary> Rotor diameter. </summary>
             public double RD;
+            /// <summary> Thrust coefficient (by WS). </summary>
             public double[] thrustCoeff;
+            /// <summary> Rated RPM. </summary>
             public double ratedRPM;
-            public double wsInt; // Wind speed interval
-            public double firstWS; // first WS in power and thrust curves
+            /// <summary> Wind speed interval. </summary>
+            public double wsInt;
+            /// <summary> First WS in power and thrust curves. </summary>
+            public double firstWS;
 
+            /// <summary> Clears turbine object. </summary>
             public void Clear()
             {
                 name = "";
@@ -47,6 +61,10 @@ namespace ContinuumNS
             }
         }
 
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary> Returns number of turbines in list. </summary>
         public int TurbineCount {
             get {
                 if (turbineEsts == null)
@@ -56,6 +74,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns number of power curves in list. </summary>
         public int PowerCurveCount {
             get {
                 if (powerCurves == null)
@@ -65,6 +84,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns number of turbine strings. </summary>
         public int NumStrings {
             get {
                 if (TurbineCount > 0)
@@ -83,24 +103,27 @@ namespace ContinuumNS
             }
         }
 
-        public void ClearAllTurbines() {
-            // Clears all turbine objects in list
+        /// <summary> Clears all turbine objects in list. </summary>
+        public void ClearAllTurbines() {            
             turbineEsts = null;
         }
 
+        /// <summary> Clears all power curves in list. </summary>
         public void ClearAllPowerCurves() {
-            // Clears all power curves in list
+            
             powerCurves = null;
         }
 
+        /// <summary> Clears all gross AEP estimates formed at turbine sites. </summary>
         public void ClearAllGrossEsts() {
-            // Clears all gross AEP estimates formed at turbine sites
+            
             for (int i = 0; i < TurbineCount; i++)
                 turbineEsts[i].grossAEP = null;
         }
 
+        /// <summary> Clears all WS_Estimate() and avgWS_Est(). Sets turbineCalcsDone to false. </summary>
         public void ClearAllWSEsts() {
-            // Clears all WS_Estimate() and avgWS_Est()
+            
             for (int i = 0; i < TurbineCount; i++) {
                 turbineEsts[i].avgWS_Est = null;
                 turbineEsts[i].WS_Estimate = null;
@@ -109,8 +132,9 @@ namespace ContinuumNS
             turbineCalcsDone = false;
         }
 
+        /// <summary> Clears all net AEP estimates formed at turbine sites. </summary>
         public void ClearAllNetEsts() {
-            //  Clears all net AEP estimates formed at turbine sites
+            
             for (int i = 0; i < TurbineCount; i++)
             {
                 turbineEsts[i].netAEP = null;
@@ -154,64 +178,13 @@ namespace ContinuumNS
 
                 turbineEsts[i].avgWS_Est = newAvgWS_Ests;
             }
-        }                
-
-        public void ClearWS_EstCalcs()
-        {
-            // Clears the wind speed estimates from all turbines in list
-            for (int i = 0; i < TurbineCount ; i++)            
-                turbineEsts[i].WS_Estimate = null;               
-            
         }
 
-        public void ClearWS_EstsDeletedMets(MetCollection metList)
-        {
-            // Clears WS estimates based on any mets that were deleted
+        
 
-            int numMets = metList.ThisCount;
-            
-            Turbine.WS_Ests[] newWS_Ests = null;
-            int newWS_EstCount = 0;
-
-            for (int i = 0; i < TurbineCount; i++)
-            {
-                for (int j = 0; j < turbineEsts[i].WSEst_Count; j++)
-                {
-                    // Check to see if predictor is in met list
-                    bool metInList = false;
-                    for (int k = 0; k < numMets; k++)
-                    {
-                        if (metList.metItem[k].name == turbineEsts[i].WS_Estimate[j].predictorMetName)
-                        {
-                            metInList = true;
-                            break;
-                        }
-                    }
-
-                    if (metInList == true) {
-                        Array.Resize(ref newWS_Ests, newWS_EstCount + 1);
-                        newWS_Ests[newWS_EstCount] = turbineEsts[i].WS_Estimate[j];
-                        newWS_EstCount++;
-                    }
-                }
-
-                turbineEsts[i].WS_Estimate = null;
-                if (newWS_EstCount > 0)
-                {
-                    turbineEsts[i].WS_Estimate = new Turbine.WS_Ests[newWS_EstCount];
-
-                    for (int j = 0; j < newWS_EstCount; j++)
-                        turbineEsts[i].WS_Estimate[j] = newWS_Ests[j];
-
-                    newWS_Ests = new Turbine.WS_Ests[1];
-                    newWS_EstCount = 0;
-                }
-            }
-        }
-
+        /// <summary> Clears all calculations at turbine sites. </summary>
         public void ClearAllCalcs()
-        {
-            // Clears all calculations at turbine sites
+        {            
             for (int i = 0; i < TurbineCount; i++)
             {
                 try {
@@ -231,10 +204,11 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Add power curve to list. </summary>
         public void AddPowerCurve(string name, double cutIn, double cutOut, double ratedPower, double[] powerValues, double[] thrustValues, double RD, 
             double ratedRPM, double ratedWS, double WS_IntSize, double firstWS)
         {
-            // Add power curve to list
+            
             int newCount = PowerCurveCount;
             Array.Resize(ref powerCurves, newCount + 1);
 
@@ -251,9 +225,9 @@ namespace ContinuumNS
             powerCurves[newCount].firstWS = firstWS;
         }
 
-        public void ReadPowerCurve(Continuum thisInst, string name, double[,] importedPower, double RD, double RPM)
-        {
-            //  Imports new power curve and adds to list                    
+        /// <summary> Imports new power curve and adds to list. </summary>
+        public void ReadPowerCurve(string name, double[,] importedPower, double RD, double RPM)
+        {                             
             double cutIn = importedPower[0, 0]; // First wind
             double cutOut = 0;
             double ratedPower = 0;
@@ -319,12 +293,12 @@ namespace ContinuumNS
                         
             AddPowerCurve(name, cutIn, cutOut, ratedPower, powerOnly, thrustOnly, RD, RPM, ratedWS, wsInterval, firstWS);                        
 
-        }       
+        }
 
+        /// <summary> Adds new Turbine object to list. </summary>
         public void AddTurbine(string name, double utmx, double utmy, int stringNum)
-        {
-            // Adds Turbine object to list
-            // Check to see that the turbine doesn//t already exist in memory
+        {           
+            // Check to see that the turbine doesn't already exist in memory
             for (int i = 0; i < TurbineCount; i++) {
                 if (name == turbineEsts[i].name) {
                     MessageBox.Show("A turbine of the same name already exists.");
@@ -343,9 +317,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Edits the UTMX, UTMY of turbine site and clears all calculated values. </summary>
         public void EditTurbine(string name, double utmx, double utmy)
-        {
-            // Edits the UTMX, UTMY of turbine site and clears all calculated values
+        {            
             for (int i = 0; i <= TurbineCount - 1; i++) {
                 if (name == turbineEsts[i].name) {
                     turbineEsts[i].UTMX = utmx;
@@ -355,9 +329,7 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary>
-        /// Calculates exposure and SRDH (if gotSR is true) for all radii at all turbine sites
-        /// </summary>        
+        /// <summary> Calculates exposure and SRDH (if gotSR is true) for all radii at all turbine sites. </summary>        
         public void CalcTurbineExposures(Continuum thisInst, int radius, double exponent, int numSectors)
         {             
             if (thisInst.metList.ThisCount == 0)
@@ -409,8 +381,8 @@ namespace ContinuumNS
                         turbineEsts[i].expo[expoIndex].UW_ParallelGrade = new double[numWD];
                         
                         for (int r = 0; r < numWD; r++) {                            
-                            turbineEsts[i].expo[expoIndex].UW_P10CrossGrade[r] = thisInst.topo.CalcP10_UW_CrosswindGrade(turbineEsts[i].UTMX, turbineEsts[i].UTMY, thisInst.radiiList, r, numWD); ;
-                            turbineEsts[i].expo[expoIndex].UW_ParallelGrade[r] = thisInst.topo.CalcP10_UW_ParallelGrade(turbineEsts[i].UTMX, turbineEsts[i].UTMY, thisInst.radiiList, r, numWD);
+                            turbineEsts[i].expo[expoIndex].UW_P10CrossGrade[r] = thisInst.topo.CalcP10_UW_CrosswindGrade(turbineEsts[i].UTMX, turbineEsts[i].UTMY, r, numWD); ;
+                            turbineEsts[i].expo[expoIndex].UW_ParallelGrade[r] = thisInst.topo.CalcP10_UW_ParallelGrade(turbineEsts[i].UTMX, turbineEsts[i].UTMY, r, numWD);
                         }
                     }
                 }
@@ -439,9 +411,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns the min. and max. distance from the turbines to specified UTMX and UTMY. </summary>   
         public int[] CalcMinMaxDistanceToTurbines(double thisX, double thisY)
-        {
-            // Returns the min and max distance from the turbines to specified UTMX and UTMY
+        {            
             int[] minMaxDistance = new int[2];
             minMaxDistance[0] = 10000000;
             minMaxDistance[1] = 0;
@@ -457,9 +429,7 @@ namespace ContinuumNS
             return minMaxDistance;
         }
 
-        /// <summary>
-        /// Recalculates UW/DW Surface roughness & Displacement height at turbine sites
-        /// </summary>        
+        /// <summary> Recalculates upwind and downwind surface roughness and displacement height at turbine sites.  Called after the land cover key is changed. </summary>        
         public void ReCalcTurbine_SRDH(Continuum thisInst)
         {              
             if (thisInst.topo.gotTopo == false || GotEst("Expo", new PowerCurve(), null) == false)
@@ -502,90 +472,9 @@ namespace ContinuumNS
             
         }
 
-        public void ReCalcNetEnergy(double previousOtherLoss, double newOtherLoss)
-        {
-            // Recalculate net energy production with updated 'other' losses
-            for (int i = 0; i <= TurbineCount - 1; i++)
-            {
-                int Num_Net_Ests = turbineEsts[i].NetAEP_Count;
-                for (int j = 0; j < Num_Net_Ests; j++)
-                {
-                    turbineEsts[i].netAEP[j].AEP = turbineEsts[i].netAEP[j].AEP * (1 - newOtherLoss) / (1 - previousOtherLoss);
-
-                    for (int WD = 0; WD < turbineEsts[i].netAEP[j].sectorEnergy.Length; WD++)
-                        turbineEsts[i].netAEP[j].sectorEnergy[WD] = turbineEsts[i].netAEP[j].sectorEnergy[WD] * (1 - newOtherLoss) / (1 - previousOtherLoss);
-
-                    turbineEsts[i].netAEP[j].CF = CalcCapacityFactor(turbineEsts[i].netAEP[j].AEP, turbineEsts[i].netAEP[j].wakeModel.powerCurve.ratedPower);
-                }
-            }
-
-        }
-
-        public void CalcEditTurbineExposures(Continuum thisInst, string name, int radius, double exponent, int numSectors)
-        {
-            // Calculates the exposure at specified turbine using specified radius
-
-            int numMets = thisInst.metList.ThisCount;
-            int numWD = thisInst.metList.numWD;
-            if (numWD == 0) return;
-            int turbineIndex;
-
-            for (turbineIndex = 0; turbineIndex <= TurbineCount - 1; turbineIndex++)
-                if (turbineEsts[turbineIndex].name == name)
-                    // Found Turbine to perform calculations
-                    break;
-
-            // First find elevation
-            if (turbineEsts[turbineIndex].elev == 0)
-                turbineEsts[turbineIndex].elev = thisInst.topo.CalcElevs(turbineEsts[turbineIndex].UTMX, turbineEsts[turbineIndex].UTMY);
-
-            // Check to see if the exposures have already been calculated 
-            bool isNew = turbineEsts[turbineIndex].IsNewExposure(radius, exponent, numSectors);
-            if (isNew == true)
-                turbineEsts[turbineIndex].AddExposure(radius, exponent, numSectors, numWD);
-
-            // Find exponsure index
-            int expoIndex = 0;
-            for (expoIndex = 0; expoIndex <= turbineEsts[turbineIndex].ExposureCount - 1; expoIndex++)
-                if (turbineEsts[turbineIndex].expo[expoIndex].radius == radius && turbineEsts[turbineIndex].expo[expoIndex].exponent == exponent && turbineEsts[turbineIndex].expo[expoIndex].numSectors == numSectors)
-                    // Found the exposure index
-                    break;
-
-            // Check to see if an exposure with a smaller radii has been calculated
-            int smallerRadius = thisInst.topo.GetSmallerRadius(turbineEsts[turbineIndex].expo, turbineEsts[turbineIndex].expo[expoIndex].radius, turbineEsts[turbineIndex].expo[expoIndex].exponent, numSectors);
-
-            if (smallerRadius == 0 || numSectors > 1)  // when sector avg is used, can//t add on to exposure calcs...so gotta do it the long way
-                turbineEsts[turbineIndex].expo[expoIndex] = thisInst.topo.CalcExposures(turbineEsts[turbineIndex].UTMX, turbineEsts[turbineIndex].UTMY,
-                                turbineEsts[turbineIndex].elev, turbineEsts[turbineIndex].expo[expoIndex].radius, turbineEsts[turbineIndex].expo[expoIndex].exponent, numSectors, thisInst.topo, numWD);
-            else {
-                Exposure smallerExposure = thisInst.topo.GetSmallerRadiusExpo(turbineEsts[turbineIndex].expo, smallerRadius, turbineEsts[turbineIndex].expo[expoIndex].exponent, numSectors);
-
-                turbineEsts[turbineIndex].expo[expoIndex] = thisInst.topo.CalcExposuresWithSmallerRadius(turbineEsts[turbineIndex].UTMX, turbineEsts[turbineIndex].UTMY,
-                                turbineEsts[turbineIndex].elev, turbineEsts[turbineIndex].expo[expoIndex].radius, turbineEsts[turbineIndex].expo[expoIndex].exponent, numSectors, smallerRadius, smallerExposure, numWD);
-            }
-
-            if (turbineEsts[turbineIndex].expo[expoIndex].UW_P10CrossGrade == null)
-            {
-                // Calc P10 UW Crosswind Grade
-                double UW_Grade = 0;
-                for (expoIndex = 0; expoIndex < thisInst.radiiList.ThisCount; expoIndex++)
-                    turbineEsts[turbineIndex].expo[expoIndex].UW_P10CrossGrade = new double[thisInst.metList.numWD];
-
-                for (int r = 0; r < thisInst.metList.numWD; r++) {
-                    UW_Grade = thisInst.topo.CalcP10_UW_CrosswindGrade(turbineEsts[turbineIndex].UTMX, turbineEsts[turbineIndex].UTMY, thisInst.radiiList, r, thisInst.metList.numWD);
-                    for (expoIndex = 0; expoIndex <= thisInst.radiiList.ThisCount - 1; expoIndex++)
-                        turbineEsts[turbineIndex].expo[expoIndex].UW_P10CrossGrade[r] = UW_Grade;
-
-                }
-            }
-        }
-
-        /// <summary>
-        /// Calculates the gross AEP for every turbine and every power curve
-        /// </summary>        
+        /// <summary> Calculates the gross AEP for every turbine and every power curve. </summary>        
         public void CalcGrossAEPFromTABs(Continuum thisInst)
-        {
-            
+        {            
             if (thisInst.metList.numWD == 0) return;
             int numWD = thisInst.metList.numWD;
             int numWS = thisInst.metList.numWS;
@@ -607,7 +496,7 @@ namespace ContinuumNS
                         }
                     }                    
 
-                    Turbine.Avg_Est avgEst = turbineEsts[j].GetAvgWS_Est(null, new PowerCurve());
+                    Turbine.Avg_Est avgEst = turbineEsts[j].GetAvgWS_Est(null);
 
                     if (avgEst.freeStream.WS == 0)
                         break;
@@ -648,15 +537,13 @@ namespace ContinuumNS
                         }                           
                      
                         double This_CF = CalcCapacityFactor(P50_AEP, powerCurves[i].ratedPower);
-                        turbineEsts[j].AddGrossAEP(thisInst, powerCurves[i], P50_AEP, This_CF, P90_AEP, P99_AEP, P50_AEP_Sect);
+                        turbineEsts[j].AddGrossAEP(powerCurves[i], P50_AEP, This_CF, P90_AEP, P99_AEP, P50_AEP_Sect);
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// Calculates and returns the capacity factor based on AEP and rated power. AEP is in MWh and rated power is in kW.
-        /// </summary>        
+        /// <summary> Calculates and returns the capacity factor based on AEP and rated power. AEP is in MWh and rated power is in kW. </summary>        
         public double CalcCapacityFactor(double AEP, double ratedPower) 
         {            
             double thisCF = AEP / (8.76 * ratedPower);
@@ -664,9 +551,7 @@ namespace ContinuumNS
             return thisCF;
         }
 
-        /// <summary>
-        /// Calculates and returns gross AEP (in MWh) calculated from specified wind speed distribution and power curve
-        /// </summary>        
+        /// <summary> Calculates and returns gross AEP (in MWh) calculated from specified wind speed distribution and power curve. </summary>        
         public double CalcAndReturnGrossAEP(double[] WS_Dist, MetCollection metList, string powerCurve)
         {            
             double thisAEP = 0;
@@ -691,55 +576,30 @@ namespace ContinuumNS
             return thisAEP;
         }
 
- /*       public double GetOverallWakeLoss(Wake_Model thisWakeModel, int WD_Ind)
-        {
-            // Returns overall wake loss for specified wake loss model, WD sector and site-calibrated vs. default model
-            double overallWakeLoss = 0;
-            double totalGrossAEP = 0;
-            double totalNetAEP = 0;
-            
-            for (int i = 0; i < TurbineCount; i++)
-            {
-                totalGrossAEP = totalGrossAEP + turbineEsts[i].GetGrossAEP(thisWakeModel.powerCurve.name, WD_Ind);
-                double thisWakeLoss = turbineEsts[i].GetWakeLoss(thisWakeModel, WD_Ind);
-                totalNetAEP = totalNetAEP + (1 - thisWakeLoss) * turbineEsts[i].GetGrossAEP(thisWakeModel.powerCurve.name, WD_Ind);
-            }
-
-            if (totalGrossAEP > 0)
-                overallWakeLoss = (totalGrossAEP - totalNetAEP) / totalGrossAEP;
-            else
-                overallWakeLoss = 0;
-
-            return overallWakeLoss;
-        }
-*/
+        /// <summary> Assigns a string number to all turbine based on distance between turbines in layout. </summary>     
         public void AssignStringNumber()
-        {
-            // if ( turbine string numbers were not read in, assigns string numbers to turbines based on distance between sites
+        {            
             if (TurbineCount > 0)
                 if (turbineEsts[0].stringNum != 0)
                     return;
 
             // Clear old string numbers
             for (int i = 0; i < TurbineCount; i++)
-                turbineEsts[i].stringNum = 0;
-
-            double thisDistance = 0;
-            double closestDistance = 100000;
-            int lastString;
+                turbineEsts[i].stringNum = 0;                      
+                        
             TopoInfo topo = new TopoInfo();
 
             if (TurbineCount > 0)
             {
                 turbineEsts[0].stringNum = 1;
-                lastString = 1;
+                int lastString = 1;
 
                 for (int i = 1; i < TurbineCount; i++)
                 {
-                    closestDistance = 100000;
+                    double closestDistance = 100000;
                     for (int j = 0; j < i; j++)
                     {
-                        thisDistance = topo.CalcDistanceBetweenPoints(turbineEsts[i].UTMX, turbineEsts[i].UTMY, turbineEsts[j].UTMX, turbineEsts[j].UTMY);
+                        double thisDistance = topo.CalcDistanceBetweenPoints(turbineEsts[i].UTMX, turbineEsts[i].UTMY, turbineEsts[j].UTMX, turbineEsts[j].UTMY);
                         if (thisDistance < 1000 && thisDistance < closestDistance) {
                             closestDistance = thisDistance;
                             turbineEsts[i].stringNum = turbineEsts[j].stringNum;
@@ -754,10 +614,11 @@ namespace ContinuumNS
             }
         }
 
-        public void CleanUpEsts(WakeCollection wakeList)
-        {
-            // if calculations were interrupted, this cleans up the turbine estimate list so that all turbine sites have same calculations
+        /// <summary> If calculations were interrupted, this cleans up the turbine estimate list so that all turbine sites have same calculations. </summary> 
+        public void CleanUpEsts()
+        {           
             bool inLastTurbine = false;
+            WakeCollection wakeList = new WakeCollection();
 
             if (TurbineCount > 0)
             {
@@ -833,9 +694,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Deletes turbine object with specified name. </summary> 
         public void DeleteTurbine(string name)
-        {
-            // Deletes turbine object with specified name
+        {            
             int newCount = TurbineCount - 1;
 
             if (newCount > 0)
@@ -860,9 +721,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Deletes power curve with specified name. </summary> 
         public void DeletePowerCurve(string name)
-        {
-            //  Deletes power curve with specified name
+        {            
             int newCount = PowerCurveCount - 1;
             int newAEP_Count = 0;
             Turbine.Gross_Energy_Est[] grossTempAEP;
@@ -939,14 +800,14 @@ namespace ContinuumNS
 
         }
 
-        public void FindParamStats(Continuum thisInst, Turbine[] turbines, int WD_Ind, int numWD)
+        /// <summary> Calculates the average, st. dev., min and max of turbine wind speed estimates for specified WD sector and updates the textboxes on Gross Turb Ests tab. </summary> 
+        public void FindParamStats(Continuum thisInst, Turbine[] turbines, int WD_Ind)
         {
-            // Calculates the average, st. dev., min and max of turbine wind speed estimates for specified WD sector and model (site-calibrated vs. default) and updates the textboxes on Gross Turb Ests tab
-
-            double avg = FindAverage(turbines, WD_Ind);
-            double stdev = FindStdev(turbines, WD_Ind);
-            double min = FindMin(turbines, WD_Ind);
-            double max = FindMax(turbines, WD_Ind);
+            PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Gross");
+            double avg = FindAverage(turbines, WD_Ind, powerCurve);
+            double stdev = FindStdev(turbines, WD_Ind, powerCurve);
+            double min = FindMin(turbines, WD_Ind, powerCurve);
+            double max = FindMax(turbines, WD_Ind, powerCurve);
 
             if (avg != 0)
             {
@@ -993,12 +854,11 @@ namespace ContinuumNS
                 thisInst.txtAEPMax.Clear();
             }
 
-        }        
+        }
 
-        public double FindAverage(Turbine[] turbines, int WD_Ind)
-        {
-            //  Calculates and returns the average free-stream wind speed for specified WD sector
-            int avgWS_Index = 0;
+        /// <summary> Calculates and returns the average free-stream wind speed for specified WD sector. </summary> 
+        public double FindAverage(Turbine[] turbines, int WD_Ind, PowerCurve powerCurve)
+        {           
             double avg = 0;            
             int dataCount = 0;
             int numWD;
@@ -1022,7 +882,7 @@ namespace ContinuumNS
 
             for (int i = 0; i < turbines.Length; i++)
             {
-                Turbine.Avg_Est avgEst = turbines[i].GetAvgWS_Est(null, new PowerCurve());
+                Turbine.Avg_Est avgEst = turbines[i].GetAvgWS_Est(null);
 
                 try {
                     if (WD_Ind == numWD)
@@ -1046,9 +906,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates and returns the average gross AEP for specified WD sector and power curve. </summary> 
         public double FindAverageAEP(Turbine[] turbines, string powerCurve, int WD_Ind)
-        {
-            // Calculates and returns the average gross AEP for specified WD sector and power curve
+        {            
             double avg = 0;            
             int dataCount = 0;
             int numWD;
@@ -1093,9 +953,9 @@ namespace ContinuumNS
             return avg;
         }
 
+        /// <summary> Calculates and returns the minimum gross AEP for specified WD sector and power curve. </summary>
         public double FindMinAEP(Turbine[] turbines, string powerCurve, int WD_Ind)
-        {
-            // Calculates and returns the minimum gross AEP for specified WD sector and power curve
+        {           
             double min = 100000;
             double thisEst = 0;
             int numWD;
@@ -1128,9 +988,9 @@ namespace ContinuumNS
             return min;
         }
 
-        public double FindMin(Turbine[] turbines, int WD_Ind)
-        {
-            // Calculates and returns the minimum free-stream wind speed for specified WD sector 
+        /// <summary> Calculates and returns the minimum free-stream wind speed for specified WD sector. </summary>
+        public double FindMin(Turbine[] turbines, int WD_Ind, PowerCurve powerCurve)
+        {            
             double min = 1000;
             double thisWS;
             
@@ -1148,7 +1008,7 @@ namespace ContinuumNS
 
             for (int i = 0; i < turbines.Length; i++)
             {
-                Turbine.Avg_Est avgEst = turbines[i].GetAvgWS_Est(null, new PowerCurve());
+                Turbine.Avg_Est avgEst = turbines[i].GetAvgWS_Est(null);
 
                 try {
                     if (WD_Ind == numWD)
@@ -1168,9 +1028,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates and returns the maximum gross AEP for specified WD sector and power curve. </summary>
         public double FindMaxAEP(Turbine[] turbines, string powerCurve, int WD_Ind)
-        {
-            // Calculates and returns the maximum gross AEP for specified WD sector and power curve
+        {            
             double max = 0;
             double thisEst = 0;
             int numWD;
@@ -1206,9 +1066,9 @@ namespace ContinuumNS
             return max;
         }
 
-        public double FindMax(Turbine[] turbines, int WD_Ind)
-        {
-            //  Calculates and returns the maximum free-stream wind speed for specified WD sector 
+        /// <summary> Calculates and returns the maximum free-stream wind speed for specified WD sector. </summary>
+        public double FindMax(Turbine[] turbines, int WD_Ind, PowerCurve powerCurve)
+        {            
             double max = 0;
             double thisWS;            
             int numWD;
@@ -1225,7 +1085,7 @@ namespace ContinuumNS
 
             for (int i = 0; i <= turbines.Length - 1; i++)
             {
-                Turbine.Avg_Est avgEst = turbines[i].GetAvgWS_Est(null, new PowerCurve());
+                Turbine.Avg_Est avgEst = turbines[i].GetAvgWS_Est(null);
 
                 try {
                     if (WD_Ind == numWD)
@@ -1242,9 +1102,9 @@ namespace ContinuumNS
             return max;
         }
 
+        /// <summary> Calculates and returns the st. deviation gross AEP for specified WD sector and power curve. </summary>
         public double FindStdevAEP(Turbine[] turbines, string powerCurve, int WD_Ind)
-        {
-            //  Calculates and returns the st. deviation gross AEP for specified WD sector and power curve
+        {            
             double avg = 0;
             double stdev = 0;
             int dataCount = 0;
@@ -1294,9 +1154,9 @@ namespace ContinuumNS
 
         }
 
-        public double FindStdev(Turbine[] turbines, int WD_Ind)
-        {
-            //  Calculates and returns the st. deviation wind speed for specified WD sector and model (site-calibrated vs. default)
+        /// <summary> Calculates and returns the st. deviation wind speed for specified WD sector. </summary>
+        public double FindStdev(Turbine[] turbines, int WD_Ind, PowerCurve powerCurve)
+        {            
             double avg = 0;
             double stdev = 0;
             int dataCount = 0;
@@ -1316,7 +1176,7 @@ namespace ContinuumNS
 
             for (int i = 0; i < turbines.Length; i++)
             {
-                Turbine.Avg_Est avgEst = turbines[i].GetAvgWS_Est(null, new PowerCurve());
+                Turbine.Avg_Est avgEst = turbines[i].GetAvgWS_Est(null);
 
                 try {
                     if (WD_Ind == numWD)
@@ -1341,87 +1201,9 @@ namespace ContinuumNS
             return stdev;
         }
 
-
-        public double GetMinDistance(Turbine turbine, Model model, MetCollection metList)
-        {
-            // Calculates and returns the minimum distance between specified turbine and all met sites
-            double minDistance = 100000;
-            TopoInfo topo = new TopoInfo();
-            int numMets = model.metsUsed.Length;
-
-            for (int i = 0; i <= numMets - 1; i++)
-                for (int j = 0; j <= metList.ThisCount - 1; j++)
-                    if (model.metsUsed[i] == metList.metItem[j].name)
-                    {
-                        double thisDistance = topo.CalcDistanceBetweenPoints(turbine.UTMX, turbine.UTMY, metList.metItem[j].UTMX, metList.metItem[j].UTMY);
-
-                        if (thisDistance < minDistance)
-                            minDistance = thisDistance;
-
-                        break;
-                    }
-
-
-            return minDistance;
-        }
-
-        public double GetMinDeltaP10Expo(Turbine turbine, Model[] models, MetCollection metList, int WD_Ind)
-        {
-            // Calculates and returns the minimum P10 exposure difference from turbine site to each predictor met
-            double minP10DW_Diff = 10000;
-            double minP10UW_Diff = 100000;
-            
-            double avgDiff = 0;
-            int numRadii = models.Length;
-
-            int numMets = 0;
-            if (models[0].isImported == true)
-                numMets = metList.ThisCount;
-            else
-                numMets = models[0].metsUsed.Length;
-
-            Met[] metsUsed = new Met[numMets];
-
-            for (int i = 0; i < numMets; i++)
-            {
-                for (int j = 0; j < metList.ThisCount; j++)
-                {
-                    if (models[0].isImported == true) {
-                        metsUsed[i] = metList.metItem[j];
-                        break;
-                    }
-                    else {
-                        if (models[0].metsUsed[i] == metList.metItem[j].name) {
-                            metsUsed[i] = metList.metItem[j];
-                            break;
-                        }
-                    }
-
-                }
-            }
-
-            for (int i = 0; i < numMets; i++) {
-                for (int j = 0; j < numRadii; j++) {
-                    if (Math.Abs(metsUsed[i].gridStats.stats[j].P10_UW[WD_Ind] - turbine.gridStats.stats[j].P10_UW[WD_Ind]) < minP10UW_Diff)
-                        minP10UW_Diff = Math.Abs(metsUsed[i].gridStats.stats[j].P10_UW[WD_Ind] - turbine.gridStats.stats[j].P10_UW[WD_Ind]);
-
-                    if (Math.Abs(metsUsed[i].gridStats.stats[j].P10_DW[WD_Ind] - turbine.gridStats.stats[j].P10_DW[WD_Ind]) < minP10DW_Diff)
-                        minP10DW_Diff = Math.Abs(metsUsed[i].gridStats.stats[j].P10_DW[WD_Ind] - turbine.gridStats.stats[j].P10_DW[WD_Ind]);
-
-                }
-            }
-
-            avgDiff = (minP10UW_Diff + minP10DW_Diff) / 2;
-
-            return avgDiff;
-
-        }
-
-  
-
+        /// <summary>  Returns Turbine object with specified name. </summary>
         public Turbine GetTurbine(string turbineName)
-        {
-            // Returns Turbine objects for names listed
+        {            
             Turbine thisTurbine = new Turbine();
 
             if (turbineName == "") return thisTurbine;
@@ -1438,9 +1220,9 @@ namespace ContinuumNS
             return thisTurbine;
         }
 
+        /// <summary>  Returns power curve object with specified name. </summary>
         public PowerCurve GetPowerCurve(string powerCurveName)
-        {
-            // returns power curve object
+        {            
             PowerCurve thisPowerCurve = new PowerCurve();
 
             for (int i = 0; i < PowerCurveCount; i++)
@@ -1453,6 +1235,7 @@ namespace ContinuumNS
             return thisPowerCurve;
         }
 
+        /// <summary>  Returns power or thrust coefficient of specified power curve interpolated at specified wind speed. </summary>
         public double GetInterpPowerOrThrust(double thisWS, PowerCurve thisPowerCurve, string powerOrThrust)
         {
             double thisVal = 0;
@@ -1527,14 +1310,11 @@ namespace ContinuumNS
             return thisVal;
         }
 
+        /// <summary> Opens and reads power curve file and adds to list of power curves. </summary>
         public void ImportPowerCurve(Continuum thisInst, double RD, double RPM)
-        {
-            // Prompts user to open a power curve. thisPowerCurve file and updates turbine calcs if they were done before
-            
+        {  
             int WS_Ind = 0;
-            double[,] powerCurve = new double[3, WS_Ind + 1];
-
-            string wholePath = thisInst.ofdPowerCurve.FileName;
+            double[,] powerCurve = new double[3, WS_Ind + 1];           
 
             string[] fileRow;
             string fileName = thisInst.ofdPowerCurve.FileName;
@@ -1615,30 +1395,16 @@ namespace ContinuumNS
 
             sr.Close();
 
-            ReadPowerCurve(thisInst, powerCurveName, powerCurve, RD, RPM);
-
-    /*           BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
-
-            argsForBW.thisInst = thisInst;
-            argsForBW.thisWakeModel = null;
-
-            // Call background worker to run calculations
-            thisInst.BW_worker = new BackgroundWork();
-            string MCP_Method = thisInst.Get_MCP_Method();
-            argsForBW.MCP_Method = MCP_Method;
-            if (thisInst.topo.gotTopo)
-                thisInst.BW_worker.Call_BW_TurbCalcs(argsForBW);
-            else
-                thisInst.updateThe.AllTABs(thisInst);
-*/
+            ReadPowerCurve(powerCurveName, powerCurve, RD, RPM);
+   
             thisInst.ChangesMade();
             thisInst.turbineList.AreTurbCalcsDone(thisInst);
             thisInst.updateThe.AllTABs(thisInst);
-        }        
+        }
 
+        /// <summary> Deletes any duplicate or unneeded AvgWSEsts. </summary>
         public void ClearDuplicateAvgWS(bool isTimeSeries)
-        {
-            // Deletes any duplicate or unneeded AvgWSEsts
+        {          
             
             for (int i = 0; i < TurbineCount; i++)
             {
@@ -1675,11 +1441,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Checks the state of the turbine ests compared to what power curves and wake models have been created. If turbine calcs not complete then sets turbineCalcsDone = false. </summary>
         public void AreTurbCalcsDone(Continuum thisInst)
-        {
-            // Checks the state of the turbine ests compared to what power curves and wake models have been created
-            // If turbine calcs not complete then sets turbineCalcsDone = false
-            
+        {            
             if (TurbineCount == 0)
             {
                 turbineCalcsDone = false;
@@ -1773,10 +1537,9 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns true if calculations have been completed with specified power curve and wake model. estType = "Expo", "WS", "Gross", "Net". </summary>
         public bool GotEst(string estType, PowerCurve powerCurve, Wake_Model wakeModel)
-        {
-            // Returns true if calculations have been completed with specified power curve and wake model. estType = Expo, WS, Gross, Net
-
+        {            
             bool haveEst = false;
             
             if (TurbineCount == 0)
@@ -1813,17 +1576,16 @@ namespace ContinuumNS
             return haveEst;
         }
 
+        /// <summary> Clears all exceedance calculations for all turbines. </summary>
         public void ClearAllExceedance()
-        {
-            // Clears all exceedance calculations from all turbines                                       
+        {                                          
             if (exceed != null)
-                exceed.SizeMonteCarloArrays();
-            
+                exceed.SizeMonteCarloArrays();            
         }
 
+        /// <summary> Defines default exceedance curves if they don't exist yet. </summary>
         public void SetExceedCurves()
-        {
-            // Define exceedance curves if doesn't exist yet
+        {            
             if (exceed == null)
             {
                 exceed = new Exceedance();
@@ -1832,9 +1594,7 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary>
-        /// Calculates and returns the probability of each turbine creating a wake at specified UTMX and Y. Used in effective TI calculations           
-        /// </summary>        
+        /// <summary> Calculates and returns the probability of each turbine creating a wake at specified UTMX and Y. Used in effective TI calculations. </summary>        
         public double[,] CalcProbOfWakeForEffectiveTI(Continuum thisInst, double thisX, double thisY, PowerCurve powerCurve)
         {
             double[,] probWake = new double[TurbineCount, thisInst.metList.numWD]; // i = Turbine count, j = WD
@@ -1967,17 +1727,13 @@ namespace ContinuumNS
             return probWake;
         }
 
+        /// <summary> Clears all generated time series. Called after save file. </summary>  
         public void ClearTimeSeries()
-        {
-            // Clears all generated time series. Called after save file.
+        {           
             for (int i = 0; i < TurbineCount; i++)
                 for (int j = 0; j < turbineEsts[i].AvgWSEst_Count; j++)
                     turbineEsts[i].avgWS_Est[j].timeSeries = new ModelCollection.TimeSeries[0];
         }
-
-
-
-
     }
 }
     

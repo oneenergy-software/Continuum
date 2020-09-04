@@ -10,11 +10,11 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class ThreeMetTSNotFiltWithMERRAAndMCP
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
-        string saveFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string testingFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string saveFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
                 
-        string merraFolder = "C:\\Users\\Liz\\Desktop\\MERRA2";
-        string bobcatFolder = "C:\\Users\\Liz\\Desktop\\MERRA2\\BobcatBluff";
+        string merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
+        string bobcatFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2\\BobcatBluff";
         string metTSFile;
         string metName;
         string MCP_Method;
@@ -96,7 +96,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -116,7 +116,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -136,7 +136,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -295,7 +295,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -443,7 +443,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -463,7 +463,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -483,7 +483,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -638,7 +638,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -770,7 +770,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -790,7 +790,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -810,7 +810,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -981,7 +981,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -1083,7 +1083,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1103,7 +1103,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1123,7 +1123,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1324,7 +1324,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -1468,7 +1468,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1488,7 +1488,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1508,7 +1508,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1667,7 +1667,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -1811,7 +1811,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1831,7 +1831,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -1851,7 +1851,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2010,7 +2010,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2159,7 +2159,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2179,7 +2179,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2199,7 +2199,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2353,7 +2353,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2502,7 +2502,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2522,7 +2522,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2542,7 +2542,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2696,7 +2696,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -2845,7 +2845,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2865,7 +2865,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -2885,7 +2885,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3039,7 +3039,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3188,7 +3188,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3208,7 +3208,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3228,7 +3228,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3382,7 +3382,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3531,7 +3531,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3551,7 +3551,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3571,7 +3571,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3725,7 +3725,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -3874,7 +3874,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3894,7 +3894,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -3914,7 +3914,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4068,7 +4068,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4216,7 +4216,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4236,7 +4236,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4256,7 +4256,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4411,7 +4411,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4543,7 +4543,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4563,7 +4563,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4583,7 +4583,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4754,7 +4754,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -4902,7 +4902,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4922,7 +4922,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -4942,7 +4942,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5097,7 +5097,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5245,7 +5245,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5265,7 +5265,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5285,7 +5285,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5440,7 +5440,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5588,7 +5588,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5608,7 +5608,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5628,7 +5628,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5783,7 +5783,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -5931,7 +5931,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5951,7 +5951,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -5971,7 +5971,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6126,7 +6126,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6274,7 +6274,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6294,7 +6294,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6314,7 +6314,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6469,7 +6469,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6571,7 +6571,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6591,7 +6591,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6611,7 +6611,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6812,7 +6812,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -6935,7 +6935,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6955,7 +6955,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -6975,7 +6975,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7155,7 +7155,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7261,7 +7261,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7281,7 +7281,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7301,7 +7301,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7498,7 +7498,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7600,7 +7600,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7620,7 +7620,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7640,7 +7640,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7841,7 +7841,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -7968,7 +7968,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -7988,7 +7988,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8008,7 +8008,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8184,7 +8184,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8316,7 +8316,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8336,7 +8336,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8356,7 +8356,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8527,7 +8527,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8654,7 +8654,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8674,7 +8674,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8694,7 +8694,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -8870,7 +8870,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -8997,7 +8997,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9017,7 +9017,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9037,7 +9037,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9213,7 +9213,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -9340,7 +9340,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9360,7 +9360,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9380,7 +9380,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9556,7 +9556,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -9658,7 +9658,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9678,7 +9678,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9698,7 +9698,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -9899,7 +9899,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10005,7 +10005,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10025,7 +10025,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10045,7 +10045,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10242,7 +10242,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10365,7 +10365,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10385,7 +10385,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10405,7 +10405,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10585,7 +10585,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -10687,7 +10687,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10707,7 +10707,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10727,7 +10727,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -10928,7 +10928,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -11030,7 +11030,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11050,7 +11050,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11070,7 +11070,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11271,7 +11271,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -11394,7 +11394,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11414,7 +11414,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11434,7 +11434,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11614,7 +11614,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -11737,7 +11737,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11757,7 +11757,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11777,7 +11777,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -11957,7 +11957,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12059,7 +12059,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12079,7 +12079,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12099,7 +12099,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12300,7 +12300,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12402,7 +12402,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12422,7 +12422,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12442,7 +12442,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12643,7 +12643,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -12787,7 +12787,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12807,7 +12807,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12827,7 +12827,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -12986,7 +12986,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -13130,7 +13130,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13150,7 +13150,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13170,7 +13170,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13329,7 +13329,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -13457,7 +13457,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13477,7 +13477,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13497,7 +13497,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13672,7 +13672,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -13800,7 +13800,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13820,7 +13820,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -13840,7 +13840,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14015,7 +14015,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14117,7 +14117,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14137,7 +14137,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14157,7 +14157,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14358,7 +14358,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14465,7 +14465,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14485,7 +14485,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14505,7 +14505,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14701,7 +14701,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -14824,7 +14824,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14844,7 +14844,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -14864,7 +14864,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15044,7 +15044,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -15146,7 +15146,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15166,7 +15166,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15186,7 +15186,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15387,7 +15387,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -15519,7 +15519,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15539,7 +15539,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15559,7 +15559,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15730,7 +15730,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -15837,7 +15837,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15857,7 +15857,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -15877,7 +15877,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16073,7 +16073,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16205,7 +16205,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16225,7 +16225,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16245,7 +16245,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16416,7 +16416,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16548,7 +16548,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16568,7 +16568,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16588,7 +16588,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16759,7 +16759,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -16891,7 +16891,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16911,7 +16911,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -16931,7 +16931,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17102,7 +17102,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -17234,7 +17234,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17254,7 +17254,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17274,7 +17274,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17445,7 +17445,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -17577,7 +17577,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17597,7 +17597,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17617,7 +17617,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17788,7 +17788,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -17895,7 +17895,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17915,7 +17915,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -17935,7 +17935,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18131,7 +18131,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -18233,7 +18233,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18253,7 +18253,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18273,7 +18273,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18474,7 +18474,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -18585,7 +18585,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18605,7 +18605,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18625,7 +18625,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18817,7 +18817,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -18928,7 +18928,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18948,7 +18948,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -18968,7 +18968,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19160,7 +19160,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -19262,7 +19262,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19282,7 +19282,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19302,7 +19302,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19503,7 +19503,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -19609,7 +19609,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19629,7 +19629,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19649,7 +19649,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19846,7 +19846,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -19952,7 +19952,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19972,7 +19972,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -19992,7 +19992,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20189,7 +20189,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -20295,7 +20295,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20315,7 +20315,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20335,7 +20335,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20532,7 +20532,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -20634,7 +20634,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20654,7 +20654,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20674,7 +20674,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -20875,7 +20875,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -21002,7 +21002,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21022,7 +21022,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21042,7 +21042,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21218,7 +21218,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -21345,7 +21345,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21365,7 +21365,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21385,7 +21385,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21561,7 +21561,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -21663,7 +21663,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21683,7 +21683,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21703,7 +21703,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -21904,7 +21904,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -22027,7 +22027,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22047,7 +22047,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22067,7 +22067,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22247,7 +22247,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -22370,7 +22370,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22390,7 +22390,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22410,7 +22410,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22590,7 +22590,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -22692,7 +22692,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22712,7 +22712,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22732,7 +22732,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -22933,7 +22933,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -23060,7 +23060,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23080,7 +23080,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23100,7 +23100,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23276,7 +23276,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -23378,7 +23378,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23398,7 +23398,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23418,7 +23418,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23619,7 +23619,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -23746,7 +23746,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23766,7 +23766,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23786,7 +23786,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -23962,7 +23962,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -24064,7 +24064,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24084,7 +24084,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24104,7 +24104,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24305,7 +24305,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -24411,7 +24411,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24431,7 +24431,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24451,7 +24451,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24648,7 +24648,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -24755,7 +24755,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24775,7 +24775,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24795,7 +24795,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -24991,7 +24991,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -25093,7 +25093,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25113,7 +25113,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25133,7 +25133,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25334,7 +25334,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -25462,7 +25462,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25482,7 +25482,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25502,7 +25502,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25677,7 +25677,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -25805,7 +25805,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25825,7 +25825,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -25845,7 +25845,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26020,7 +26020,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -26122,7 +26122,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26142,7 +26142,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26162,7 +26162,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26363,7 +26363,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -26486,7 +26486,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26506,7 +26506,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26526,7 +26526,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26706,7 +26706,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -26838,7 +26838,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26858,7 +26858,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -26878,7 +26878,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27049,7 +27049,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -27160,7 +27160,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27180,7 +27180,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27200,7 +27200,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27392,7 +27392,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -27524,7 +27524,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27544,7 +27544,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27564,7 +27564,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27735,7 +27735,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -27867,7 +27867,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27887,7 +27887,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -27907,7 +27907,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28078,7 +28078,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -28210,7 +28210,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28230,7 +28230,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28250,7 +28250,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28421,7 +28421,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -28553,7 +28553,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28573,7 +28573,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28593,7 +28593,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28764,7 +28764,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -28896,7 +28896,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28916,7 +28916,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -28936,7 +28936,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29107,7 +29107,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -29218,7 +29218,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29238,7 +29238,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29258,7 +29258,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29450,7 +29450,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -29561,7 +29561,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29581,7 +29581,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29601,7 +29601,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29793,7 +29793,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -29895,7 +29895,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29915,7 +29915,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -29935,7 +29935,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30136,7 +30136,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -30243,7 +30243,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30263,7 +30263,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30283,7 +30283,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30479,7 +30479,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -30585,7 +30585,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30605,7 +30605,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30625,7 +30625,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30822,7 +30822,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -30933,7 +30933,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30953,7 +30953,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -30973,7 +30973,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31165,7 +31165,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -31267,7 +31267,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31287,7 +31287,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31307,7 +31307,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31508,7 +31508,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -31610,7 +31610,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31630,7 +31630,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31650,7 +31650,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31851,7 +31851,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -31974,7 +31974,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -31994,7 +31994,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32014,7 +32014,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32194,7 +32194,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -32300,7 +32300,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32320,7 +32320,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32340,7 +32340,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32537,7 +32537,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -32639,7 +32639,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32659,7 +32659,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32679,7 +32679,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -32880,7 +32880,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -33007,7 +33007,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33027,7 +33027,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33047,7 +33047,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33223,7 +33223,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -33350,7 +33350,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33370,7 +33370,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33390,7 +33390,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33566,7 +33566,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -33694,7 +33694,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33714,7 +33714,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33734,7 +33734,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -33909,7 +33909,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -34037,7 +34037,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34057,7 +34057,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34077,7 +34077,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34252,7 +34252,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -34354,7 +34354,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34374,7 +34374,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34394,7 +34394,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34595,7 +34595,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -34722,7 +34722,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34742,7 +34742,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34762,7 +34762,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -34938,7 +34938,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -35045,7 +35045,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35065,7 +35065,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35085,7 +35085,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35281,7 +35281,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -35404,7 +35404,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35424,7 +35424,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35444,7 +35444,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35624,7 +35624,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -35726,7 +35726,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35746,7 +35746,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35766,7 +35766,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -35967,7 +35967,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -36069,7 +36069,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36089,7 +36089,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36109,7 +36109,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36310,7 +36310,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -36416,7 +36416,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36436,7 +36436,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36456,7 +36456,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36653,7 +36653,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -36760,7 +36760,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36780,7 +36780,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36800,7 +36800,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -36996,7 +36996,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -37098,7 +37098,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37118,7 +37118,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37138,7 +37138,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37339,7 +37339,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -37450,7 +37450,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37470,7 +37470,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37490,7 +37490,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37682,7 +37682,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -37793,7 +37793,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37813,7 +37813,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -37833,7 +37833,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38025,7 +38025,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -38157,7 +38157,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38177,7 +38177,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38197,7 +38197,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38368,7 +38368,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -38516,7 +38516,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38536,7 +38536,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38556,7 +38556,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38711,7 +38711,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -38838,7 +38838,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38858,7 +38858,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -38878,7 +38878,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39054,7 +39054,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -39186,7 +39186,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39206,7 +39206,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39226,7 +39226,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39397,7 +39397,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -39529,7 +39529,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39549,7 +39549,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39569,7 +39569,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39740,7 +39740,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -39872,7 +39872,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39892,7 +39892,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -39912,7 +39912,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40083,7 +40083,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -40215,7 +40215,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40235,7 +40235,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40255,7 +40255,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40426,7 +40426,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -40558,7 +40558,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40578,7 +40578,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40598,7 +40598,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40769,7 +40769,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -40871,7 +40871,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40891,7 +40891,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -40911,7 +40911,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41112,7 +41112,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -41218,7 +41218,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41238,7 +41238,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41258,7 +41258,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41455,7 +41455,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -41557,7 +41557,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41577,7 +41577,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41597,7 +41597,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41798,7 +41798,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -41900,7 +41900,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41920,7 +41920,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -41940,7 +41940,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42141,7 +42141,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -42248,7 +42248,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42268,7 +42268,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42288,7 +42288,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42484,7 +42484,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -42586,7 +42586,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42606,7 +42606,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42626,7 +42626,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42827,7 +42827,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -42929,7 +42929,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42949,7 +42949,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -42969,7 +42969,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43170,7 +43170,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;
@@ -43272,7 +43272,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_2001 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43292,7 +43292,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_5444 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43312,7 +43312,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.turbineList.genTimeSeries = true;
 
             metTSFile = testingFolder + "\\Met TS files\\Bobcat Bluff\\Met_9900 short.csv";
-            thisInst.metList.ImportFilterExtrapMetDataContinuum(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
+            thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst); // Reads in formatted .csv file, filters and extrapolates to modeled height
 
             thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
             thisInst.metList.numWS = 30;
@@ -43513,7 +43513,7 @@ namespace Continuum_Tests.GUI_Tests
             }
 
 
-            BackgroundWork.Vars_for_Turbine_and_Node_Calcs argsForBW = new BackgroundWork.Vars_for_Turbine_and_Node_Calcs();
+            BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
 
             argsForBW.thisInst = thisInst;
             argsForBW.thisWakeModel = null;

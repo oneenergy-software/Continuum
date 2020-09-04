@@ -1,69 +1,53 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-// file:	TopoInfo.cs
-//
-// summary:	Implements the topo information class
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
+﻿
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 using OSGeo.GDAL;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Net.Http;
  
 namespace ContinuumNS
 {
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// <summary>   TopoInfo class contains all info and functions regarding the digital elevation 
-    ///             (topography) and land cover datasets. </summary>
-    ///
-    /// <remarks>   OEE, 7/15/2019. </remarks>
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    
+    /// <summary> Class that contains all information and functions regarding the digital elevation (topography) and land cover datasets. Also it contains functions for calculating terrain
+    /// exposure, average surface roughness and average displacement height. </summary>
+    
     [Serializable()]
     public class TopoInfo
     {
-        /// <summary>   Used for plotting only [NumX, NumY]. </summary>
+        /// <summary> Elevation data used for plotting only. </summary>
         public double[,] topoElevs;
-        /// <summary>   elevations used for calculations. </summary>
+        /// <summary> Elevation data used for calculations. </summary>
         public double[,] elevsForCalcs;
-        /// <summary>   surface roughness used for calculations. </summary>
+        /// <summary> Surface roughness data used for calculations. </summary>
         public double[,] SR_ForCalcs;
-        /// <summary>   displacement height used for calculations. </summary>
+        /// <summary> Displacement height data used for calculations. </summary>
         public double[,] DH_ForCalcs;
 
-        /// <summary>   true when surface roughness or land cover data has been loaded. </summary>
+        /// <summary> True when surface roughness or land cover data has been loaded. </summary>
         public bool gotSR;
-        /// <summary>   If true then use SR in model calcs. </summary>
+        /// <summary> If true then surface roughness model is used in wind speed estimates. </summary>
         public bool useSR;
-        /// <summary>   If true then enable flow separation model. </summary>
+        /// <summary> If true then flow separation model is used in wind speed estimates. </summary>
         public bool useSepMod;
-        /// <summary>   true when topo data has been loaded. </summary>
+        /// <summary> True when topo data has been loaded. </summary>
         public bool gotTopo;
 
-        /// <summary>   Holds Num X/Y All/Plot/Calcs of elevation data. </summary>
+        /// <summary> Holds Num X/Y All/Plot/Calcs of elevation data. </summary>
         public Min_Max_Num_XYs topoNumXY = new Min_Max_Num_XYs();
-        /// <summary>   Holds Num X/Y All/Plot/Calcs of land cover data. </summary>
+        /// <summary> Holds Num X/Y All/Plot/Calcs of land cover data. </summary>
         public Min_Max_Num_XYs LC_NumXY;
 
-        /// <summary>   Used for plotting only. </summary>
+        /// <summary>  Land cover data used for plotting only. </summary>
         public int[,] landCover;
-        /// <summary>   The lc key. </summary>
+        /// <summary>  Land cover key (converts land cover code to surface roughness and displacement height). </summary>
         public LC_SR_DH[] LC_Key;
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing two Dec_Type structs which contain Min_Max_Num structs for each
-        ///             grid type (i.e. all, calcs, or plot). </summary>
-        ///
-        /// <remarks>   Liz, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary>   Struct containing two Dec_Type structs which contain Min_Max_Num structs for each grid type (i.e. all, calcs, or plot). </summary>        
         [Serializable()]
         public struct Min_Max_Num_XYs
         {
@@ -72,196 +56,128 @@ namespace ContinuumNS
             /// <summary>   Y Min_Max_Num structs for each grid type. </summary>
             public Dec_Type Y;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing Min_Max_Num structs. One for each topo grid type (i.e. all, calcs, 
-        ///             or plot) </summary>
-        ///
-        /// <remarks>   Liz, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+       
+        /// <summary> Contains Min_Max_Num structs (min, max, num, and reso). One for each topo grid type (i.e. all, calcs, or plot) </summary>
         [Serializable()]
         public struct Dec_Type
         {
-            /// <summary>   All data in database. </summary>
+            /// <summary> All data in database. </summary>
             public Min_Max_Num all;
-            /// <summary>   Decimated for plotting. </summary>
+            /// <summary> Decimated for plotting. </summary>
             public Min_Max_Num plot;
-            /// <summary>   Data extracted for calculations. </summary>
+            /// <summary> Data extracted for calculations. </summary>
             public Min_Max_Num calcs;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing grid min, max, count, and resolution. </summary>
-        ///
-        /// <remarks>   Liz, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Contains grid min, max, count, and resolution. </summary>        
         [Serializable()]
         public struct Min_Max_Num
         {
-            /// <summary>   Grid minimum. </summary>
+            /// <summary> Grid minimum. </summary>
             public double min;
-            /// <summary>   Grid maximum. </summary>
+            /// <summary> Grid maximum. </summary>
             public double max;
-            /// <summary>   Grid count. </summary>
+            /// <summary> Grid count. </summary>
             public int num;
-            /// <summary>   Grid resolution. </summary>
+            /// <summary> Grid resolution. </summary>
             public double reso;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing UTMX/Y, elevation, and exposure info for a grid point. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Contains UTMX/Y, elevation, and exposure info for a grid point. </summary>  
         [Serializable()]
         public struct TopoGrid
         {
-            /// <summary>   The utmx. </summary>
+            /// <summary> UTM X coordinate. </summary>
             public double UTMX;
-            /// <summary>   The utmy. </summary>
+            /// <summary> UTM Y coordinate. </summary>
             public double UTMY;
-            /// <summary>   The elev. </summary>
+            /// <summary> Elevation. </summary>
             public double elev;
-            /// <summary>   The smaller exposure. </summary>
+            /// <summary> Exposure calculated with a smaller radius of investigation. </summary>
             public Exposure smallerR_Exposure;
-            /// <summary>   The smaller radius. </summary>
+            /// <summary> Smaller radius. </summary>
             public int smallerRadius;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing UTMX/Y and Land cover code for a grid point. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary> Contains UTMX/Y and Land cover code for a grid point. </summary>    
         public struct LandCoverGrid
         {
-            /// <summary>   The utmx. </summary>
+            /// <summary> UTM X coordinate. </summary>
             public double UTMX;
-            /// <summary>   The utmy. </summary>
+            /// <summary> UTM Y coordinate. </summary>
             public double UTMY;
-            /// <summary>   The lc code. </summary>
+            /// <summary> Land cover code. </summary>
             public int LC_code;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing land cover code, description, surface roughness and displacement
-        ///             height. </summary>
-        ///
-        /// <remarks>   Liz, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary>  Contains land cover code, description, surface roughness and displacement height. </summary> 
         [Serializable()]
         public struct LC_SR_DH
         {
-            /// <summary>   The code. </summary>
+            /// <summary> Land cover code. </summary>
             public int code;
-            /// <summary>   The description. </summary>
+            /// <summary> Land cover description. </summary>
             public string desc;
-            /// <summary>   The sr. </summary>
+            /// <summary> Surface roughness [m]. </summary>
             public double SR;
-            /// <summary>   The dh. </summary>
+            /// <summary> Displacement height [m]. </summary>
             public double DH;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing UTMX/Y. </summary>
-        ///
-        /// <remarks>   Liz, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary>   Struct containing UTMX/Y. </summary>        
         [Serializable()]
         public struct UTM_X_Y
         {
-            /// <summary>   The utmx. </summary>
+            /// <summary> UTM X coordinate. </summary>
             public double UTMX;
-            /// <summary>   The utmy. </summary>
+            /// <summary> UTM Y coordinate. </summary>
             public double UTMY;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing UTMX/Y and shape index. </summary>
-        ///
-        /// <remarks>   Liz, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public struct UTM_X_Y_Shape_Num
-        {
-            /// <summary>   The utmx. </summary>
-            public double UTMX;
-            /// <summary>   The utmy. </summary>
-            public double UTMY;
-            /// <summary>   Index of shape (read from .MAP files). </summary>
-            public int shapeInd;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing info related to a shape read in from roughness maps (.MAP). </summary>
-        ///
-        /// <remarks>   Liz, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        }          
+               
+        /// <summary> Contains info related to a shape read in from roughness maps (.MAP). </summary>        
         public struct Roughness_Map_Struct
         {
             // Used when reading .map roughness file
-            /// <summary>   The minimum x coordinate. </summary>
+            /// <summary> Minimum X coordinate. </summary>
             public double minX;
-            /// <summary>   The maximum x coordinate. </summary>
+            /// <summary> Maximum X coordinate. </summary>
             public double maxX;
-            /// <summary>   The minimum y coordinate. </summary>
+            /// <summary> Minimum Y coordinate. </summary>
             public double minY;
-            /// <summary>   The maximum y coordinate. </summary>
+            /// <summary> Maximum Y coordinate. </summary>
             public double maxY;
 
-            /// <summary>   Surface roughness on left side of line. </summary>
+            /// <summary> Surface roughness on left side of line. </summary>
             public double leftRough;
-            /// <summary>   Surface roughness on right side of line. </summary>
+            /// <summary> Surface roughness on right side of line. </summary>
             public double rightRough;
 
-            /// <summary>   Number of points. </summary>
+            /// <summary> Number of points. </summary>
             public int numPoints;
-            /// <summary>   Array of struct UTM_X_Y containing coordinates of points. </summary>
+            /// <summary> Array of struct UTM_X_Y containing coordinates of points. </summary>
             public UTM_X_Y[] points;
 
-            /// <summary>   True if is closed, false if not. </summary>
-            public bool isClosed;
-            //  Dim Is_Clockwise = Boolean
+            /// <summary> True if is closed, false if not. </summary>
+            public bool isClosed;            
+        }
 
-        }                      
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets lc parameter to plot. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="paramType">    Type of the parameter. </param>
-        ///
-        /// <returns>   The lc parameter to plot. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns param array based on specified parameter ("Land Cover", "Surface Roughness" or "Displacement Height"). </summary>
         public double[,] GetLC_ParamToPlot(string paramType)
         {
-            // Returns param array based on selected parameter (land cover, surface roughness or displacement height)                       
-
             int numX_Plot = LC_NumXY.X.plot.num;
             int numY_Plot = LC_NumXY.Y.plot.num;
 
-            double[,] param = new double[numX_Plot, numY_Plot];                     
+            double[,] param = new double[numX_Plot, numY_Plot];
 
-            int numSR = 0;
-
-            try
-            {
-                numSR = LC_Key.Length;
-            }
-            catch 
+            if (LC_Key == null)
             {
                 MessageBox.Show("No land cover / surface roughness info entered.", "Continuum 2.2");
                 return param;
             }
+
+            int numSR = LC_Key.Length;                       
 
             int X_Ind = 0;
             int Y_Ind = 0;
@@ -276,7 +192,7 @@ namespace ContinuumNS
                         {
                             if (paramType == "Surface Roughness")
                                 param[X_Ind, Y_Ind] = LC_Key[k].SR;
-                            else if (paramType == "Displacement height")
+                            else if (paramType == "Displacement Height")
                                 param[X_Ind, Y_Ind] = LC_Key[k].DH;
                             else
                                 param[X_Ind, Y_Ind] = LC_Key[k].code;
@@ -301,20 +217,10 @@ namespace ContinuumNS
             return param;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Finds the min of the given arguments. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="param">        The parameter. </param>
-        /// <param name="ignoreZeros">  True to ignore zeros. </param>
-        ///
-        /// <returns>   The calculated minimum. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary>  Returns minimum value of two-dimensional param array. </summary> 
         public double GetMin(double[,] param, bool ignoreZeros)
-        {
-            // Returns minimum value of two-dimensional param array
+        {            
             double thisMin = 100000;
 
             for (int i = 0; i <= param.GetUpperBound(0); i++)
@@ -325,19 +231,10 @@ namespace ContinuumNS
             return thisMin;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Finds the max of the given arguments. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="param">    The parameter. </param>
-        ///
-        /// <returns>   The calculated maximum. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary> Returns maximum value of two-dimensional param array. </summary>     
 
         public double GetMax(double[,] param)
-        {
-            //  Returns maximum value of two-dimensional param array
+        {            
             double thisMax = 0;
 
             for (int i = 0; i <= param.GetUpperBound(0); i++)
@@ -348,19 +245,11 @@ namespace ContinuumNS
             return thisMax;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Searches for the first minimum. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="theseParams">  Options for controlling the these. </param>
-        ///
-        /// <returns>   The found minimum. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Returns minimum value of one-dimensional theseParams array. </summary>        
 
         public double FindMin(double[] theseParams)
-        {
-            // Returns minimum value of one-dimensional theseParams array
+        {            
             double thisMin = 1000000;
             int numParams;
 
@@ -380,19 +269,11 @@ namespace ContinuumNS
             return thisMin;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Searches for the first maximum. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="theseParams">  Options for controlling the these. </param>
-        ///
-        /// <returns>   The found maximum. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Returns maximum value of one-dimensional param array. </summary>
 
         public double FindMax(double[] theseParams)
-        {
-            //  Returns maximum value of one-dimensional param array
+        {            
             double thisMax = -1000000;
             int numParams;
 
@@ -411,19 +292,9 @@ namespace ContinuumNS
             return thisMax;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Searches for the first average. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="theseParams">  Options for controlling the these. </param>
-        ///
-        /// <returns>   The found average. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns average of one-dimensional theseParams array. </summary>        
         public double FindAvg(double[] theseParams)
-        {
-            // Returns average of one-dimensional theseParams array
+        {            
             double avg = 0;
             int numParams;
 
@@ -448,19 +319,9 @@ namespace ContinuumNS
             return avg;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Searches for the first SD. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="theseParams">  Options for controlling the these. </param>
-        ///
-        /// <returns>   The found SD. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns standard deviation of one-dimensional theseParams array. </summary>        
         public double FindSD(double[] theseParams)
-        {
-            // Returns standard deviation of one-dimensional theseParams array
+        {            
             double stDev = 0;
             double avg = 0;
             int numParams = 0;
@@ -488,41 +349,22 @@ namespace ContinuumNS
             return stDev;
 
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Ok to reload. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <returns>   An int. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Returns 1 if gotTopo is false; returns 6 if gotTopo is true and user wants to load new data; returns 7 if gotTopo is true but user does not want to load new data. </summary>
         public int OkToReload()
-        {
-            // Returns 1 if gotTopo is false; returns 6 if gotTopo is true and user wants to load new data; returns 7 if gotTopo is true but user does not want to load new data
+        {            
             int goodToGo = 1;
 
             if (gotTopo == true) // Already have topo data loaded, need to clear it first before loading new stuff
                 goodToGo = Convert.ToInt16(MessageBox.Show("You already have topo data loaded.  Do you want to load new data?  If you proceed, all calculated exposures, " +
-                    "models and parameters will be lost.", "Continuum 2.2", MessageBoxButtons.YesNo));
+                    "models and parameters will be lost.", "Continuum 3", MessageBoxButtons.YesNo));
 
             return goodToGo;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Lc ok to reload. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="savedFileName">    Filename of the saved file. </param>
-        /// <param name="continuum">        The continuum. </param>
-        ///
-        /// <returns>   True if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> If user agrees to load new LC data, it clears the calculated SRDH at mets and estimates at turbine sites and at nodes in the database. </summary>       
         public bool LC_OkToReload(string savedFileName, Continuum continuum)
-        {
-            // If user agrees to load new LC data, it clears the calculated SRDH at mets and estimates at turbine sites and in the database
+        {            
             int goodToGo;
             bool okBool = false;
             int numRadii = 0;
@@ -616,28 +458,14 @@ namespace ContinuumNS
             return okBool;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the elevs. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX"> The utmx. </param>
-        /// <param name="UTMY"> The utmy. </param>
-        ///
-        /// <returns>   The calculated elevs. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns interpolated elevation at specified UTMX and UTMY. </summary>        
         public double CalcElevs(double UTMX, double UTMY)
-        {
-            // Returns interpolated elevation at specified UTMX and UTMY
+        {            
             double sumDist;
             double elev = 0;
 
             int thisX_Ind = Convert.ToInt16((UTMX - topoNumXY.X.calcs.min) / topoNumXY.X.calcs.reso);
-            int thisY_Ind = Convert.ToInt16((UTMY - topoNumXY.Y.calcs.min) / topoNumXY.Y.calcs.reso);
-
-           // int thisX_Ind = Convert.ToInt32(Math.Truncate(Convert.ToDouble(((UTMX - topoNumXY.X.calcs.min) / topoNumXY.X.calcs.reso)))); // this is silly, do it cleaner
-           // int thisY_Ind = Convert.ToInt32(Math.Truncate(Convert.ToDouble(((UTMY - topoNumXY.Y.calcs.min) / topoNumXY.Y.calcs.reso))));
+            int thisY_Ind = Convert.ToInt16((UTMY - topoNumXY.Y.calcs.min) / topoNumXY.Y.calcs.reso);                       
 
             int xInd1 = thisX_Ind;
             int xInd2 = thisX_Ind + 1;
@@ -647,9 +475,7 @@ namespace ContinuumNS
             double targetEastMin = xInd1 * topoNumXY.X.calcs.reso + topoNumXY.X.calcs.min;
             double targetEastMax = xInd2 * topoNumXY.X.calcs.reso + topoNumXY.X.calcs.min;
             double targetNorthMin = yInd1 * topoNumXY.Y.calcs.reso + topoNumXY.Y.calcs.min;
-            double targetNorthMax = yInd2 * topoNumXY.Y.calcs.reso + topoNumXY.Y.calcs.min;
-
-            double thisElev = 0;
+            double targetNorthMax = yInd2 * topoNumXY.Y.calcs.reso + topoNumXY.Y.calcs.min;                        
 
             if (elevsForCalcs == null)
                 return elev;
@@ -695,8 +521,7 @@ namespace ContinuumNS
             if (distanceSqrd > 0)
             {
                 sumDist = sumDist + 1 / distanceSqrd;                
-                elev = elev + elevsForCalcs[xInd2, yInd2] / distanceSqrd;
-                thisElev = elevsForCalcs[xInd2, yInd2];
+                elev = elev + elevsForCalcs[xInd2, yInd2] / distanceSqrd;                
             }
             else
             {
@@ -709,80 +534,9 @@ namespace ContinuumNS
             return elev;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Creates a new node. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">         The utmx. </param>
-        /// <param name="UTMY">         The utmy. </param>
-        /// <param name="radiiList">    List of radiis. </param>
-        /// <param name="gridRadius">   The grid radius. </param>
-        ///
-        /// <returns>   True if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  /*      public bool newNode(double UTMX, double UTMY, InvestCollection radiiList, int gridRadius)
-        {
-            // Checks the distance between the mets/turbines and edges of topo data to make sure they all fit within defined radii and returns false if UTMX and UTMY fall outside radius
-            bool nodeOk = true;
-
-            if (gotTopo == true)
-            {             
-                int numRadii = radiiList.ThisCount;
-                int maxRadius = Convert.ToInt32(Math.Min((UTMX - topoNumXY.X.calcs.min), (UTMY - topoNumXY.Y.calcs.min)));
-                maxRadius = Convert.ToInt32(Math.Min(maxRadius, (topoNumXY.X.calcs.max - UTMX)));
-                maxRadius = Convert.ToInt32(Math.Min(maxRadius, (topoNumXY.Y.calcs.max - UTMY)));
-
-                if (UTMX > topoNumXY.X.calcs.max)
-                {
-                    nodeOk = false;
-                    return nodeOk;
-                }
-                else if (UTMX < topoNumXY.X.calcs.min)
-                {
-                    nodeOk = false;
-                    return nodeOk;
-                }
-                else if (UTMY > topoNumXY.Y.calcs.max)
-                {
-                    nodeOk = false;
-                    return nodeOk;
-                }
-                else if (UTMY < topoNumXY.Y.calcs.min)
-                {
-                    nodeOk = false;
-                    return nodeOk;
-                }
-
-                for (int i = 0; i < numRadii; i++)
-                {
-                    if ((radiiList.investItem[i].radius + gridRadius) > maxRadius)
-                    {
-                        nodeOk = false;
-                        break;
-                    }
-                }
-            }                        
-
-            return nodeOk;
-        }
-*/
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets a direction. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisX">    this x coordinate. </param>
-        /// <param name="thisY">    this y coordinate. </param>
-        ///
-        /// <returns>   The direction. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Calculates wind direction corresponding to thisX and thisY. </summary>        
         public double GetDirection(double thisX, double thisY)
-        {
-            // Calculates orientation (or direction) corresponding to thisX and thisY
-
+        {            
             double direction = Convert.ToSingle(Math.Atan2(thisY, thisX) * 180 / Math.PI);
 
             direction = 90 - direction; // moves 0 degree from east (90 degs) To north (0 degs)                                                              
@@ -792,21 +546,9 @@ namespace ContinuumNS
             return direction;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the dir ind. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="deltaX">       The delta x coordinate. </param>
-        /// <param name="deltaY">       The delta y coordinate. </param>
-        /// <param name="dirBinSize">   Size of the dir bin. </param>
-        ///
-        /// <returns>   The calculated dir ind. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns wind direction sector corresponding to deltaX, deltaY, and bin size (degrees). </summary>        
         public int CalcDirInd(double deltaX, double deltaY, double dirBinSize)
-        {
-            // Returns wind direction sector corresponding to deltaX and deltaY
+        {            
             double direction = GetDirection(deltaX, deltaY);
             int dirInd;
 
@@ -815,25 +557,12 @@ namespace ContinuumNS
             else
                 dirInd = Convert.ToInt16(Math.Round(direction / dirBinSize, 0));
                         
-
             return dirInd;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets closest node. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">         The utmx. </param>
-        /// <param name="UTMY">         The utmy. </param>
-        /// <param name="Topo_or_LC">   The topo or lc. </param>
-        ///
-        /// <returns>   The closest node. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns node coordinates of data point that is closest to UTMX and UTMY. </summary>        
         public TopoGrid GetClosestNode(double UTMX, double UTMY, string Topo_or_LC)
-        {
-            // Returns node coordinates of data point that is closest to UTMX and UTMY
+        {            
             double targetEastMin = 0;
             double targetEastMax = 0;
             double targetNorthMin = 0;
@@ -926,7 +655,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>   Returns a node on grid closest to UTMX/Y but a minimum distance away from edge of topo. </summary>        
+        /// <summary> Returns a node on grid closest to UTMX/Y but a minimum distance away from edge of topo. </summary>        
         public TopoGrid GetClosestNodeFixedGrid(double UTMX, double UTMY, int gridReso, int minDist)
         {            
             TopoGrid closestNode = new TopoGrid();
@@ -980,10 +709,7 @@ namespace ContinuumNS
                     }
 
                     xFixed = topoNumXY.X.all.min + X_Ind * gridReso;
-                    yFixed = topoNumXY.Y.all.min + Y_Ind * gridReso;
-
-                    if (yFixed < 4000000)
-                        yFixed = yFixed;
+                    yFixed = topoNumXY.Y.all.min + Y_Ind * gridReso;                                       
 
                     goodToGo = check.NewNodeCheck(this, xFixed, yFixed, minDist, "Plot");
                 }
@@ -995,23 +721,9 @@ namespace ContinuumNS
             return closestNode;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the p 10 uw crosswind grade. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">         The utmx. </param>
-        /// <param name="UTMY">         The utmy. </param>
-        /// <param name="radiiList">    List of radiis. </param>
-        /// <param name="WD_sec">       The wd security. </param>
-        /// <param name="numWD">        Number of wds. </param>
-        ///
-        /// <returns>   The calculated p 10 uw crosswind grade. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public double CalcP10_UW_CrosswindGrade(double UTMX, double UTMY, InvestCollection radiiList, int WD_sec, int numWD)
-        {
-            // Returns P10 upwind crosswind grade. Not used right now but will be when flow around hills algorithm is revisisted.
+        /// <summary> Returns P10 upwind crosswind grade. Not used right now but will be when flow around hills algorithm is revisited. </summary>        
+        public double CalcP10_UW_CrosswindGrade(double UTMX, double UTMY, int WD_sec, int numWD)
+        {            
             double[] UWGrade = new double[4];
             double[] avgUWGrade = new double[6];
             double highestUWGrade;
@@ -1182,26 +894,12 @@ namespace ContinuumNS
             return highestUWGrade;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the p 10 uw parallel grade. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">         The utmx. </param>
-        /// <param name="UTMY">         The utmy. </param>
-        /// <param name="radiiList">    List of radiis. </param>
-        /// <param name="WD_sec">       The wd security. </param>
-        /// <param name="numWD">        Number of wds. </param>
-        ///
-        /// <returns>   The calculated p 10 uw parallel grade. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public double CalcP10_UW_ParallelGrade(double UTMX, double UTMY, InvestCollection radiiList, int WD_sec, int numWD)
-        {
-            //  Returns P10 upwind parallel grade. Not used right now but will be when flow around hills algorithm is revisisted.
+        /// <summary> Returns P10 upwind parallel grade. Not used right now but will be when flow around hills algorithm is revisited. </summary>        
+        public double CalcP10_UW_ParallelGrade(double UTMX, double UTMY, int WD_sec, int numWD)
+        {            
             double[] UWGrade = new double[11];
-            double[] maxUWGrade = new double[5];
-            double avgHighestUWGrade;
+            double[] maxUWGrade = new double[5];            
             double WD_theta;
             TopoGrid[] nodesCross;
 
@@ -1214,24 +912,9 @@ namespace ContinuumNS
 
             if (numWD == 0) return 0;
 
-            double WDbin = Convert.ToSingle(360.0 / numWD);
+          //  double WDbin = Convert.ToSingle(360.0 / numWD);                   
+         
                         
-            int gradeInd = 0;
-
-            double radialDist3000 = 0;
-            double radialDist2750 = 0;
-            double radialDist2500 = 0;
-            double radialDist2250 = 0;
-            double radialDist2000 = 0;
-            double radialDist1750 = 0;
-            double radialDist1500 = 0;
-            double radialDist1250 = 0;
-            double radialDist1000 = 0;
-            double radialDist750 = 0;
-            double radialDist500 = 0;
-            double radialDist250 = 0;
-            double radialDist0 = 0;
-
             int[] isPositiveSlope = new int[5]; // 0 = not sure, 1 = positive, 2 = negative
             int[] hillSlopeChangeInd = new int[5]; // Chunk index where slope changes from + to - and is more than |0.02|
             int[] hillStartInd = new int[5]; // Chunk index where slope greater than 0.02 is first identified
@@ -1338,19 +1021,19 @@ namespace ContinuumNS
                 if (thetaMin[d, 10] > 360) thetaMin[d, 10] = thetaMin[d, 10] - 360;
                 if (thetaMax[d, 10] > 360) thetaMax[d, 10] = thetaMax[d, 10] - 360;
 
-                radialDist0 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2)), 0.5));
-                radialDist250 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(250, 2)), 0.5));
-                radialDist500 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(500, 2)), 0.5));
-                radialDist750 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(750, 2)), 0.5));
-                radialDist1000 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1000, 2)), 0.5));
-                radialDist1250 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1250, 2)), 0.5));
-                radialDist1500 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1500, 2)), 0.5));
-                radialDist1750 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1750, 2)), 0.5));
-                radialDist2000 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2000, 2)), 0.5));
-                radialDist2250 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2250, 2)), 0.5));
-                radialDist2500 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2500, 2)), 0.5));
-                radialDist2750 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2750, 2)), 0.5));
-                radialDist3000 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(3000, 2)), 0.5));
+                double radialDist0 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2)), 0.5));
+                double radialDist250 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(250, 2)), 0.5));
+                double radialDist500 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(500, 2)), 0.5));
+                double radialDist750 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(750, 2)), 0.5));
+                double radialDist1000 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1000, 2)), 0.5));
+                double radialDist1250 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1250, 2)), 0.5));
+                double radialDist1500 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1500, 2)), 0.5));
+                double radialDist1750 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(1750, 2)), 0.5));
+                double radialDist2000 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2000, 2)), 0.5));
+                double radialDist2250 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2250, 2)), 0.5));
+                double radialDist2500 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2500, 2)), 0.5));
+                double radialDist2750 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(2750, 2)), 0.5));
+                double radialDist3000 = Convert.ToSingle(Math.Pow((Math.Pow(thisDist, 2) + Math.Pow(3000, 2)), 0.5));
 
                 X_min[d, 0] = UTMX + Convert.ToSingle((Math.Cos(thetaMin[d, 0] * Math.PI / 180)) * radialDist0);
                 X_max[d, 0] = UTMX + Convert.ToSingle((Math.Cos(thetaMax[d, 0] * Math.PI / 180)) * radialDist500);
@@ -1423,7 +1106,7 @@ namespace ContinuumNS
 
             for (int d = 0; d <= 4; d++)
             {
-                gradeInd = 0;
+                int gradeInd = 0;
                 isPositiveSlope[d] = 0; // not sure
 
                 for (int c = 0; c <= 10; c++)
@@ -1527,8 +1210,7 @@ namespace ContinuumNS
                 }
 
             }
-
-            avgHighestUWGrade = 0;            
+                                  
             double highestGrade = 0;
             double secHighestGrade = 0;
 
@@ -1538,32 +1220,15 @@ namespace ContinuumNS
             for (int s = 0; s <= 4; s++)
                 if (Math.Abs(maxUWGrade[s]) > Math.Abs(secHighestGrade) && maxUWGrade[s] != highestGrade && maxUWGrade[s] != 0) secHighestGrade = maxUWGrade[s];
 
-            avgHighestUWGrade = (highestGrade + secHighestGrade) / 2;
+            double avgHighestUWGrade = (highestGrade + secHighestGrade) / 2;
 
             return avgHighestUWGrade;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the exposures. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">         The utmx. </param>
-        /// <param name="UTMY">         The utmy. </param>
-        /// <param name="elev">         The elev. </param>
-        /// <param name="radius">       The radius. </param>
-        /// <param name="exponent">     The exponent. </param>
-        /// <param name="numSectors">   Number of sectors. </param>
-        /// <param name="topo">         The topo. </param>
-        /// <param name="numWD">        Number of wds. </param>
-        ///
-        /// <returns>   The calculated exposures. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary> Calculates and returns terrain exposure at specified UTMX/Y and using specified radius and exponent. </summary>
         public Exposure CalcExposures(double UTMX, double UTMY, double elev, int radius, double exponent, int numSectors, TopoInfo topo, int numWD)
-        {
-            // Returns exposure at specified UTMX/Y and radius and exponent
-            
+        {                        
             Exposure expoReturn = new Exposure();
 
             if (numWD == 0)
@@ -1606,11 +1271,7 @@ namespace ContinuumNS
                     double deltaY = gridUTMY - UTMY;
                     if (deltaX < maxDistance && deltaY < maxDistance)
                     {
-                        double deltaZ = elev - topo.elevsForCalcs[j, k];
-                        double thisElev = topo.elevsForCalcs[j, k];
-                        if (deltaZ > 100)
-                            deltaZ = deltaZ;
-
+                        double deltaZ = elev - topo.elevsForCalcs[j, k];  
                         double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                        
 
                         if (distance <= radius && distance >= 0) // since exposures are calculated using an inverse distance, using grid point that is too close
@@ -1651,22 +1312,10 @@ namespace ContinuumNS
             return expoReturn;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets smaller radius. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="expo">         The expo. </param>
-        /// <param name="radius">       The radius. </param>
-        /// <param name="exponent">     The exponent. </param>
-        /// <param name="numSectors">   Number of sectors. </param>
-        ///
-        /// <returns>   The smaller radius. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary> Returns radius one level lower in list of exposures. </summary>
         public int GetSmallerRadius(Exposure[] expo, int radius, double exponent, int numSectors)
-        {
-            // Returns radius one level lower
+        {            
             int smallerRadius = 0;
             int thisR;
             int thisCount = 0;
@@ -1696,36 +1345,18 @@ namespace ContinuumNS
 
             return smallerRadius;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets smaller radius expo. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="expo">             The expo. </param>
-        /// <param name="smaller_radius">   The smaller radius. </param>
-        /// <param name="exponent">         The exponent. </param>
-        /// <param name="numSectors">       Number of sectors. </param>
-        ///
-        /// <returns>   The smaller radius expo. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Returns exposure calculated with specified radius, exponent and numSectors. </summary>
         public Exposure GetSmallerRadiusExpo(Exposure[] expo, int smaller_radius, double exponent, int numSectors)
-        {
-            // Returns exposure calculated with specified radius, exponent and numSectors
-            int thisR;
+        {          
             Exposure thisExpo = null;
             int thisCount = 0;
 
-            try {
-                thisCount = expo.Length;
-            }
-            catch 
-            { }
+            if (expo != null)            
+                thisCount = expo.Length;            
 
             for (int i = 0; i < thisCount; i++)
-            {
-                thisR = expo[i].radius;
+            {                
                 if (expo[i].exponent == exponent && expo[i].radius == smaller_radius && expo[i].numSectors == numSectors)
                 {
                     thisExpo = expo[i];
@@ -1736,26 +1367,13 @@ namespace ContinuumNS
             return thisExpo;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the srdh. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="expo">     [in,out] The expo. </param>
-        /// <param name="UTMX">     The utmx. </param>
-        /// <param name="UTMY">     The utmy. </param>
-        /// <param name="radius">   The radius. </param>
-        /// <param name="exponent"> The exponent. </param>
-        /// <param name="numWD">    Number of wds. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary> Calculates the surface roughness and displacement height at specified UTMX/Y and updates referenced Exposure object. </summary>
         public void CalcSRDH(ref Exposure expo, double UTMX, double UTMY, int radius, double exponent, int numWD)
-        {
-            // Calculates the surface roughness and displacement height at specified UTMX/Y and updates referenced Exposure object
-                        
+        {                                    
             if (numWD == 0)
             {
-                MessageBox.Show("You need to import met files first.", "Continuum 2.2");
+                MessageBox.Show("You need to import met files first.", "Continuum 3");
                 return;
             }                        
                         
@@ -1822,26 +1440,10 @@ namespace ContinuumNS
             }
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the srd hwith smaller radius. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="expo">             [in,out] The expo. </param>
-        /// <param name="UTMX">             The utmx. </param>
-        /// <param name="UTMY">             The utmy. </param>
-        /// <param name="radius">           The radius. </param>
-        /// <param name="exponent">         The exponent. </param>
-        /// <param name="numSectors">       Number of sectors. </param>
-        /// <param name="smallerRadius">    The smaller radius. </param>
-        /// <param name="smallerExposure">  The smaller exposure. </param>
-        /// <param name="numWD">            Number of wds. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        public void CalcSRDHwithSmallerRadius(ref Exposure expo, double UTMX, double UTMY, int radius, double exponent,
-                                                        int numSectors, int smallerRadius, Exposure smallerExposure, int numWD)
-        {
-            // Calculates the surface roughness and displacement height at specified UTMX/Y using SR/DH from smaller radius and updates referenced Exposure object 
+        /// <summary> Calculates the surface roughness and displacement height at specified UTMX/Y using SR/DH from smaller radius and updates referenced Exposure object. </summary>
+        public void CalcSRDHwithSmallerRadius(ref Exposure expo, double UTMX, double UTMY, int radius, double exponent, int numSectors, int smallerRadius, Exposure smallerExposure, int numWD)
+        {            
             // TESTING EXPONENT = 1
             exponent = 1;
             
@@ -2024,28 +1626,9 @@ namespace ContinuumNS
             }
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the exposures with smaller radius. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">             The utmx. </param>
-        /// <param name="UTMY">             The utmy. </param>
-        /// <param name="elev">             The elev. </param>
-        /// <param name="radius">           The radius. </param>
-        /// <param name="exponent">         The exponent. </param>
-        /// <param name="numSectors">       Number of sectors. </param>
-        /// <param name="smallerRadius">    The smaller radius. </param>
-        /// <param name="smallerExposure">  The smaller exposure. </param>
-        /// <param name="numWD">            Number of wds. </param>
-        ///
-        /// <returns>   The calculated exposures with smaller radius. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public Exposure CalcExposuresWithSmallerRadius(double UTMX, double UTMY, double elev, int radius, double exponent,
-                                                        int numSectors, int smallerRadius, Exposure smallerExposure, int numWD)
-        {
-            //  Calculates the exposure at specified UTMX/Y using exposure from smaller radius and returns Exposure object 
+        /// <summary> Calculates the exposure at specified UTMX/Y using exposure from smaller radius and returns Exposure object. </summary>        
+        public Exposure CalcExposuresWithSmallerRadius(double UTMX, double UTMY, double elev, int radius, double exponent, int numSectors, int smallerRadius, Exposure smallerExposure, int numWD)
+        {              
             Exposure expoReturn = new Exposure();
 
             if (numWD == 0)
@@ -2216,20 +1799,11 @@ namespace ContinuumNS
 
             return expoReturn;
 
-        }       
+        }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Clears the xy information described by thisXY_Info. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisXY_Info">  [in,out] Information describing this xy. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Clears the topo and LC All/Plot/Calcs X/Y Min/Max/Num/reso values. </summary>        
         public void ClearXY_Info(ref Min_Max_Num_XYs thisXY_Info)
-        {
-            // Clears the topo and LC All/Plot/Calcs X/Y Min/Max/Num/reso values
-
+        {            
             thisXY_Info.X.all.min = 0;
             thisXY_Info.X.all.max = 0;
             thisXY_Info.X.all.num = 0;
@@ -2261,17 +1835,10 @@ namespace ContinuumNS
             thisXY_Info.Y.plot.reso = 0;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Clears all described by continuum. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="continuum">    [in,out] The continuum. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Clears TopoInfo object. </summary>        
         public void ClearAll(ref Continuum continuum)
-        {
-            //Resets TopoInfo object
+        {            
             ClearXY_Info(ref topoNumXY);
             ClearXY_Info(ref LC_NumXY);
 
@@ -2294,17 +1861,9 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Decimate for plot. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="Topo_or_LC">   The topo or lc. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> If more than 500,000 data points, the topo/LC data is decimated for the plot on Input and Advanced tab. </summary>        
         public void DecimateForPlot(string Topo_or_LC)
-        {
-            // if more than 1,000,000 data points, the topo/LC data is decimated for the plot on Input and Advanced tab
+        {             
             int decInd = 1;
 
             if (Topo_or_LC == "topo")
@@ -2419,21 +1978,13 @@ namespace ContinuumNS
 
                 landCover = landCoverDec;
             }
-        }               
+        }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets minimum maximum utm for calcs. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisInst">     this instance. </param>
-        /// <param name="thisMap">      this map. </param>
-        /// <param name="allNodesInDB"> True to all nodes in database. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary> Calculates the min and max UTMX and UTMY needed for calculations. </summary>
         public void GetMinMaxUTM_forCalcs(Continuum thisInst, Map thisMap, bool allNodesInDB)
         { 
-            // Calculates the min and max UTMX and UTMY needed for calculations. thisMap should be null if a map is not being generated.
+            // thisMap should be null if a map is not being generated.
 
             Min_Max_Num_XYs bounds = new Min_Max_Num_XYs();
             bounds.X.calcs.min = 10000000;
@@ -2580,17 +2131,8 @@ namespace ContinuumNS
             }
             
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets minimum maximum xy in database. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisInst"> this instance. </param>
-        ///
-        /// <returns>   The minimum maximum xy in database. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Gets minimum and maximum UTMX/Y of nodes in database. </summary>        
         public Min_Max_Num_XYs GetMinMaxXY_InDB(Continuum thisInst)
         {
             Min_Max_Num_XYs theseMinMax = new Min_Max_Num_XYs();
@@ -2629,22 +2171,10 @@ namespace ContinuumNS
             return theseMinMax;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets xy indices. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="topoOrLC">     The topo or lc. </param>
-        /// <param name="UTMX">         The utmx. </param>
-        /// <param name="UTMY">         The utmy. </param>
-        /// <param name="allOrPlot">    all or plot. </param>
-        ///
-        /// <returns>   An array of int. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns X/Y indices associated with specified UTMX/Y and either topography or land cover data and using either 'all' data or decimated 'plot' data. </summary>
         public int[] GetXYIndices(string topoOrLC, double UTMX, double UTMY, string allPlotOrCalcs)
-        {
-            // Returns X/Y indices associated with specified UTMX/Y and either topography or land cover data and using either 'all' data or decimated 'plot' data
+        {            
+            // Returns indices = -888 if error thrown
             int[] indices = new int[2]; // 0: X, 1: Y
                        
             if (topoOrLC == "Topo")
@@ -2658,8 +2188,17 @@ namespace ContinuumNS
                         return indices;
                     }
 
-                    indices[0] = Convert.ToInt16((UTMX - topoNumXY.X.all.min) / topoNumXY.X.all.reso);
-                    indices[1] = Convert.ToInt16((UTMY - topoNumXY.Y.all.min) / topoNumXY.Y.all.reso);
+                    try
+                    {
+                        indices[0] = Convert.ToInt16((UTMX - topoNumXY.X.all.min) / topoNumXY.X.all.reso);
+                        indices[1] = Convert.ToInt16((UTMY - topoNumXY.Y.all.min) / topoNumXY.Y.all.reso);
+                    }
+                    catch
+                    {
+                        indices[0] = -888;
+                        indices[1] = -888;
+                        return indices;
+                    }
                 }
                 else if (allPlotOrCalcs == "Calcs")
                 {
@@ -2670,8 +2209,18 @@ namespace ContinuumNS
                         return indices;
                     }
 
-                    indices[0] = Convert.ToInt16((UTMX - topoNumXY.X.calcs.min) / topoNumXY.X.calcs.reso);
-                    indices[1] = Convert.ToInt16((UTMY - topoNumXY.Y.calcs.min) / topoNumXY.Y.calcs.reso);
+                    try
+                    {
+                        indices[0] = Convert.ToInt16((UTMX - topoNumXY.X.calcs.min) / topoNumXY.X.calcs.reso);
+                        indices[1] = Convert.ToInt16((UTMY - topoNumXY.Y.calcs.min) / topoNumXY.Y.calcs.reso);
+                    }
+                    catch
+                    {
+                        indices[0] = -888;
+                        indices[1] = -888;
+                        return indices;
+                    }
+                    
                 }
                 else if (allPlotOrCalcs == "Plot")
                 {
@@ -2682,8 +2231,18 @@ namespace ContinuumNS
                         return indices;
                     }
 
-                    indices[0] = Convert.ToInt16((UTMX - topoNumXY.X.plot.min) / topoNumXY.X.plot.reso);
-                    indices[1] = Convert.ToInt16((UTMY - topoNumXY.Y.plot.min) / topoNumXY.Y.plot.reso);
+                    try
+                    {
+                        indices[0] = Convert.ToInt16((UTMX - topoNumXY.X.plot.min) / topoNumXY.X.plot.reso);
+                        indices[1] = Convert.ToInt16((UTMY - topoNumXY.Y.plot.min) / topoNumXY.Y.plot.reso);
+                    }
+                    catch
+                    {
+                        indices[0] = -888;
+                        indices[1] = -888;
+                        return indices;
+                    }
+
                 }
             }
             else
@@ -2697,8 +2256,18 @@ namespace ContinuumNS
                         return indices;
                     }
 
-                    indices[0] = Convert.ToInt16((UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso);
-                    indices[1] = Convert.ToInt16((UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso);
+                    try
+                    {
+                        indices[0] = Convert.ToInt16((UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso);
+                        indices[1] = Convert.ToInt16((UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso);
+                    }
+                    catch
+                    {
+                        indices[0] = -888;
+                        indices[1] = -888;
+                        return indices;
+                    }
+
                 }
                 else if (allPlotOrCalcs == "Calcs")
                 {
@@ -2709,8 +2278,18 @@ namespace ContinuumNS
                         return indices;
                     }
 
-                    indices[0] = Convert.ToInt16((UTMX - LC_NumXY.X.calcs.min) / LC_NumXY.X.calcs.reso);
-                    indices[1] = Convert.ToInt16((UTMY - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.calcs.reso);
+                    try
+                    {
+                        indices[0] = Convert.ToInt16((UTMX - LC_NumXY.X.calcs.min) / LC_NumXY.X.calcs.reso);
+                        indices[1] = Convert.ToInt16((UTMY - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.calcs.reso);
+                    }
+                    catch
+                    {
+                        indices[0] = -888;
+                        indices[1] = -888;
+                        return indices;
+                    }
+
                 }
                 else if (allPlotOrCalcs == "Plot")
                 {
@@ -2721,8 +2300,18 @@ namespace ContinuumNS
                         return indices;
                     }
 
-                    indices[0] = Convert.ToInt16((UTMX - LC_NumXY.X.plot.min) / LC_NumXY.X.plot.reso);
-                    indices[1] = Convert.ToInt16((UTMY - LC_NumXY.Y.plot.min) / LC_NumXY.Y.plot.reso);
+                    try
+                    {
+                        indices[0] = Convert.ToInt16((UTMX - LC_NumXY.X.plot.min) / LC_NumXY.X.plot.reso);
+                        indices[1] = Convert.ToInt16((UTMY - LC_NumXY.Y.plot.min) / LC_NumXY.Y.plot.reso);
+                    }
+                    catch
+                    {
+                        indices[0] = -888;
+                        indices[1] = -888;
+                        return indices;
+                    }
+                    
                 }
             }
 
@@ -2730,20 +2319,9 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets elevs and srdh for calcs. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisInst">     this instance. </param>
-        /// <param name="thisMap">      this map. </param>
-        /// <param name="allNodesInDB"> True to all nodes in database. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Retrieves elevations from database and gets surface roughness and displacement height for calcs using LC key. </summary>        
         public void GetElevsAndSRDH_ForCalcs(Continuum thisInst, Map thisMap, bool allNodesInDB)
-
-        {
-            // Retrieves elevations from database and gets surface roughness and displacement height for calcs using LC key
+        {            
             if (gotTopo == true && (thisInst.metList.ThisCount > 0 || thisInst.turbineList.TurbineCount > 0 || thisInst.siteSuitability.GetNumZones() > 0))
             {                
                 GetMinMaxUTM_forCalcs(thisInst, thisMap, allNodesInDB);                
@@ -2899,19 +2477,8 @@ namespace ContinuumNS
 
             }
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets lc code. </summary>
-        ///
-        /// <remarks>   Only used in TopoInfo tests (ReadGeoTiffLandCover) and not for any SRDH calcs so
-        ///             okay that it used decimated (plot) array OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX"> The utmx. </param>
-        /// <param name="UTMY"> The utmy. </param>
-        ///
-        /// <returns>   A land cover code. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+                
+        /// <summary>  Gets land cover code.  Only used in TopoInfo tests (ReadGeoTiffLandCover) and not for any SRDH calcs.  </summary>        
         public int GetLC_Code(double UTMX, double UTMY)
         {
             int thisLC_Code = 0;
@@ -2924,21 +2491,10 @@ namespace ContinuumNS
 
             return thisLC_Code;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Reads geo TIFF topo. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="wholePath">    Full pathname of the whole file. </param>
-        /// <param name="thisInst">     this instance. </param>
-        ///
-        /// <returns>   True if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+               
+        /// <summary> Reads digital elevation data from GeoTIFF file. </summary>        
         public bool ReadGeoTiffTopo(string wholePath, Continuum thisInst)
-        {            
-            // Reads topography data = a GeoTiff file
+        {                        
             GdalConfiguration.ConfigureGdal();
             Gdal.AllRegister();            
             Dataset GDAL_obj;
@@ -2997,14 +2553,10 @@ namespace ContinuumNS
             UTM_Point[0] = minX;
             UTM_Point[1] = minY;
             ct.TransformPoint(UTM_Point);
-            double UTMX_Min = UTM_Point[0];
-            double UTMY_Min = UTM_Point[1];
-
+            
             UTM_Point[0] = maxX;
             UTM_Point[1] = maxY;
-            ct.TransformPoint(UTM_Point);
-            double UTMX_Max = UTM_Point[0];
-            double UTMY_Max = UTM_Point[1];                    
+            ct.TransformPoint(UTM_Point);                           
 
             // Figure out grid resolution
 
@@ -3035,7 +2587,17 @@ namespace ContinuumNS
             Band GD_Raster = GDAL_obj.GetRasterBand(1);
 
             double[] buff = new double[width * height];        
-            var rasterData = GD_Raster.ReadRaster(0, 0, width, height, buff, width, height, 0, 0);
+            GD_Raster.ReadRaster(0, 0, width, height, buff, width, height, 0, 0);
+
+            // Check to see if file contains elevation or color RGB codes
+            Check_class check = new Check_class();
+            bool isGeoTiff = check.IsGeoTIFF(buff);
+
+            if (isGeoTiff == false)
+            {
+               MessageBox.Show("The elevation TIF file appears to contain color RGB raster values and not elevation data. Aborting import.");                
+               return false;
+            }
 
             // Create array of TopoGrid containing raw GeoTiff data
             TopoGrid[] rawGeoTiff = new TopoGrid[width * height];
@@ -3170,9 +2732,7 @@ namespace ContinuumNS
                                     Interp_Elev = Interp_Elev / sumDist;
                                 else
                                     Interp_Elev = -999;
-
-                           //     Interp_Elev = ((rawGeoTiff[index1].elev / dist1 + rawGeoTiff[index2].elev / dist2 + rawGeoTiff[index3].elev / dist3 + rawGeoTiff[index4].elev / dist4)
-                           //         / (1 / dist1 + 1 / dist2 + 1 / dist3 + 1 / dist4));
+                           
                             }
 
                             if (Interp_Elev < 0 && Interp_Elev != -999)
@@ -3195,96 +2755,9 @@ namespace ContinuumNS
             return true;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Reads shp roughness. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="wholePath">    Full pathname of the whole file. </param>
-        /// <param name="UTM">          The utm. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public void Read_SHP_Roughness(string wholePath, UTM_conversion UTM)
-        {
-            // NOT WORKING YET...
-
-        //    Dataset GDAL_obj = new Dataset();
-        //    Datasource GDAL_source = new Datasource();
-            Ogr.RegisterAll();
-
-            // Dim drv = OSGeo.OGR.Driver = Ogr.GetDriverByName("ESRI Shapefile")
-
-            try
-            {
-       //         GDAL_source = Ogr.Open(wholePath, 0);
-            }
-            catch  {
-                MessageBox.Show("Unable to open file. Make sure that it//s not open in another program.", "Continuum 2.2");
-                return;
-            }
-
-            //Layer This_Layer = GDAL_source.GetLayerByIndex(0);
-            Envelope Envelope = new Envelope();
-           // This_Layer.GetExtent(Envelope, 0);
-
-            int width = Convert.ToInt32((Envelope.MaxX - Envelope.MinX) / 30);
-            int height = Convert.ToInt32((Envelope.MaxY - Envelope.MinY) / 30);
-
-            double[] argin = new double[6] { Envelope.MinX, 30, 0, Envelope.MaxY, 0, -30 };
-            int[] bandlist = new int[1];
-
-            Gdal.AllRegister();
-          //  int Feature_Count = 0;
-        //    This_Layer.GetFeatureCount(Feature_Count);
-
-       //     string FID_cols = This_Layer.GetFIDColumn();
-       //     string FeaturesRead = This_Layer.GetFeaturesRead();
-       //     FeatureDefn This_Defn = This_Layer.GetLayerDefn;
-       //     int Ref_Count = This_Layer.GetRefCount;
-       //     Feature This_Feature = This_Layer.GetFeature(0);
-       //     string This_field = This_Feature.GetFieldAsString(0);
-        //    int Field_Count = This_Feature.GetFieldCount();
-
-      //      string[] rasterizeOptions = new string[2] { "ATTRIBUTE=" + "roughness" };
-
-
-       //     double[] burnValues = new double() { 10.0 };
-       //     Gdal.RasterizeLayer(GDAL_obj, 1, bandlist, This_Layer, IntPtr.Zero, IntPtr.Zero, 1, burnValues, rasterizeOptions, new Gdal.GDALProgressFuncDelegate(AddressOf ProgressFunc), "Raster conversion");
-            //    Gdal.R=terizeLayer(myDat=et, 1, bandlist, Layer, IntPtr.Zero, IntPtr.Zero, 1, burnValues, r=terizeOptions, new Gdal.GDALProgressFuncDelegate(ProgressFunc), "R=ter conversion");  
-
-            //  //Gdal.R=terizeLayer(myDat=et, 1, bandlist, layer, IntPtr.Zero, IntPtr.Zero, 1, burnValues, null, null, null); // To burn the given burn values instead of feature attributes  
-            //    Gdal.R=terizeLayer(myDat=et, 1, bandlist, Layer, IntPtr.Zero, IntPtr.Zero, 1, burnValues, r=terizeOptions, new Gdal.GDALProgressFuncDelegate(ProgressFunc), "R=ter conversion");  
-
-
-            LC_NumXY.X.all.num = width;
-            LC_NumXY.Y.all.num = height;
-
-            double[] geoTrans = new double[6];
-
-       //     string projection = GDAL_obj.GetProjection();
-       //     GDAL_obj.GetGeoTransform(geoTrans);
-
-            double LC_MinX = geoTrans[0];
-            double LC_MinY = geoTrans[3] + width * geoTrans[4] + height * geoTrans[5];
-            double LC_X_Reso = geoTrans[1];
-            double LC_Y_Reso = -geoTrans[5];
-
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Reads geo TIFF land cover. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="wholePath">    Full pathname of the whole file. </param>
-        /// <param name="thisInst">     this instance. </param>
-        ///
-        /// <returns>   True if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Reads land cover data as a GeoTiff file. </summary> 
         public bool ReadGeoTiffLandCover(string wholePath, Continuum thisInst)
-        {
-            //  Reads land cover data as a GeoTiff file
+        {            
             GdalConfiguration.ConfigureGdal();
             Gdal.AllRegister();
             Dataset GDAL_obj; // GDal Dataset object which is used to open the GeoTiff file
@@ -3373,8 +2846,7 @@ namespace ContinuumNS
             double newLC_MaxX = 0; // Min UTM X of new forced uniform grid
             double newLC_MaxY = 0;       // Min UTM X of new forced uniform grid               
 
-            int X_Ind = 0;
-            bool LC_Code_In_Key = false;
+            int X_Ind = 0;            
             int Y_Ind = height - 1;
 
             CoordinateTransformation ct = new CoordinateTransformation(src, dst); // GDal CoordinateTransformation object used to convert data to UTM 
@@ -3413,7 +2885,7 @@ namespace ContinuumNS
 
                 if (buff[i] >= 0)
                 {
-                    LC_Code_In_Key = CheckKeyForLC_Code(buff[i]);
+                    bool LC_Code_In_Key = CheckKeyForLC_Code(buff[i]);
 
                     if (LC_Code_In_Key == false)
                     {
@@ -3501,21 +2973,11 @@ namespace ContinuumNS
             useSR = true;
 
             return true;
-        }                
+        }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Check key for lc code. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="This_LC_Code"> this lc code. </param>
-        ///
-        /// <returns>   True if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns true if This_LC_Code is defined in the Land cover key. </summary>        
         public bool CheckKeyForLC_Code(int This_LC_Code)
-        {
-            // returns true if This_LC_Code is defined in the Land cover key
+        {            
             bool LC_in_Key = false;
 
             if (LC_Key != null)
@@ -3534,59 +2996,11 @@ namespace ContinuumNS
             return LC_in_Key;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Sets us nlcd key. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Sets the land cover key to be USGS National Land Cover data. </summary>        
         public void SetUS_NLCD_Key()
-        {
-            // Sets the land cover key to be USGS National Land Cover data
-            // Land cover type = defined by USGS:
-            // Code	Description	roughness length
-            //11	Open Water	0.0002
-            //12	Perennial Ice/Snow	0.0024
-            //31	Barren Bare Rock/Sand/Clay	0.005
-            //71	Grassland/Herbaceous	0.03
-            //72	Sedge/Herbaceous	0.03
-            //73 Lichens 0.03
-            //74 Moss 0.03
-            //81	P=ture/Hay	0.03
-            //21 Developed Open Space 0.2
-            //51: Dwarf Shrubland 0.2
-            //52: Shrub/scrub 0.2
-            //82	Row Crops	0.25
-            //22	Developed Low-intensity residential	0.4
-            //95	Emergent Herbaceous Wetlands	0.4
-            //90	Woody Wetlands	0.5
-            //23	Developed Med-intensity residential.	0.8
-            //41	Deciduous for(int est	1
-            //43	Mixed for(int est	1.1
-            //42	Evergreen for(int est	1.2
-            //24	Developed High-intensity residential	1.6
-
-            //11	Open Water	0
-            //12	Perennial Ice/Snow	0
-            //31	Barren Bare Rock/Sand/Clay	0
-            //71	Gr=sland/Herbaceous	0.1
-            //72	Sedge/Herbaceous	0.3
-            //73 Lichens 0.1
-            //74 Moss 0.1
-            //81	P=ture/Hay	0.1
-            //21 Developed Open Space 0.7
-            //51:Dwarf Shrubland 0.1
-            //52:Shrub/scrub 1.3
-            //82	Row Crops	1.3
-            //22	Developed Low-intensity residential	1.3
-            //95	Emergent Herbaceous Wetlands	0.7
-            //90	Woody Wetlands	3.3
-            //23	Developed Med-intensity residential.	3.3
-            //41	Deciduous for(int est	16.7
-            //43	Mixed for(int est	16.7
-            //42	Evergreen for(int est	13.3
-            //24	Developed High-intensity residential	13.3
-
+        {            
+            // Land cover type as defined by USGS:
+            
             LC_Key = new LC_SR_DH[20];
             LC_Key[0].code = 11;
             LC_Key[0].desc = "Open Water";
@@ -3690,27 +3104,16 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Lc is default nlcd. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisLC_Key">   this lc key. </param>
-        ///
-        /// <returns>   True if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns true if Land Cover key is the USGS NLCD. </summary>
         public bool LC_IsDefaultNLCD(LC_SR_DH[] thisLC_Key)
         {
-            // returns true if( Land Cover key is the USGS NLCD
             bool isNLCD = true;
-
             int numCodes = 0;
-            try
-            {
-                numCodes = thisLC_Key.Length;
-            }
-            catch {
+
+            if (thisLC_Key != null)            
+                numCodes = thisLC_Key.Length;            
+            else 
+            { 
                 numCodes = 0;
                 isNLCD = false;
             }
@@ -3735,27 +3138,16 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Lc is default nalc. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisLC_Key">   this lc key. </param>
-        ///
-        /// <returns>   True if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns true if Land Cover key is North America Land Cover data. </summary>        
         public bool LC_IsDefaultNALC(LC_SR_DH[] thisLC_Key)
-        {
-            // returns true if Land Cover key is North America Land Cover data
+        {            
             bool isNALC = true;
-
             int numCodes = 0;
-            try
-            {
+            
+            if (thisLC_Key != null)            
                 numCodes = thisLC_Key.Length;
-            }
-            catch  {
+           else 
+            { 
                 numCodes = 0;
                 isNALC = false;
             }
@@ -3780,28 +3172,16 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Lc is default eu corine. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisLC_Key">   this lc key. </param>
-        ///
-        /// <returns>   True if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns true if Land Cover key is EU Corine 2006 Land Cover data. </summary>        
         public bool LC_IsDefaultEU_Corine(LC_SR_DH[] thisLC_Key)
         {
-            //   returns true if Land Cover key is EU Corine 2006 Land Cover data
-
             bool isEU_LC = true;
-
             int numCodes = 0;
-            try
-            {
+
+            if (thisLC_Key != null)
                 numCodes = thisLC_Key.Length;
-            }
-            catch {
+            else 
+            {
                 numCodes = 0;
                 isEU_LC = false;
             }
@@ -3827,17 +3207,9 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Sets na lc key. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Sets the land cover key to be North America Land Cover DB. </summary>        
         public void SetNA_LC_Key()
-        {
-            //  Sets the land cover key to be North America Land Cover DB
-            // Code	Description	roughness length
-            
+        {             
             LC_Key = new LC_SR_DH[19];
             LC_Key[0].code = 1;
             LC_Key[0].desc = "Temperate or sub-polar needleleaf forest";
@@ -3936,17 +3308,9 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Sets eu corine lc key. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Sets the land cover key to be EU Corine 2006 Land Cover DB. </summary>
         public void SetEU_Corine_LC_Key()
-        {
-            //   Sets the land cover key to be EU Corine 2006 Land Cover DB
-            // Code	Description	roughness length
-            
+        {   
             LC_Key = new LC_SR_DH[44];
             LC_Key[0].code = 1;
             LC_Key[0].desc = "Continuous urban fabric";
@@ -4170,88 +3534,9 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Reads wasp roughness map. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisInst"> this instance. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        void ReadWaspRoughnessMap(Continuum thisInst)
-        {
-            // Calls Background Worker to read in roughness .map file
-            if (thisInst.ofdImportMap.ShowDialog() == DialogResult.OK) {
-
-                string wholePath = thisInst.ofdImportMap.FileName;
-                thisInst.SetDefaultFolderLocations(wholePath);
-
-                BackgroundWork.Vars_for_BW varsForBW = new BackgroundWork.Vars_for_BW();
-                varsForBW.thisInst = thisInst;
-                varsForBW.Filename = wholePath;
-
-                thisInst.BW_worker = new BackgroundWork();
-                thisInst.BW_worker.Call_BW_WAsP_Map(varsForBW);
-
-            }
-
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Order shapes by size. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="shapes">   The shapes. </param>
-        ///
-        /// <returns>   A Roughness_Map_Struct[]. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public Roughness_Map_Struct[] OrderShapesBySize(Roughness_Map_Struct[] shapes)
-        {
-            //   Reads in Roughness_Map_Structs() and returns shapes ordered by number of points (small to large)
-
-            int numShapes = 0;
-            try
-            {
-                numShapes = shapes.Length;
-            }
-            catch {
-                return shapes;
-            }
-
-            Roughness_Map_Struct[] orderedShapes = new Roughness_Map_Struct[numShapes];
-
-            int minSize = 2;
-            int ordInd = 0;
-
-            while (ordInd <= numShapes - 1)
-            {
-                for (int i = 0; i < numShapes; i++)
-                    if (shapes[i].numPoints == minSize)
-                    {
-                        orderedShapes[ordInd] = shapes[i];
-                        ordInd = ordInd + 1;
-                    }
-
-                minSize = minSize + 1;
-            }
-
-            return orderedShapes;
-
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Searches for the first shape minimum maximum and is closed. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisShape">    [in,out] this shape. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Finds min/max X/Y of shape and determines whether it is a line or a closed contour . </summary>        
         public void FindShapeMinMaxAndIsClosed(ref Roughness_Map_Struct thisShape)
-        {
-            // Finds min/max X/Y of shape and determines whether it is a line || a closed contour 
+        {            
             double thisX_Min = 10000000;
             double thisX_Max = 0;
             double thisY_Min = 10000000;
@@ -4278,32 +3563,21 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Creates lc key using map shapes. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="theseShapes">  The these shapes. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary> Reads in shape objects from a .MAP contour file and creates a land cover key based on the roughness values contained in the file and assigns a default displacement height to each land cover code. </summary>
         public void CreateLC_KeyUsingMAP_Shapes(Roughness_Map_Struct[] theseShapes)
         {
-            // Reads in shape objects from a .MAP contour file and creates a land cover key b=ed on the roughness values contained in the file
-            // And =signs a default displacement height to each land cover code
-
             // reset the LC_Key            
             LC_Key = new LC_SR_DH[1];
             int LC_count = 0;
-            bool isNewLeftRough = false;
-            bool isNewRightRough = false;
-
+            
             if (theseShapes == null)
                 return;
 
             for (int i = 0; i < theseShapes.Length; i++)
             {
-                isNewLeftRough = true;
-                isNewRightRough = true;
+                bool isNewLeftRough = true;
+                bool isNewRightRough = true;
 
                 for (int j = 0; j < LC_count; j++)
                 {
@@ -4335,41 +3609,23 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Does this y coordinate cross another line. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisShape">    this shape. </param>
-        /// <param name="pointInd">     The point ind. </param>
-        /// <param name="Y_interp">     The interp. </param>
-        /// <param name="thisX">        this x coordinate. </param>
-        /// <param name="thisY">        this y coordinate. </param>
-        ///
-        /// <returns>   True if it succeeds, false if it fails. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns true if there is another line between thisY and Y_interp. </summary>   
         public bool DoesThisY_CrossAnotherLine(Roughness_Map_Struct thisShape, int pointInd, double Y_interp, double thisX, double thisY)
-        {
-            // returns true if( there is another line between thisY and Y_interp
+        {            
             bool crossesLine = false;
-            double X1 = 0;
-            double X2 = 0;
-            double Y1 = 0;
-            double Y2 = 0;
+            
             double Y_int_prime = 0;
             double diffY_Int = thisY - Y_interp;
-            double diffY_IntPrime = 0;
-
+            
             for (int i = 0; i <= thisShape.numPoints - 2; i++)
             {
                 if (i != pointInd)
                 { // ignore the line that you//re currently working with
-                    X1 = thisShape.points[i].UTMX;
-                    Y1 = thisShape.points[i].UTMY;
+                    double X1 = thisShape.points[i].UTMX;
+                    double Y1 = thisShape.points[i].UTMY;
 
-                    X2 = thisShape.points[i + 1].UTMX;
-                    Y2 = thisShape.points[i + 1].UTMY;
+                    double X2 = thisShape.points[i + 1].UTMX;
+                    double Y2 = thisShape.points[i + 1].UTMY;
 
                     if (thisX > X1 && thisX < X2)
                     { // thisX falls in range of this other line
@@ -4384,7 +3640,7 @@ namespace ContinuumNS
                         else
                             Y_int_prime = thisY;
 
-                        diffY_IntPrime = thisY - Y_int_prime;
+                        double diffY_IntPrime = thisY - Y_int_prime;
 
                         if ((thisY < Y_interp && diffY_IntPrime < 0 && diffY_IntPrime > diffY_Int) ||
                           (thisY > Y_interp && diffY_IntPrime > 0 && diffY_IntPrime < diffY_Int))
@@ -4401,51 +3657,22 @@ namespace ContinuumNS
             return crossesLine;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Query if this object is outside one of bounds. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisX">    this x coordinate. </param>
-        /// <param name="thisY">    this y coordinate. </param>
-        /// <param name="minX">     The minimum x coordinate. </param>
-        /// <param name="maxX">     The maximum x coordinate. </param>
-        /// <param name="minY">     The minimum y coordinate. </param>
-        /// <param name="maxY">     The maximum y coordinate. </param>
-        ///
-        /// <returns>   True if outside one of bounds, false if not. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Returns true if data point is outside either the X or the Y bounds. </summary>
         public bool IsOutsideOneOfBounds(int thisX, int thisY, int minX, int maxX, int minY, int maxY)
-        {
-            // returns true if( data point is outside either the X || the Y bounds
+        {            
             bool isOutside = false;
 
-            if ((thisX < minX || thisX > maxX) || (thisY < minY || thisY > maxY))
+            if (thisX < minX || thisX > maxX || thisY < minY || thisY > maxY)
                 isOutside = true;
 
             return isOutside;
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Get y coordinate interp. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisX">    this x coordinate. </param>
-        /// <param name="thisY">    this y coordinate. </param>
-        /// <param name="X_1">      The 1. </param>
-        /// <param name="X_2">      The 2. </param>
-        /// <param name="Y_1">      The 1. </param>
-        /// <param name="Y_2">      The 2. </param>
-        ///
-        /// <returns>   The y coordinate interp. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Finds interpolated Y value at thisX value. </summary>
         public double GetY_Interp(double thisX, double thisY, double X_1, double X_2, double Y_1, double Y_2)
-        {
-            // Finds interpolated Y value at thisX value 
+        {            
             double Y_interp = 0;
             
             if (thisX != X_1 && thisX != X_2 && X_1 != X_2)
@@ -4461,24 +3688,10 @@ namespace ContinuumNS
             return Y_interp;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Query if this object is left or right. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisX">    this x coordinate. </param>
-        /// <param name="thisY">    this y coordinate. </param>
-        /// <param name="X_1">      The 1. </param>
-        /// <param name="X_2">      The 2. </param>
-        /// <param name="Y_1">      The 1. </param>
-        /// <param name="Y_2">      The 2. </param>
-        ///
-        /// <returns>   True if left or right, false if not. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary> Returns true is thisX/thisY is left of line and false if on right. </summary>
         public bool Is_Left_or_Right(double thisX, double thisY, double X_1, double X_2, double Y_1, double Y_2)
-        {
-            // returns true is thisX/thisY is left of line and false if( on right
+        {            
             bool isLeft = true;
             double deltaX = X_2 - X_1;
             double deltaY = Y_2 - Y_1;
@@ -4560,34 +3773,18 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Assign lc codes to shape contours. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="theseShapes">  The these shapes. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary> Traces each contour/line of each shape in theseShapes() array and assigns left/right Land cover code to +/- 90m from contour/line. </summary>        
         public void AssignLC_CodesToShapeContours(Roughness_Map_Struct[] theseShapes)
         {
-            // Traces each contour/line of each shape in theseShapes() array and assigns left/right Land cover code to +/- 90m from contour/line
-
-            double Y_interp = 0;
-
-            int X_IndMin = 0;
-            int X_IndMax = 0;
-            int Y_IndMin = 0;
-            int Y_IndMax = 0;
-
-            TopoInfo.UTM_X_Y gridPoint = new TopoInfo.UTM_X_Y();
-            TopoInfo.UTM_X_Y nextPoint = new TopoInfo.UTM_X_Y();
-            TopoInfo.UTM_X_Y lastPoint = new TopoInfo.UTM_X_Y();
-            TopoInfo.UTM_X_Y startPoint = new TopoInfo.UTM_X_Y();
-            TopoInfo.UTM_X_Y endPoint = new TopoInfo.UTM_X_Y();
+            UTM_X_Y gridPoint = new TopoInfo.UTM_X_Y();
+            UTM_X_Y nextPoint = new TopoInfo.UTM_X_Y();
+            UTM_X_Y lastPoint = new TopoInfo.UTM_X_Y();
+            UTM_X_Y startPoint = new TopoInfo.UTM_X_Y();
+            UTM_X_Y endPoint = new TopoInfo.UTM_X_Y();
 
             int leftLC = 1;
-            int rightLC = 1;
-            bool isLeft = false;
+            int rightLC = 1;            
             bool nextIsLeft = false;
 
             double angleLastToPt1 = 0;
@@ -4653,8 +3850,8 @@ namespace ContinuumNS
                     if (angleLastToPt1 < 0) angleLastToPt1 = angleLastToPt1 + 360;
 
                     // Define min/max X and Y to define bounding box to fill with LC codes
-                    X_IndMin = (int)Math.Round((startPoint.UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso, 0); // Start of line
-                    X_IndMax = (int)Math.Round((endPoint.UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso, 0); // End of line
+                    int X_IndMin = (int)Math.Round((startPoint.UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso, 0); // Start of line
+                    int X_IndMax = (int)Math.Round((endPoint.UTMX - LC_NumXY.X.all.min) / LC_NumXY.X.all.reso, 0); // End of line
 
                     if (X_IndMin > X_IndMax)
                     {
@@ -4669,8 +3866,8 @@ namespace ContinuumNS
                     int X_ind_max_box = X_IndMax + 2;
                     if (X_ind_max_box > LC_NumXY.X.all.num - 1) X_ind_max_box = LC_NumXY.X.all.num - 1;
                     //
-                    Y_IndMin = (int)Math.Round((startPoint.UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso, 0);
-                    Y_IndMax = (int)Math.Round((endPoint.UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso, 0);
+                    int Y_IndMin = (int)Math.Round((startPoint.UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso, 0);
+                    int Y_IndMax = (int)Math.Round((endPoint.UTMY - LC_NumXY.Y.all.min) / LC_NumXY.Y.all.reso, 0);
 
                     if (Y_IndMin > Y_IndMax)
                     {
@@ -4700,13 +3897,13 @@ namespace ContinuumNS
 
                             // Check to see if there is another line between thisY and Y_interp
                             // if there is else don't assign a LC code
-                            Y_interp = GetY_Interp(gridPoint.UTMX, gridPoint.UTMY, startPoint.UTMX, endPoint.UTMX, startPoint.UTMY, endPoint.UTMY);
+                            double Y_interp = GetY_Interp(gridPoint.UTMX, gridPoint.UTMY, startPoint.UTMX, endPoint.UTMX, startPoint.UTMY, endPoint.UTMY);
                             bool crossesAnother = DoesThisY_CrossAnotherLine(theseShapes[shpInd], ptInd, Y_interp, gridPoint.UTMX, gridPoint.UTMY);
                             bool outsideOneBound = IsOutsideOneOfBounds(X_Ind, Y_Ind, X_IndMin, X_IndMax, Y_IndMin, Y_IndMax);                                                     
 
                             if (landCover[X_Ind, Y_Ind] == 0 && Math.Abs(gridPoint.UTMY - Y_interp) < 90 && crossesAnother == false)
                             {
-                                isLeft = Is_Left_or_Right(gridPoint.UTMX, gridPoint.UTMY, startPoint.UTMX, endPoint.UTMX, startPoint.UTMY, endPoint.UTMY);
+                                bool isLeft = Is_Left_or_Right(gridPoint.UTMX, gridPoint.UTMY, startPoint.UTMX, endPoint.UTMX, startPoint.UTMY, endPoint.UTMY);
 
                                 if (outsideOneBound == true)
                                 {
@@ -4771,22 +3968,12 @@ namespace ContinuumNS
             }
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Fill in lc array. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>  Fills in the landCover array with land cover codes based on the LC codes that were assigned to the left and right of each line. </summary>
 
         public void FillInLC_Array()
         {
-            // This is called after the void routine 'AssignLC_CodesToShapeContours' has been called
-            // Fills in the landCover array with land cover codes based on the LC codes that were assigned to the left and right of each line
-
-            int thisInd = 0;
-            int nextLC = 0;
-            int lastLC = 0;
-
-            // first move along rows and read from bottom-up of each column
+            // This is called after the void routine 'AssignLC_CodesToShapeContours' has been called.
+            // First move along rows and read from bottom-up of each column
             for (int i = 0; i < LC_NumXY.X.all.num; i++)
             {
                 for (int j = 0; j < LC_NumXY.Y.all.num; j++)
@@ -4794,8 +3981,8 @@ namespace ContinuumNS
                     if (landCover[i, j] == 0 && j == 0)
                     { // At start of column, move up unti LC code is not a zero                                              
 
-                        thisInd = j;
-                        nextLC = landCover[i, thisInd];
+                        int thisInd = j;
+                        int nextLC = landCover[i, thisInd];
 
                         while (nextLC == 0 && thisInd < LC_NumXY.Y.all.num - 1)
                         {
@@ -4814,9 +4001,9 @@ namespace ContinuumNS
                     }
                     else if (landCover[i, j] == 0 && j > 0)
                     { // not at start of column but empty landCover entry next
-                        lastLC = landCover[i, j - 1];
-                        thisInd = j;
-                        nextLC = landCover[i, thisInd];
+                        int lastLC = landCover[i, j - 1];
+                        int thisInd = j;
+                        int nextLC = landCover[i, thisInd];
 
                         while (nextLC == 0 && thisInd < LC_NumXY.Y.all.num - 1) // fill in landCover codes with //lastLC// until a non-empty landCover entry { is found
                         {
@@ -4829,11 +4016,8 @@ namespace ContinuumNS
                             landCover[i, thisInd] = lastLC;
 
                         j = thisInd;
-
                     }
-
                 }
-
             }
 
             // now move along columns and read rows from left-right
@@ -4844,8 +4028,8 @@ namespace ContinuumNS
 
                     if (landCover[i, j] == 0 && i == 0)
                     { // At start of row, move to right unti LC code is not a zero
-                        thisInd = i;
-                        nextLC = landCover[thisInd, j];
+                        int thisInd = i;
+                        int nextLC = landCover[thisInd, j];
 
                         while (nextLC == 0 && thisInd < LC_NumXY.X.all.num - 1)
                         {
@@ -4860,9 +4044,9 @@ namespace ContinuumNS
                     }
                     else if (landCover[i, j] == 0 && i > 0)
                     {
-                        thisInd = i;
-                        lastLC = landCover[i - 1, j];
-                        nextLC = landCover[thisInd, j];
+                        int thisInd = i;
+                        int lastLC = landCover[i - 1, j];
+                        int nextLC = landCover[thisInd, j];
                         
                         while (nextLC == 0 && thisInd < LC_NumXY.X.all.num - 1)
                         { // fill in landCover codes with //lastLC// until a non-empty landCover entry { is found
@@ -4890,8 +4074,8 @@ namespace ContinuumNS
                     if (landCover[i, j] == 0 && j == 0)
                     { // At start of column, move up unti LC code is not a zero
 
-                        thisInd = j;
-                        nextLC = landCover[i, thisInd];
+                        int thisInd = j;
+                        int nextLC = landCover[i, thisInd];
 
                         while (nextLC == 0 && thisInd < LC_NumXY.Y.all.num - 1)
                         {
@@ -4908,9 +4092,9 @@ namespace ContinuumNS
                     }
                     else if (landCover[i, j] == 0 && j > 0)
                     { // not at start of column but empty landCover entry {
-                        lastLC = landCover[i, j - 1];
-                        thisInd = j;
-                        nextLC = landCover[i, thisInd];
+                        int lastLC = landCover[i, j - 1];
+                        int thisInd = j;
+                        int nextLC = landCover[i, thisInd];
 
                         while (nextLC == 0 && thisInd < LC_NumXY.Y.all.num - 1)
                         { // fill in landCover codes with 'lastLC' until a non-empty landCover entry is found
@@ -4929,41 +4113,17 @@ namespace ContinuumNS
             }
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the distance between points. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="X_1">  The 1. </param>
-        /// <param name="Y_1">  The 1. </param>
-        /// <param name="X_2">  The 2. </param>
-        /// <param name="Y_2">  The 2. </param>
-        ///
-        /// <returns>   The calculated distance between points. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        /// <summary> Calculates and erturns the distance between two points. </summary>        
         public double CalcDistanceBetweenPoints(double X_1, double Y_1, double X_2, double Y_2)
-        {
-            // returns distance between two points
-           // double thisDist = Convert.ToSingle(Math.Pow((Math.Pow((X_1 - X_2), 2) + Math.Pow((Y_1 - Y_2), 2)), 0.5));
-           // double thisDist = Convert.ToSingle(Math.Pow(((X_1 - X_2) * (X_1 - X_2) + (Y_1 - Y_2) * (Y_1 - Y_2)), 0.5));
+        {            
             double thisDist = Math.Sqrt((X_1 - X_2) * (X_1 - X_2) + (Y_1 - Y_2) * (Y_1 - Y_2));
             return thisDist;
-        }             
+        }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets default disp height. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="thisSR">   this sr. </param>
-        ///
-        /// <returns>   The default disp height. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Returns the default displacement height associated with thisSR. </summary>        
         public double GetDefaultDispHeight(double thisSR)
-        {
-            // returns the default displacement height =sociated with thisSR
+        {             
             double defaultDH = 0;
 
             if (thisSR < 0.02)
@@ -4983,23 +4143,9 @@ namespace ContinuumNS
 
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Gets elevation profile. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="UTMX">     The utmx. </param>
-        /// <param name="UTMY">     The utmy. </param>
-        /// <param name="WD">       The wd. </param>
-        /// <param name="radius">   The radius. </param>
-        /// <param name="elevReso"> The elev reso. </param>
-        ///
-        /// <returns>   An array of topo grid. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Creates array of elevation data along line specified by WD and radius (+/- distance from site) using elevReso as spacing between points. </summary>        
         public TopoGrid[] GetElevationProfile(double UTMX, double UTMY, double WD, int radius, int elevReso)
-        {
-            // Creates array of elevation data along line specified by WD and radius (+/- distance from site) using elevReso as spacing between points
+        {             
             TopoGrid[] elevProfile = new TopoGrid[0];
 
             if (elevReso == 0)
@@ -5019,20 +4165,9 @@ namespace ContinuumNS
             return elevProfile;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Calculates the slope. </summary>
-        ///
-        /// <remarks>   OEE, 7/15/2019. </remarks>
-        ///
-        /// <param name="xVals">    The vals. </param>
-        /// <param name="yVals">    The vals. </param>
-        ///
-        /// <returns>   The calculated slope. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Calculates and returns best-fit slope (using least squares regression) along X and Y values. </summary>        
         public double CalcSlope(double[] xVals, double[] yVals)
-        {
-            // Calculates and returns best-fit slope (using least squares regression)
+        {             
             double slope = 0;
 
             if (xVals == null || yVals == null)
@@ -5076,12 +4211,5 @@ namespace ContinuumNS
         }
         
     }
-
- /*   public void tester()
-    {
-        HttpClient httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-
-    }
-   */ 
+     
 }

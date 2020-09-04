@@ -86,8 +86,7 @@
             this.txtMETname.Location = new System.Drawing.Point(145, 24);
             this.txtMETname.Name = "txtMETname";
             this.txtMETname.Size = new System.Drawing.Size(126, 25);
-            this.txtMETname.TabIndex = 0;
-            this.txtMETname.TextChanged += new System.EventHandler(this.txtMETname_TextChanged);
+            this.txtMETname.TabIndex = 0;            
             // 
             // label1
             // 
@@ -97,8 +96,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(119, 18);
             this.label1.TabIndex = 1;
-            this.label1.Text = "MET Tower Name:";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.label1.Text = "MET Tower Name:";            
             // 
             // label2
             // 
@@ -156,8 +154,7 @@
             this.cboWindSpeedUnits.Location = new System.Drawing.Point(183, 167);
             this.cboWindSpeedUnits.Name = "cboWindSpeedUnits";
             this.cboWindSpeedUnits.Size = new System.Drawing.Size(57, 26);
-            this.cboWindSpeedUnits.TabIndex = 7;
-            this.cboWindSpeedUnits.SelectedIndexChanged += new System.EventHandler(this.cboUnits_SelectedIndexChanged);
+            this.cboWindSpeedUnits.TabIndex = 7;            
             // 
             // label5
             // 
@@ -167,8 +164,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(111, 18);
             this.label5.TabIndex = 8;
-            this.label5.Text = "Anemometers";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
+            this.label5.Text = "Anemometers";            
             // 
             // label6
             // 
@@ -178,8 +174,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(54, 18);
             this.label6.TabIndex = 10;
-            this.label6.Text = "Vanes";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
+            this.label6.Text = "Vanes";            
             // 
             // label7
             // 
@@ -189,8 +184,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(101, 18);
             this.label7.TabIndex = 12;
-            this.label7.Text = "Temperature";
-            this.label7.Click += new System.EventHandler(this.label7_Click);
+            this.label7.Text = "Temperature";            
             // 
             // label8
             // 
@@ -200,8 +194,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(72, 18);
             this.label8.TabIndex = 15;
-            this.label8.Text = "Temp Data";
-            this.label8.Click += new System.EventHandler(this.label8_Click);
+            this.label8.Text = "Temp Data";            
             // 
             // btnFormat
             // 
@@ -305,8 +298,7 @@
             this.txtNewAnemHeight.Location = new System.Drawing.Point(34, 109);
             this.txtNewAnemHeight.Name = "txtNewAnemHeight";
             this.txtNewAnemHeight.Size = new System.Drawing.Size(75, 25);
-            this.txtNewAnemHeight.TabIndex = 27;
-            this.txtNewAnemHeight.TextChanged += new System.EventHandler(this.txtNewAnemHeight_TextChanged);
+            this.txtNewAnemHeight.TabIndex = 27;            
             // 
             // txtNewVaneHeight
             // 
@@ -314,8 +306,7 @@
             this.txtNewVaneHeight.Location = new System.Drawing.Point(283, 109);
             this.txtNewVaneHeight.Name = "txtNewVaneHeight";
             this.txtNewVaneHeight.Size = new System.Drawing.Size(75, 25);
-            this.txtNewVaneHeight.TabIndex = 28;
-            this.txtNewVaneHeight.TextChanged += new System.EventHandler(this.txtNewVaneHeight_TextChanged);
+            this.txtNewVaneHeight.TabIndex = 28;            
             // 
             // txtNewAnemOrient
             // 
@@ -323,8 +314,7 @@
             this.txtNewAnemOrient.Location = new System.Drawing.Point(131, 109);
             this.txtNewAnemOrient.Name = "txtNewAnemOrient";
             this.txtNewAnemOrient.Size = new System.Drawing.Size(75, 25);
-            this.txtNewAnemOrient.TabIndex = 32;
-            this.txtNewAnemOrient.TextChanged += new System.EventHandler(this.txtNewAnemOrient_TextChanged);
+            this.txtNewAnemOrient.TabIndex = 32;            
             // 
             // txtNewTempHeight
             // 
@@ -332,8 +322,7 @@
             this.txtNewTempHeight.Location = new System.Drawing.Point(503, 109);
             this.txtNewTempHeight.Name = "txtNewTempHeight";
             this.txtNewTempHeight.Size = new System.Drawing.Size(75, 25);
-            this.txtNewTempHeight.TabIndex = 35;
-            this.txtNewTempHeight.TextChanged += new System.EventHandler(this.txtNewTempHeight_TextChanged);
+            this.txtNewTempHeight.TabIndex = 35;            
             // 
             // cboTempUnits
             // 
@@ -343,8 +332,7 @@
             this.cboTempUnits.Location = new System.Drawing.Point(597, 108);
             this.cboTempUnits.Name = "cboTempUnits";
             this.cboTempUnits.Size = new System.Drawing.Size(49, 26);
-            this.cboTempUnits.TabIndex = 39;
-            this.cboTempUnits.SelectedIndexChanged += new System.EventHandler(this.cboTempUnits_SelectedIndexChanged);
+            this.cboTempUnits.TabIndex = 39;            
             // 
             // label9
             // 
@@ -354,8 +342,7 @@
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(71, 18);
             this.label9.TabIndex = 40;
-            this.label9.Text = "Height (m)";
-            this.label9.Click += new System.EventHandler(this.label9_Click);
+            this.label9.Text = "Height (m)";            
             // 
             // label10
             // 
@@ -448,10 +435,7 @@
             this.label13.Size = new System.Drawing.Size(68, 18);
             this.label13.TabIndex = 52;
             this.label13.Text = "File Name";
-            // 
-            // folderBrowserDialog1
-            // 
-            this.folderBrowserDialog1.HelpRequest += new System.EventHandler(this.folderBrowserDialog1_HelpRequest);
+            //             
             // 
             // chkMaxVane
             // 
@@ -670,8 +654,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtMETname);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "GenHeaders";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Name = "GenHeaders";            
             this.ResumeLayout(false);
             this.PerformLayout();
 

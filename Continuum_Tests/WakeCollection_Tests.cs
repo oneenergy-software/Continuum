@@ -8,7 +8,7 @@ namespace Continuum_Tests
     [TestClass]
     public class WakeCollection_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\WakeCollection";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\WakeCollection";
 
         [TestMethod]
         public void CalcWakeProfileFit_Test()
@@ -262,7 +262,7 @@ namespace Continuum_Tests
             metList.metItem[0] = new Met();
 
             WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
-            double This_IBL_H1 = WakeModList.Calc_IBL_H1_New(UW_Turbs[0], 280000, 4553500, WakeModList.wakeModels[0], 90f, 1.9316f, metList, 8, 80.0);
+            double This_IBL_H1 = WakeModList.Calc_IBL_H1(UW_Turbs[0], 280000, 4553500, WakeModList.wakeModels[0], 90f, 1.9316f, 80.0);
 
             Assert.AreEqual(This_IBL_H1, 750.4, 1, "Wrong IBL H1");
 
@@ -303,7 +303,7 @@ namespace Continuum_Tests
             metList.numWS = 30;
 
             WakeModList.AddWakeModel(1, 5, 10, turbineList.powerCurves[0], 10, 3.5f, 0.03f, "Linear");
-            double This_IBL_H2 = WakeModList.Calc_IBL_H2_NEW(UW_Turbs[0], 280000, 4553500, WakeModList.wakeModels[0], 90f, metList, 8, 80.0);
+            double This_IBL_H2 = WakeModList.Calc_IBL_H2(UW_Turbs[0], 280000, 4553500, WakeModList.wakeModels[0], 90f, metList, 80.0);
 
             Assert.AreEqual(This_IBL_H2, 394.2, 1, "Wrong IBL H2");
 

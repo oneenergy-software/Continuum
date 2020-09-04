@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> GUI class that allows user to export exposure and SRDH at met and turbine sites for selected radii. </summary>
     public partial class Expo_Export : Form
     {
         Continuum thisInst;
 
+        /// <summary> Class initializer</summary>        
         public Expo_Export(Continuum continuum)
         {
             InitializeComponent();
@@ -22,9 +17,7 @@ namespace ContinuumNS
 
         private void chkboxAllRadii_CheckedChanged(object sender, EventArgs e)
         {
-            // Selects or Deselects all radii from list
-
-            string invest_str = "";
+            // Selects or Deselects all radii from list                        
             int numRadii = thisInst.radiiList.ThisCount;
             int numChecked = chkRadii.CheckedItems.Count;
 
@@ -32,7 +25,7 @@ namespace ContinuumNS
                 chkRadii.Items.Clear();
 
                 for (int i = 0; i < numRadii; i++) {
-                    invest_str = "R= " + thisInst.radiiList.investItem[i].radius;
+                    string invest_str = "R= " + thisInst.radiiList.investItem[i].radius;
                     chkRadii.Items.Add(invest_str, true);
                 }            
             }
@@ -40,7 +33,7 @@ namespace ContinuumNS
             {
                 chkRadii.Items.Clear();
             for (int i = 0; i < numRadii; i++) {
-                    invest_str = "R= " + thisInst.radiiList.investItem[i].radius;
+                    string invest_str = "R= " + thisInst.radiiList.investItem[i].radius;
                     chkRadii.Items.Add(invest_str, false);
                 }
             }

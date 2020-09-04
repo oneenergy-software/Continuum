@@ -1,62 +1,89 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 
-
 namespace ContinuumNS
 {
+    /// <summary> Collection of Met site objects. Class contains met data settings, number of bins, and info regarding the MCP long-term estimate. Class has functions
+    /// to call model calculations (i.e. QC filtering, extrapolating, MCP, Weibull parameter calculations) at met sites and to add/delete mets from collection.</summary>
     [Serializable()]
     public class MetCollection
     {
+        /// <summary> List of Met site objects  </summary>
         public Met[] metItem;
+        /// <summary> True if exposure has been calculated at met sites  </summary>
         public bool expoIsCalc;
+        /// <summary> True if surface roughness and displacement height have been calculated at met sites  </summary>
         public bool SRDH_IsCalc;
+        /// <summary> True if met data is time series data </summary>
         public bool isTimeSeries;
+        /// <summary> True if met data QC filters are applied to time series data.  </summary>
         public bool filteringEnabled;
-        public bool isMCPd; // True if MERRA2 data is uploaded and MCP is conducted
-        public bool allMCPd; // True if MCP has been conducted at all met sites (time series only). Models and estimates are not created unless this is true
-        public double WS_FirstInt; // Upper bound of first wind speed bin (to be consistent with TAB file format)
-        public double WS_IntSize; // Wind speed bin size (moved this from Met object) To Do: If importing a met TAB file, and it's the first one and it has a different first WS or different bin size, this should be updated
+        /// <summary> True if MERRA2 data is uploaded and MCP is conducted  </summary>
+        public bool isMCPd;
+        /// <summary> True if MCP has been conducted at all met sites (time series only). Models and estimates are not created unless this is true.  </summary>
+        public bool allMCPd;
+        /// <summary> Upper bound of first wind speed bin (to be consistent with TAB file format)  </summary>
+        public double WS_FirstInt;
+        /// <summary> Wind speed bin size  </summary>
+        public double WS_IntSize; // To Do: If importing a met TAB file, and it's the first one and it has a different first WS or different bin size, this should be updated
+        /// <summary> Number of wind direction bins  </summary>
         public int numWD;
+        /// <summary> Number of wind speed bins  </summary>
         public int numWS;
+        /// <summary> Number of time of day bins  </summary>
         public int numTOD;
+        /// <summary> Number of season bins  </summary>
         public int numSeason;
+        /// <summary> Wind speed bin width used in MCP  </summary>
         public double mcpWS_BinWidth;
+        /// <summary> Matrix weight used in MCP (if Matrix method used)  </summary>
         public double mcpMatrixWgt;
+        /// <summary> Last WS weight used in MCP (if Matrix method used)  </summary>
         public double mcpLastWS_Wgt;
-        public int mcpUncertStepSize; // MCP uncertainty analysis step size (in months)
+        /// <summary> MCP uncertainty analysis step size (in months)  </summary>
+        public int mcpUncertStepSize;
 
+        /// <summary> Start of day hours. Default = 7 am.  </summary>
         public int dayStartHour = 7;
+        /// <summary> End of day hours. Default = 6 pm.  </summary>
         public int dayEndHour = 18;
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Defined Type: Header_Details. Used to hold information contained in the raw data file headers
-        /// including the type of sensor, the sensor ID and the type of measurement (i.e. average, min,
-        /// max or standard deviation)
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/21/2017. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary> Holds the type of sensor, sensor ID and type of measurement (i.e. average, min, max or standard deviation) used to create .CSV file headers </summary>
         public struct Header_Details
         {
             /// <summary>   Type of sensor (Anem, Vane or temp). </summary>
-            public String sensorType;
+            public string sensorType;
             /// <summary>   The height (in meters). </summary>
             public int height;
             /// <summary>   The sensor ID (A or B if there are redundant sensors). </summary>
-            public Char ID;
+            public char ID;
             /// <summary>   The boom orientation. </summary>
             public int orient;
             /// <summary>   Type of the measurement (average, min, max or SD). </summary>
-            public String measType;
+            public string measType;
         }
 
+        /// <summary> Holds overall and sectorwise Weibull parameters </summary>
+        [Serializable()]
+        public struct Weibull_params
+        {
+            /// <summary> Overall Weibull k </summary>
+            public double overall_k;
+            /// <summary> Overall Weibull A </summary>
+            public double overall_A;
+            /// <summary> Sectorwise Weibull k </summary>
+            public double[] sector_k;
+            /// <summary> Sectorwise Weibull A </summary>
+            public double[] sector_A;
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Resets met collection parameters to default values. </summary>
         public void NewList()
         {
             mcpWS_BinWidth = 1;
@@ -79,6 +106,7 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Returns the number of met sites in list. </summary>
         public int ThisCount
         {
             get {
@@ -86,15 +114,9 @@ namespace ContinuumNS
                     return 0;
                 else
                     return metItem.Length; }
-        }     
-
-        public void GetBinSettings(Continuum thisInst)
-        {
-            numWD = thisInst.GetNumWD();
-            numTOD = Convert.ToInt16(thisInst.cboMCP_TOD.SelectedItem);
-            numSeason = Convert.ToInt16(thisInst.cboMCP_Season.SelectedItem);
         }
 
+        /// <summary> Returns the time of day of specified timestamp. </summary>
         public Met.TOD GetTOD(DateTime thisDate)
         {
             Met.TOD thisTOD = Met.TOD.All;
@@ -111,6 +133,7 @@ namespace ContinuumNS
             return thisTOD;
         }
 
+        /// <summary> Returns the season of specified timestamp. </summary>
         public Met.Season GetSeason(DateTime thisDate)
         {
             Met.Season thisSeason = Met.Season.All;
@@ -129,10 +152,10 @@ namespace ContinuumNS
             
             return thisSeason;
         }
-        
+
+        /// <summary> If Met TAB files have different number of WS bins, this void adds zeros to the end to make all mets WS dists the same length. </summary>
         public void MakeAllSameLength()
         {
-            // if Met TAB files have different number of WS bins, this void adds zeros to the end to make all mets WS dists the same length
             int maxLength = 0;
                         
             for (int i = 0; i < ThisCount; i++)
@@ -166,19 +189,18 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Creates a name for met site if blank in TAB file. </summary>
         public string MakeUpNameIfBlank()
-        {
-            // Creates a name for met site if blank in TAB file
+        {            
             string metName = "Met_" + ThisCount;
 
             return metName;
 
         }
 
+        /// <summary> Adds met to list, adds WSWD_Dist (All hours and All seasons for TAB file imports) and calculates average wind speed and directional WS ratios. </summary>
         public void AddMetTAB(string metName, double UTMX, double UTMY, int height, double[] metWindRose, double[,] sectorWS_Dist, double thisWS_FirstInt, double thisWS_IntSize, Continuum thisInst)
-        {
-            // Adds met to list, adds WSWD_Dist (All hours and All seasons for TAB file imports) and calculates average wind speed and directional WS ratios
-            
+        {                        
             int newCount = ThisCount;
             Array.Resize(ref metItem, newCount + 1);
 
@@ -201,6 +223,7 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Filters time series data, extrapolates to modeled height, and adds met site to collection. </summary>
         public void FilterExtrapolateAddMetTimeSeries(string metName, double UTMX, double UTMY, Met_Data_Filter metData, Continuum thisInst)
         {
             int newCount = ThisCount;
@@ -212,29 +235,15 @@ namespace ContinuumNS
             metItem[newCount].UTMY = UTMY;
             metItem[newCount].metData = metData;
             if (filteringEnabled)
-                metItem[newCount].metData.FilterData("All");
+                metItem[newCount].metData.FilterData(thisInst.GetFiltersToApply());
             metItem[newCount].metData.EstimateAlpha();
             metItem[newCount].metData.ExtrapolateData(thisInst.modeledHeight);
                         
-        }
+        }               
 
-        public void ExtrapolateAddMetTimeSeries(string metName, double UTMX, double UTMY, Met_Data_Filter metData, Continuum thisInst)
-        {
-            int newCount = ThisCount;
-            Array.Resize(ref metItem, newCount + 1);
-
-            metItem[newCount] = new Met();
-            metItem[newCount].name = metName;
-            metItem[newCount].UTMX = UTMX;
-            metItem[newCount].UTMY = UTMY;
-            metItem[newCount].metData = metData;            
-            metItem[newCount].metData.ExtrapolateData(thisInst.modeledHeight);
-
-        }
-
+        /// <summary> Deletes Met from list and data from DB (if time series). </summary>
         public void Delete(string metname, Continuum thisInst, double metLat, double metLong)
-        {
-            // Deletes Met from list and data from DB (if time series)
+        {            
             int newCount = ThisCount - 1;
 
             if (newCount > 0)
@@ -318,14 +327,13 @@ namespace ContinuumNS
             }
 
             // Delete MERRA data from MERRAList
-            thisInst.merraList.deleteMERRA(metLat, metLong, thisInst);
+            thisInst.merraList.deleteMERRA(metLat, metLong);
 
         }
 
+        /// <summary> Deletes all met site time series estimates. Called after a change is made to MCP or MERRA2 settings. </summary>
         public void DeleteAllTimeSeriesEsts(Continuum thisInst)
-        {
-            // Deletes all met site time series estimates. Called after a change is made to MCP or MERRA2 settings
-            
+        {                        
             for (int i = 0; i < ThisCount; i++)
             {
                 if (metItem[i].mcp != null)
@@ -340,13 +348,11 @@ namespace ContinuumNS
                            
         }
 
+        /// <summary> Calculates exposure and SRDH at met site (if not already calculated). </summary>
         public void CalcMetExposures(int metInd, int radiusIndex, Continuum thisInst)
-        {
-            // Calculates exposure and SRDH at met site (if not already calculated)            
+        {                  
             int numSectors = 1;
-
-            // First find elevation
-            
+                    
             if (metItem[metInd].elev == 0) metItem[metInd].elev = thisInst.topo.CalcElevs(metItem[metInd].UTMX, metItem[metInd].UTMY);
             
             int thisRadius = thisInst.radiiList.investItem[radiusIndex].radius;
@@ -409,8 +415,8 @@ namespace ContinuumNS
 
                 for (int r = 0; r < numWD; r++)
                 {
-                    double UW_CW_Grade = thisInst.topo.CalcP10_UW_CrosswindGrade(metItem[metInd].UTMX, metItem[metInd].UTMY, thisInst.radiiList, r, numWD);
-                    double UW_PL_Grade = thisInst.topo.CalcP10_UW_ParallelGrade(metItem[metInd].UTMX, metItem[metInd].UTMY, thisInst.radiiList, r, numWD);
+                    double UW_CW_Grade = thisInst.topo.CalcP10_UW_CrosswindGrade(metItem[metInd].UTMX, metItem[metInd].UTMY, r, numWD);
+                    double UW_PL_Grade = thisInst.topo.CalcP10_UW_ParallelGrade(metItem[metInd].UTMX, metItem[metInd].UTMY, r, numWD);
 
                     metItem[metInd].expo[radiusIndex].UW_P10CrossGrade[r] = UW_CW_Grade;
                     metItem[metInd].expo[radiusIndex].UW_ParallelGrade[r] = UW_PL_Grade;
@@ -418,12 +424,12 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Recalculates surface roughness and displacement at met sites if land cover key was changed. </summary>
         public void ReCalcSRDH(TopoInfo topo, InvestCollection radiiList)
         {
             if (expoIsCalc == false)
                 return;
-
-            // if Land Cover key is changed, the surface roughness and displacement heights are recalculated in this void
+            
             int expoInd = 0;
             int numSectors = 1;
 
@@ -465,15 +471,12 @@ namespace ContinuumNS
             }
             SRDH_IsCalc = true;
         }
-                
 
+        /// <summary> Form and return average wind rose calculated from metsUsed. </summary>
         public double[] GetAvgWindRoseMetsUsed(string[] metsUsed, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
-        {
-            // Returns average wind rose calculated from metsUsed
+        {            
             double[] avgWindRose = null;
-            
-            bool metIsUsed = false;
-
+                        
             if (ThisCount > 0)
             {
                 if (metItem[0].WSWD_DistCount == 0) return avgWindRose;
@@ -482,7 +485,7 @@ namespace ContinuumNS
 
                 for (int i = 0; i < ThisCount; i++)
                 {
-                    metIsUsed = false;
+                    bool metIsUsed = false;
                     Met.WSWD_Dist thisDist = new Met.WSWD_Dist();
 
                     for (int metInd = 0; metInd < metsUsed.Length; metInd++)
@@ -509,11 +512,10 @@ namespace ContinuumNS
 
         }
 
+        /// <summary>  Forms and returns average wind rose using all mets in list. </summary>
         public double[] GetAvgWindRose(double thisHeight, Met.TOD thisTOD, Met.Season thisSeason)
-        {
-            // Returns average wind rose using all mets in list
-            double[] avgWindRose = null;
-             
+        {            
+            double[] avgWindRose = null;             
 
             if (ThisCount > 0)
             {                
@@ -534,9 +536,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Returns wind rose interpolated from mets in specified list of mets and weighted based on distance to specified UTM X/Y coordinates. </summary>
         public double[] GetInterpolatedWindRose(string[] metsUsed, double UTMX, double UTMY, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
-        {
-            // Returns wind rose interpolated from mets in metsUsed and weighted based on distance to X/Y
+        {            
             double[] thisWR = null; 
             TopoInfo topo = new TopoInfo();
 
@@ -573,10 +575,9 @@ namespace ContinuumNS
             return thisWR;
         }
 
-
+        /// <summary> Calculate and returns overall WS distribution using sectorwise wind speed distribution and weighted by wind rose. </summary>
         public double[] CalcOverallWS_Dist(double[,] sectorWS_Dist, double[] windRose)
-        {
-            // Calculate overall WS distribution using sectorwise wind speed distribution and weighted by wind rose                       
+        {                                
             double[] WS_Dist = null;
 
             if (sectorWS_Dist == null) return WS_Dist;  
@@ -598,13 +599,11 @@ namespace ContinuumNS
             return WS_Dist;
         }
 
-
+        /// <summary> Calculates and returns a WS distribution by combining wind speed distributions from the metsUsed with calculated weights. Weights are adjusted until avgWS is matched.
+        /// If avgWS is within range of met avg wind speeds, use weighted average of all mets where weights are altered until avgWS is reached. If avgWS is outside range of met WS then it 
+        /// uses the met with either the highest or lowest WS and adjusts WS dist until avgWS is reached. </summary>
         public double[] CalcWS_DistForTurbOrMap(string[] metsUsed, double avgWS, int WD_Ind, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
-        {
-            // Calculates and returns a WS distribution by combining wind speed distributions from the metsUsed with calculated weights. Weights are adjusted until avgWS is matched
-            // if avgWS is within range of met avg wind speeds, use weighted average of all mets where weights are altered until avgWS is reached
-            // if avgWS is outside range of met WS then it uses the met with either the highest or lowest WS and adjusts WS dist until avgWS is reached
-            
+        {           
             if (metsUsed == null || avgWS == 0) return null;
             double[] WS_Dist = new double[numWS];
 
@@ -833,6 +832,7 @@ namespace ContinuumNS
             return WS_Dist;
         }               
 
+        /// <summary> Finds and returns the met sites with the min and max wind speed in specified wind direction index, time of day, and season. </summary>        
         public Met[] GetMetsWithMinMaxWS(string[] metsUsed, int WD_Ind, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
         {
             Met[] minMaxWS = new Met[2];
@@ -909,6 +909,7 @@ namespace ContinuumNS
             return minMaxWS;
         }
 
+        /// <summary> Gets wind speed at specified wind speed index. </summary>  
         public double GetWS_atWS_Ind(int thisInd)
         {
             double thisWS = 0;
@@ -919,9 +920,9 @@ namespace ContinuumNS
             return thisWS;
         }
 
+        /// <summary> Returns Met objects for names listed. </summary>  
         public Met[] GetMets(string[] metNames, string[] exceptMets)
-        {
-            // Returns Met objects for names listed
+        {            
             Met[] theseMets = null;
             int numToExcl;
 
@@ -968,9 +969,9 @@ namespace ContinuumNS
             return theseMets;
         }
 
+        /// <summary> Returns Met object with specified name. </summary>  
         public Met GetMet(string metName)
-        {
-            // Returns Met objects for names listed
+        {            
             Met thisMet = new Met();
             
             if (metName == "") return thisMet;
@@ -987,20 +988,21 @@ namespace ContinuumNS
             return thisMet;
         }
 
+        /// <summary> Returns array of met names from list of mets used in model. </summary>  
         public string[] GetMetsUsed()
-            {
-                // Returns array of met names from list of mets used in model
-                string[] metsUsed = new string[ThisCount];
+        {                
+            string[] metsUsed = new string[ThisCount];
 
-                for (int i = 0; i < ThisCount; i++)
-                    metsUsed[i] = metItem[i].name;
+            for (int i = 0; i < ThisCount; i++)
+                metsUsed[i] = metItem[i].name;
             
-                return metsUsed;
+            return metsUsed;
         }
 
+        /// <summary> Calculates and returns Weibull parameters fit to the specified WS distribution. In this function, the RMS difference in Weibull Freq dist and WS dist then sweeps k value 
+        /// until the min is found. Returns weibull estimates for overall and sector. </summary>  
         public Weibull_params CalcWeibullParams(double[] WS_Dist, double[,] sectDist, double avgWS)
-        {
-            // Calculates the RMS difference in weibull Freq dist and WS dist then sweeps k value until the min is found. Returns weibull estimates for overall and sector
+        {            
             Weibull_params weibull = new Weibull_params();
 
             if (ThisCount == 0 || WS_Dist == null || sectDist == null)
@@ -1192,17 +1194,9 @@ namespace ContinuumNS
             }
 
             return weibull;
-        }
+        }                
 
-        [Serializable()]
-        public struct Weibull_params
-        {
-            public double overall_k;
-            public double overall_A;
-            public double[] sector_k;
-            public double[] sector_A;
-        }
-
+        /// <summary> Calculates and returns Weibull A parameter based on average wind speed and Weibull parameter, m. </summary>  
         public double CalcWeibullA(double avgWS, double m)
         {
     
@@ -1212,25 +1206,25 @@ namespace ContinuumNS
             return weibullA;
         }
 
+        /// <summary> Calculates and returns Weibull frequency for specified Weibull k, A, and wind speed. </summary>  
         public double CalcWeibullDist(double k, double A, double WS)
         {
             double weibullDist = Convert.ToSingle((k / A) * Math.Pow((WS / A), (k - 1)) * Math.Exp(-(Math.Pow((WS / A), k))));
             return weibullDist;
         }
 
+        /// <summary> Returns true if metsUsed1 and metsUsed2 have same mets. </summary>
         public bool sameMets(string[] metsUsed1, string[] metsUsed2)
-        {
-            // Returns true if metsUsed1 and metsUsed2 have same mets            
+        {                  
             bool sameMetSites = false;
-            bool foundMet = false;
-
+            
             if (metsUsed1 != null && metsUsed2 != null)
             {
                 if (metsUsed1.Length == metsUsed2.Length)
                 {
                     for (int j = 0; j < metsUsed1.Length; j++)
                     {
-                        foundMet = false;
+                        bool foundMet = false;
                         for (int i = 0; i < metsUsed2.Length; i++)
                         {
                             if (metsUsed1[j] == metsUsed2[i])
@@ -1257,11 +1251,11 @@ namespace ContinuumNS
                 sameMetSites = false;
 
             return sameMetSites;
-        }        
+        }
 
+        /// <summary> Returns string of all mets in metsUsed. </summary>
         public string CreateMetString(string[] metsUsed, bool isVerbose)
-        {
-            // Returns string of all mets in metsUsed
+        {           
             int numMetsUsed;
             string metString = "";
 
@@ -1289,9 +1283,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Clears list of mets and deletes data from database (if time series data). </summary>
         public void ClearAllMets(Continuum thisInst, bool clearDB)
-        {
-            // Clears list of mets
+        {            
             metItem = null;
             expoIsCalc = false;
             SRDH_IsCalc = false;
@@ -1321,9 +1315,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Clears all calculated exposures, SRDH, and grid stats. </summary>
         public void ClearAllExposuresAndGridStats()
-        { 
-            // Clears all calculated exposures, SRDH, and grid stats
+        {             
             if (ThisCount > 0)
             {
                 for (int i = 0; i < ThisCount; i++)
@@ -1333,32 +1327,16 @@ namespace ContinuumNS
                 }
             }
         }
-                
 
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>
-        /// Reads in met data formatted with following convention: Anem_HH_A_XXX: HH = height of sensor,
-        /// A = ID (A or B), XXX = avg, SD, min or max Vane_HH_XXX: HH = height, XX = avg, SD, min, or
-        /// max Temp_HH_XXX_F: HH = height, XXX = avg, SD, min or max, F = C (celsius) or F (Farenheit)
-        /// </summary>
-        ///
-        /// <remarks>   Liz, 6/23/2017. </remarks>
-        ///
-        /// <param name="filename"> Filename of the met data file to import. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public bool ImportFilterExtrapMetDataContinuum(string filename, Continuum thisInst)
-        {
-            // Reads in formatted .csv file with anem, vane, and temp data. Adds the new met to metList. 
-            // Filters (using all filters) and extrapolates to modeled height (specified on Input tab)
-            // Returns true if met data successfully read in, filtered, extrapolated, and added
-            
+        /// <summary> Reads in formatted .csv file with anem, vane, and temp data. Adds the new met to metList. Filters (using all filters) and 
+        /// extrapolates to modeled height (specified on Input tab) Returns true if met data successfully read in. </summary>
+        public bool ImportFilterExtrapMetData(string filename, Continuum thisInst)
+        {           
             Met_Data_Filter thisMetData = new Met_Data_Filter();
-            String[] header;
+            string[] header;
             Header_Details[] headerDeets = new Header_Details[0];
             string line;
-            Char[] delims = { ',' };
+            char[] delims = { ',' };
             Check_class check = new Check_class();
 
             if (filename != "")
@@ -1605,11 +1583,11 @@ namespace ContinuumNS
                     while ((line = file.ReadLine()) != null)
                     {
                         line = line.Trim(',');
-                        String[] data = line.Split(delims);
+                        string[] data = line.Split(delims);
 
                         if (data.Length > 0)
                             if (data[0] == "")
-                                break;
+                                break;                                               
 
                         DateTime thisTimeStamp = Convert.ToDateTime(data[0]);
                         dataCount++;                                                
@@ -1625,8 +1603,8 @@ namespace ContinuumNS
 
                         for (int i = 1; i < data.Length; i++)
                         {
-                            String thisHeader = header[i];
-                            String sensorType = thisHeader.Substring(0, 4);
+                            string thisHeader = header[i];
+                            string sensorType = thisHeader.Substring(0, 4);
                             double thisData = -999;
 
                             if (data[i] != "") thisData = Convert.ToDouble(data[i]);
@@ -1739,685 +1717,9 @@ namespace ContinuumNS
             
             return true;
         }
+              
 
-        public struct windogSensor
-        {
-            public string sensorType; // Anem, Vane, Temperature, Tubulence
-            public int height;
-            public int index;
-        }
-
-        public bool ImportFilterExtrapMetDataWindographer(string filename, Continuum thisInst)
-        {
-            // Reads in formatted .csv file with anem, vane, and temp data. Adds the new met to metList. 
-            // Filters (using all filters) and extrapolates to modeled height (specified on Input tab)
-            // Returns true if met data successfully read in, filtered, extrapolated, and added
-            //  NOT CURRENTLY USED YET. ONLY CONTINUUM FORMATTED FILES for 3.0
-
-            Met_Data_Filter thisMetData = new Met_Data_Filter();
-            String[] header;
-            Header_Details[] headerDeets = new Header_Details[0];
-            string line;
-            Char[] delims = { ',', ' ' };
-            Check_class check = new Check_class();
-            int firstDataRow = 0;
-
-            if (filename != "")
-            {
-                StreamReader file;
-                try
-                {
-                    file = new StreamReader(filename);
-                }
-                catch
-                {
-                    MessageBox.Show("Error opening the met data file. Check that it's not open in another program.", "", MessageBoxButtons.OK);
-                    return false;
-                }
-                int firstInd = filename.LastIndexOf('\\') + 1;
-                int fileLength = filename.Length - filename.LastIndexOf('\\') - 1;
-                string metName = filename.Substring(firstInd, fileLength);
-
-                bool inputMet = check.CheckMetName(metName, thisInst.turbineList);
-
-                if (inputMet == false)
-                {
-                    MessageBox.Show("Met site with same filename already imported", "Continuum 3.0");
-                    return false;
-                }                    
-                                
-                try
-                {
-                    // first read until it finds latitude and longitude
-                    line = file.ReadLine();
-                    firstDataRow++;
-                    line.Trim();
-                    string[] thisLine = line.Split(delims);
-                    string firstIndex = "";
-
-                    if (thisLine.Length > 0)
-                        firstIndex = thisLine[0];
-                    // First look for latitude
-                    while (firstIndex != "Latitude" && file.EndOfStream == false)
-                    {
-                        line = file.ReadLine();
-                        firstDataRow++;
-                        line.Trim();
-                        thisLine = line.Split(delims);
-
-                        if (thisLine.Length > 0)
-                            firstIndex = thisLine[0];
-                    }
-                    
-                    if (firstIndex != "Latitude")
-                    {
-                        MessageBox.Show("Error reading file. Couldn't find Latitude", "Continuum 3.0");
-                        return false;
-                    }
-                    
-                    double thisLat = Convert.ToDouble(thisLine[thisLine.Length - 1]);
-
-                    // Now look for longitude
-                    line = file.ReadLine();
-                    firstDataRow++;
-                    line.Trim();
-                    thisLine = line.Split(delims);
-
-                    if (thisLine.Length > 0)
-                        firstIndex = thisLine[0];
-
-                    while (firstIndex != "Longitude" && file.EndOfStream == false)
-                    {
-                        line = file.ReadLine();
-                        firstDataRow++;
-                        line.Trim();
-                        thisLine = line.Split(delims);
-
-                        if (thisLine.Length > 0)
-                            firstIndex = thisLine[0];
-                    }
-
-                    if (firstIndex != "Longitude")
-                    {
-                        MessageBox.Show("Error reading file. Couldn't find Longitude", "Continuum 3.0");
-                        return false;
-                    }
-
-                    double thisLong = Convert.ToDouble(thisLine[thisLine.Length - 1]);
-                                   
-                    // Check if UTM datum has been defined, if not, ask user
-                    if (thisInst.UTM_conversions.savedDatumIndex == 100)
-                    {
-                        UTM_datum thisDatum = new UTM_datum();
-                        thisDatum.ShowDialog();
-                        thisInst.UTM_conversions.savedDatumIndex = thisDatum.cbo_Datums.SelectedIndex;
-                        thisInst.UTM_conversions.hemisphere = thisDatum.cboNorthOrSouth.SelectedItem.ToString();
-                    }
-
-                    UTM_conversion.UTM_coords theseUTMs = thisInst.UTM_conversions.LLtoUTM(thisLat, thisLong);
-                    double thisUTMX = theseUTMs.UTMEasting;
-                    double thisUTMY = theseUTMs.UTMNorthing;
-
-                    thisInst.txtUTMDatum.Text = thisInst.UTM_conversions.GetDatumString(thisInst.UTM_conversions.savedDatumIndex);
-                    thisInst.txtUTMZone.Text = thisInst.UTM_conversions.UTMZoneNumber.ToString() + thisInst.UTM_conversions.hemisphere.Substring(0, 1);
-                    
-                    // Read file until it gets to header (starts with Date/Time)
-
-                    line = file.ReadLine();
-                    firstDataRow++;
-                    line.Trim();
-                    header = line.Split(delims);
-
-                    if (header.Length > 0)
-                        firstIndex = header[0];
-
-                    while (firstIndex != "Date/Time" && file.EndOfStream == false)
-                    {
-                        line = file.ReadLine();
-                        firstDataRow++;
-                        line.Trim();
-                        header = line.Split(delims);
-
-                        if (header.Length > 0)
-                            firstIndex = header[0];
-                    }
-
-                    if (firstIndex != "Date/Time")
-                    {
-                        MessageBox.Show("Error reading file. Couldn't find row with headers", "Continuum 3.0");
-                        return false;
-                    }
-
-                    windogSensor[] sensorIndices = new windogSensor[0];
-                    int sensorCount = 0;
-
-                    for (int headInd = 0; headInd < header.Length; headInd++)
-                    {
-                        string thisHeader = header[headInd];
-
-                        // check to see if Anem, Vane or temp
-                        if (thisHeader == "Speed" || thisHeader == "Direction" || thisHeader == "Temperature" || thisHeader == "Density" || thisHeader == "Intensity")
-                        {
-                            // the next header will be the height with 'm'
-                            int unitInd = header[headInd + 1].LastIndexOf('m');
-                            int headerLen = header[headInd + 1].Length;
-                            int thisHeight = Convert.ToInt16(header[headInd + 1].Substring(0, unitInd));
-
-                            sensorCount++;
-                            Array.Resize(ref sensorIndices, sensorCount);
-                            sensorIndices[sensorCount - 1].height = thisHeight;
-                            sensorIndices[sensorCount - 1].index = sensorCount;
-                            sensorIndices[sensorCount - 1].sensorType = thisHeader;
-
-                            if (thisHeader == "Speed")
-                            {
-                                int numAnems = thisMetData.GetNumAnems();
-                                Array.Resize(ref thisMetData.anems, numAnems + 1);
-                                thisMetData.anems[numAnems].height = thisHeight;
-                            }
-                            else if (thisHeader == "Direction")
-                            {
-                                int numVanes = thisMetData.GetNumVanes();
-                                Array.Resize(ref thisMetData.vanes, numVanes + 1);
-                                thisMetData.vanes[numVanes].height = thisHeight;
-                            }
-                            else if (thisHeader == "Temperature")
-                            {
-                                int numTemps = thisMetData.GetNumTemps();
-                                Array.Resize(ref thisMetData.temps, numTemps + 1);
-                                thisMetData.temps[numTemps].height = thisHeight;
-                            }                           
-
-                        }
-                    }                          
-                     
-                    // first read through data file and find Start and End dates
-                    int dataCount = 0;
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        String[] data = line.Split(delims);
-                        if (data.Length > 0)
-                            if (data[0] == "")
-                                break;
-
-                        dataCount++;
-                    }
-
-                    // Size the arrays
-                    for (int i = 0; i < thisMetData.GetNumAnems(); i++)
-                        Array.Resize(ref thisMetData.anems[i].windData, dataCount);
-
-                    for (int i = 0; i < thisMetData.GetNumVanes(); i++)
-                        Array.Resize(ref thisMetData.vanes[i].dirData, dataCount);
-
-                    for (int i = 0; i < thisMetData.GetNumTemps(); i++)
-                        Array.Resize(ref thisMetData.temps[i].temp, dataCount);
-
-
-                    file.Close();
-                    file = new StreamReader(filename);
-
-                    for (int i = 0; i < firstDataRow; i++)
-                        file.ReadLine();
-
-                    // read in all data and fill anems, vanes and temps objects
-                    dataCount = 0;
-
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        string[] data = line.Split(delims);
-
-                        if (data.Length > 0)
-                            if (data[0] == "")
-                                break;
-
-                        int thisYear = Convert.ToInt16(data[0]);
-                        int thisMonth = Convert.ToInt16(data[1]);
-                        int thisDay = Convert.ToInt16(data[2]);
-                        int thisHour = Convert.ToInt16(data[3].Substring(0, 2));
-                        int thisMinute = Convert.ToInt16(data[3].Substring(2, 2));
-
-                        DateTime thisTimeStamp = new DateTime(thisYear, thisMonth, thisDay, thisHour, 0, 0);
-
-                        for (int i = 0; i < thisMetData.GetNumAnems(); i++)
-                            thisMetData.anems[i].windData[dataCount].timeStamp = thisTimeStamp;
-
-                        for (int i = 0; i < thisMetData.GetNumVanes(); i++)
-                            thisMetData.vanes[i].dirData[dataCount].timeStamp = thisTimeStamp;
-
-                        for (int i = 0; i < thisMetData.GetNumTemps(); i++)
-                            thisMetData.temps[i].temp[dataCount].timeStamp = thisTimeStamp;
-
-                        for (int ind = 4; ind < data.Length; ind++)
-                        {
-                            for (int sensorInd = 0; sensorInd < sensorCount; sensorInd++)
-                            {
-                                if (sensorIndices[sensorInd].index == (ind - 3)) // Data starts after time stamp which takes up first four indices
-                                {
-                                    if (sensorIndices[sensorInd].sensorType == "Speed")
-                                    {
-                                        for (int i = 0; i < thisMetData.GetNumAnems(); i++)
-                                        {
-                                            if (thisMetData.anems[i].height == sensorIndices[sensorInd].height)
-                                            {
-                                                thisMetData.anems[i].windData[dataCount].avg = Convert.ToDouble(data[ind]);
-                                                thisMetData.anems[i].windData[dataCount].filterFlag = Met_Data_Filter.Filter_Flags.Valid;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else if (sensorIndices[sensorInd].sensorType == "Direction")
-                                    {
-                                        for (int i = 0; i < thisMetData.GetNumVanes(); i++)
-                                        {
-                                            if (thisMetData.vanes[i].height == sensorIndices[sensorInd].height)
-                                            {
-                                                thisMetData.vanes[i].dirData[dataCount].avg = Convert.ToDouble(data[ind]);
-                                                thisMetData.vanes[i].dirData[dataCount].filterFlag = Met_Data_Filter.Filter_Flags.Valid;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else if (sensorIndices[sensorInd].sensorType == "Temperature")
-                                    {
-                                        for (int i = 0; i < thisMetData.GetNumTemps(); i++)
-                                        {
-                                            if (thisMetData.temps[i].height == sensorIndices[sensorInd].height)
-                                            {
-                                                thisMetData.temps[i].temp[dataCount].avg = Convert.ToDouble(data[ind]);
-                                                thisMetData.temps[i].temp[dataCount].filterFlag = Met_Data_Filter.Filter_Flags.Valid;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else if (sensorIndices[sensorInd].sensorType == "Intensity")
-                                    {
-                                        for (int i = 0; i < thisMetData.GetNumAnems(); i++)
-                                        {
-                                            if (thisMetData.anems[i].height == sensorIndices[sensorInd].height)
-                                            {
-                                                // Convert TI into SD
-                                                double thisSD = thisMetData.anems[i].windData[dataCount].avg * Convert.ToDouble(data[ind]);
-
-                                                thisMetData.anems[i].windData[dataCount].SD = thisSD;
-                                                thisMetData.anems[i].windData[dataCount].filterFlag = Met_Data_Filter.Filter_Flags.Valid;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        dataCount++;
-                    }                     
-                                        
-                    if (thisMetData.GetNumAnems() > 0)
-                        if (thisMetData.anems[0].windData.Length > 0)
-                        {
-                            thisMetData.allStartDate = thisMetData.anems[0].windData[0].timeStamp;
-                            thisMetData.allEndDate = thisMetData.anems[0].windData[thisMetData.anems[0].windData.Length - 1].timeStamp;
-                            thisMetData.startDate = thisMetData.anems[0].windData[0].timeStamp;
-                            thisMetData.endDate = thisMetData.anems[0].windData[thisMetData.anems[0].windData.Length - 1].timeStamp;
-                        }
-                                        
-                    file.Close();
-
-                    ExtrapolateAddMetTimeSeries(metName, thisUTMX, thisUTMY, thisMetData, thisInst);
-                }
-                catch
-                {
-                    thisMetData.anems = new Met_Data_Filter.Anem_Data[0];
-                    thisMetData.vanes = new Met_Data_Filter.Vane_Data[0];
-                    thisMetData.temps = new Met_Data_Filter.Temp_Data[0];
-                    file.Close();
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-
-
-            return true;
-        }
-
-        public bool ImportFilterExtrapMetDataSymphonie(string filename, Continuum thisInst)
-        {
-            // Reads in raw text file generated by Symphonie logger. Adds the new met to metList. 
-            // Filters (using all filters) and extrapolates to modeled height (specified on Input tab)
-            // Returns true if met data successfully read in, filtered, extrapolated, and added
-            // NOT WORKING YET
-
-            Met_Data_Filter thisMetData = new Met_Data_Filter();
-            String[] header;            
-            string line;
-            Char[] delims = { ',', ' ' };
-            Check_class check = new Check_class();
-            int firstDataRow = 0;
-
-            if (filename != "")
-            {
-                StreamReader file;
-                try
-                {
-                    file = new StreamReader(filename);
-                }
-                catch
-                {
-                    MessageBox.Show("Error opening the met data file. Check that it's not open in another program.", "", MessageBoxButtons.OK);
-                    return false;
-                }
-                int firstInd = filename.LastIndexOf('\\') + 1;
-                int fileLength = filename.Length - filename.LastIndexOf('\\') - 1;
-                string metName = filename.Substring(firstInd, fileLength);
-
-                bool inputMet = check.CheckMetName(metName, thisInst.turbineList);
-
-                if (inputMet == false)
-                {
-                    MessageBox.Show("Met site with same filename already imported", "Continuum 3.0");
-                    return false;
-                }
-
-                try
-                {
-                    // first read until it finds latitude and longitude
-                    line = file.ReadLine();
-                    firstDataRow++;
-                    line.Trim();
-                    string[] thisLine = line.Split(delims);
-                    string firstIndex = "";
-
-                    if (thisLine.Length > 0)
-                        firstIndex = thisLine[0];
-                    // First look for latitude
-                    while (firstIndex != "Latitude" && file.EndOfStream == false)
-                    {
-                        line = file.ReadLine();
-                        firstDataRow++;
-                        line.Trim();
-                        thisLine = line.Split(delims);
-
-                        if (thisLine.Length > 0)
-                            firstIndex = thisLine[0];
-                    }
-
-                    if (firstIndex != "Latitude")
-                    {
-                        MessageBox.Show("Error reading file. Couldn't find Latitude", "Continuum 3.0");
-                        return false;
-                    }
-
-                    double thisLat = Convert.ToDouble(thisLine[thisLine.Length - 1]);
-
-                    // Now look for longitude
-                    line = file.ReadLine();
-                    firstDataRow++;
-                    line.Trim();
-                    thisLine = line.Split(delims);
-
-                    if (thisLine.Length > 0)
-                        firstIndex = thisLine[0];
-
-                    while (firstIndex != "Longitude" && file.EndOfStream == false)
-                    {
-                        line = file.ReadLine();
-                        firstDataRow++;
-                        line.Trim();
-                        thisLine = line.Split(delims);
-
-                        if (thisLine.Length > 0)
-                            firstIndex = thisLine[0];
-                    }
-
-                    if (firstIndex != "Longitude")
-                    {
-                        MessageBox.Show("Error reading file. Couldn't find Longitude", "Continuum 3.0");
-                        return false;
-                    }
-
-                    double thisLong = Convert.ToDouble(thisLine[thisLine.Length - 1]);
-
-                    // Check if UTM datum has been defined, if not, ask user
-                    if (thisInst.UTM_conversions.savedDatumIndex == 100)
-                    {
-                        UTM_datum thisDatum = new UTM_datum();
-                        thisDatum.ShowDialog();
-                        thisInst.UTM_conversions.savedDatumIndex = thisDatum.cbo_Datums.SelectedIndex;
-                        thisInst.UTM_conversions.hemisphere = thisDatum.cboNorthOrSouth.SelectedItem.ToString();
-                    }
-
-                    UTM_conversion.UTM_coords theseUTMs = thisInst.UTM_conversions.LLtoUTM(thisLat, thisLong);
-                    double thisUTMX = theseUTMs.UTMEasting;
-                    double thisUTMY = theseUTMs.UTMNorthing;
-
-                    thisInst.txtUTMDatum.Text = thisInst.UTM_conversions.GetDatumString(thisInst.UTM_conversions.savedDatumIndex);
-                    thisInst.txtUTMZone.Text = thisInst.UTM_conversions.UTMZoneNumber.ToString() + thisInst.UTM_conversions.hemisphere.Substring(0, 1);
-
-                    // Read file until it gets to header (starts with Date/Time)
-
-                    line = file.ReadLine();
-                    firstDataRow++;
-                    line.Trim();
-                    header = line.Split(delims);
-
-                    if (header.Length > 0)
-                        firstIndex = header[0];
-
-                    while (firstIndex != "Date/Time" && file.EndOfStream == false)
-                    {
-                        line = file.ReadLine();
-                        firstDataRow++;
-                        line.Trim();
-                        header = line.Split(delims);
-
-                        if (header.Length > 0)
-                            firstIndex = header[0];
-                    }
-
-                    if (firstIndex != "Date/Time")
-                    {
-                        MessageBox.Show("Error reading file. Couldn't find row with headers", "Continuum 3.0");
-                        return false;
-                    }
-
-                    windogSensor[] sensorIndices = new windogSensor[0];
-                    int sensorCount = 0;
-
-                    for (int headInd = 0; headInd < header.Length; headInd++)
-                    {
-                        string thisHeader = header[headInd];
-
-                        // check to see if Anem, Vane or temp
-                        if (thisHeader == "Speed" || thisHeader == "Direction" || thisHeader == "Temperature" || thisHeader == "Density" || thisHeader == "Intensity")
-                        {
-                            // the next header will be the height with 'm'
-                            int unitInd = header[headInd + 1].LastIndexOf('m');
-                            int headerLen = header[headInd + 1].Length;
-                            int thisHeight = Convert.ToInt16(header[headInd + 1].Substring(0, unitInd));
-
-                            sensorCount++;
-                            Array.Resize(ref sensorIndices, sensorCount);
-                            sensorIndices[sensorCount - 1].height = thisHeight;
-                            sensorIndices[sensorCount - 1].index = sensorCount;
-                            sensorIndices[sensorCount - 1].sensorType = thisHeader;
-
-                            if (thisHeader == "Speed")
-                            {
-                                int numAnems = thisMetData.GetNumAnems();
-                                Array.Resize(ref thisMetData.anems, numAnems + 1);
-                                thisMetData.anems[numAnems].height = thisHeight;
-                            }
-                            else if (thisHeader == "Direction")
-                            {
-                                int numVanes = thisMetData.GetNumVanes();
-                                Array.Resize(ref thisMetData.vanes, numVanes + 1);
-                                thisMetData.vanes[numVanes].height = thisHeight;
-                            }
-                            else if (thisHeader == "Temperature")
-                            {
-                                int numTemps = thisMetData.GetNumTemps();
-                                Array.Resize(ref thisMetData.temps, numTemps + 1);
-                                thisMetData.temps[numTemps].height = thisHeight;
-                            }
-
-                        }
-                    }
-
-                    // first read through data file and find Start and End dates
-                    int dataCount = 0;
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        String[] data = line.Split(delims);
-                        if (data.Length > 0)
-                            if (data[0] == "")
-                                break;
-
-                        dataCount++;
-                    }
-
-                    // Size the arrays
-                    for (int i = 0; i < thisMetData.GetNumAnems(); i++)
-                        Array.Resize(ref thisMetData.anems[i].windData, dataCount);
-
-                    for (int i = 0; i < thisMetData.GetNumVanes(); i++)
-                        Array.Resize(ref thisMetData.vanes[i].dirData, dataCount);
-
-                    for (int i = 0; i < thisMetData.GetNumTemps(); i++)
-                        Array.Resize(ref thisMetData.temps[i].temp, dataCount);
-
-
-                    file.Close();
-                    file = new StreamReader(filename);
-
-                    for (int i = 0; i < firstDataRow; i++)
-                        file.ReadLine();
-
-                    // read in all data and fill anems, vanes and temps objects
-                    dataCount = 0;
-
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        string[] data = line.Split(delims);
-
-                        if (data.Length > 0)
-                            if (data[0] == "")
-                                break;
-
-                        int thisYear = Convert.ToInt16(data[0]);
-                        int thisMonth = Convert.ToInt16(data[1]);
-                        int thisDay = Convert.ToInt16(data[2]);
-                        int thisHour = Convert.ToInt16(data[3].Substring(0, 2));
-                        int thisMinute = Convert.ToInt16(data[3].Substring(2, 2));
-
-                        DateTime thisTimeStamp = new DateTime(thisYear, thisMonth, thisDay, thisHour, 0, 0);
-
-                        for (int i = 0; i < thisMetData.GetNumAnems(); i++)
-                            thisMetData.anems[i].windData[dataCount].timeStamp = thisTimeStamp;
-
-                        for (int i = 0; i < thisMetData.GetNumVanes(); i++)
-                            thisMetData.vanes[i].dirData[dataCount].timeStamp = thisTimeStamp;
-
-                        for (int i = 0; i < thisMetData.GetNumTemps(); i++)
-                            thisMetData.temps[i].temp[dataCount].timeStamp = thisTimeStamp;
-
-                        for (int ind = 4; ind < data.Length; ind++)
-                        {
-                            for (int sensorInd = 0; sensorInd < sensorCount; sensorInd++)
-                            {
-                                if (sensorIndices[sensorInd].index == (ind - 3)) // Data starts after time stamp which takes up first four indices
-                                {
-                                    if (sensorIndices[sensorInd].sensorType == "Speed")
-                                    {
-                                        for (int i = 0; i < thisMetData.GetNumAnems(); i++)
-                                        {
-                                            if (thisMetData.anems[i].height == sensorIndices[sensorInd].height)
-                                            {
-                                                thisMetData.anems[i].windData[dataCount].avg = Convert.ToDouble(data[ind]);
-                                                thisMetData.anems[i].windData[dataCount].filterFlag = Met_Data_Filter.Filter_Flags.Valid;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else if (sensorIndices[sensorInd].sensorType == "Direction")
-                                    {
-                                        for (int i = 0; i < thisMetData.GetNumVanes(); i++)
-                                        {
-                                            if (thisMetData.vanes[i].height == sensorIndices[sensorInd].height)
-                                            {
-                                                thisMetData.vanes[i].dirData[dataCount].avg = Convert.ToDouble(data[ind]);
-                                                thisMetData.vanes[i].dirData[dataCount].filterFlag = Met_Data_Filter.Filter_Flags.Valid;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else if (sensorIndices[sensorInd].sensorType == "Temperature")
-                                    {
-                                        for (int i = 0; i < thisMetData.GetNumTemps(); i++)
-                                        {
-                                            if (thisMetData.temps[i].height == sensorIndices[sensorInd].height)
-                                            {
-                                                thisMetData.temps[i].temp[dataCount].avg = Convert.ToDouble(data[ind]);
-                                                thisMetData.temps[i].temp[dataCount].filterFlag = Met_Data_Filter.Filter_Flags.Valid;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else if (sensorIndices[sensorInd].sensorType == "Intensity")
-                                    {
-                                        for (int i = 0; i < thisMetData.GetNumAnems(); i++)
-                                        {
-                                            if (thisMetData.anems[i].height == sensorIndices[sensorInd].height)
-                                            {
-                                                // Convert TI into SD
-                                                double thisSD = thisMetData.anems[i].windData[dataCount].avg * Convert.ToDouble(data[ind]);
-
-                                                thisMetData.anems[i].windData[dataCount].SD = thisSD;
-                                                thisMetData.anems[i].windData[dataCount].filterFlag = Met_Data_Filter.Filter_Flags.Valid;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        dataCount++;
-                    }
-
-                    if (thisMetData.GetNumAnems() > 0)
-                        if (thisMetData.anems[0].windData.Length > 0)
-                        {
-                            thisMetData.allStartDate = thisMetData.anems[0].windData[0].timeStamp;
-                            thisMetData.allEndDate = thisMetData.anems[0].windData[thisMetData.anems[0].windData.Length - 1].timeStamp;
-                            thisMetData.startDate = thisMetData.anems[0].windData[0].timeStamp;
-                            thisMetData.endDate = thisMetData.anems[0].windData[thisMetData.anems[0].windData.Length - 1].timeStamp;
-                        }
-
-                    file.Close();
-
-                    ExtrapolateAddMetTimeSeries(metName, thisUTMX, thisUTMY, thisMetData, thisInst);
-                }
-                catch
-                {
-                    thisMetData.anems = new Met_Data_Filter.Anem_Data[0];
-                    thisMetData.vanes = new Met_Data_Filter.Vane_Data[0];
-                    thisMetData.temps = new Met_Data_Filter.Temp_Data[0];
-                    file.Close();
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-
+        /// <summary> Runs MCP at selected met site using selected MCP method. </summary>       
         public void RunMCP(ref Met thisMet, MERRA thisMERRA, Continuum thisInst, string MCP_method)
         {            
             thisMet.mcp = new MCP();
@@ -2428,15 +1730,15 @@ namespace ContinuumNS
 
             // Get extrapolated met dat as the target data
             thisMet.mcp.targetData = thisMet.mcp.GetTargetData(thisInst.modeledHeight, thisMet);
-
-       //     thisMet.metData.FindStartEndDatesWithMaxRecovery();            
+                              
             thisMet.mcp.FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate);
             
-            if (thisMet.mcp.gotConc == true)
-                thisMet.mcp.DoMCP(thisMet.mcp.concStart, thisMet.mcp.concEnd, true, MCP_method, thisInst, thisMet);                                   
+            if (thisMet.mcp.concData.Length > 0)
+                thisMet.mcp.DoMCP(thisMet.mcp.GetStartOrEndDate("Concurrent", "Start"), thisMet.mcp.GetStartOrEndDate("Concurrent", "End"), true, MCP_method, thisInst, thisMet);                                   
             
         }
 
+        /// <summary> Adds met time series data to database and clears data from object. </summary>       
         public void AddAllMetDataToDBAndClear(Continuum thisInst)
         {
             if (thisInst.metList.isTimeSeries == false)
@@ -2450,10 +1752,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Clears all MCP reference, target, concurrent and LT estimate data. Not saved in file. It's regenerated as needed. </summary>
         public void ClearMCPRefTargetConcLTEstData()
-        {
-            // Clears all MCP reference, target, concurrent and LT estimate data. Not saved in file. It's regenerated as needed
-            
+        {           
             for (int i = 0; i < ThisCount; i++)
             {
                 if (metItem[i].mcp != null)
@@ -2461,14 +1762,12 @@ namespace ContinuumNS
                     metItem[i].mcp.refData = new MCP.Site_data[0];
                     metItem[i].mcp.targetData = new MCP.Site_data[0];
                     metItem[i].mcp.concData = new MCP.Concurrent_data[0];
-                    metItem[i].mcp.LT_WS_Ests = new MCP.Site_data[0];
-                    metItem[i].mcp.gotConc = false;
-                    metItem[i].mcp.gotRef = false;
-                    metItem[i].mcp.gotTarg = false;
+                    metItem[i].mcp.LT_WS_Ests = new MCP.Site_data[0];                   
                 }
             }
         }
 
+        /// <summary> Gets wind direction index of specified wind direction. </summary>
         public int GetWD_Ind(double thisWD)
         {
             int WD_Ind = 0;
@@ -2484,9 +1783,9 @@ namespace ContinuumNS
             return WD_Ind;
         }
 
+        /// <summary> Finds and returns Met site closest to target UTMX/Y. </summary>
         public Met GetClosestMet(double targetX, double targetY)
-        {
-            // Finds and returns Met site closest to target UTMX/Y
+        {            
             Met closestMet = new Met();
             double minDist = 1000000;
             TopoInfo topo = new TopoInfo(); // Created for CalcDistanceBetweenTwoPoints function
@@ -2505,25 +1804,24 @@ namespace ContinuumNS
             return closestMet;
         }
 
+        /// <summary> Checks if all met sites have MCP calcs (time series model only) and sets allMCPd flag. </summary>
         public void AreAllMetsMCPd()
-        {
-            // Checks if all met sites have MCP calcs (time series model only) and sees allMCPd flag
+        {             
             allMCPd = true;
 
             for (int i = 0; i < ThisCount; i++)
             {
                 if (metItem[i].mcp == null)
                     allMCPd = false;
-                else if (metItem[i].mcp.gotMCP_Est == false)
+                else if (metItem[i].mcp.HaveMCP_Estimate("Any") == false)
                     allMCPd = false;
             }
 
         }
 
+        /// <summary> Resets all mets' exposure, grid stats, turbulence, and WSWD_Dists. This is called when the numWD is changed on MCP tab. </summary>
         public void ResetMetParams()
-        {
-            // Resets all mets' exposure, grid stats, turbulence, and WSWD_Dists. This is called when the numWD is changed on MCP tab
-            
+        {                        
             for (int i = 0; i < ThisCount; i++)
             {
                 metItem[i].expo = null;

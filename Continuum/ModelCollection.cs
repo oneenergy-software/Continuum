@@ -1,50 +1,112 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 
 namespace ContinuumNS
 {
+    /// <summary> Class that holds list of Continuum models and functions to add/delete models, to generate average estimates based on model weights, and to create time series data. </summary>
     [Serializable()]
     public class ModelCollection
-
     {
-        public Model[,] models;  // List of models; i = Model ind (0 = default), j = radius ind        
-        public double maxElevAllowed = 300; // Maximum elevation difference between predictor and target site for wind speed estimate to be formed
-        public double maxP10ExpoAllowed = 200; // Maximum P10 exposure difference between predictor and target site for wind speed estimate to be formed
-             
-        public struct WS_Est_Struct {
+        /// <summary> List of models; i = Model ind, j = radius ind  </summary>
+        public Model[,] models;
+        /// <summary> Maximum elevation difference between predictor and target site for wind speed estimate to be formed (not currently used)  </summary>
+        public double maxElevAllowed = 300;
+        /// <summary> Maximum P10 exposure difference between predictor and target site for wind speed estimate to be formed (not currently used)  </summary>
+        public double maxP10ExpoAllowed = 200;
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Holds sectorwise wind speeds at site of interest and sectorwise wind speed estimates at each node in path of nodes  </summary>
+        public struct WS_Est_Struct 
+        {
+            /// <summary> Sectorwise wind speed estimates </summary>
             public double[] sectorWS;
+            /// <summary> Sectorwise wind speed estimates at each node in path of nodes </summary>
             public double[,] sectorWS_AtNodes;
         }
 
-        /// <summary>
-        /// Contains a model coefficient, flow type, estimated change in wind speed, and string specifying either exposure or roughness model
-        /// </summary>
-        public struct Coeff_Delta_WS {
+        /// <summary> Contains a model coefficient, flow type, estimated change in wind speed, and string specifying either exposure or roughness model </summary>
+        public struct Coeff_Delta_WS 
+        {
+            /// <summary> Model coefficient </summary>
             public double coeff;
-            public string flowType;  // Downhill, uphill, speed-up, valley or turbulent
+            /// <summary> Flow type: Downhill, uphill, speed-up, valley or turbulent </summary>
+            public string flowType;
+            /// <summary> Estimated change in wind speed </summary>
             public double deltaWS_Expo;
-            public string expoOrRough;  // specifies whether refers to exposure model or surface roughness model "Expo" or "SRDH"
+            /// <summary> specifies whether refers to exposure model or surface roughness model "Expo" or "SRDH" </summary>
+            public string expoOrRough;
         }
 
+        /// <summary> Contains model, predictor met, and wind speed weight </summary>
         public struct ModelWeights
         {
+            /// <summary> Predictor met </summary>
             public Met met;
+            /// <summary> Continuum model </summary>
             public Model model;
+            /// <summary> Wind speed estimate weight to apply </summary>
             public double weight;
         }
 
+        /// <summary> Holds list of WS/WD time series </summary>
+        public struct MetLTEsts
+        {
+            /// <summary> List of WS/WD time series </summary>
+            public MCP.Site_data[] estWS;
+        }
+
+        /// <summary> Holds list of Models (one for each radius of investigation) </summary>
+        public struct Models
+        {
+            /// <summary> List of Models </summary>
+            public Model[] modelsByRad;
+        }
+
+        /// <summary> Holds predictor met, wind flow model, and path of nodes to site of interest. </summary>
+        public struct PathsOfNodes
+        {
+            /// <summary> Path of nodes between met and site of interest </summary>
+            public Nodes[] path;
+            /// <summary> Model to use to conduct estimate </summary>
+            public Model model;
+            /// <summary> Predicting met site </summary>
+            public Met met;
+        }
+
+        /// <summary> Holds wind direction, wind speed (free-stream and waked), and energy production (gross and net) data for specified timestamp. </summary>
+        [Serializable]
+        public struct TimeSeries
+        {
+            /// <summary> Time stamp </summary>
+            public DateTime dateTime;
+            /// <summary> Free-stream wind speed </summary>
+            public double freeStreamWS;
+            /// <summary> Waked wind speed </summary>
+            public double wakedWS;
+            /// <summary> Wind direction </summary>
+            public double WD;
+            /// <summary> Gross energy production </summary>
+            public double grossEnergy;
+            /// <summary> Net energy production </summary>
+            public double netEnergy;
+        }
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Returns number of models in list </summary>
         public int ModelCount
         {
             get { if (models == null)
                     return 0;
                 else return models.GetUpperBound(0) + 1; }
-        }        
+        }
 
+        /// <summary> Returns number of Invest_Params (i.e. radius and exponent) </summary>
         public int RadiiCount
         {
             get
@@ -55,52 +117,49 @@ namespace ContinuumNS
                     return models.GetUpperBound(1) + 1;
             }
         }
-    
-        public void ClearAll() {
-                //  Clears all models including site-calibrated
-                models = null;                
-        }               
-          
-        public void ClearAllExceptImported()
-        {
-            // Clears all models except imported models
-            Model[] importedModel = null;
 
+        /// <summary> Clears all models from list. </summary>
+        public void ClearAll()
+        {                 
+            models = null;                
+        }
+
+        /// <summary> Clears all models except imported models </summary>
+        public void ClearAllExceptImported()
+        {        
             if (ModelCount > 0)
             {
-                Model[,] newModel = null;
+                Model[,] importedModel = null;
                 int haveImported = GetImportedModelInd();
 
-                if (haveImported != -1)
-                {
-                    newModel = new Model[2, RadiiCount];
-                    importedModel = new Model[RadiiCount];
-                }
-                
+                if (haveImported != -1)               
+                    importedModel = new Model[1, RadiiCount];                   
+                                
                 for (int i = 0; i < ModelCount; i++)
                 {
                     if (models[i, 0].isImported)
                     {
-                        for (int j = 0; j <= RadiiCount - 1; j++)                        
-                            newModel[1, j] = models[i, j]; 
+                        for (int j = 0; j < RadiiCount; j++)
+                            importedModel[0, j] = models[i, j]; 
                     }
                 }
 
-                models = newModel;
+                models = importedModel;
             }            
         }
 
-        public void ClearImported() { 
-            // Clears all imported models
+        /// <summary> Clears all imported models </summary>
+        public void ClearImported()
+        {            
             if (ModelCount > 0 ) {
-                Model[,] newModel = null;
+                
                 int modelInd = 0;
 
                 for (int i = 0; i < ModelCount; i++)
                     if (models[i, 0].isImported == false)
                         modelInd++;
 
-                newModel = new Model[modelInd, RadiiCount];
+                Model[,] newModel = new Model[modelInd, RadiiCount];
                 modelInd = 0;
 
                 for (int i = 0; i < ModelCount; i++)
@@ -117,55 +176,12 @@ namespace ContinuumNS
                 models = newModel;
             }               
             
-        }       
-
-  /*      public void UpdateDefaultModel(Continuum thisInst)
-        {
-            // Updates the default model with new met list and resets the met cross-prediction errors
-            string[] metsUsed = thisInst.metList.GetMetsUsed();
-            int numRadii = thisInst.radiiList.ThisCount;
-            int numWD = thisInst.metList.numWD;
-
-            if (ModelCount > 0)
-            {
-                for (int j = 0; j < numRadii; j++)
-                {
-                    models[0, j].RMS_WS_Est = 0;
-                    models[0, j].RMS_Sect_WS_Est = new double[numWD];
-                    models[0, j].metsUsed = metsUsed;
-                }
-
-                for (int i = 0; i < thisInst.metPairList.PairCount; i++)
-                    for (int j = 0; j <= numRadii - 1; j++)
-                        thisInst.metPairList.metPairs[i].WS_Pred[0, j].model = models[0, j];
-
-            }
-            else { // create default model
-                Model[] model = new Model[numRadii];
-                
-                for (int i = 0; i <= numRadii - 1; i++)
-                {
-                    model[i] = new Model();
-                    model[i].timeOfDay = Met.TOD.All;
-                    model[i].season = Met.Season.All;
-                    model[i].SizeArrays(numWD);
-
-                    model[i].SetDefaultModelCoeffs(numWD);
-                    model[i].SetDefaultLimits();
-                    model[i].radius = thisInst.radiiList.investItem[i].radius;
-                    model[i].metsUsed = metsUsed;                    
-                }
-
-                // Create new UWDW model in UWDW collection
-                AddModel(model);
-            }                        
-            
         }
-*/
-        public void AddModel(Model[] newModel) {
-            // Adds a model to the list of models
-            int numRadii = newModel.Length;
 
+        /// <summary> Adds a model to the list of models </summary>  
+        public void AddModel(Model[] newModel)
+        {             
+            int numRadii = newModel.Length;
             Model[,] tempModels = new Model[ModelCount, numRadii];
 
             // Copy existing UW&DW models into temp array
@@ -175,7 +191,7 @@ namespace ContinuumNS
 
             models = new Model[ModelCount + 1, numRadii];
 
-            // Copy UW&DW models back in
+            // Copy models back in
             for (int i = 0; i <= ModelCount - 2; i++)
                 for (int j = 0; j <= numRadii - 1; j++)
                     models[i, j] = tempModels[i, j];               
@@ -192,9 +208,7 @@ namespace ContinuumNS
 
         }               
 
-        /// <summary>
-        /// Calculates and returns wind speed estimates weights at a target site for each predictor met and each model and TOD/Season bin
-        /// </summary>
+        /// <summary> Calculates and returns wind speed estimates weights at a target site for each predictor met and each model and TOD/Season bin </summary>
         public ModelWeights[] GetWS_EstWeights(Met[] predictorMets, Nodes targetNode, Model[] models, double[] windRose, InvestCollection radiiList)
         {             
             int numPredMets = predictorMets.Length;
@@ -311,10 +325,9 @@ namespace ContinuumNS
             return weights;
         }
 
+        /// <summary> Finds and returns wind speed estimate weight for specified model and predictor met </summary>  
         public double GetWeightForMetAndModel(ModelWeights[] modelWeights, Met thisMet, Model thisModel)
-        {
-         //   double weight = 0;
-            
+        {                    
             if (modelWeights == null)
                 return 0;
 
@@ -327,9 +340,9 @@ namespace ContinuumNS
             return 0;
         }
 
+        /// <summary>  Returns false if site-calibration has not been performed yet for specified list of met sites and time of day and seasonal bins </summary> 
         public bool IterationAlreadyDone(Continuum thisInst, string[] metsUsed, Met.TOD thisTOD, Met.Season thisSeason)
-        {
-            //  Returns false if site-calibration hasn//t been performed yet
+        {            
             bool alreadyDone = false;
             
             for (int i = 0; i < ModelCount; i++)
@@ -343,11 +356,11 @@ namespace ContinuumNS
             }
 
             return alreadyDone;
-        }              
+        }
 
+        /// <summary>  Returns index of imported model in list of models </summary> 
         public int GetImportedModelInd()
-        {
-            // Returns index of imported model in list of models
+        {            
             int importedInd = -1;
 
             for (int i = 0; i < ModelCount; i++)
@@ -362,11 +375,10 @@ namespace ContinuumNS
 
             return importedInd;
         }
-                
-        public Model[] GetModels(Continuum thisInst, string[] metsUsed, Met.TOD thisTOD, Met.Season thisSeason
-            , double thisHeight, bool createIfNeeded)
-        {
-            // Returns models with specified mets, radius range and site-calibrated vs. default
+
+        /// <summary> Returns models with specified mets, time of day bin, and season bin </summary> 
+        public Model[] GetModels(Continuum thisInst, string[] metsUsed, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight, bool createIfNeeded)
+        {            
             Model[] thisModel = new Model[RadiiCount];
             bool sameMets = false;
             
@@ -401,10 +413,9 @@ namespace ContinuumNS
             return thisModel;
         }
 
+        /// <summary> Returns true if two models are identical </summary> 
         public bool IsSameModel(Model model1, Model model2)
-        {
-            //  Returns true if two models are identical
-            bool isSameMets = false;
+        {            
             bool isSame = true;
             int numWD;
             try
@@ -419,7 +430,7 @@ namespace ContinuumNS
 
             if (model1 != null && model2 != null)
             {
-                isSameMets = sameMets(model1.metsUsed, model2.metsUsed);
+                bool isSameMets = sameMets(model1.metsUsed, model2.metsUsed);
                 for (int WD = 0; WD < numWD; WD++)
                 {
                     try
@@ -451,9 +462,9 @@ namespace ContinuumNS
             return isSame;
         }
 
+        /// <summary> Returns true if two lists of mets are identical or if both lists contain one met (i.e. default model) </summary> 
         public bool sameMets(string[] metsUsed1, string[] metsUsed2)
-        {
-            //  Returns true if two lists of mets are identical or if both lists contain one met (i.e. default model)
+        {              
             string string1 = "";
             string string2 = "";
             bool sameMetSites = false;
@@ -483,9 +494,7 @@ namespace ContinuumNS
             return sameMetSites;
         }
 
-        /// <summary>
-        /// With specified model settings and met list, creates site-calibrated model for each radius of investigation and adds to list of Models
-        /// </summary>        
+        /// <summary> With specified model settings and met list, creates site-calibrated model for each radius of investigation and adds to list of Models </summary>        
         public void FindSiteCalibratedModels(Continuum thisInst, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
         {                       
             // need more than one met to create site-calibrate model
@@ -496,8 +505,9 @@ namespace ContinuumNS
             if (thisInst.metList.ThisCount > 1)
                 CreateModel(thisInst.metList.GetMetsUsed(), thisInst, thisTOD, thisSeason, thisHeight);                               
             
-        }      
-        
+        }
+
+        /// <summary> Creates default Continuum models (one for each radius of investigation and exponent) and adds them to list </summary>  
         public void CreateDefaultModels(Continuum thisInst)
         {
             int numRadii = thisInst.radiiList.ThisCount;
@@ -523,10 +533,9 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Opens model coefficient file and creates model with imported coefficients </summary> 
         public void ImportModelsCSV(Continuum thisInst)
-        {
-            // Opens model coefficient file and creates model with imported coefficients
-
+        {            
             int numRadii = thisInst.radiiList.ThisCount;
             Model[] importModel = new Model[numRadii];                       
             
@@ -701,9 +710,7 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary>
-        /// Creates and returns site-calibrated models using specified mets and model settings
-        /// </summary>        
+        /// <summary> Creates and returns site-calibrated models using specified mets and model settings </summary>        
         public Model[] CreateModel(string[] metsUsed, Continuum thisInst, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
         {             
             int numPairs = thisInst.metPairList.PairCount;
@@ -771,10 +778,9 @@ namespace ContinuumNS
             return models;
         }
 
-    
+        /// <summary> Calculates and returns the total estimated change in wind speed. </summary> 
         public double GetTotalWS(Coeff_Delta_WS[] coeffsDelta)
-        {
-            //  Calculates and returns the total change in wind speed
+        {            
             double totalWS = 0;
             int numCoeffs = 0;
 
@@ -788,9 +794,7 @@ namespace ContinuumNS
             return totalWS;
         }
 
-        /// <summary>
-        /// Performs and returns wind speed estimate along path of nodes using specified model in one wind direction sector (WD_Ind)
-        /// </summary>        
+        /// <summary> Performs and returns wind speed estimate along path of nodes using specified model in one wind direction sector (WD_Ind) </summary>        
         public double DoWS_EstimateOneWDTimeSeries(double startWS, int WD_Ind, Met startMet, Nodes endNode, Nodes[] pathOfNodes, Model thisModel, Continuum thisInst)
         {           
             double thisWS_Est = 0;
@@ -1115,9 +1119,7 @@ namespace ContinuumNS
             return thisWS_Est;
         }
 
-        /// <summary>
-        /// Performs wind speed estimate along path of nodes using specified model and returns WS_Est_Struct object with results
-        /// </summary>        
+        /// <summary> Performs wind speed estimate along path of nodes using specified model and returns WS_Est_Struct object with results </summary>        
         public WS_Est_Struct DoWS_Estimate(Met startMet, Nodes endNode, Nodes[] pathOfNodes, Model thisModel, Continuum thisInst)
         {             
             WS_Est_Struct WS_Est_Return = new WS_Est_Struct();
@@ -1470,12 +1472,9 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Calculates the RMS of all met cross-prediction errors (overall and sectorwise) for specified models. Only using met pairs where both mets are used in the models
-        /// </summary>        
+        /// <summary> Calculates the RMS of all met cross-prediction errors (overall and sectorwise) for specified models. Only using met pairs where both mets are used in the models </summary>        
         public void CalcRMS_Overall_and_Sectorwise(ref Model[] models, Continuum thisInst)
-        {           
-            
+        {                   
             int numRadii = models.Length;
             int numWD = models[0].downhill_A.Length;
             double RMS_WS_Est = 0;
@@ -1546,15 +1545,14 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Finds and returns the index of model in metPair's WS_Estimates. </summary>
         public int GetWS_PredInd(Pair_Of_Mets metPair, Model[] model)
-        {
-            // Finds and returns the index of model in metPair//s WS_Estimates
+        {           
             int WS_PredInd = -1;
-            bool isSame = false;
-
+            
             for (int i = 0; i < metPair.WS_PredCount; i++)
             {
-                isSame = IsSameModel(model[0], metPair.WS_Pred[i, 0].model); // just comparing with first radii to find WS_PredInd
+                bool isSame = IsSameModel(model[0], metPair.WS_Pred[i, 0].model); // just comparing with first radii to find WS_PredInd
                 if (isSame == true)
                 {
                     WS_PredInd = i;
@@ -1565,9 +1563,7 @@ namespace ContinuumNS
             return WS_PredInd;
         }
 
-        /// <summary>
-        /// Calculates and returns the coefficients and change in wind speed for each flow type based on change in either UW or DW exposure
-        /// </summary>        
+        /// <summary> Calculates and returns the coefficients and change in wind speed due to changes in downwind exposure. </summary>        
         public Coeff_Delta_WS[] Get_DeltaWS_DW_Expo(double WS1, double UW1, double UW2, double DW1, double DW2, double P10_UW, double P10_DW, Model thisModel, int WD_Ind, bool useSepModel)
         {            
             Coeff_Delta_WS[] coeffsDelta = null;
@@ -1715,9 +1711,9 @@ namespace ContinuumNS
             return coeffsDelta;
         }
 
+        /// <summary> Adds coefficients and delta WS to list of coeffsDelta. </summary>
         public void AddCoeffDeltaWS(ref Coeff_Delta_WS[] coeffsDelta, double coeff, double deltaWS, string flowType, string Expo_or_SRDH)
-        {
-            //  Adds coefficients and delta WS to list of coeffsDelta
+        {            
             int numCoeffDelt = 0;
             if (coeffsDelta != null)
                 numCoeffDelt = coeffsDelta.Length;
@@ -1731,9 +1727,9 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Returns flow separation nodes for specified WD sector if they exist. </summary>
         public NodeCollection.Sep_Nodes GetFlowSepNodes(NodeCollection.Sep_Nodes[] flowSepNodes, int WD_Ind)
-        {
-            // Returns flow separation nodes for specified WD sector if they exist
+        {            
             NodeCollection.Sep_Nodes thisFlowSep = new NodeCollection.Sep_Nodes();
             int numFS = 0;
 
@@ -1751,6 +1747,7 @@ namespace ContinuumNS
             return thisFlowSep;
         }
 
+        /// <summary> Calculates and returns the coefficients and change in wind speed due to changes in upwind exposure during flow separation. </summary>
         public Coeff_Delta_WS[] GetDeltaWS_UW_Turbulent(NodeCollection.Node_UTMs siteCoords, double siteUWExpo, NodeCollection.Sep_Nodes flowSepNodes, Model thisModel, 
                 bool fromSiteToSepNode, int WD_Ind, int radiusIndex, double P10_UW, double P10_DW)
         {
@@ -1805,9 +1802,7 @@ namespace ContinuumNS
             return coeffsDelta;
         }
 
-        /// <summary>
-        /// Calculates and returns the coeffs and change in wind speed for each flow type based on change in UW exposure
-        /// </summary>        
+        /// <summary> Calculates and returns the coeffs and change in wind speed for each flow type based on change in upwind exposure </summary>        
         public Coeff_Delta_WS[] Get_DeltaWS_UW_Expo(double UW1, double UW2, double DW1, double DW2, double P10_UW, double P10_DW, Model thisModel, int WD_Ind, int radiusIndex, NodeCollection.Sep_Nodes[] sepNodes1,
                                             NodeCollection.Sep_Nodes[] sepNodes2, double WS, bool useFlowSep, NodeCollection.Node_UTMs node1Coords, NodeCollection.Node_UTMs node2Coords)
         
@@ -2298,18 +2293,11 @@ namespace ContinuumNS
                 AddCoeffDeltaWS(ref coeffsDelta, 0, deltaWS, "Total", "Expo");
 
             }
-            else
-            {
-                flow1 = flow1;
-            }
-
+            
             return coeffsDelta;
         }
 
-        /// <summary>
-        /// Calculates and returns the change in WS based on change in surface roughness and displacement height
-        /// </summary>        
-        /// <returns></returns>
+        /// <summary> Calculates and returns the change in WS based on change in surface roughness and displacement height. </summary>       
         public double GetDeltaWS_SRDH(double WS1, double HH, double SR1, double SR2, double DH1, double DH2, double Stab_1, double Stab_2)
         {             
             double deltaWS = 0;
@@ -2321,9 +2309,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Calculates and returns the equivalent sectorwise wind speeds at the target site based on the sectorwise wind speeds and wind rose at the predictor site
-        /// </summary>        
+        /// <summary> Calculates and returns the equivalent sectorwise wind speeds at the target site based on the sectorwise wind speeds and wind rose at the predictor site. </summary>        
         public double[] GetWS_Equiv(double[] WR_Pred, double[] WR_Targ, double[] WS_Pred)
         {
             // Flow Rotation Model 4/20/16
@@ -2331,7 +2317,7 @@ namespace ContinuumNS
             // Also calculates the change in the wind rose for each sector
             // Adj. factors are defined, one for sectors with positive WR change and one for sectors with negative delta WR with a default value of 0.01 
             // WS_Equiv is calculated for each sector = WS_Pred * Adj. factors * deltaWR
-            // Wgt average wind speed is calculated with WS_Equiv. if ( Avg WS < Avg WS Pred then posAdj is increed using 0.02 increments until Avg WS = Avg WS Pred
+            // Wgt average wind speed is calculated with WS_Equiv. if Avg WS < Avg WS Pred then posAdj is increed using 0.02 increments until Avg WS = Avg WS Pred
             // Vice-versa if Avg WS > Avg WS Pred then Neg_adj incree
                         
             double posAdj = 0;
@@ -2339,8 +2325,7 @@ namespace ContinuumNS
 
             double avgWS_Pred = 0;
             double avgWS_Equiv = 0;
-            double WS_Diff = 0;
-
+            
             int numWD = WR_Pred.Length;
             double[] WS_Equiv = new double[numWD];
             double[] deltaWR = new double[numWD];
@@ -2358,7 +2343,7 @@ namespace ContinuumNS
                 avgWS_Equiv = avgWS_Equiv + WS_Equiv[i] * WR_Targ[i];
             }
 
-            WS_Diff = avgWS_Equiv - avgWS_Pred;
+            double WS_Diff = avgWS_Equiv - avgWS_Pred;
             double thisMin = 1000;
 
             while (Math.Abs(WS_Diff) > 0.01 && thisMin > 0.05)
@@ -2397,36 +2382,9 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Returns two boolean flags. One for elevDiffTooBig and the second one for expoDiffTooBig
-        /// </summary>
-        public bool[] IsOutsideModelLimit(Grid_Info Site_1_Stats, double Site_1_Elev, Grid_Info Site_2_Stats, double Site_2_Elev, int radiusIndex, double[] windRose)
-        {
-            bool elevDiffTooBig = false;
-            bool expoDiffTooBig = false;
-            bool[] returnedBools = new bool[2];
-
-            if (Math.Abs(Site_1_Elev - Site_2_Elev) > maxElevAllowed)
-                elevDiffTooBig = true;
-           
-            // Check overall expo difference
-            double Site1_Overall_P10DW = Site_1_Stats.GetOverallP10(windRose, radiusIndex, "DW");
-            double Site1_Overall_P10UW = Site_1_Stats.GetOverallP10(windRose, radiusIndex, "UW");
-            double Site2_Overall_P10DW = Site_2_Stats.GetOverallP10(windRose, radiusIndex, "DW");
-            double Site2_Overall_P10UW = Site_2_Stats.GetOverallP10(windRose, radiusIndex, "UW");
-
-            if (Math.Abs(Site1_Overall_P10DW - Site2_Overall_P10DW) > maxP10ExpoAllowed || Math.Abs(Site1_Overall_P10UW - Site2_Overall_P10UW) > maxP10ExpoAllowed)
-                expoDiffTooBig = true;
-
-            returnedBools[0] = elevDiffTooBig;
-            returnedBools[1] = expoDiffTooBig;
-
-            return returnedBools;
-        }
-
+        /// <summary> Finds and returns all models that use specfied met sites. </summary>
         public Model[] GetAllModels(Continuum thisInst, string[] metsUsed)
-        {
-            // Finds and returns all models that use 
+        {             
             Model[] models = new Model[0];
 
             int numTOD = thisInst.metList.numTOD;
@@ -2468,34 +2426,8 @@ namespace ContinuumNS
             return models;
         }                
 
-        public struct MetLTEsts
-        {
-            public MCP.Site_data[] estWS;
-        }
-
-        public struct Models
-        {
-            public Model[] modelsByRad;
-        }
-
-        public struct PathsOfNodes
-        {
-            public Nodes[] path;
-            public Model model;
-            public Met met;
-        }
-
-        [Serializable]
-        public struct TimeSeries
-        {
-            public DateTime dateTime;
-            public double freeStreamWS;
-            public double wakedWS;
-            public double WD;
-            public double grossEnergy;
-            public double netEnergy;
-        }
-
+        
+        /// <summary> Returns all models used in time series analysis. </summary>        
         public Models[] GetAllModelsUsed(Continuum thisInst)
         {
             Models[] models = new Models[1]; // Models struct holds array of Model called modelsByRad (one for each radius)
@@ -2540,14 +2472,13 @@ namespace ContinuumNS
             return models;
         }
 
+        /// <summary> Generates a time series of either gross/net wind speed/energy. Uses seasonal and TOD models and LT estimates at each met site to estimate wind speed. These are combined using WS weights. Returns time series array.
+        /// </summary>
+
         public TimeSeries[] GenerateTimeSeries(Continuum thisInst, string[] metsUsed, Nodes targetNode, TurbineCollection.PowerCurve powerCurve,
             Wake_Model wakeModel, WakeCollection.WakeLossCoeffs[] wakeCoeffs, string MCP_Method)
         {
-            // Generates a time series of either gross/net wind speed/energy.
-            // Uses seasonal and TOD models and LT estimates at each met site to estimate wind speed 
-            // These are combined using WS weights.
-            // Returns time series array
-
+            
             TimeSeries[] thisTS = new TimeSeries[0];
             int numMets = metsUsed.Length;
 
@@ -2561,7 +2492,7 @@ namespace ContinuumNS
                 thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
             // Size time series array to same length at met's long-term estimates
-            int TS_Length = thisInst.merraList.GetLTRefLength(thisInst);
+            int TS_Length = thisInst.merraList.GetLTRefLength();
             Array.Resize(ref thisTS, TS_Length);
 
             // Get LT Estimates at each met used in model. Save in MetLTEsts struct which holds an array of MCP.Site_Data struct           
@@ -2677,7 +2608,7 @@ namespace ContinuumNS
 
                     for (int r = 0; r < numRad; r++)
                     {
-                        Model thisModel = GetSeasonalModels(models, thisTOD, season, r, numRad);
+                        Model thisModel = GetSeasonalModels(models, thisTOD, season, r);
                         Nodes[] thisPath = GetPathNodesForMetAndModel(pathsOfNodes, thisMet, thisModel, thisInst);
                         double thisEst = thisInst.modelList.DoWS_EstimateOneWDTimeSeries(metLT_Ests[m].estWS[i].thisWS, thisWD_Ind, thisMet, targetNode, thisPath, thisModel, thisInst);
                         double thisWeight = GetWeightForMetAndModel(weights, thisMet, thisModel);
@@ -2712,9 +2643,9 @@ namespace ContinuumNS
             return thisTS;
         }
 
-        public Model GetSeasonalModels(Models[] models, Met.TOD thisTOD, Met.Season thisSeason, int radInd, int numRad)
-        {
-           // Finds and returns model with specified settings
+        /// <summary> Finds and returns model with specified settings </summary>
+        public Model GetSeasonalModels(Models[] models, Met.TOD thisTOD, Met.Season thisSeason, int radInd)
+        {           
 
             for (int i = 0; i < models.Length; i++)
                 if (models[i].modelsByRad[0].metsUsed.Length == 1 || (models[i].modelsByRad[0].timeOfDay == thisTOD && models[i].modelsByRad[0].season == thisSeason))
@@ -2723,11 +2654,9 @@ namespace ContinuumNS
             return new Model();
         }
 
+        /// <summary> Finds and returns path of nodes between for specified met and model. </summary>        
         public Nodes[] GetPathNodesForMetAndModel(PathsOfNodes[] thesePaths, Met thisMet, Model thisModel, Continuum thisInst)
-        {
-         //   Nodes[] pathNodes = new Nodes[0];
-         //   ModelCollection modelList = new ModelCollection();
-
+        {         
             if (thesePaths == null)
                 return new Nodes[0];
 
@@ -2738,9 +2667,7 @@ namespace ContinuumNS
             return new Nodes[0];
         }
 
-        /// <summary>
-        /// Calculates and returns WSWD distribution formed from TimeSeries data using either free-stream or waked wind speed. 
-        /// </summary>        
+        /// <summary> Calculates and returns WSWD distribution formed from TimeSeries data using either free-stream or waked wind speed. </summary>        
         public Met.WSWD_Dist CalcWSWD_Dist(TimeSeries[] thisTS, Continuum thisInst, string wakedOrFreestream)
         {
             // Flags are: Waked and Freestream
@@ -2838,9 +2765,7 @@ namespace ContinuumNS
             return thisDist;
         }
 
-        /// <summary>
-        /// Reads in a time series dataset and calculates long-term (LT) Gross AEP, LT CF, sectorwise energy, and monthly values and saves to referenced gross estimates
-        /// </summary>        
+        /// <summary> Reads in a time series dataset and calculates long-term (LT) Gross AEP, LT CF, sectorwise energy, and monthly values and saves to referenced gross estimates. </summary>        
         public void CalcGrossAEP_AndMonthlyEnergy(ref Turbine.Gross_Energy_Est grossEst, ModelCollection.TimeSeries[] thisTS, Continuum thisInst)
         {     
 
@@ -2955,9 +2880,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Reads in a timeseries dataset and calculates LT net AEP, LT CF, sectorwise energy, and monthly values and saves to referenced net energy estimate
-        /// </summary>        
+        /// <summary> Reads in a timeseries dataset and calculates LT net AEP, LT CF, sectorwise energy, and monthly values and saves to referenced net energy estimate </summary>        
         public void CalcNetAEP_AndMonthlyEnergy(ref Turbine.Net_Energy_Est netEst, ModelCollection.TimeSeries[] thisTS, Continuum thisInst)
         {
             if (thisTS == null) return;
@@ -3066,6 +2989,7 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Returns true if model collection contains required models for specified number of time of day and seasonal bins. </summary>        
         public bool HaveRequiredModels(MetCollection metList)
         {
             bool haveModels = false;

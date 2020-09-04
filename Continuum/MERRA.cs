@@ -1,164 +1,140 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-// file:	InsuranceSettlementForm.cs
-//
-// summary:	Implements the insurance settlement Windows Form
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections;
 using System.Windows.Forms;
 using System.IO;
-using System.Globalization;
-using OSGeo.GDAL;
-using OSGeo.OGR;
-using OSGeo.OSR;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ContinuumNS
 {    
+    /// <summary> Class that contains MERRA2 reanalysis data at MERRA2 nodes and interpolated at specified latitude/longitude (if more than 1 MERRA2 node is used). 
+    /// It contains functions that extract data from locally-downloaded MERRA2 datafiles and calculate average wind speed and wind direction from UV data and monthly/yearly energy production statistics.</summary>
     
     [Serializable()]
     public partial class MERRA
     {        
-        /// <summary>   Array of type Wind_Data_and_Prod_Stats to hold interpolated MERRA2 data and calculated monthly and annual energy production. </summary>
+        /// <summary> Site location coordinates, interpolated MERRA2 time series data (50m WS, pressure, and 10m temp), and calculated monthly and annual energy production. </summary>
         public Wind_Data_and_Prod_Stats interpData;
-
-        /// <summary>   Arrays of type MERRA_Node_Data containing Wind_TS data, UTM and Lat/Long coords and XY indices of closest MERRA nodes and 
-        ///             calculated monthly and annual energy production. </summary>
+        /// <summary> List of MERRA2 node data. Each entry contains MERRA2 time series data, MERRA2 node coordinates, and X/Y datafile indices. User selects either 1, 4, or 16 MERRA2 nodes. </summary>
         public MERRA_Node_Data[] MERRA_Nodes = new MERRA_Node_Data[0];
-        /// <summary>  Number of surrounding MERRA nodes to pull </summary>
-
-   //     public Export_Params MERRA_Params;          
-            
-        
-        public bool isUserDefined; // true if not associated with a loaded met site
-        
+        /// <summary> True if not associated with a loaded met site. </summary>
+        public bool isUserDefined;
+        /// <summary> Power curve used to calculate energy production. </summary>
         public TurbineCollection.PowerCurve powerCurve;
-        
-        public double WS_ScaleFactor = 0.85; // Scaling Factor applied to WS 
-
+        /// <summary> Scaling Factor applied to WS. Default = 0.85. </summary>
+        public double WS_ScaleFactor = 0.85;
+        /// <summary> Number of MERRA2 nodes. Options are 1, 4, 16. Default is 1. </summary>
         public int numMERRA_Nodes;
         
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    
         /// <summary>   Struct containing date, WS, WD and energy production for each entry. </summary>
-        ///
-        /// <remarks>   Liz, 1/16/2018. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////               
-
         [Serializable()]
         public struct Wind_Data_and_Prod_Stats
         {
-            public Wind_TS_with_Prod[] TS_Data;            
-            public MonthlyProdByYearAndLTAvg[] Monthly_Prod; // one for every month
-            public YearlyProdAndLTAvg Annual_Prod;      
+            /// <summary> Wind speed, wind direction, and energy production time series data. </summary>
+            public Wind_TS_with_Prod[] TS_Data;
+            /// <summary> Monthly energy production by year and long-term average monthly energy production. </summary>
+            public MonthlyProdByYearAndLTAvg[] Monthly_Prod;
+            /// <summary> Yearly energy production and long-term average yearly energy production. </summary>
+            public YearlyProdAndLTAvg Annual_Prod;
+            /// <summary> Latitude and longitude of site. </summary>
             public UTM_conversion.Lat_Long Coords;
+            /// <summary> UTM coordinates of site. </summary>
             public UTM_conversion.UTM_coords UTM;
+            /// <summary> UTM hour offset. </summary>
             public int UTC_offset;         
         }
 
-        /// <summary>
-        /// Contains time stamp, wind speed, direction, pressure, and temperature data
-        /// </summary>
+        /// <summary> Contains time stamp, wind speed, direction, pressure, and temperature data </summary>
         [Serializable()]
         public struct Wind_TS
-        {            
-            public DateTime ThisDate;            
-            public double WS50m;            
-            public double WD50m;            
-      //      public double Prod;
-
-       //     public double WS10m;
-       //     public double WD10m;
+        {
+            /// <summary> Timestamp </summary>
+            public DateTime ThisDate;
+            /// <summary> 50 m wind speed </summary>
+            public double WS50m;
+            /// <summary> 50 m wind direction </summary>
+            public double WD50m;
+            /// <summary> Surface level pressure </summary>
             public double SurfPress;
+            /// <summary> Sea-level pressure </summary>
             public double SeaPress;
-            public double Temp10m;
-      //      public double Mean_Cloud_Fraction; // MODIS cloud area fraction
-      //      public double Optical_Thick;  // MODIS cloud optical thickness
-      //      public double Total_Cloud_Area_Fraction;  // ISCCP cloud area fraction
-      //      public double Precip; // total precipitation from M2T1NXFLX data set
-      //      public double Precip_Corr; // bias corrected total precipitation
+            /// <summary> 10 m temperature </summary>
+            public double Temp10m;      
         }
 
+        /// <summary> Contains time stamp, wind speed, direction, pressure, temperature, and energy production data </summary>
         [Serializable()]
         public struct Wind_TS_with_Prod
         {
+            /// <summary> Timestamp </summary>
             public DateTime ThisDate;
+            /// <summary> 50 m wind speed </summary>
             public double WS50m;
+            /// <summary> 50 m wind direction </summary>
             public double WD50m;
+            /// <summary> Energy production </summary>
             public double Prod;
-
-            //     public double WS10m;
-            //     public double WD10m;
+            /// <summary> Surface level pressure </summary>
             public double SurfPress;
+            /// <summary> Sea-level pressure </summary>
             public double SeaPress;
-            public double Temp10m;
-            //      public double Mean_Cloud_Fraction; // MODIS cloud area fraction
-            //      public double Optical_Thick;  // MODIS cloud optical thickness
-            //      public double Total_Cloud_Area_Fraction;  // ISCCP cloud area fraction
-            //      public double Precip; // total precipitation from M2T1NXFLX data set
-            //      public double Precip_Corr; // bias corrected total precipitation
+            /// <summary> 10 m temperature </summary>
+            public double Temp10m;            
         }
 
-        [Serializable()]
-        public struct Conc_Data
-        {
-            public DateTime ThisDate;
-            public double Swiss_WS;
-            public double Interp_WS;
-        }
-
+        /// <summary> Contains WS, WD, temperature, and pressure time series data and lat/long and corresponding MERRA2 datafile X/Y indices </summary>
         [Serializable()]
         public struct MERRA_Node_Data
         {
+            /// <summary> WS, WD, temperature, and pressure time series data </summary>
             public Wind_TS[] TS_Data;
-            public XYIndices XY_ind;            
-         //   public MonthlyProdByYearAndLTAvg[] Monthly_Prod; // one for every month
-         //   public YearlyProdAndLTAvg Annual_Prod; 
+            /// <summary> Lat/long and corresponding MERRA2 datafile X/Y indices </summary>
+            public XYIndices XY_ind;         
         }
 
         /// <summary> Holds coordinates, UTM coordinates, MERRA2 file indices and time series data of MERRA2 node </summary>
         public struct MERRA_Pull
         {
+            /// <summary> Lat/Long of MERRA2 node </summary>
             public UTM_conversion.Lat_Long Coords;
+            /// <summary> UTM coords of MERRA2 node </summary>
             public UTM_conversion.UTM_coords UTM;
+            /// <summary> MERRA2 datafile X and Y indices </summary>
             public XYIndices XY_ind;
+            /// <summary> MERRA2 time series data </summary>
             public Wind_TS[] Data;
         }
         
         /// <summary>   Contains the Lat/Long and X/Y index (i.e. in MERRA2 datafile) of MERRA2 nodes. </summary>
         [Serializable()]
         public struct XYIndices
-        {            
-            public int X_ind;            
-            public double Lat;            
-            public int Y_ind;            
+        {
+            /// <summary> MERRA2 datafile X index </summary>
+            public int X_ind;
+            /// <summary> Latitude </summary>
+            public double Lat;
+            /// <summary> MERRA2 datafile Y index </summary>
+            public int Y_ind;
+            /// <summary> Longitude </summary>
             public double Lon;
         }                         
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Struct containing the specified month, an array of type Year_and_Prod which 
-        ///             holds the year and monthly production, and the average overall monthly production. </summary>
-        ///
-        /// <remarks>   Liz, 1/16/2018. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
+       
+        /// <summary>   Contains the specified month, the long-term average monthly energy production and an array containing the monthly energy production for every year. </summary>        
         [Serializable()]
         public struct MonthlyProdByYearAndLTAvg
         {
-            /// <summary>   Month. </summary>
+            /// <summary> Month. </summary>
             public int Month;
-            /// <summary>   Array of Monthly energy production by year </summary>
+            /// <summary> List of monthly energy production by year (i.e. if month is January, list would contain energy production in January for every year) </summary>
             public YearAndProd[] YearProd;
-            /// <summary>   The LT average monthly energy production. </summary>
+            /// <summary>   Long-term average monthly energy production. </summary>
             public double LT_Avg;
         }
+
+        /// <summary> Contains yearly energy production for each year and long-term AEP</summary>
         [Serializable()]
         public struct YearlyProdAndLTAvg
         {
@@ -168,48 +144,35 @@ namespace ContinuumNS
             public double LT_Avg;             
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Information about the project. </summary>
-        ///
-        /// <remarks>   Liz, 1/16/2018. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
         
+        /// <summary>  Contains year and energy production. </summary>        
         [Serializable()]
         public struct YearAndProd
         {
+            /// <summary>  Energy Production Year </summary>
             public int year;
+            /// <summary>  Energy Production</summary>
             public double prod;
-        }
+        }             
 
-        [Serializable()]
-        public struct Export_Params
-        {
-            public bool Get_50mWSWD;            
-            public bool Get_10mWSWD;            
-            public bool Get_SurfPress;
-            public bool Get_SeaPress;
-            public bool Get_10mTemp;
-            public bool Get_FracMean;
-            public bool Get_OpticalThick;
-            public bool Get_TotalFrac;
-            public bool Get_Precip;
-            public bool Get_Corr_Precip;
-        }
-
-        /// <summary> Holds an array of timestamps and east/north (i.e. U/V) wind speeds at 10 and 50 m </summary>
+        /// <summary> Holds hourly timestamps and east/north (i.e. U/V) wind speeds at 10 and 50 m for 24 hour period (i.e. 1 day) </summary>
         public struct East_North_WSs
         {
+            /// <summary> Hourly timestamps (24 hours) </summary>
             public DateTime[] timeStamp;
-            public double[] U50; // arrays to hold 24 hours of data (or whatever the length of the MERRA_pull is
+            /// <summary> East-West 50 m wind speed </summary>
+            public double[] U50;
+            /// <summary> North-South 50 m wind speed </summary>
             public double[] V50;
+            /// <summary> East-West 10 m wind speed </summary>
             public double[] U10;
+            /// <summary> North-South 10 m wind speed </summary>
             public double[] V10;
-        }                    
+        }   
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary>
-        /// CLEAR and RESET STUFF
-        /// </summary>
-
+        /// <summary> Clears all calculated data and site location coordinates. </summary>
         public void ClearInterpData()
         {
             interpData.TS_Data = new Wind_TS_with_Prod[0];          
@@ -224,48 +187,22 @@ namespace ContinuumNS
           
         }
 
+        /// <summary> Clears all MERRA2 node data </summary>
         public void Clear_MERRA2_Node_Data()
         {
             if (MERRA_Nodes.Length > 0)
                 for (int i = 0; i < MERRA_Nodes.Length; i++)                
                     MERRA_Nodes[i].TS_Data = new Wind_TS[0];             
-        }                    
+        }
 
+        /// <summary> Clears all MERRA2 node data and all calculated data and site locations. </summary>
         public void ClearAll()
         {            
             ClearInterpData();           
             Clear_MERRA2_Node_Data();                                 
-        }                 
-        
-        public void Reset_MERRA_Pull(ref MERRA_Pull[] thisMERRA_Pull)
-        {
-            if (thisMERRA_Pull == null)
-                return;
-
-            for (int i = 0; i < thisMERRA_Pull.Length; i++)
-            {
-                for (int j = 0; j < thisMERRA_Pull[i].Data.Length; j++)
-                {
-                    thisMERRA_Pull[i].Data[j].ThisDate = Convert.ToDateTime("1/1/1980");
-                    thisMERRA_Pull[i].Data[j].WS50m = 0;
-                    thisMERRA_Pull[i].Data[j].WD50m = 0;
-                 //   thisMERRA_Pull[i].Data[j].WS10m = 0;
-                 //   thisMERRA_Pull[i].Data[j].WD10m = 0;
-                 //   thisMERRA_Pull[i].Data[j].Prod = 0;
-                    thisMERRA_Pull[i].Data[j].Temp10m = 0;
-                    thisMERRA_Pull[i].Data[j].SurfPress = 0;
-                    thisMERRA_Pull[i].Data[j].SeaPress = 0;
-                 //   thisMERRA_Pull[i].Data[j].Mean_Cloud_Fraction = 0;
-                 //   thisMERRA_Pull[i].Data[j].Optical_Thick = 0;
-                 //   thisMERRA_Pull[i].Data[j].Total_Cloud_Area_Fraction = 0;
-                 //   thisMERRA_Pull[i].Data[j].Precip = 0;
-                 //   thisMERRA_Pull[i].Data[j].Precip_Corr = 0;
-                }
-                
-            }
-
         }
 
+        /// <summary> Resets monthly energy production data. </summary>
         public void Reset_MonthProdStats()
         {
             if (interpData.Monthly_Prod == null)
@@ -282,16 +219,14 @@ namespace ContinuumNS
                      
         }
 
+        /// <summary> Resets annual energy production data. </summary>
         public void Reset_AnnualProdStats()
         {
             interpData.Annual_Prod.LT_Avg = 0;
             interpData.Annual_Prod.Yearly_Prod = null;
         }
 
-        /// <summary>
-        /// BOOL FLAGS
-        /// </summary>
-
+        /// <summary> Returns true if monthly eneryg production has been calculated. </summary>
         public bool GotMonthlyProd()
         {
             bool gotIt = false;
@@ -302,6 +237,7 @@ namespace ContinuumNS
             return gotIt;
         }
 
+        /// <summary> Returns true if have interpolated MERRA2 time series data. </summary>
         public bool GotWindTS(UTM_conversion utm)
         {
             bool gotIt = false;
@@ -324,18 +260,9 @@ namespace ContinuumNS
                 gotIt = true;
                         
             return gotIt;
-        }               
+        }
 
-        public bool Got_Yearly_Prod(YearlyProdAndLTAvg[] thisData)
-        {
-            bool gotIt = false;
-
-            if (thisData != null)
-                gotIt = true;
-
-            return gotIt;
-        }            
- 
+        /// <summary> Resizes the referenced array to new size. </summary>
         public void Size_East_North_WS_Data(ref East_North_WSs[] theseUVs, int New_Size)
         {
             if (theseUVs == null)
@@ -350,6 +277,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Returns true if MERRA2 datafile parameter is needed (i.e. wind speed, temperature, or pressure). </summary>
         public bool Need_This_Param(string thisString)
         {
             bool Need_it = false;
@@ -387,9 +315,7 @@ namespace ContinuumNS
             return Need_it;
         }
                 
-        /// <summary>
-        /// SET STUFF
-        /// </summary>
+        /// <summary> Sets site location (lat/long and UTM coordinates) and UTC offset. </summary>
         public void Set_Interp_LatLon_Dates_Offset(double latitude, double longitude, int offset, Continuum thisInst)
         {            
             interpData.Coords.latitude = Math.Round(latitude, 3);
@@ -411,10 +337,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// FORMAT STUFF
-        /// </summary>
-
+        /// <summary> Returns string containing specified timestamp </summary>
         public string Make_MERRA2_Date_String(DateTime thisDate)
         {
             string datestring = Convert.ToString(thisDate.Year);
@@ -432,114 +355,7 @@ namespace ContinuumNS
             return datestring;
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Export data. </summary>
-        ///
-        /// <remarks>   OEE, 1/16/2018. </remarks>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public string[] Create_DateString_for_Export(DateTime startTime, DateTime endTime)
-        {
-            string[] DateStrings = new string[2];
-
-            DateStrings[0] = Convert.ToString(startTime.Year);
-            DateStrings[1] = Convert.ToString(endTime.Year);
-
-            if (startTime.Month < 10)
-                DateStrings[0] += "0" + Convert.ToString(startTime.Month);
-            else
-                DateStrings[0] += Convert.ToString(startTime.Month);
-
-            if (startTime.Day < 10)
-                DateStrings[0] += "0" + Convert.ToString(startTime.Day);
-            else
-                DateStrings[0] += Convert.ToString(startTime.Day);
-
-            if (endTime.Month < 10)
-                DateStrings[1] += "0" + Convert.ToString(endTime.Month);
-            else
-                DateStrings[1] += Convert.ToString(endTime.Month);
-
-            if (endTime.Day < 10)
-                DateStrings[1] += "0" + Convert.ToString(endTime.Day);
-            else
-                DateStrings[1] += Convert.ToString(endTime.Day);
-
-            return DateStrings;
-        }
-
-        public string Get_Dataset_String(string Code_string, string Full_or_Dropdown)
-        {
-            string Dataset_String = "";
-
-            if (Full_or_Dropdown == "Full")
-            {
-                if (Code_string == "Interp" && numMERRA_Nodes > 1)
-                    Dataset_String = "MERRA2 data interpolated between " + numMERRA_Nodes + " closest nodes";
-                else if (Code_string == "Interp")
-                    Dataset_String = "Closest MERRA2 node data";
-                else
-                    Dataset_String = "Swiss Re MERRA2 data";
-            }
-            else // Dropdown
-            {
-                if (Code_string == "Interp")
-                    Dataset_String = "Interp MERRA2";
-                else
-                    Dataset_String = "Swiss Re MERRA2";
-            }
-
-            return Dataset_String;
-        }
-
-        /// <summary>
-        /// GET STUFF
-        /// </summary>
-
-        public double Get_Annual_Prod(int thisYear)
-        {
-            double thisAnnualProd = 0;                    
-                            
-            for (int j = 0; j < interpData.Annual_Prod.Yearly_Prod.Length; j++)
-                if (interpData.Annual_Prod.Yearly_Prod[j].year == thisYear)
-                {
-                    thisAnnualProd = interpData.Annual_Prod.Yearly_Prod[j].prod;
-                    break;
-                }
-            
-            return thisAnnualProd;
-        }        
-                           
-              
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Used in Swiss data import. Gets rid of empty strings after 'splitting' the line 
-        ///             into substrings. </summary>
-        ///
-        /// <remarks>   Liz, 1/17/2018. </remarks>
-        ///
-        /// <param name="substrings">  Substrings read from splitting line of data. </param>
-        ///
-        /// <returns>   All non-empty substrings. </returns>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public string[] Get_Rid_of_Empty_String(string[] substrings)
-        {
-            int numStrings = 0;
-            string[] datastrings = new string[0];
-
-            for (int i = 0; i < substrings.Length; i++)
-            {
-                if (substrings[i] != "")
-                {
-                    numStrings++;
-                    Array.Resize(ref datastrings, numStrings);
-                    datastrings[numStrings - 1] = substrings[i];
-                }
-            }
-
-            return datastrings;
-        }              
-
+        /// <summary> Returns true if MERRA2 dataset contains full year for specified year. </summary>
         public bool Have_Full_Year(Wind_TS_with_Prod[] thisTS, int thisYear)
         {
             bool isFull = false;
@@ -567,8 +383,8 @@ namespace ContinuumNS
             
             return isFull;
         }
-               
 
+        /// <summary> Returns true if MERRA2 dataset contains full month for specified month. </summary>
         public bool Have_Full_Month(Wind_TS_with_Prod[] thisTS, int thisMonth, int thisYear)
         {
             bool isFull = false;
@@ -604,7 +420,8 @@ namespace ContinuumNS
 
             return isFull;
         }
-                
+
+        /// <summary> Returns either long-term or specified yearly or monthly energy production. For long-term estimates, thisMonth/thisYear set to 100. </summary>
         public double Get_Energy_Prod(YearlyProdAndLTAvg thisAnnual, MonthlyProdByYearAndLTAvg[] thisMonthly, int thisMonth, int thisYear) // if thisMonth = 100, gets yearly; if thisYear = 100, gets LT
         {
             double thisProd = 0;
@@ -637,63 +454,7 @@ namespace ContinuumNS
             return thisProd / 1000;
         }
 
-  /*      public Export_Params Get_Export_Params(Continuum thisInst)
-        {
-            MERRA_Params = new Export_Params();
-
-            if (thisInst.chkWSWD50m.Checked == true)
-                MERRA_Params.Get_50mWSWD = true;
-            else
-                MERRA_Params.Get_50mWSWD = false;
-            
-            if (thisInst.chkWSWD10m.Checked == true)
-                MERRA_Params.Get_10mWSWD = true;  
-            else
-                MERRA_Params.Get_10mWSWD = false;
-                
-            if (thisInst.chkTemp10m.Checked == true)
-                MERRA_Params.Get_10mTemp = true;
-            else
-                MERRA_Params.Get_10mTemp = false;
-
-            if (thisInst.chkPressure.Checked == true)
-                MERRA_Params.Get_SurfPress = true;
-            else
-                MERRA_Params.Get_SurfPress = false;
-
-            if (thisInst.chkSeaLevel.Checked == true)
-                MERRA_Params.Get_SeaPress = true;
-            else
-                MERRA_Params.Get_SeaPress = false;
-            
-                        if (thisInst.chkCloudFracMean.Checked == true)
-                            MERRA_Params.Get_FracMean = true;                
-                        else
-                            MERRA_Params.Get_FracMean = false;
-
-                        if (thisInst.chkOptThick.Checked == true)
-                            MERRA_Params.Get_OpticalThick = true;
-                        else
-                            MERRA_Params.Get_OpticalThick = false;
-
-                        if (thisInst.chkTotalFrac.Checked == true)
-                            MERRA_Params.Get_TotalFrac = true;
-                        else
-                            MERRA_Params.Get_TotalFrac = false;
-
-                        if (thisInst.chk_Precip.Checked == true)
-                            MERRA_Params.Get_Precip = true;
-                        else
-                            MERRA_Params.Get_Precip = false;
-
-                        if (thisInst.chk_Precip_Corr.Checked == true)
-                            MERRA_Params.Get_Corr_Precip = true;
-                        else
-                            MERRA_Params.Get_Corr_Precip = false;
-            
-            return MERRA_Params;
-        }
-    */
+        /// <summary> Calculates and returns either long-term or specified yearly or monthly capacity factor. For long-term estimates, thisMonth/thisYear set to 100. </summary>
         public double Calc_CF(double thisProd, int thisMonth, int thisYear, TurbineCollection.PowerCurve powerCurve) // if This_Month == 100 then it's a yearly CF calc
         {
             double thisCF = 0;
@@ -721,6 +482,7 @@ namespace ContinuumNS
             return thisCF;
         }
 
+        /// <summary> Returns index of specified year. </summary>
         public int Get_Year_Ind(int thisYear, YearlyProdAndLTAvg thisAnnual)
         {
             int yearInd = -1;
@@ -738,6 +500,7 @@ namespace ContinuumNS
             return yearInd;
         }
 
+        /// <summary> Returns index of specified year from monthly energy production data. </summary>
         public int Get_Year_Ind_from_Monthly_Prod(int thisYear, MonthlyProdByYearAndLTAvg thisMonthly)
         {
             int yearInd = -1;
@@ -752,6 +515,7 @@ namespace ContinuumNS
             return yearInd;
         }
 
+        /// <summary> Returns indices of specified month and year from monthly energy production data. monthYearInd[0] = Month index; monthYearInd[1] = Year index </summary>
         public int[] Get_Month_Year_Inds(MonthlyProdByYearAndLTAvg[] monthProd, int thisMonth, int thisYear) // i = Month index, j = Year index
         {
             int[] monthYearInd = new int[2];
@@ -774,23 +538,11 @@ namespace ContinuumNS
             }
 
             return monthYearInd;
-        }            
+        }
 
-        /// <summary>  
-        /// CALCULATE AND FIND STUFF
-        /// </summary>
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-        /// <summary>   Applies the PC described by Wind. </summary>
-        ///
-        /// <remarks>   OEE, 1/16/2018. </remarks>
-        ///
-        /// <param name="Wind"> [in,out] The wind. </param>
-        ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /// <summary> Calculates energy production for referenced time series. </summary>
         public void ApplyPC(ref Wind_TS_with_Prod[] Wind)
-        {
-            // Applies selected power curve to wind speed data and inputs data directly into the Wind_TS variable specified in the funcion, must used "ref" inside function
+        {            
             if (Wind == null)
                 return;
             
@@ -800,33 +552,16 @@ namespace ContinuumNS
                 {
                     double Scaled_WS = Wind[i].WS50m * WS_ScaleFactor;
                     TurbineCollection turbList = new TurbineCollection();
-                    Wind[i].Prod = turbList.GetInterpPowerOrThrust(Scaled_WS, powerCurve, "Power");
-
-                    /* 2/20/2020 took this out since it is dealt with in GetInterpPowerorThrust
-                    if (Scaled_WS < powerCurve.cutInWS || Scaled_WS > powerCurve.cutOutWS)
-                        Wind[i].Prod = 0;
-                    else if ((Scaled_WS >= powerCurve.cutInWS) && (Scaled_WS < (powerCurve.ratedWS - .5)))
-                    {
-                        TurbineCollection turbList = new TurbineCollection();
-                        Wind[i].Prod = turbList.GetInterpPowerOrThrust(Scaled_WS, powerCurve, "Power");
-
-                        if (Wind[i].Prod > powerCurve.ratedPower) Wind[i].Prod = powerCurve.ratedPower;                                                
-                    }
-                    
-                    else
-                    {
-                        Wind[i].Prod = powerCurve.ratedPower;                        
-                    }
-                    */
+                    Wind[i].Prod = turbList.GetInterpPowerOrThrust(Scaled_WS, powerCurve, "Power");                    
                 }
                 else
                     Wind[i].Prod = 0;
             }
         }
 
+        /// <summary> Calculates the annual energy production (AEP) and long-term AEP and saves to referenced YearlyProdAndLTAvg object. </summary>
         public void CalcAnnualProd(ref YearlyProdAndLTAvg thisAnnual, MonthlyProdByYearAndLTAvg[] thisMonthly, UTM_conversion utm)
-        {
-            // Calculates the annual energy production based on either the Interp or Swiss dataset and using either a traditional year or contract year
+        {            
             thisAnnual.Yearly_Prod = null;
             thisAnnual.LT_Avg = 0;
 
@@ -894,12 +629,12 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Calculates and returns the average or long-term monthly or yearly MERRA2 data parameter ("50 m WS", "Energy Prod.", "Surface Pressure", "Sea Level Pressure", "10 m Temp") </summary>
         public double Calc_Avg_or_LT(Wind_TS_with_Prod[] thisTS, int thisMonth, int thisYear, string param) 
         {
             double avgOrLT = 0;
             int count = 0;
-            int cloudCount = 0;
-
+            
             for (int i = 0; i < thisTS.Length; i++)
             {
                 if ((thisMonth == 100 || thisTS[i].ThisDate.Month == thisMonth) && 
@@ -908,67 +643,27 @@ namespace ContinuumNS
                     if (param == "50 m WS")
                         avgOrLT = avgOrLT + thisTS[i].WS50m;
                     else if (param == "Energy Prod.")
-                        avgOrLT = avgOrLT + thisTS[i].Prod;
-                  //  else if (param == "10 m WS")
-                  //      avgOrLT = avgOrLT + thisTS[i].WS10m;
+                        avgOrLT = avgOrLT + thisTS[i].Prod;                  
                     else if (param == "Surface Pressure")
                         avgOrLT = avgOrLT + thisTS[i].SurfPress/1000;
                     else if (param == "Sea Level Pressure")
                         avgOrLT = avgOrLT + thisTS[i].SeaPress / 1000;
                     else if (param == "10 m Temp")
                         avgOrLT = avgOrLT + thisTS[i].Temp10m - 273.15;
-                  /*  else if (param == "MODIS Cloud Fraction")
-                    {
-                        if (thisTS[i].Mean_Cloud_Fraction < 10)
-                        {
-                            avgOrLT = avgOrLT + thisTS[i].Mean_Cloud_Fraction;
-                            cloudCount++;
-                        }
-                    }                                                    
-                    else if (param == "MODIS Cloud Thickness")
-                    {
-                        if (thisTS[i].Optical_Thick < 1e+10)
-                        {
-                            avgOrLT = avgOrLT + thisTS[i].Optical_Thick;
-                            cloudCount++;
-                        }
-                    }
-                    
-                    else if (param == "ISCCP Cloud Fraction")
-                    {
-                        if (thisTS[i].Mean_Cloud_Fraction < 10)
-                        {
-                            avgOrLT = avgOrLT + thisTS[i].Total_Cloud_Area_Fraction;
-                            cloudCount++;
-                        }
-                    }
-                    else if (param == "Precipitation")
-                        avgOrLT = avgOrLT + thisTS[i].Precip;
-                    else if (param == "Corrected Precipitation")
-                        avgOrLT = avgOrLT + thisTS[i].Precip_Corr;
-                    */
+                 
                     count++;
                 }
 
-            }
+            }           
 
-            bool isCloud = false;
-
-            if ((param == "MODIS Cloud Fraction") || (param == "MODIS Cloud Thickness") || (param == "ISCCP Cloud Fraction"))
-                isCloud = true;
-
-            if (count > 0 && isCloud == false)
+            if (count > 0)
                 avgOrLT = avgOrLT / count;
-            else if (cloudCount > 0 && isCloud == true)
-                avgOrLT = avgOrLT / cloudCount;
-            
+                        
             return avgOrLT;
             
         }
 
-        /// <summary>
-        /// Calculates and returns the average wind rose for specified month and year
-        /// </summary>        
+        /// <summary> Calculates and returns the average wind rose for specified month and year. For long-term wind rose, thisMonth and thisYear = 100. </summary>        
         public double[] Calc_Wind_Rose(int thisMonth, int thisYear, UTM_conversion utm)
         {
             int numWD = 16;
@@ -997,9 +692,7 @@ namespace ContinuumNS
             return windRose;
         }
                
-        /// <summary>
-        /// Calculates the long-term average energy production for referenced YearlyProdAndLTAvg object
-        /// </summary>        
+        /// <summary> Calculates the long-term average energy production for referenced YearlyProdAndLTAvg object. </summary>        
         public void Calc_LT_Avg_Prod(ref YearlyProdAndLTAvg thisAnnual)
         {            
             double avgLT = 0.0;                                 
@@ -1013,7 +706,7 @@ namespace ContinuumNS
             
         }
 
-        /// <summary> Calculates the wind speed and wind direction based on MERRA U and V wind speeds for each node in thisMERRA_Pull and for each time stamp </summary>        
+        /// <summary> Calculates the wind speed and wind direction based on MERRA U and V wind speeds for each node in thisMERRA_Pull and for each time stamp. </summary>        
         public void Calc_MERRA2_WS_WD(ref MERRA_Pull[] thisMERRA_Pull, East_North_WSs[] theseUVs)
         {
             if (thisMERRA_Pull == null || theseUVs == null)
@@ -1025,18 +718,6 @@ namespace ContinuumNS
             for (int i = 0; i < numNodes; i++)
                 for (int j = 0; j < numHours; j++)
                 {
-                    /*        if (theseUVs[i].U10[j] != 0 && theseUVs[i].V10[j] != 0 && MERRA_Params.Get_10mWSWD)
-                            {
-                                thisMERRA_Pull[i].Data[j].WS10m = Math.Pow((Math.Pow(theseUVs[i].U10[j], 2) + Math.Pow(theseUVs[i].V10[j], 2)), 0.5);
-                                thisMERRA_Pull[i].Data[j].WD10m = Math.Atan2(theseUVs[i].V10[j], theseUVs[i].U10[j]) * (180 / Math.PI);
-                                thisMERRA_Pull[i].Data[j].WD10m = 270 - thisMERRA_Pull[i].Data[j].WD10m; // this moves WD=0 to north and flips WD to be from wind direction
-                                if (thisMERRA_Pull[i].Data[j].WD10m > 360) thisMERRA_Pull[i].Data[j].WD10m = thisMERRA_Pull[i].Data[j].WD10m - 360;
-                            }
-                    */
-
-                    if (j == 52627)
-                        j = j;
-
                     if (theseUVs[i].U50[j] != 0 && theseUVs[i].V50[j] != 0)
                     {
                         thisMERRA_Pull[i].Data[j].WS50m = Math.Pow((Math.Pow(theseUVs[i].U50[j], 2) + Math.Pow(theseUVs[i].V50[j], 2)), 0.5);
@@ -1092,8 +773,9 @@ namespace ContinuumNS
                 interpData.Monthly_Prod[i].LT_Avg = interpData.Monthly_Prod[i].LT_Avg / yearCount;
             }            
 
-        }                   
+        }
 
+        /// <summary> Calculates and returns percent differnce of energy production calculated in specified year from long-term average monthly production. </summary>
         public double Calc_Perc_Diff_from_LT_Monthly(MonthlyProdByYearAndLTAvg thisMonthly, int thisYear)
         {
             double percDiff = 0;
@@ -1108,8 +790,8 @@ namespace ContinuumNS
             return percDiff;
         }
 
+        /// <summary> Calculates and returns percent differnce of energy production calculated in specified year from long-term average yearly production. </summary>
         public double Calc_Perc_Diff_from_LT_Yearly(YearlyProdAndLTAvg thisAnnual, int thisYear)
-
         {
             double percDiff = 0;
 
@@ -1124,14 +806,14 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Calculates and returns deviation of specified year/month from long-term value. </summary>
         public double Calc_Dev_from_LT(MonthlyProdByYearAndLTAvg[] thisMonthly, YearlyProdAndLTAvg thisAnnual, int thisYear, int thisMonth)
         {
             double devFromLT = 0;
-            int yearInd = 0;
-
+            
             if (thisMonth == 100 && thisYear != 100) // deviation from long-term annual
             {
-                yearInd = Get_Year_Ind(thisYear, thisAnnual);
+                int yearInd = Get_Year_Ind(thisYear, thisAnnual);
                 devFromLT = (thisAnnual.Yearly_Prod[yearInd].prod - thisAnnual.LT_Avg) / thisAnnual.LT_Avg;
             }
             else if (thisMonth != 100 & thisYear != 100) // deviation from long-term monthly
@@ -1143,12 +825,9 @@ namespace ContinuumNS
             return devFromLT;
         }
 
-            
+        /// <summary>  Opens a MERRA data file, looks at lat/long and assigns Xind and Yind to nodesToPull. If any nodesToPull are out of the range, returns false. </summary>
         public bool GetMERRAPullXYIndices(ref MERRA_Pull[] nodesToPull, string MERRAfolder)
         {
-            // Opens a MERRA data file, looks at lat/long and assigns Xind and Yind to nodesToPull
-            // If any nodesToPull are out of the range, returns false. 
-
             bool gotAllIndices = false;
             if (nodesToPull == null)
                 return gotAllIndices;
@@ -1264,7 +943,7 @@ namespace ContinuumNS
 
 
 
-        /// <summary> Finds lat/long and MERRA2 datafile X/Y indices for MERRA2 node(s) closest to project site </summary>        
+        /// <summary> Finds lat/long and MERRA2 datafile X/Y indices for MERRA2 node(s) closest to project site. Returns true if required MERRA2 data are available (i.e. locally downloaded). </summary>        
         public bool Find_MERRA_Coords(string MERRAfolder)
         {                        
             bool foundInds = false;
@@ -1441,9 +1120,9 @@ namespace ContinuumNS
 
             return foundInds;
         }
-                        
-            
 
+
+        /// <summary> Returns number of days in month. </summary>
         public int Get_Num_Days_in_Month(int Month_1_to_12, int thisYear)
         {
             int numDays = 31;
@@ -1458,52 +1137,9 @@ namespace ContinuumNS
             return numDays;
         }
 
-        public void AddDataToDBAndClear(Continuum thisInst)
-        {
-            // Adds MERRA2 data to database (if it doesn't already exist) and clears MERRA2.TS_Data
-            NodeCollection nodeList = new NodeCollection();
-            BinaryFormatter bin = new BinaryFormatter();
-            string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
-                        
-            using (var context = new Continuum_EDMContainer(connString))
-            {               
-                for (int i = 0; i < numMERRA_Nodes; i++)
-                {
-                    double thisLat = MERRA_Nodes[i].XY_ind.Lat;
-                    double thisLong = MERRA_Nodes[i].XY_ind.Lon;
-
-                    var thisMERRAData = from N in context.MERRA_Node_table where N.latitude == thisLat && N.longitude == thisLong select N;
-                    if (thisMERRAData.Count() == 0)
-                    {
-                        MERRA_Node_table merraNodeTable = new MERRA_Node_table();
-                        merraNodeTable.latitude = thisLat;
-                        merraNodeTable.longitude = thisLong;
-
-                        MemoryStream MS1 = new MemoryStream();
-                        bin.Serialize(MS1, MERRA_Nodes[i].TS_Data);
-                        merraNodeTable.merraData = MS1.ToArray();
-
-                        try
-                        {
-                            context.MERRA_Node_table.Add(merraNodeTable);
-                            context.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.InnerException.ToString());                            
-                            return;
-                        }
-                    }
-
-                    MERRA_Nodes[i].TS_Data = null;
-                }
-                context.Database.Connection.Close();
-            }
-        }
-
+        /// <summary> Adds new MERRA2 data to database. </summary>
         public void AddNewDataToDB(Continuum thisInst, MERRA_Pull[] newDataToAdd)
-        {
-            // Adds new MERRA2 data to database 
+        {            
             NodeCollection nodeList = new NodeCollection();
             BinaryFormatter bin = new BinaryFormatter();
             string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
@@ -1542,6 +1178,7 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Gets MERRA2 data from database. </summary>
         public void GetMERRADataFromDB(Continuum thisInst)
         {
             NodeCollection nodeList = new NodeCollection();
@@ -1635,10 +1272,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary>
-        /// Finds and returns maximum hourly wind speed for each year of long-term data (used in extreme WS calcs)
-        /// </summary>
-        /// <returns></returns>
+        /// <summary> Finds and returns maximum hourly wind speed for each year of long-term data (used in extreme WS calcs). </summary>        
         public Met.MaxYearlyWind[] GetMaxHourlyWindSpeeds()
         {            
             int refLength = interpData.TS_Data.Length;
@@ -1680,7 +1314,8 @@ namespace ContinuumNS
             return maxHourlyRef;
         }
 
-        public bool WasDataFullyLoaded(MERRA_Pull[] merraData, string selectedFolder)
+        /// <summary> Returns true if data was fully loaded. </summary>  
+        public bool WasDataFullyLoaded(MERRA_Pull[] merraData)
         {
             bool fullyLoaded = true;
             TimeSpan timeSpan;
@@ -1715,8 +1350,7 @@ namespace ContinuumNS
 
 
             return fullyLoaded;
-        }
-        
+        }       
 
     }
 

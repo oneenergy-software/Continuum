@@ -1,69 +1,70 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GeoTimeZone;
-using TimeZoneConverter;
 
 namespace ContinuumNS
 {
+    /// <summary> Class with functions to convert UTM to/from lat/long coordinates </summary>
     [Serializable()]
     public class UTM_conversion
     {
-        // lat Long - UTM, UTM - lat Long conversions
-
-        // Tom Lambert generously shared this code with me. I cross-checked it
-        // with this website: http://www.uwgb.edu/dutchs/usefuldata/utmformulas.htm
-        // and it's all consistent.The website that he lists is no longer up so
-        // I'm using the reference ellipsoids on the uwgb.edu page(11 of them)
-        ///*Reference ellipsoids derived from Peter H. Dana//s website- 
-        //http://www.utexas.edu/depts/grg/gcraft/notes/datum/elist.html
-        //Department of Geography, University of Texas at Austin
-        //Internet: pdana@mail.utexas.edu
-        //3/22/95
-
-        //Source
-        //Defense Mapping Agency. 1987b. DMA Technical Report: Supplement to Department of Defense World Geodetic System
-        //1984 Technical Report. Part I and II. Washington, DC: Defense Mapping Agency
-        //*/
-
-        public int savedDatumIndex = 100; /// 0 = NAD83/WGS84; 1 = GRS 80; 2 = WGS72 (NASA, DOD) 100 = none selected
+        /// <summary> Saved datum index. 0 = NAD83/WGS84; 1 = GRS 80; 2 = WGS72 (NASA, DOD) 100 = none selected </summary>
+        public int savedDatumIndex = 100;
+        /// <summary> UTM zone number. -999 if not specified </summary>
         public int UTMZoneNumber = -999;
+        /// <summary> Hemisphere: "Northern" or "Southern" </summary>
         public string hemisphere = "";
+        /// <summary> Convert to radians multiplier </summary>
         double deg2rad = Math.PI / 180;
+        /// <summary> Convert to degrees multiplier </summary>
         double rad2deg = 180 / Math.PI;
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Holds equatorial radius and square of eccentricity for an ellipsoid </summary>
         public struct Ellipsoid_Shapes
         {
+            /// <summary> Radius at equator </summary>
             public double equatorialRadius;
+            /// <summary> Square of eccentricity (i.e. measure of how much a conic section deviates from circular) </summary>
             public double eccentricitySquared;
         }
 
+        /// <summary> Holds UTM zone, datum, and coordiantes (northing, easting) </summary>
         [Serializable()]
         public struct UTM_coords
         {
+            /// <summary> UTM Zone number </summary>
             public int UTMZoneNumber;
+            /// <summary> Northern or Southern hemisphere </summary>
             public string hemisphere;
+            /// <summary> Northing </summary>
             public double UTMNorthing;
+            /// <summary> Easting </summary>
             public double UTMEasting;
         }
 
+        /// <summary> Holds geographic coordiantes </summary>
         [Serializable()]
         public struct Lat_Long
         {
+            /// <summary> Latitude (degs) </summary>
             public double latitude;
+            /// <summary> Longitude (degs) </summary>
             public double longitude;
         }
 
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Clears UTM datum, zone and hemisphere </summary>
         public void ResetDefaults()
-        { // Clears UTM_zone and datum
+        { 
             savedDatumIndex = 100;
             UTMZoneNumber = -999;
             hemisphere = "";
         }
 
-        public Ellipsoid_Shapes GetEllipsoidShape(int ellipsoidIndex) // Returns ellipse shapr based on index
+        /// <summary> Returns ellipse shape based on index </summary>
+        public Ellipsoid_Shapes GetEllipsoidShape(int ellipsoidIndex) 
         {
             Ellipsoid_Shapes thisShape = new Ellipsoid_Shapes();
 
@@ -115,7 +116,8 @@ namespace ContinuumNS
             return thisShape;
         }
 
-        public string GetDatumString(int datumInd) // Returns name of datum based on index
+        /// <summary> Returns name of datum based on index </summary>
+        public string GetDatumString(int datumInd) 
         {
             string datumString = "";
 
@@ -144,15 +146,11 @@ namespace ContinuumNS
 
             return datumString;
         }
-                                                   
 
+        /// <summary> Converts lat/long to UTM coords.  Equations from USGS Bulletin 1532 </summary>
         public UTM_coords LLtoUTM(double thisLat, double thisLong)
-        {
-            // //converts lat/long to UTM coords.  Equations from USGS Bulletin 1532 
-            // //East Longitudes are positive, West longitudes are negative. 
-            // //North latitudes are positive, South latitudes are negative
-            // //lat and Long are in decimal degrees
-            //	//Written by Chuck Gantz- chuck.gantz@globalstar.com
+        {           
+            
             UTM_coords theseUTMcoords = new UTM_coords();
 
             if ((savedDatumIndex < 0 || savedDatumIndex > 10))
@@ -161,22 +159,14 @@ namespace ContinuumNS
             Ellipsoid_Shapes thisEllip = GetEllipsoidShape(savedDatumIndex);
             double equatRad = thisEllip.equatorialRadius;
             double eccSquared = thisEllip.eccentricitySquared;
-            double k0 = 0.9996f;
-
-            double longOrigin;
-            double eccPrimeSquared;
-            double N;
-            double T;
-            double C;
-            double A;
-            double M;
+            double k0 = 0.9996f;                      
 
             //   //Make sure the longitude is between -180.00 .. 179.9
             double longTemp = (thisLong + 180) - (int)((thisLong + 180) / 360) * 360 - 180; //// -180.00 .. 179.9;
 
             double latRad = thisLat * deg2rad;
             double longRad = longTemp * deg2rad;
-            double longOriginRad;
+         //   double longOriginRad;
 
             if (UTMZoneNumber == -999)
                 UTMZoneNumber = (int)((longTemp + 180) / 6) + 1;
@@ -195,21 +185,21 @@ namespace ContinuumNS
                 else if ((longTemp >= 33.0 && longTemp < 42.0))
                     UTMZoneNumber = 37;                
             }
-            longOrigin = (UTMZoneNumber - 1) * 6 - 180 + 3;  ////+3 puts origin in middle of zone
-            longOriginRad = longOrigin * deg2rad;
+            double longOrigin = (UTMZoneNumber - 1) * 6 - 180 + 3;  ////+3 puts origin in middle of zone
+            double longOriginRad = longOrigin * deg2rad;
 
             ////compute the UTM Zone from the latitude and longitude
             theseUTMcoords.UTMZoneNumber = UTMZoneNumber;
             theseUTMcoords.hemisphere = hemisphere;
 
-            eccPrimeSquared = (eccSquared) / (1 - eccSquared);
+            double eccPrimeSquared = (eccSquared) / (1 - eccSquared);
 
-            N = equatRad / Math.Pow((1 - eccSquared * Math.Sin(latRad) * Math.Sin(latRad)), 0.5);
-            T = Math.Tan(latRad) * Math.Tan(latRad);
-            C = eccPrimeSquared * Math.Cos(latRad) * Math.Cos(latRad);
-            A = Math.Cos(latRad) * (longRad - longOriginRad);
+            double N = equatRad / Math.Pow((1 - eccSquared * Math.Sin(latRad) * Math.Sin(latRad)), 0.5);
+            double T = Math.Tan(latRad) * Math.Tan(latRad);
+            double C = eccPrimeSquared * Math.Cos(latRad) * Math.Cos(latRad);
+            double A = Math.Cos(latRad) * (longRad - longOriginRad);
 
-            M = equatRad * ((1.0f - eccSquared / 4.0f - 3.0f * eccSquared * eccSquared / 64.0f - 5.0f * eccSquared * eccSquared * eccSquared / 256.0f) * latRad
+            double M = equatRad * ((1.0f - eccSquared / 4.0f - 3.0f * eccSquared * eccSquared / 64.0f - 5.0f * eccSquared * eccSquared * eccSquared / 256.0f) * latRad
                 - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Math.Sin(2 * latRad)
                 + (15 * eccSquared * eccSquared / 256 + 45 * eccSquared * eccSquared * eccSquared / 1024) * Math.Sin(4 * latRad)
                 - (35 * eccSquared * eccSquared * eccSquared / 3072) * Math.Sin(6 * latRad));
@@ -221,80 +211,13 @@ namespace ContinuumNS
             if ((thisLat < 0))
                 theseUTMcoords.UTMNorthing += 10000000.0; ////10000000 meter offset for southern hemisphere
 
-            return theseUTMcoords;
-
-      }
-
-
-        public char UTMLetterDesignator(double lat)
-        {
-            // //This routine determines the correct UTM letter designator for the given latitude
-            // //returns //Z// if latitude is outside the UTM limits of 84N to 80S
-            //	//Written by Chuck Gantz- chuck.gantz@globalstar.com
-            char letterDesignator;
-
-            //  if ( ((84 >= lat) && (lat >= 0)) ) {
-            // letterDesignator = "N"
-            // else if ( ((0 > lat) && (lat >= -80)) ) {
-            // letterDesignator = "S"
-
-            if (((84 >= lat) && (lat >= 72)))
-                letterDesignator = 'X';
-            else if (((72 > lat) && (lat >= 64)))
-                letterDesignator = 'W';
-            else if (((64 > lat) && (lat >= 56)))
-                letterDesignator = 'V';
-            else if (((56 > lat) && (lat >= 48)))
-                letterDesignator = 'U';
-            else if (((48 > lat) && (lat >= 40)))
-                letterDesignator = 'T';
-            else if (((40 > lat) && (lat >= 32)))
-                letterDesignator = 'S';
-            else if (((32 > lat) && (lat >= 24)))
-                letterDesignator = 'R';
-            else if (((24 > lat) && (lat >= 16)))
-                letterDesignator = 'Q';
-            else if (((16 > lat) && (lat >= 8)))
-                letterDesignator = 'P';
-            else if (((8 > lat) && (lat >= 0)))
-                letterDesignator = 'N';
-            else if (((0 > lat) && (lat >= -8)))
-                letterDesignator = 'M';
-            else if (((-8 > lat) && (lat >= -16)))
-                letterDesignator = 'L';
-            else if (((-16 > lat) && (lat >= -24)))
-                letterDesignator = 'K';
-            else if (((-24 > lat) && (lat >= -32)))
-                letterDesignator = 'J';
-            else if (((-32 > lat) && (lat >= -40)))
-                letterDesignator = 'H';
-            else if (((-40 > lat) && (lat >= -48)))
-                letterDesignator = 'G';
-            else if (((-48 > lat) && (lat >= -56)))
-                letterDesignator = 'F';
-            else if (((-56 > lat) && (lat >= -64)))
-                letterDesignator = 'E';
-            else if (((-64 > lat) && (lat >= -72)))
-                letterDesignator = 'D';
-            else if (((-72 > lat) && (lat >= -80)))
-                letterDesignator = 'C';
-            else
-                letterDesignator = 'Z'; // //This is here as an error flag to show that the latitude is outside the UTM limits
-
-            return letterDesignator;
+            return theseUTMcoords;      
         }
 
-
+        /// <summary> Converts UTM coords to lat/long.  Equations from USGS Bulletin 1532  </summary>  
         public Lat_Long UTMtoLL(double UTMEasting, double UTMNorthing)
-        {
-
-            //   //converts UTM coords to lat/long.  Equations from USGS Bulletin 1532 
-            //   //East Longitudes are positive, West longitudes are negative. 
-            //   //North latitudes are positive, South latitudes are negative
-            //   //lat and Long are in decimal degrees. 
-            //	//Written by Chuck Gantz- chuck.gantz@globalstar.com
-            Lat_Long theseLL = new Lat_Long();
-            
+        {            
+            Lat_Long theseLL = new Lat_Long();            
 
             if ((savedDatumIndex < 0 || savedDatumIndex > 10)) 
                 return theseLL;
@@ -349,9 +272,9 @@ namespace ContinuumNS
             return theseLL;
         }
 
+        /// <summary> Returns UTC offset (in hours) at specified lat/long  </summary>  
         public int GetUTC_Offset(double thisLat, double thisLong)
         {           
-
             string ianaTimeZone = TimeZoneLookup.GetTimeZone(thisLat, thisLong).Result;
             string windowsTimeZone = TimeZoneConverter.TZConvert.IanaToWindows(ianaTimeZone);
 

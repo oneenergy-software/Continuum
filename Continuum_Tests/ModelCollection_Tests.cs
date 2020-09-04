@@ -13,7 +13,7 @@ namespace Continuum_Tests
     [TestClass]
     public class ModelCollection_Tests
     {
-        string testingFolder = "C:\\Users\\Liz\\Desktop\\Continuum 3 Testing\\Unit tests & Documentation\\ModelCollection";
+        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\ModelCollection";
 
         [TestMethod]
         public void GetDeltaWS_DW_Expo_Test()
@@ -903,7 +903,7 @@ namespace Continuum_Tests
             startWSDist = startMet.GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
                      
             Turbine endTurbine = thisInst.turbineList.GetTurbine("Turb_532");
-            Turbine.Avg_Est avgEst = endTurbine.GetAvgWS_Est(null, new TurbineCollection.PowerCurve());
+            Turbine.Avg_Est avgEst = endTurbine.GetAvgWS_Est(null);
             Turbine.WS_Ests wsEst = endTurbine.GetWS_Est(4000, startMet.name, model);
             Nodes[] pathOfNodes = wsEst.pathOfNodes;
 
@@ -1271,7 +1271,7 @@ namespace Continuum_Tests
             NodeCollection nodeList = new NodeCollection();
             Nodes targetNode = nodeList.GetTurbNode(thisTurb);
 
-            Turbine.Avg_Est avgEst = thisTurb.GetAvgWS_Est(thisWakeModel, powerCurve);
+            Turbine.Avg_Est avgEst = thisTurb.GetAvgWS_Est(thisWakeModel);
             ModelCollection.TimeSeries[] thisTS = avgEst.timeSeries;
 
             if (thisTS.Length == 0)

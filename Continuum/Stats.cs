@@ -1,30 +1,14 @@
-﻿////////////////////////////////////////////////////////////////////////////////////////////////////
-// file:	Stats.cs
-//
-// summary:	Implements the statistics class which calculates average, variance, covariance, etc.
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System;
 
 namespace ContinuumNS
-{
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// <summary> Statistics class used in MCP tool. </summary>
-    ///
-    /// <remarks>   Liz, 5/26/2017. </remarks>
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
+{   
+    /// <summary> Statistics class used to calculate average, variance, covariance of Site_data. </summary>
+    
     [Serializable()]
     public class Stats
     {
-        /// <summary>
-        /// Calculates and returns the average wind speed for specified wind speed range, time interval range, 
-        /// wind direction range, time of day, and season
-        /// </summary>        
+        /// <summary> Calculates and returns the average wind speed for specified wind speed range, time interval range, 
+        /// wind direction range, time of day, and season </summary>        
         public double CalcAvgWS(MCP.Site_data[] site, DateTime startTime, DateTime endTime, double minWD, double maxWD,
             Met.TOD TOD, Met.Season season, MetCollection metList)
         {
@@ -107,12 +91,10 @@ namespace ContinuumNS
 
             return variance;
         }
-
         
-        /// <summary>   Calculates and returns the covariance between x_vals and y_vals. </summary>        
+        /// <summary> Calculates and returns the covariance between x_vals and y_vals. </summary>        
         public double CalcCovariance(double[] x_vals, double[] y_vals)
-        {            
-
+        {
             double covar = 0;
             double sum_XY = 0;
             double sum_x = 0;
@@ -140,18 +122,19 @@ namespace ContinuumNS
             return covar;
         }
                 
-        /// <summary>   Calculates the coefficient of determination, R-squared. </summary>        
+        /// <summary>  Calculates and returns the coefficient of determination, R-squared. </summary>        
         public double CalcR_Sqr(double covar_xy, double var_x, double var_y)
         {
             double R_sqr = Math.Pow(covar_xy / Math.Pow(var_x, 0.5) / Math.Pow(var_y, 0.5), 2);
             return R_sqr;
         }
                 
-        /// <summary>   Calculates the intercept based on mean x, mean y, and slope. </summary> 
+        /// <summary>   Calculates and returns the intercept based on mean x, mean y, and slope. </summary> 
         public double CalcIntercept(double avgY, double slope, double avgX)
         {
             double intercept = avgY - slope * avgX;
             return intercept;
         }
-}
+
+    }
 }
