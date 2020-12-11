@@ -14,7 +14,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void DoWS_EstAlongNodes_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             double thisUTMX = 823500;
             double thisUTMY = 4500400;
@@ -71,7 +71,7 @@ namespace Continuum_Tests
         public void ExportMetWeights()
         {
             // Used in GenerateAvgWSFromTABs
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             string exportName = testingFolder + "\\Met Weights and WS Ests.csv";
             StreamWriter sw = new StreamWriter(exportName);
 
@@ -100,7 +100,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GenerateAvgWSFromTABs_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\Turbine testing.cfm";
             string WSFile = testingFolder + "\\W1 Avg WS and Sect WS Ests.csv";
@@ -127,7 +127,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void DoTurbineCalcs_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\Turbine testing.cfm";
             thisInst.Open(Filename);
@@ -161,7 +161,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcTurbineWakeLosses_Test()
         {
-            Continuum thisInst = new Continuum();            
+            Continuum thisInst = new Continuum("");            
 
             string Filename = testingFolder + "\\Turbine testing.cfm";
             thisInst.Open(Filename);
@@ -206,7 +206,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GenerateAvgWSTimeSeries_Test()
         {
-            Continuum thisInst = new Continuum();            
+            Continuum thisInst = new Continuum("");            
             string fileName = testingFolder + "\\Turbine TS testing.cfm";
             thisInst.Open(fileName);
 
@@ -231,7 +231,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcMonthlyWS_Values_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Turbine TS testing.cfm";
             thisInst.Open(fileName);
@@ -258,7 +258,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcYearlyValue_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Turbine TS testing.cfm";
             thisInst.Open(fileName);
@@ -284,7 +284,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcLT_MonthlyValue_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Turbine TS testing.cfm";
             thisInst.Open(fileName);
@@ -315,7 +315,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcWakedStDev_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Turbine testing.cfm";
             thisInst.Open(fileName);
@@ -341,7 +341,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcEffectiveTI_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Turbine TS testing.cfm";
             thisInst.Open(fileName);

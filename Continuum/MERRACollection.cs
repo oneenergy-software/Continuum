@@ -455,43 +455,12 @@ namespace ContinuumNS
 
         /// <summary> Logs user into NASA's EarthData system and begins MERRA2 data download (in background worker). </summary> 
         public async Task NASA_LogInAsync(Continuum thisInst)
-        {
-                                  
-            if (earthdataUser == "" || earthdataPwd == "")
-            {
-                try
-                {
-                    earthdataUser = Microsoft.VisualBasic.Interaction.InputBox("Enter your Earthdata username. If you don't have one, go to https://urs.earthdata.nasa.gov/ to create an account.", "Continuum 3").ToString();
-                }
-                catch
-                {
-                    MessageBox.Show("Invalid Earthdata username");
-                    return;
-                }
-
-                if (earthdataUser == "")
-                    return;
-                
-                try
-                {
-                    earthdataPwd = Microsoft.VisualBasic.Interaction.InputBox("Enter your Earthdata password. If you don't have one, go to https://urs.earthdata.nasa.gov/ to create an account.", "Continuum 3").ToString();
-                }
-                catch
-                {
-                    MessageBox.Show("Invalid Earthdata password");
-                    return;
-                }
-
-                if (earthdataPwd == "")
-                    return;
-            }
-
+        {  
             BackgroundWork.Vars_for_BW Vars_for_MERRA = new BackgroundWork.Vars_for_BW();
             Vars_for_MERRA.thisInst = thisInst;
             
             thisInst.BW_worker = new BackgroundWork();
             thisInst.BW_worker.Call_BW_MERRA2_Download(Vars_for_MERRA);
-
         }
 
         /// <summary> Returns MERRA2 data file latitude index. </summary> 

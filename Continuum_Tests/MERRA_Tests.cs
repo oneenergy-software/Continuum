@@ -15,7 +15,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetMaxHourlyWindSpeeds_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\GetMaxHourlyWindSpeeds\\GetMaxHourlyWindSpeeds test.cfm";
             thisInst.Open(Filename);
@@ -42,7 +42,7 @@ namespace Continuum_Tests
         public void Calc_Avg_or_LT_Test()
         {       
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
@@ -87,7 +87,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Wind_Rose_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
@@ -158,7 +158,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_LT_Avg_Prod_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
@@ -235,7 +235,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_MonthProdStats_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
@@ -257,7 +257,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Perc_Diff_from_LT_Monthly_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
@@ -281,7 +281,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Perc_Diff_from_LT_Yearly_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
@@ -305,7 +305,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Dev_from_LT_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
@@ -326,7 +326,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_CF_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
@@ -349,7 +349,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Find_MERRA_Coords_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);

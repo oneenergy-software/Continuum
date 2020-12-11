@@ -26,7 +26,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_1";
 
@@ -277,7 +277,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_10";
 
@@ -528,7 +528,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_100";
 
@@ -779,7 +779,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_101";
 
@@ -1030,7 +1030,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_102";
 
@@ -1281,7 +1281,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_103";
 
@@ -1532,7 +1532,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_104";
 
@@ -1783,7 +1783,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_105";
 
@@ -2034,7 +2034,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_106";
 
@@ -2285,7 +2285,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_107";
 
@@ -2536,7 +2536,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_108";
 
@@ -2787,7 +2787,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_109";
 
@@ -3038,7 +3038,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_11";
 
@@ -3289,7 +3289,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_110";
 
@@ -3540,7 +3540,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_111";
 
@@ -3791,7 +3791,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_112";
 
@@ -4042,7 +4042,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_113";
 
@@ -4293,7 +4293,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_114";
 
@@ -4544,7 +4544,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_115";
 
@@ -4795,7 +4795,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_116";
 
@@ -5046,7 +5046,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_117";
 
@@ -5297,7 +5297,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_118";
 
@@ -5548,7 +5548,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_119";
 
@@ -5799,7 +5799,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_12";
 
@@ -6050,7 +6050,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_120";
 
@@ -6301,7 +6301,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_121";
 
@@ -6552,7 +6552,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_122";
 
@@ -6803,7 +6803,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_123";
 
@@ -7054,7 +7054,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_124";
 
@@ -7305,7 +7305,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_125";
 
@@ -7556,7 +7556,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_126";
 
@@ -7807,7 +7807,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_127";
 
@@ -8058,7 +8058,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_128";
 
@@ -8309,7 +8309,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_129";
 
@@ -8560,7 +8560,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_13";
 
@@ -8811,7 +8811,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_130";
 
@@ -9062,7 +9062,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_131";
 
@@ -9313,7 +9313,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_132";
 
@@ -9564,7 +9564,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_133";
 
@@ -9815,7 +9815,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_134";
 
@@ -10066,7 +10066,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\TwoMetTABAndGrossNet_135";
 

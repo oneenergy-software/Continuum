@@ -31,7 +31,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1";
 
@@ -256,7 +256,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_10";
 
@@ -483,7 +483,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_100";
 
@@ -710,7 +710,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1360";
 
@@ -937,7 +937,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1361";
 
@@ -1164,7 +1164,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1362";
 
@@ -1391,7 +1391,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1363";
 
@@ -1618,7 +1618,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1364";
 
@@ -1845,7 +1845,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1365";
 
@@ -2072,7 +2072,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1366";
 
@@ -2299,7 +2299,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1367";
 
@@ -2526,7 +2526,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1368";
 
@@ -2753,7 +2753,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1369";
 
@@ -2980,7 +2980,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_101";
 
@@ -3207,7 +3207,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1370";
 
@@ -3434,7 +3434,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1371";
 
@@ -3661,7 +3661,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1372";
 
@@ -3888,7 +3888,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1373";
 
@@ -4115,7 +4115,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1374";
 
@@ -4342,7 +4342,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1375";
 
@@ -4569,7 +4569,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1376";
 
@@ -4796,7 +4796,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1377";
 
@@ -5023,7 +5023,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1378";
 
@@ -5250,7 +5250,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1379";
 
@@ -5477,7 +5477,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_102";
 
@@ -5704,7 +5704,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1380";
 
@@ -5931,7 +5931,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1381";
 
@@ -6158,7 +6158,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1382";
 
@@ -6385,7 +6385,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1383";
 
@@ -6612,7 +6612,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1384";
 
@@ -6839,7 +6839,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1385";
 
@@ -7066,7 +7066,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1386";
 
@@ -7293,7 +7293,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1387";
 
@@ -7520,7 +7520,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1388";
 
@@ -7747,7 +7747,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1389";
 
@@ -7974,7 +7974,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_103";
 
@@ -8201,7 +8201,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1390";
 
@@ -8428,7 +8428,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1391";
 
@@ -8655,7 +8655,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1392";
 
@@ -8882,7 +8882,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1393";
 
@@ -9109,7 +9109,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1394";
 
@@ -9336,7 +9336,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1395";
 
@@ -9563,7 +9563,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1396";
 
@@ -9790,7 +9790,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1397";
 
@@ -10017,7 +10017,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1398";
 
@@ -10244,7 +10244,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1399";
 
@@ -10471,7 +10471,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_104";
 
@@ -10698,7 +10698,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1400";
 
@@ -10925,7 +10925,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1401";
 
@@ -11152,7 +11152,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1402";
 
@@ -11379,7 +11379,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1403";
 
@@ -11606,7 +11606,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1404";
 
@@ -11833,7 +11833,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1405";
 
@@ -12060,7 +12060,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1406";
 
@@ -12287,7 +12287,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1407";
 
@@ -12514,7 +12514,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1408";
 
@@ -12741,7 +12741,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1409";
 
@@ -12968,7 +12968,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_105";
 
@@ -13195,7 +13195,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1410";
 
@@ -13422,7 +13422,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1411";
 
@@ -13649,7 +13649,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1412";
 
@@ -13876,7 +13876,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1413";
 
@@ -14103,7 +14103,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1414";
 
@@ -14330,7 +14330,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1415";
 
@@ -14557,7 +14557,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1416";
 
@@ -14784,7 +14784,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1417";
 
@@ -15011,7 +15011,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1418";
 
@@ -15238,7 +15238,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1419";
 
@@ -15465,7 +15465,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_106";
 
@@ -15692,7 +15692,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1420";
 
@@ -15919,7 +15919,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1421";
 
@@ -16146,7 +16146,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1422";
 
@@ -16373,7 +16373,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1423";
 
@@ -16600,7 +16600,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1424";
 
@@ -16827,7 +16827,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1425";
 
@@ -17054,7 +17054,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1426";
 
@@ -17281,7 +17281,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1427";
 
@@ -17508,7 +17508,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1428";
 
@@ -17735,7 +17735,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1429";
 
@@ -17962,7 +17962,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_107";
 
@@ -18189,7 +18189,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1430";
 
@@ -18416,7 +18416,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1431";
 
@@ -18643,7 +18643,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1432";
 
@@ -18870,7 +18870,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1433";
 
@@ -19097,7 +19097,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1434";
 
@@ -19324,7 +19324,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1435";
 
@@ -19551,7 +19551,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1436";
 
@@ -19778,7 +19778,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1437";
 
@@ -20005,7 +20005,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1438";
 
@@ -20232,7 +20232,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1439";
 
@@ -20459,7 +20459,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_108";
 
@@ -20686,7 +20686,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_1440";
 
@@ -20913,7 +20913,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2161";
 
@@ -21140,7 +21140,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2162";
 
@@ -21367,7 +21367,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2163";
 
@@ -21594,7 +21594,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2164";
 
@@ -21821,7 +21821,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2165";
 
@@ -22048,7 +22048,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2166";
 
@@ -22275,7 +22275,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2167";
 
@@ -22502,7 +22502,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2168";
 
@@ -22729,7 +22729,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2169";
 
@@ -22956,7 +22956,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_109";
 
@@ -23183,7 +23183,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2170";
 
@@ -23410,7 +23410,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2171";
 
@@ -23637,7 +23637,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2172";
 
@@ -23864,7 +23864,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2173";
 
@@ -24091,7 +24091,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2174";
 
@@ -24318,7 +24318,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2175";
 
@@ -24545,7 +24545,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2176";
 
@@ -24772,7 +24772,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2177";
 
@@ -24999,7 +24999,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2178";
 
@@ -25226,7 +25226,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2179";
 
@@ -25453,7 +25453,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_11";
 
@@ -25680,7 +25680,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_110";
 
@@ -25907,7 +25907,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2180";
 
@@ -26134,7 +26134,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2181";
 
@@ -26361,7 +26361,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2182";
 
@@ -26588,7 +26588,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2183";
 
@@ -26815,7 +26815,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2184";
 
@@ -27042,7 +27042,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2191";
 
@@ -27269,7 +27269,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2192";
 
@@ -27496,7 +27496,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2194";
 
@@ -27723,7 +27723,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2199";
 
@@ -27950,7 +27950,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2201";
 
@@ -28177,7 +28177,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_111";
 
@@ -28404,7 +28404,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2202";
 
@@ -28631,7 +28631,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2203";
 
@@ -28858,7 +28858,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2204";
 
@@ -29085,7 +29085,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2205";
 
@@ -29312,7 +29312,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2206";
 
@@ -29539,7 +29539,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2207";
 
@@ -29766,7 +29766,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2208";
 
@@ -29993,7 +29993,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2209";
 
@@ -30220,7 +30220,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2210";
 
@@ -30447,7 +30447,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2211";
 
@@ -30674,7 +30674,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_112";
 
@@ -30901,7 +30901,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2212";
 
@@ -31128,7 +31128,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2213";
 
@@ -31355,7 +31355,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2214";
 
@@ -31582,7 +31582,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2221";
 
@@ -31809,7 +31809,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2222";
 
@@ -32036,7 +32036,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2225";
 
@@ -32263,7 +32263,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2228";
 
@@ -32490,7 +32490,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2231";
 
@@ -32717,7 +32717,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2232";
 
@@ -32944,7 +32944,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2233";
 
@@ -33171,7 +33171,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_113";
 
@@ -33398,7 +33398,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2234";
 
@@ -33625,7 +33625,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2237";
 
@@ -33852,7 +33852,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2239";
 
@@ -34079,7 +34079,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2240";
 
@@ -34306,7 +34306,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\OneMetTSNotFiltWithMERRAAndMCP_2241";
 

@@ -19,7 +19,7 @@ namespace Continuum_Tests.GUI_Tests
         [TestMethod]
         public void ShadowFlicker_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
 
@@ -53,7 +53,7 @@ namespace Continuum_Tests.GUI_Tests
         [TestMethod]
         public void IceThrow_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
 
@@ -94,7 +94,7 @@ namespace Continuum_Tests.GUI_Tests
         [TestMethod]
         public void SoundModel_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
 

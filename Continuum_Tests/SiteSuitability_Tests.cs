@@ -13,7 +13,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetFlickerAngles_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);
@@ -208,7 +208,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcNoiseLevel_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Sound\\Sound testing.cfm";
             thisInst.Open(fileName);
@@ -357,7 +357,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetTipSpeed_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
@@ -410,7 +410,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void ExportIceThrows()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
@@ -460,7 +460,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcIceHitVersusDistance_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
@@ -492,7 +492,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcProbabilityOfHits()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Ice Throw\\Ice Throw testing.cfm";
             thisInst.Open(fileName);
@@ -587,7 +587,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetTotalFlickerHoursByMonthAndH_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);
@@ -610,7 +610,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetTotalFlickerHours_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);
@@ -629,7 +629,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GenerateWS_CDFs_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
@@ -648,7 +648,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FindCDF_WS_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Ice Throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
@@ -683,7 +683,7 @@ namespace Continuum_Tests
         public void ExportShadowFlickerMap12x24()
         {
             string exportFile = testingFolder + "\\Shadow Flicker\\Flicker Map vals.csv";
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);

@@ -13,12 +13,14 @@ namespace ContinuumNS
         /// </summary>      
         
         [STAThread]
-        static void Main()
-        {
-
+        static void Main(string[] args)
+        {            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Continuum());
+            if (args.Length == 0)
+                Application.Run(new Continuum(""));
+            else
+                Application.Run(new Continuum(args[0]));
         }
     }
 }

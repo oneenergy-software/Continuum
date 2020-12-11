@@ -18,7 +18,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FindSectorsForGrid_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
                      
             StreamReader sr = new StreamReader(testingFolder + "\\WindRose 1.txt");
             double[] windRose = new double[16];
@@ -72,7 +72,7 @@ namespace Continuum_Tests
 
         public void ExportGridArray()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
 
             string Filename = testingFolder + "\\Grid_Info testing.cfm";
@@ -92,7 +92,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Get_Grid_Array_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
 
             string Filename = testingFolder + "\\Grid_Info testing Paulding 0206.cfm";
@@ -129,7 +129,7 @@ namespace Continuum_Tests
             srExcel.Close();
 
             // Test 2
-            thisInst = new Continuum();
+            thisInst = new Continuum("");
             Filename = testingFolder + "\\Grid_Info testing Great Western 0206.cfm";
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
@@ -162,7 +162,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Get_Closest_Node_Fixed_Grid()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
 
             string Filename = testingFolder + "\\Grid_Info testing Paulding 0206.cfm";
@@ -182,7 +182,7 @@ namespace Continuum_Tests
                 
         public void ExportGridExpos()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\Grid_Info testing Paulding 0206.cfm";
             thisInst.Open(Filename);
@@ -205,7 +205,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Grid_Stats_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
 
             string Filename = testingFolder + "\\Grid_Info testing Paulding 0206.cfm";

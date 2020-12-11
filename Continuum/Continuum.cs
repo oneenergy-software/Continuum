@@ -6,6 +6,8 @@ using System.Runtime.Serialization.Formatters;
 using System.Diagnostics;
 using Microsoft.VisualBasic;
 using System.Threading;
+using System.Net;
+using System.Text;
 
 namespace ContinuumNS
 {
@@ -57,18 +59,18 @@ namespace ContinuumNS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         /// <summary> Continuum class initializer </summary>
-        public Continuum()
+        public Continuum(string fileName)
         {
             SplashScreen Splash = new SplashScreen();
             Splash.ShowDialog();                        
 
-            InitializeComponent();      
+            InitializeComponent();            
 
             radiiList.New(); // populates with R = 4000, 6000, 8000, 10000 and invserse distance exponent = 1
             metList.NewList(); // sets MCP settings and day/night hours
             turbineList.SetExceedCurves(); // initializes Exceedance curves
             updateThe.Exceedance_TAB(this);
-            
+
             chkSelectedTurbineParam.Items.Add("Avg WS", true);
             chkSelectedTurbineParam.Items.Add("Gross AEP", false);
             chkSelectedTurbineParam.Items.Add("Net AEP", false);
@@ -77,12 +79,15 @@ namespace ContinuumNS
 
             txtNumIceDays.Text = siteSuitability.numIceDaysPerYear.ToString();
             txtNumIceThrowsPerDay.Text = siteSuitability.iceThrowsPerIceDay.ToString();
-            
+
             cboTI_Type.SelectedIndex = 0;
             cboEffectiveTI_m.SelectedIndex = 0;
             cboMERRASelectedMet.SelectedIndex = 0;
             cboMCP_Type.SelectedIndex = 0;
             updateThe.MCP_Settings(this);
+
+            if (fileName != "")
+                Open(fileName);
                         
             
         }               
@@ -1248,7 +1253,7 @@ namespace ContinuumNS
                     updateThe.NewProject(this);
                     return;
                 }
-            }
+            }            
 
             try {
                 radiiList = (InvestCollection)bin.Deserialize(fstream);
@@ -6144,6 +6149,21 @@ namespace ContinuumNS
                 return;
             }
 
+            // Check to see if all mets have multiple heights.  If any one has a single height then it must be the same as the modeled height other can't change height
+            for (int i = 0; i < metList.ThisCount; i++)
+            {
+                double[] anemHs = metList.metItem[i].metData.GetHeightsOfAnems();
+                if (anemHs.Length == 1)
+                {
+                    if (anemHs[0] != newHeight)
+                    {
+                        MessageBox.Show("Met site " + metList.metItem[i].name + " has a single wind speed measurement at " + anemHs[0] + " m. More than one wind speed" +
+                            "measurement levels are required for wind speed extrapolation to the selected height of " + newHeight);
+                        return;
+                    }
+                }
+            }                
+
             if (modelList.ModelCount > 0)
             {
                 DialogResult goodToGo = MessageBox.Show("Changing the modeled height will reset models and all estimated values. Do you " +
@@ -6251,9 +6271,25 @@ namespace ContinuumNS
                         metList.metItem[i].metData.FilterData(GetFiltersToApply());
                     metList.metItem[i].metData.EstimateAlpha();
                     metList.metItem[i].metData.ExtrapolateData(modeledHeight);
+                    metList.metItem[i].WSWD_Dists = null;
+
+                    if (metList.isMCPd)
+                    {
+                        UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(metList.metItem[i].UTMX, metList.metItem[i].UTMY);
+                        string MCP_Method = Get_MCP_Method();
+                        MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                        metList.RunMCP(ref metList.metItem[i], thisMERRA, this, MCP_Method); // Runs MCP and generates LT WS estimates                                                                        
+
+                        metList.metItem[i].CalcAllLT_WSWD_Dists(this, metList.metItem[i].mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
+
+                    }
+                    else
+                        metList.metItem[i].CalcAllMeas_WSWD_Dists(this, metList.metItem[i].metData.GetSimulatedTimeSeries(modeledHeight));
+                    
                 }
 
                 updateThe.InputTAB(this);
+                updateThe.MetList(this);
                 updateThe.MetDataQC_TAB(this);
                 updateThe.Met_Turbine_Summary_TAB(this);
                 updateThe.GrossTurbineEstsTAB(this);
@@ -6572,6 +6608,26 @@ namespace ContinuumNS
 
         private void btnDownloadMERRA2_Click(object sender, EventArgs e)
         {
+            if (merraList.earthdataUser == "" || merraList.earthdataPwd == "")
+            {
+                NASA_LogIn nasaCreds = new NASA_LogIn();
+                nasaCreds.ShowDialog();                
+
+                if (nasaCreds.goodToGo == false)
+                    return;
+
+                try
+                {
+                    merraList.earthdataUser = nasaCreds.txtNASAUsername.Text;
+                    merraList.earthdataPwd = nasaCreds.txtNASAPassword.Text;
+                }
+                catch
+                {
+                    MessageBox.Show("Invalid Earthdata credentials");
+                    return;
+                }                
+            }
+
             merraList.NASA_LogInAsync(this);
         }
 
@@ -6738,6 +6794,29 @@ namespace ContinuumNS
             Met selectedMet = GetSelectedMet("Met Data QC");
             selectedMet.metData.FindStartEndDatesWithMaxRecovery();
             updateThe.MetDataQC_TAB(this);
+        }
+
+        private void btnDownloadTopoLC_Click(object sender, EventArgs e)
+        {
+            // Calls USGS API and downloads GeoTiff
+            // Testing
+
+            // Define HTTP web request and set authorization headers
+            string minLong = "-103";
+            string maxLong = "-101";
+            string minLat = "44";
+            string maxLat = "45";
+            string usgsBase = "http://viewer.nationalmap.gov/tnmaccess/api/products?datasets=National Elevation Dataset (NED) 1 arc-second&bbox=" + minLong + "," +
+                minLat + "," + maxLong + "," + maxLat + " prodFormats=GeoTiff&prodExtents=1 x 1 degree";
+
+            HttpWebRequest testRequest = (HttpWebRequest)WebRequest.Create(usgsBase);            
+            testRequest.Method = "GET";
+
+            var response = testRequest.GetResponse();
+            Stream clientList = response.GetResponseStream();
+            StreamReader sr = new StreamReader(clientList, Encoding.UTF8);
+            string thisJson = sr.ReadToEnd();
+            thisJson = thisJson;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_1";
 
@@ -253,7 +253,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_10";
 
@@ -482,7 +482,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_100";
 
@@ -711,7 +711,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_101";
 
@@ -940,7 +940,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_102";
 
@@ -1169,7 +1169,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_103";
 
@@ -1398,7 +1398,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_104";
 
@@ -1627,7 +1627,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_105";
 
@@ -1856,7 +1856,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_106";
 
@@ -2085,7 +2085,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_107";
 
@@ -2314,7 +2314,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_108";
 
@@ -2543,7 +2543,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_109";
 
@@ -2772,7 +2772,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_11";
 
@@ -3001,7 +3001,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_110";
 
@@ -3230,7 +3230,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_111";
 
@@ -3459,7 +3459,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_112";
 
@@ -3688,7 +3688,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_113";
 
@@ -3917,7 +3917,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_114";
 
@@ -4146,7 +4146,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_115";
 
@@ -4375,7 +4375,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_116";
 
@@ -4604,7 +4604,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_117";
 
@@ -4833,7 +4833,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_118";
 
@@ -5062,7 +5062,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_119";
 
@@ -5291,7 +5291,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_12";
 
@@ -5520,7 +5520,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_120";
 
@@ -5749,7 +5749,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_121";
 
@@ -5978,7 +5978,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_122";
 
@@ -6207,7 +6207,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_123";
 
@@ -6436,7 +6436,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_124";
 
@@ -6665,7 +6665,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_125";
 
@@ -6894,7 +6894,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_126";
 
@@ -7123,7 +7123,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_127";
 
@@ -7352,7 +7352,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_128";
 
@@ -7581,7 +7581,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_129";
 
@@ -7810,7 +7810,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_13";
 
@@ -8039,7 +8039,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
 
             string fileName = saveFolder + "\\ThreeMetTSNotFiltLTAndGrossNet_130";
 

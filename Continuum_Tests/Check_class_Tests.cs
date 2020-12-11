@@ -16,7 +16,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void TopoCheck_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoCheck model.cfm";
             thisInst.Open(Filename);
@@ -46,7 +46,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void LandCoverCheck_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoCheck model.cfm";
             thisInst.Open(Filename);

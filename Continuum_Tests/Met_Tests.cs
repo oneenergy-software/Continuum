@@ -13,7 +13,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcAvgWS_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\Met testing RDM.cfm";
             thisInst.Open(Filename);
@@ -40,7 +40,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcSectorWS_Ratios_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             thisInst.UTM_conversions.savedDatumIndex = 0;
             thisInst.UTM_conversions.hemisphere = "Northern";
@@ -59,7 +59,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcLT_WSWD_Dists_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Met testing.cfm";
             thisInst.Open(fileName);
@@ -166,7 +166,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcMeas_WSWD_Dists_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Met testing.cfm";
             thisInst.Open(fileName);
@@ -223,7 +223,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcTurbulenceIntensity_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Met testing.cfm";
             thisInst.Open(fileName);
@@ -263,7 +263,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcOverallTurbulenceIntensity()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Met testing.cfm";
             thisInst.Open(fileName);
@@ -290,7 +290,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetAlphaHistogram()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Met testing.cfm";
             thisInst.Open(fileName);
@@ -364,7 +364,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetAlphaPValue_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Met testing.cfm";
             thisInst.Open(fileName);
@@ -389,7 +389,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetMaxYearlyWinds_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Extreme WS\\Extreme WS Ashta Iten.cfm";
             thisInst.Open(fileName);
@@ -411,7 +411,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcExtremeWindSpeeds_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Extreme WS\\Extreme WS Ashta Iten.cfm";
             thisInst.Open(fileName);

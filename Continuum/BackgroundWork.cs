@@ -3336,7 +3336,13 @@ namespace ContinuumNS
             // Create a credential cache for authenticating when redirected to Earthdata Login
 
             CredentialCache cache = new CredentialCache();
-            cache.Add(new Uri(urs), "Basic", new NetworkCredential(merraList.earthdataUser, merraList.earthdataPwd));                      
+            cache.Add(new Uri(urs), "Basic", new NetworkCredential(merraList.earthdataUser, merraList.earthdataPwd));   
+            
+            if (thisInst.txtMinLat.Text == "" || thisInst.txtMaxLat.Text == "" || thisInst.txtMinLong.Text == "" || thisInst.txtMaxLong.Text == "")
+            {
+                MessageBox.Show("Specify the latitude/longitude bounding box before clicking 'Download MERRA2'.  This will begin the download process of MERRA2 data files to the specified MERRA2 folder location");
+                return;
+            }
 
             double minLat = Convert.ToDouble(thisInst.txtMinLat.Text);
             double maxLat = Convert.ToDouble(thisInst.txtMaxLat.Text);

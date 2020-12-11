@@ -16,7 +16,7 @@ namespace Continuum_Tests.GUI_Tests
         [TestMethod]
         public void Changing_Num_MERRA_Nodes_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             thisInst.isTest = true;
 
             string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\MERRA_Node_Test";

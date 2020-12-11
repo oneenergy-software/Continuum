@@ -85,6 +85,7 @@
             this.btnTurbines = new System.Windows.Forms.Button();
             this.btnLoadXYZ = new System.Windows.Forms.Button();
             this.pgeMetData = new System.Windows.Forms.TabPage();
+            this.btnResetMaxRecovDates = new System.Windows.Forms.Button();
             this.chkMaxWS_Range = new System.Windows.Forms.CheckBox();
             this.chkMaxWS_SD = new System.Windows.Forms.CheckBox();
             this.chkMinWS_SD = new System.Windows.Forms.CheckBox();
@@ -922,7 +923,6 @@
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
-            this.btnResetMaxRecovDates = new System.Windows.Forms.Button();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pgeMetData.SuspendLayout();
@@ -1681,6 +1681,17 @@
             this.pgeMetData.TabIndex = 14;
             this.pgeMetData.Text = "Met Data QC";
             this.pgeMetData.UseVisualStyleBackColor = true;
+            // 
+            // btnResetMaxRecovDates
+            // 
+            this.btnResetMaxRecovDates.Location = new System.Drawing.Point(744, 36);
+            this.btnResetMaxRecovDates.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnResetMaxRecovDates.Name = "btnResetMaxRecovDates";
+            this.btnResetMaxRecovDates.Size = new System.Drawing.Size(65, 47);
+            this.btnResetMaxRecovDates.TabIndex = 237;
+            this.btnResetMaxRecovDates.Text = "Reset Dates";
+            this.btnResetMaxRecovDates.UseVisualStyleBackColor = true;
+            this.btnResetMaxRecovDates.Click += new System.EventHandler(this.btnResetMaxRecovDates_Click);
             // 
             // chkMaxWS_Range
             // 
@@ -10174,7 +10185,7 @@
             // 
             // ofdLandCover
             // 
-            this.ofdLandCover.Filter = "TIFF file|*.TIF";
+            this.ofdLandCover.Filter = "TIF file|*.TIF|TIFF file|*.TIFF";
             this.ofdLandCover.InitialDirectory = "C:\\";
             this.ofdLandCover.Title = "Load GeoTIFF file";
             // 
@@ -10251,17 +10262,6 @@
             this.ofdExceedCurves.Filter = "CSV file|*.CSV";
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
-            // 
-            // btnResetMaxRecovDates
-            // 
-            this.btnResetMaxRecovDates.Location = new System.Drawing.Point(744, 36);
-            this.btnResetMaxRecovDates.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnResetMaxRecovDates.Name = "btnResetMaxRecovDates";
-            this.btnResetMaxRecovDates.Size = new System.Drawing.Size(65, 47);
-            this.btnResetMaxRecovDates.TabIndex = 237;
-            this.btnResetMaxRecovDates.Text = "Reset Dates";
-            this.btnResetMaxRecovDates.UseVisualStyleBackColor = true;
-            this.btnResetMaxRecovDates.Click += new System.EventHandler(this.btnResetMaxRecovDates_Click);
             // 
             // Continuum
             // 

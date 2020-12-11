@@ -183,7 +183,7 @@ namespace Continuum_Tests
             for (int i = 0; i <= 30; i++)
                 thisDist[i] = Convert.ToSingle(sr.ReadLine());
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             double[] dummyRose = new double[16];
             double[,] dummySect = new double[16, 31];
             thisInst.metList.AddMetTAB("Dummy", 0, 0, 0, dummyRose, dummySect, 0.5, 1, thisInst);
@@ -390,7 +390,7 @@ namespace Continuum_Tests
                     sectorWS[i, j] = Convert.ToSingle(This_Array_Split[j]);
             }
 
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             thisInst.metList.WS_FirstInt = 0.5;
             thisInst.metList.WS_IntSize = 1;
             thisInst.metList.numWS = 30;
@@ -491,7 +491,7 @@ namespace Continuum_Tests
             }
             turbineList.AddTurbine("Target Site", 280050, 4552500, 1);
             turbineList.AddTurbine("UW Site", 280000, 4553000, 1);
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             thisInst.turbineList = turbineList;
             thisInst.metList.WS_FirstInt = 0.5;
             thisInst.metList.WS_IntSize = 1;
@@ -622,7 +622,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcNetEnergyTimeSeries_Test()
         {
-            Continuum thisInst = new Continuum();            
+            Continuum thisInst = new Continuum("");            
             string fileName = testingFolder + "\\WakeCollection TS testing.cfm";
             thisInst.Open(fileName);
 

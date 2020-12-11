@@ -15,7 +15,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetInterpData_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\GetInterpData test.cfm";
             thisInst.Open(Filename);

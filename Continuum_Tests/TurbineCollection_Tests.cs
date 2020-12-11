@@ -13,7 +13,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void ExportWSDist()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
 
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
@@ -35,7 +35,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcAndReturnGrossAEP_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
 
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
@@ -76,7 +76,7 @@ namespace Continuum_Tests
  /*       [TestMethod] Function no longer used
         public void GetOverallWakeLoss_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename =  testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(Filename);
@@ -90,7 +90,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcTurbineExposures_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(Filename);                      
@@ -109,7 +109,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcGrossAEPFromTABs_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
 
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
@@ -139,10 +139,10 @@ namespace Continuum_Tests
             string LC_Change_Before = "Test_Change_LCKey_Before_Mets_and_Turbs.cfm";
             string LC_Change_After = "Test_Change_LCKey_After_Mets_and_Turbs.cfm";
 
-            Continuum Change_Before = new Continuum();
+            Continuum Change_Before = new Continuum("");
             Change_Before.Open(testingFolder + "\\Node_ReCalc\\" + LC_Change_Before);
 
-            Continuum Change_After = new Continuum();
+            Continuum Change_After = new Continuum("");
             Change_After.Open(testingFolder + "\\Node_ReCalc\\" + LC_Change_After);
 
             for (int i = 0; i < 3; i++)
@@ -179,7 +179,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcProbOfWakeForEffectiveTI_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\CalcProbOfWakeForEffectiveTI\\Turbine Marion TI testing.cfm";
             thisInst.Open(fileName);
@@ -193,7 +193,7 @@ namespace Continuum_Tests
             Assert.AreEqual(probWakes[2, 5], 0.276, 0.01, "Wrong Wake Prob Test 4");
 
             thisInst.Close();
-            thisInst = new Continuum();
+            thisInst = new Continuum("");
             fileName = testingFolder + "\\CalcProbOfWakeForEffectiveTI\\Turbine Findlay TI testing.cfm";
             thisInst.Open(fileName);
             thisTurb = thisInst.turbineList.turbineEsts[4];
@@ -209,7 +209,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetInterpPowerOrThrust_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(fileName);

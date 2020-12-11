@@ -2511,6 +2511,15 @@ namespace ContinuumNS
             int width = GDAL_obj.RasterXSize;
             int height = GDAL_obj.RasterYSize;
 
+            int totalPoints = width * height;
+
+            if (totalPoints > 53000000)
+            {
+                MessageBox.Show("Topography file is too large!  The maximum number of grid points is 53 million.  The file being read contains " + totalPoints + ".  It is recommended to" +
+                    "open the file in QGIS and extract a smaller area.  See the tutorial \"How to download and extract USGS Data\" for more details");
+                return false;
+            }
+
             topoNumXY.X.all.num = width;
             topoNumXY.Y.all.num = height;
 
@@ -2599,8 +2608,10 @@ namespace ContinuumNS
                return false;
             }
 
-            // Create array of TopoGrid containing raw GeoTiff data
-            TopoGrid[] rawGeoTiff = new TopoGrid[width * height];
+            // Create array of TopoGrid containing raw GeoTiff data           
+            
+
+            TopoGrid[] rawGeoTiff = new TopoGrid[totalPoints];
 
             double new_MinX = 0;
             double new_MinY = 0;

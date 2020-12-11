@@ -13,7 +13,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcWS_DistForTurbOrMap_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
 
             string Filename = testingFolder + "\\RDM test.cfm";
@@ -60,7 +60,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcMetExposures_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
 
             string Filename = testingFolder + "\\RDM test.cfm";
@@ -104,7 +104,7 @@ namespace Continuum_Tests
                     sectorWS[i, j] = Convert.ToSingle(This_Array_Split[j]);
             }
 
-            Continuum ThisNewInst = new Continuum();
+            Continuum ThisNewInst = new Continuum("");
             ThisNewInst.metList.AddMetTAB("Test_Add", 10000, 100000, 80, windRose, sectorWS, 0.5f, 1, ThisNewInst);
 
             Assert.AreEqual(ThisNewInst.metList.ThisCount, 1, 0, "Wrong met count");

@@ -18,7 +18,7 @@ namespace Continuum_Tests
         public void ExportTopoData()
         {
             // Exports topography data to .csv for testing
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoInfo testing.cfm";
             thisInst.Open(Filename);
@@ -35,7 +35,7 @@ namespace Continuum_Tests
         public void ExportLandCoverData()
         {
             // Exports land cover data to .csv for testing
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoInfo testing.cfm";
             thisInst.Open(Filename);
@@ -51,7 +51,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcElevs_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoInfo testing.cfm";
             thisInst.Open(Filename);                    
@@ -85,7 +85,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcExposures_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoInfo testing.cfm";
             thisInst.Open(Filename);
@@ -147,7 +147,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void ReadGeoTiffTopo_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             thisInst.savedParams.savedFileName = testingFolder + "\\Testing GeoTiff load.cfm";
             thisInst.SaveFile(true);
@@ -195,7 +195,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void ReadGeoTiffLandCover_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             thisInst.savedParams.savedFileName = testingFolder + "\\Testing LandCover load.cfm";
             thisInst.SaveFile(true);
@@ -236,7 +236,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcSRDH_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoInfo testing.cfm";
             thisInst.Open(Filename);
@@ -290,7 +290,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcExposuresWithSmallerR_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoInfo testing.cfm";
             thisInst.Open(Filename);
@@ -322,7 +322,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcSRDHWithSmallerR_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoInfo testing.cfm";
             thisInst.Open(Filename);

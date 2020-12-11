@@ -383,7 +383,7 @@ namespace ContinuumNS
                     thisDist = WSWD_Dists[i];
             
             return thisDist;
-        }
+        }        
 
         /// <summary> Gets index of WS/WD distribution for specified height, time of day, and season  </summary>
         public int GetWS_WD_DistInd(double thisHeight, TOD thisTOD, Season thisSeason)
@@ -922,8 +922,12 @@ namespace ContinuumNS
             int[] anemInds = metData.GetAnemsClosestToHH(thisInst.modeledHeight);
             Met_Data_Filter.Anem_Data anem1 = metData.anems[anemInds[0]];
             Met_Data_Filter.Anem_Data anem2 = new Met_Data_Filter.Anem_Data();
-            if (anemInds[1] != -999)
+            bool gotAnem2 = false;
+            if (anemInds.Length > 1)
+            {
                 anem2 = metData.anems[anemInds[1]];
+                gotAnem2 = true;
+            }                
 
             // Go to first Jan 1            
             while (dataInd < anem1.windData.Length && (anem1.windData[dataInd].timeStamp.Month != 1 || anem1.windData[dataInd].timeStamp.Day != 1))
@@ -951,7 +955,7 @@ namespace ContinuumNS
                     {
                         if (anem1.windData[i].avg > maxWS)
                             maxWS = anem1.windData[i].avg;
-                        if (anemInds[1] != -999)
+                        if (gotAnem2) 
                             if (anem2.windData[i].avg > maxWS)
                                 maxWS = anem1.windData[i].avg;
                     }
@@ -959,7 +963,7 @@ namespace ContinuumNS
                     {
                         if (anem1.windData[i].max > maxWS)
                             maxWS = anem1.windData[i].max;
-                        if (anemInds[1] != -999)
+                        if (gotAnem2)
                             if (anem2.windData[i].max > maxWS)
                                 maxWS = anem1.windData[i].max;
                     }
@@ -973,14 +977,14 @@ namespace ContinuumNS
                     if (tenMinOrGust == "10-min")
                     {
                         maxWS = anem1.windData[i].avg;
-                        if (anemInds[1] != -999)
+                        if (gotAnem2)
                             if (anem2.windData[i].avg > maxWS)
                                 maxWS = anem1.windData[i].avg;
                     }
                     else
                     {
                         maxWS = anem1.windData[i].max;
-                        if (anemInds[1] != -999)
+                        if (gotAnem2)
                             if (anem2.windData[i].max > maxWS)
                                 maxWS = anem1.windData[i].max;
                     }

@@ -1696,11 +1696,27 @@ namespace ContinuumNS
 
                     file.Close();
 
+                    // Check to see if met data has multiple heights.  If it doesn't and the modeled height is different from met data height, return false
+                    double[] metWSHeights = thisMetData.GetHeightsOfAnems();
+
+                    if (metWSHeights.Length == 0)
+                    {
+                        MessageBox.Show("Met data import unsuccessful. No wind speed measurements were found in met data file: " + filename);
+                        return false;
+                    }
+
+                    if (metWSHeights.Length == 1 && metWSHeights[0] != thisInst.modeledHeight)
+                    {
+                        MessageBox.Show("Met data file contains one wind speed measurement height: " + metWSHeights[0] + " m.  However, the modeled height is set at " + thisInst.modeledHeight + " m." +
+                            " There must be at least two wind speed measurements in order to extrapolate to modeled height");
+                        return false;
+                    }
+
                     FilterExtrapolateAddMetTimeSeries(thisName, thisUTMX, thisUTMY, thisMetData, thisInst);
                 }
                 catch
                 {
-                    MessageBox.Show("Unable to import met time series data. Go to Met Data QC and click Generate Headers to create .csv with met data headers formatted for Continuum.", "Continuum 3");
+                    MessageBox.Show("Unable to import met time series data. Go to Tools -> Generate Headers to create .csv with met data headers formatted for Continuum.", "Continuum 3");
 
                     thisMetData.anems = new Met_Data_Filter.Anem_Data[0];
                     thisMetData.vanes = new Met_Data_Filter.Vane_Data[0];

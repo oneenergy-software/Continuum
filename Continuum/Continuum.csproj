@@ -231,6 +231,12 @@
     <Compile Include="Mod_LC_Key.Designer.cs">
       <DependentUpon>Mod_LC_Key.cs</DependentUpon>
     </Compile>
+    <Compile Include="NASA_LogIn.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NASA_LogIn.Designer.cs">
+      <DependentUpon>NASA_LogIn.cs</DependentUpon>
+    </Compile>
     <Compile Include="SiteSuitability.cs" />
     <Compile Include="InvestCollection.cs" />
     <Compile Include="Invest_Params.cs" />
@@ -363,6 +369,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mod_LC_Key.resx">
       <DependentUpon>Mod_LC_Key.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NASA_LogIn.resx">
+      <DependentUpon>NASA_LogIn.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewTurbine.resx">
       <DependentUpon>NewTurbine.cs</DependentUpon>

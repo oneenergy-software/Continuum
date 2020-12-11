@@ -13,7 +13,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcGridStatsAndExposures_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\Findlay.cfm";
             thisInst.Open(Filename);

@@ -495,6 +495,9 @@ namespace ContinuumNS
 
             int[] indA_andB = GetAnemsClosestToHH(anemHeight);
 
+            if (indA_andB.Length < 2)
+                return Ratios_WD;
+
             if (indA_andB[0] == -999 || indA_andB[1] == -999)
                 return Ratios_WD;
 
@@ -1543,16 +1546,15 @@ namespace ContinuumNS
         /// <summary> Gets indices of anemometers closest to (but not higher than) specified height. </summary>
         public int[] GetAnemsClosestToHH(double thisHH)
         {
-            int[] anemInd = new int[2];
+            int numAnemsAtH = 1;
+            int[] anemInd = new int[numAnemsAtH];
             double heightDiff = 1000;
-            anemInd[0] = -999;
-            anemInd[1] = -999;
-
+            
             // find first Anem
             for (int i = 0; i < GetNumAnems(); i++)
             {
                 if ((thisHH - anems[i].height >= 0) && (Math.Abs(anems[i].height - thisHH) < heightDiff)) 
-                {
+                {                    
                     anemInd[0] = i;
                     heightDiff = Math.Abs(anems[i].height - thisHH);
                 }
@@ -1574,18 +1576,23 @@ namespace ContinuumNS
             // Find redundant sensor
             for (int i = 0; i < GetNumAnems(); i++)
                 if (anemInd[0] != i && Math.Abs(anems[i].height - anems[anemInd[0]].height) <= 2)
-                    anemInd[1] = i;
+                {
+                    numAnemsAtH++;
+                    Array.Resize(ref anemInd, numAnemsAtH);
+                    anemInd[numAnemsAtH - 1] = i;
+                }
+                    
 
             return anemInd;
         }
-        
+
         /// <summary> Gets anemometer height closest to modeled height. </summary>        
         public int GetHeightClosestToHH(double thisHH)
-        {            
+        {
             double heightDiff = 1000;
             int heightInd = 0;
             double[] anemHeights = GetHeightsOfAnems();
-            
+
             for (int i = 0; i < anemHeights.Length; i++)
             {
                 if ((thisHH - anemHeights[i] >= 0) && (Math.Abs(anemHeights[i] - thisHH) < heightDiff))
@@ -1605,13 +1612,14 @@ namespace ContinuumNS
                     {
                         lowestLevel = anemHeights[i];
                         heightInd = i;
-                    }   
+                    }
                 }
             }
 
             return heightInd;
         }
-        
+
+
         /// <summary> Gets maximum temperature that Icing occurs (in C or F). </summary>        
         public double GetMaxIcingTemp(Temp_Data thisTemp)
         {          
@@ -1655,7 +1663,7 @@ namespace ContinuumNS
             Array.Resize(ref simData, simData.Length + 1);
             simData[simData.Length - 1].height = thisHeight; 
                         
-            int heightInd = GetHeightClosestToHH(thisHeight);
+            int heightInd = GetHeightClosestToHH(thisHeight); 
 
             // Check to see if thisHeight is same as the closest anemometer.
             bool haveExtrapHeight = false;
@@ -1669,26 +1677,61 @@ namespace ContinuumNS
                 // Count number of data points with both Valid anem and vane
                 int validCount = 0;
                 int vaneInd = GetVaneClosestToHH(thisHeight);
+                int[] anemInds = GetAnemsClosestToHH(thisHeight);
+                int numAnems = anemInds.Length;
 
-                for (int i = 0; i < anems[heightInd].windData.Length; i++)
-                    if (anems[heightInd].windData[i].filterFlag == Filter_Flags.Valid && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
+                for (int i = 0; i < anems[anemInds[0]].windData.Length; i++)
+                {
+                    bool gotOne = false;
+
+                    for (int a = 0; a < numAnems; a++)
+                        if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
+                            gotOne = true;
+
+                    if (gotOne && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
                         validCount++;
+                }
+                    
 
                 Array.Resize(ref simData[simData.Length - 1].WS_WD_data, validCount);
 
                 try
                 {
                     validCount = 0;
-                    for (int i = 0; i < anems[heightInd].windData.Length; i++)
+                    for (int i = 0; i < anems[anemInds[0]].windData.Length; i++)
                     {
-                        if (anems[heightInd].windData[i].filterFlag == Filter_Flags.Valid && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
-                        {
-                            simData[simData.Length - 1].WS_WD_data[validCount].timeStamp = anems[heightInd].windData[i].timeStamp;
-                            simData[simData.Length - 1].WS_WD_data[validCount].WS = anems[heightInd].windData[i].avg;
-                            simData[simData.Length - 1].WS_WD_data[validCount].SD = anems[heightInd].windData[i].SD;
-                            simData[simData.Length - 1].WS_WD_data[validCount].WD = vanes[vaneInd].dirData[i].avg;
+                        bool gotOne = false;
 
-                            validCount++;
+                        for (int a = 0; a < numAnems; a++)
+                            if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
+                                gotOne = true;
+
+                        if (gotOne && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
+                        {
+                            double avgWS = 0;
+                            double avgSD = 0;
+                            int avgWSCount = 0;
+
+                            for (int a = 0; a < numAnems; a++)
+                                if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
+                                {
+                                    avgWS = avgWS + anems[anemInds[a]].windData[i].avg;
+                                    avgSD = avgSD + anems[anemInds[a]].windData[i].SD;
+                                    avgWSCount++;
+                                }
+
+                            if (avgWSCount > 0)
+                            {
+                                avgWS = avgWS / avgWSCount;
+                                avgSD = avgSD / avgWSCount;
+
+                                simData[simData.Length - 1].WS_WD_data[validCount].timeStamp = anems[anemInds[0]].windData[i].timeStamp;
+                                simData[simData.Length - 1].WS_WD_data[validCount].WS = avgWS;
+                                simData[simData.Length - 1].WS_WD_data[validCount].SD = avgSD;
+                                simData[simData.Length - 1].WS_WD_data[validCount].WD = vanes[vaneInd].dirData[i].avg;
+
+                                validCount++;
+                            }
                         }
                     }
                 }
@@ -1886,6 +1929,10 @@ namespace ContinuumNS
             Yearly_Maxes theseMaxVals = new Yearly_Maxes();
             
             int[] anemInds = GetAnemsClosestToHH(HH);
+            int numAnemsAtH = anemInds.Length;
+            bool gotAnem2 = false;
+            if (numAnemsAtH >= 2)
+                gotAnem2 = true;
             
             theseMaxVals.maxWS = 0;
             theseMaxVals.maxGust = 0;
@@ -1900,10 +1947,13 @@ namespace ContinuumNS
                         theseMaxVals.maxWS = anems[anemInds[0]].windData[i].avg;
                     }
 
-                    if (anems[anemInds[1]].windData[i].avg > theseMaxVals.maxWS)
+                    if (gotAnem2)
                     {
-                        theseMaxVals.timeStampMaxWS = anems[anemInds[1]].windData[i].timeStamp;
-                        theseMaxVals.maxWS = anems[anemInds[1]].windData[i].avg;
+                        if (anems[anemInds[1]].windData[i].avg > theseMaxVals.maxWS)
+                        {
+                            theseMaxVals.timeStampMaxWS = anems[anemInds[1]].windData[i].timeStamp;
+                            theseMaxVals.maxWS = anems[anemInds[1]].windData[i].avg;
+                        }
                     }
 
                     if (anems[anemInds[0]].windData[i].max > theseMaxVals.maxGust)
@@ -1912,10 +1962,13 @@ namespace ContinuumNS
                         theseMaxVals.maxGust = anems[anemInds[0]].windData[i].max;
                     }
 
-                    if (anems[anemInds[1]].windData[i].max > theseMaxVals.maxGust)
+                    if (gotAnem2)
                     {
-                        theseMaxVals.timeStampMaxGust = anems[anemInds[1]].windData[i].timeStamp;
-                        theseMaxVals.maxGust = anems[anemInds[1]].windData[i].max;
+                        if (anems[anemInds[1]].windData[i].max > theseMaxVals.maxGust)
+                        {
+                            theseMaxVals.timeStampMaxGust = anems[anemInds[1]].windData[i].timeStamp;
+                            theseMaxVals.maxGust = anems[anemInds[1]].windData[i].max;
+                        }
                     }
                 }
             }                       

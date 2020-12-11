@@ -30,7 +30,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GenerateMatrixCDFs_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
@@ -62,7 +62,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetConcAvgsCount_Test()
         {            
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
@@ -99,7 +99,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetConcWS_Array_test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
@@ -164,7 +164,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetSubsetConcData_test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
@@ -198,7 +198,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FindCDF_Index_test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
@@ -234,7 +234,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FindSD_ChangeInWS_test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
@@ -285,7 +285,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcAvgSD_Uncert_test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
@@ -308,7 +308,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Do_MCP_Uncertainty_test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
@@ -332,7 +332,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FindConcurrentData_test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
@@ -353,7 +353,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Get_Sector_Counts_test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
