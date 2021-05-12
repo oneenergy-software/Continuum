@@ -1188,6 +1188,24 @@ namespace ContinuumNS
             return isInList;
         }
 
+        public bool HaveAnem_SD_Data(Anem_Data thisAnemData)
+        {
+            // Returns true if dataset has SD data (if all == 0 then return false)
+            bool gotSD_Data = false;
+
+            if (thisAnemData.windData != null)
+            {
+                for (int i = 0; i < thisAnemData.windData.Length; i++)
+                    if (thisAnemData.windData[i].SD != 0)
+                    {
+                        gotSD_Data = true;
+                        break;
+                    }
+            }
+
+            return gotSD_Data;
+        }
+
         /// <summary> Quality check and filter data based on specified filtering flags ("All", "Min WS", "Icing", "Min WS SD", "Max WS SD", "Max WS Range", Tower Shadow") </summary>        
         public void FilterData(string[] filtersToApply)
         { 
@@ -1201,6 +1219,8 @@ namespace ContinuumNS
             {                                   
                 for (int j = 0; j < GetNumAnems(); j++)
                 {
+                    bool haveAnemSD = HaveAnem_SD_Data(anems[j]);
+
                     if ((anems[j].windData[i].filterFlag != Filter_Flags.missing) && (anems[j].windData[i].filterFlag != Filter_Flags.outsideRange))
                     {                        
                         int vaneInd = GetVaneClosestToHH(anems[j].height);                                                
@@ -1210,7 +1230,7 @@ namespace ContinuumNS
                             anems[j].windData[i].filterFlag = Filter_Flags.minWS;
                                                
                         // Icing filter
-                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (GetNumTemps() > 0) && IsFilterInList(filtersToApply, "Icing"))
+                        if (haveAnemSD && (anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (GetNumTemps() > 0) && IsFilterInList(filtersToApply, "Icing"))
                         {
                             // find a Valid temperature reading for icing filter
                             double validTemp = -999;
@@ -1224,11 +1244,11 @@ namespace ContinuumNS
                         }                                               
 
                         // min SD filter
-                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].avg > 1) && (anems[j].windData[i].SD <= minSD_FiltSlope * anems[j].windData[i].avg) && IsFilterInList(filtersToApply, "Min WS SD"))
+                        if (haveAnemSD && (anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].avg > 1) && (anems[j].windData[i].SD <= minSD_FiltSlope * anems[j].windData[i].avg) && IsFilterInList(filtersToApply, "Min WS SD"))
                             anems[j].windData[i].filterFlag = Filter_Flags.minAnemSD;                       
                                                                      
                         // max SD filter
-                        if ((anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].SD >= maxSD_FiltSlope * anems[j].windData[i].avg + maxSD_FiltInt) && IsFilterInList(filtersToApply, "Max WS SD"))
+                        if (haveAnemSD && (anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].SD >= maxSD_FiltSlope * anems[j].windData[i].avg + maxSD_FiltInt) && IsFilterInList(filtersToApply, "Max WS SD"))
                             anems[j].windData[i].filterFlag = Filter_Flags.maxAnemSD;                                       
                         
                         // max - min Range filter
