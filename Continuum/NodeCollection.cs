@@ -611,11 +611,11 @@ namespace ContinuumNS
                             radiusStep = Convert.ToInt32((lastStepSize * 2 / stepSplit));
 
                         if (radiusStep > 7500)
-                            radiusStep = 7500;
+                            radiusStep = 7500;                        
 
                         if (startInd > 100) {
-                            Array.Resize(ref nodePath1to2, 200);
-                            return nodePath1to2;
+                      //      Array.Resize(ref nodePath1to2, 200);
+                      //      return nodePath1to2;
                         }
                         
                         // Find direction sector with the lowest grade
@@ -626,7 +626,7 @@ namespace ContinuumNS
                         minDir = minSlopeDir - 30;
                         maxDir = minSlopeDir + 30;
 
-                        nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7));
+                        nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7), nodesFromStart, nodesFromEnd);
 
                         if (nextNode.UTMX == 0 && nextNode.UTMY == 0)
                             foundNode = false;
@@ -691,8 +691,8 @@ namespace ContinuumNS
                             
                             if (endInd > 100)
                             {
-                                Array.Resize(ref nodePath1to2, 200);
-                                return nodePath1to2;
+                        //        Array.Resize(ref nodePath1to2, 200);
+                         //       return nodePath1to2;
                             }
 
                             // Find direction sector with the lowest grade
@@ -704,7 +704,7 @@ namespace ContinuumNS
                             minDir = minSlopeDir - 30;
                             maxDir = minSlopeDir + 30;
 
-                            nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7));
+                            nextNode = FindNodeInSectorHighSpot(thisInst, startNode, minDir, maxDir, radiusStep, (int)(radiusStep * 0.7), nodesFromStart, nodesFromEnd);
 
                             if (nextNode.UTMX == 0 && nextNode.UTMY == 0)
                                 foundNode = false;
@@ -717,7 +717,7 @@ namespace ContinuumNS
                                 isElevClose = ElevClose(startNode, nextNode, model, adjFac);
                             }
 
-                            if (foundNode = true && ((isTerrainSame == true && isElevClose == true) || radiusStep < 500))
+                            if (foundNode == true && ((isTerrainSame == true && isElevClose == true) || radiusStep < 500))
                             { // found next node to use
                                 if (thisInst.topo.useSepMod == true && nextNode.expo != null)
                                     nextNode.flowSepNodes = FindAllFlowSeps(nextNode, thisInst, thisInst.metList.numWD);
@@ -854,14 +854,19 @@ namespace ContinuumNS
         }
 
                 
-        /// <summary> Finds and returns a node with highest elvation within min/max WD and min/max radius. </summary>        
-        public Nodes FindNodeInSectorHighSpot(Continuum thisInst, Nodes startNode, double minDir, double maxDir, int maxRadius, int minRadius)
+        /// <summary> Finds and returns a node with highest elvation within min/max WD and min/max radius.  Also checks list of nodes in path and won't return a node that is already in path </summary>        
+        public Nodes FindNodeInSectorHighSpot(Continuum thisInst, Nodes startNode, double minDir, double maxDir, int maxRadius, int minRadius, Nodes[] nodesStartPath = null, Nodes[] nodesEndPath = null)
         {             
             Nodes highNode = new Nodes();
             Nodes thisNode = new Nodes();
             Check_class check = new Check_class();
             
-            int reso = 250;            
+            int reso = 250; // If maxRadius < 500, decrease reso to 50
+            if (maxRadius < 500)
+                reso = 50;
+
+            if (minRadius == 0)
+                return highNode; // Don't allow a step this small otherwise it'll pick startNode
             
             // Adjust maxDir if it is less than minDir (i.e. if it crosses over 0 degs)
             if (maxDir < minDir) maxDir = maxDir + 360; 
@@ -875,17 +880,34 @@ namespace ContinuumNS
                     thisNode.UTMY = startNode.UTMY + j * Math.Sin((90 - i) * Math.PI / 180);
 
                     // Find closest nodes on fixed grid
-                    TopoInfo.TopoGrid closestNode = thisInst.topo.GetClosestNodeFixedGrid(thisNode.UTMX, thisNode.UTMY, 250, 12000);
+                    TopoInfo.TopoGrid closestNode = thisInst.topo.GetClosestNodeFixedGrid(thisNode.UTMX, thisNode.UTMY, reso, 12000);
                     thisNode.UTMX = closestNode.UTMX;
                     thisNode.UTMY = closestNode.UTMY;
 
                     int newOk = check.NewNodeCheck(thisInst.topo, thisNode.UTMX, thisNode.UTMY, 10000, "Calcs");
 
+                    if (thisNode.UTMX == startNode.UTMX && thisNode.UTMY == startNode.UTMY) // 4/26/2021 Don't allow it to find startNode
+                        newOk = 0;
+
+                    if (nodesStartPath != null)
+                    {
+                        for (int n = 0; n < nodesStartPath.Length; n++)
+                            if (nodesStartPath[n].UTMX == thisNode.UTMX && nodesStartPath[n].UTMY == thisNode.UTMY)
+                                newOk = 0;
+                    }
+
+                    if (nodesEndPath != null)
+                    { 
+                        for (int n = 0; n < nodesEndPath.Length; n++)
+                            if (nodesEndPath[n].UTMX == thisNode.UTMX && nodesEndPath[n].UTMY == thisNode.UTMY)
+                                newOk = 0;
+                    }                    
+
                     if (newOk == 100)
                     {
                         thisNode.elev = thisInst.topo.CalcElevs(thisNode.UTMX, thisNode.UTMY);                        
 
-                        if (highNode == null || thisNode.elev > highNode.elev)
+                        if (highNode == null || thisNode.elev > highNode.elev) 
                         {
                             highNode.UTMX = thisNode.UTMX;
                             highNode.UTMY = thisNode.UTMY;

@@ -723,6 +723,13 @@ namespace ContinuumNS
 
                 model.Series.Add(wakeMapSeries);
 
+                if (plotInd == 0)
+                    model.LegendTitle = "Wind Speed [m/s]";
+                else if (plotInd == 1)
+                    model.LegendTitle = "Wake Loss [%]";
+                else if (plotInd == 2)
+                    model.LegendTitle = "Net Energy Prod [MWh]";
+
                 model.Axes.Add(new LinearColorAxis
                 {
                     Position = AxisPosition.Right,
@@ -3218,37 +3225,17 @@ namespace ContinuumNS
         {
             if (thisInst.metList.ThisCount == 0) return;
             var model = thisInst.plotWakeMap.Model;
-
-            Met[] checkedMets = thisInst.GetCheckedMets("Net");
+                 
             Turbine[] checkedTurbines = thisInst.GetCheckedTurbs("Net");
             int checkedMetCount = 0;
-            int checkedTurbCount = 0;
-
-            if (checkedMets == null)
-                checkedMetCount = 0;
-            else
-                checkedMetCount = checkedMets.Length;
+            int checkedTurbCount = 0;                        
 
             if (checkedTurbines == null)
                 checkedTurbCount = 0;
             else
                 checkedTurbCount = checkedTurbines.Length;
-
-            ScatterSeries[] labelMets = new ScatterSeries[checkedMetCount];
-            ScatterSeries[] labelTurbs = new ScatterSeries[checkedTurbCount];
-
-            for (int i = 0; i < checkedMetCount; i++)
-            {
-                labelMets[i] = new ScatterSeries();
-                labelMets[i].Points.Add(new ScatterPoint(Math.Round(checkedMets[i].UTMX, 0), Math.Round(checkedMets[i].UTMY, 0), 5, checkedMets[i].elev));
-                labelMets[i].MarkerSize = 5;
-                labelMets[i].MarkerStrokeThickness = 1;
-                labelMets[i].MarkerType = MarkerType.Circle;
-                labelMets[i].MarkerFill = OxyColors.Black;
-                labelMets[i].MarkerStroke = OxyColors.Red;
-                labelMets[i].RenderInLegend = false;
-                model.Series.Add(labelMets[i]);
-            }
+           
+            ScatterSeries[] labelTurbs = new ScatterSeries[checkedTurbCount];                        
 
             for (int i = 0; i < checkedTurbCount; i++)
             {
@@ -7251,6 +7238,12 @@ namespace ContinuumNS
 
                 thisInst.plotGenMap.Model = new PlotModel();
                 var model = thisInst.plotGenMap.Model;
+                if (thisMap.modelType == 0 || thisMap.modelType == 1)
+                    model.LegendTitle = "Exposure [m]";
+                else if (thisMap.modelType == 2 || thisMap.isWaked)
+                    model.LegendTitle = "Wind Speed [m/s]";
+                else if (thisMap.modelType == 3)
+                    model.LegendTitle = "Energy Prod [MWh]";
 
                 double intWidth = 0.0f;
                 double thisMin = 0;

@@ -793,7 +793,7 @@ namespace ContinuumNS
                         latitude = Convert.ToDouble(fileRow[fileRow.Length - 2]);
                     }
                     catch  {
-                        MessageBox.Show("Error reading the turbine input file.  The format should be Name, Easting, Northing.", "Continuum 3");
+                        MessageBox.Show("Error reading the turbine input file.  The format should be Name, Latitude, Longitude", "Continuum 3");
                         sr.Close();
                         return;
                     }
@@ -802,7 +802,7 @@ namespace ContinuumNS
                         longitude = Convert.ToDouble(fileRow[fileRow.Length - 1]);
                     }
                     catch  {
-                        MessageBox.Show("Error reading the turbine input file.  The format should be Name, Easting, Northing.", "Continuum 3");
+                        MessageBox.Show("Error reading the turbine input file.  The format should be Name, Latitude, Longitude", "Continuum 3");
                         sr.Close();
                         return;
                     }
@@ -1587,7 +1587,7 @@ namespace ContinuumNS
                 return;
             }
 
-            if ((modelList.ModelCount <= 1 && metList.ThisCount > 1) || metList.expoIsCalc == false)
+            if ((modelList.ModelCount == 0 && metList.ThisCount > 1) || metList.expoIsCalc == false)
             {
                 MessageBox.Show("The met sites have not been analyzed and a site-calibrated model has not been created yet. Starting those calculations now.", "No Site-Calibrated Model");
                 Analyze_Mets();
@@ -6608,6 +6608,70 @@ namespace ContinuumNS
 
         private void btnDownloadMERRA2_Click(object sender, EventArgs e)
         {
+            // Make sure that a folder has been selected
+            if (merraList.MERRAfolder == "")
+            {
+                MessageBox.Show("You have to choose a folder to save the daily MERRA2 datafiles.  Click 'Change Folder' button to select folder");
+                return;
+            }
+
+            if (dateMERRAEnd.Value > DateTime.Now)
+            {
+                MessageBox.Show("End date cannot be in the future.");
+                return;
+            }
+
+            // Make sure that the lat/long range includes at least one node, min < max, and show message displaying number of nodes and time range selected to download (give chance to cancel)
+            if (txtMinLat.Text == "" || txtMaxLat.Text == "" || txtMinLong.Text == "" || txtMaxLong.Text == "")
+            {
+                MessageBox.Show("Enter a latitude and longitude range to download MERRA2 data.");
+                return;
+            }
+
+            double minLat = Convert.ToDouble(txtMinLat.Text);
+            double maxLat = Convert.ToDouble(txtMaxLat.Text);
+            double minLong = Convert.ToDouble(txtMinLong.Text);
+            double maxLong = Convert.ToDouble(txtMaxLong.Text);
+
+            minLat = Math.Round(minLat / 0.5, 0) * 0.5;
+            maxLat = Math.Round(maxLat / 0.5, 0) * 0.5;
+            minLong = Math.Round(minLong / 0.625) * 0.625;
+            maxLong = Math.Round(maxLong / 0.625) * 0.625;
+
+            int numLat = merraList.GetNumNodesInRange(minLat, maxLat, "Lat");
+            int numLong = merraList.GetNumNodesInRange(minLong, maxLong, "Long");
+            int numNodes = numLat * numLong;
+
+            if (minLat > maxLat)
+            {
+                MessageBox.Show("Minimum latitude must be smaller than maximum latitude in range");
+                return;
+            }
+
+            if (minLong > maxLong)
+            {
+                MessageBox.Show("Minimum longitude must be smaller than maximum longitude in range");
+                return;
+            }
+
+            if (numLat == 0)
+            {
+                MessageBox.Show("There are no MERRA2 nodes that fall within specified latitude range: " + minLat.ToString() + " to " + maxLat.ToString());
+                return;
+            }
+            if (numLong == 0)
+            {
+                MessageBox.Show("There are no MERRA2 nodes that fall within specified longitude range: " + minLong.ToString() + " to " + maxLong.ToString());
+                return;
+            }
+
+            DialogResult goodToGo = MessageBox.Show("With a latitude range of " + minLat.ToString() + " to " + maxLat.ToString() + " and a longitude range of " + minLong.ToString()
+                + " to " + maxLong.ToString() + ", a total of " + numNodes.ToString() + " nodes will be downloaded (" + numLat.ToString() + " along latitude and " + numLong
+                + " along longitude. Do you want to continue?", "Continuum" ,MessageBoxButtons.YesNo);
+
+            if (goodToGo == DialogResult.No)
+                return;
+
             if (merraList.earthdataUser == "" || merraList.earthdataPwd == "")
             {
                 NASA_LogIn nasaCreds = new NASA_LogIn();
@@ -6817,6 +6881,12 @@ namespace ContinuumNS
             StreamReader sr = new StreamReader(clientList, Encoding.UTF8);
             string thisJson = sr.ReadToEnd();
             thisJson = thisJson;
+        }
+
+        private void btnExplainMERRA2Tab_Click(object sender, EventArgs e)
+        {
+            Explaining_MERRA2 explainIt = new Explaining_MERRA2();
+            explainIt.Show();
         }
     }
 }

@@ -337,12 +337,8 @@ namespace ContinuumNS
         {            
             int thisCount = 0;
 
-            try {
-                thisCount = thisMapNode.expo.Length;
-            }
-            catch {
-                thisCount = 0;
-            }
+            if (thisMapNode.expo != null)
+                thisCount = thisMapNode.expo.Length;                       
 
             bool isNew = false;
             if (thisCount == 0) isNew = true;

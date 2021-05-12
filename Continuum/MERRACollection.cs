@@ -694,28 +694,64 @@ namespace ContinuumNS
             return fileExists;
         }
 
-        /// <summary> Downloads and save MERRA2 datafile for specified day. </summary>
-        public void SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate)
+        /// <summary> Downloads and save MERRA2 datafile for specified day.     </summary>
+        public bool SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate)
         {
-            // Now access the data
-
-            long length = response.ContentLength;
-            string type = response.ContentType;
+            // Now access the data            
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
             string MERRA2filename = CreateMERRA2filename(thisDate);
             StreamWriter writer = new StreamWriter(MERRAfolder + "\\" + MERRA2filename);
+
+            bool isDataset = false;
+            bool isFirstLine = true;
 
             // Save to file
             while (reader.EndOfStream == false)
             {
                 string thisLine = reader.ReadLine();
                 writer.WriteLine(thisLine);
+
+                if (isFirstLine)
+                {
+                    if (thisLine.Length > 8)
+                        if (thisLine.Substring(0, 8) == "Dataset:")
+                            isDataset = true;
+                    isFirstLine = false;
+                }
             }
                                     
             writer.Close();
             stream.Close();
             reader.Close();
+
+            return isDataset;
+        }
+
+        public int GetNumNodesInRange(double minDeg, double maxDeg, string latOrLong)
+        {
+            // Returns the number of nodes included between specified range (either "lat" or "lon")
+            
+            int numNodes = 0;
+            int minInd = 0;
+            int maxInd = 0;
+
+            // Find lat/long index of min and max value
+            if (latOrLong == "lat")
+            {
+                minInd = GetLatitudeIndex(minDeg);
+                maxInd = GetLatitudeIndex(maxDeg);
+                
+            }
+            else
+            {
+                minInd = GetLongitudeIndex(minDeg);
+                maxInd = GetLongitudeIndex(maxDeg);
+            }
+
+            numNodes = maxInd - minInd;
+
+            return numNodes;
         }
         
     }

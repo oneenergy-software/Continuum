@@ -1346,9 +1346,8 @@ namespace ContinuumNS
 
             if (thisMap.parameterToMap == null)
             {
-                thisMap.parameterToMap = new double[numX, numY];
-                if (thisMap.modelType == 2 || thisMap.modelType == 4 || thisMap.isWaked == true)
-                    thisMap.sectorParamToMap = new double[numX, numY, numWD];
+                thisMap.parameterToMap = new double[numX, numY];                
+                thisMap.sectorParamToMap = new double[numX, numY, numWD];
             }
 
             Stopwatch thisStopwatch = new Stopwatch();
@@ -1535,11 +1534,19 @@ namespace ContinuumNS
                         // Finally, populate parameterToMap 
 
                         if (thisMap.modelType == 0)  // UW exposure
+                        {
                             thisMap.parameterToMap[xind, yind] = thisMapNode.expo[thisMap.expoMapRadius].GetOverallValue(thisMapNode.windRose, "Expo", "UW");
+                            for (int WD = 0; WD < numWD; WD++)
+                                thisMap.sectorParamToMap[xind, yind, WD] = thisMapNode.expo[thisMap.expoMapRadius].expo[WD];
+                        }                            
                         else if (thisMap.modelType == 1)  // DW Exposure
+                        {
                             thisMap.parameterToMap[xind, yind] = thisMapNode.expo[thisMap.expoMapRadius].GetOverallValue(thisMapNode.windRose, "Expo", "DW");
+                            for (int WD = 0; WD < numWD; WD++)
+                                thisMap.sectorParamToMap[xind, yind, WD] = thisMapNode.expo[thisMap.expoMapRadius].GetDW_Param(WD, "Expo");
+                        }                            
                         else if (thisMap.modelType == 2 || thisMap.modelType == 4)
-                        { // WS Best UWDW
+                        {
                             thisMap.parameterToMap[xind, yind] = thisMapNode.avgWS_Est;
                             for (int WD = 0; WD < numWD; WD++)
                                 thisMap.sectorParamToMap[xind, yind, WD] = thisMapNode.sectorWS[WD];
@@ -3454,10 +3461,17 @@ namespace ContinuumNS
                     {
                         try
                         {
-                            merraList.SaveMERRA2DataFile(response, thisDate);
+                            bool allGood = merraList.SaveMERRA2DataFile(response, thisDate);
+                            if (allGood == false)
+                            {
+                                MessageBox.Show("Downloaded file does not contain the expected dataset.  Check your Earthdata credentials at https://urs.earthdata.nasa.gov/.  Aborting download");
+                                return;
+                            }
                         }
-                        catch 
-                        {                      
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            return;
                         }
                     }
                     else if (response == null)
@@ -3489,7 +3503,9 @@ namespace ContinuumNS
         private void BackgroundWorker_MERRADownload_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Continuum thisInst = (Continuum)e.Result;
-            thisInst.merraList.SetMERRA2LatLong(thisInst);
+            if (thisInst != null)
+                if (thisInst.merraList != null)
+                    thisInst.merraList.SetMERRA2LatLong(thisInst);
             Close();
         }
     }

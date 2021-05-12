@@ -167,6 +167,7 @@
             this.columnHeader72 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader73 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgeMERRA = new System.Windows.Forms.TabPage();
+            this.btnExplainMERRA2Tab = new System.Windows.Forms.Button();
             this.label54 = new System.Windows.Forms.Label();
             this.txtMaxLong = new System.Windows.Forms.TextBox();
             this.label146 = new System.Windows.Forms.Label();
@@ -947,6 +948,9 @@
             // 
             // tabContinuum
             // 
+            this.tabContinuum.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabContinuum.CausesValidation = false;
             this.tabContinuum.Controls.Add(this.pgeInput);
             this.tabContinuum.Controls.Add(this.pgeMetData);
@@ -2478,6 +2482,7 @@
             // 
             // pgeMERRA
             // 
+            this.pgeMERRA.Controls.Add(this.btnExplainMERRA2Tab);
             this.pgeMERRA.Controls.Add(this.label54);
             this.pgeMERRA.Controls.Add(this.txtMaxLong);
             this.pgeMERRA.Controls.Add(this.label146);
@@ -2533,6 +2538,17 @@
             this.pgeMERRA.TabIndex = 16;
             this.pgeMERRA.Text = "MERRA2 Data";
             this.pgeMERRA.UseVisualStyleBackColor = true;
+            // 
+            // btnExplainMERRA2Tab
+            // 
+            this.btnExplainMERRA2Tab.Font = new System.Drawing.Font("Palatino Linotype", 12F);
+            this.btnExplainMERRA2Tab.Location = new System.Drawing.Point(422, 11);
+            this.btnExplainMERRA2Tab.Name = "btnExplainMERRA2Tab";
+            this.btnExplainMERRA2Tab.Size = new System.Drawing.Size(63, 31);
+            this.btnExplainMERRA2Tab.TabIndex = 237;
+            this.btnExplainMERRA2Tab.Text = "Help";
+            this.btnExplainMERRA2Tab.UseVisualStyleBackColor = true;
+            this.btnExplainMERRA2Tab.Click += new System.EventHandler(this.btnExplainMERRA2Tab_Click);
             // 
             // label54
             // 
@@ -3008,7 +3024,7 @@
             this.dateMERRAEnd.Name = "dateMERRAEnd";
             this.dateMERRAEnd.Size = new System.Drawing.Size(163, 25);
             this.dateMERRAEnd.TabIndex = 124;
-            this.dateMERRAEnd.Value = new System.DateTime(2018, 12, 31, 23, 0, 0, 0);
+            this.dateMERRAEnd.Value = new System.DateTime(2020, 12, 31, 23, 0, 0, 0);
             this.dateMERRAEnd.ValueChanged += new System.EventHandler(this.dateMERRAEnd_ValueChanged);
             // 
             // dateMERRAStart
@@ -3024,7 +3040,7 @@
             this.dateMERRAStart.Name = "dateMERRAStart";
             this.dateMERRAStart.Size = new System.Drawing.Size(163, 25);
             this.dateMERRAStart.TabIndex = 123;
-            this.dateMERRAStart.Value = new System.DateTime(1989, 1, 1, 0, 0, 0, 0);
+            this.dateMERRAStart.Value = new System.DateTime(2002, 1, 1, 0, 0, 0, 0);
             this.dateMERRAStart.ValueChanged += new System.EventHandler(this.dateMERRAStart_ValueChanged);
             // 
             // label152
@@ -7553,6 +7569,9 @@
             // 
             // plotGenMap
             // 
+            this.plotGenMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.plotGenMap.Location = new System.Drawing.Point(646, 32);
             this.plotGenMap.Name = "plotGenMap";
             this.plotGenMap.PanCursor = System.Windows.Forms.Cursors.Hand;
@@ -11218,6 +11237,7 @@
         internal System.Windows.Forms.CheckBox chkIcing;
         internal System.Windows.Forms.CheckBox chkTowerShadow;
         private System.Windows.Forms.Button btnResetMaxRecovDates;
+        private System.Windows.Forms.Button btnExplainMERRA2Tab;
     }
 }
 

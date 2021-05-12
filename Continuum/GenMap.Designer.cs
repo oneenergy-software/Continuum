@@ -54,6 +54,7 @@
             this.cboWhatToMap = new System.Windows.Forms.ComboBox();
             this.cboUseTimeSeries = new System.Windows.Forms.ComboBox();
             this.txtisMCPdGenMap = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtMap_FlowSep_Used
@@ -124,7 +125,7 @@
             this.btnCoordsAllTurbs.Name = "btnCoordsAllTurbs";
             this.btnCoordsAllTurbs.Size = new System.Drawing.Size(173, 50);
             this.btnCoordsAllTurbs.TabIndex = 217;
-            this.btnCoordsAllTurbs.Text = "Get Coords for Map that includes all turbine sites";
+            this.btnCoordsAllTurbs.Text = "Get Coords for Map that includes all turbine sites\r\n";
             this.btnCoordsAllTurbs.UseVisualStyleBackColor = true;
             this.btnCoordsAllTurbs.Click += new System.EventHandler(this.btnCoordsAllTurbs_Click);
             // 
@@ -135,7 +136,7 @@
             this.btnMinMax.Name = "btnMinMax";
             this.btnMinMax.Size = new System.Drawing.Size(173, 53);
             this.btnMinMax.TabIndex = 216;
-            this.btnMinMax.Text = "Get Coords for Largest Possible Map";
+            this.btnMinMax.Text = "Get Coords for Largest Possible Map*\r\n";
             this.btnMinMax.UseVisualStyleBackColor = true;
             this.btnMinMax.Click += new System.EventHandler(this.btnMinMax_Click);
             // 
@@ -312,11 +313,23 @@
             this.txtisMCPdGenMap.Size = new System.Drawing.Size(155, 25);
             this.txtisMCPdGenMap.TabIndex = 227;
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(15, 415);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(333, 36);
+            this.label9.TabIndex = 228;
+            this.label9.Text = "*Model requires 12 km of topography (and roughness, if loaded)\r\ndata surrounding " +
+    "every modeled grid point";
+            // 
             // GenMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(397, 422);
+            this.ClientSize = new System.Drawing.Size(397, 464);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.txtisMCPdGenMap);
             this.Controls.Add(this.cboUseTimeSeries);
             this.Controls.Add(this.txtMap_FlowSep_Used);
@@ -376,5 +389,6 @@
         public System.Windows.Forms.TextBox txtMinUTMX;
         public System.Windows.Forms.ComboBox cboWhatToMap;
         public System.Windows.Forms.CheckedListBox chkMetsToUse;
+        internal System.Windows.Forms.Label label9;
     }
 }
