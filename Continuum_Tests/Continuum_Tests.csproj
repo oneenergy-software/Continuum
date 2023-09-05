@@ -85,6 +85,9 @@
     <Reference Include="OxyPlot.WindowsForms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.WindowsForms.2.0.0\lib\net45\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
+    <Reference Include="ScientificDataSet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SDSLite.3.0.1\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />

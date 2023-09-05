@@ -2842,8 +2842,8 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary> Exports MERRA2 wind rose for selected time interval. </summary> 
-        public void ExportMERRA_WindRose(Continuum thisInst)
+        /// <summary> Exports Reference wind rose for selected time interval. </summary> 
+        public void ExportReferenceWindRose(Continuum thisInst)
         {
             string Output_folder = "";
 
@@ -2853,34 +2853,33 @@ namespace ContinuumNS
                 return;
 
             string Month_str;
-            if (thisInst.cboMERRA_Month.SelectedItem.ToString() == "All Months")
+            if (thisInst.cboReferenceMonth.SelectedItem.ToString() == "All Months")
                 Month_str = "All";
             else
-                Month_str = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(thisInst.cboMERRA_Month.SelectedIndex + 1);
+                Month_str = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(thisInst.cboReferenceMonth.SelectedIndex + 1);
 
-            string Year_str = thisInst.cboMERRAYear.SelectedItem.ToString();
+            string Year_str = thisInst.cboReferenceYear.SelectedItem.ToString();
 
             string filename = "";
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
-            MERRACollection merraList = thisInst.merraList;
-
-            if (thisMERRA.interpData.TS_Data == null)
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
+           
+            if (thisRef.interpData.TS_Data == null)
                 return;
 
             if (Month_str != "All")
-                filename = Output_folder + "\\MERRA2_" + "Lat_" + Math.Round(thisMERRA.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisMERRA.interpData.Coords.longitude, 3) + "_" + Month_str + "_" + Year_str + "_Wind_Rose" + ".csv";
+                filename = Output_folder + "\\" + thisRef.referenceType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Month_str + "_" + Year_str + "_Wind_Rose" + ".csv";
             else
-                filename = Output_folder + "\\MERRA2_" + "Lat_" + Math.Round(thisMERRA.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisMERRA.interpData.Coords.longitude, 3) + "_" + Year_str + "_Wind_Rose" + ".csv";
+                filename = Output_folder + "\\" + thisRef.referenceType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Year_str + "_Wind_Rose" + ".csv";
 
             // Header
             StreamWriter file = new StreamWriter(filename);
             try
             {
-                file.WriteLine("Wind Rose Estimated from MERRA2");
-                if (merraList.numMERRA_Nodes == 1)
-                    file.WriteLine("Using closest MERRA2 node: ," + thisMERRA.MERRA_Nodes[0].XY_ind.Lat + ", " + thisMERRA.MERRA_Nodes[0].XY_ind.Lon);
+                file.WriteLine("Wind Rose Estimated from " + thisRef.referenceType);
+                if (thisRef.numNodes == 1)
+                    file.WriteLine("Using closest node: ," + thisRef.nodes[0].XY_ind.Lat + ", " + thisRef.nodes[0].XY_ind.Lon);
                 else
-                    file.WriteLine("Interpolated between closest" + merraList.numMERRA_Nodes + " MERRA2 nodes");
+                    file.WriteLine("Interpolated between closest" + thisRef.numNodes + " nodes");
 
             }
             catch
@@ -2889,7 +2888,7 @@ namespace ContinuumNS
                 return;
             }
 
-            file.WriteLine("Lat: ," + thisMERRA.interpData.Coords.latitude + ", Long: ," + thisMERRA.interpData.Coords.longitude);
+            file.WriteLine("Lat: ," + thisRef.interpData.Coords.latitude + ", Long: ," + thisRef.interpData.Coords.longitude);
             file.WriteLine();
 
 
@@ -2901,13 +2900,13 @@ namespace ContinuumNS
 
             int monthInd = 100;
             int yearInd = 100;
-            if (thisInst.cboMERRA_Month.SelectedItem.ToString() != "All")
-                monthInd = thisInst.cboMERRA_Month.SelectedIndex + 1;
+            if (thisInst.cboReferenceMonth.SelectedItem.ToString() != "All")
+                monthInd = thisInst.cboReferenceMonth.SelectedIndex + 1;
 
-            if (thisInst.cboMERRAYear.SelectedItem.ToString() != "LT Avg")
-                yearInd = Convert.ToInt16(thisInst.cboMERRAYear.SelectedItem.ToString());
+            if (thisInst.cboReferenceYear.SelectedItem.ToString() != "LT Avg")
+                yearInd = Convert.ToInt16(thisInst.cboReferenceYear.SelectedItem.ToString());
 
-            double[] thisWR = thisMERRA.Calc_Wind_Rose(monthInd, yearInd, thisInst.UTM_conversions);
+            double[] thisWR = thisRef.Calc_Wind_Rose(monthInd, yearInd, thisInst.UTM_conversions, thisInst.metList.numWD);
 
             for (int i = 0; i < 16; i++)
                 file.WriteLine(i * 22.5 + "," + thisWR[i].ToString());
@@ -2915,8 +2914,8 @@ namespace ContinuumNS
             file.Close();
         }
 
-        /// <summary> Exports monthly MERRA2 data for all years. </summary> 
-        public void ExportMERRAAllMonthsAllYears(Continuum thisInst)
+        /// <summary> Exports monthly LT reference data for all years. </summary> 
+        public void ExportReferenceAllMonthsAllYears(Continuum thisInst)
         {
             string Output_folder = "";
 
@@ -2927,34 +2926,32 @@ namespace ContinuumNS
       
             string filename = "";    
 
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
-            if (thisMERRA.interpData.TS_Data == null)
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
+            if (thisRef.interpData.TS_Data == null)
                 return;
 
-            int firstYear = thisInst.merraList.startDate.Year;
-            int lastYear = thisInst.merraList.endDate.Year;
+            int firstYear = thisRef.startDate.Year;
+            int lastYear = thisRef.endDate.Year;
 
-            string selectedMERRA = thisInst.cboMERRASelectedMet.SelectedItem.ToString();
+            //      string selectedMERRA = thisInst.cboMERRASelectedMet.SelectedItem.ToString();
 
-            if (selectedMERRA == "User-Defined Lat/Long")
-            {
-                filename = Output_folder + "\\Monthly_Prod_Lat_" + thisMERRA.interpData.Coords.latitude + "_" + "Lon_" + thisMERRA.interpData.Coords.longitude +
-                "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";
-            }
-            else
-            {
-                filename = Output_folder + "\\Monthly_Prod_" + selectedMERRA + "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";
-            }
+            Met targetMet = new Met();
+            if (thisRef.isUserDefined == false)
+                targetMet = thisInst.metList.GetMetAtLatLon(thisRef.interpData.Coords.latitude, thisRef.interpData.Coords.longitude, thisInst.UTM_conversions);
 
+            if (thisRef.isUserDefined)            
+                filename = Output_folder + "\\Monthly_Prod_Lat_" + thisRef.interpData.Coords.latitude + "_" + "Lon_" + thisRef.interpData.Coords.longitude +
+                "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";            
+            else            
+                filename = Output_folder + "\\Monthly_Prod_" + targetMet.name + "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";
+            
             StreamWriter file = new StreamWriter(filename);
 
             file.WriteLine("Long-Term Monthly Production based on MERRA data");
-            if (selectedMERRA == "User-Defined Lat/Long")
-            {
-                file.WriteLine("Project location (user-defined):, Lat:, " + thisMERRA.interpData.Coords.latitude + ", Long:, " + thisMERRA.interpData.Coords.longitude);
-            }
+            if (thisRef.isUserDefined)            
+                file.WriteLine("Project location (user-defined):, Lat:, " + thisRef.interpData.Coords.latitude + ", Long:, " + thisRef.interpData.Coords.longitude);            
             else
-                file.WriteLine("Project:," + selectedMERRA);
+                file.WriteLine("Project:," + targetMet.name);
 
             file.WriteLine();
             file.WriteLine("Year, Month, Prod (MWh), % Diff from Monthly LT");
@@ -2962,18 +2959,18 @@ namespace ContinuumNS
             for (int i = firstYear; i <= lastYear; i++)
             {
                 {
-                    MERRA.MonthlyProdByYearAndLTAvg[] thisMonthly = new MERRA.MonthlyProdByYearAndLTAvg[0];
-                    thisMonthly = thisMERRA.interpData.Monthly_Prod;
+                    Reference.MonthlyProdByYearAndLTAvg[] thisMonthly = new Reference.MonthlyProdByYearAndLTAvg[0];
+                    thisMonthly = thisRef.interpData.monthlyProd;
 
                     for (int j = 1; j <= 12; j++)
                     {
-                        if (thisMERRA.Have_Full_Month(thisMERRA.interpData.TS_Data, j, i))
+                        if (thisRef.Have_Full_Month(thisRef.interpData.TS_Data, j, i))
                         {
                             file.Write(i + ",");
                             file.Write(CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(j) + ",");
-                            int[] monthYearInd = thisMERRA.Get_Month_Year_Inds(thisMonthly, j, i);
+                            int[] monthYearInd = thisRef.Get_Month_Year_Inds(thisMonthly, j, i);
                             file.Write(Math.Round(thisMonthly[monthYearInd[0]].YearProd[monthYearInd[1]].prod / 1000, 1).ToString() + ",");
-                            double Diff = thisMERRA.Calc_Perc_Diff_from_LT_Monthly(thisMonthly[monthYearInd[0]], i);
+                            double Diff = thisRef.Calc_Perc_Diff_from_LT_Monthly(thisMonthly[monthYearInd[0]], i);
                             file.Write((Math.Round(Diff, 4)).ToString("P")); // adds % diff from the average
                             file.WriteLine();
                         }
@@ -2984,12 +2981,12 @@ namespace ContinuumNS
             file.Close();
         }
 
-        /// <summary> Exports MERRA2 time series data (interpolated, if more than one node selected). </summary> 
-        public void ExportMERRA_Interp_Data(Continuum thisInst)
+        /// <summary> Exports Reference time series data (interpolated, if more than one node selected). </summary> 
+        public void ExportReferenceInterpData(Continuum thisInst)
         {
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
 
-            if (thisMERRA.interpData.TS_Data == null)
+            if (thisRef.interpData.TS_Data == null)
             {
                 MessageBox.Show("No data to export! You have to extract data first.");
                 return;
@@ -3002,20 +2999,20 @@ namespace ContinuumNS
             else
                 return;
 
-            string filename = Output_folder + "\\MERRA2_" + "Lat_" + thisMERRA.interpData.Coords.latitude + "_" + "Lon_" + thisMERRA.interpData.Coords.longitude + "_" + thisMERRA.Make_MERRA2_Date_String(thisInst.merraList.startDate)
-                + "_to_" + thisMERRA.Make_MERRA2_Date_String(thisInst.merraList.endDate) + ".csv";
+            string filename = Output_folder + "\\" + thisRef.referenceType + "_Lat_" + thisRef.interpData.Coords.latitude + "_" + "Lon_" + thisRef.interpData.Coords.longitude + "_" + thisRef.Make_MERRA2_Date_String(thisRef.startDate)
+                + "_to_" + thisRef.Make_MERRA2_Date_String(thisRef.endDate) + ".csv";
 
             // Header
             StreamWriter file = new StreamWriter(filename);
-            file.WriteLine("OE-Extracted MERRA2 Hourly Data");
-            if (thisInst.merraList.numMERRA_Nodes == 1)
-                file.WriteLine("Using closest MERRA2 node: Lat = " + thisMERRA.MERRA_Nodes[0].XY_ind.Lat.ToString() + "; Long = " + thisMERRA.MERRA_Nodes[0].XY_ind.Lon.ToString());
+            file.WriteLine("Interpolated " + thisRef.referenceType + " Hourly Data");
+            if (thisRef.numNodes == 1)
+                file.WriteLine("Using closest " + thisRef.referenceType + " node: Lat = " + thisRef.nodes[0].XY_ind.Lat.ToString() + "; Long = " + thisRef.nodes[0].XY_ind.Lon.ToString());
             else
-                file.WriteLine("Interpolated between " + thisInst.merraList.numMERRA_Nodes + " MERRA2 nodes");
+                file.WriteLine("Interpolated between " + thisRef.numNodes + " " + thisRef.referenceType + " nodes");
 
             file.WriteLine();
-            file.WriteLine("Lat: ," + thisMERRA.interpData.Coords.latitude + ", Long: ," + thisMERRA.interpData.Coords.longitude);
-            file.WriteLine("UTC Offset: " + thisMERRA.interpData.UTC_offset.ToString());
+            file.WriteLine("Lat: ," + thisRef.interpData.Coords.latitude + ", Long: ," + thisRef.interpData.Coords.longitude);
+            file.WriteLine("UTC Offset: " + thisRef.interpData.UTC_offset.ToString());
 
             file.WriteLine();
             file.Write("Time Stamp ,");
@@ -3026,37 +3023,37 @@ namespace ContinuumNS
             file.Write("10mTemp[deg C],");
             
             /*
-            if (thisMERRA.MERRA_Params.Get_50mWSWD) file.Write("50mWS [m/s],");
-            if (thisMERRA.MERRA_Params.Get_50mWSWD) file.Write("50mWD [degs],");
-            if (thisMERRA.MERRA_Params.Get_10mWSWD) file.Write("10mWS [m/s],");
-            if (thisMERRA.MERRA_Params.Get_10mWSWD) file.Write("10mWD [degs],");
-            if (thisMERRA.MERRA_Params.Get_SurfPress) file.Write("Surf. Press. [kPa],");
-            if (thisMERRA.MERRA_Params.Get_SurfPress) file.Write("Sea Press. [kPa],");
-            if (thisMERRA.MERRA_Params.Get_10mTemp) file.Write("10mTemp[deg C],");
-            if (thisMERRA.MERRA_Params.Get_FracMean) file.Write("MODIS Cloud Fraction,");
-            if (thisMERRA.MERRA_Params.Get_OpticalThick) file.Write("MODIS Optical Thickness,");
-            if (thisMERRA.MERRA_Params.Get_TotalFrac) file.Write("ISCCP Cloud Fraction,");
-            if (thisMERRA.MERRA_Params.Get_Precip) file.Write("Total Precipitation,");
-            if (thisMERRA.MERRA_Params.Get_Corr_Precip) file.Write("Corrected Precipitation,");
+            if (thisRef.MERRA_Params.Get_50mWSWD) file.Write("50mWS [m/s],");
+            if (thisRef.MERRA_Params.Get_50mWSWD) file.Write("50mWD [degs],");
+            if (thisRef.MERRA_Params.Get_10mWSWD) file.Write("10mWS [m/s],");
+            if (thisRef.MERRA_Params.Get_10mWSWD) file.Write("10mWD [degs],");
+            if (thisRef.MERRA_Params.Get_SurfPress) file.Write("Surf. Press. [kPa],");
+            if (thisRef.MERRA_Params.Get_SurfPress) file.Write("Sea Press. [kPa],");
+            if (thisRef.MERRA_Params.Get_10mTemp) file.Write("10mTemp[deg C],");
+            if (thisRef.MERRA_Params.Get_FracMean) file.Write("MODIS Cloud Fraction,");
+            if (thisRef.MERRA_Params.Get_OpticalThick) file.Write("MODIS Optical Thickness,");
+            if (thisRef.MERRA_Params.Get_TotalFrac) file.Write("ISCCP Cloud Fraction,");
+            if (thisRef.MERRA_Params.Get_Precip) file.Write("Total Precipitation,");
+            if (thisRef.MERRA_Params.Get_Corr_Precip) file.Write("Corrected Precipitation,");
             */
 
             file.WriteLine();
 
-            for (int i = 0; i < thisMERRA.interpData.TS_Data.Length; i++)
+            for (int i = 0; i < thisRef.interpData.TS_Data.Length; i++)
             {
-                file.Write(thisMERRA.interpData.TS_Data[i].ThisDate + ",");
-                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WS50m, 4) + ",");
-                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WD50m, 3) + ",");
-                //    if (thisMERRA.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WS10m, 3) + ",");
-                //    if (thisMERRA.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].WD10m, 2) + ",");
-                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].SurfPress / 1000, 3) + ",");
-                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].SeaPress / 1000, 3) + ",");
-                file.Write(Math.Round(thisMERRA.interpData.TS_Data[i].Temp10m - 273.15, 2) + ",");
-                //   if (thisMERRA.MERRA_Params.Get_FracMean) file.Write(thisMERRA.interpData.TS_Data[i].Mean_Cloud_Fraction + ",");
-                //   if (thisMERRA.MERRA_Params.Get_OpticalThick) file.Write(thisMERRA.interpData.TS_Data[i].Optical_Thick + ",");
-                //   if (thisMERRA.MERRA_Params.Get_TotalFrac) file.Write(thisMERRA.interpData.TS_Data[i].Total_Cloud_Area_Fraction + ",");
-                //   if (thisMERRA.MERRA_Params.Get_Precip) file.Write(thisMERRA.interpData.TS_Data[i].Precip + ",");
-                //   if (thisMERRA.MERRA_Params.Get_Corr_Precip) file.Write(thisMERRA.interpData.TS_Data[i].Precip_Corr + ",");
+                file.Write(thisRef.interpData.TS_Data[i].thisDate + ",");
+                file.Write(Math.Round(thisRef.interpData.TS_Data[i].WS, 4) + ",");
+                file.Write(Math.Round(thisRef.interpData.TS_Data[i].WD, 3) + ",");
+                //    if (thisRef.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisRef.interpData.TS_Data[i].WS10m, 3) + ",");
+                //    if (thisRef.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisRef.interpData.TS_Data[i].WD10m, 2) + ",");
+                file.Write(Math.Round(thisRef.interpData.TS_Data[i].surfPress / 1000, 3) + ",");
+                file.Write(Math.Round(thisRef.interpData.TS_Data[i].seaPress / 1000, 3) + ",");
+                file.Write(Math.Round(thisRef.interpData.TS_Data[i].temperature - 273.15, 2) + ",");
+                //   if (thisRef.MERRA_Params.Get_FracMean) file.Write(thisRef.interpData.TS_Data[i].Mean_Cloud_Fraction + ",");
+                //   if (thisRef.MERRA_Params.Get_OpticalThick) file.Write(thisRef.interpData.TS_Data[i].Optical_Thick + ",");
+                //   if (thisRef.MERRA_Params.Get_TotalFrac) file.Write(thisRef.interpData.TS_Data[i].Total_Cloud_Area_Fraction + ",");
+                //   if (thisRef.MERRA_Params.Get_Precip) file.Write(thisRef.interpData.TS_Data[i].Precip + ",");
+                //   if (thisRef.MERRA_Params.Get_Corr_Precip) file.Write(thisRef.interpData.TS_Data[i].Precip_Corr + ",");
 
                 file.WriteLine();
             }
@@ -3714,7 +3711,8 @@ namespace ContinuumNS
         public void ExportExtremeWS(Continuum thisInst)
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
-            Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst);
+            Reference thisRef = thisInst.GetSelectedReference("Site Conditions Extreme WS");
+            Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst, thisRef);
 
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
             {
@@ -3828,8 +3826,8 @@ namespace ContinuumNS
                         yVals[i] = elevProfile[i].elev;
                     }
 
-                    double slope = thisInst.topo.CalcSlope(xVals, yVals);
-                    double inflowAngle = Math.Atan(slope) * 180 / Math.PI;
+                    double[] slopeAndVar = thisInst.topo.CalcSlopeAndVariation(xVals, yVals);
+                    double inflowAngle = Math.Atan(slopeAndVar[0]) * 180 / Math.PI;
 
                     file.WriteLine(Math.Round(thisWD, 1).ToString() + "," + Math.Round(inflowAngle, 2).ToString());
                 }
@@ -3947,6 +3945,52 @@ namespace ContinuumNS
 
                 sw.Close();
 
+            }
+        }
+
+        /// <summary> Exports terrain complexity values at each turbine site </summary>
+        public void ExportTerrainComplexityAtTurbines(Continuum thisInst)
+        {
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
+
+                sw.WriteLine("Terrain Complexity Values by Turbine Site");
+                sw.WriteLine();
+                
+                sw.WriteLine("Turbine, Elev. [m], Complexity, 5h 360 TSI, 5h 360 TVI, 5h 30 TSI, 5h 30 TVI, 10h 30 TSI, 10h 30 TVI, 20h 30 TSI, 20h 30 TVI, P10 UW, P10 DW");
+
+                double hubH = thisInst.modeledHeight;
+                double[] energyRose = thisInst.metList.GetAvgWindRose(hubH, Met.TOD.All, Met.Season.All);
+
+                if (energyRose == null)
+                    energyRose = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 12);
+
+                for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
+                {
+                    Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                    sw.Write(thisTurb.name + "," + thisTurb.elev + ",");
+
+                    sw.Write(thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo, thisInst.modeledHeight, energyRose, "WTG", thisTurb) + ",");
+
+                    double[] terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, 5 * hubH, 1, thisInst.topo);
+                    sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
+
+                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, 5 * hubH, 12, thisInst.topo, energyRose);
+                    sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
+
+                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, 10 * hubH, 12, thisInst.topo, energyRose);
+                    sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
+
+                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, 20 * hubH, 12, thisInst.topo, energyRose);
+                    sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
+
+                    double thisUW_P10 = thisTurb.gridStats.GetOverallP10(energyRose, 1, "UW");
+                    double thisDW_P10 = thisTurb.gridStats.GetOverallP10(energyRose, 1, "DW");
+                    sw.WriteLine(Math.Round(thisUW_P10, 2) + "," + Math.Round(thisDW_P10, 2) + ",");
+                }
+
+                sw.Close();
             }
         }
     }

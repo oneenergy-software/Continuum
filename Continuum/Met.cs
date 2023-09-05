@@ -1006,27 +1006,30 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates and returns extreme wind speeds estimates (1 yr and 50 yr, 10-min and Gust).  </summary>
-        public Extreme_WindSpeed CalcExtremeWindSpeeds(Continuum thisInst)
+        public Extreme_WindSpeed CalcExtremeWindSpeeds(Continuum thisInst, Reference thisRef)
         {            
-            Extreme_WindSpeed extremeWinds = new Extreme_WindSpeed();                                 
+            Extreme_WindSpeed extremeWinds = new Extreme_WindSpeed();
 
             // Get MERRA2 data used for this met
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(UTMX, UTMY);
-       //     int UTC_offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
+            //     UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(UTMX, UTMY);
+            //     int UTC_offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
 
-            if (thisInst.merraList.GotMERRA(theseLL.latitude, theseLL.longitude) == false)
+            //     if (thisInst.refList.GotReference(theseLL.latitude, theseLL.longitude) == false)
+            //         return extremeWinds;
+
+            //     Reference thisMERRA = thisInst.refList.GetReference("MERRA2", theseLL.latitude, theseLL.longitude, 0);   // TO DO: Read selected reference          
+            //     int refLength = thisRef.interpData.TS_Data.Length;
+
+            //     if (thisRef.interpData.TS_Data.Length == 0)
+            //     {
+            //         thisRef.GetReferenceDataFromDB(thisInst);
+            //         thisRef.GetInterpData(thisInst.UTM_conversions);
+            //     }
+
+            if (thisRef.interpData.TS_Data == null || metData == null)
                 return extremeWinds;
-            
-            MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);            
-            int refLength = thisMERRA.interpData.TS_Data.Length;
 
-            if (thisMERRA.interpData.TS_Data.Length == 0)
-            {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
-            }
-
-            if (thisMERRA.interpData.TS_Data.Length == 0)
+            if (thisRef.interpData.TS_Data.Length == 0)
                 return extremeWinds;
 
             if (metData.GetNumAnems() > 0)
@@ -1041,7 +1044,7 @@ namespace ContinuumNS
                 return extremeWinds;
 
             // Create array of max hourly wind speed every year (MERRA2 data)
-            MaxYearlyWind[] maxHourlyRefWS = thisMERRA.GetMaxHourlyWindSpeeds();
+            MaxYearlyWind[] maxHourlyRefWS = thisRef.GetMaxHourlyWindSpeeds();
 
             // Find max 10-min and max gust for every full year of data (Jan - Dec)            
             MaxYearlyWind[] maxMetTenMin = GetMaxYearlyWinds("10-min", thisInst);

@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace ContinuumNS
 {
-    public partial class Explaining_MERRA2 : Form
+    public partial class ShowIEC_TerrainComplexity : Form
     {
-        public Explaining_MERRA2()
+        public ShowIEC_TerrainComplexity()
         {
             InitializeComponent();
         }
@@ -22,7 +22,7 @@ namespace ContinuumNS
             Close();
         }
 
-        private void label7_Click(object sender, EventArgs e)
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }

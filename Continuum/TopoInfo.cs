@@ -7,7 +7,8 @@ using OSGeo.GDAL;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using System.Runtime.Serialization.Formatters.Binary;
- 
+using MathNet.Numerics.Statistics;
+
 namespace ContinuumNS
 {
     
@@ -4155,7 +4156,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Creates array of elevation data along line specified by WD and radius (+/- distance from site) using elevReso as spacing between points. </summary>        
-        public TopoGrid[] GetElevationProfile(double UTMX, double UTMY, double WD, int radius, int elevReso)
+        public TopoGrid[] GetElevationProfile(double UTMX, double UTMY, double WD, int radius, int elevReso, bool UW_only = false)
         {             
             TopoGrid[] elevProfile = new TopoGrid[0];
 
@@ -4163,6 +4164,10 @@ namespace ContinuumNS
                 return elevProfile;
 
             int numPoints = 2 * radius / elevReso + 1;
+
+            if (UW_only)
+                numPoints = radius / elevReso + 1;
+
             elevProfile = new TopoGrid[numPoints];
                         
             for (int i = 0; i < numPoints; i++)
@@ -4176,21 +4181,21 @@ namespace ContinuumNS
             return elevProfile;
         }
 
-        /// <summary> Calculates and returns best-fit slope (using least squares regression) along X and Y values. </summary>        
-        public double CalcSlope(double[] xVals, double[] yVals)
+        /// <summary> Calculates and returns best-fit slope (using least squares regression) along X and Y values and standard deviation of variability. </summary>        
+        public double[] CalcSlopeAndVariation(double[] xVals, double[] yVals)
         {             
-            double slope = 0;
+            double[] slopeAndVarSD = new double[2]; // Index 0: Slope, Index 1: St. dev. of Variation
 
             if (xVals == null || yVals == null)
-                return slope;
+                return slopeAndVarSD;
 
             if (xVals.Length != yVals.Length)
-                return slope;
+                return slopeAndVarSD;
 
             int numPts = xVals.Length;
 
             if (numPts == 0)
-                return slope;
+                return slopeAndVarSD;
 
             // Calculate mean of X and Y
             double meanX = 0;
@@ -4216,10 +4221,26 @@ namespace ContinuumNS
             }
 
             if (sXX != 0)
-                slope = sXY / sXX;        
-                     
-            return slope;
+                slopeAndVarSD[0] = sXY / sXX;
+
+            // Find intercept and populate array with elevation variability
+            double intercept = meanY - slopeAndVarSD[0] * meanX;
+
+            double[] elevVars = new double[numPts];
+
+            for (int i = 0; i < numPts; i++)            
+                elevVars[i] = yVals[i] - slopeAndVarSD[0] * xVals[i] + intercept;
+
+            // Calculate standard deviation of elevation variations            
+            slopeAndVarSD[1] = elevVars.StandardDeviation();
+
+            // Convert slope to degrees
+            slopeAndVarSD[0] = Math.Atan(slopeAndVarSD[0]) * 180 / Math.PI;
+
+            return slopeAndVarSD;
         }
+
+        
         
     }
      

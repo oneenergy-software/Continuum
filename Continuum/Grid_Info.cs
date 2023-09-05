@@ -118,6 +118,10 @@ namespace ContinuumNS
             double dirBinSize = (double)360 / thisInst.metList.numWD;
             
             double[] windRose = thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+
+            if (windRose == null)            
+                windRose = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, thisInst.metList.numWD);                           
+
             bool[] sectorsToUse = FindSectorsForGrid(windRose);
             
             for (double i = minX; i <= maxX; i = i + reso)
