@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Policy;
 using System.Windows.Forms;
 
 namespace ContinuumNS
@@ -998,6 +999,225 @@ namespace ContinuumNS
 
             return prob;
         }
+
+        /// <summary> Calculates and returns either the Terrain Slope Index (TSI) and Terrain Variability Index (TVI) based on IEC 61400-1 Ed 4 terrain complexity. 
+        /// The TSI is the average terrain slope measured over a specified radius from the point of interest within a specified wind direction sector.   The TVI is
+        /// the avreage standard deviation of the variations in terrain from the best-fit line (divided by radius) within a specified direction sector. If direction
+        /// sector is size less than 360, the average TSI or TVI is found using energy rose as the weight.  If direction sector is 360 degs, the average TSI is 
+        /// multiplied by 5/3 and the average TVI is divided by 3.</summary>
+
+        public double[] CalcTerrainSlopeAndVariationIndexPerIEC(double UTMX, double UTMY, double radius, int numWDs, TopoInfo topo, double[] energyRose = null)
+        {
+            // Calculates and returns either TSI or TVI at specified
+            double[] avgSlopeAndVar = new double[2];
+            double topoRes =  Math.Min(topo.topoNumXY.X.calcs.reso, topo.topoNumXY.Y.calcs.reso);
+
+            if (numWDs == 1)
+            {
+                // 360 degree terrain slope 
+                // Loop through all WDs and gather all distance and elevation values in arrays
+
+                int numDataPoints = Convert.ToInt32(360 * radius / topoRes); // Estimates approx number of total points so array resizing is reduced 
+                double[] allXVals = new double[numDataPoints];
+                double[] allYVals = new double[numDataPoints];
+                int valInd = 0;
+
+                for (int d = 0; d < 180; d++) // Only going to 180 since elevation profile is NOT just UW of POI, it goes to +/- specified radius
+                {
+                    TopoInfo.TopoGrid[] elevProfData = topo.GetElevationProfile(UTMX, UTMY, d, (int)radius, (int)topoRes);
+
+                    for (int p = 0;  p < elevProfData.Length; p++)
+                    {
+                        if (valInd >= allXVals.Length)
+                        {
+                            Array.Resize(ref allXVals, valInd + 1);
+                            Array.Resize(ref allYVals, valInd + 1);
+                        }
+
+                        allXVals[valInd] = p * topoRes;
+                        allYVals[valInd] = elevProfData[p].elev;
+                        valInd++;
+                    }
+                }
+
+                // Find avg slope and standard deviation of elevation deviations across 360 degree plane. Multiply slope by 5/3 and divide st. dev. of 
+                // elevation deviations by 3 and by radius
+                avgSlopeAndVar = topo.CalcSlopeAndVariation(allXVals, allYVals);
+                avgSlopeAndVar[0] = avgSlopeAndVar[0] * 5.0 / 3.0;
+                avgSlopeAndVar[1] = avgSlopeAndVar[1] / 3.0 / radius;
+
+            }
+            else
+            {
+                // Average TSI as average of sectorwise slope weighted by energy rose
+                double[] sectorSlopes = new double[numWDs];
+                double[] sectorVars = new double[numWDs];
+                int degsPerSect = (int)360 / numWDs;
+                int ptsPerSect = Convert.ToInt32(degsPerSect * radius / topoRes);  // Estimates approx number of total points so array resizing is reduced 
+
+                for (int i = 0; i < numWDs; i++)
+                {
+                    // Calculate average slope in sector                    
+                    double[] allXVals = new double[ptsPerSect];
+                    double[] allYVals = new double[ptsPerSect];
+                    int valInd = 0;
+                    int minWD = i * degsPerSect - degsPerSect / 2;
+                    int maxWD = i * degsPerSect + degsPerSect / 2;
+
+                    for (int d = minWD; d <= maxWD; d++) // Get distance and elevation data at every WD within sector (including min and max WD)
+                    {
+                        TopoInfo.TopoGrid[] elevProfData = topo.GetElevationProfile(UTMX, UTMY, d, (int)radius, (int)topoRes, true); // UW profile only
+
+                        for (int p = 0; p < elevProfData.Length; p++)
+                        {
+                            if (valInd >= allXVals.Length)
+                            {
+                                Array.Resize(ref allXVals, valInd + 1);
+                                Array.Resize(ref allYVals, valInd + 1);
+                            }
+
+                            allXVals[valInd] = p * topoRes;
+                            allYVals[valInd] = elevProfData[p].elev;
+                            valInd++;
+                        }
+                    }
+
+                    // Find avg slope across all 360 degree plane 
+                    double[] thisSlopeAndVar = topo.CalcSlopeAndVariation(allXVals, allYVals);
+                    sectorSlopes[i] = thisSlopeAndVar[0];
+                    sectorVars[i] = thisSlopeAndVar[1] / radius;
+                }
+
+                // Combine sectorwise slopes (absolute values?) with energy rose
+                for (int i = 0; i < numWDs; i++)
+                {
+                    avgSlopeAndVar[0] = avgSlopeAndVar[0] + Math.Abs(sectorSlopes[i]) * energyRose[i];
+                    avgSlopeAndVar[1] = avgSlopeAndVar[1] + Math.Abs(sectorVars[i]) * energyRose[i];
+                }
+
+            }
+
+            return avgSlopeAndVar;
+        }
+
+        /// <summary> Returns array of all turbines' terrain complexity values (for histogram) </summary>
+        public double[] GetTerrainComplexityAtAllTurbines(TurbineCollection turbList, TopoInfo topo, string complexMetric, double[] energyRose, double hubHeight)
+        {
+            double[] turbVals = new double[turbList.TurbineCount];
+
+            for (int t = 0; t < turbList.TurbineCount; t++)
+            {
+                double UTMX = turbList.turbineEsts[t].UTMX;
+                double UTMY = turbList.turbineEsts[t].UTMY;
+
+                if (complexMetric == "5z 360 TSI")
+                    turbVals[t] = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 5 * hubHeight, 1, topo)[0];
+                else if (complexMetric == "5z 360 TVI")
+                    turbVals[t] = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 5 * hubHeight, 1, topo)[1];
+                else if (complexMetric == "5z 30 TSI")
+                    turbVals[t] = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 5 * hubHeight, 12, topo, energyRose)[0];
+                else if (complexMetric == "5z 30 TVI")
+                    turbVals[t] = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 5 * hubHeight, 12, topo, energyRose)[1];
+                else if (complexMetric == "10z 30 TSI")
+                    turbVals[t] = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 10 * hubHeight, 12, topo, energyRose)[0];
+                else if (complexMetric == "10z 30 TVI")
+                    turbVals[t] = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 10 * hubHeight, 12, topo, energyRose)[1];
+                else if (complexMetric == "20z 30 TSI")
+                    turbVals[t] = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 20 * hubHeight, 12, topo, energyRose)[0];
+                else if (complexMetric == "20z 30 TVI")
+                    turbVals[t] = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 20 * hubHeight, 12, topo, energyRose)[1];
+                else if (complexMetric == "P10 UW")
+                    turbVals[t] = turbList.turbineEsts[t].gridStats.GetOverallP10(energyRose, 1, "UW");
+                else if (complexMetric == "P10 DW")
+                    turbVals[t] = turbList.turbineEsts[t].gridStats.GetOverallP10(energyRose, 1, "DW");
+            }
+
+            return turbVals;
+        }
+
+        /// <summary> Returns terrain complexity level based on IEC 61400-1 ed 4 "logic" </summary>
+        
+        public string CalcTerrainComplexityPerIEC(TurbineCollection turbList, TopoInfo topo, double hubH, double[] energyRose, string farmOrWTG, Turbine singleSite = null)
+        {
+            string terrainComplex = "Not Complex";
+
+            // IEC thresholds
+            double lowTSI = 10;
+            double medTSI = 15;
+            double highTSI = 20;
+
+            double lowTVI = 0.02;
+            double medTVI = 0.04;
+            double highTVI = 0.06;
+
+            double maxTSI = 0;
+            double maxTVI = 0;
+
+            // Loop through each turbine and calculate TSI and TVI at 5h over 360 degs and at 5h, 10h, and 20h in 30 deg sectors
+            // If any TSI or TVI levels exceed above threshold values, the terrain complexity value is assigned based on highest value
+
+            int numSites = 1;
+            if (farmOrWTG == "Farm")
+                numSites = turbList.TurbineCount;
+                                   
+
+            for (int t = 0; t < numSites; t++)
+            {
+                Turbine thisTurb = turbList.turbineEsts[t];
+
+                if (farmOrWTG != "Farm")
+                    thisTurb = singleSite;
+
+                double UTMX = thisTurb.UTMX;
+                double UTMY = thisTurb.UTMY;
+
+                // TSI and TVI at 5h and 360 degs
+                double[] slopeAndVarInds = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 5 * hubH, 1, topo);
+
+                if (slopeAndVarInds[0] > maxTSI)
+                    maxTSI = slopeAndVarInds[0];
+
+                if (slopeAndVarInds[1] > maxTVI)
+                    maxTVI = slopeAndVarInds[1];
+
+                // TSI and TVI at 5h and 30 degs (i.e. 12 sectors)
+                slopeAndVarInds = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 5 * hubH, 12, topo, energyRose);
+
+                if (slopeAndVarInds[0] > maxTSI)
+                    maxTSI = slopeAndVarInds[0];
+
+                if (slopeAndVarInds[1] > maxTVI)
+                    maxTVI = slopeAndVarInds[1];
+
+                // TSI and TVI at 10h and 30 degs (i.e. 12 sectors)
+                slopeAndVarInds = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 10 * hubH, 12, topo, energyRose);
+
+                if (slopeAndVarInds[0] > maxTSI)
+                    maxTSI = slopeAndVarInds[0];
+
+                if (slopeAndVarInds[1] > maxTVI)
+                    maxTVI = slopeAndVarInds[1];
+
+                // TSI and TVI at 20h and 30 degs (i.e. 12 sectors)
+                slopeAndVarInds = CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 20 * hubH, 12, topo, energyRose);
+
+                if (slopeAndVarInds[0] > maxTSI)
+                    maxTSI = slopeAndVarInds[0];
+
+                if (slopeAndVarInds[1] > maxTVI)
+                    maxTVI = slopeAndVarInds[1];
+            }
+
+            if (maxTSI > highTSI || maxTVI > highTVI)
+                terrainComplex = "High Complex";
+            else if (maxTSI > medTSI || maxTVI > medTVI)
+                terrainComplex = "Mod. Complex";
+            else if (maxTSI > lowTSI || maxTVI > lowTVI)
+                terrainComplex = "Low Complex";
+            
+            return terrainComplex;
+        }
+
 
     }
 }

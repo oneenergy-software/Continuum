@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.IO;
+using System.Windows.Shapes;
+using static ContinuumNS.BackgroundWork;
 
 namespace ContinuumNS
 {
@@ -46,7 +48,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Sets number of MERRA2 data based on dropdown selection. </summary>
-        public void Set_Num_MERRA_Nodes(Continuum thisInst)
+  /*      public void Set_Num_MERRA_Nodes(Continuum thisInst)
         {            
             if (merraData == null)
                 numMERRA_Nodes = Convert.ToInt16(thisInst.cboNumMERRA_Nodes.SelectedItem.ToString());
@@ -68,7 +70,8 @@ namespace ContinuumNS
                 numMERRA_Nodes = Convert.ToInt16(thisInst.cboNumMERRA_Nodes.SelectedItem.ToString());
 
             thisInst.ChangesMade();
-        }        
+        }   
+  */
         
         /// <summary> Returns array of lat/long coordinates of MERRA2 coordinates for specified lat/long </summary>        
         public UTM_conversion.Lat_Long[] GetRequiredMERRACoords(double latitude, double longitude)
@@ -223,7 +226,7 @@ namespace ContinuumNS
 
             return thisMERRA;
         }
-
+                
         /// <summary> Adds new MERRA object to list. Figures out if additional MERRA nodes need to be uploaded from textfiles.
         ///    Runs MCP at Met site (if thisMet not null) if have all MERRA node data. Calls BW worker to upload additional data if needed. </summary>
         public void AddMERRA_GetDataFromTextFiles(double thisLat, double thisLong, int offset, Continuum thisInst, Met thisMet, bool isTest)
@@ -247,7 +250,8 @@ namespace ContinuumNS
                     else
                         return;
 
-                    SetMERRA2LatLong(thisInst);
+                    //SetMERRA2LatLong(thisInst);
+                    thisInst.updateThe.LT_RefNodesAndCompleteness(thisInst);
                 }
                 catch
                 {
@@ -305,13 +309,13 @@ namespace ContinuumNS
 
                 BackgroundWork.Vars_for_MERRA Vars_for_MERRA = new BackgroundWork.Vars_for_MERRA();
                 Vars_for_MERRA.thisInst = thisInst;
-                Vars_for_MERRA.thisMERRA = thisMERRA;
+          //      Vars_for_MERRA.thisMERRA = thisMERRA;
                 Vars_for_MERRA.MCP_type = thisInst.Get_MCP_Method();
                 Vars_for_MERRA.thisMet = thisMet;
-                Vars_for_MERRA.nodesToPull = nodesToPull;
+          //      Vars_for_MERRA.nodesToPull = nodesToPull;
 
                 thisInst.BW_worker = new BackgroundWork();
-                thisInst.BW_worker.Call_BW_MERRA2_Import(Vars_for_MERRA);
+           //     thisInst.BW_worker.Call_BW_MERRA2_Import(Vars_for_MERRA);
             }
             else
             {
@@ -326,19 +330,19 @@ namespace ContinuumNS
                 if (doMCP == DialogResult.Yes)
                 {
                     thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
-                    thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, thisInst.Get_MCP_Method());
+          //          thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, thisInst.Get_MCP_Method());
                     thisMet.CalcAllLT_WSWD_Dists(thisInst, thisMet.mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
                     thisInst.updateThe.AllTABs(thisInst);
                 }
                 else
                 {
-                    thisInst.updateThe.MERRA_Dropdowns(thisInst);
-                    thisInst.updateThe.MERRA_TAB(thisInst);
+              //      thisInst.updateThe.MERRA_Dropdowns(thisInst);
+              //      thisInst.updateThe.MERRA_TAB(thisInst);
                 }
                     
             }
         }
-
+   
         /// <summary> Deletes MERRA data from list. </summary>        
         public void deleteMERRA(double latitude, double longitude)
         {            
@@ -454,10 +458,11 @@ namespace ContinuumNS
         }
 
         /// <summary> Logs user into NASA's EarthData system and begins MERRA2 data download (in background worker). </summary> 
-        public async Task NASA_LogInAsync(Continuum thisInst)
+        public async Task NASA_LogInAsync(Continuum thisInst, MERRA2_Download merraDownload)
         {  
-            BackgroundWork.Vars_for_BW Vars_for_MERRA = new BackgroundWork.Vars_for_BW();
+            BackgroundWork.Vars_for_MERRA_Download Vars_for_MERRA = new BackgroundWork.Vars_for_MERRA_Download();
             Vars_for_MERRA.thisInst = thisInst;
+            Vars_for_MERRA.thisMERRA = merraDownload;
             
             thisInst.BW_worker = new BackgroundWork();
             thisInst.BW_worker.Call_BW_MERRA2_Download(Vars_for_MERRA);
@@ -501,6 +506,9 @@ namespace ContinuumNS
                 dateNum = 200;
             else if (thisDay.Year <= 2010)
                 dateNum = 300;
+            else if ((thisDay.Year == 2021 && thisDay.Month >= 6 && thisDay.Month <= 9) || 
+                (thisDay.Year == 2020 && thisDay.Month == 9))
+                dateNum = 401;
             else
                 dateNum = 400;
 
@@ -534,12 +542,129 @@ namespace ContinuumNS
 
             thisInst.txt_MERRA2_folder.Text = MERRAfolder.ToString();
 
-            SetMERRA2LatLong(thisInst);
+         //   SetMERRA2LatLong(thisInst);
             
         }
 
+        /// <summary>  Return node lat/longs in MERRA2 file </summary>
+        public MERRA.MERRA_Node_Data[] GetAllNodesInFile(Continuum thisInst)
+        {
+            // Opens first file in folder and creates MERRA objects for each set of latitude and longitude
+            MERRA.MERRA_Node_Data[] allMERRA_nodes = new MERRA.MERRA_Node_Data[0];
+
+            bool folderExists = Directory.Exists(MERRAfolder);
+            if (folderExists == false)
+                return allMERRA_nodes;
+
+            string[] MERRAfiles = Directory.GetFiles(MERRAfolder, "*.ascii");
+            string line;
+
+            if (MERRAfiles.Length > 0)
+            {
+                StreamReader file = new StreamReader(MERRAfiles[0]);
+
+                char[] delims = { ',' };
+                int numLats = 0;
+                int numLongs = 0;
+                double[] lats = new double[numLats];
+                double[] longs = new double[numLongs];
+
+                while ((line = file.ReadLine()) != null)
+                {
+                    string[] substrings = line.Split(delims);
+
+                    if (substrings[0] == "lat") // read in all latitudes
+                    {
+                        numLats = substrings.Length - 1;
+                        Array.Resize(ref lats, numLats);
+
+                        for (int i = 0; i < numLats; i++)
+                            lats[i] = Convert.ToDouble(substrings[i + 1]);
+                    }
+
+                    if (substrings[0] == "lon") // read in all longitudes
+                    {
+                        numLongs = substrings.Length - 1;
+                        Array.Resize(ref longs, numLongs);
+
+                        for (int i = 0; i < numLongs; i++)
+                            longs[i] = Convert.ToDouble(substrings[i + 1]);
+                    }
+                }
+
+                int nodeInd = 0;
+                int numNodes = numLats * numLongs;
+                allMERRA_nodes = new MERRA.MERRA_Node_Data[numNodes];
+
+                for (int l = 0; l < numLats; l++)
+                    for (int g = 0; g < numLongs; g++)
+                    {
+                        allMERRA_nodes[nodeInd] = new MERRA.MERRA_Node_Data();
+                        allMERRA_nodes[nodeInd].XY_ind.Lat = lats[l];
+                        allMERRA_nodes[nodeInd].XY_ind.Lon = longs[g];
+                        nodeInd++;
+                    }
+            }
+
+            return allMERRA_nodes;
+        }
+
+        /// <summary> Finds and returns the start and end date of the downloaded data files. </summary>
+        public DateTime[] GetDataFileStartEndDate(Continuum thisInst)
+        {
+            DateTime[] startEndDates = new DateTime[2];
+
+            bool folderExists = Directory.Exists(MERRAfolder);
+            if (folderExists == false)
+                return startEndDates;
+
+            string[] MERRAfiles = Directory.GetFiles(MERRAfolder, "*.ascii");
+
+            for (int f = 0; f < MERRAfiles.Length; f++)
+            {
+                // Get date from filename
+                int ncIndex = MERRAfiles[f].IndexOf("nc4");
+                string dateStr = MERRAfiles[f].Substring(ncIndex - 9, 8);
+                int thisYear = Convert.ToInt16(dateStr.Substring(0, 4));
+                int thisMonth = Convert.ToInt16(dateStr.Substring(4, 2));
+                int thisDay = Convert.ToInt16(dateStr.Substring(6, 2));
+
+                DateTime thisDate = new DateTime(thisYear, thisMonth, thisDay);
+
+                if (thisDate < startEndDates[0] || startEndDates[0].Year == 1)
+                    startEndDates[0] = thisDate;
+
+                if (thisDate > startEndDates[1])
+                    startEndDates[1] = thisDate;
+            }
+
+            return startEndDates;
+        }
+
+        /// <summary> Calculates % completion of downloaded data files </summary>
+        public double CalcDownloadedDataCompletion(Continuum thisInst)
+        {
+            double complete = 0;
+
+            DateTime[] startEndDates = GetDataFileStartEndDate(thisInst);
+            double numTotalDays = startEndDates[1].Subtract(startEndDates[0]).TotalDays;
+            int daysWithData = 0;
+
+            for (DateTime thisDate = startEndDates[0]; thisDate <= startEndDates[1]; thisDate = thisDate.AddDays(1))
+            {
+                if (MERRA2FileExists(thisDate))
+                    daysWithData++;
+            }
+
+            if (numTotalDays > 0)
+                complete = 100.0 * daysWithData / numTotalDays;
+
+            return complete;
+        }
+
+
         /// <summary> Updates textboxes showing MERRA2 data bounds on GUI. </summary>
-        public void SetMERRA2LatLong (Continuum thisInst)
+   /*     public void SetMERRA2LatLong (Continuum thisInst)
         {
             if (MERRAfolder == null || MERRAfolder == "")
                 return;
@@ -645,6 +770,7 @@ namespace ContinuumNS
 
             file.Close();
         }
+   */
 
         /// <summary> Creates filename for exported MERRA2 data. </summary>
         public string CreateMERRA2filename(DateTime thisDate)

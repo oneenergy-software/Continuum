@@ -12,8 +12,9 @@ namespace ContinuumNS
     /// </summary>
     [Serializable()]
     public partial class MCP
-    {       
-
+    {
+        /// <summary> Long-term Reference used to create the MCP estimate </summary>
+        public Reference reference;
         /// <summary> Reference site time series data. </summary>
         public Site_data[] refData = new Site_data[0];  // Not saved with file. Regenerated as needed.        
         /// <summary> Target site time series data. </summary>
@@ -961,18 +962,17 @@ namespace ContinuumNS
             return LT_WS_Est;
         }
 
-        /// <summary> Estimates time series at met site using MERRA2 data and selected MCP type. </summary>        
+        /// <summary> Estimates time series at met site using long-term reference data and selected MCP type. </summary>        
         /// <returns> Estimated long-term wind speed time series </returns>
         public Site_data[] GenerateLT_WS_TS(Continuum thisInst, Met thisMet, string MCP_Method)
         {            
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-            MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-
+           
             if (HaveMCP_Estimate(MCP_Method) == false && MCP_Method != "Matrix")
-                thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method); // Reads in MERRA data and extrapolated filtered data and runs MCP using settings on form                    
+                thisInst.metList.RunMCP(ref thisMet, reference, thisInst, MCP_Method); // Reads in long-term reference data and extrapolated filtered data and runs MCP using settings on form                    
 
             if (thisMet.mcp.refData.Length == 0)
-                thisMet.mcp.GetRefData(thisMERRA, ref thisMet, thisInst);                       
+                thisMet.mcp.GetRefData(reference, ref thisMet, thisInst);                       
 
             Site_data[] LT_WS_Est_TS = new Site_data[thisMet.mcp.refData.Length];
 
@@ -1545,7 +1545,7 @@ namespace ContinuumNS
        
        
         /// <summary>   Runs the MCP uncertainty analysis. </summary>        
-        public void Do_MCP_Uncertainty(Continuum thisInst, MERRA thisMERRA, Met thisMet)
+        public void Do_MCP_Uncertainty(Continuum thisInst, Reference thisRef, Met thisMet)
         {
             int uncertStepSize = Get_Uncert_Step_Size(); // Step size (in months) that defines the next start date. 
                                                          // Default is 1 month but for large datasets, increasing this 
@@ -1561,10 +1561,9 @@ namespace ContinuumNS
             DateTime testStart = concStart;            
             DateTime testEnd = concEnd;
             DateTime origStart = concStart;
-
-            // Copy MERRA data as the reference data
+                        
             if (refData == null)
-                refData = GetRefData(thisMERRA, ref thisMet, thisInst);
+                refData = GetRefData(thisRef, ref thisMet, thisInst);
 
             // Get sector count to be used within loops
             Find_Sector_Counts(thisInst.metList);
@@ -1828,29 +1827,29 @@ namespace ContinuumNS
         }      
               
         /// <summary> Extracts reference data for specified met site. </summary>        
-        /// <returns> MERRA2 reference time series data </returns>
-        public Site_data[] GetRefData(MERRA thisMERRA, ref Met thisMet, Continuum thisInst)
+        /// <returns> Long-term reference time series data </returns>
+        public Site_data[] GetRefData(Reference thisRef, ref Met thisMet, Continuum thisInst)
         {
-            if (thisMERRA.interpData.TS_Data == null)
+            if (thisRef.interpData.TS_Data == null)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            if (thisMERRA.interpData.TS_Data.Length == 0)
+            if (thisRef.interpData.TS_Data.Length == 0)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            int refDataLen = thisMERRA.interpData.TS_Data.Length;
+            int refDataLen = thisRef.interpData.TS_Data.Length;
             refData = new Site_data[refDataLen];            
            
             for (int i = 0; i < refDataLen; i++)
             {
-                refData[i].thisDate = thisMERRA.interpData.TS_Data[i].ThisDate;
-                refData[i].thisWS = thisMERRA.interpData.TS_Data[i].WS50m;
-                refData[i].thisWD = thisMERRA.interpData.TS_Data[i].WD50m;
+                refData[i].thisDate = thisRef.interpData.TS_Data[i].thisDate;
+                refData[i].thisWS = thisRef.interpData.TS_Data[i].WS;
+                refData[i].thisWD = thisRef.interpData.TS_Data[i].WD;
             }
 
             return refData;

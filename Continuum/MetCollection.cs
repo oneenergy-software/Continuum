@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using System.Windows.Forms;
+using System.Security.Cryptography.Xml;
 
 namespace ContinuumNS
 {
@@ -297,38 +298,48 @@ namespace ContinuumNS
                 return;
             }
 
-            // Delete unused MERRA data from DB
-            // First check to see if there is MERRA data for this met
-            MERRA thisMERRA = thisInst.merraList.GetMERRA(metLat, metLong);
-            thisMERRA.GetMERRADataFromDB(thisInst);
+            // Delete unused reference data from DB
+            // First check to see if there is reference data for this met
+            Reference[] theRefs = thisInst.refList.GetAllRefsAtLatLong(metLat, metLong);
 
-            if (thisMERRA.MERRA_Nodes != null)
-            {              
-                // Go through each MERRA node and check to see if it is used by another met
-                for (int i = 0; i < thisMERRA.numMERRA_Nodes; i++)
+            for (int r = 0; r < theRefs.Length; r++)
+            {
+                theRefs[r].GetReferenceDataFromDB(thisInst);
+
+                if (theRefs[r].nodes != null)
                 {
-                    bool usedByOtherMets = false;
-
-                    for (int m = 0; m < ThisCount; m++)
+                    // Go through each MERRA node and check to see if it is used by another met
+                    for (int i = 0; i < theRefs[r].numNodes; i++)
                     {
-                        UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(metItem[m].UTMX, metItem[m].UTMY);
-                        MERRA otherMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                        bool usedByOtherMets = false;
 
-                        for (int j = 0; j < otherMERRA.numMERRA_Nodes; j++)
-                            if (thisMERRA.MERRA_Nodes[i].XY_ind.Lat == otherMERRA.MERRA_Nodes[j].XY_ind.Lat
-                                && thisMERRA.MERRA_Nodes[i].XY_ind.Lon == otherMERRA.MERRA_Nodes[j].XY_ind.Lon)
-                                usedByOtherMets = true;
+                        for (int m = 0; m < ThisCount; m++)
+                        {
+                            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(metItem[m].UTMX, metItem[m].UTMY);
+                            Reference[] otherRefs = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude);
+
+                            for (int a = 0; a < otherRefs.Length; a++)
+                                for (int j = 0; j < otherRefs[a].numNodes; j++)
+                                    if (theRefs[r].nodes[i].XY_ind.Lat == otherRefs[a].nodes[j].XY_ind.Lat
+                                    && theRefs[r].nodes[i].XY_ind.Lon == otherRefs[a].nodes[j].XY_ind.Lon
+                                    && theRefs[r].referenceType == otherRefs[a].referenceType)
+                                        usedByOtherMets = true;
+                        }
+
+                        if (usedByOtherMets == false && theRefs[r].referenceType == "MERRA2")
+                            thisInst.refList.DeleteMERRANodeDataFromDB(theRefs[r].nodes[i].XY_ind.Lat, theRefs[r].nodes[i].XY_ind.Lon, thisInst);
+                        else if (usedByOtherMets == false && theRefs[r].referenceType == "ERA5")
+                            thisInst.refList.DeleteERANodeDataFromDB(theRefs[r].nodes[i].XY_ind.Lat, theRefs[r].nodes[i].XY_ind.Lon, thisInst);
+
                     }
-
-                    if (usedByOtherMets == false)
-                        thisInst.merraList.DeleteMERRANodeDataFromDB(thisMERRA.MERRA_Nodes[i].XY_ind.Lat, thisMERRA.MERRA_Nodes[i].XY_ind.Lon, thisInst);
-
                 }
+
+                // Delete reference data from refList
+                Reference[] refsDefForThisMet = thisInst.refList.GetAllRefsAtLatLong(metLat, metLong);
+
+                for (int d = 0; d < refsDefForThisMet.Length; d++)
+                    thisInst.refList.DeleteReference(refsDefForThisMet[d]);
             }
-
-            // Delete MERRA data from MERRAList
-            thisInst.merraList.deleteMERRA(metLat, metLong);
-
         }
 
         /// <summary> Deletes all met site time series estimates. Called after a change is made to MCP or MERRA2 settings. </summary>
@@ -1736,13 +1747,13 @@ namespace ContinuumNS
               
 
         /// <summary> Runs MCP at selected met site using selected MCP method. </summary>       
-        public void RunMCP(ref Met thisMet, MERRA thisMERRA, Continuum thisInst, string MCP_method)
+        public void RunMCP(ref Met thisMet, Reference thisRef, Continuum thisInst, string MCP_method)
         {            
             thisMet.mcp = new MCP();
             thisMet.mcp.New_MCP(true, true, thisInst); // reads the MCP settings from MCP tab
 
             // Get MERRA data as the reference data
-            thisMet.mcp.refData = thisMet.mcp.GetRefData(thisMERRA, ref thisMet, thisInst);
+            thisMet.mcp.refData = thisMet.mcp.GetRefData(thisRef, ref thisMet, thisInst);
 
             // Get extrapolated met dat as the target data
             thisMet.mcp.targetData = thisMet.mcp.GetTargetData(thisInst.modeledHeight, thisMet);
@@ -1847,6 +1858,45 @@ namespace ContinuumNS
             }
 
             expoIsCalc = false;
+        }
+
+        /// <summary> Get met tower with specified latitude and longitude </summary>
+        public Met GetMetAtLatLon(double thisLat, double thisLong, UTM_conversion utmConv)
+        {
+            Met thisMet = new Met();
+
+            for (int m = 0; m < ThisCount; m++)
+            {
+                UTM_conversion.Lat_Long thisLL = utmConv.UTMtoLL(metItem[m].UTMX, metItem[m].UTMY);
+                if (thisLL.latitude == thisLat && thisLL.longitude == thisLong)
+                {
+                    thisMet = metItem[m];
+                    break;
+                }
+            }                
+
+            return thisMet;
+        }
+
+        /// <summary> Get Reference used to generate MCP estimates at met sites </summary>
+        public Reference GetReferenceUsedInMCP(string[] metsUsed)
+        {
+            Reference thisRef = new Reference();
+
+            for (int m = 0; m < ThisCount; m++)
+            {
+                for (int u = 0; u < metsUsed.Length; u++)
+                {
+                    if (metsUsed[u] == metItem[m].name)
+                    {
+                        thisRef = metItem[m].mcp.reference;
+                        break;
+                    }
+                }
+            }
+
+            return thisRef;
+
         }
                 
     }

@@ -28,6 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
@@ -167,31 +171,35 @@
             this.columnHeader72 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader73 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgeMERRA = new System.Windows.Forms.TabPage();
-            this.btnExplainMERRA2Tab = new System.Windows.Forms.Button();
-            this.label54 = new System.Windows.Forms.Label();
-            this.txtMaxLong = new System.Windows.Forms.TextBox();
-            this.label146 = new System.Windows.Forms.Label();
-            this.txtMinLong = new System.Windows.Forms.TextBox();
+            this.btnDelRef = new System.Windows.Forms.Button();
+            this.btnEditReference = new System.Windows.Forms.Button();
+            this.btnAddNew = new System.Windows.Forms.Button();
+            this.label207 = new System.Windows.Forms.Label();
+            this.cboLTReferences = new System.Windows.Forms.ComboBox();
+            this.label205 = new System.Windows.Forms.Label();
+            this.txtRefDataAvail = new System.Windows.Forms.TextBox();
+            this.label204 = new System.Windows.Forms.Label();
+            this.dateLTRefAvailEnd = new System.Windows.Forms.DateTimePicker();
+            this.dateLTRefAvailStart = new System.Windows.Forms.DateTimePicker();
             this.label52 = new System.Windows.Forms.Label();
-            this.txtMaxLat = new System.Windows.Forms.TextBox();
+            this.label54 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.txtMinLat = new System.Windows.Forms.TextBox();
-            this.btnChangeFolder = new System.Windows.Forms.Button();
-            this.btnDownloadMERRA2 = new System.Windows.Forms.Button();
+            this.dataLTRefNodes = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnExplainMERRA2Tab = new System.Windows.Forms.Button();
             this.plotMERRA_WindRose = new OxyPlot.WindowsForms.PlotView();
             this.plotMERRA_Monthly = new OxyPlot.WindowsForms.PlotView();
             this.plotMERRA_Yearly = new OxyPlot.WindowsForms.PlotView();
             this.btnImportCRV_MERRA = new System.Windows.Forms.Button();
             this.chkYearsToDisplayAll = new System.Windows.Forms.CheckBox();
             this.label121 = new System.Windows.Forms.Label();
-            this.cboMERRA_Month = new System.Windows.Forms.ComboBox();
+            this.cboReferenceMonth = new System.Windows.Forms.ComboBox();
             this.label120 = new System.Windows.Forms.Label();
-            this.cboMERRAYear = new System.Windows.Forms.ComboBox();
+            this.cboReferenceYear = new System.Windows.Forms.ComboBox();
             this.chkYearsToDisplay = new System.Windows.Forms.CheckedListBox();
             this.label162 = new System.Windows.Forms.Label();
             this.txtMERRA_WS_ScaleFact = new System.Windows.Forms.TextBox();
-            this.cboNumMERRA_Nodes = new System.Windows.Forms.ComboBox();
-            this.label161 = new System.Windows.Forms.Label();
             this.label160 = new System.Windows.Forms.Label();
             this.cboMERRA_PowerCurves = new System.Windows.Forms.ComboBox();
             this.btn_ExportWR = new System.Windows.Forms.Button();
@@ -213,17 +221,13 @@
             this.dateMERRAStart = new System.Windows.Forms.DateTimePicker();
             this.label152 = new System.Windows.Forms.Label();
             this.label153 = new System.Windows.Forms.Label();
-            this.label147 = new System.Windows.Forms.Label();
-            this.cboMERRASelectedMet = new System.Windows.Forms.ComboBox();
-            this.txtMERRA_SelectedLong = new System.Windows.Forms.TextBox();
-            this.label149 = new System.Windows.Forms.Label();
-            this.label150 = new System.Windows.Forms.Label();
-            this.txtMERRA_SelectedLat = new System.Windows.Forms.TextBox();
             this.label154 = new System.Windows.Forms.Label();
             this.txt_MERRA2_folder = new System.Windows.Forms.TextBox();
             this.btn_Import_MERRA = new System.Windows.Forms.Button();
             this.label151 = new System.Windows.Forms.Label();
             this.pgeMCP = new System.Windows.Forms.TabPage();
+            this.label206 = new System.Windows.Forms.Label();
+            this.cboMCP_Ref = new System.Windows.Forms.ComboBox();
             this.btnExportTarget = new System.Windows.Forms.Button();
             this.plotMCP_Uncertainty = new OxyPlot.WindowsForms.PlotView();
             this.plotMCP = new OxyPlot.WindowsForms.PlotView();
@@ -531,56 +535,31 @@
             this.ColumnHeader77 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Label36 = new System.Windows.Forms.Label();
             this.pgeSiteConditions = new System.Windows.Forms.TabPage();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.tabSiteConditions = new System.Windows.Forms.TabControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnCalcTerrainComplexity = new System.Windows.Forms.Button();
+            this.label161 = new System.Windows.Forms.Label();
+            this.cboTSIorTVIorP90 = new System.Windows.Forms.ComboBox();
+            this.plotComplexHisto = new OxyPlot.WindowsForms.PlotView();
+            this.label150 = new System.Windows.Forms.Label();
+            this.btnShowIECThresh = new System.Windows.Forms.Button();
+            this.lblIEC_Complexity = new System.Windows.Forms.Label();
+            this.label147 = new System.Windows.Forms.Label();
+            this.dataTerrainComplex = new System.Windows.Forms.DataGridView();
+            this.label199 = new System.Windows.Forms.Label();
+            this.label198 = new System.Windows.Forms.Label();
+            this.label197 = new System.Windows.Forms.Label();
+            this.label196 = new System.Windows.Forms.Label();
             this.plotInflowAngle = new OxyPlot.WindowsForms.PlotView();
             this.label200 = new System.Windows.Forms.Label();
             this.txtInflowAngle = new System.Windows.Forms.TextBox();
-            this.label199 = new System.Windows.Forms.Label();
             this.cboInflowReso = new System.Windows.Forms.ComboBox();
-            this.label198 = new System.Windows.Forms.Label();
             this.cboInflowRadius = new System.Windows.Forms.ComboBox();
             this.btnInflowAngles = new System.Windows.Forms.Button();
             this.cboInflowTurbine = new System.Windows.Forms.ComboBox();
-            this.label197 = new System.Windows.Forms.Label();
-            this.label196 = new System.Windows.Forms.Label();
             this.cboInflowWD = new System.Windows.Forms.ComboBox();
             this.label171 = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.plotExtremeWS = new OxyPlot.WindowsForms.PlotView();
-            this.lblNoExtremeWS = new System.Windows.Forms.Label();
-            this.lblExtremeWS = new System.Windows.Forms.Label();
-            this.btnExtremeWS = new System.Windows.Forms.Button();
-            this.label195 = new System.Windows.Forms.Label();
-            this.cboExtremeWSMet = new System.Windows.Forms.ComboBox();
-            this.txt1yrExtremeGust = new System.Windows.Forms.TextBox();
-            this.txt1yrExtreme10min = new System.Windows.Forms.TextBox();
-            this.txt50yrExtremeGust = new System.Windows.Forms.TextBox();
-            this.txt50yrExtreme10min = new System.Windows.Forms.TextBox();
-            this.label193 = new System.Windows.Forms.Label();
-            this.label194 = new System.Windows.Forms.Label();
-            this.label192 = new System.Windows.Forms.Label();
-            this.label191 = new System.Windows.Forms.Label();
-            this.label170 = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.plotExtremeShear = new OxyPlot.WindowsForms.PlotView();
-            this.dateTimeExtremeShearStart = new System.Windows.Forms.DateTimePicker();
-            this.label202 = new System.Windows.Forms.Label();
-            this.label203 = new System.Windows.Forms.Label();
-            this.dateTimeExtremeShearEnd = new System.Windows.Forms.DateTimePicker();
-            this.label201 = new System.Windows.Forms.Label();
-            this.label190 = new System.Windows.Forms.Label();
-            this.cboExtremeShearRange = new System.Windows.Forms.ComboBox();
-            this.label189 = new System.Windows.Forms.Label();
-            this.cboExtremeShearMet = new System.Windows.Forms.ComboBox();
-            this.btnExportShearStats = new System.Windows.Forms.Button();
-            this.lstExtremeShear = new System.Windows.Forms.ListView();
-            this.columnHeader180 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader181 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader182 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader183 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader184 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label95 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.plotTurbInt = new OxyPlot.WindowsForms.PlotView();
             this.btnExportTI = new System.Windows.Forms.Button();
             this.label188 = new System.Windows.Forms.Label();
@@ -604,6 +583,43 @@
             this.label172 = new System.Windows.Forms.Label();
             this.cboTurbWD = new System.Windows.Forms.ComboBox();
             this.label93 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.plotExtremeShear = new OxyPlot.WindowsForms.PlotView();
+            this.dateTimeExtremeShearStart = new System.Windows.Forms.DateTimePicker();
+            this.label202 = new System.Windows.Forms.Label();
+            this.label203 = new System.Windows.Forms.Label();
+            this.dateTimeExtremeShearEnd = new System.Windows.Forms.DateTimePicker();
+            this.label201 = new System.Windows.Forms.Label();
+            this.label190 = new System.Windows.Forms.Label();
+            this.cboExtremeShearRange = new System.Windows.Forms.ComboBox();
+            this.label189 = new System.Windows.Forms.Label();
+            this.cboExtremeShearMet = new System.Windows.Forms.ComboBox();
+            this.btnExportShearStats = new System.Windows.Forms.Button();
+            this.lstExtremeShear = new System.Windows.Forms.ListView();
+            this.columnHeader180 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader181 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader182 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader183 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader184 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label95 = new System.Windows.Forms.Label();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.lblNoExtremeWS = new System.Windows.Forms.Label();
+            this.label195 = new System.Windows.Forms.Label();
+            this.label103 = new System.Windows.Forms.Label();
+            this.cboExtremeWSRef = new System.Windows.Forms.ComboBox();
+            this.plotExtremeWS = new OxyPlot.WindowsForms.PlotView();
+            this.lblExtremeWS = new System.Windows.Forms.Label();
+            this.btnExtremeWS = new System.Windows.Forms.Button();
+            this.cboExtremeWSMet = new System.Windows.Forms.ComboBox();
+            this.txt1yrExtremeGust = new System.Windows.Forms.TextBox();
+            this.txt1yrExtreme10min = new System.Windows.Forms.TextBox();
+            this.txt50yrExtremeGust = new System.Windows.Forms.TextBox();
+            this.txt50yrExtreme10min = new System.Windows.Forms.TextBox();
+            this.label193 = new System.Windows.Forms.Label();
+            this.label194 = new System.Windows.Forms.Label();
+            this.label192 = new System.Windows.Forms.Label();
+            this.label191 = new System.Windows.Forms.Label();
+            this.label170 = new System.Windows.Forms.Label();
             this.label92 = new System.Windows.Forms.Label();
             this.pgeMonthlyAnalysis = new System.Windows.Forms.TabPage();
             this.plotMonthlyTS = new OxyPlot.WindowsForms.PlotView();
@@ -902,6 +918,7 @@
             this.aboutContinuumToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateHeadersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.downloadMERRA2DataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ofdXYZfile = new System.Windows.Forms.OpenFileDialog();
             this.ofdPowerCurve = new System.Windows.Forms.OpenFileDialog();
             this.sfdrsf = new System.Windows.Forms.SaveFileDialog();
@@ -924,20 +941,36 @@
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pgeMetData.SuspendLayout();
             this.pgeMERRA.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataLTRefNodes)).BeginInit();
             this.pgeMCP.SuspendLayout();
             this.pgeMetSumm.SuspendLayout();
             this.pgeGrossTurbs.SuspendLayout();
             this.pgeExceedance.SuspendLayout();
             this.pgeNetEsts.SuspendLayout();
             this.pgeSiteConditions.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.tabSiteConditions.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataTerrainComplex)).BeginInit();
+            this.tabPage1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.pgeMonthlyAnalysis.SuspendLayout();
             this.pgeMaps.SuspendLayout();
             this.pgeRound.SuspendLayout();
@@ -971,7 +1004,7 @@
             this.tabContinuum.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabContinuum.Name = "tabContinuum";
             this.tabContinuum.SelectedIndex = 0;
-            this.tabContinuum.Size = new System.Drawing.Size(1635, 880);
+            this.tabContinuum.Size = new System.Drawing.Size(1643, 936);
             this.tabContinuum.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabContinuum.TabIndex = 3;
             // 
@@ -1028,7 +1061,7 @@
             this.pgeInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeInput.Name = "pgeInput";
             this.pgeInput.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeInput.Size = new System.Drawing.Size(1627, 849);
+            this.pgeInput.Size = new System.Drawing.Size(1635, 905);
             this.pgeInput.TabIndex = 0;
             this.pgeInput.Text = "Input";
             this.pgeInput.UseVisualStyleBackColor = true;
@@ -1389,7 +1422,7 @@
             this.chkTurbLabels.Location = new System.Drawing.Point(1095, 681);
             this.chkTurbLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbLabels.Name = "chkTurbLabels";
-            this.chkTurbLabels.Size = new System.Drawing.Size(268, 104);
+            this.chkTurbLabels.Size = new System.Drawing.Size(268, 84);
             this.chkTurbLabels.TabIndex = 64;
             this.chkTurbLabels.SelectedIndexChanged += new System.EventHandler(this.chkTurbLabels_SelectedIndexChanged);
             // 
@@ -1401,7 +1434,7 @@
             this.chkMetLabels.Location = new System.Drawing.Point(822, 681);
             this.chkMetLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMetLabels.Name = "chkMetLabels";
-            this.chkMetLabels.Size = new System.Drawing.Size(264, 104);
+            this.chkMetLabels.Size = new System.Drawing.Size(264, 84);
             this.chkMetLabels.TabIndex = 63;
             this.chkMetLabels.SelectedIndexChanged += new System.EventHandler(this.chkMetLabels_SelectedIndexChanged);
             // 
@@ -1681,7 +1714,7 @@
             this.pgeMetData.Location = new System.Drawing.Point(4, 27);
             this.pgeMetData.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMetData.Name = "pgeMetData";
-            this.pgeMetData.Size = new System.Drawing.Size(1627, 849);
+            this.pgeMetData.Size = new System.Drawing.Size(1635, 905);
             this.pgeMetData.TabIndex = 14;
             this.pgeMetData.Text = "Met Data QC";
             this.pgeMetData.UseVisualStyleBackColor = true;
@@ -2482,31 +2515,33 @@
             // 
             // pgeMERRA
             // 
-            this.pgeMERRA.Controls.Add(this.btnExplainMERRA2Tab);
-            this.pgeMERRA.Controls.Add(this.label54);
-            this.pgeMERRA.Controls.Add(this.txtMaxLong);
-            this.pgeMERRA.Controls.Add(this.label146);
-            this.pgeMERRA.Controls.Add(this.txtMinLong);
+            this.pgeMERRA.Controls.Add(this.btnDelRef);
+            this.pgeMERRA.Controls.Add(this.btnEditReference);
+            this.pgeMERRA.Controls.Add(this.btnAddNew);
+            this.pgeMERRA.Controls.Add(this.label207);
+            this.pgeMERRA.Controls.Add(this.cboLTReferences);
+            this.pgeMERRA.Controls.Add(this.label205);
+            this.pgeMERRA.Controls.Add(this.txtRefDataAvail);
+            this.pgeMERRA.Controls.Add(this.label204);
+            this.pgeMERRA.Controls.Add(this.dateLTRefAvailEnd);
+            this.pgeMERRA.Controls.Add(this.dateLTRefAvailStart);
             this.pgeMERRA.Controls.Add(this.label52);
-            this.pgeMERRA.Controls.Add(this.txtMaxLat);
+            this.pgeMERRA.Controls.Add(this.label54);
             this.pgeMERRA.Controls.Add(this.label5);
-            this.pgeMERRA.Controls.Add(this.txtMinLat);
-            this.pgeMERRA.Controls.Add(this.btnChangeFolder);
-            this.pgeMERRA.Controls.Add(this.btnDownloadMERRA2);
+            this.pgeMERRA.Controls.Add(this.dataLTRefNodes);
+            this.pgeMERRA.Controls.Add(this.btnExplainMERRA2Tab);
             this.pgeMERRA.Controls.Add(this.plotMERRA_WindRose);
             this.pgeMERRA.Controls.Add(this.plotMERRA_Monthly);
             this.pgeMERRA.Controls.Add(this.plotMERRA_Yearly);
             this.pgeMERRA.Controls.Add(this.btnImportCRV_MERRA);
             this.pgeMERRA.Controls.Add(this.chkYearsToDisplayAll);
             this.pgeMERRA.Controls.Add(this.label121);
-            this.pgeMERRA.Controls.Add(this.cboMERRA_Month);
+            this.pgeMERRA.Controls.Add(this.cboReferenceMonth);
             this.pgeMERRA.Controls.Add(this.label120);
-            this.pgeMERRA.Controls.Add(this.cboMERRAYear);
+            this.pgeMERRA.Controls.Add(this.cboReferenceYear);
             this.pgeMERRA.Controls.Add(this.chkYearsToDisplay);
             this.pgeMERRA.Controls.Add(this.label162);
             this.pgeMERRA.Controls.Add(this.txtMERRA_WS_ScaleFact);
-            this.pgeMERRA.Controls.Add(this.cboNumMERRA_Nodes);
-            this.pgeMERRA.Controls.Add(this.label161);
             this.pgeMERRA.Controls.Add(this.label160);
             this.pgeMERRA.Controls.Add(this.cboMERRA_PowerCurves);
             this.pgeMERRA.Controls.Add(this.btn_ExportWR);
@@ -2521,12 +2556,6 @@
             this.pgeMERRA.Controls.Add(this.dateMERRAStart);
             this.pgeMERRA.Controls.Add(this.label152);
             this.pgeMERRA.Controls.Add(this.label153);
-            this.pgeMERRA.Controls.Add(this.label147);
-            this.pgeMERRA.Controls.Add(this.cboMERRASelectedMet);
-            this.pgeMERRA.Controls.Add(this.txtMERRA_SelectedLong);
-            this.pgeMERRA.Controls.Add(this.label149);
-            this.pgeMERRA.Controls.Add(this.label150);
-            this.pgeMERRA.Controls.Add(this.txtMERRA_SelectedLat);
             this.pgeMERRA.Controls.Add(this.label154);
             this.pgeMERRA.Controls.Add(this.txt_MERRA2_folder);
             this.pgeMERRA.Controls.Add(this.btn_Import_MERRA);
@@ -2534,124 +2563,210 @@
             this.pgeMERRA.Location = new System.Drawing.Point(4, 27);
             this.pgeMERRA.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMERRA.Name = "pgeMERRA";
-            this.pgeMERRA.Size = new System.Drawing.Size(1627, 849);
+            this.pgeMERRA.Size = new System.Drawing.Size(1635, 905);
             this.pgeMERRA.TabIndex = 16;
-            this.pgeMERRA.Text = "MERRA2 Data";
+            this.pgeMERRA.Text = "LT Reference Data";
             this.pgeMERRA.UseVisualStyleBackColor = true;
+            // 
+            // btnDelRef
+            // 
+            this.btnDelRef.Font = new System.Drawing.Font("Palatino Linotype", 10F);
+            this.btnDelRef.Location = new System.Drawing.Point(424, 49);
+            this.btnDelRef.Name = "btnDelRef";
+            this.btnDelRef.Size = new System.Drawing.Size(60, 31);
+            this.btnDelRef.TabIndex = 254;
+            this.btnDelRef.Text = "Delete";
+            this.btnDelRef.UseVisualStyleBackColor = true;
+            this.btnDelRef.Click += new System.EventHandler(this.btnDelRef_Click);
+            // 
+            // btnEditReference
+            // 
+            this.btnEditReference.Font = new System.Drawing.Font("Palatino Linotype", 10F);
+            this.btnEditReference.Location = new System.Drawing.Point(358, 49);
+            this.btnEditReference.Name = "btnEditReference";
+            this.btnEditReference.Size = new System.Drawing.Size(60, 31);
+            this.btnEditReference.TabIndex = 253;
+            this.btnEditReference.Text = "Edit";
+            this.btnEditReference.UseVisualStyleBackColor = true;
+            this.btnEditReference.Click += new System.EventHandler(this.btnEditReference_Click);
+            // 
+            // btnAddNew
+            // 
+            this.btnAddNew.Font = new System.Drawing.Font("Palatino Linotype", 10F);
+            this.btnAddNew.Location = new System.Drawing.Point(287, 49);
+            this.btnAddNew.Name = "btnAddNew";
+            this.btnAddNew.Size = new System.Drawing.Size(60, 31);
+            this.btnAddNew.TabIndex = 252;
+            this.btnAddNew.Text = "New";
+            this.btnAddNew.UseVisualStyleBackColor = true;
+            this.btnAddNew.Click += new System.EventHandler(this.btnAddNew_Click);
+            // 
+            // label207
+            // 
+            this.label207.AutoSize = true;
+            this.label207.Location = new System.Drawing.Point(27, 68);
+            this.label207.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label207.Name = "label207";
+            this.label207.Size = new System.Drawing.Size(98, 19);
+            this.label207.TabIndex = 251;
+            this.label207.Text = "Reference Site:";
+            // 
+            // cboLTReferences
+            // 
+            this.cboLTReferences.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboLTReferences.FormattingEnabled = true;
+            this.cboLTReferences.Location = new System.Drawing.Point(19, 91);
+            this.cboLTReferences.Margin = new System.Windows.Forms.Padding(2);
+            this.cboLTReferences.Name = "cboLTReferences";
+            this.cboLTReferences.Size = new System.Drawing.Size(459, 25);
+            this.cboLTReferences.TabIndex = 250;
+            this.cboLTReferences.SelectedIndexChanged += new System.EventHandler(this.cboLTReferences_SelectedIndexChanged);
+            // 
+            // label205
+            // 
+            this.label205.AutoSize = true;
+            this.label205.Enabled = false;
+            this.label205.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label205.Location = new System.Drawing.Point(21, 477);
+            this.label205.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label205.Name = "label205";
+            this.label205.Size = new System.Drawing.Size(95, 18);
+            this.label205.TabIndex = 249;
+            this.label205.Text = "Complete [%] :";
+            // 
+            // txtRefDataAvail
+            // 
+            this.txtRefDataAvail.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRefDataAvail.Location = new System.Drawing.Point(119, 474);
+            this.txtRefDataAvail.Margin = new System.Windows.Forms.Padding(2);
+            this.txtRefDataAvail.Name = "txtRefDataAvail";
+            this.txtRefDataAvail.ReadOnly = true;
+            this.txtRefDataAvail.Size = new System.Drawing.Size(66, 25);
+            this.txtRefDataAvail.TabIndex = 248;
+            // 
+            // label204
+            // 
+            this.label204.AutoSize = true;
+            this.label204.Enabled = false;
+            this.label204.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label204.Location = new System.Drawing.Point(20, 307);
+            this.label204.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label204.Name = "label204";
+            this.label204.Size = new System.Drawing.Size(175, 36);
+            this.label204.TabIndex = 247;
+            this.label204.Text = "Downloaded Data: \r\nDate Range and Complete %";
+            // 
+            // dateLTRefAvailEnd
+            // 
+            this.dateLTRefAvailEnd.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateLTRefAvailEnd.CausesValidation = false;
+            this.dateLTRefAvailEnd.CustomFormat = "MM/dd/yyyy HH:mm";
+            this.dateLTRefAvailEnd.Enabled = false;
+            this.dateLTRefAvailEnd.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateLTRefAvailEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateLTRefAvailEnd.Location = new System.Drawing.Point(23, 433);
+            this.dateLTRefAvailEnd.Margin = new System.Windows.Forms.Padding(2);
+            this.dateLTRefAvailEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
+            this.dateLTRefAvailEnd.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateLTRefAvailEnd.Name = "dateLTRefAvailEnd";
+            this.dateLTRefAvailEnd.Size = new System.Drawing.Size(163, 25);
+            this.dateLTRefAvailEnd.TabIndex = 245;
+            this.dateLTRefAvailEnd.Value = new System.DateTime(2022, 12, 31, 23, 0, 0, 0);
+            // 
+            // dateLTRefAvailStart
+            // 
+            this.dateLTRefAvailStart.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateLTRefAvailStart.CustomFormat = "MM/dd/yyyy HH:mm";
+            this.dateLTRefAvailStart.Enabled = false;
+            this.dateLTRefAvailStart.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dateLTRefAvailStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateLTRefAvailStart.Location = new System.Drawing.Point(22, 374);
+            this.dateLTRefAvailStart.Margin = new System.Windows.Forms.Padding(2);
+            this.dateLTRefAvailStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
+            this.dateLTRefAvailStart.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateLTRefAvailStart.Name = "dateLTRefAvailStart";
+            this.dateLTRefAvailStart.Size = new System.Drawing.Size(163, 25);
+            this.dateLTRefAvailStart.TabIndex = 244;
+            this.dateLTRefAvailStart.Value = new System.DateTime(2002, 1, 1, 0, 0, 0, 0);
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Enabled = false;
+            this.label52.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label52.Location = new System.Drawing.Point(20, 413);
+            this.label52.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(74, 18);
+            this.label52.TabIndex = 243;
+            this.label52.Text = "End (Local)";
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Enabled = false;
+            this.label54.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label54.Location = new System.Drawing.Point(21, 354);
+            this.label54.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(81, 18);
+            this.label54.TabIndex = 242;
+            this.label54.Text = "Start (Local)";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Enabled = false;
+            this.label5.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(207, 307);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(248, 18);
+            this.label5.TabIndex = 241;
+            this.label5.Text = "Node Coordinates in Reference data files";
+            // 
+            // dataLTRefNodes
+            // 
+            this.dataLTRefNodes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataLTRefNodes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2});
+            this.dataLTRefNodes.Enabled = false;
+            this.dataLTRefNodes.Location = new System.Drawing.Point(207, 332);
+            this.dataLTRefNodes.Margin = new System.Windows.Forms.Padding(2);
+            this.dataLTRefNodes.Name = "dataLTRefNodes";
+            this.dataLTRefNodes.ReadOnly = true;
+            this.dataLTRefNodes.RowHeadersWidth = 51;
+            this.dataLTRefNodes.RowTemplate.Height = 24;
+            this.dataLTRefNodes.Size = new System.Drawing.Size(246, 184);
+            this.dataLTRefNodes.TabIndex = 240;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Latitude [degs]";
+            this.Column1.MinimumWidth = 6;
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 125;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Longitude [degs]";
+            this.Column2.MinimumWidth = 6;
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.Width = 125;
             // 
             // btnExplainMERRA2Tab
             // 
             this.btnExplainMERRA2Tab.Font = new System.Drawing.Font("Palatino Linotype", 12F);
-            this.btnExplainMERRA2Tab.Location = new System.Drawing.Point(422, 11);
+            this.btnExplainMERRA2Tab.Location = new System.Drawing.Point(519, 13);
             this.btnExplainMERRA2Tab.Name = "btnExplainMERRA2Tab";
             this.btnExplainMERRA2Tab.Size = new System.Drawing.Size(63, 31);
             this.btnExplainMERRA2Tab.TabIndex = 237;
             this.btnExplainMERRA2Tab.Text = "Help";
             this.btnExplainMERRA2Tab.UseVisualStyleBackColor = true;
             this.btnExplainMERRA2Tab.Click += new System.EventHandler(this.btnExplainMERRA2Tab_Click);
-            // 
-            // label54
-            // 
-            this.label54.AutoSize = true;
-            this.label54.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label54.Location = new System.Drawing.Point(400, 455);
-            this.label54.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(20, 18);
-            this.label54.TabIndex = 236;
-            this.label54.Text = "to";
-            // 
-            // txtMaxLong
-            // 
-            this.txtMaxLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxLong.Location = new System.Drawing.Point(422, 452);
-            this.txtMaxLong.Margin = new System.Windows.Forms.Padding(2);
-            this.txtMaxLong.Name = "txtMaxLong";
-            this.txtMaxLong.Size = new System.Drawing.Size(47, 25);
-            this.txtMaxLong.TabIndex = 235;
-            // 
-            // label146
-            // 
-            this.label146.AutoSize = true;
-            this.label146.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label146.Location = new System.Drawing.Point(238, 455);
-            this.label146.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label146.Name = "label146";
-            this.label146.Size = new System.Drawing.Size(109, 18);
-            this.label146.TabIndex = 234;
-            this.label146.Text = "Longitude range:";
-            // 
-            // txtMinLong
-            // 
-            this.txtMinLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinLong.Location = new System.Drawing.Point(350, 452);
-            this.txtMinLong.Margin = new System.Windows.Forms.Padding(2);
-            this.txtMinLong.Name = "txtMinLong";
-            this.txtMinLong.Size = new System.Drawing.Size(47, 25);
-            this.txtMinLong.TabIndex = 233;
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label52.Location = new System.Drawing.Point(400, 422);
-            this.label52.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(20, 18);
-            this.label52.TabIndex = 232;
-            this.label52.Text = "to";
-            // 
-            // txtMaxLat
-            // 
-            this.txtMaxLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxLat.Location = new System.Drawing.Point(422, 419);
-            this.txtMaxLat.Margin = new System.Windows.Forms.Padding(2);
-            this.txtMaxLat.Name = "txtMaxLat";
-            this.txtMaxLat.Size = new System.Drawing.Size(47, 25);
-            this.txtMaxLat.TabIndex = 231;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(247, 422);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(99, 18);
-            this.label5.TabIndex = 230;
-            this.label5.Text = "Latitude range:";
-            // 
-            // txtMinLat
-            // 
-            this.txtMinLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinLat.Location = new System.Drawing.Point(350, 419);
-            this.txtMinLat.Margin = new System.Windows.Forms.Padding(2);
-            this.txtMinLat.Name = "txtMinLat";
-            this.txtMinLat.Size = new System.Drawing.Size(47, 25);
-            this.txtMinLat.TabIndex = 229;
-            // 
-            // btnChangeFolder
-            // 
-            this.btnChangeFolder.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.btnChangeFolder.Location = new System.Drawing.Point(381, 76);
-            this.btnChangeFolder.Name = "btnChangeFolder";
-            this.btnChangeFolder.Size = new System.Drawing.Size(104, 31);
-            this.btnChangeFolder.TabIndex = 228;
-            this.btnChangeFolder.Text = "Change Folder";
-            this.btnChangeFolder.UseVisualStyleBackColor = true;
-            this.btnChangeFolder.Click += new System.EventHandler(this.btnChangeFolder_Click);
-            // 
-            // btnDownloadMERRA2
-            // 
-            this.btnDownloadMERRA2.BackColor = System.Drawing.Color.LightCoral;
-            this.btnDownloadMERRA2.Location = new System.Drawing.Point(49, 421);
-            this.btnDownloadMERRA2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnDownloadMERRA2.Name = "btnDownloadMERRA2";
-            this.btnDownloadMERRA2.Size = new System.Drawing.Size(184, 52);
-            this.btnDownloadMERRA2.TabIndex = 227;
-            this.btnDownloadMERRA2.Text = "Download MERRA2 data";
-            this.btnDownloadMERRA2.UseVisualStyleBackColor = false;
-            this.btnDownloadMERRA2.Click += new System.EventHandler(this.btnDownloadMERRA2_Click);
             // 
             // plotMERRA_WindRose
             // 
@@ -2664,6 +2779,7 @@
             this.plotMERRA_WindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotMERRA_WindRose.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotMERRA_WindRose.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotMERRA_WindRose.Click += new System.EventHandler(this.plotMERRA_WindRose_Click);
             // 
             // plotMERRA_Monthly
             // 
@@ -2726,11 +2842,11 @@
             this.label121.TabIndex = 211;
             this.label121.Text = "Month : ";
             // 
-            // cboMERRA_Month
+            // cboReferenceMonth
             // 
-            this.cboMERRA_Month.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboMERRA_Month.FormattingEnabled = true;
-            this.cboMERRA_Month.Items.AddRange(new object[] {
+            this.cboReferenceMonth.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboReferenceMonth.FormattingEnabled = true;
+            this.cboReferenceMonth.Items.AddRange(new object[] {
             "All Months",
             "Jan",
             "Feb",
@@ -2744,13 +2860,13 @@
             "Oct",
             "Nov",
             "Dec"});
-            this.cboMERRA_Month.Location = new System.Drawing.Point(1490, 47);
-            this.cboMERRA_Month.Margin = new System.Windows.Forms.Padding(2);
-            this.cboMERRA_Month.Name = "cboMERRA_Month";
-            this.cboMERRA_Month.Size = new System.Drawing.Size(123, 26);
-            this.cboMERRA_Month.TabIndex = 210;
-            this.cboMERRA_Month.Text = "All Months";
-            this.cboMERRA_Month.SelectedIndexChanged += new System.EventHandler(this.cboMERRA_Month_SelectedIndexChanged);
+            this.cboReferenceMonth.Location = new System.Drawing.Point(1490, 47);
+            this.cboReferenceMonth.Margin = new System.Windows.Forms.Padding(2);
+            this.cboReferenceMonth.Name = "cboReferenceMonth";
+            this.cboReferenceMonth.Size = new System.Drawing.Size(123, 26);
+            this.cboReferenceMonth.TabIndex = 210;
+            this.cboReferenceMonth.Text = "All Months";
+            this.cboReferenceMonth.SelectedIndexChanged += new System.EventHandler(this.cboMERRA_Month_SelectedIndexChanged);
             // 
             // label120
             // 
@@ -2763,20 +2879,16 @@
             this.label120.TabIndex = 209;
             this.label120.Text = "Year : ";
             // 
-            // cboMERRAYear
+            // cboReferenceYear
             // 
-            this.cboMERRAYear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboMERRAYear.FormattingEnabled = true;
-            this.cboMERRAYear.Items.AddRange(new object[] {
-            "CF, %",
-            "Energy Prod.",
-            "Dev. from LT"});
-            this.cboMERRAYear.Location = new System.Drawing.Point(1291, 47);
-            this.cboMERRAYear.Margin = new System.Windows.Forms.Padding(2);
-            this.cboMERRAYear.Name = "cboMERRAYear";
-            this.cboMERRAYear.Size = new System.Drawing.Size(123, 26);
-            this.cboMERRAYear.TabIndex = 208;
-            this.cboMERRAYear.SelectedIndexChanged += new System.EventHandler(this.cboMERRAYear_SelectedIndexChanged);
+            this.cboReferenceYear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboReferenceYear.FormattingEnabled = true;
+            this.cboReferenceYear.Location = new System.Drawing.Point(1291, 47);
+            this.cboReferenceYear.Margin = new System.Windows.Forms.Padding(2);
+            this.cboReferenceYear.Name = "cboReferenceYear";
+            this.cboReferenceYear.Size = new System.Drawing.Size(123, 26);
+            this.cboReferenceYear.TabIndex = 208;
+            this.cboReferenceYear.SelectedIndexChanged += new System.EventHandler(this.cboMERRAYear_SelectedIndexChanged);
             // 
             // chkYearsToDisplay
             // 
@@ -2792,8 +2904,9 @@
             // label162
             // 
             this.label162.AutoSize = true;
+            this.label162.Enabled = false;
             this.label162.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label162.Location = new System.Drawing.Point(343, 159);
+            this.label162.Location = new System.Drawing.Point(344, 144);
             this.label162.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label162.Name = "label162";
             this.label162.Size = new System.Drawing.Size(109, 18);
@@ -2803,40 +2916,13 @@
             // txtMERRA_WS_ScaleFact
             // 
             this.txtMERRA_WS_ScaleFact.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMERRA_WS_ScaleFact.Location = new System.Drawing.Point(374, 183);
+            this.txtMERRA_WS_ScaleFact.Location = new System.Drawing.Point(358, 164);
             this.txtMERRA_WS_ScaleFact.Margin = new System.Windows.Forms.Padding(2);
             this.txtMERRA_WS_ScaleFact.Name = "txtMERRA_WS_ScaleFact";
+            this.txtMERRA_WS_ScaleFact.ReadOnly = true;
             this.txtMERRA_WS_ScaleFact.Size = new System.Drawing.Size(66, 25);
             this.txtMERRA_WS_ScaleFact.TabIndex = 205;
             this.txtMERRA_WS_ScaleFact.Text = "0.85";
-            this.txtMERRA_WS_ScaleFact.TextChanged += new System.EventHandler(this.txtMERRA_WS_ScaleFact_TextChanged);
-            // 
-            // cboNumMERRA_Nodes
-            // 
-            this.cboNumMERRA_Nodes.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboNumMERRA_Nodes.FormattingEnabled = true;
-            this.cboNumMERRA_Nodes.Items.AddRange(new object[] {
-            "1",
-            "4",
-            "16"});
-            this.cboNumMERRA_Nodes.Location = new System.Drawing.Point(265, 183);
-            this.cboNumMERRA_Nodes.Margin = new System.Windows.Forms.Padding(2);
-            this.cboNumMERRA_Nodes.Name = "cboNumMERRA_Nodes";
-            this.cboNumMERRA_Nodes.Size = new System.Drawing.Size(72, 26);
-            this.cboNumMERRA_Nodes.TabIndex = 204;
-            this.cboNumMERRA_Nodes.Text = "1";
-            this.cboNumMERRA_Nodes.SelectedIndexChanged += new System.EventHandler(this.cboNumMERRA_Nodes_SelectedIndexChanged);
-            // 
-            // label161
-            // 
-            this.label161.AutoSize = true;
-            this.label161.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label161.Location = new System.Drawing.Point(15, 188);
-            this.label161.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label161.Name = "label161";
-            this.label161.Size = new System.Drawing.Size(195, 18);
-            this.label161.TabIndex = 203;
-            this.label161.Text = "Num. of MERRA2 Nodes to use:";
             // 
             // label160
             // 
@@ -2864,7 +2950,7 @@
             // btn_ExportWR
             // 
             this.btn_ExportWR.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_ExportWR.Location = new System.Drawing.Point(70, 734);
+            this.btn_ExportWR.Location = new System.Drawing.Point(279, 682);
             this.btn_ExportWR.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btn_ExportWR.Name = "btn_ExportWR";
             this.btn_ExportWR.Size = new System.Drawing.Size(128, 59);
@@ -2876,7 +2962,7 @@
             // btn_Export_All_Months_All_Years
             // 
             this.btn_Export_All_Months_All_Years.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Export_All_Months_All_Years.Location = new System.Drawing.Point(70, 658);
+            this.btn_Export_All_Months_All_Years.Location = new System.Drawing.Point(279, 606);
             this.btn_Export_All_Months_All_Years.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Export_All_Months_All_Years.Name = "btn_Export_All_Months_All_Years";
             this.btn_Export_All_Months_All_Years.Size = new System.Drawing.Size(128, 58);
@@ -2892,9 +2978,9 @@
             this.label159.Location = new System.Drawing.Point(1305, 17);
             this.label159.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label159.Name = "label159";
-            this.label159.Size = new System.Drawing.Size(289, 20);
+            this.label159.Size = new System.Drawing.Size(273, 20);
             this.label159.TabIndex = 151;
-            this.label159.Text = "MERRA2 Wind Rose for Selected Interval:";
+            this.label159.Text = "LT Ref. Wind Rose for Selected Interval:";
             // 
             // label156
             // 
@@ -3001,12 +3087,12 @@
             // btn_Export_Interp
             // 
             this.btn_Export_Interp.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Export_Interp.Location = new System.Drawing.Point(37, 582);
+            this.btn_Export_Interp.Location = new System.Drawing.Point(34, 681);
             this.btn_Export_Interp.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Export_Interp.Name = "btn_Export_Interp";
             this.btn_Export_Interp.Size = new System.Drawing.Size(203, 62);
             this.btn_Export_Interp.TabIndex = 138;
-            this.btn_Export_Interp.Text = "Export Interpolated OE-Extracted MERRA2 Data";
+            this.btn_Export_Interp.Text = "Export Interpolated Data";
             this.btn_Export_Interp.UseVisualStyleBackColor = true;
             this.btn_Export_Interp.Click += new System.EventHandler(this.btn_Export_Interp_Click);
             // 
@@ -3015,25 +3101,26 @@
             this.dateMERRAEnd.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateMERRAEnd.CausesValidation = false;
             this.dateMERRAEnd.CustomFormat = "MM/dd/yyyy HH:mm";
+            this.dateMERRAEnd.Enabled = false;
             this.dateMERRAEnd.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateMERRAEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateMERRAEnd.Location = new System.Drawing.Point(136, 354);
+            this.dateMERRAEnd.Location = new System.Drawing.Point(142, 176);
             this.dateMERRAEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateMERRAEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
             this.dateMERRAEnd.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
             this.dateMERRAEnd.Name = "dateMERRAEnd";
             this.dateMERRAEnd.Size = new System.Drawing.Size(163, 25);
             this.dateMERRAEnd.TabIndex = 124;
-            this.dateMERRAEnd.Value = new System.DateTime(2020, 12, 31, 23, 0, 0, 0);
-            this.dateMERRAEnd.ValueChanged += new System.EventHandler(this.dateMERRAEnd_ValueChanged);
+            this.dateMERRAEnd.Value = new System.DateTime(2022, 12, 31, 23, 0, 0, 0);
             // 
             // dateMERRAStart
             // 
             this.dateMERRAStart.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 10.125F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateMERRAStart.CustomFormat = "MM/dd/yyyy HH:mm";
+            this.dateMERRAStart.Enabled = false;
             this.dateMERRAStart.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateMERRAStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateMERRAStart.Location = new System.Drawing.Point(136, 320);
+            this.dateMERRAStart.Location = new System.Drawing.Point(142, 142);
             this.dateMERRAStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateMERRAStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
             this.dateMERRAStart.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
@@ -3041,13 +3128,13 @@
             this.dateMERRAStart.Size = new System.Drawing.Size(163, 25);
             this.dateMERRAStart.TabIndex = 123;
             this.dateMERRAStart.Value = new System.DateTime(2002, 1, 1, 0, 0, 0, 0);
-            this.dateMERRAStart.ValueChanged += new System.EventHandler(this.dateMERRAStart_ValueChanged);
             // 
             // label152
             // 
             this.label152.AutoSize = true;
+            this.label152.Enabled = false;
             this.label152.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label152.Location = new System.Drawing.Point(23, 354);
+            this.label152.Location = new System.Drawing.Point(29, 176);
             this.label152.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label152.Name = "label152";
             this.label152.Size = new System.Drawing.Size(74, 18);
@@ -3057,93 +3144,31 @@
             // label153
             // 
             this.label153.AutoSize = true;
+            this.label153.Enabled = false;
             this.label153.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label153.Location = new System.Drawing.Point(22, 326);
+            this.label153.Location = new System.Drawing.Point(28, 149);
             this.label153.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label153.Name = "label153";
             this.label153.Size = new System.Drawing.Size(81, 18);
             this.label153.TabIndex = 121;
             this.label153.Text = "Start (Local)";
             // 
-            // label147
-            // 
-            this.label147.AutoSize = true;
-            this.label147.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label147.Location = new System.Drawing.Point(31, 228);
-            this.label147.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label147.Name = "label147";
-            this.label147.Size = new System.Drawing.Size(88, 18);
-            this.label147.TabIndex = 115;
-            this.label147.Text = "Selected Met :";
-            // 
-            // cboMERRASelectedMet
-            // 
-            this.cboMERRASelectedMet.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboMERRASelectedMet.FormattingEnabled = true;
-            this.cboMERRASelectedMet.Items.AddRange(new object[] {
-            "User-Defined Lat/Long"});
-            this.cboMERRASelectedMet.Location = new System.Drawing.Point(135, 226);
-            this.cboMERRASelectedMet.Margin = new System.Windows.Forms.Padding(2);
-            this.cboMERRASelectedMet.Name = "cboMERRASelectedMet";
-            this.cboMERRASelectedMet.Size = new System.Drawing.Size(320, 26);
-            this.cboMERRASelectedMet.TabIndex = 114;
-            this.cboMERRASelectedMet.SelectedIndexChanged += new System.EventHandler(this.cboMERRASelectedMet_SelectedIndexChanged);
-            // 
-            // txtMERRA_SelectedLong
-            // 
-            this.txtMERRA_SelectedLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMERRA_SelectedLong.Location = new System.Drawing.Point(317, 278);
-            this.txtMERRA_SelectedLong.Margin = new System.Windows.Forms.Padding(2);
-            this.txtMERRA_SelectedLong.Name = "txtMERRA_SelectedLong";
-            this.txtMERRA_SelectedLong.Size = new System.Drawing.Size(110, 25);
-            this.txtMERRA_SelectedLong.TabIndex = 113;
-            // 
-            // label149
-            // 
-            this.label149.AutoSize = true;
-            this.label149.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label149.Location = new System.Drawing.Point(222, 278);
-            this.label149.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label149.Name = "label149";
-            this.label149.Size = new System.Drawing.Size(72, 18);
-            this.label149.TabIndex = 112;
-            this.label149.Text = "Longitude:";
-            // 
-            // label150
-            // 
-            this.label150.AutoSize = true;
-            this.label150.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label150.Location = new System.Drawing.Point(19, 279);
-            this.label150.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label150.Name = "label150";
-            this.label150.Size = new System.Drawing.Size(62, 18);
-            this.label150.TabIndex = 111;
-            this.label150.Text = "Latitude:";
-            // 
-            // txtMERRA_SelectedLat
-            // 
-            this.txtMERRA_SelectedLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMERRA_SelectedLat.Location = new System.Drawing.Point(93, 277);
-            this.txtMERRA_SelectedLat.Margin = new System.Windows.Forms.Padding(2);
-            this.txtMERRA_SelectedLat.Name = "txtMERRA_SelectedLat";
-            this.txtMERRA_SelectedLat.Size = new System.Drawing.Size(110, 25);
-            this.txtMERRA_SelectedLat.TabIndex = 110;
-            // 
             // label154
             // 
             this.label154.AutoSize = true;
+            this.label154.Enabled = false;
             this.label154.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label154.Location = new System.Drawing.Point(22, 91);
+            this.label154.Location = new System.Drawing.Point(15, 242);
             this.label154.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label154.Name = "label154";
-            this.label154.Size = new System.Drawing.Size(178, 20);
+            this.label154.Size = new System.Drawing.Size(215, 20);
             this.label154.TabIndex = 109;
-            this.label154.Text = "MERRA2 Folder location:";
+            this.label154.Text = "Reference Data Folder location:";
             // 
             // txt_MERRA2_folder
             // 
             this.txt_MERRA2_folder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_MERRA2_folder.Location = new System.Drawing.Point(26, 117);
+            this.txt_MERRA2_folder.Location = new System.Drawing.Point(19, 267);
             this.txt_MERRA2_folder.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt_MERRA2_folder.Name = "txt_MERRA2_folder";
             this.txt_MERRA2_folder.ReadOnly = true;
@@ -3154,12 +3179,12 @@
             // 
             this.btn_Import_MERRA.BackColor = System.Drawing.Color.LightCoral;
             this.btn_Import_MERRA.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Import_MERRA.Location = new System.Drawing.Point(49, 497);
+            this.btn_Import_MERRA.Location = new System.Drawing.Point(46, 595);
             this.btn_Import_MERRA.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Import_MERRA.Name = "btn_Import_MERRA";
             this.btn_Import_MERRA.Size = new System.Drawing.Size(184, 71);
             this.btn_Import_MERRA.TabIndex = 107;
-            this.btn_Import_MERRA.Text = "Extract MERRA2 Data for Selected Met or Lat/Long";
+            this.btn_Import_MERRA.Text = "Extract Data for Selected Met or Lat/Long";
             this.btn_Import_MERRA.UseVisualStyleBackColor = false;
             this.btn_Import_MERRA.Click += new System.EventHandler(this.btn_Import_MERRA_Click);
             // 
@@ -3170,12 +3195,14 @@
             this.label151.Location = new System.Drawing.Point(22, 22);
             this.label151.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label151.Name = "label151";
-            this.label151.Size = new System.Drawing.Size(371, 25);
+            this.label151.Size = new System.Drawing.Size(283, 25);
             this.label151.TabIndex = 99;
-            this.label151.Text = "Long-Term Reference MERRA2 Data";
+            this.label151.Text = "Long-Term Reference Data";
             // 
             // pgeMCP
             // 
+            this.pgeMCP.Controls.Add(this.label206);
+            this.pgeMCP.Controls.Add(this.cboMCP_Ref);
             this.pgeMCP.Controls.Add(this.btnExportTarget);
             this.pgeMCP.Controls.Add(this.plotMCP_Uncertainty);
             this.pgeMCP.Controls.Add(this.plotMCP);
@@ -3261,10 +3288,29 @@
             this.pgeMCP.Location = new System.Drawing.Point(4, 27);
             this.pgeMCP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMCP.Name = "pgeMCP";
-            this.pgeMCP.Size = new System.Drawing.Size(1627, 849);
+            this.pgeMCP.Size = new System.Drawing.Size(1635, 905);
             this.pgeMCP.TabIndex = 15;
             this.pgeMCP.Text = "MCP";
             this.pgeMCP.UseVisualStyleBackColor = true;
+            // 
+            // label206
+            // 
+            this.label206.AutoSize = true;
+            this.label206.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label206.Location = new System.Drawing.Point(18, 97);
+            this.label206.Name = "label206";
+            this.label206.Size = new System.Drawing.Size(122, 18);
+            this.label206.TabIndex = 300;
+            this.label206.Text = "Selected Reference :";
+            // 
+            // cboMCP_Ref
+            // 
+            this.cboMCP_Ref.FormattingEnabled = true;
+            this.cboMCP_Ref.Location = new System.Drawing.Point(146, 93);
+            this.cboMCP_Ref.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboMCP_Ref.Name = "cboMCP_Ref";
+            this.cboMCP_Ref.Size = new System.Drawing.Size(219, 26);
+            this.cboMCP_Ref.TabIndex = 299;
             // 
             // btnExportTarget
             // 
@@ -3393,7 +3439,7 @@
             this.dateConcurrentEnd.CustomFormat = "MM/dd/yy HH:mm";
             this.dateConcurrentEnd.Enabled = false;
             this.dateConcurrentEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateConcurrentEnd.Location = new System.Drawing.Point(259, 193);
+            this.dateConcurrentEnd.Location = new System.Drawing.Point(259, 228);
             this.dateConcurrentEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateConcurrentEnd.Name = "dateConcurrentEnd";
             this.dateConcurrentEnd.Size = new System.Drawing.Size(140, 25);
@@ -3403,7 +3449,7 @@
             // 
             this.label144.AutoSize = true;
             this.label144.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label144.Location = new System.Drawing.Point(250, 128);
+            this.label144.Location = new System.Drawing.Point(250, 163);
             this.label144.Name = "label144";
             this.label144.Size = new System.Drawing.Size(151, 18);
             this.label144.TabIndex = 286;
@@ -3414,7 +3460,7 @@
             this.dateConcurrentStart.CustomFormat = "MM/dd/yy HH:mm";
             this.dateConcurrentStart.Enabled = false;
             this.dateConcurrentStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateConcurrentStart.Location = new System.Drawing.Point(259, 155);
+            this.dateConcurrentStart.Location = new System.Drawing.Point(259, 190);
             this.dateConcurrentStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateConcurrentStart.Name = "dateConcurrentStart";
             this.dateConcurrentStart.Size = new System.Drawing.Size(140, 25);
@@ -3658,7 +3704,7 @@
             // txtNumYrsConc
             // 
             this.txtNumYrsConc.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNumYrsConc.Location = new System.Drawing.Point(128, 258);
+            this.txtNumYrsConc.Location = new System.Drawing.Point(128, 293);
             this.txtNumYrsConc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtNumYrsConc.Name = "txtNumYrsConc";
             this.txtNumYrsConc.ReadOnly = true;
@@ -3669,7 +3715,7 @@
             // 
             this.label132.AutoSize = true;
             this.label132.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label132.Location = new System.Drawing.Point(130, 236);
+            this.label132.Location = new System.Drawing.Point(130, 271);
             this.label132.Name = "label132";
             this.label132.Size = new System.Drawing.Size(41, 18);
             this.label132.TabIndex = 263;
@@ -3678,7 +3724,7 @@
             // txtRsq
             // 
             this.txtRsq.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRsq.Location = new System.Drawing.Point(160, 156);
+            this.txtRsq.Location = new System.Drawing.Point(160, 191);
             this.txtRsq.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtRsq.Name = "txtRsq";
             this.txtRsq.ReadOnly = true;
@@ -3689,7 +3735,7 @@
             // 
             this.label130.AutoSize = true;
             this.label130.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label130.Location = new System.Drawing.Point(172, 132);
+            this.label130.Location = new System.Drawing.Point(172, 167);
             this.label130.Name = "label130";
             this.label130.Size = new System.Drawing.Size(28, 18);
             this.label130.TabIndex = 259;
@@ -3709,7 +3755,7 @@
             // txtIntercept
             // 
             this.txtIntercept.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIntercept.Location = new System.Drawing.Point(98, 156);
+            this.txtIntercept.Location = new System.Drawing.Point(98, 191);
             this.txtIntercept.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtIntercept.Name = "txtIntercept";
             this.txtIntercept.ReadOnly = true;
@@ -3719,7 +3765,7 @@
             // txtSlope
             // 
             this.txtSlope.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSlope.Location = new System.Drawing.Point(35, 156);
+            this.txtSlope.Location = new System.Drawing.Point(35, 191);
             this.txtSlope.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtSlope.Name = "txtSlope";
             this.txtSlope.ReadOnly = true;
@@ -3730,7 +3776,7 @@
             // 
             this.label123.AutoSize = true;
             this.label123.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label123.Location = new System.Drawing.Point(96, 132);
+            this.label123.Location = new System.Drawing.Point(96, 167);
             this.label123.Name = "label123";
             this.label123.Size = new System.Drawing.Size(65, 18);
             this.label123.TabIndex = 250;
@@ -3740,7 +3786,7 @@
             // 
             this.label124.AutoSize = true;
             this.label124.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label124.Location = new System.Drawing.Point(33, 132);
+            this.label124.Location = new System.Drawing.Point(33, 167);
             this.label124.Name = "label124";
             this.label124.Size = new System.Drawing.Size(43, 18);
             this.label124.TabIndex = 249;
@@ -3796,7 +3842,7 @@
             // 
             this.lblRegStats.AutoSize = true;
             this.lblRegStats.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRegStats.Location = new System.Drawing.Point(33, 98);
+            this.lblRegStats.Location = new System.Drawing.Point(33, 133);
             this.lblRegStats.Name = "lblRegStats";
             this.lblRegStats.Size = new System.Drawing.Size(209, 23);
             this.lblRegStats.TabIndex = 246;
@@ -3805,7 +3851,7 @@
             // txtNumYrsTarg
             // 
             this.txtNumYrsTarg.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNumYrsTarg.Location = new System.Drawing.Point(83, 258);
+            this.txtNumYrsTarg.Location = new System.Drawing.Point(83, 293);
             this.txtNumYrsTarg.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtNumYrsTarg.Name = "txtNumYrsTarg";
             this.txtNumYrsTarg.ReadOnly = true;
@@ -3815,7 +3861,7 @@
             // txtNumYrsRef
             // 
             this.txtNumYrsRef.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNumYrsRef.Location = new System.Drawing.Point(37, 258);
+            this.txtNumYrsRef.Location = new System.Drawing.Point(37, 293);
             this.txtNumYrsRef.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtNumYrsRef.Name = "txtNumYrsRef";
             this.txtNumYrsRef.ReadOnly = true;
@@ -3826,7 +3872,7 @@
             // 
             this.label127.AutoSize = true;
             this.label127.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label127.Location = new System.Drawing.Point(86, 236);
+            this.label127.Location = new System.Drawing.Point(86, 271);
             this.label127.Name = "label127";
             this.label127.Size = new System.Drawing.Size(38, 18);
             this.label127.TabIndex = 243;
@@ -3836,7 +3882,7 @@
             // 
             this.label128.AutoSize = true;
             this.label128.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label128.Location = new System.Drawing.Point(37, 236);
+            this.label128.Location = new System.Drawing.Point(37, 271);
             this.label128.Name = "label128";
             this.label128.Size = new System.Drawing.Size(33, 18);
             this.label128.TabIndex = 242;
@@ -3846,9 +3892,9 @@
             // 
             this.label129.AutoSize = true;
             this.label129.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label129.Location = new System.Drawing.Point(42, 215);
+            this.label129.Location = new System.Drawing.Point(42, 250);
             this.label129.Name = "label129";
-            this.label129.Size = new System.Drawing.Size(116, 16);
+            this.label129.Size = new System.Drawing.Size(115, 16);
             this.label129.TabIndex = 241;
             this.label129.Text = "Number of Years";
             // 
@@ -4179,7 +4225,7 @@
             // 
             this.label107.AutoSize = true;
             this.label107.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label107.Location = new System.Drawing.Point(31, 62);
+            this.label107.Location = new System.Drawing.Point(51, 64);
             this.label107.Name = "label107";
             this.label107.Size = new System.Drawing.Size(88, 18);
             this.label107.TabIndex = 208;
@@ -4188,10 +4234,10 @@
             // cboMCP_Met
             // 
             this.cboMCP_Met.FormattingEnabled = true;
-            this.cboMCP_Met.Location = new System.Drawing.Point(127, 58);
+            this.cboMCP_Met.Location = new System.Drawing.Point(146, 57);
             this.cboMCP_Met.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCP_Met.Name = "cboMCP_Met";
-            this.cboMCP_Met.Size = new System.Drawing.Size(233, 26);
+            this.cboMCP_Met.Size = new System.Drawing.Size(219, 26);
             this.cboMCP_Met.TabIndex = 207;
             this.cboMCP_Met.SelectedIndexChanged += new System.EventHandler(this.cboMCP_Met_SelectedIndexChanged);
             // 
@@ -4237,7 +4283,7 @@
             this.pgeMetSumm.Location = new System.Drawing.Point(4, 27);
             this.pgeMetSumm.Margin = new System.Windows.Forms.Padding(1);
             this.pgeMetSumm.Name = "pgeMetSumm";
-            this.pgeMetSumm.Size = new System.Drawing.Size(1627, 849);
+            this.pgeMetSumm.Size = new System.Drawing.Size(1635, 905);
             this.pgeMetSumm.TabIndex = 12;
             this.pgeMetSumm.Text = "Met && Turbine Summary";
             this.pgeMetSumm.UseVisualStyleBackColor = true;
@@ -4422,7 +4468,7 @@
             this.chkTurbSummAll.Location = new System.Drawing.Point(918, 28);
             this.chkTurbSummAll.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbSummAll.Name = "chkTurbSummAll";
-            this.chkTurbSummAll.Size = new System.Drawing.Size(89, 36);
+            this.chkTurbSummAll.Size = new System.Drawing.Size(88, 36);
             this.chkTurbSummAll.TabIndex = 173;
             this.chkTurbSummAll.Text = "Select/\r\nDeselect All";
             this.chkTurbSummAll.UseVisualStyleBackColor = true;
@@ -4446,7 +4492,7 @@
             this.Label78.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label78.Location = new System.Drawing.Point(910, 7);
             this.Label78.Name = "Label78";
-            this.Label78.Size = new System.Drawing.Size(89, 16);
+            this.Label78.Size = new System.Drawing.Size(88, 16);
             this.Label78.TabIndex = 171;
             this.Label78.Text = "Turbine Sites";
             // 
@@ -4459,7 +4505,7 @@
             this.chkMetSummAll.Location = new System.Drawing.Point(813, 28);
             this.chkMetSummAll.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMetSummAll.Name = "chkMetSummAll";
-            this.chkMetSummAll.Size = new System.Drawing.Size(89, 36);
+            this.chkMetSummAll.Size = new System.Drawing.Size(88, 36);
             this.chkMetSummAll.TabIndex = 170;
             this.chkMetSummAll.Text = "Select/\r\nDeselect All";
             this.chkMetSummAll.UseVisualStyleBackColor = true;
@@ -4471,7 +4517,7 @@
             this.Label12.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label12.Location = new System.Drawing.Point(812, 8);
             this.Label12.Name = "Label12";
-            this.Label12.Size = new System.Drawing.Size(65, 16);
+            this.Label12.Size = new System.Drawing.Size(64, 16);
             this.Label12.TabIndex = 169;
             this.Label12.Text = "Met Sites";
             // 
@@ -4736,7 +4782,7 @@
             this.pgeGrossTurbs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeGrossTurbs.Name = "pgeGrossTurbs";
             this.pgeGrossTurbs.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeGrossTurbs.Size = new System.Drawing.Size(1627, 849);
+            this.pgeGrossTurbs.Size = new System.Drawing.Size(1635, 905);
             this.pgeGrossTurbs.TabIndex = 3;
             this.pgeGrossTurbs.Text = "Gross Turbine Ests.";
             this.pgeGrossTurbs.UseVisualStyleBackColor = true;
@@ -5414,7 +5460,7 @@
             this.pgeExceedance.Location = new System.Drawing.Point(4, 27);
             this.pgeExceedance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeExceedance.Name = "pgeExceedance";
-            this.pgeExceedance.Size = new System.Drawing.Size(1627, 849);
+            this.pgeExceedance.Size = new System.Drawing.Size(1635, 905);
             this.pgeExceedance.TabIndex = 19;
             this.pgeExceedance.Text = "Exceedance Modeling";
             this.pgeExceedance.UseVisualStyleBackColor = true;
@@ -5813,7 +5859,7 @@
             this.pgeNetEsts.Location = new System.Drawing.Point(4, 27);
             this.pgeNetEsts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeNetEsts.Name = "pgeNetEsts";
-            this.pgeNetEsts.Size = new System.Drawing.Size(1627, 849);
+            this.pgeNetEsts.Size = new System.Drawing.Size(1635, 905);
             this.pgeNetEsts.TabIndex = 13;
             this.pgeNetEsts.Text = "Net Turbine Ests";
             this.pgeNetEsts.UseVisualStyleBackColor = true;
@@ -6372,47 +6418,224 @@
             // 
             // pgeSiteConditions
             // 
-            this.pgeSiteConditions.Controls.Add(this.panel4);
-            this.pgeSiteConditions.Controls.Add(this.panel3);
-            this.pgeSiteConditions.Controls.Add(this.panel2);
-            this.pgeSiteConditions.Controls.Add(this.panel1);
+            this.pgeSiteConditions.Controls.Add(this.tabSiteConditions);
             this.pgeSiteConditions.Controls.Add(this.label92);
             this.pgeSiteConditions.Location = new System.Drawing.Point(4, 27);
             this.pgeSiteConditions.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeSiteConditions.Name = "pgeSiteConditions";
-            this.pgeSiteConditions.Size = new System.Drawing.Size(1627, 849);
+            this.pgeSiteConditions.Size = new System.Drawing.Size(1635, 905);
             this.pgeSiteConditions.TabIndex = 20;
             this.pgeSiteConditions.Text = "Site Conditions";
             this.pgeSiteConditions.UseVisualStyleBackColor = true;
             // 
-            // panel4
+            // tabSiteConditions
             // 
-            this.panel4.Controls.Add(this.plotInflowAngle);
-            this.panel4.Controls.Add(this.label200);
-            this.panel4.Controls.Add(this.txtInflowAngle);
-            this.panel4.Controls.Add(this.label199);
-            this.panel4.Controls.Add(this.cboInflowReso);
-            this.panel4.Controls.Add(this.label198);
-            this.panel4.Controls.Add(this.cboInflowRadius);
-            this.panel4.Controls.Add(this.btnInflowAngles);
-            this.panel4.Controls.Add(this.cboInflowTurbine);
-            this.panel4.Controls.Add(this.label197);
-            this.panel4.Controls.Add(this.label196);
-            this.panel4.Controls.Add(this.cboInflowWD);
-            this.panel4.Controls.Add(this.label171);
-            this.panel4.Location = new System.Drawing.Point(821, 442);
-            this.panel4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(806, 377);
-            this.panel4.TabIndex = 6;
+            this.tabSiteConditions.Controls.Add(this.tabPage2);
+            this.tabSiteConditions.Controls.Add(this.tabPage1);
+            this.tabSiteConditions.Controls.Add(this.tabPage3);
+            this.tabSiteConditions.Controls.Add(this.tabPage4);
+            this.tabSiteConditions.Location = new System.Drawing.Point(22, 48);
+            this.tabSiteConditions.Name = "tabSiteConditions";
+            this.tabSiteConditions.SelectedIndex = 0;
+            this.tabSiteConditions.Size = new System.Drawing.Size(1599, 760);
+            this.tabSiteConditions.TabIndex = 7;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.btnCalcTerrainComplexity);
+            this.tabPage2.Controls.Add(this.label161);
+            this.tabPage2.Controls.Add(this.cboTSIorTVIorP90);
+            this.tabPage2.Controls.Add(this.plotComplexHisto);
+            this.tabPage2.Controls.Add(this.label150);
+            this.tabPage2.Controls.Add(this.btnShowIECThresh);
+            this.tabPage2.Controls.Add(this.lblIEC_Complexity);
+            this.tabPage2.Controls.Add(this.label147);
+            this.tabPage2.Controls.Add(this.dataTerrainComplex);
+            this.tabPage2.Controls.Add(this.label199);
+            this.tabPage2.Controls.Add(this.label198);
+            this.tabPage2.Controls.Add(this.label197);
+            this.tabPage2.Controls.Add(this.label196);
+            this.tabPage2.Controls.Add(this.plotInflowAngle);
+            this.tabPage2.Controls.Add(this.label200);
+            this.tabPage2.Controls.Add(this.txtInflowAngle);
+            this.tabPage2.Controls.Add(this.cboInflowReso);
+            this.tabPage2.Controls.Add(this.cboInflowRadius);
+            this.tabPage2.Controls.Add(this.btnInflowAngles);
+            this.tabPage2.Controls.Add(this.cboInflowTurbine);
+            this.tabPage2.Controls.Add(this.cboInflowWD);
+            this.tabPage2.Controls.Add(this.label171);
+            this.tabPage2.Location = new System.Drawing.Point(4, 27);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1591, 729);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Terrain Complexity";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnCalcTerrainComplexity
+            // 
+            this.btnCalcTerrainComplexity.BackColor = System.Drawing.Color.Transparent;
+            this.btnCalcTerrainComplexity.Font = new System.Drawing.Font("Palatino Linotype", 9.5F);
+            this.btnCalcTerrainComplexity.Location = new System.Drawing.Point(232, 9);
+            this.btnCalcTerrainComplexity.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnCalcTerrainComplexity.Name = "btnCalcTerrainComplexity";
+            this.btnCalcTerrainComplexity.Size = new System.Drawing.Size(146, 49);
+            this.btnCalcTerrainComplexity.TabIndex = 300;
+            this.btnCalcTerrainComplexity.Text = "Calculate Complexity at Turbine Sites";
+            this.btnCalcTerrainComplexity.UseVisualStyleBackColor = false;
+            this.btnCalcTerrainComplexity.Click += new System.EventHandler(this.btnCalcTerrainComplexity_Click);
+            // 
+            // label161
+            // 
+            this.label161.AutoSize = true;
+            this.label161.Font = new System.Drawing.Font("Palatino Linotype", 12F);
+            this.label161.Location = new System.Drawing.Point(42, 64);
+            this.label161.Name = "label161";
+            this.label161.Size = new System.Drawing.Size(316, 22);
+            this.label161.TabIndex = 299;
+            this.label161.Text = "Histogram of Complexity Metrics at Turbines";
+            // 
+            // cboTSIorTVIorP90
+            // 
+            this.cboTSIorTVIorP90.FormattingEnabled = true;
+            this.cboTSIorTVIorP90.Items.AddRange(new object[] {
+            "5z 360 TSI",
+            "5z 360 TVI",
+            "5z 30 TSI",
+            "5z 30 TVI",
+            "10z 30 TSI",
+            "10z 30 TVI",
+            "20z 30 TSI",
+            "20z 30 TVI",
+            "P10 UW",
+            "P10 DW"});
+            this.cboTSIorTVIorP90.Location = new System.Drawing.Point(401, 53);
+            this.cboTSIorTVIorP90.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTSIorTVIorP90.Name = "cboTSIorTVIorP90";
+            this.cboTSIorTVIorP90.Size = new System.Drawing.Size(128, 26);
+            this.cboTSIorTVIorP90.TabIndex = 298;
+            this.cboTSIorTVIorP90.SelectedIndexChanged += new System.EventHandler(this.cboTSIorTVIorP90_SelectedIndexChanged);
+            // 
+            // plotComplexHisto
+            // 
+            this.plotComplexHisto.Location = new System.Drawing.Point(40, 92);
+            this.plotComplexHisto.Name = "plotComplexHisto";
+            this.plotComplexHisto.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotComplexHisto.Size = new System.Drawing.Size(489, 206);
+            this.plotComplexHisto.TabIndex = 297;
+            this.plotComplexHisto.Text = "plotView1";
+            this.plotComplexHisto.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotComplexHisto.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotComplexHisto.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // label150
+            // 
+            this.label150.AutoSize = true;
+            this.label150.Font = new System.Drawing.Font("Palatino Linotype", 12F);
+            this.label150.Location = new System.Drawing.Point(559, 36);
+            this.label150.Name = "label150";
+            this.label150.Size = new System.Drawing.Size(219, 22);
+            this.label150.TabIndex = 296;
+            this.label150.Text = "Terrain Complexity by Turbine";
+            // 
+            // btnShowIECThresh
+            // 
+            this.btnShowIECThresh.Location = new System.Drawing.Point(1472, 14);
+            this.btnShowIECThresh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnShowIECThresh.Name = "btnShowIECThresh";
+            this.btnShowIECThresh.Size = new System.Drawing.Size(93, 47);
+            this.btnShowIECThresh.TabIndex = 295;
+            this.btnShowIECThresh.Text = "Show IEC Thresholds";
+            this.btnShowIECThresh.UseVisualStyleBackColor = true;
+            this.btnShowIECThresh.Click += new System.EventHandler(this.btnShowIECThresh_Click);
+            // 
+            // lblIEC_Complexity
+            // 
+            this.lblIEC_Complexity.AutoSize = true;
+            this.lblIEC_Complexity.Font = new System.Drawing.Font("Palatino Linotype", 14F, System.Drawing.FontStyle.Bold);
+            this.lblIEC_Complexity.ForeColor = System.Drawing.Color.IndianRed;
+            this.lblIEC_Complexity.Location = new System.Drawing.Point(967, 32);
+            this.lblIEC_Complexity.Name = "lblIEC_Complexity";
+            this.lblIEC_Complexity.Size = new System.Drawing.Size(143, 26);
+            this.lblIEC_Complexity.TabIndex = 294;
+            this.lblIEC_Complexity.Text = "COMPLEXITY";
+            // 
+            // label147
+            // 
+            this.label147.AutoSize = true;
+            this.label147.Location = new System.Drawing.Point(911, 11);
+            this.label147.Name = "label147";
+            this.label147.Size = new System.Drawing.Size(248, 19);
+            this.label147.TabIndex = 293;
+            this.label147.Text = "Complexity Level (IEC 61400-1 Ed.4) :";
+            // 
+            // dataTerrainComplex
+            // 
+            this.dataTerrainComplex.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataTerrainComplex.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column3,
+            this.Column4,
+            this.Column15,
+            this.Column5,
+            this.Column6,
+            this.Column7,
+            this.Column8,
+            this.Column9,
+            this.Column10,
+            this.Column11,
+            this.Column12,
+            this.Column13,
+            this.Column14});
+            this.dataTerrainComplex.Location = new System.Drawing.Point(552, 72);
+            this.dataTerrainComplex.Name = "dataTerrainComplex";
+            this.dataTerrainComplex.ReadOnly = true;
+            this.dataTerrainComplex.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dataTerrainComplex.Size = new System.Drawing.Size(1024, 637);
+            this.dataTerrainComplex.TabIndex = 292;
+            // 
+            // label199
+            // 
+            this.label199.AutoSize = true;
+            this.label199.Location = new System.Drawing.Point(235, 351);
+            this.label199.Name = "label199";
+            this.label199.Size = new System.Drawing.Size(85, 19);
+            this.label199.TabIndex = 290;
+            this.label199.Text = "Resolution :";
+            // 
+            // label198
+            // 
+            this.label198.AutoSize = true;
+            this.label198.Location = new System.Drawing.Point(47, 383);
+            this.label198.Name = "label198";
+            this.label198.Size = new System.Drawing.Size(60, 19);
+            this.label198.TabIndex = 289;
+            this.label198.Text = "Radius :";
+            // 
+            // label197
+            // 
+            this.label197.AutoSize = true;
+            this.label197.Location = new System.Drawing.Point(43, 311);
+            this.label197.Name = "label197";
+            this.label197.Size = new System.Drawing.Size(67, 19);
+            this.label197.TabIndex = 288;
+            this.label197.Text = "Turbine :";
+            // 
+            // label196
+            // 
+            this.label196.AutoSize = true;
+            this.label196.Location = new System.Drawing.Point(62, 345);
+            this.label196.Name = "label196";
+            this.label196.Size = new System.Drawing.Size(42, 19);
+            this.label196.TabIndex = 287;
+            this.label196.Text = "WD :";
             // 
             // plotInflowAngle
             // 
-            this.plotInflowAngle.Location = new System.Drawing.Point(326, 33);
+            this.plotInflowAngle.Location = new System.Drawing.Point(58, 415);
             this.plotInflowAngle.Name = "plotInflowAngle";
             this.plotInflowAngle.PanCursor = System.Windows.Forms.Cursors.Hand;
             this.plotInflowAngle.Size = new System.Drawing.Size(444, 294);
-            this.plotInflowAngle.TabIndex = 277;
+            this.plotInflowAngle.TabIndex = 286;
             this.plotInflowAngle.Text = "plotView1";
             this.plotInflowAngle.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotInflowAngle.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -6421,29 +6644,20 @@
             // label200
             // 
             this.label200.AutoSize = true;
-            this.label200.Location = new System.Drawing.Point(19, 207);
+            this.label200.Location = new System.Drawing.Point(247, 387);
             this.label200.Name = "label200";
             this.label200.Size = new System.Drawing.Size(143, 19);
-            this.label200.TabIndex = 276;
+            this.label200.TabIndex = 285;
             this.label200.Text = "Inflow Angle (degs) :";
             // 
             // txtInflowAngle
             // 
             this.txtInflowAngle.Enabled = false;
-            this.txtInflowAngle.Location = new System.Drawing.Point(166, 203);
+            this.txtInflowAngle.Location = new System.Drawing.Point(394, 383);
             this.txtInflowAngle.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtInflowAngle.Name = "txtInflowAngle";
             this.txtInflowAngle.Size = new System.Drawing.Size(96, 25);
-            this.txtInflowAngle.TabIndex = 275;
-            // 
-            // label199
-            // 
-            this.label199.AutoSize = true;
-            this.label199.Location = new System.Drawing.Point(8, 171);
-            this.label199.Name = "label199";
-            this.label199.Size = new System.Drawing.Size(85, 19);
-            this.label199.TabIndex = 274;
-            this.label199.Text = "Resolution :";
+            this.txtInflowAngle.TabIndex = 284;
             // 
             // cboInflowReso
             // 
@@ -6453,21 +6667,12 @@
             "50",
             "75",
             "100"});
-            this.cboInflowReso.Location = new System.Drawing.Point(98, 165);
+            this.cboInflowReso.Location = new System.Drawing.Point(326, 345);
             this.cboInflowReso.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboInflowReso.Name = "cboInflowReso";
             this.cboInflowReso.Size = new System.Drawing.Size(84, 26);
-            this.cboInflowReso.TabIndex = 273;
+            this.cboInflowReso.TabIndex = 283;
             this.cboInflowReso.SelectedIndexChanged += new System.EventHandler(this.cboInflowReso_SelectedIndexChanged);
-            // 
-            // label198
-            // 
-            this.label198.AutoSize = true;
-            this.label198.Location = new System.Drawing.Point(28, 130);
-            this.label198.Name = "label198";
-            this.label198.Size = new System.Drawing.Size(60, 19);
-            this.label198.TabIndex = 272;
-            this.label198.Text = "Radius :";
             // 
             // cboInflowRadius
             // 
@@ -6483,23 +6688,23 @@
             "800",
             "900",
             "1000"});
-            this.cboInflowRadius.Location = new System.Drawing.Point(98, 127);
+            this.cboInflowRadius.Location = new System.Drawing.Point(118, 380);
             this.cboInflowRadius.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboInflowRadius.Name = "cboInflowRadius";
             this.cboInflowRadius.Size = new System.Drawing.Size(84, 26);
-            this.cboInflowRadius.TabIndex = 271;
+            this.cboInflowRadius.TabIndex = 282;
             this.cboInflowRadius.SelectedIndexChanged += new System.EventHandler(this.cboInflowRadius_SelectedIndexChanged);
             // 
             // btnInflowAngles
             // 
-            this.btnInflowAngles.Location = new System.Drawing.Point(26, 284);
+            this.btnInflowAngles.Location = new System.Drawing.Point(1330, 14);
             this.btnInflowAngles.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnInflowAngles.Name = "btnInflowAngles";
-            this.btnInflowAngles.Size = new System.Drawing.Size(93, 77);
-            this.btnInflowAngles.TabIndex = 270;
-            this.btnInflowAngles.Text = "Export Inflow Angles";
+            this.btnInflowAngles.Size = new System.Drawing.Size(119, 47);
+            this.btnInflowAngles.TabIndex = 281;
+            this.btnInflowAngles.Text = "Export Turbine TSI && TVI";
             this.btnInflowAngles.UseVisualStyleBackColor = true;
-            this.btnInflowAngles.Click += new System.EventHandler(this.btnInflowAngles_Click);
+            this.btnInflowAngles.Click += new System.EventHandler(this.btnInflowAngles_Click_1);
             // 
             // cboInflowTurbine
             // 
@@ -6508,238 +6713,317 @@
             "Average",
             "Representative",
             "Effective"});
-            this.cboInflowTurbine.Location = new System.Drawing.Point(96, 55);
+            this.cboInflowTurbine.Location = new System.Drawing.Point(116, 308);
             this.cboInflowTurbine.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboInflowTurbine.Name = "cboInflowTurbine";
             this.cboInflowTurbine.Size = new System.Drawing.Size(173, 26);
-            this.cboInflowTurbine.TabIndex = 263;
+            this.cboInflowTurbine.TabIndex = 280;
             this.cboInflowTurbine.SelectedIndexChanged += new System.EventHandler(this.cboInflowTurbine_SelectedIndexChanged);
-            // 
-            // label197
-            // 
-            this.label197.AutoSize = true;
-            this.label197.Location = new System.Drawing.Point(24, 58);
-            this.label197.Name = "label197";
-            this.label197.Size = new System.Drawing.Size(67, 19);
-            this.label197.TabIndex = 262;
-            this.label197.Text = "Turbine :";
-            // 
-            // label196
-            // 
-            this.label196.AutoSize = true;
-            this.label196.Location = new System.Drawing.Point(43, 92);
-            this.label196.Name = "label196";
-            this.label196.Size = new System.Drawing.Size(42, 19);
-            this.label196.TabIndex = 199;
-            this.label196.Text = "WD :";
             // 
             // cboInflowWD
             // 
             this.cboInflowWD.FormattingEnabled = true;
-            this.cboInflowWD.Location = new System.Drawing.Point(97, 90);
+            this.cboInflowWD.Location = new System.Drawing.Point(117, 343);
             this.cboInflowWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboInflowWD.Name = "cboInflowWD";
             this.cboInflowWD.Size = new System.Drawing.Size(84, 26);
-            this.cboInflowWD.TabIndex = 198;
+            this.cboInflowWD.TabIndex = 279;
             this.cboInflowWD.SelectedIndexChanged += new System.EventHandler(this.cboInflowWD_SelectedIndexChanged);
             // 
             // label171
             // 
             this.label171.AutoSize = true;
             this.label171.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label171.Location = new System.Drawing.Point(22, 20);
+            this.label171.Location = new System.Drawing.Point(18, 17);
             this.label171.Name = "label171";
-            this.label171.Size = new System.Drawing.Size(123, 23);
-            this.label171.TabIndex = 3;
-            this.label171.Text = "Inflow Angle";
+            this.label171.Size = new System.Drawing.Size(184, 23);
+            this.label171.TabIndex = 278;
+            this.label171.Text = "Terrain Complexity";
             // 
-            // panel3
+            // tabPage1
             // 
-            this.panel3.Controls.Add(this.plotExtremeWS);
-            this.panel3.Controls.Add(this.lblNoExtremeWS);
-            this.panel3.Controls.Add(this.lblExtremeWS);
-            this.panel3.Controls.Add(this.btnExtremeWS);
-            this.panel3.Controls.Add(this.label195);
-            this.panel3.Controls.Add(this.cboExtremeWSMet);
-            this.panel3.Controls.Add(this.txt1yrExtremeGust);
-            this.panel3.Controls.Add(this.txt1yrExtreme10min);
-            this.panel3.Controls.Add(this.txt50yrExtremeGust);
-            this.panel3.Controls.Add(this.txt50yrExtreme10min);
-            this.panel3.Controls.Add(this.label193);
-            this.panel3.Controls.Add(this.label194);
-            this.panel3.Controls.Add(this.label192);
-            this.panel3.Controls.Add(this.label191);
-            this.panel3.Controls.Add(this.label170);
-            this.panel3.Location = new System.Drawing.Point(9, 442);
-            this.panel3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(797, 377);
-            this.panel3.TabIndex = 5;
+            this.tabPage1.Controls.Add(this.plotTurbInt);
+            this.tabPage1.Controls.Add(this.btnExportTI);
+            this.tabPage1.Controls.Add(this.label188);
+            this.tabPage1.Controls.Add(this.cboTurbPowerCurve);
+            this.tabPage1.Controls.Add(this.dateTIStart);
+            this.tabPage1.Controls.Add(this.label186);
+            this.tabPage1.Controls.Add(this.label187);
+            this.tabPage1.Controls.Add(this.dateTIEnd);
+            this.tabPage1.Controls.Add(this.cboTurbineTI);
+            this.tabPage1.Controls.Add(this.label179);
+            this.tabPage1.Controls.Add(this.label178);
+            this.tabPage1.Controls.Add(this.cboEffectiveTI_m);
+            this.tabPage1.Controls.Add(this.cboTI_Type);
+            this.tabPage1.Controls.Add(this.label177);
+            this.tabPage1.Controls.Add(this.lstTurbulence);
+            this.tabPage1.Controls.Add(this.label174);
+            this.tabPage1.Controls.Add(this.cboTurbMet);
+            this.tabPage1.Controls.Add(this.label172);
+            this.tabPage1.Controls.Add(this.cboTurbWD);
+            this.tabPage1.Controls.Add(this.label93);
+            this.tabPage1.Location = new System.Drawing.Point(4, 27);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(1591, 729);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Turbulence Intensity";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // plotExtremeWS
+            // plotTurbInt
             // 
-            this.plotExtremeWS.Location = new System.Drawing.Point(328, 33);
-            this.plotExtremeWS.Name = "plotExtremeWS";
-            this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(444, 251);
-            this.plotExtremeWS.TabIndex = 272;
-            this.plotExtremeWS.Text = "plotView1";
-            this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotExtremeWS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotExtremeWS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotTurbInt.Location = new System.Drawing.Point(279, 141);
+            this.plotTurbInt.Name = "plotTurbInt";
+            this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTurbInt.Size = new System.Drawing.Size(444, 251);
+            this.plotTurbInt.TabIndex = 289;
+            this.plotTurbInt.Text = "plotView1";
+            this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTurbInt.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTurbInt.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
-            // lblNoExtremeWS
+            // btnExportTI
             // 
-            this.lblNoExtremeWS.AutoSize = true;
-            this.lblNoExtremeWS.Location = new System.Drawing.Point(151, 347);
-            this.lblNoExtremeWS.Name = "lblNoExtremeWS";
-            this.lblNoExtremeWS.Size = new System.Drawing.Size(0, 19);
-            this.lblNoExtremeWS.TabIndex = 271;
+            this.btnExportTI.Location = new System.Drawing.Point(729, 141);
+            this.btnExportTI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnExportTI.Name = "btnExportTI";
+            this.btnExportTI.Size = new System.Drawing.Size(87, 62);
+            this.btnExportTI.TabIndex = 288;
+            this.btnExportTI.Text = "Export TI";
+            this.btnExportTI.UseVisualStyleBackColor = true;
             // 
-            // lblExtremeWS
+            // label188
             // 
-            this.lblExtremeWS.AutoSize = true;
-            this.lblExtremeWS.Location = new System.Drawing.Point(150, 284);
-            this.lblExtremeWS.Name = "lblExtremeWS";
-            this.lblExtremeWS.Size = new System.Drawing.Size(0, 19);
-            this.lblExtremeWS.TabIndex = 270;
+            this.label188.AutoSize = true;
+            this.label188.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label188.Location = new System.Drawing.Point(481, 46);
+            this.label188.Name = "label188";
+            this.label188.Size = new System.Drawing.Size(93, 18);
+            this.label188.TabIndex = 287;
+            this.label188.Text = "Power Curve :";
             // 
-            // btnExtremeWS
+            // cboTurbPowerCurve
             // 
-            this.btnExtremeWS.Location = new System.Drawing.Point(26, 284);
-            this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnExtremeWS.Name = "btnExtremeWS";
-            this.btnExtremeWS.Size = new System.Drawing.Size(100, 63);
-            this.btnExtremeWS.TabIndex = 269;
-            this.btnExtremeWS.Text = "Export Extreme WS";
-            this.btnExtremeWS.UseVisualStyleBackColor = true;
-            this.btnExtremeWS.Click += new System.EventHandler(this.btnExtremeWS_Click);
+            this.cboTurbPowerCurve.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboTurbPowerCurve.FormattingEnabled = true;
+            this.cboTurbPowerCurve.Location = new System.Drawing.Point(579, 43);
+            this.cboTurbPowerCurve.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTurbPowerCurve.Name = "cboTurbPowerCurve";
+            this.cboTurbPowerCurve.Size = new System.Drawing.Size(229, 26);
+            this.cboTurbPowerCurve.TabIndex = 286;
             // 
-            // label195
+            // dateTIStart
             // 
-            this.label195.AutoSize = true;
-            this.label195.Location = new System.Drawing.Point(19, 65);
-            this.label195.Name = "label195";
-            this.label195.Size = new System.Drawing.Size(41, 19);
-            this.label195.TabIndex = 210;
-            this.label195.Text = "Met :";
+            this.dateTIStart.CustomFormat = "MM/dd/yy";
+            this.dateTIStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTIStart.Location = new System.Drawing.Point(523, 76);
+            this.dateTIStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.dateTIStart.Name = "dateTIStart";
+            this.dateTIStart.Size = new System.Drawing.Size(76, 25);
+            this.dateTIStart.TabIndex = 285;
             // 
-            // cboExtremeWSMet
+            // label186
             // 
-            this.cboExtremeWSMet.FormattingEnabled = true;
-            this.cboExtremeWSMet.Location = new System.Drawing.Point(66, 61);
-            this.cboExtremeWSMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboExtremeWSMet.Name = "cboExtremeWSMet";
-            this.cboExtremeWSMet.Size = new System.Drawing.Size(227, 26);
-            this.cboExtremeWSMet.TabIndex = 209;
-            this.cboExtremeWSMet.SelectedIndexChanged += new System.EventHandler(this.cboExtremeWSMet_SelectedIndexChanged);
+            this.label186.AutoSize = true;
+            this.label186.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label186.Location = new System.Drawing.Point(614, 80);
+            this.label186.Name = "label186";
+            this.label186.Size = new System.Drawing.Size(29, 18);
+            this.label186.TabIndex = 284;
+            this.label186.Text = "To :";
             // 
-            // txt1yrExtremeGust
+            // label187
             // 
-            this.txt1yrExtremeGust.Location = new System.Drawing.Point(193, 236);
-            this.txt1yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txt1yrExtremeGust.Name = "txt1yrExtremeGust";
-            this.txt1yrExtremeGust.Size = new System.Drawing.Size(96, 25);
-            this.txt1yrExtremeGust.TabIndex = 11;
+            this.label187.AutoSize = true;
+            this.label187.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label187.Location = new System.Drawing.Point(476, 80);
+            this.label187.Name = "label187";
+            this.label187.Size = new System.Drawing.Size(46, 18);
+            this.label187.TabIndex = 283;
+            this.label187.Text = "From :";
             // 
-            // txt1yrExtreme10min
+            // dateTIEnd
             // 
-            this.txt1yrExtreme10min.Location = new System.Drawing.Point(193, 201);
-            this.txt1yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txt1yrExtreme10min.Name = "txt1yrExtreme10min";
-            this.txt1yrExtreme10min.Size = new System.Drawing.Size(96, 25);
-            this.txt1yrExtreme10min.TabIndex = 10;
+            this.dateTIEnd.CustomFormat = "MM/dd/yy";
+            this.dateTIEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTIEnd.Location = new System.Drawing.Point(648, 76);
+            this.dateTIEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.dateTIEnd.Name = "dateTIEnd";
+            this.dateTIEnd.Size = new System.Drawing.Size(76, 25);
+            this.dateTIEnd.TabIndex = 282;
             // 
-            // txt50yrExtremeGust
+            // cboTurbineTI
             // 
-            this.txt50yrExtremeGust.Location = new System.Drawing.Point(194, 167);
-            this.txt50yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txt50yrExtremeGust.Name = "txt50yrExtremeGust";
-            this.txt50yrExtremeGust.Size = new System.Drawing.Size(96, 25);
-            this.txt50yrExtremeGust.TabIndex = 9;
+            this.cboTurbineTI.FormattingEnabled = true;
+            this.cboTurbineTI.Items.AddRange(new object[] {
+            "Average",
+            "Representative",
+            "Effective"});
+            this.cboTurbineTI.Location = new System.Drawing.Point(552, 108);
+            this.cboTurbineTI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTurbineTI.Name = "cboTurbineTI";
+            this.cboTurbineTI.Size = new System.Drawing.Size(173, 26);
+            this.cboTurbineTI.TabIndex = 281;
             // 
-            // txt50yrExtreme10min
+            // label179
             // 
-            this.txt50yrExtreme10min.Location = new System.Drawing.Point(195, 133);
-            this.txt50yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txt50yrExtreme10min.Name = "txt50yrExtreme10min";
-            this.txt50yrExtreme10min.Size = new System.Drawing.Size(96, 25);
-            this.txt50yrExtreme10min.TabIndex = 8;
+            this.label179.AutoSize = true;
+            this.label179.Location = new System.Drawing.Point(487, 110);
+            this.label179.Name = "label179";
+            this.label179.Size = new System.Drawing.Size(67, 19);
+            this.label179.TabIndex = 280;
+            this.label179.Text = "Turbine :";
             // 
-            // label193
+            // label178
             // 
-            this.label193.AutoSize = true;
-            this.label193.Location = new System.Drawing.Point(21, 236);
-            this.label193.Name = "label193";
-            this.label193.Size = new System.Drawing.Size(166, 19);
-            this.label193.TabIndex = 7;
-            this.label193.Text = "1 yr Extreme (3-sec gust)";
+            this.label178.AutoSize = true;
+            this.label178.Location = new System.Drawing.Point(394, 112);
+            this.label178.Name = "label178";
+            this.label178.Size = new System.Drawing.Size(29, 19);
+            this.label178.TabIndex = 279;
+            this.label178.Text = "m :";
             // 
-            // label194
+            // cboEffectiveTI_m
             // 
-            this.label194.AutoSize = true;
-            this.label194.Location = new System.Drawing.Point(21, 203);
-            this.label194.Name = "label194";
-            this.label194.Size = new System.Drawing.Size(147, 19);
-            this.label194.TabIndex = 6;
-            this.label194.Text = "1 yr Extreme (10 min)";
+            this.cboEffectiveTI_m.FormattingEnabled = true;
+            this.cboEffectiveTI_m.Items.AddRange(new object[] {
+            "1",
+            "10"});
+            this.cboEffectiveTI_m.Location = new System.Drawing.Point(423, 107);
+            this.cboEffectiveTI_m.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboEffectiveTI_m.Name = "cboEffectiveTI_m";
+            this.cboEffectiveTI_m.Size = new System.Drawing.Size(55, 26);
+            this.cboEffectiveTI_m.TabIndex = 278;
             // 
-            // label192
+            // cboTI_Type
             // 
-            this.label192.AutoSize = true;
-            this.label192.Location = new System.Drawing.Point(22, 171);
-            this.label192.Name = "label192";
-            this.label192.Size = new System.Drawing.Size(173, 19);
-            this.label192.TabIndex = 5;
-            this.label192.Text = "50 yr Extreme (3-sec gust)";
+            this.cboTI_Type.FormattingEnabled = true;
+            this.cboTI_Type.Items.AddRange(new object[] {
+            "Average",
+            "Representative",
+            "Effective"});
+            this.cboTI_Type.Location = new System.Drawing.Point(324, 76);
+            this.cboTI_Type.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTI_Type.Name = "cboTI_Type";
+            this.cboTI_Type.Size = new System.Drawing.Size(132, 26);
+            this.cboTI_Type.TabIndex = 277;
             // 
-            // label191
+            // label177
             // 
-            this.label191.AutoSize = true;
-            this.label191.Location = new System.Drawing.Point(22, 137);
-            this.label191.Name = "label191";
-            this.label191.Size = new System.Drawing.Size(154, 19);
-            this.label191.TabIndex = 4;
-            this.label191.Text = "50 yr Extreme (10 min)";
+            this.label177.AutoSize = true;
+            this.label177.Location = new System.Drawing.Point(258, 78);
+            this.label177.Name = "label177";
+            this.label177.Size = new System.Drawing.Size(66, 19);
+            this.label177.TabIndex = 276;
+            this.label177.Text = "TI Type :";
             // 
-            // label170
+            // lstTurbulence
             // 
-            this.label170.AutoSize = true;
-            this.label170.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label170.Location = new System.Drawing.Point(22, 20);
-            this.label170.Name = "label170";
-            this.label170.Size = new System.Drawing.Size(201, 23);
-            this.label170.TabIndex = 3;
-            this.label170.Text = "Extreme Wind Speed";
+            this.lstTurbulence.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader177,
+            this.columnHeader178,
+            this.columnHeader179});
+            this.lstTurbulence.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstTurbulence.GridLines = true;
+            this.lstTurbulence.HideSelection = false;
+            this.lstTurbulence.Location = new System.Drawing.Point(35, 96);
+            this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
+            this.lstTurbulence.Name = "lstTurbulence";
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 290);
+            this.lstTurbulence.TabIndex = 275;
+            this.lstTurbulence.UseCompatibleStateImageBehavior = false;
+            this.lstTurbulence.View = System.Windows.Forms.View.Details;
             // 
-            // panel2
+            // columnHeader177
             // 
-            this.panel2.Controls.Add(this.plotExtremeShear);
-            this.panel2.Controls.Add(this.dateTimeExtremeShearStart);
-            this.panel2.Controls.Add(this.label202);
-            this.panel2.Controls.Add(this.label203);
-            this.panel2.Controls.Add(this.dateTimeExtremeShearEnd);
-            this.panel2.Controls.Add(this.label201);
-            this.panel2.Controls.Add(this.label190);
-            this.panel2.Controls.Add(this.cboExtremeShearRange);
-            this.panel2.Controls.Add(this.label189);
-            this.panel2.Controls.Add(this.cboExtremeShearMet);
-            this.panel2.Controls.Add(this.btnExportShearStats);
-            this.panel2.Controls.Add(this.lstExtremeShear);
-            this.panel2.Controls.Add(this.label95);
-            this.panel2.Location = new System.Drawing.Point(821, 47);
-            this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(806, 388);
-            this.panel2.TabIndex = 4;
+            this.columnHeader177.Text = "WS [m/s]";
+            this.columnHeader177.Width = 62;
+            // 
+            // columnHeader178
+            // 
+            this.columnHeader178.Text = "TI";
+            this.columnHeader178.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnHeader178.Width = 56;
+            // 
+            // columnHeader179
+            // 
+            this.columnHeader179.Text = "Freq.";
+            this.columnHeader179.Width = 59;
+            // 
+            // label174
+            // 
+            this.label174.AutoSize = true;
+            this.label174.Location = new System.Drawing.Point(252, 46);
+            this.label174.Name = "label174";
+            this.label174.Size = new System.Drawing.Size(41, 19);
+            this.label174.TabIndex = 274;
+            this.label174.Text = "Met :";
+            // 
+            // cboTurbMet
+            // 
+            this.cboTurbMet.FormattingEnabled = true;
+            this.cboTurbMet.Location = new System.Drawing.Point(296, 44);
+            this.cboTurbMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTurbMet.Name = "cboTurbMet";
+            this.cboTurbMet.Size = new System.Drawing.Size(177, 26);
+            this.cboTurbMet.TabIndex = 273;
+            // 
+            // label172
+            // 
+            this.label172.AutoSize = true;
+            this.label172.Location = new System.Drawing.Point(259, 110);
+            this.label172.Name = "label172";
+            this.label172.Size = new System.Drawing.Size(42, 19);
+            this.label172.TabIndex = 272;
+            this.label172.Text = "WD :";
+            // 
+            // cboTurbWD
+            // 
+            this.cboTurbWD.FormattingEnabled = true;
+            this.cboTurbWD.Location = new System.Drawing.Point(302, 107);
+            this.cboTurbWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTurbWD.Name = "cboTurbWD";
+            this.cboTurbWD.Size = new System.Drawing.Size(84, 26);
+            this.cboTurbWD.TabIndex = 271;
+            // 
+            // label93
+            // 
+            this.label93.AutoSize = true;
+            this.label93.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label93.Location = new System.Drawing.Point(42, 48);
+            this.label93.Name = "label93";
+            this.label93.Size = new System.Drawing.Size(191, 23);
+            this.label93.TabIndex = 270;
+            this.label93.Text = "Turbulence Intensity";
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.plotExtremeShear);
+            this.tabPage3.Controls.Add(this.dateTimeExtremeShearStart);
+            this.tabPage3.Controls.Add(this.label202);
+            this.tabPage3.Controls.Add(this.label203);
+            this.tabPage3.Controls.Add(this.dateTimeExtremeShearEnd);
+            this.tabPage3.Controls.Add(this.label201);
+            this.tabPage3.Controls.Add(this.label190);
+            this.tabPage3.Controls.Add(this.cboExtremeShearRange);
+            this.tabPage3.Controls.Add(this.label189);
+            this.tabPage3.Controls.Add(this.cboExtremeShearMet);
+            this.tabPage3.Controls.Add(this.btnExportShearStats);
+            this.tabPage3.Controls.Add(this.lstExtremeShear);
+            this.tabPage3.Controls.Add(this.label95);
+            this.tabPage3.Location = new System.Drawing.Point(4, 27);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(1591, 729);
+            this.tabPage3.TabIndex = 3;
+            this.tabPage3.Text = "Extreme Shear";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // plotExtremeShear
             // 
-            this.plotExtremeShear.Location = new System.Drawing.Point(32, 113);
+            this.plotExtremeShear.Location = new System.Drawing.Point(52, 141);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
             this.plotExtremeShear.Size = new System.Drawing.Size(394, 251);
-            this.plotExtremeShear.TabIndex = 279;
+            this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotExtremeShear.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -6749,61 +7033,59 @@
             // 
             this.dateTimeExtremeShearStart.CustomFormat = "MM/dd/yy";
             this.dateTimeExtremeShearStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimeExtremeShearStart.Location = new System.Drawing.Point(553, 41);
+            this.dateTimeExtremeShearStart.Location = new System.Drawing.Point(573, 69);
             this.dateTimeExtremeShearStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTimeExtremeShearStart.Name = "dateTimeExtremeShearStart";
             this.dateTimeExtremeShearStart.Size = new System.Drawing.Size(76, 25);
-            this.dateTimeExtremeShearStart.TabIndex = 278;
-            this.dateTimeExtremeShearStart.ValueChanged += new System.EventHandler(this.dateTimeExtremeShearStart_ValueChanged);
+            this.dateTimeExtremeShearStart.TabIndex = 291;
             // 
             // label202
             // 
             this.label202.AutoSize = true;
             this.label202.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label202.Location = new System.Drawing.Point(644, 45);
+            this.label202.Location = new System.Drawing.Point(664, 73);
             this.label202.Name = "label202";
             this.label202.Size = new System.Drawing.Size(29, 18);
-            this.label202.TabIndex = 277;
+            this.label202.TabIndex = 290;
             this.label202.Text = "To :";
             // 
             // label203
             // 
             this.label203.AutoSize = true;
             this.label203.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label203.Location = new System.Drawing.Point(506, 45);
+            this.label203.Location = new System.Drawing.Point(526, 73);
             this.label203.Name = "label203";
             this.label203.Size = new System.Drawing.Size(46, 18);
-            this.label203.TabIndex = 276;
+            this.label203.TabIndex = 289;
             this.label203.Text = "From :";
             // 
             // dateTimeExtremeShearEnd
             // 
             this.dateTimeExtremeShearEnd.CustomFormat = "MM/dd/yy";
             this.dateTimeExtremeShearEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimeExtremeShearEnd.Location = new System.Drawing.Point(678, 41);
+            this.dateTimeExtremeShearEnd.Location = new System.Drawing.Point(698, 69);
             this.dateTimeExtremeShearEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTimeExtremeShearEnd.Name = "dateTimeExtremeShearEnd";
             this.dateTimeExtremeShearEnd.Size = new System.Drawing.Size(76, 25);
-            this.dateTimeExtremeShearEnd.TabIndex = 275;
-            this.dateTimeExtremeShearEnd.ValueChanged += new System.EventHandler(this.dateTimeExtremeShearEnd_ValueChanged);
+            this.dateTimeExtremeShearEnd.TabIndex = 288;
             // 
             // label201
             // 
             this.label201.AutoSize = true;
             this.label201.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label201.Location = new System.Drawing.Point(450, 113);
+            this.label201.Location = new System.Drawing.Point(470, 141);
             this.label201.Name = "label201";
             this.label201.Size = new System.Drawing.Size(175, 19);
-            this.label201.TabIndex = 274;
+            this.label201.TabIndex = 287;
             this.label201.Text = "Extreme Shear Values";
             // 
             // label190
             // 
             this.label190.AutoSize = true;
-            this.label190.Location = new System.Drawing.Point(223, 46);
+            this.label190.Location = new System.Drawing.Point(243, 74);
             this.label190.Name = "label190";
             this.label190.Size = new System.Drawing.Size(135, 19);
-            this.label190.TabIndex = 273;
+            this.label190.TabIndex = 286;
             this.label190.Text = "Wind Speed Range :";
             // 
             // cboExtremeShearRange
@@ -6814,42 +7096,39 @@
             "10 - 15 m/s",
             "15+ m/s",
             "All > Cut-In"});
-            this.cboExtremeShearRange.Location = new System.Drawing.Point(359, 42);
+            this.cboExtremeShearRange.Location = new System.Drawing.Point(379, 70);
             this.cboExtremeShearRange.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeShearRange.Name = "cboExtremeShearRange";
             this.cboExtremeShearRange.Size = new System.Drawing.Size(104, 26);
-            this.cboExtremeShearRange.TabIndex = 272;
-            this.cboExtremeShearRange.SelectedIndexChanged += new System.EventHandler(this.cboExtremeShearRange_SelectedIndexChanged);
+            this.cboExtremeShearRange.TabIndex = 285;
             // 
             // label189
             // 
             this.label189.AutoSize = true;
-            this.label189.Location = new System.Drawing.Point(233, 15);
+            this.label189.Location = new System.Drawing.Point(253, 43);
             this.label189.Name = "label189";
             this.label189.Size = new System.Drawing.Size(41, 19);
-            this.label189.TabIndex = 271;
+            this.label189.TabIndex = 284;
             this.label189.Text = "Met :";
             // 
             // cboExtremeShearMet
             // 
             this.cboExtremeShearMet.FormattingEnabled = true;
-            this.cboExtremeShearMet.Location = new System.Drawing.Point(276, 9);
+            this.cboExtremeShearMet.Location = new System.Drawing.Point(296, 37);
             this.cboExtremeShearMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeShearMet.Name = "cboExtremeShearMet";
             this.cboExtremeShearMet.Size = new System.Drawing.Size(187, 26);
-            this.cboExtremeShearMet.TabIndex = 270;
-            this.cboExtremeShearMet.SelectedIndexChanged += new System.EventHandler(this.cboExtremeShearMet_SelectedIndexChanged);
+            this.cboExtremeShearMet.TabIndex = 283;
             // 
             // btnExportShearStats
             // 
-            this.btnExportShearStats.Location = new System.Drawing.Point(687, 303);
+            this.btnExportShearStats.Location = new System.Drawing.Point(707, 331);
             this.btnExportShearStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportShearStats.Name = "btnExportShearStats";
             this.btnExportShearStats.Size = new System.Drawing.Size(101, 66);
-            this.btnExportShearStats.TabIndex = 269;
+            this.btnExportShearStats.TabIndex = 282;
             this.btnExportShearStats.Text = "Export Shear Stats";
             this.btnExportShearStats.UseVisualStyleBackColor = true;
-            this.btnExportShearStats.Click += new System.EventHandler(this.btnExportShearStats_Click);
             // 
             // lstExtremeShear
             // 
@@ -6862,11 +7141,11 @@
             this.lstExtremeShear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstExtremeShear.GridLines = true;
             this.lstExtremeShear.HideSelection = false;
-            this.lstExtremeShear.Location = new System.Drawing.Point(454, 148);
+            this.lstExtremeShear.Location = new System.Drawing.Point(474, 176);
             this.lstExtremeShear.Margin = new System.Windows.Forms.Padding(2);
             this.lstExtremeShear.Name = "lstExtremeShear";
             this.lstExtremeShear.Size = new System.Drawing.Size(334, 142);
-            this.lstExtremeShear.TabIndex = 267;
+            this.lstExtremeShear.TabIndex = 281;
             this.lstExtremeShear.UseCompatibleStateImageBehavior = false;
             this.lstExtremeShear.View = System.Windows.Forms.View.Details;
             // 
@@ -6899,273 +7178,191 @@
             // 
             this.label95.AutoSize = true;
             this.label95.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label95.Location = new System.Drawing.Point(22, 20);
+            this.label95.Location = new System.Drawing.Point(42, 48);
             this.label95.Name = "label95";
             this.label95.Size = new System.Drawing.Size(193, 23);
-            this.label95.TabIndex = 3;
+            this.label95.TabIndex = 280;
             this.label95.Text = "Extreme Wind Shear";
             // 
-            // panel1
+            // tabPage4
             // 
-            this.panel1.Controls.Add(this.plotTurbInt);
-            this.panel1.Controls.Add(this.btnExportTI);
-            this.panel1.Controls.Add(this.label188);
-            this.panel1.Controls.Add(this.cboTurbPowerCurve);
-            this.panel1.Controls.Add(this.dateTIStart);
-            this.panel1.Controls.Add(this.label186);
-            this.panel1.Controls.Add(this.label187);
-            this.panel1.Controls.Add(this.dateTIEnd);
-            this.panel1.Controls.Add(this.cboTurbineTI);
-            this.panel1.Controls.Add(this.label179);
-            this.panel1.Controls.Add(this.label178);
-            this.panel1.Controls.Add(this.cboEffectiveTI_m);
-            this.panel1.Controls.Add(this.cboTI_Type);
-            this.panel1.Controls.Add(this.label177);
-            this.panel1.Controls.Add(this.lstTurbulence);
-            this.panel1.Controls.Add(this.label174);
-            this.panel1.Controls.Add(this.cboTurbMet);
-            this.panel1.Controls.Add(this.label172);
-            this.panel1.Controls.Add(this.cboTurbWD);
-            this.panel1.Controls.Add(this.label93);
-            this.panel1.Location = new System.Drawing.Point(9, 47);
-            this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(806, 388);
-            this.panel1.TabIndex = 3;
+            this.tabPage4.Controls.Add(this.lblNoExtremeWS);
+            this.tabPage4.Controls.Add(this.label195);
+            this.tabPage4.Controls.Add(this.label103);
+            this.tabPage4.Controls.Add(this.cboExtremeWSRef);
+            this.tabPage4.Controls.Add(this.plotExtremeWS);
+            this.tabPage4.Controls.Add(this.lblExtremeWS);
+            this.tabPage4.Controls.Add(this.btnExtremeWS);
+            this.tabPage4.Controls.Add(this.cboExtremeWSMet);
+            this.tabPage4.Controls.Add(this.txt1yrExtremeGust);
+            this.tabPage4.Controls.Add(this.txt1yrExtreme10min);
+            this.tabPage4.Controls.Add(this.txt50yrExtremeGust);
+            this.tabPage4.Controls.Add(this.txt50yrExtreme10min);
+            this.tabPage4.Controls.Add(this.label193);
+            this.tabPage4.Controls.Add(this.label194);
+            this.tabPage4.Controls.Add(this.label192);
+            this.tabPage4.Controls.Add(this.label191);
+            this.tabPage4.Controls.Add(this.label170);
+            this.tabPage4.Location = new System.Drawing.Point(4, 27);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(1591, 729);
+            this.tabPage4.TabIndex = 4;
+            this.tabPage4.Text = "Extreme WS";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
             // 
-            // plotTurbInt
+            // lblNoExtremeWS
             // 
-            this.plotTurbInt.Location = new System.Drawing.Point(259, 113);
-            this.plotTurbInt.Name = "plotTurbInt";
-            this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(444, 251);
-            this.plotTurbInt.TabIndex = 269;
-            this.plotTurbInt.Text = "plotView1";
-            this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotTurbInt.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotTurbInt.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.lblNoExtremeWS.AutoSize = true;
+            this.lblNoExtremeWS.Location = new System.Drawing.Point(354, 362);
+            this.lblNoExtremeWS.Name = "lblNoExtremeWS";
+            this.lblNoExtremeWS.Size = new System.Drawing.Size(0, 19);
+            this.lblNoExtremeWS.TabIndex = 291;
             // 
-            // btnExportTI
+            // label195
             // 
-            this.btnExportTI.Location = new System.Drawing.Point(709, 113);
-            this.btnExportTI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnExportTI.Name = "btnExportTI";
-            this.btnExportTI.Size = new System.Drawing.Size(87, 62);
-            this.btnExportTI.TabIndex = 268;
-            this.btnExportTI.Text = "Export TI";
-            this.btnExportTI.UseVisualStyleBackColor = true;
-            this.btnExportTI.Click += new System.EventHandler(this.btnExportTI_Click);
+            this.label195.AutoSize = true;
+            this.label195.Location = new System.Drawing.Point(49, 98);
+            this.label195.Name = "label195";
+            this.label195.Size = new System.Drawing.Size(41, 19);
+            this.label195.TabIndex = 290;
+            this.label195.Text = "Met :";
             // 
-            // label188
+            // label103
             // 
-            this.label188.AutoSize = true;
-            this.label188.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label188.Location = new System.Drawing.Point(461, 18);
-            this.label188.Name = "label188";
-            this.label188.Size = new System.Drawing.Size(93, 18);
-            this.label188.TabIndex = 267;
-            this.label188.Text = "Power Curve :";
+            this.label103.AutoSize = true;
+            this.label103.Location = new System.Drawing.Point(49, 132);
+            this.label103.Name = "label103";
+            this.label103.Size = new System.Drawing.Size(75, 19);
+            this.label103.TabIndex = 289;
+            this.label103.Text = "Reference :";
             // 
-            // cboTurbPowerCurve
+            // cboExtremeWSRef
             // 
-            this.cboTurbPowerCurve.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboTurbPowerCurve.FormattingEnabled = true;
-            this.cboTurbPowerCurve.Location = new System.Drawing.Point(559, 15);
-            this.cboTurbPowerCurve.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboTurbPowerCurve.Name = "cboTurbPowerCurve";
-            this.cboTurbPowerCurve.Size = new System.Drawing.Size(229, 26);
-            this.cboTurbPowerCurve.TabIndex = 266;
+            this.cboExtremeWSRef.FormattingEnabled = true;
+            this.cboExtremeWSRef.Location = new System.Drawing.Point(126, 129);
+            this.cboExtremeWSRef.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboExtremeWSRef.Name = "cboExtremeWSRef";
+            this.cboExtremeWSRef.Size = new System.Drawing.Size(197, 26);
+            this.cboExtremeWSRef.TabIndex = 288;
             // 
-            // dateTIStart
+            // plotExtremeWS
             // 
-            this.dateTIStart.CustomFormat = "MM/dd/yy";
-            this.dateTIStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTIStart.Location = new System.Drawing.Point(503, 48);
-            this.dateTIStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.dateTIStart.Name = "dateTIStart";
-            this.dateTIStart.Size = new System.Drawing.Size(76, 25);
-            this.dateTIStart.TabIndex = 265;
-            this.dateTIStart.ValueChanged += new System.EventHandler(this.dateTIStart_ValueChanged);
+            this.plotExtremeWS.Location = new System.Drawing.Point(358, 67);
+            this.plotExtremeWS.Name = "plotExtremeWS";
+            this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotExtremeWS.Size = new System.Drawing.Size(444, 251);
+            this.plotExtremeWS.TabIndex = 287;
+            this.plotExtremeWS.Text = "plotView1";
+            this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotExtremeWS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotExtremeWS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
-            // label186
+            // lblExtremeWS
             // 
-            this.label186.AutoSize = true;
-            this.label186.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label186.Location = new System.Drawing.Point(594, 52);
-            this.label186.Name = "label186";
-            this.label186.Size = new System.Drawing.Size(29, 18);
-            this.label186.TabIndex = 264;
-            this.label186.Text = "To :";
+            this.lblExtremeWS.AutoSize = true;
+            this.lblExtremeWS.Location = new System.Drawing.Point(180, 318);
+            this.lblExtremeWS.Name = "lblExtremeWS";
+            this.lblExtremeWS.Size = new System.Drawing.Size(0, 19);
+            this.lblExtremeWS.TabIndex = 286;
             // 
-            // label187
+            // btnExtremeWS
             // 
-            this.label187.AutoSize = true;
-            this.label187.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label187.Location = new System.Drawing.Point(456, 52);
-            this.label187.Name = "label187";
-            this.label187.Size = new System.Drawing.Size(46, 18);
-            this.label187.TabIndex = 263;
-            this.label187.Text = "From :";
+            this.btnExtremeWS.Location = new System.Drawing.Point(56, 318);
+            this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnExtremeWS.Name = "btnExtremeWS";
+            this.btnExtremeWS.Size = new System.Drawing.Size(100, 63);
+            this.btnExtremeWS.TabIndex = 285;
+            this.btnExtremeWS.Text = "Export Extreme WS";
+            this.btnExtremeWS.UseVisualStyleBackColor = true;
             // 
-            // dateTIEnd
+            // cboExtremeWSMet
             // 
-            this.dateTIEnd.CustomFormat = "MM/dd/yy";
-            this.dateTIEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTIEnd.Location = new System.Drawing.Point(628, 48);
-            this.dateTIEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.dateTIEnd.Name = "dateTIEnd";
-            this.dateTIEnd.Size = new System.Drawing.Size(76, 25);
-            this.dateTIEnd.TabIndex = 262;
-            this.dateTIEnd.ValueChanged += new System.EventHandler(this.dateTIEnd_ValueChanged);
+            this.cboExtremeWSMet.FormattingEnabled = true;
+            this.cboExtremeWSMet.Location = new System.Drawing.Point(96, 95);
+            this.cboExtremeWSMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboExtremeWSMet.Name = "cboExtremeWSMet";
+            this.cboExtremeWSMet.Size = new System.Drawing.Size(227, 26);
+            this.cboExtremeWSMet.TabIndex = 284;
             // 
-            // cboTurbineTI
+            // txt1yrExtremeGust
             // 
-            this.cboTurbineTI.FormattingEnabled = true;
-            this.cboTurbineTI.Items.AddRange(new object[] {
-            "Average",
-            "Representative",
-            "Effective"});
-            this.cboTurbineTI.Location = new System.Drawing.Point(532, 80);
-            this.cboTurbineTI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboTurbineTI.Name = "cboTurbineTI";
-            this.cboTurbineTI.Size = new System.Drawing.Size(173, 26);
-            this.cboTurbineTI.TabIndex = 261;
-            this.cboTurbineTI.SelectedIndexChanged += new System.EventHandler(this.cboTurbineTI_SelectedIndexChanged);
+            this.txt1yrExtremeGust.Location = new System.Drawing.Point(223, 270);
+            this.txt1yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txt1yrExtremeGust.Name = "txt1yrExtremeGust";
+            this.txt1yrExtremeGust.Size = new System.Drawing.Size(96, 25);
+            this.txt1yrExtremeGust.TabIndex = 283;
             // 
-            // label179
+            // txt1yrExtreme10min
             // 
-            this.label179.AutoSize = true;
-            this.label179.Location = new System.Drawing.Point(467, 82);
-            this.label179.Name = "label179";
-            this.label179.Size = new System.Drawing.Size(67, 19);
-            this.label179.TabIndex = 260;
-            this.label179.Text = "Turbine :";
+            this.txt1yrExtreme10min.Location = new System.Drawing.Point(223, 235);
+            this.txt1yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txt1yrExtreme10min.Name = "txt1yrExtreme10min";
+            this.txt1yrExtreme10min.Size = new System.Drawing.Size(96, 25);
+            this.txt1yrExtreme10min.TabIndex = 282;
             // 
-            // label178
+            // txt50yrExtremeGust
             // 
-            this.label178.AutoSize = true;
-            this.label178.Location = new System.Drawing.Point(374, 84);
-            this.label178.Name = "label178";
-            this.label178.Size = new System.Drawing.Size(29, 19);
-            this.label178.TabIndex = 259;
-            this.label178.Text = "m :";
+            this.txt50yrExtremeGust.Location = new System.Drawing.Point(224, 201);
+            this.txt50yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txt50yrExtremeGust.Name = "txt50yrExtremeGust";
+            this.txt50yrExtremeGust.Size = new System.Drawing.Size(96, 25);
+            this.txt50yrExtremeGust.TabIndex = 281;
             // 
-            // cboEffectiveTI_m
+            // txt50yrExtreme10min
             // 
-            this.cboEffectiveTI_m.FormattingEnabled = true;
-            this.cboEffectiveTI_m.Items.AddRange(new object[] {
-            "1",
-            "10"});
-            this.cboEffectiveTI_m.Location = new System.Drawing.Point(403, 79);
-            this.cboEffectiveTI_m.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboEffectiveTI_m.Name = "cboEffectiveTI_m";
-            this.cboEffectiveTI_m.Size = new System.Drawing.Size(55, 26);
-            this.cboEffectiveTI_m.TabIndex = 258;
-            this.cboEffectiveTI_m.SelectedIndexChanged += new System.EventHandler(this.cboEffectiveTI_m_SelectedIndexChanged);
+            this.txt50yrExtreme10min.Location = new System.Drawing.Point(225, 167);
+            this.txt50yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txt50yrExtreme10min.Name = "txt50yrExtreme10min";
+            this.txt50yrExtreme10min.Size = new System.Drawing.Size(96, 25);
+            this.txt50yrExtreme10min.TabIndex = 280;
             // 
-            // cboTI_Type
+            // label193
             // 
-            this.cboTI_Type.FormattingEnabled = true;
-            this.cboTI_Type.Items.AddRange(new object[] {
-            "Average",
-            "Representative",
-            "Effective"});
-            this.cboTI_Type.Location = new System.Drawing.Point(304, 48);
-            this.cboTI_Type.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboTI_Type.Name = "cboTI_Type";
-            this.cboTI_Type.Size = new System.Drawing.Size(132, 26);
-            this.cboTI_Type.TabIndex = 257;
-            this.cboTI_Type.SelectedIndexChanged += new System.EventHandler(this.cboTI_Type_SelectedIndexChanged);
+            this.label193.AutoSize = true;
+            this.label193.Location = new System.Drawing.Point(51, 270);
+            this.label193.Name = "label193";
+            this.label193.Size = new System.Drawing.Size(166, 19);
+            this.label193.TabIndex = 279;
+            this.label193.Text = "1 yr Extreme (3-sec gust)";
+            this.label193.Click += new System.EventHandler(this.label193_Click);
             // 
-            // label177
+            // label194
             // 
-            this.label177.AutoSize = true;
-            this.label177.Location = new System.Drawing.Point(238, 50);
-            this.label177.Name = "label177";
-            this.label177.Size = new System.Drawing.Size(66, 19);
-            this.label177.TabIndex = 256;
-            this.label177.Text = "TI Type :";
+            this.label194.AutoSize = true;
+            this.label194.Location = new System.Drawing.Point(51, 237);
+            this.label194.Name = "label194";
+            this.label194.Size = new System.Drawing.Size(147, 19);
+            this.label194.TabIndex = 278;
+            this.label194.Text = "1 yr Extreme (10 min)";
             // 
-            // lstTurbulence
+            // label192
             // 
-            this.lstTurbulence.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader177,
-            this.columnHeader178,
-            this.columnHeader179});
-            this.lstTurbulence.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstTurbulence.GridLines = true;
-            this.lstTurbulence.HideSelection = false;
-            this.lstTurbulence.Location = new System.Drawing.Point(15, 68);
-            this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
-            this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 290);
-            this.lstTurbulence.TabIndex = 255;
-            this.lstTurbulence.UseCompatibleStateImageBehavior = false;
-            this.lstTurbulence.View = System.Windows.Forms.View.Details;
+            this.label192.AutoSize = true;
+            this.label192.Location = new System.Drawing.Point(52, 205);
+            this.label192.Name = "label192";
+            this.label192.Size = new System.Drawing.Size(173, 19);
+            this.label192.TabIndex = 277;
+            this.label192.Text = "50 yr Extreme (3-sec gust)";
             // 
-            // columnHeader177
+            // label191
             // 
-            this.columnHeader177.Text = "WS [m/s]";
-            this.columnHeader177.Width = 62;
+            this.label191.AutoSize = true;
+            this.label191.Location = new System.Drawing.Point(52, 171);
+            this.label191.Name = "label191";
+            this.label191.Size = new System.Drawing.Size(154, 19);
+            this.label191.TabIndex = 276;
+            this.label191.Text = "50 yr Extreme (10 min)";
             // 
-            // columnHeader178
+            // label170
             // 
-            this.columnHeader178.Text = "TI";
-            this.columnHeader178.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader178.Width = 56;
-            // 
-            // columnHeader179
-            // 
-            this.columnHeader179.Text = "Freq.";
-            this.columnHeader179.Width = 59;
-            // 
-            // label174
-            // 
-            this.label174.AutoSize = true;
-            this.label174.Location = new System.Drawing.Point(232, 18);
-            this.label174.Name = "label174";
-            this.label174.Size = new System.Drawing.Size(41, 19);
-            this.label174.TabIndex = 208;
-            this.label174.Text = "Met :";
-            // 
-            // cboTurbMet
-            // 
-            this.cboTurbMet.FormattingEnabled = true;
-            this.cboTurbMet.Location = new System.Drawing.Point(276, 16);
-            this.cboTurbMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboTurbMet.Name = "cboTurbMet";
-            this.cboTurbMet.Size = new System.Drawing.Size(177, 26);
-            this.cboTurbMet.TabIndex = 207;
-            this.cboTurbMet.SelectedIndexChanged += new System.EventHandler(this.cboTurbMet_SelectedIndexChanged);
-            // 
-            // label172
-            // 
-            this.label172.AutoSize = true;
-            this.label172.Location = new System.Drawing.Point(239, 82);
-            this.label172.Name = "label172";
-            this.label172.Size = new System.Drawing.Size(42, 19);
-            this.label172.TabIndex = 197;
-            this.label172.Text = "WD :";
-            // 
-            // cboTurbWD
-            // 
-            this.cboTurbWD.FormattingEnabled = true;
-            this.cboTurbWD.Location = new System.Drawing.Point(282, 79);
-            this.cboTurbWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboTurbWD.Name = "cboTurbWD";
-            this.cboTurbWD.Size = new System.Drawing.Size(84, 26);
-            this.cboTurbWD.TabIndex = 196;
-            this.cboTurbWD.SelectedIndexChanged += new System.EventHandler(this.cboTurbWD_SelectedIndexChanged);
-            // 
-            // label93
-            // 
-            this.label93.AutoSize = true;
-            this.label93.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label93.Location = new System.Drawing.Point(22, 20);
-            this.label93.Name = "label93";
-            this.label93.Size = new System.Drawing.Size(191, 23);
-            this.label93.TabIndex = 3;
-            this.label93.Text = "Turbulence Intensity";
+            this.label170.AutoSize = true;
+            this.label170.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label170.Location = new System.Drawing.Point(52, 54);
+            this.label170.Name = "label170";
+            this.label170.Size = new System.Drawing.Size(201, 23);
+            this.label170.TabIndex = 275;
+            this.label170.Text = "Extreme Wind Speed";
             // 
             // label92
             // 
@@ -7202,7 +7399,7 @@
             this.pgeMonthlyAnalysis.Location = new System.Drawing.Point(4, 27);
             this.pgeMonthlyAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMonthlyAnalysis.Name = "pgeMonthlyAnalysis";
-            this.pgeMonthlyAnalysis.Size = new System.Drawing.Size(1627, 849);
+            this.pgeMonthlyAnalysis.Size = new System.Drawing.Size(1635, 905);
             this.pgeMonthlyAnalysis.TabIndex = 17;
             this.pgeMonthlyAnalysis.Text = "Time Series Analysis";
             this.pgeMonthlyAnalysis.UseVisualStyleBackColor = true;
@@ -7562,7 +7759,7 @@
             this.pgeMaps.Location = new System.Drawing.Point(4, 27);
             this.pgeMaps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMaps.Name = "pgeMaps";
-            this.pgeMaps.Size = new System.Drawing.Size(1627, 849);
+            this.pgeMaps.Size = new System.Drawing.Size(1635, 905);
             this.pgeMaps.TabIndex = 8;
             this.pgeMaps.Text = "Maps";
             this.pgeMaps.UseVisualStyleBackColor = true;
@@ -8048,7 +8245,7 @@
             this.pgeRound.Location = new System.Drawing.Point(4, 27);
             this.pgeRound.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeRound.Name = "pgeRound";
-            this.pgeRound.Size = new System.Drawing.Size(1627, 849);
+            this.pgeRound.Size = new System.Drawing.Size(1635, 905);
             this.pgeRound.TabIndex = 11;
             this.pgeRound.Text = "Uncertainty Analysis";
             this.pgeRound.UseVisualStyleBackColor = true;
@@ -8509,7 +8706,7 @@
             this.pgeStepwise.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeStepwise.Name = "pgeStepwise";
             this.pgeStepwise.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeStepwise.Size = new System.Drawing.Size(1627, 849);
+            this.pgeStepwise.Size = new System.Drawing.Size(1635, 905);
             this.pgeStepwise.TabIndex = 10;
             this.pgeStepwise.Text = "Advanced";
             this.pgeStepwise.UseVisualStyleBackColor = true;
@@ -8820,7 +9017,7 @@
             this.chkAdvToShow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAdvToShow.MultiColumn = true;
             this.chkAdvToShow.Name = "chkAdvToShow";
-            this.chkAdvToShow.Size = new System.Drawing.Size(254, 184);
+            this.chkAdvToShow.Size = new System.Drawing.Size(254, 164);
             this.chkAdvToShow.TabIndex = 187;
             this.chkAdvToShow.SelectedIndexChanged += new System.EventHandler(this.chkAdvToShow_SelectedIndexChanged);
             // 
@@ -9321,7 +9518,7 @@
             this.pgeSuitability.Location = new System.Drawing.Point(4, 27);
             this.pgeSuitability.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeSuitability.Name = "pgeSuitability";
-            this.pgeSuitability.Size = new System.Drawing.Size(1627, 849);
+            this.pgeSuitability.Size = new System.Drawing.Size(1635, 905);
             this.pgeSuitability.TabIndex = 18;
             this.pgeSuitability.Text = "Site Suitability";
             this.pgeSuitability.UseVisualStyleBackColor = true;
@@ -10074,6 +10271,7 @@
             // menuStrip1
             // 
             this.menuStrip1.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.helpToolStripMenuItem,
@@ -10082,7 +10280,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1671, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(1679, 25);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -10164,7 +10362,8 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.generateHeadersToolStripMenuItem});
+            this.generateHeadersToolStripMenuItem,
+            this.downloadMERRA2DataToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(50, 21);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -10172,9 +10371,16 @@
             // generateHeadersToolStripMenuItem
             // 
             this.generateHeadersToolStripMenuItem.Name = "generateHeadersToolStripMenuItem";
-            this.generateHeadersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.generateHeadersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.generateHeadersToolStripMenuItem.Text = "Generate Headers";
             this.generateHeadersToolStripMenuItem.Click += new System.EventHandler(this.generateHeadersToolStripMenuItem_Click);
+            // 
+            // downloadMERRA2DataToolStripMenuItem
+            // 
+            this.downloadMERRA2DataToolStripMenuItem.Name = "downloadMERRA2DataToolStripMenuItem";
+            this.downloadMERRA2DataToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.downloadMERRA2DataToolStripMenuItem.Text = "Download MERRA2 data";
+            this.downloadMERRA2DataToolStripMenuItem.Click += new System.EventHandler(this.downloadMERRA2DataToolStripMenuItem_Click);
             // 
             // ofdXYZfile
             // 
@@ -10282,12 +10488,114 @@
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Turbine";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Width = 80;
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "Elev. [m]";
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            this.Column4.Width = 70;
+            // 
+            // Column15
+            // 
+            this.Column15.HeaderText = "Complexity";
+            this.Column15.Name = "Column15";
+            this.Column15.ReadOnly = true;
+            // 
+            // Column5
+            // 
+            this.Column5.HeaderText = "5h 360 TSI";
+            this.Column5.Name = "Column5";
+            this.Column5.ReadOnly = true;
+            this.Column5.Width = 80;
+            // 
+            // Column6
+            // 
+            dataGridViewCellStyle1.Format = "P";
+            dataGridViewCellStyle1.NullValue = null;
+            this.Column6.DefaultCellStyle = dataGridViewCellStyle1;
+            this.Column6.HeaderText = "5h 360 TVI";
+            this.Column6.Name = "Column6";
+            this.Column6.ReadOnly = true;
+            this.Column6.Width = 80;
+            // 
+            // Column7
+            // 
+            this.Column7.HeaderText = "5h 30 TSI";
+            this.Column7.Name = "Column7";
+            this.Column7.ReadOnly = true;
+            this.Column7.Width = 80;
+            // 
+            // Column8
+            // 
+            dataGridViewCellStyle2.Format = "P";
+            dataGridViewCellStyle2.NullValue = null;
+            this.Column8.DefaultCellStyle = dataGridViewCellStyle2;
+            this.Column8.HeaderText = "5h 30 TVI";
+            this.Column8.Name = "Column8";
+            this.Column8.ReadOnly = true;
+            this.Column8.Width = 80;
+            // 
+            // Column9
+            // 
+            this.Column9.HeaderText = "10h 30 TSI";
+            this.Column9.Name = "Column9";
+            this.Column9.ReadOnly = true;
+            this.Column9.Width = 80;
+            // 
+            // Column10
+            // 
+            dataGridViewCellStyle3.Format = "P";
+            dataGridViewCellStyle3.NullValue = null;
+            this.Column10.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Column10.HeaderText = "10h 30 TVI";
+            this.Column10.Name = "Column10";
+            this.Column10.ReadOnly = true;
+            this.Column10.Width = 80;
+            // 
+            // Column11
+            // 
+            this.Column11.HeaderText = "20h 30 TSI";
+            this.Column11.Name = "Column11";
+            this.Column11.ReadOnly = true;
+            this.Column11.Width = 80;
+            // 
+            // Column12
+            // 
+            dataGridViewCellStyle4.Format = "P";
+            dataGridViewCellStyle4.NullValue = null;
+            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
+            this.Column12.HeaderText = "20h 30 TVI";
+            this.Column12.Name = "Column12";
+            this.Column12.ReadOnly = true;
+            this.Column12.Width = 80;
+            // 
+            // Column13
+            // 
+            this.Column13.HeaderText = "P10 UW Expo.";
+            this.Column13.Name = "Column13";
+            this.Column13.ReadOnly = true;
+            this.Column13.Width = 90;
+            // 
+            // Column14
+            // 
+            this.Column14.HeaderText = "P10 DW Expo";
+            this.Column14.Name = "Column14";
+            this.Column14.ReadOnly = true;
+            this.Column14.Width = 90;
+            // 
             // Continuum
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1671, 910);
+            this.ClientSize = new System.Drawing.Size(1679, 905);
             this.Controls.Add(this.tabContinuum);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -10304,6 +10612,7 @@
             this.pgeMetData.PerformLayout();
             this.pgeMERRA.ResumeLayout(false);
             this.pgeMERRA.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataLTRefNodes)).EndInit();
             this.pgeMCP.ResumeLayout(false);
             this.pgeMCP.PerformLayout();
             this.pgeMetSumm.ResumeLayout(false);
@@ -10316,14 +10625,16 @@
             this.pgeNetEsts.PerformLayout();
             this.pgeSiteConditions.ResumeLayout(false);
             this.pgeSiteConditions.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.tabSiteConditions.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataTerrainComplex)).EndInit();
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.pgeMonthlyAnalysis.ResumeLayout(false);
             this.pgeMonthlyAnalysis.PerformLayout();
             this.pgeMaps.ResumeLayout(false);
@@ -10888,19 +11199,11 @@
         public System.Windows.Forms.DateTimePicker dateMERRAStart;
         private System.Windows.Forms.Label label152;
         private System.Windows.Forms.Label label153;
-        private System.Windows.Forms.Label label147;
-        public System.Windows.Forms.ComboBox cboMERRASelectedMet;
-        public System.Windows.Forms.TextBox txtMERRA_SelectedLong;
-        private System.Windows.Forms.Label label149;
-        private System.Windows.Forms.Label label150;
-        public System.Windows.Forms.TextBox txtMERRA_SelectedLat;
         private System.Windows.Forms.Label label154;
         private System.Windows.Forms.Label label151;
         private System.Windows.Forms.Label label160;
         public System.Windows.Forms.ComboBox cboMERRA_PowerCurves;
         public System.Windows.Forms.FolderBrowserDialog fbd_MERRAData;
-        public System.Windows.Forms.ComboBox cboNumMERRA_Nodes;
-        private System.Windows.Forms.Label label161;
         private System.Windows.Forms.Label label162;
         public System.Windows.Forms.TextBox txtMERRA_WS_ScaleFact;        
         public System.Windows.Forms.ListView lstMERRAAnnualProd;
@@ -10920,9 +11223,9 @@
         internal System.Windows.Forms.Label label168;
         public System.Windows.Forms.Label lblRegStats;
         private System.Windows.Forms.Label label121;
-        public System.Windows.Forms.ComboBox cboMERRA_Month;
+        public System.Windows.Forms.ComboBox cboReferenceMonth;
         private System.Windows.Forms.Label label120;
-        public System.Windows.Forms.ComboBox cboMERRAYear;
+        public System.Windows.Forms.ComboBox cboReferenceYear;
         internal System.Windows.Forms.CheckedListBox chkYearsToDisplay;
         internal System.Windows.Forms.CheckBox chkYearsToDisplayAll;
         internal System.Windows.Forms.Button btnImportCRV_MERRA;
@@ -11063,75 +11366,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader175;
         private System.Windows.Forms.ColumnHeader columnHeader176;
         private System.Windows.Forms.TabPage pgeSiteConditions;
-        private System.Windows.Forms.Panel panel3;
-        internal System.Windows.Forms.Label label170;
-        private System.Windows.Forms.Panel panel2;
-        internal System.Windows.Forms.Label label95;
-        private System.Windows.Forms.Panel panel1;
-        internal System.Windows.Forms.Label label93;
         internal System.Windows.Forms.Label label92;
-        private System.Windows.Forms.Panel panel4;
-        internal System.Windows.Forms.Label label171;
-        internal System.Windows.Forms.Label label172;
-        internal System.Windows.Forms.ComboBox cboTurbWD;
-        internal System.Windows.Forms.Label label174;
-        public System.Windows.Forms.ComboBox cboTurbMet;
-        public System.Windows.Forms.ListView lstTurbulence;
-        private System.Windows.Forms.ColumnHeader columnHeader177;
-        private System.Windows.Forms.ColumnHeader columnHeader178;
-        internal System.Windows.Forms.ComboBox cboTurbineTI;
-        internal System.Windows.Forms.Label label179;
-        internal System.Windows.Forms.Label label178;
-        internal System.Windows.Forms.ComboBox cboEffectiveTI_m;
-        internal System.Windows.Forms.ComboBox cboTI_Type;
-        internal System.Windows.Forms.Label label177;
-        private System.Windows.Forms.ColumnHeader columnHeader179;
-        public System.Windows.Forms.DateTimePicker dateTIStart;
-        private System.Windows.Forms.Label label186;
-        private System.Windows.Forms.Label label187;
-        public System.Windows.Forms.DateTimePicker dateTIEnd;
-        internal System.Windows.Forms.Label label188;
-        internal System.Windows.Forms.ComboBox cboTurbPowerCurve;
-        private System.Windows.Forms.Button btnExportTI;
-        internal System.Windows.Forms.Label label189;
-        public System.Windows.Forms.ComboBox cboExtremeShearMet;
-        private System.Windows.Forms.Button btnExportShearStats;
-        public System.Windows.Forms.ListView lstExtremeShear;
-        private System.Windows.Forms.ColumnHeader columnHeader180;
-        private System.Windows.Forms.ColumnHeader columnHeader181;
-        private System.Windows.Forms.ColumnHeader columnHeader182;
-        private System.Windows.Forms.ColumnHeader columnHeader183;
-        private System.Windows.Forms.ColumnHeader columnHeader184;
-        internal System.Windows.Forms.Label label190;
-        public System.Windows.Forms.ComboBox cboExtremeShearRange;
-        private System.Windows.Forms.Button btnInflowAngles;
-        internal System.Windows.Forms.ComboBox cboInflowTurbine;
-        internal System.Windows.Forms.Label label197;
-        internal System.Windows.Forms.Label label196;
-        internal System.Windows.Forms.ComboBox cboInflowWD;
-        private System.Windows.Forms.Button btnExtremeWS;
-        internal System.Windows.Forms.Label label195;
-        public System.Windows.Forms.ComboBox cboExtremeWSMet;
-        private System.Windows.Forms.Label label193;
-        private System.Windows.Forms.Label label194;
-        private System.Windows.Forms.Label label192;
-        private System.Windows.Forms.Label label191;
-        public System.Windows.Forms.TextBox txt1yrExtremeGust;
-        public System.Windows.Forms.TextBox txt1yrExtreme10min;
-        public System.Windows.Forms.TextBox txt50yrExtremeGust;
-        public System.Windows.Forms.TextBox txt50yrExtreme10min;
-        internal System.Windows.Forms.Label label199;
-        internal System.Windows.Forms.ComboBox cboInflowReso;
-        internal System.Windows.Forms.Label label198;
-        internal System.Windows.Forms.ComboBox cboInflowRadius;
-        internal System.Windows.Forms.Label label200;
-        public System.Windows.Forms.TextBox txtInflowAngle;
-        internal System.Windows.Forms.Label label201;
         public System.Windows.Forms.Button btnDoMCP;
-        public System.Windows.Forms.DateTimePicker dateTimeExtremeShearStart;
-        private System.Windows.Forms.Label label202;
-        private System.Windows.Forms.Label label203;
-        public System.Windows.Forms.DateTimePicker dateTimeExtremeShearEnd;
         private System.Windows.Forms.ColumnHeader columnHeader185;
         internal System.Windows.Forms.TextBox txtisMCPdGross;
         public System.Windows.Forms.Button btnDoMCPAllMets;
@@ -11149,8 +11385,6 @@
         private System.Windows.Forms.Label label51;
         internal System.Windows.Forms.CheckBox chkCreateTurbTS;
         internal System.Windows.Forms.Button btnGenTurbGross;
-        private System.Windows.Forms.Label lblExtremeWS;
-        public System.Windows.Forms.Label lblNoExtremeWS;
         public System.Windows.Forms.ListView lstZones;
         public System.Windows.Forms.Label lblTurbineTSNoAdvanced;
         private System.Windows.Forms.Button btnShowMCPRanges;
@@ -11195,10 +11429,6 @@
         public OxyPlot.WindowsForms.PlotView plotWakedDists;
         public OxyPlot.WindowsForms.PlotView plotTurbsByString;
         public OxyPlot.WindowsForms.PlotView plotWakeMap;
-        public OxyPlot.WindowsForms.PlotView plotTurbInt;
-        public OxyPlot.WindowsForms.PlotView plotExtremeShear;
-        public OxyPlot.WindowsForms.PlotView plotExtremeWS;
-        public OxyPlot.WindowsForms.PlotView plotInflowAngle;
         public OxyPlot.WindowsForms.PlotView plotMonthlyTS;
         public OxyPlot.WindowsForms.PlotView plotYearlyTS;
         public OxyPlot.WindowsForms.PlotView plotGenMap;
@@ -11211,16 +11441,6 @@
         public OxyPlot.WindowsForms.PlotView plotUHModel;
         public OxyPlot.WindowsForms.PlotView plotIceShadowSound;
         public OxyPlot.WindowsForms.PlotView plotIceVsDist;
-        internal System.Windows.Forms.Button btnDownloadMERRA2;
-        private System.Windows.Forms.Button btnChangeFolder;
-        private System.Windows.Forms.Label label54;
-        public System.Windows.Forms.TextBox txtMaxLong;
-        private System.Windows.Forms.Label label146;
-        public System.Windows.Forms.TextBox txtMinLong;
-        private System.Windows.Forms.Label label52;
-        public System.Windows.Forms.TextBox txtMaxLat;
-        private System.Windows.Forms.Label label5;
-        public System.Windows.Forms.TextBox txtMinLat;
         public System.Windows.Forms.Button btnExportTarget;
         internal System.Windows.Forms.ComboBox cboSelVane;
         private System.Windows.Forms.Label label184;
@@ -11238,6 +11458,123 @@
         internal System.Windows.Forms.CheckBox chkTowerShadow;
         private System.Windows.Forms.Button btnResetMaxRecovDates;
         private System.Windows.Forms.Button btnExplainMERRA2Tab;
+        private System.Windows.Forms.ToolStripMenuItem downloadMERRA2DataToolStripMenuItem;
+        public System.Windows.Forms.DateTimePicker dateLTRefAvailEnd;
+        public System.Windows.Forms.DateTimePicker dateLTRefAvailStart;
+        private System.Windows.Forms.Label label52;
+        private System.Windows.Forms.Label label54;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.Label label205;
+        public System.Windows.Forms.TextBox txtRefDataAvail;
+        private System.Windows.Forms.Label label204;
+        public System.Windows.Forms.DataGridView dataLTRefNodes;
+        private System.Windows.Forms.Label label206;
+        public System.Windows.Forms.ComboBox cboMCP_Ref;
+        private System.Windows.Forms.Label label207;
+        public System.Windows.Forms.ComboBox cboLTReferences;
+        private System.Windows.Forms.Button btnAddNew;
+        private System.Windows.Forms.Button btnEditReference;
+        private System.Windows.Forms.Button btnDelRef;
+        private System.Windows.Forms.TabControl tabSiteConditions;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPage1;
+        public OxyPlot.WindowsForms.PlotView plotTurbInt;
+        private System.Windows.Forms.Button btnExportTI;
+        internal System.Windows.Forms.Label label188;
+        internal System.Windows.Forms.ComboBox cboTurbPowerCurve;
+        public System.Windows.Forms.DateTimePicker dateTIStart;
+        private System.Windows.Forms.Label label186;
+        private System.Windows.Forms.Label label187;
+        public System.Windows.Forms.DateTimePicker dateTIEnd;
+        internal System.Windows.Forms.ComboBox cboTurbineTI;
+        internal System.Windows.Forms.Label label179;
+        internal System.Windows.Forms.Label label178;
+        internal System.Windows.Forms.ComboBox cboEffectiveTI_m;
+        internal System.Windows.Forms.ComboBox cboTI_Type;
+        internal System.Windows.Forms.Label label177;
+        public System.Windows.Forms.ListView lstTurbulence;
+        private System.Windows.Forms.ColumnHeader columnHeader177;
+        private System.Windows.Forms.ColumnHeader columnHeader178;
+        private System.Windows.Forms.ColumnHeader columnHeader179;
+        internal System.Windows.Forms.Label label174;
+        public System.Windows.Forms.ComboBox cboTurbMet;
+        internal System.Windows.Forms.Label label172;
+        internal System.Windows.Forms.ComboBox cboTurbWD;
+        internal System.Windows.Forms.Label label93;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tabPage4;
+        internal System.Windows.Forms.Label label199;
+        internal System.Windows.Forms.Label label198;
+        internal System.Windows.Forms.Label label197;
+        internal System.Windows.Forms.Label label196;
+        public OxyPlot.WindowsForms.PlotView plotInflowAngle;
+        internal System.Windows.Forms.Label label200;
+        public System.Windows.Forms.TextBox txtInflowAngle;
+        internal System.Windows.Forms.ComboBox cboInflowReso;
+        internal System.Windows.Forms.ComboBox cboInflowRadius;
+        private System.Windows.Forms.Button btnInflowAngles;
+        internal System.Windows.Forms.ComboBox cboInflowTurbine;
+        internal System.Windows.Forms.ComboBox cboInflowWD;
+        internal System.Windows.Forms.Label label171;
+        public OxyPlot.WindowsForms.PlotView plotExtremeShear;
+        public System.Windows.Forms.DateTimePicker dateTimeExtremeShearStart;
+        private System.Windows.Forms.Label label202;
+        private System.Windows.Forms.Label label203;
+        public System.Windows.Forms.DateTimePicker dateTimeExtremeShearEnd;
+        internal System.Windows.Forms.Label label201;
+        internal System.Windows.Forms.Label label190;
+        public System.Windows.Forms.ComboBox cboExtremeShearRange;
+        internal System.Windows.Forms.Label label189;
+        public System.Windows.Forms.ComboBox cboExtremeShearMet;
+        private System.Windows.Forms.Button btnExportShearStats;
+        public System.Windows.Forms.ListView lstExtremeShear;
+        private System.Windows.Forms.ColumnHeader columnHeader180;
+        private System.Windows.Forms.ColumnHeader columnHeader181;
+        private System.Windows.Forms.ColumnHeader columnHeader182;
+        private System.Windows.Forms.ColumnHeader columnHeader183;
+        private System.Windows.Forms.ColumnHeader columnHeader184;
+        internal System.Windows.Forms.Label label95;
+        internal System.Windows.Forms.Label label195;
+        internal System.Windows.Forms.Label label103;
+        public System.Windows.Forms.ComboBox cboExtremeWSRef;
+        public OxyPlot.WindowsForms.PlotView plotExtremeWS;
+        private System.Windows.Forms.Label lblExtremeWS;
+        private System.Windows.Forms.Button btnExtremeWS;
+        public System.Windows.Forms.ComboBox cboExtremeWSMet;
+        public System.Windows.Forms.TextBox txt1yrExtremeGust;
+        public System.Windows.Forms.TextBox txt1yrExtreme10min;
+        public System.Windows.Forms.TextBox txt50yrExtremeGust;
+        public System.Windows.Forms.TextBox txt50yrExtreme10min;
+        private System.Windows.Forms.Label label193;
+        private System.Windows.Forms.Label label194;
+        private System.Windows.Forms.Label label192;
+        private System.Windows.Forms.Label label191;
+        internal System.Windows.Forms.Label label170;
+        private System.Windows.Forms.Label label147;
+        private System.Windows.Forms.Button btnShowIECThresh;
+        public OxyPlot.WindowsForms.PlotView plotComplexHisto;
+        private System.Windows.Forms.Label label150;
+        private System.Windows.Forms.Label label161;
+        public System.Windows.Forms.DataGridView dataTerrainComplex;
+        public System.Windows.Forms.ComboBox cboTSIorTVIorP90;
+        public System.Windows.Forms.Label lblNoExtremeWS;
+        public System.Windows.Forms.Label lblIEC_Complexity;
+        internal System.Windows.Forms.Button btnCalcTerrainComplexity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column15;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column13;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
     }
 }
 

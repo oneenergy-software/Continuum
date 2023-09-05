@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
+//using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Net;
+using Microsoft.Research.Science.Data.Imperative;
+using Microsoft.Research.Science.Data;
 
 namespace ContinuumNS
 {
@@ -16,7 +18,7 @@ namespace ContinuumNS
     /// Class that executes lengthy processes on a separate (background) thread so that the GUI doesn't appear unresponsive.
     /// Background tasks include: 
     /// 1) Topography and Land Cover import
-    /// 2) MERRA2 data download and extracting
+    /// 2) MERRA2 data download and long-term data extracting (ERA5 (downloads currently must be done outside C3 and MERRA2)
     /// 3) Met site calcs and model creation
     /// 4) Turbine site calcs and estimates
     /// 5) Round Robin analysis
@@ -110,17 +112,38 @@ namespace ContinuumNS
         public struct Vars_for_MERRA
         {
             /// <summary> MERRA2 object to fill with data </summary>
-            public MERRA thisMERRA;
+            public Reference thisMERRA;
             /// <summary> MERRA2 nodes to pull from local files </summary>
-            public MERRA.MERRA_Pull[] nodesToPull;
+            public Reference.RefData_Pull[] nodesToPull;
             /// <summary> Continuum instance </summary>
             public Continuum thisInst;
             /// <summary> Selected MCP method </summary>
             public string MCP_type;
             /// <summary> Selected met (if any) to conduct MCP </summary>
             public Met thisMet;
-        }          
-        
+        }
+
+        /// <summary> Contains objects to extract reference data from local files </summary>
+        public struct Vars_for_ReferenceData_Extract
+        {
+            /// <summary> Reference object to fill with data </summary>
+            public Reference thisRef;
+            /// <summary> Reference nodes to pull from local files </summary>
+            public Reference.RefData_Pull[] nodesToPull;
+            /// <summary> Continuum instance </summary>
+            public Continuum thisInst;            
+        }
+
+        /// <summary> Contains MERRA2 download form </summary>
+        public struct Vars_for_MERRA_Download
+        {
+            /// <summary> MERRA2 download form </summary>
+            public MERRA2_Download thisMERRA;            
+            /// <summary> Continuum instance </summary>
+            public Continuum thisInst;
+            
+        }
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary> Calls Met Calcs background worker and runs background task </summary>        
@@ -202,7 +225,7 @@ namespace ContinuumNS
                 BackgroundWorker_MetCalcs.ReportProgress(10 + 40 * (i + 1) / numMets, textForProgBar);
             }
 
-            // If using time series mets and isMCPd = true, only create model if all mets have LT ests (i.e. user might have to import MERRA data)
+            // If using time series mets and isMCPd = true, only create model if all mets have LT ests (i.e. user might have to import reference data)
             thisInst.metList.AreAllMetsMCPd();
             if (thisInst.metList.isTimeSeries && thisInst.metList.isMCPd && thisInst.metList.allMCPd == false)
             {
@@ -1092,7 +1115,7 @@ namespace ContinuumNS
             }
             else
             {
-                if (turbList.TurbineCount > 0)
+                if (turbList.TurbineCount > 0 && thisInst.modelList.ModelCount > 0)
                 {
                     textForProgBar = "Calculating wind speeds at 1/" + turbList.TurbineCount + " turbine sites.";
                     BackgroundWorker_TurbCalcs.ReportProgress(10, textForProgBar);
@@ -1108,6 +1131,10 @@ namespace ContinuumNS
 
                 if (turbine.gridStats.stats == null)
                     turbine.gridStats.GetGridArrayAndCalcStats(turbine.UTMX, turbine.UTMY, thisInst);
+
+                textForProgBar = "Calculating terrain complexity at " + (i + 1).ToString() + "/" + turbList.TurbineCount + " turbine sites.";
+                int prog = (int)((double)(i + 1) / thisInst.turbineList.TurbineCount * 100);
+                BackgroundWorker_TurbCalcs.ReportProgress(prog, textForProgBar);
             }
 
             if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || thisInst.turbineList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0)
@@ -1137,7 +1164,7 @@ namespace ContinuumNS
                     }
                 }
             }
-            else
+            else if (thisInst.modelList.ModelCount > 0)
             {
                 for (int i = 0; i < turbList.TurbineCount; i++)
                 {
@@ -1274,6 +1301,7 @@ namespace ContinuumNS
             }
 
             turbList.AssignStringNumber();
+            turbList.AreExpoCalcsDone();
             turbList.AreTurbCalcsDone(thisInst);
             DoWorkDone = true;
             e.Result = thisInst;
@@ -2529,11 +2557,11 @@ namespace ContinuumNS
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_WAsP_Map.CancelAsync();
             }
-            else if (BackgroundWorker_MERRA.IsBusy == true)
+            else if (BackgroundWorker_RefDataExtract.IsBusy == true)
             {
                 DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 data import?", "Continuum 3", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
-                    BackgroundWorker_MERRA.CancelAsync();
+                    BackgroundWorker_RefDataExtract.CancelAsync();
             }
             else if (BackgroundWorker_Shadow.IsBusy == true)
             {
@@ -2576,43 +2604,46 @@ namespace ContinuumNS
                        
             if (BackgroundWorker_LandCover.IsBusy || BackgroundWorker_Map.IsBusy || BackgroundWorker_MetCalcs.IsBusy || BackgroundWorker_Node_SR_Recalc.IsBusy
                 || BackgroundWorker_RoundRobin.IsBusy || BackgroundWorker_SaveAs.IsBusy || BackgroundWorker_Topo.IsBusy || BackgroundWorker_TurbCalcs.IsBusy
-                || BackgroundWorker_WAsP_Map.IsBusy || BackgroundWorker_WRG.IsBusy || BackgroundWorker_MERRA.IsBusy || BackgroundWorker_IceThrow.IsBusy
+                || BackgroundWorker_WAsP_Map.IsBusy || BackgroundWorker_WRG.IsBusy || BackgroundWorker_RefDataExtract.IsBusy || BackgroundWorker_IceThrow.IsBusy
                 || BackgroundWorker_Exceed.IsBusy || BackgroundWorker_Shadow.IsBusy)
                 Busy = true;                        
 
             return Busy;
         }
 
-        /// <summary> Calls MERRA2 import background worker (extracts required data from local MERRA2 files) </summary>        
-        public void Call_BW_MERRA2_Import(Vars_for_MERRA vars_For_MERRA)
+        /// <summary> Calls reference data extractor background worker (extracts required data from local reference files) </summary>        
+        public void Call_BW_RefDataImport(Vars_for_ReferenceData_Extract vars_For_refData)
         {            
             Show();
-            BackgroundWorker_MERRA.RunWorkerAsync(vars_For_MERRA);
+            BackgroundWorker_RefDataExtract.RunWorkerAsync(vars_For_refData);
         }
 
-        private void BackgroundWorker_MERRA_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker_RefDataExtract_DoWork(object sender, DoWorkEventArgs e)
         {
-            // Reads in MERRA2 text files, interpolates to estimate MERRA2 data at specified lat/long
-            Vars_for_MERRA theArgs = (Vars_for_MERRA)(e.Argument);
+            // Reads in Reference data text files, interpolates to estimate reference data at specified lat/long
+            Vars_for_ReferenceData_Extract theArgs = (Vars_for_ReferenceData_Extract)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
-            MERRA thisMERRA = theArgs.thisMERRA;
-            MERRA.MERRA_Pull[] nodesToPull = theArgs.nodesToPull;
+            Reference thisRef = theArgs.thisRef;
+            Reference.RefData_Pull[] nodesToPull = theArgs.nodesToPull;
             int numNodesToPull = nodesToPull.Length;
-            MERRACollection merraList = thisInst.merraList;
-            Met thisMet = theArgs.thisMet;
-            string MCP_Method = theArgs.MCP_type;
-
+            ReferenceCollection refList = thisInst.refList;
+            
             int last_file_ind = 0;
             char[] delims = { ',', '\n' };
 
-            string[] MERRAfiles = Directory.GetFiles(merraList.MERRAfolder, "*.ascii");
+            string[] refDataFiles = new string[0];
+            
+            if (thisRef.referenceType == "MERRA2")
+                refDataFiles = Directory.GetFiles(thisRef.refDataFolder, "*.ascii");
+            else
+                refDataFiles = Directory.GetFiles(thisRef.refDataFolder, "*.nc"); // NetCDF files
 
             StreamReader file;
-            DateTime startTime = thisInst.dateMERRAStart.Value;
-            DateTime endTime = thisInst.dateMERRAEnd.Value;
+            DateTime startTime = thisRef.startDate;
+            DateTime endTime = thisRef.endDate;
             // Convert start and end time to UTC
-            startTime = startTime.AddHours(-thisMERRA.interpData.UTC_offset);
-            endTime = endTime.AddHours(-thisMERRA.interpData.UTC_offset);
+            startTime = startTime.AddHours(-thisRef.interpData.UTC_offset);
+            endTime = endTime.AddHours(-thisRef.interpData.UTC_offset);
 
             // Set hour of startTime and endTime to 0. (Daily files are read in and all data is processed. After 
             // all files have been read, the data is trimmed to the actual start and end times
@@ -2623,209 +2654,304 @@ namespace ContinuumNS
             TimeSpan timeSpan = endTimeZeroHour - startTimeZeroHour;
             int numRefHours = Convert.ToInt32(timeSpan.TotalHours) + 24;
 
-            // Resize MERRApull objects to hold all TS data and define East_North_WS arrays
-            MERRA.East_North_WSs[] nodeEastNorthWS = new MERRA.East_North_WSs[numNodesToPull];
+            // Resize Refpull objects to hold all TS data and define East_North_WS arrays
+            Reference.East_North_WSs[] nodeEastNorthWS = new Reference.East_North_WSs[numNodesToPull];
 
             for (int i = 0; i < numNodesToPull; i++)
             {
                 Array.Resize(ref nodesToPull[i].Data, numRefHours);
                 Array.Resize(ref nodeEastNorthWS[i].timeStamp, numRefHours);
-                Array.Resize(ref nodeEastNorthWS[i].U10, numRefHours);
-                Array.Resize(ref nodeEastNorthWS[i].U50, numRefHours);
-                Array.Resize(ref nodeEastNorthWS[i].V10, numRefHours);
-                Array.Resize(ref nodeEastNorthWS[i].V50, numRefHours);
+                Array.Resize(ref nodeEastNorthWS[i].U_WS, numRefHours);
+                Array.Resize(ref nodeEastNorthWS[i].V_WS, numRefHours);               
             }
 
             int lastInd = 0;
             int counter = 0;
 
-            // Looping through every day in specified date range
-            for (DateTime thisDate = startTimeZeroHour; thisDate <= endTimeZeroHour; thisDate = thisDate.AddDays(1))
+            if (thisRef.referenceType == "MERRA2")
             {
-                string datestring = thisMERRA.Make_MERRA2_Date_String(thisDate);
-                counter++;
-                TimeSpan Num_Days_Processed = thisDate.Subtract(startTime);
-                TimeSpan Num_Days_Total = endTime.Subtract(startTime);
-                double Prog = 100 * Num_Days_Processed.TotalDays / Num_Days_Total.TotalDays;
-
-                if (counter % 50 == 0)
-                    BackgroundWorker_MERRA.ReportProgress((int)Prog, "Importing MERRA2 data");
-
-                if (BackgroundWorker_MERRA.CancellationPending == true)
+                // Looping through every day in specified date range
+                for (DateTime thisDate = startTimeZeroHour; thisDate <= endTimeZeroHour; thisDate = thisDate.AddDays(1))
                 {
-                    if (thisMet != null)
-                        thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
-                    e.Result = thisInst;
-                    return;
-                }
+                    string datestring = thisRef.Make_MERRA2_Date_String(thisDate);
+                    counter++;
+                    TimeSpan Num_Days_Processed = thisDate.Subtract(startTime);
+                    TimeSpan Num_Days_Total = endTime.Subtract(startTime);
+                    double Prog = 100 * Num_Days_Processed.TotalDays / Num_Days_Total.TotalDays;
 
-                // Looping through every file to find correct file by matching with datestring
-                for (int i = last_file_ind; i < MERRAfiles.Length; i++)
-                {
-                    string thisFile = MERRAfiles[i];
+                    if (counter % 50 == 0)
+                        BackgroundWorker_RefDataExtract.ReportProgress((int)Prog, "Importing MERRA2 data");
 
-                    if (thisFile.Substring(thisFile.Length - 18, 8) == datestring)
+                    if (BackgroundWorker_RefDataExtract.CancellationPending == true)
                     {
-                        try
-                        {
-                            file = new StreamReader(thisFile);
-                            last_file_ind = i + 1;
-                        }
-                        catch
-                        {
-                            MessageBox.Show("Error opening the MERRA data file. Check that it's not open in another program.", "", MessageBoxButtons.OK);
-                            return;
-                        }
+                  //      if (thisMet != null) // Met data calcs should be unrelated to reference data pulls
+                  //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+                        e.Result = thisInst;
+                        return;
+                    }
 
-                        string file_contents = file.ReadToEnd();
-                        string[] file_strings = file_contents.Split(delims);
-                        int file_ind = 1; // skip header file_string
-                        int Col_count = 1;
+                    // Looping through every file to find correct file by matching with datestring
+                    for (int i = last_file_ind; i < refDataFiles.Length; i++)
+                    {
+                        string thisFile = refDataFiles[i];
 
-                        while (file_ind < file_strings.Length && file_strings[file_ind - 1] != "time")
+                        if (thisFile.Substring(thisFile.Length - 18, 8) == datestring)
                         {
-                            if (thisMERRA.Need_This_Param(file_strings[file_ind]))
+                            try
                             {
-                                // Using location of brackets in file line to grab the hour of that line
-                                int open_bracket = file_strings[file_ind].IndexOf("[");
-                                int close_bracket = file_strings[file_ind].IndexOf("]");
+                                file = new StreamReader(thisFile);
+                                last_file_ind = i + 1;
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Error opening the MERRA data file. Check that it's not open in another program.", "", MessageBoxButtons.OK);
+                                return;
+                            }
 
-                                int ThisHour = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));
-                                int thisInd = lastInd + ThisHour;
-                         //       DateTime thisTimeStamp = thisDate.AddHours(ThisHour);
+                            string file_contents = file.ReadToEnd();
+                            string[] file_strings = file_contents.Split(delims);
+                            int file_ind = 1; // skip header file_string
+                            int Col_count = 1;
 
-                                open_bracket = file_strings[file_ind].LastIndexOf("[");
-                                close_bracket = file_strings[file_ind].LastIndexOf("]");
-                                int This_X_ind = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));
-
-                                for (int j = 0; j < nodesToPull.Length; j++)
+                            while (file_ind < file_strings.Length && file_strings[file_ind - 1] != "time")
+                            {
+                                if (thisRef.Need_This_Param(file_strings[file_ind]))
                                 {
-                                    if (This_X_ind == nodesToPull[j].XY_ind.X_ind)
+                                    // Using location of brackets in file line to grab the hour of that line
+                                    int open_bracket = file_strings[file_ind].IndexOf("[");
+                                    int close_bracket = file_strings[file_ind].IndexOf("]");
+
+                                    int ThisHour = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));
+                                    int thisInd = lastInd + ThisHour;
+                                    //       DateTime thisTimeStamp = thisDate.AddHours(ThisHour);
+
+                                    open_bracket = file_strings[file_ind].LastIndexOf("[");
+                                    close_bracket = file_strings[file_ind].LastIndexOf("]");
+                                    int This_X_ind = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));                                                                     
+
+                                    for (int j = 0; j < nodesToPull.Length; j++)
                                     {
+                                        if (This_X_ind == nodesToPull[j].XY_ind.X_ind)
+                                        {
 
-                                        if (file_strings[file_ind].Substring(0, 3) == "U50")
-                                            nodeEastNorthWS[j].U50[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                        else if (file_strings[file_ind].Substring(0, 3) == "V50")
-                                            nodeEastNorthWS[j].V50[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                        else if (file_strings[file_ind].Substring(0, 3) == "U10")
-                                            nodeEastNorthWS[j].U10[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                        else if (file_strings[file_ind].Substring(0, 3) == "V10")
-                                            nodeEastNorthWS[j].V10[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                        else if (file_strings[file_ind].Substring(0, 4) == "T10M")
-                                            nodesToPull[j].Data[thisInd].Temp10m = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                        else if (file_strings[file_ind].Substring(0, 2) == "PS")
-                                            nodesToPull[j].Data[thisInd].SurfPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                        else if (file_strings[file_ind].Substring(0, 3) == "SLP")
-                                            nodesToPull[j].Data[thisInd].SeaPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                            if (file_strings[file_ind].Substring(0, 3) == "U50")
+                                                nodeEastNorthWS[j].U_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                            else if (file_strings[file_ind].Substring(0, 3) == "V50")
+                                                nodeEastNorthWS[j].V_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                            else if (file_strings[file_ind].Substring(0, 4) == "T10M")
+                                                nodesToPull[j].Data[thisInd].temperature = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                            else if (file_strings[file_ind].Substring(0, 2) == "PS")
+                                                nodesToPull[j].Data[thisInd].surfPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                            else if (file_strings[file_ind].Substring(0, 3) == "SLP")
+                                                nodesToPull[j].Data[thisInd].seaPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
 
-                                        // Save dates in local time
-                                        nodesToPull[j].Data[thisInd].ThisDate = thisDate.AddHours(ThisHour + thisMERRA.interpData.UTC_offset);
-                                        nodeEastNorthWS[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour + thisMERRA.interpData.UTC_offset);
+                                            // Save dates in local time
+                                            nodesToPull[j].Data[thisInd].thisDate = thisDate.AddHours(ThisHour + thisRef.interpData.UTC_offset);
+                                            nodeEastNorthWS[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour + thisRef.interpData.UTC_offset);
+                                        }
                                     }
                                 }
+
+                                if (Col_count == 1)
+                                {
+                                    file_ind++; // go to first data point
+                                    while (file_strings[file_ind].Contains("[") == false)
+                                    {
+                                        file_ind++;
+                                        Col_count++;
+                                    }
+                                }
+                                else
+                                    file_ind = file_ind + Col_count;
                             }
 
-                            if (Col_count == 1)
+
+                            file.Close();
+                            break; // exiting for loop cycling through files, this break only reached if the correct file has been found and read in
+                        }
+                    }
+
+                    // update lastInd
+                    while (nodeEastNorthWS[0].U_WS[lastInd] != 0 && lastInd < (numRefHours - 1))
+                        lastInd++;
+                }
+            }
+            else
+            {
+                // Read and extract ERA5 netCDF files
+
+                // Populate nodesToPull and nodeEastNorthWS with timestamps
+                for (int hourInd = 0; hourInd < numRefHours; hourInd++)
+                {
+                    DateTime thisTS = startTimeZeroHour.AddHours(hourInd);
+
+                    for (int n = 0; n < nodeEastNorthWS.Length; n++)
+                        nodeEastNorthWS[n].timeStamp[hourInd] = thisTS;
+
+                    for (int n = 0; n < nodesToPull.Length; n++)
+                        nodesToPull[n].Data[hourInd].thisDate = thisTS;
+                }
+
+                DateTime baseTime = new DateTime(1900, 01, 01, 0, 0, 0); //time that all the ERA5 'time' variable values are relative to
+
+                for (int f = 0; f < refDataFiles.Length; f++)
+                {
+                    DataSet thisDataFile = DataSet.Open(refDataFiles[f]);
+                    Variable[] allVars = thisDataFile.Variables.ToArray();
+
+                    Single[] allLats = thisDataFile.GetData<Single[]>("latitude");
+                    Single[] allLong = thisDataFile.GetData<Single[]>("longitude");
+                    int[] allTime = thisDataFile.GetData<int[]>("time");
+                    DateTime thisDate = baseTime.AddHours(allTime[0]);
+                    int tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
+
+                    for (int v = 0; v < allVars.Length; v++)
+                    {
+                        string thisType = allVars[v].TypeOfData.Name;
+
+                        if (thisType == "Int16")
+                        {
+                            Int16[,,] currentVar = thisDataFile.GetData<Int16[,,]>(allVars[v].ID);
+                            var metaData = allVars[v].Metadata;
+
+                            double scaleFactor = (double)metaData["scale_factor"]; 
+                            double addOffset = (double)metaData["add_offset"]; 
+                            
+                            if (allVars[v].Name == "sp")
                             {
-                                file_ind++; // go to first data point
-                                while (file_strings[file_ind].Contains("[") == false)
+                                // Surface pressure
+                                for (int t = 0; t < currentVar.GetUpperBound(0); t++)
                                 {
-                                    file_ind++;
-                                    Col_count++;
+                                    thisDate = baseTime.AddHours(allTime[t]);  
+                                    tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
+
+                                    if (tsInd >= numRefHours)
+                                        break;
+
+                                    for (int n = 0; n < nodesToPull.Length; n++)
+                                        nodesToPull[n].Data[tsInd].surfPress = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
                                 }
                             }
-                            else
-                                file_ind = file_ind + Col_count;
+                            else if (allVars[v].Name == "t2m")
+                            {
+                                // 10 m temperature
+                                for (int t = 0; t < currentVar.GetUpperBound(0); t++)
+                                {
+                                    thisDate = baseTime.AddHours(allTime[t]);
+                                    tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
+
+                                    if (tsInd >= numRefHours)
+                                        break;
+
+                                    for (int n = 0; n < nodesToPull.Length; n++)
+                                        nodesToPull[n].Data[tsInd].temperature = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                }
+                            }
+                            else if (allVars[v].Name == "u100")
+                            {
+                                // 100 m U component of WS
+                                for (int t = 0; t < currentVar.GetUpperBound(0); t++)
+                                {
+                                    thisDate = baseTime.AddHours(allTime[t]);
+                                    tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
+
+                                    if (tsInd >= numRefHours)
+                                        break;
+
+                                    for (int n = 0; n < nodesToPull.Length; n++)
+                                        nodeEastNorthWS[n].U_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                }
+                            }
+                            else if (allVars[v].Name == "v100")
+                            {
+                                // 100 m V component of WS
+                                for (int t = 0; t < currentVar.GetUpperBound(0); t++)
+                                {
+                                    thisDate = baseTime.AddHours(allTime[t]);
+                                    tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
+
+                                    if (tsInd >= numRefHours)
+                                        break;
+
+                                    for (int n = 0; n < nodesToPull.Length; n++)
+                                        nodeEastNorthWS[n].V_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                }
+                            }
                         }
-
-
-                        file.Close();
-                        break; // exiting for loop cycling through files, this break only reached if the correct file has been found and read in
                     }
                 }
 
-                // update lastInd
-                while (nodeEastNorthWS[0].U50[lastInd] != 0 && lastInd < (numRefHours - 1))
-                    lastInd++;
             }
 
             // Find index of start date (with the conversion b/w UTC and local, there will be some additional entries to trim)
             // Convert start and end time back to Local
-            startTime = startTime.AddHours(thisMERRA.interpData.UTC_offset);
-            endTime = endTime.AddHours(thisMERRA.interpData.UTC_offset);
+            startTime = startTime.AddHours(thisRef.interpData.UTC_offset);
+            endTime = endTime.AddHours(thisRef.interpData.UTC_offset);
             int startInd = 0;
-            while (nodesToPull[0].Data[startInd].ThisDate < startTime)
+            while (nodesToPull[0].Data[startInd].thisDate < startTime)
                 startInd++;
 
-            if (startTime < nodesToPull[0].Data[startInd].ThisDate)
+            if (startTime < nodesToPull[0].Data[startInd].thisDate)
             {
                 MessageBox.Show("Available MERRA2 data does not cover desired date range.", "Continuum 3");
-                if (thisMet != null)
-                    thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+          //      if (thisMet != null)
+          //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                 e.Result = thisInst;
                 return;
             }
 
             int endInd = nodesToPull[0].Data.Length - 1;
-            while (nodesToPull[0].Data[endInd].ThisDate > endTime)
+            while (nodesToPull[0].Data[endInd].thisDate > endTime)
                 endInd--;
 
-            // Get rid of any extra entries and calculates and populates MERRApull[] with WS & WD data at 50 & 10m (at each MERRA node) using U and V wind speeds            
+            // Get rid of any extra entries and calculates and populates nodesToPull[] with WS & WD data at 50 & 10m (at each reference node) using U and V wind speeds            
             for (int i = 0; i < numNodesToPull; i++)
             {
-                MERRA.Wind_TS[] croppedData = new MERRA.Wind_TS[endInd - startInd + 1];
+                Reference.Wind_TS_with_Prod[] croppedData = new Reference.Wind_TS_with_Prod[endInd - startInd + 1];
                 Array.Copy(nodesToPull[i].Data, startInd, croppedData, 0, endInd - startInd + 1);
                 nodesToPull[i].Data = croppedData;
 
-                MERRA.East_North_WSs[] croppedEastNorth = new MERRA.East_North_WSs[1];
-                croppedEastNorth[0].U10 = new double[endInd - startInd + 1];
-                croppedEastNorth[0].U50 = new double[endInd - startInd + 1];
-                croppedEastNorth[0].V10 = new double[endInd - startInd + 1];
-                croppedEastNorth[0].V50 = new double[endInd - startInd + 1];
+                Reference.East_North_WSs[] croppedEastNorth = new Reference.East_North_WSs[1];                
+                croppedEastNorth[0].U_WS = new double[endInd - startInd + 1];                
+                croppedEastNorth[0].V_WS = new double[endInd - startInd + 1];                                
 
-                Array.Copy(nodeEastNorthWS[i].U10, startInd, croppedEastNorth[0].U10, 0, endInd - startInd + 1);
-                nodeEastNorthWS[i].U10 = croppedEastNorth[0].U10;
+                Array.Copy(nodeEastNorthWS[i].U_WS, startInd, croppedEastNorth[0].U_WS, 0, endInd - startInd + 1);
+                nodeEastNorthWS[i].U_WS = croppedEastNorth[0].U_WS;                                
 
-                Array.Copy(nodeEastNorthWS[i].U50, startInd, croppedEastNorth[0].U50, 0, endInd - startInd + 1);
-                nodeEastNorthWS[i].U50 = croppedEastNorth[0].U50;
+                Array.Copy(nodeEastNorthWS[i].V_WS, startInd, croppedEastNorth[0].V_WS, 0, endInd - startInd + 1);
+                nodeEastNorthWS[i].V_WS = croppedEastNorth[0].V_WS;
 
-                Array.Copy(nodeEastNorthWS[i].V10, startInd, croppedEastNorth[0].V10, 0, endInd - startInd + 1);
-                nodeEastNorthWS[i].V10 = croppedEastNorth[0].V10;
-
-                Array.Copy(nodeEastNorthWS[i].V50, startInd, croppedEastNorth[0].V50, 0, endInd - startInd + 1);
-                nodeEastNorthWS[i].V50 = croppedEastNorth[0].V50;
-
-                thisMERRA.Calc_MERRA2_WS_WD(ref nodesToPull, nodeEastNorthWS);
+                thisRef.Calc_WS_WD(ref nodesToPull, nodeEastNorthWS);
             }
 
-            // Check that MERRA data was read in
-            bool gotItAll = thisMERRA.WasDataFullyLoaded(nodesToPull);
+            // Check that reference data was read in
+            bool gotItAll = thisRef.WasDataFullyLoaded(nodesToPull);
             if (gotItAll == false)
             {
-                if (thisMet != null)
-                    thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+           //     if (thisMet != null)
+           //         thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                 e.Result = thisInst;
                 return;
             }
 
-            // Add new MERRA nodes to database
-            thisMERRA.AddNewDataToDB(thisInst, nodesToPull);
+            // Add new reference nodes to database
+            thisRef.AddNewDataToDB(thisInst, nodesToPull);
 
-            // Add MERRA object to list
-            Array.Resize(ref thisInst.merraList.merraData, thisInst.merraList.numMERRA_Data + 1);
-            thisInst.merraList.merraData[thisInst.merraList.numMERRA_Data - 1] = thisMERRA;
+            // Add reference object to list // The reference object should already have been added...
+            //   Array.Resize(ref thisInst.refList.reference, thisInst.refList.numReferences + 1);
+            //   thisInst.refList.reference[thisInst.refList.numReferences - 1] = thisMERRA;
 
             // Get all nodes from database
-            thisMERRA.GetMERRADataFromDB(thisInst);
+            thisRef.GetReferenceDataFromDB(thisInst);
 
             // Generate interpData
-            thisMERRA.GetInterpData(thisInst.UTM_conversions);
+            thisRef.GetInterpData(thisInst.UTM_conversions);
 
-            thisMERRA.Calc_MonthProdStats(thisInst.UTM_conversions);
-            thisMERRA.CalcAnnualProd(ref thisMERRA.interpData.Annual_Prod, thisMERRA.interpData.Monthly_Prod, thisInst.UTM_conversions);
+            thisRef.Calc_MonthProdStats(thisInst.UTM_conversions);
+            thisRef.CalcAnnualProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, thisInst.UTM_conversions);
 
-            // Runs MCP at met sites if MCP_type not null
-            if (theArgs.MCP_type != null && theArgs.thisMet.name != null)
+            // Runs MCP at met sites if MCP_type not null.  Taking this out... let users define as many reference sites as they want and then run MCP on MCP tab
+       /*     if (theArgs.MCP_type != null && theArgs.thisMet.name != null)
             {
                 thisMet.mcp = new MCP();
                 thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
@@ -2837,6 +2963,7 @@ namespace ContinuumNS
                 // Checks to see if all mets have MCP estimates and sets metList.allMCPd boolean
                 thisInst.metList.AreAllMetsMCPd();
             }
+       */
 
             DoWorkDone = true;
             e.Result = thisInst;
@@ -2860,7 +2987,7 @@ namespace ContinuumNS
 
         private void BackgroundWorker_MERRA_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            // Updates the MERRA2 import progress bar
+            // Updates the reference data import progress bar
             BringToFront();
             string textForLabel = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
@@ -3325,7 +3452,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Calls MERRA2 download background worker. Connects to NASA website and downloads daily files to local PC. </summary>        
-        public void Call_BW_MERRA2_Download(Vars_for_BW vars_For_MERRA)
+        public void Call_BW_MERRA2_Download(Vars_for_MERRA_Download vars_For_MERRA)
         {            
             Show();
             BackgroundWorker_MERRADownload.RunWorkerAsync(vars_For_MERRA);
@@ -3333,9 +3460,10 @@ namespace ContinuumNS
 
         private void BackgroundWorker_MERRADownload_DoWork(object sender, DoWorkEventArgs e)
         {
-            Vars_for_BW theArgs = (Vars_for_BW)(e.Argument);
+            Vars_for_MERRA_Download theArgs = (Vars_for_MERRA_Download)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
-            MERRACollection merraList = thisInst.merraList;
+            MERRA2_Download download = theArgs.thisMERRA;
+            ReferenceCollection refList = thisInst.refList;
 
             string urs = "https://urs.earthdata.nasa.gov";
             CookieContainer myContainer = new CookieContainer();
@@ -3343,18 +3471,18 @@ namespace ContinuumNS
             // Create a credential cache for authenticating when redirected to Earthdata Login
 
             CredentialCache cache = new CredentialCache();
-            cache.Add(new Uri(urs), "Basic", new NetworkCredential(merraList.earthdataUser, merraList.earthdataPwd));   
+            cache.Add(new Uri(urs), "Basic", new NetworkCredential(download.merraToDownload.earthdataUser, download.merraToDownload.earthdataPwd));   
             
-            if (thisInst.txtMinLat.Text == "" || thisInst.txtMaxLat.Text == "" || thisInst.txtMinLong.Text == "" || thisInst.txtMaxLong.Text == "")
+            if (download.txtMinLat.Text == "" || download.txtMaxLat.Text == "" || download.txtMinLong.Text == "" || download.txtMaxLong.Text == "")
             {
                 MessageBox.Show("Specify the latitude/longitude bounding box before clicking 'Download MERRA2'.  This will begin the download process of MERRA2 data files to the specified MERRA2 folder location");
                 return;
             }
 
-            double minLat = Convert.ToDouble(thisInst.txtMinLat.Text);
-            double maxLat = Convert.ToDouble(thisInst.txtMaxLat.Text);
-            double minLong = Convert.ToDouble(thisInst.txtMinLong.Text);
-            double maxLong = Convert.ToDouble(thisInst.txtMaxLong.Text);
+            double minLat = Convert.ToDouble(download.txtMinLat.Text);
+            double maxLat = Convert.ToDouble(download.txtMaxLat.Text);
+            double minLong = Convert.ToDouble(download.txtMinLong.Text);
+            double maxLong = Convert.ToDouble(download.txtMaxLong.Text);
 
             minLat = Math.Round(minLat / 0.5, 0) * 0.5;
             maxLat = Math.Round(maxLat / 0.5, 0) * 0.5;
@@ -3362,9 +3490,9 @@ namespace ContinuumNS
             maxLong = Math.Round(maxLong / 0.625) * 0.625;
 
             int offset = thisInst.UTM_conversions.GetUTC_Offset(minLat, minLong);
-            DateTime startDate = thisInst.dateMERRAStart.Value;
+            DateTime startDate = download.dateMERRAStart.Value;
             startDate = startDate.AddHours(-offset);
-            DateTime endDate = thisInst.dateMERRAEnd.Value;
+            DateTime endDate = download.dateMERRAEnd.Value;
             endDate = endDate.AddHours(-offset);
 
             DateTime startDayOnly = new DateTime(startDate.Year, startDate.Month, startDate.Day);
@@ -3383,7 +3511,7 @@ namespace ContinuumNS
             double timeToFinish;
 
             // Attempt to connect and test credentials
-            string testResource = merraList.GetMERRA2URL(startDate, minLat, maxLat, minLong, maxLong);
+            string testResource = thisInst.refList.GetMERRA2URL(startDate, minLat, maxLat, minLong, maxLong);
                        
             HttpWebRequest testRequest = (HttpWebRequest)WebRequest.Create(testResource);
             testRequest.Method = "GET";
@@ -3402,8 +3530,8 @@ namespace ContinuumNS
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message.ToString());
-                thisInst.merraList.earthdataUser = "";
-                thisInst.merraList.earthdataPwd = "";
+                download.merraToDownload.earthdataUser = "";
+                download.merraToDownload.earthdataPwd = "";
                 e.Result = thisInst;
                 return;
             }            
@@ -3411,7 +3539,7 @@ namespace ContinuumNS
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
             {
                 DateTime thisDate = startDate.AddDays(i);
-                bool fileExists = merraList.MERRA2FileExists(thisDate);
+                bool fileExists = download.merraToDownload.MERRA2FileExists(thisDate);
 
                 double Prog = Math.Min(100 * (double)count / numDays, 100);
                 if (count % 10 == 0)
@@ -3432,7 +3560,7 @@ namespace ContinuumNS
                 if (fileExists == false)
                 {
                     // Execute the request
-                    string resource = merraList.GetMERRA2URL(thisDate, minLat, maxLat, minLong, maxLong);
+                    string resource = thisInst.refList.GetMERRA2URL(thisDate, minLat, maxLat, minLong, maxLong);
                                         
                     HttpWebResponse response = null;
 
@@ -3444,7 +3572,7 @@ namespace ContinuumNS
                         request.CookieContainer = myContainer;
                         request.PreAuthenticate = false;
                         request.AllowAutoRedirect = true;
-                        request.Timeout = 10000;
+                        request.Timeout = 30000;
                                                 
                         response = null;
 
@@ -3452,8 +3580,9 @@ namespace ContinuumNS
                         {
                             response = (HttpWebResponse)request.GetResponse();
                         }
-                        catch
-                        {                       
+                        catch (WebException ex) 
+                        {
+                          //  MessageBox.Show(ex.Message);
                         }
                     }
 
@@ -3461,7 +3590,7 @@ namespace ContinuumNS
                     {
                         try
                         {
-                            bool allGood = merraList.SaveMERRA2DataFile(response, thisDate);
+                            bool allGood = download.merraToDownload.SaveMERRA2DataFile(response, thisDate);
                             if (allGood == false)
                             {
                                 MessageBox.Show("Downloaded file does not contain the expected dataset.  Check your Earthdata credentials at https://urs.earthdata.nasa.gov/.  Aborting download");
@@ -3504,8 +3633,8 @@ namespace ContinuumNS
         {
             Continuum thisInst = (Continuum)e.Result;
             if (thisInst != null)
-                if (thisInst.merraList != null)
-                    thisInst.merraList.SetMERRA2LatLong(thisInst);
+                thisInst.updateThe.LT_ReferenceTAB(thisInst);
+
             Close();
         }
     }

@@ -132,6 +132,7 @@ namespace ContinuumNS
                 thisInst.btnTurbines.BackColor = Color.LightCoral;
 
             thisInst.turbineList.AreTurbCalcsDone(thisInst);
+
             if (thisInst.turbineList.turbineCalcsDone == true)
             {
                 thisInst.btnGenTurbEsts.BackColor = Color.MediumSeaGreen;
@@ -157,11 +158,11 @@ namespace ContinuumNS
                     thisInst.chkCreateTurbTS.CheckState = CheckState.Unchecked;
             }
 
-            // MERRA2 tab
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
-            if (thisMERRA.GotWindTS(thisInst.UTM_conversions))
+            // LT Reference tab
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
+            if (thisRef.GotWindTS(thisInst.UTM_conversions))
                 thisInst.btn_Import_MERRA.BackColor = Color.MediumSeaGreen;
-            else if (thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
+            else if (thisRef.GotWindTS(thisInst.UTM_conversions) == false)
                 thisInst.btn_Import_MERRA.BackColor = Color.LightCoral;
             else
                 thisInst.btn_Import_MERRA.BackColor = Color.Gray;
@@ -174,32 +175,34 @@ namespace ContinuumNS
 
             // MCP tab
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            bool gotMERRA = false;
+            thisRef = thisInst.GetSelectedReference("MCP");
+          //  bool gotRef = false;
 
             // Check to see if have MERRA data
-            if (thisMet.name != null)
+       /*     if (thisMet.name != null)
             {
                 UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
                 int offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-                gotMERRA = thisInst.merraList.GotMERRA(theseLL.latitude, theseLL.longitude);
+                gotRef = thisInst.refList.GetReference(theseLL.latitude, theseLL.longitude);
             }
+       */
 
             if (thisMet.name == null)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && gotMERRA == false)
+            else if (thisMet.mcp == null && thisRef.numNodes != 0)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && gotMERRA == true)
+            else if (thisMet.mcp == null && thisRef.numNodes != 0)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = true;
             }
-            else if (thisMet.mcp.HaveMCP_Estimate("Any") == false && gotMERRA == true)
+            else if (thisMet.mcp.HaveMCP_Estimate("Any") == false && thisRef.numNodes != 0)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = true;
@@ -212,15 +215,18 @@ namespace ContinuumNS
 
             // Check to see if all mets have MCP
             thisInst.metList.AreAllMetsMCPd();
-            bool haveMERRAForAll = false;
+            bool haveRefsForAll = true;
 
             for (int i = 0; i < thisInst.metList.ThisCount; i++)
             {
                 UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[i].UTMX, thisInst.metList.metItem[i].UTMY);
-                haveMERRAForAll = thisInst.merraList.GotMERRA(theseLL.latitude, theseLL.longitude);
+                Reference[] refsForMet = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude);
 
-                if (haveMERRAForAll == false)
+                if (refsForMet.Length == 0)
+                {
+                    haveRefsForAll = false;
                     break;
+                }
             }
 
             if (thisInst.metList.allMCPd)
@@ -228,7 +234,7 @@ namespace ContinuumNS
                 thisInst.btnDoMCPAllMets.BackColor = Color.MediumSeaGreen;
                 thisInst.btnDoMCPAllMets.Enabled = false;
             }
-            else if (haveMERRAForAll)
+            else if (haveRefsForAll)
             {
                 thisInst.btnDoMCPAllMets.BackColor = Color.LightCoral;
                 thisInst.btnDoMCPAllMets.Enabled = true;
@@ -967,8 +973,7 @@ namespace ContinuumNS
             thisInst.chkMetSumm.Items.Clear(); // Clear met list in turb est tab
             thisInst.chkMetGross.Items.Clear(); // Clear met list in Met and Turb summary page    
             thisInst.cboMetQC_SelectedMet.Items.Clear(); // Clear met dropdown list on Met Data QC page
-            thisInst.cboMCP_Met.Items.Clear(); // Clear met dropdown list on MCP page
-            thisInst.cboMERRASelectedMet.Items.Clear(); // Clear met dropdown list on MERRA (LT Ref) page
+            thisInst.cboMCP_Met.Items.Clear(); // Clear met dropdown list on MCP page            
             thisInst.cboTurbMet.Items.Clear();
             thisInst.cboExtremeShearMet.Items.Clear();
             thisInst.cboExtremeWSMet.Items.Clear();
@@ -997,16 +1002,14 @@ namespace ContinuumNS
                     if (thisMet.ExposureCount == 4) thisInst.chkMetSumm.Items.Add(thisMet.name, true);
                     if (thisMet.ExposureCount == 4) thisInst.chkMetGross.Items.Add(thisMet.name, true);
                     thisInst.cboMetQC_SelectedMet.Items.Add(thisMet.name);
-                    thisInst.cboMCP_Met.Items.Add(thisMet.name);
-                    thisInst.cboMERRASelectedMet.Items.Add(thisMet.name);
+                    thisInst.cboMCP_Met.Items.Add(thisMet.name);                    
                     thisInst.cboTurbMet.Items.Add(thisMet.name);
                     thisInst.cboExtremeShearMet.Items.Add(thisMet.name);
                     thisInst.cboExtremeWSMet.Items.Add(thisMet.name);
                 }
 
                 thisInst.cboMetQC_SelectedMet.SelectedIndex = 0;
-                thisInst.cboMCP_Met.SelectedIndex = 0;
-                thisInst.cboMERRASelectedMet.SelectedIndex = 0;
+                thisInst.cboMCP_Met.SelectedIndex = 0;                
                 thisInst.cboTurbMet.SelectedIndex = 0;
                 thisInst.cboExtremeShearMet.SelectedIndex = 0;
                 thisInst.cboExtremeWSMet.SelectedIndex = 0;
@@ -1032,8 +1035,7 @@ namespace ContinuumNS
             else // Clear all met text
             {
                 thisInst.cboMetQC_SelectedMet.Text = "";
-                thisInst.cboMCP_Met.Text = "";
-                thisInst.cboMERRASelectedMet.Text = "";
+                thisInst.cboMCP_Met.Text = "";               
                 thisInst.cboTurbMet.Text = "";
                 thisInst.cboExtremeShearMet.Text = "";
                 thisInst.cboExtremeWSMet.Text = "";
@@ -1041,19 +1043,7 @@ namespace ContinuumNS
                 thisInst.cboStartMet.Text = "";
                 thisInst.cboEndMet.Text = "";
 
-            }
-
-            // Add 'user defined' on MERRA page so user can enter lat/long for MERRA2 data extraction
-            thisInst.cboMERRASelectedMet.Items.Add("User-Defined Lat/Long");
-
-            // Add all user-defined MERRA data extracted
-            for (int i = 0; i < thisInst.merraList.numMERRA_Data; i++)
-                if (thisInst.merraList.merraData[i].isUserDefined == true)
-                    if (thisInst.merraList.merraData[i].numMERRA_Nodes > 0)
-                        thisInst.cboMERRASelectedMet.Items.Add("Lat: " + Math.Round(thisInst.merraList.merraData[i].MERRA_Nodes[0].XY_ind.Lat, 3)
-                            + " Long: " + Math.Round(thisInst.merraList.merraData[i].MERRA_Nodes[0].XY_ind.Lon, 3));
-
-            thisInst.cboMERRASelectedMet.SelectedIndex = 0;
+            }                        
 
             thisInst.cboRR_MinSize.Items.Clear();
             thisInst.cboRR_MinSize.Text = "";
@@ -6941,7 +6931,7 @@ namespace ContinuumNS
             thisInst.wakeModelList.ClearAll();
             thisInst.savedParams.ClearAll();
             thisInst.UTM_conversions.ResetDefaults();
-            thisInst.merraList.ClearMERRA();
+            thisInst.refList.ClearReferences();
             thisInst.siteSuitability.ClearAll();
             thisInst.siteSuitability.ClearAllZones();
 
@@ -7497,29 +7487,29 @@ namespace ContinuumNS
             thisInst.okToUpdate = false;
             MetList(thisInst);
             TurbineList(thisInst);
-            ZoneList(thisInst);
+            ZoneList(thisInst);            
             thisInst.txtTurbineNoise.Text = thisInst.siteSuitability.turbineSound.ToString();
             WindDirectionToDisplay(thisInst);
             RadiusToDisplay("Summary", thisInst);
             RadiusToDisplay("Adv", thisInst);
-            MERRA_Dropdowns(thisInst);
+            LongTermReference(thisInst);
             SeasonDropdown(thisInst);
             TOD_Dropdown(thisInst);
             MCP_Settings(thisInst);
-            MERRA_Settings(thisInst);
+            LT_ReferenceSettings(thisInst);
             SetDefaultCheckAdvanced(thisInst);
 
             ColoredButtons(thisInst);
             ColoredTextBoxes(thisInst);
 
-            thisInst.dateMERRAStart.Value = thisInst.merraList.startDate;
-            thisInst.dateMERRAEnd.Value = thisInst.merraList.endDate;
+      //      thisInst.dateMERRAStart.Value = thisInst.merraList.startDate;
+      //      thisInst.dateMERRAEnd.Value = thisInst.merraList.endDate;
 
             thisInst.okToUpdate = true;
             InputTAB(thisInst);
             MetDataQC_TAB(thisInst);
             MCP_TAB(thisInst);
-            MERRA_TAB(thisInst);
+            LT_ReferenceTAB(thisInst);
             Met_Turbine_Summary_TAB(thisInst);
             GrossTurbineEstsTAB(thisInst);
             NetTurbineEstsTAB(thisInst);
@@ -7533,6 +7523,7 @@ namespace ContinuumNS
             TurbulenceIntensityPlotAndTable(thisInst);
             SiteConditionsAlpha(thisInst);
             ExtremeWindSpeed(thisInst);
+            TerrainComplexityTab(thisInst);
             InflowAnglePlotAndTable(thisInst);
         }
 
@@ -8310,6 +8301,7 @@ namespace ContinuumNS
         {
             int WD_Ind = thisInst.GetWD_ind("MCP");
             Met thisMet = thisInst.GetSelectedMet("MCP");
+            Reference thisRef = thisInst.GetSelectedReference("MCP");
             MCP thisMCP = thisMet.mcp;
 
             if (thisMCP == null)
@@ -8351,8 +8343,8 @@ namespace ContinuumNS
             if (thisMet.mcp.refData == null)
             {
                 UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-                thisMet.mcp.refData = thisMet.mcp.GetRefData(thisMERRA, ref thisMet, thisInst);
+           //     MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                thisMet.mcp.refData = thisMet.mcp.GetRefData(thisRef, ref thisMet, thisInst);
             }
 
             if (thisMet.mcp.targetData == null)
@@ -8637,6 +8629,7 @@ namespace ContinuumNS
         public void MCP_Buttons(Continuum thisInst)
         {
             Met thisMet = thisInst.GetSelectedMet("MCP");
+            Reference thisRef = thisInst.GetSelectedReference("MCP");
             MCP thisMCP = thisMet.mcp;
             string selectedMethod = thisInst.Get_MCP_Method();
 
@@ -8649,13 +8642,10 @@ namespace ContinuumNS
                 thisInst.btnMCP_Uncert.Enabled = false;
 
                 bool gotThisMERRA = false;
-                // Check to see if have MERRA data
-                if (thisMet.name != null)
-                {
-                    UTM_conversion.Lat_Long metLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                    gotThisMERRA = thisInst.merraList.GotMERRA(metLL.latitude, metLL.longitude);
-                }
-
+                // Check to see if have LT Reference data
+                if (thisMet.name != null)  
+                    gotThisMERRA = thisInst.refList.GotReference(thisRef);
+                
                 if (gotThisMERRA == false)
                 {
                     thisInst.btnDoMCP.BackColor = Color.LightCoral;
@@ -8700,13 +8690,10 @@ namespace ContinuumNS
                 thisInst.btnMCP_Uncert.Enabled = true;
 
             bool gotMERRA = false;
-            // Check to see if have MERRA data
-            if (thisMet.name != null)
-            {
-                UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                gotMERRA = thisInst.merraList.GotMERRA(theseLL.latitude, theseLL.longitude);
-            }
-
+            // Check to see if have LT Reference data
+            if (thisMet.name != null) 
+                gotMERRA = thisInst.refList.GotReference(thisRef);
+            
             if (thisMet.name == "")
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
@@ -8735,6 +8722,7 @@ namespace ContinuumNS
         public void MCP_Scatterplot(Continuum thisInst)
         {
             Met thisMet = thisInst.GetSelectedMet("MCP");
+            Reference thisRef = thisInst.GetSelectedReference("MCP");
 
             if (thisMet.metData == null)
                 return;
@@ -8770,7 +8758,7 @@ namespace ContinuumNS
             // Specify axes
             LinearAxis xAxis = new LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
-            xAxis.Title = "MERRA2 50 m Wind Speed, m/s";
+            xAxis.Title = thisRef.referenceType + " " + thisRef.wswdH.ToString() + " m Wind Speed, m/s";
             LinearAxis yAxis = new LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.Title = thisMet.name + " " + thisInst.modeledHeight + " Wind Speed, m/s";
@@ -8780,9 +8768,9 @@ namespace ContinuumNS
 
             if (thisMCP.refData.Length == 0)
             {
-                UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-                thisMCP.refData = thisMCP.GetRefData(thisMERRA, ref thisMet, thisInst);
+           //     UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+           //     MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                thisMCP.refData = thisMCP.GetRefData(thisRef, ref thisMet, thisInst);
             }
 
             if (thisMCP.targetData.Length == 0)
@@ -9119,33 +9107,33 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Updates yearly summary table on MERRA2 tab based on selected parameter and creates plot of yearly values. </summary>
-        public void MERRA_AnnualTableAndPlot(Continuum thisInst)
+        /// <summary> Updates yearly summary table on LT Reference tab based on selected parameter and creates plot of yearly values. </summary>
+        public void LT_ReferenceAnnualTableAndPlot(Continuum thisInst)
         {
             thisInst.lstMERRAAnnualProd.Items.Clear();
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
 
             thisInst.plotMERRA_Yearly.Model = new PlotModel();
             var model = thisInst.plotMERRA_Yearly.Model;
             model.IsLegendVisible = false;
 
-            if (thisMERRA.interpData.TS_Data == null)
+            if (thisRef.interpData.TS_Data == null)
             {
                 thisInst.plotMERRA_Yearly.Refresh();
                 return;
             }
 
-            if (thisMERRA.interpData.TS_Data.Length == 0)
+            if (thisRef.interpData.TS_Data.Length == 0)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            string selectedParam = thisInst.GetMERRA_SelectedPlotParameter();
+            string selectedParam = thisInst.GetLT_RefSelectedPlotParameter();
             thisInst.lstMERRAAnnualProd.Columns[1].Text = selectedParam;
             thisInst.lstMERRAAnnualProd.Columns[2].Text = "% Diff. from LT";
 
-            if (thisInst.okToUpdate == false || thisMERRA.GotWindTS(thisInst.UTM_conversions) == false || (thisMERRA.powerCurve.name == null &&
+            if (thisInst.okToUpdate == false || thisRef.GotWindTS(thisInst.UTM_conversions) == false || (thisRef.powerCurve.name == null &&
                 (selectedParam == "CF (%)" || selectedParam == "Energy Prod.")))
             {
                 thisInst.plotMERRA_Yearly.Refresh();
@@ -9154,26 +9142,26 @@ namespace ContinuumNS
 
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("MERRA");
 
-            if (powerCurve.name != thisMERRA.powerCurve.name)
+            if (powerCurve.name != thisRef.powerCurve.name)
             {
-                thisMERRA.Reset_MonthProdStats();
-                thisMERRA.Reset_AnnualProdStats();
-                thisMERRA.powerCurve = powerCurve;
-                thisMERRA.ApplyPC(ref thisMERRA.interpData.TS_Data);
+                thisRef.Reset_MonthProdStats();
+                thisRef.Reset_AnnualProdStats();
+                thisRef.powerCurve = powerCurve;
+                thisRef.ApplyPC(ref thisRef.interpData.TS_Data);
             }
 
-            int firstYear = thisInst.merraList.startDate.Year;
-            int lastYear = thisInst.merraList.endDate.Year;
+            int firstYear = thisRef.startDate.Year;
+            int lastYear = thisRef.endDate.Year;
 
-            if (thisMERRA.interpData.Annual_Prod.LT_Avg == 0)
+            if (thisRef.interpData.annualProd.LT_Avg == 0)
             {
-                thisMERRA.Calc_MonthProdStats(thisInst.UTM_conversions);
-                thisMERRA.CalcAnnualProd(ref thisMERRA.interpData.Annual_Prod, thisMERRA.interpData.Monthly_Prod, thisInst.UTM_conversions);
+                thisRef.Calc_MonthProdStats(thisInst.UTM_conversions);
+                thisRef.CalcAnnualProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, thisInst.UTM_conversions);
             }
 
-            MERRA.YearlyProdAndLTAvg thisAnnual = thisMERRA.interpData.Annual_Prod;
-            MERRA.MonthlyProdByYearAndLTAvg[] thisMonthly = thisMERRA.interpData.Monthly_Prod;
-            MERRA.Wind_TS_with_Prod[] thisTS = thisMERRA.interpData.TS_Data;
+            Reference.YearlyProdAndLTAvg thisAnnual = thisRef.interpData.annualProd;
+            Reference.MonthlyProdByYearAndLTAvg[] thisMonthly = thisRef.interpData.monthlyProd;
+            Reference.Wind_TS_with_Prod[] thisTS = thisRef.interpData.TS_Data;
             double diff = 0;
             double LT_Val = 0;
 
@@ -9205,28 +9193,28 @@ namespace ContinuumNS
 
             for (int i = firstYear; i <= lastYear; i++)
             {
-                if (thisMERRA.Have_Full_Year(thisTS, i))
+                if (thisRef.Have_Full_Year(thisTS, i))
                 {
                     ListViewItem objListItem = new ListViewItem(i.ToString()); // Adds year to table
 
-                    int yearInd = thisMERRA.Get_Year_Ind(i, thisAnnual);
+                    int yearInd = thisRef.Get_Year_Ind(i, thisAnnual);
 
                     if (selectedParam == "CF (%)" || selectedParam == "Energy Prod.")
                     {
-                        double prod = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, 100, i);
-                        double thisCF = thisMERRA.Calc_CF(prod, 100, i, powerCurve);
+                        double prod = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, 100, i);
+                        double thisCF = thisRef.Calc_CF(prod, 100, i, powerCurve);
 
                         if (selectedParam == "Energy Prod.")
                         {
-                            LT_Val = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, 100, 100);
-                            diff = thisMERRA.Calc_Dev_from_LT(thisMonthly, thisAnnual, i, 100);
+                            LT_Val = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, 100, 100);
+                            diff = thisRef.Calc_Dev_from_LT(thisMonthly, thisAnnual, i, 100);
                             objListItem.SubItems.Add(Math.Round(prod, 1).ToString());
                             paramSeries.Points.Add(new DataPoint(i, Math.Round(prod, 1)));
                         }
                         else
                         {
-                            double LT_Prod = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, 100, 100);
-                            LT_Val = thisMERRA.Calc_CF(LT_Prod, 100, 100, powerCurve);
+                            double LT_Prod = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, 100, 100);
+                            LT_Val = thisRef.Calc_CF(LT_Prod, 100, 100, powerCurve);
                             diff = (thisCF - LT_Val) / LT_Val;
                             objListItem.SubItems.Add(Math.Round(thisCF, 4).ToString("P"));
                             paramSeries.Points.Add(new DataPoint(i, Math.Round(thisCF * 100, 2)));
@@ -9234,8 +9222,8 @@ namespace ContinuumNS
                     }
                     else
                     {
-                        double avg = thisMERRA.Calc_Avg_or_LT(thisTS, 100, i, selectedParam);
-                        LT_Val = thisMERRA.Calc_Avg_or_LT(thisTS, 100, 100, selectedParam);
+                        double avg = thisRef.Calc_Avg_or_LT(thisTS, 100, i, selectedParam);
+                        LT_Val = thisRef.Calc_Avg_or_LT(thisTS, 100, 100, selectedParam);
                         diff = (avg - LT_Val) / LT_Val;
                         objListItem.SubItems.Add(Math.Round(avg, 2).ToString());
                         paramSeries.Points.Add(new DataPoint(i, Math.Round(avg, 1)));
@@ -9256,17 +9244,17 @@ namespace ContinuumNS
 
 
 
-        /// <summary> Updates MERRA2 monthly table and plot on MERRA2 tab. </summary>        
-        public void MERRA_MonthlyTableAndPlot(Continuum thisInst)
+        /// <summary> Updates LT Reference monthly table and plot on LT Reference tab. </summary>        
+        public void LT_ReferenceMonthlyTableAndPlot(Continuum thisInst)
         {
             thisInst.lstMERRA_MonthlyProd.Items.Clear();
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
 
             thisInst.plotMERRA_Monthly.Model = new PlotModel();
             var model = thisInst.plotMERRA_Monthly.Model;
             model.IsLegendVisible = false;
 
-            if (thisInst.okToUpdate == false || thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
+            if (thisInst.okToUpdate == false || thisRef.GotWindTS(thisInst.UTM_conversions) == false)
             {
                 thisInst.plotMERRA_Monthly.Refresh();
                 return;
@@ -9274,18 +9262,18 @@ namespace ContinuumNS
 
             // Calculate monthly energy production by year and average monthly energy production
 
-            if (thisMERRA.GotMonthlyProd() == false)
-                thisMERRA.Calc_MonthProdStats(thisInst.UTM_conversions);
+            if (thisRef.GotMonthlyProd() == false)
+                thisRef.Calc_MonthProdStats(thisInst.UTM_conversions);
 
-            MERRA.MonthlyProdByYearAndLTAvg[] thisMonthly = thisMERRA.interpData.Monthly_Prod;
-            MERRA.YearlyProdAndLTAvg thisAnnual = thisMERRA.interpData.Annual_Prod;
-            TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("MERRA");
+            Reference.MonthlyProdByYearAndLTAvg[] thisMonthly = thisRef.interpData.monthlyProd;
+            Reference.YearlyProdAndLTAvg thisAnnual = thisRef.interpData.annualProd;
+            TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("LT Ref");
 
-            MERRA.Wind_TS_with_Prod[] thisTS = thisMERRA.interpData.TS_Data;
-            string selectedParam = thisInst.GetMERRA_SelectedPlotParameter();
+            Reference.Wind_TS_with_Prod[] thisTS = thisRef.interpData.TS_Data;
+            string selectedParam = thisInst.GetLT_RefSelectedPlotParameter();
             thisInst.lstMERRA_MonthlyProd.Columns[2].Text = selectedParam;
 
-            if (thisMERRA.powerCurve.name == null && (selectedParam == "CF (%)" || selectedParam == "Energy Prod."))
+            if (thisRef.powerCurve.name == null && (selectedParam == "CF (%)" || selectedParam == "Energy Prod."))
             {
                 thisInst.plotMERRA_Monthly.Refresh();
                 return;
@@ -9341,7 +9329,7 @@ namespace ContinuumNS
                 {
                     string monthStr = new DateTime(1999, i, 1).ToString("MMM", CultureInfo.InvariantCulture);
 
-                    if ((thisYear == 100 || thisMERRA.Have_Full_Month(thisTS, i, thisYear)))
+                    if ((thisYear == 100 || thisRef.Have_Full_Month(thisTS, i, thisYear)))
                     {
                         ListViewItem objListItem = new ListViewItem(monthStr);
                         if (thisYear != 100)
@@ -9351,14 +9339,14 @@ namespace ContinuumNS
 
                         if (selectedParam == "CF (%)" || selectedParam == "Energy Prod.")
                         {
-                            double prod = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, i, thisYear);
-                            double LT_Prod = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, i, 100);
-                            double thisCF = thisMERRA.Calc_CF(prod, i, thisYear, powerCurve);
+                            double prod = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, i, thisYear);
+                            double LT_Prod = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, i, 100);
+                            double thisCF = thisRef.Calc_CF(prod, i, thisYear, powerCurve);
 
                             if (selectedParam == "CF (%)")
                             {
                                 objListItem.SubItems.Add((Math.Round(thisCF, 4)).ToString("P"));
-                                double LT_CF = thisMERRA.Calc_CF(LT_Prod, i, thisYear, powerCurve);
+                                double LT_CF = thisRef.Calc_CF(LT_Prod, i, thisYear, powerCurve);
                                 diffFromLT = (thisCF - LT_CF) / LT_CF;
                                 monthlySeries.Points.Add(new DataPoint(i, Math.Round(thisCF * 100, 4)));
 
@@ -9372,8 +9360,8 @@ namespace ContinuumNS
                         }
                         else
                         {
-                            double LT_Val = thisMERRA.Calc_Avg_or_LT(thisTS, i, 100, selectedParam);
-                            double monthVal = thisMERRA.Calc_Avg_or_LT(thisTS, i, thisYear, selectedParam);
+                            double LT_Val = thisRef.Calc_Avg_or_LT(thisTS, i, 100, selectedParam);
+                            double monthVal = thisRef.Calc_Avg_or_LT(thisTS, i, thisYear, selectedParam);
                             objListItem.SubItems.Add((Math.Round(monthVal, 2)).ToString()); // adds the monthly average 
                             monthlySeries.Points.Add(new DataPoint(i, Math.Round(monthVal, 1)));
                             diffFromLT = (monthVal - LT_Val) / LT_Val;
@@ -9396,58 +9384,58 @@ namespace ContinuumNS
             thisInst.plotMERRA_Monthly.Refresh();
         }
 
-        /// <summary> Updates MERRA2 dropdown menu based on what datasets have been imported on MERRA2 tab. </summary> 
-        public void MERRA_Dropdowns(Continuum thisInst)
+        /// <summary> Updates LT Reference dropdown menu based on what datasets have been imported on MERRA2 tab. </summary> 
+        public void LT_ReferenceDropdowns(Continuum thisInst)
         {
             thisInst.okToUpdate = false;
 
-            thisInst.cboMERRAYear.Items.Clear();
+            thisInst.cboReferenceYear.Items.Clear();
             thisInst.chkYearsToDisplay.Items.Clear();
             thisInst.chkYears_Monthly.Items.Clear();
-            thisInst.cboMERRAYear.Text = "";
+            thisInst.cboReferenceYear.Text = "";
 
-            if (thisInst.merraList.numMERRA_Data == 0)
+            if (thisInst.refList.numReferences == 0)
             {
                 thisInst.okToUpdate = true;
                 return;
             }
 
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
 
-            if (thisMERRA.interpData.TS_Data == null)
+            if (thisRef.interpData.TS_Data == null)
             {
                 thisInst.okToUpdate = true;
                 return;
             }
 
-            if (thisMERRA.interpData.TS_Data.Length == 0)
+            if (thisRef.interpData.TS_Data.Length == 0)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            if (thisMERRA.GotWindTS(thisInst.UTM_conversions)) // By default only show LT Avg (to speed up AllTAB update)
+            if (thisRef.GotWindTS(thisInst.UTM_conversions)) // By default only show LT Avg (to speed up AllTAB update)
             {
-                thisInst.cboMERRAYear.Items.Add("LT Avg");
+                thisInst.cboReferenceYear.Items.Add("LT Avg");
                 thisInst.chkYearsToDisplay.Items.Add("LT Avg", true);
                 thisInst.chkYears_Monthly.Items.Add("LT Avg", true);
 
-                for (DateTime thisDate = thisInst.merraList.startDate; thisDate <= thisInst.merraList.endDate; thisDate = thisDate.AddYears(1))
+                for (DateTime thisDate = thisRef.startDate; thisDate <= thisRef.endDate; thisDate = thisDate.AddYears(1))
                 {
-                    thisInst.cboMERRAYear.Items.Add(Convert.ToString(thisDate.Year));
+                    thisInst.cboReferenceYear.Items.Add(Convert.ToString(thisDate.Year));
                     thisInst.chkYearsToDisplay.Items.Add(Convert.ToString(thisDate.Year), false);
                     thisInst.chkYears_Monthly.Items.Add(Convert.ToString(thisDate.Year), false);
                 }
             }
 
-            if (thisInst.cboMERRAYear.Items.Count > 0) thisInst.cboMERRAYear.SelectedIndex = 0;
+            if (thisInst.cboReferenceYear.Items.Count > 0) thisInst.cboReferenceYear.SelectedIndex = 0;
 
             thisInst.cboMERRA_PlotParam.Items.Clear();
 
-            thisInst.cboMERRA_PlotParam.Items.Add("50 m WS");
+            thisInst.cboMERRA_PlotParam.Items.Add(thisRef.wswdH.ToString() + " m WS");
             thisInst.cboMERRA_PlotParam.Items.Add("CF (%)");
             thisInst.cboMERRA_PlotParam.Items.Add("Energy Prod.");
-            thisInst.cboMERRA_PlotParam.Items.Add("10 m Temp");
+            thisInst.cboMERRA_PlotParam.Items.Add(thisRef.temperatureH + " m Temp");
             thisInst.cboMERRA_PlotParam.Items.Add("Surface Pressure");
             thisInst.cboMERRA_PlotParam.Items.Add("Sea Level Pressure");
 
@@ -9457,103 +9445,87 @@ namespace ContinuumNS
             thisInst.okToUpdate = true;
         }
 
-        /// <summary> Updates textboxes on MERRA2 tab. </summary> 
-        public void MERRA_Textboxes(Continuum thisInst)
+        /// <summary> Updates table with LT reference lat/longs and % download completion on LT Reference tab. </summary> 
+        public void LT_RefNodesAndCompleteness(Continuum thisInst)
         {
-            thisInst.okToUpdate = false;
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
-            Met thisMet = thisInst.GetSelectedMet("MERRA");
+            thisInst.dataLTRefNodes.Rows.Clear();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
+                        
+            Reference.Node_Data[] refNodes = thisRef.GetAllNodesInFile();
 
-            thisInst.txt_MERRA2_folder.Text = thisInst.merraList.MERRAfolder;
-            string thisLLStr = thisInst.cboMERRASelectedMet.SelectedItem.ToString();
-
-            if (thisMet.name != null) // it is associated with a met
+            for (int m = 0; m < refNodes.Length; m++)
             {
-                UTM_conversion.Lat_Long thisLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                thisInst.txtMERRA_SelectedLat.Text = Math.Round(thisLL.latitude, 3).ToString();
-                thisInst.txtMERRA_SelectedLong.Text = Math.Round(thisLL.longitude, 3).ToString();
-
-                thisInst.txtMERRA_SelectedLat.Enabled = false;
-                thisInst.txtMERRA_SelectedLong.Enabled = false;
-            }
-            else if (thisLLStr != "User-Defined Lat/Long" && thisLLStr != "") // not associated with a met
-            {
-                int firstColon = thisLLStr.IndexOf(':');
-                int secColon = thisLLStr.LastIndexOf(':');
-
-                double thisLat = Convert.ToDouble(thisLLStr.Substring(firstColon + 2, secColon - firstColon - 6));
-                double thisLong = Convert.ToDouble(thisLLStr.Substring(secColon + 2, thisLLStr.Length - secColon - 2));
-
-                thisInst.txtMERRA_SelectedLat.Text = Math.Round(thisLat, 3).ToString();
-                thisInst.txtMERRA_SelectedLong.Text = Math.Round(thisLong, 3).ToString();
-
-                thisInst.txtMERRA_SelectedLat.Enabled = false;
-                thisInst.txtMERRA_SelectedLong.Enabled = false;
-            }
-            else
-            {
-                thisInst.txtMERRA_SelectedLat.Enabled = true;
-                thisInst.txtMERRA_SelectedLong.Enabled = true;
+                int rowInd = thisInst.dataLTRefNodes.Rows.Add(refNodes[m].XY_ind.Lat.ToString());
+                thisInst.dataLTRefNodes.Rows[rowInd].Cells[1].Value = refNodes[m].XY_ind.Lon.ToString();
             }
 
-            thisInst.txtMERRA_WS_ScaleFact.Text = thisMERRA.WS_ScaleFactor.ToString();
-            thisInst.okToUpdate = true;
+            DateTime[] startEndDates = thisRef.GetDataFileStartEndDate();
+
+            if (startEndDates[0].Year != 1)
+            {
+                thisInst.dateLTRefAvailStart.Value = startEndDates[0];
+                thisInst.dateLTRefAvailEnd.Value = startEndDates[1];
+
+                double completePerc = thisRef.CalcDownloadedDataCompletion();
+                thisInst.txtRefDataAvail.Text = Math.Round(completePerc, 1).ToString();
+            }            
         }
 
-        /// <summary> Updates MERRA2 settings (start/end dates, number of nodes, and scale factor) on MERRA2 tab. </summary> 
-        public void MERRA_Settings(Continuum thisInst)
-        {
-            thisInst.okToUpdate = false;
-
-            thisInst.dateMERRAStart.Value = thisInst.merraList.startDate;
-            thisInst.dateMERRAEnd.Value = thisInst.merraList.endDate;
-
-            if (thisInst.merraList.numMERRA_Nodes == 1)
-                thisInst.cboNumMERRA_Nodes.SelectedIndex = 0;
-            else if (thisInst.merraList.numMERRA_Nodes == 4)
-                thisInst.cboNumMERRA_Nodes.SelectedIndex = 1;
-            else if (thisInst.merraList.numMERRA_Nodes == 16)
-                thisInst.cboNumMERRA_Nodes.SelectedIndex = 2;
-
-            thisInst.okToUpdate = true;
-
+        /// <summary> Updates textboxes on LT Reference tab. </summary> 
+        public void LT_ReferenceTextboxes(Continuum thisInst)
+        {                       
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");            
+            thisInst.txt_MERRA2_folder.Text = thisRef.refDataFolder;
+            thisInst.txtMERRA_WS_ScaleFact.Text = thisRef.WS_ScaleFactor.ToString();           
         }
 
-        /// <summary> Updates MERRA2 wind rose plot on MERRA2 tab. </summary> 
-        public void MERRA_WindRosePlot(Continuum thisInst)
+        /// <summary> Updates LT Reference settings (start/end dates, number of nodes, and scale factor) on LT Reference tab. </summary> 
+        public void LT_ReferenceSettings(Continuum thisInst)
         {
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
+            thisInst.dateMERRAStart.Value = thisRef.startDate;
+            thisInst.dateMERRAEnd.Value = thisRef.endDate;  
+        }
+
+        /// <summary> Updates LT Reference wind rose plot on LT Reference tab. </summary> 
+        public void LT_ReferenceWindRosePlot(Continuum thisInst)
+        {
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
             thisInst.plotMERRA_WindRose.Model = new PlotModel();
             var model = thisInst.plotMERRA_WindRose.Model;
             model.PlotType = PlotType.Polar;
             model.IsLegendVisible = false;
             model.PlotAreaBorderThickness = new OxyThickness(0);
 
-            if (thisMERRA.interpData.TS_Data == null)
+            if (thisRef.interpData.TS_Data == null)
             {
                 thisInst.plotMERRA_WindRose.Refresh();
                 return;
             }
 
-            if (thisMERRA.interpData.TS_Data.Length == 0)
+            if (thisRef.interpData.TS_Data.Length == 0)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            if (thisInst.cboMERRAYear.Items.Count == 0)
+            if (thisInst.cboReferenceYear.Items.Count == 0)
             {
                 thisInst.plotMERRA_WindRose.Refresh();
                 return;
             }
 
             int thisMonth = 100;
-            if (thisInst.cboMERRA_Month.SelectedItem.ToString() != "All Months")
-                thisMonth = thisInst.cboMERRA_Month.SelectedIndex + 1;
+            if (thisInst.cboReferenceMonth.SelectedItem.ToString() != "All Months")
+                thisMonth = thisInst.cboReferenceMonth.SelectedIndex + 1;
 
             int thisYear = 100;
-            if (thisInst.cboMERRAYear.SelectedItem.ToString() != "LT Avg")
-                thisYear = Convert.ToInt16(thisInst.cboMERRAYear.SelectedItem.ToString());
+
+            if (thisInst.cboReferenceYear.SelectedItem == null)
+                thisInst.cboReferenceYear.SelectedIndex = 0;
+
+            if (thisInst.cboReferenceYear.SelectedItem.ToString() != "LT Avg")
+                thisYear = Convert.ToInt16(thisInst.cboReferenceYear.SelectedItem.ToString());
 
             if (thisMonth == -1 || thisYear == -1)
                 return;
@@ -9567,21 +9539,17 @@ namespace ContinuumNS
                 Maximum = 360
             });
 
-            double[] interpWR = thisMERRA.Calc_Wind_Rose(thisMonth, thisYear, thisInst.UTM_conversions);
+            double[] interpWR = thisRef.Calc_Wind_Rose(thisMonth, thisYear, thisInst.UTM_conversions, 16);
 
-
-            if (thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
+            if (thisRef.GotWindTS(thisInst.UTM_conversions) == false)
                 return;
 
             var WR_Series = new LineSeries();
             SortedList<double, double> ii = new SortedList<double, double>();
 
             for (int i = 0; i < interpWR.Length; i++)
-            {
-
                 ii.Add(i * 360 / interpWR.Length, interpWR[i]);
-            }
-
+            
             ii.Add(360, interpWR[0]);
 
             WR_Series.ItemsSource = ii;
@@ -9595,19 +9563,52 @@ namespace ContinuumNS
             thisInst.plotMERRA_WindRose.Refresh();
         }
 
-        /// <summary> Updates all tables and plots on MERRA2 tab. </summary> 
-        public void MERRA_TAB(Continuum thisInst)
-        {
-            MERRA_AnnualTableAndPlot(thisInst);
-            MERRA_MonthlyTableAndPlot(thisInst);
-            MERRA_Textboxes(thisInst);
-            MERRA_WindRosePlot(thisInst);
+        /// <summary> Updates list of long-term references on LT Reference tab and Extreme WS (Site conditions) and selects last in list </summary>
+        public void LongTermReference(Continuum thisInst)
+        {         
+            // List of references on LT Reference tab
+            thisInst.cboLTReferences.Items.Clear();
 
-            // MERRA2 tab
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
-            if (thisMERRA.GotWindTS(thisInst.UTM_conversions))
+            for (int r = 0; r < thisInst.refList.numReferences; r++)
+                thisInst.cboLTReferences.Items.Add(thisInst.refList.reference[r].GetName(thisInst.metList, thisInst.UTM_conversions));
+
+            if (thisInst.refList.numReferences > 0)
+                thisInst.cboLTReferences.SelectedIndex = thisInst.refList.numReferences - 1;
+
+            // List of references on Site Conditions: Extreme WS tab
+            thisInst.cboExtremeWSRef.Items.Clear();
+
+            for (int r = 0; r < thisInst.refList.numReferences; r++)
+                thisInst.cboExtremeWSRef.Items.Add(thisInst.refList.reference[r].GetName(thisInst.metList, thisInst.UTM_conversions));
+
+            if (thisInst.refList.numReferences > 0)
+                thisInst.cboExtremeWSRef.SelectedIndex = thisInst.refList.numReferences - 1;
+
+            // List of references on MCP tab
+            thisInst.cboMCP_Ref.Items.Clear();
+
+            for (int r = 0; r < thisInst.refList.numReferences; r++)
+                thisInst.cboMCP_Ref.Items.Add(thisInst.refList.reference[r].GetName(thisInst.metList, thisInst.UTM_conversions));
+
+            if (thisInst.refList.numReferences > 0)
+                thisInst.cboMCP_Ref.SelectedIndex = thisInst.refList.numReferences - 1;
+
+        }
+
+        /// <summary> Updates all tables and plots on MERRA2 tab. </summary> 
+        public void LT_ReferenceTAB(Continuum thisInst)
+        {
+            LT_RefNodesAndCompleteness(thisInst);
+            LT_ReferenceAnnualTableAndPlot(thisInst);
+            LT_ReferenceMonthlyTableAndPlot(thisInst);
+            LT_ReferenceTextboxes(thisInst);
+            LT_ReferenceWindRosePlot(thisInst);
+
+            // Update button colors on LT Reference tab
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
+            if (thisRef.GotWindTS(thisInst.UTM_conversions))
                 thisInst.btn_Import_MERRA.BackColor = Color.MediumSeaGreen;
-            else if (thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
+            else if (thisRef.GotWindTS(thisInst.UTM_conversions) == false)
                 thisInst.btn_Import_MERRA.BackColor = Color.LightCoral;
             else
                 thisInst.btn_Import_MERRA.BackColor = Color.Gray;
@@ -9789,9 +9790,9 @@ namespace ContinuumNS
             }
 
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
-
-            int firstYear = thisInst.merraList.startDate.Year;
-            int lastYear = thisInst.merraList.endDate.Year;
+            Turbine.Avg_Est thisAvgEst = thisTurb.GetAvgWS_Est(thisWakeModel);
+            int firstYear = thisAvgEst.timeSeries[0].dateTime.Year; // thisInst.merraList.startDate.Year;
+            int lastYear = thisAvgEst.timeSeries[thisAvgEst.timeSeries.Length - 1].dateTime.Year; // thisInst.merraList.endDate.Year;
 
             for (int i = firstYear; i <= lastYear; i++)
             {
@@ -11798,20 +11799,24 @@ namespace ContinuumNS
         public void ExtremeWindSpeed(Continuum thisInst)
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
-            Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst);
+            Reference thisRef = thisInst.GetSelectedReference("Site Conditions Extreme WS");
+
+            if (thisRef.numNodes == 0)
+            {
+                thisInst.lblNoExtremeWS.Text = "MERRA2 data not loaded. MERRA2 required for extreme WS calculations.";
+                return;
+            }
+
+            Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst, thisRef);
 
             thisInst.plotExtremeWS.Model = new PlotModel();
             var model = thisInst.plotExtremeWS.Model;
             model.IsLegendVisible = false;
-
             thisInst.lblNoExtremeWS.Text = "";
 
             if (extremeWS.tenMin1yr == 0)
-            {
-                if (thisInst.merraList.numMERRA_Data == 0)
-                    thisInst.lblNoExtremeWS.Text = "MERRA2 data not loaded. MERRA2 required for extreme WS calculations.";
-                else
-                    thisInst.lblNoExtremeWS.Text = "Met data does not cover a full year (Jan. - Dec.) required for extreme WS calculations.";
+            {               
+                thisInst.lblNoExtremeWS.Text = "Met data does not cover a full year (Jan. - Dec.) required for extreme WS calculations.";
 
                 thisInst.txt50yrExtreme10min.Text = "";
                 thisInst.txt50yrExtremeGust.Text = "";
@@ -11870,7 +11875,7 @@ namespace ContinuumNS
 
             Turbine thisTurb = thisInst.GetSelectedTurbine("Inflow Angle");
 
-            if (thisInst.cboInflowWD.Items.Count == 0 || thisTurb.UTMX == 0 || thisInst.topo.gotTopo == false)
+            if (thisInst.cboInflowWD.Items.Count == 0 || thisTurb.UTMX == 0 || thisTurb.elev == 0 || thisInst.topo.gotTopo == false)
             {
                 thisInst.plotInflowAngle.Refresh();
                 return;
@@ -11911,9 +11916,8 @@ namespace ContinuumNS
                 yVals[i] = elevProfile[i].elev;
             }
 
-            double slope = thisInst.topo.CalcSlope(xVals, yVals);
-            double inflowAngle = Math.Atan(slope) * 180 / Math.PI;
-            thisInst.txtInflowAngle.Text = Math.Round(inflowAngle, 2).ToString();
+            double[] slopeAndVars = thisInst.topo.CalcSlopeAndVariation(xVals, yVals);            
+            thisInst.txtInflowAngle.Text = Math.Round(slopeAndVars[0], 2).ToString();
 
             // Update plot
             model.Title = "Elevation Profile along WD = " + thisWD.ToString();
@@ -11943,7 +11947,7 @@ namespace ContinuumNS
             slopeSeries.LineStyle = LineStyle.Dash;
 
             slopeSeries.Points.Add(new DataPoint(0, elevProfile[0].elev));
-            slopeSeries.Points.Add(new DataPoint(radius, elevProfile[0].elev + radius * slope));
+            slopeSeries.Points.Add(new DataPoint(radius, elevProfile[0].elev + radius * Math.Tan(Math.PI / 180.0 * slopeAndVars[0])));
 
             // Add point for turbine location
             ScatterSeries turbineSite = new ScatterSeries();
@@ -11952,6 +11956,172 @@ namespace ContinuumNS
             turbineSite.Points.Add(new ScatterPoint(radius, thisTurb.elev));
 
             thisInst.plotInflowAngle.Refresh();
+        }
+
+        /// <summary> Populates Terrain Complexity table on Site Conditions - Terrain Complexity tab </summary>        
+        public void TerrainComplexityTable(Continuum thisInst)
+        {
+            thisInst.dataTerrainComplex.Rows.Clear();
+
+      //      if (thisInst.turbineList.turbineCalcsDone == false)
+      //          return;
+
+            double hubH = thisInst.modeledHeight;
+            double[] windRose = thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+            double[] energyRose = new double[12]; // TO DO: Add CalcEnergyRose from 
+            double[] refWindRose = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 12); // 12 sectors used in IEC
+            double[] refWindRose16 = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 16); // Default used in Continuum model (i.e. grid stats)
+
+            if (windRose == null)
+                windRose = refWindRose;                        
+
+            for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
+            {
+                Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                double UTMX = thisInst.turbineList.turbineEsts[t].UTMX;
+                double UTMY = thisInst.turbineList.turbineEsts[t].UTMY;
+                int rowInd = thisInst.dataTerrainComplex.Rows.Add(thisTurb.name);
+
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[1].Value = Math.Round(thisTurb.elev, 1);
+
+                string turbComplexity = thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo, thisInst.modeledHeight, windRose, "WTG", 
+                    thisTurb);
+
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Value = turbComplexity;
+                if (turbComplexity == "Not Complex")
+                    thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Style.BackColor = Color.Green;
+                else if (turbComplexity == "Low Complex")
+                    thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Style.BackColor = Color.Yellow;
+                else if (turbComplexity == "Mod. Complex")
+                    thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Style.BackColor = Color.Orange;
+                else if (turbComplexity == "High Complex")
+                    thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Style.BackColor = Color.Red;
+
+                // 5 hub heights - 360 degs TSI and TVI
+                double[] slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 5 * hubH, 1, thisInst.topo);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[3].Value = Math.Round(slopeAndVarInds[0], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[4].Value = Math.Round(slopeAndVarInds[1], 3);
+                
+                // 5 hub heights - 30 degs TSI and TVI
+                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 5 * hubH, 12, thisInst.topo, windRose);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[5].Value = Math.Round(slopeAndVarInds[0], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[6].Value = Math.Round(slopeAndVarInds[1], 3);
+
+                // 10 hub heights - 30 degs TSI and TVI
+                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 10 * hubH, 12, thisInst.topo, windRose);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[7].Value = Math.Round(slopeAndVarInds[0], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[8].Value = Math.Round(slopeAndVarInds[1], 3);
+
+                // 20 hub heights - 30 degs TSI and TVI
+                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, 20 * hubH, 12, thisInst.topo, windRose);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[9].Value = Math.Round(slopeAndVarInds[0], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[10].Value = Math.Round(slopeAndVarInds[1], 3);
+
+                // P10 UW & DW Exposure R = 6000
+                double thisUWP10 = thisTurb.gridStats.GetOverallP10(refWindRose16, 2, "UW");
+                double thisDWP10 = thisTurb.gridStats.GetOverallP10(refWindRose16, 2, "DW");
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[11].Value = Math.Round(thisUWP10, 1);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[12].Value = Math.Round(thisDWP10, 1);
+            }
+
+        }
+
+        /// <summary> Updates Terrain Complexity tab on Site Conditions tab </summary>
+        public void TerrainComplexityTab(Continuum thisInst)
+        {
+            if (thisInst.turbineList.expoCalcsDone == true)
+            {
+                TerrainComplexityTable(thisInst);
+                TerrainComplexityHistogram(thisInst);
+
+                double[] energyRose = thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+
+                if (energyRose == null)
+                    energyRose = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 12);
+
+                thisInst.lblIEC_Complexity.Text = thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo,
+                thisInst.modeledHeight, energyRose, "Farm");
+            }
+            else
+            {
+                thisInst.dataTerrainComplex.Rows.Clear();
+                thisInst.plotComplexHisto.Model = new PlotModel();
+                thisInst.plotInflowAngle.Model = new PlotModel();
+            }
+        }
+
+        /// <summary> Updates plot showing histogram of selected terrain complexity metric </summary>
+        public void TerrainComplexityHistogram(Continuum thisInst)
+        {
+            if (thisInst.turbineList.expoCalcsDone == false)
+                return;
+
+            if (thisInst.cboTSIorTVIorP90.SelectedItem == null)
+                thisInst.cboTSIorTVIorP90.SelectedIndex = 0;
+
+            string terrainComplex = thisInst.cboTSIorTVIorP90.SelectedItem.ToString();
+
+            string xAxisTitle = "TSI [deg]";
+            if (terrainComplex.Contains("TVI"))
+                xAxisTitle = "TVI [%]";
+            else if (terrainComplex.Contains("P10"))
+                xAxisTitle = "P10 Exposure [m]";
+
+            thisInst.plotComplexHisto.Model = new PlotModel();
+            var model = thisInst.plotComplexHisto.Model;
+            model.IsLegendVisible = false;
+
+            // Specify axes
+            CategoryAxis xAxis = new CategoryAxis();
+            xAxis.Position = AxisPosition.Bottom;
+            xAxis.Title = xAxisTitle;
+            LinearAxis yAxis = new LinearAxis();
+            yAxis.Position = AxisPosition.Left;
+            yAxis.Title = "Freq. of Occurrence";
+
+            model.Axes.Add(xAxis);
+            model.Axes.Add(yAxis);
+
+            ColumnSeries complexHisto = new ColumnSeries();            
+            model.Series.Add(complexHisto);
+
+            double[] energyRose = thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+
+            if (energyRose == null)
+                energyRose = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 12);
+
+            double[] complexVals = thisInst.siteSuitability.GetTerrainComplexityAtAllTurbines(thisInst.turbineList, thisInst.topo, terrainComplex, energyRose,
+                thisInst.modeledHeight);
+            Array.Sort(complexVals);
+            int histoSize = 10;
+            double minVal = complexVals[0];
+            double maxVal = complexVals[complexVals.Length - 1];
+            double histoWidth = (maxVal - minVal) / histoSize;
+
+            double[] histoVals = new double[histoSize];
+
+            for (int i = 0; i < histoSize; i++)
+                histoVals[i] = i * histoWidth;
+
+            List<double> histoLabels = new List<double>();
+            for (int i = 0; i < histoSize; i++)
+                histoLabels.Add(histoVals[i]);
+
+            xAxis.ItemsSource = histoLabels;
+
+            for (int i = 0; i < histoSize; i++)
+            {
+                // Get count for this histoVal
+                int histoCount = 0;
+                double thisMinVal = complexVals[i];
+                double thisMaxVal = thisMinVal + histoWidth;
+
+                for (int c = 0; c < complexVals.Length; c++)
+                    if (complexVals[c] >= thisMinVal && complexVals[c] < thisMaxVal)
+                        histoCount++;
+                    
+                complexHisto.Items.Add(new ColumnItem { Value = histoCount });  
+            }
         }
 
         /// <summary> Calculates the statistics (avg, min, max, SD) of map and updates the textboxes on Maps tab. </summary> 

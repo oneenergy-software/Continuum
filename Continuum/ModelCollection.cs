@@ -2492,7 +2492,8 @@ namespace ContinuumNS
                 thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
             // Size time series array to same length at met's long-term estimates
-            int TS_Length = thisInst.merraList.GetLTRefLength();
+            Reference thisRef = thisInst.metList.GetReferenceUsedInMCP(metsUsed);
+            int TS_Length = thisRef.interpData.TS_Data.Length;
             Array.Resize(ref thisTS, TS_Length);
 
             // Get LT Estimates at each met used in model. Save in MetLTEsts struct which holds an array of MCP.Site_Data struct           

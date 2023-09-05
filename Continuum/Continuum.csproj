@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ContinuumNS</RootNamespace>
     <AssemblyName>ContinuumAN</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
@@ -28,6 +28,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -97,6 +98,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ScientificDataSet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SDSLite.3.0.1\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -128,6 +132,12 @@
     </Compile>
     <Compile Include="AboutContinuum.Designer.cs">
       <DependentUpon>AboutContinuum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddEditReference.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddEditReference.Designer.cs">
+      <DependentUpon>AddEditReference.cs</DependentUpon>
     </Compile>
     <Compile Include="AddPFCurve.cs">
       <SubType>Form</SubType>
@@ -229,6 +239,13 @@
     <Compile Include="MCP_ValidSettings.Designer.cs">
       <DependentUpon>MCP_ValidSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="MERRA2_Download.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MERRA2_Download.Designer.cs">
+      <DependentUpon>MERRA2_Download.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ERA_Node_table.cs" />
     <Compile Include="MERRA_Node_table.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Mod_LC_Key.cs">
@@ -242,6 +259,14 @@
     </Compile>
     <Compile Include="NASA_LogIn.Designer.cs">
       <DependentUpon>NASA_LogIn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reference.cs" />
+    <Compile Include="ReferenceCollection.cs" />
+    <Compile Include="ShowIEC_TerrainComplexity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowIEC_TerrainComplexity.Designer.cs">
+      <DependentUpon>ShowIEC_TerrainComplexity.cs</DependentUpon>
     </Compile>
     <Compile Include="SiteSuitability.cs" />
     <Compile Include="InvestCollection.cs" />
@@ -321,6 +346,9 @@
       <DependentUpon>AboutContinuum.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="AddEditReference.resx">
+      <DependentUpon>AddEditReference.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AddPFCurve.resx">
       <DependentUpon>AddPFCurve.cs</DependentUpon>
     </EmbeddedResource>
@@ -376,6 +404,9 @@
     <EmbeddedResource Include="MCP_ValidSettings.resx">
       <DependentUpon>MCP_ValidSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MERRA2_Download.resx">
+      <DependentUpon>MERRA2_Download.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mod_LC_Key.resx">
       <DependentUpon>Mod_LC_Key.cs</DependentUpon>
     </EmbeddedResource>
@@ -400,6 +431,9 @@
     </Compile>
     <EmbeddedResource Include="Roughness_File_Format.resx">
       <DependentUpon>Roughness_File_Format.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowIEC_TerrainComplexity.resx">
+      <DependentUpon>ShowIEC_TerrainComplexity.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
