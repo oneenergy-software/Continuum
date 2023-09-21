@@ -12234,6 +12234,137 @@ namespace ContinuumNS
             thisInst.okToUpdate = true;
         }
 
+        /// <summary> Updates list of met sites on Met Data Time Series tab </summary>
+        public void MetTS_CheckList(Continuum thisInst)
+        {
+            thisInst.chkMetsTS.Items.Clear();
+
+            for (int m = 0; m < thisInst.metList.ThisCount; m++)
+                thisInst.chkMetsTS.Items.Add(thisInst.metList.metItem[m].name, true);
+        }
+
+        /// <summary> Updates checklist showing all met data parameters for mets selected in checklist </summary>        
+        public void MetDataTS_CheckList(Continuum thisInst)
+        {
+            thisInst.chkTS_Params.Items.Clear();
+
+            for (int m = 0; m < thisInst.chkMetsTS.CheckedItems.Count; m++)
+            {
+                Met thisMet = thisInst.metList.GetMet(thisInst.chkMetsTS.CheckedItems[m].ToString());
+
+                // Anemometers
+                for (int s = 0; s < thisMet.metData.GetNumAnems(); s++)
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetAnemName(thisMet.metData.anems[s], true));
+
+                // Vanes
+                for (int s = 0; s < thisMet.metData.GetNumVanes(); s++)
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetVaneName(thisMet.metData.vanes[s], true));
+
+                // Thermometers
+                for (int s = 0; s < thisMet.metData.GetNumTemps(); s++)
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetTempName(thisMet.metData.temps[s], true));
+
+                // Barometers
+                for (int s = 0; s < thisMet.metData.GetNumBaros(); s++)
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetPressName(thisMet.metData.baros[s], true));
+            }
+        }
+
+        /// <summary> Updates met data time series data table based on met stations and sensors selected </summary>
+        public void MetDataTS_DataTable(Continuum thisInst)
+        {
+            thisInst.dataMetTS.Rows.Clear();
+            thisInst.dataMetTS.Columns.Clear();
+
+            // Get selected met sites
+            int numMets = thisInst.chkMetsTS.CheckedItems.Count;
+            Met[] selMets = new Met[numMets];
+
+            for (int m = 0; m < numMets; m++)
+                selMets[m] = thisInst.metList.GetMet(thisInst.chkMetsTS.CheckedItems[m].ToString());
+
+            // Figure out first and last timestamp
+            DateTime startTime = DateTime.Now;
+            DateTime endTime = new DateTime(); // Initializes to year 1
+
+            for (int m = 0; m < numMets; m++)
+            {
+                if (selMets[m].metData.startDate < startTime)
+                    startTime = selMets[m].metData.startDate;
+
+                if (selMets[m].metData.endDate > endTime)
+                    endTime = selMets[m].metData.endDate;
+            }
+
+            thisInst.dataMetTS.Columns.Add("colTS", "Timestamp");
+
+            int numSens = thisInst.chkTS_Params.CheckedItems.Count;
+            int numAnems = 0;
+            int numVanes = 0;
+            int numTemp = 0;
+            int numBaro = 0;
+
+            // Now create columns for each selected sensor
+            for (int s = 0; s < numSens; s++)
+                thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString());
+
+            // Get all anems, vanes, temps, and press sensors selected in list
+            Met_Data_Filter.Anem_Data[] anems = new Met_Data_Filter.Anem_Data[0];
+            Met_Data_Filter.Vane_Data[] vanes = new Met_Data_Filter.Vane_Data[0];
+            Met_Data_Filter.Temp_Data[] temps = new Met_Data_Filter.Temp_Data[0];
+            Met_Data_Filter.Press_Data[] baros = new Met_Data_Filter.Press_Data[0];
+
+            for (int m = 0; m < numMets; m++)
+            {
+                for (int a = 0; a < selMets[m].metData.GetNumAnems(); a++)
+                    if (thisInst.IsMetSensorSelected(selMets[m].name + " " + selMets[m].metData.GetAnemName(selMets[m].metData.anems[a], true)))
+                    {
+                        numAnems++;
+                        Array.Resize(ref anems, numAnems);
+                        anems[numAnems - 1] = selMets[m].metData.anems[a];
+                    }
+
+                for (int v = 0; v < selMets[m].metData.GetNumVanes(); v++)
+                    if (thisInst.IsMetSensorSelected(selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[v], true)))
+                    {
+                        numVanes++;
+                        Array.Resize(ref vanes, numVanes);
+                        vanes[numVanes - 1] = selMets[m].metData.vanes[v];
+                    }
+
+                for (int t = 0; t < selMets[m].metData.GetNumTemps(); t++)
+                    if (thisInst.IsMetSensorSelected(selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[t], true)))
+                    {
+                        numTemp++;
+                        Array.Resize(ref temps, numTemp);
+                        temps[numTemp - 1] = selMets[m].metData.temps[t];
+                    }
+
+                for (int b = 0; b < selMets[m].metData.GetNumBaros(); b++)
+                    if (thisInst.IsMetSensorSelected(selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[b], true)))
+                    {
+                        numBaro++;
+                        Array.Resize(ref baros, numBaro);
+                        baros[numBaro - 1] = selMets[m].metData.baros[b];
+                    }
+            }
+
+           
+
+            // Now populate table and color code data that is flagged
+            for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(10))
+            {
+                int rowInd = thisInst.dataMetTS.Rows.Add(thisTS.ToString());
+
+                for (int a = 0; a < numAnems; a++)
+                {
+                    int tsIndex = anems[a].get
+                }
+            }
+
+            
+        }
+
     }
 
 }

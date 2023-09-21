@@ -23,6 +23,8 @@ namespace ContinuumNS
         public Vane_Data[] vanes = new Vane_Data[0];
         /// <summary>   List of temperature sensor datasets. </summary>
         public Temp_Data[] temps = new Temp_Data[0];
+        /// <summary>   List of temperature sensor datasets. </summary>
+        public Press_Data[] baros = new Press_Data[0];
         /// <summary>   If filtering has been conducted, this is true. </summary>
         public bool filteringDone = false;
         /// <summary>   Wind speed units, mph (miles/hour) or mps (meters/sec). </summary>
@@ -143,6 +145,27 @@ namespace ContinuumNS
             public bool isOnlyMet;
             /// <summary>   Wind speed time series data. </summary>
             public data[] windData;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime thisDate)
+            {
+                int tsInd = 0;
+                int indMid = windData.Length / 2;
+                int dataIntMins = Convert.ToInt32(Math.Round(windData[indMid].timeStamp.Subtract(windData[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(windData[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                while (windData[tsInd].timeStamp < thisDate && tsInd < windData.Length - 1)
+                    tsInd++;
+
+                while (windData[tsInd].timeStamp > thisDate && tsInd > 0)
+                    tsInd--;
+
+                if (windData[tsInd].timeStamp != thisDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }
        
         /// <summary>   Contains defined tower shadow sector (min/max/center WD). </summary>        
@@ -163,6 +186,8 @@ namespace ContinuumNS
         {
             /// <summary>  Vane height. </summary>
             public double height;
+            /// <summary> Vane boom orientation </summary>
+            public double orientation;
             /// <summary>  Wind direction time series data. </summary>
             public data[] dirData;
         }
@@ -171,14 +196,27 @@ namespace ContinuumNS
         [Serializable()]
         public struct Temp_Data
         {
-            /// <summary>   Senso height. </summary>
+            /// <summary>   Sensor height. </summary>
             public double height;
             /// <summary>   Celsius 'C' or Fahrenheit 'F'. </summary>
             public char C_or_F;
             /// <summary>   Array of type data holding time series of temperature sensor data. </summary>
             public data[] temp;
         }
-                
+
+
+        /// <summary> Holds pressure sensor time series data plus the height of the sensor and pressure units. </summary>
+        [Serializable()]
+        public struct Press_Data
+        {
+            /// <summary>   Sensor height. </summary>
+            public double height;
+            /// <summary>   Pressure units. </summary>
+            public string units;
+            /// <summary>   Array of type data holding time series of pressure sensor data. </summary>
+            public data[] pressure;
+        }
+
         /// <summary> Holds anemometer height and time series of shear alpha, wind speed and wind direction data </summary>        
         [Serializable()]
         public struct Shear_Data
@@ -289,7 +327,13 @@ namespace ContinuumNS
             return temps.Length;
         }
 
-        
+        /// <summary>   Gets the number of pressure sensors. </summary>
+        public int GetNumBaros()
+        {
+            return baros.Length;
+        }
+
+
         /// <summary> Gets the number of simulated (estimated) datasets. </summary>
         public int GetNumSimData()
         {
@@ -2401,6 +2445,98 @@ namespace ContinuumNS
                 fliterFlag = "Valid";
 
             return fliterFlag;
+        }
+
+        /// <summary> Gets name of anemometer </summary>
+        public string GetAnemName(Anem_Data thisAnem, bool inclSensType)
+        {
+            string anemName = "";
+
+            if (inclSensType)
+                anemName = "ANEM ";
+
+            anemName = anemName + thisAnem.height.ToString() + "-" + GetBoomOrientChars(thisAnem.orientation);
+
+            return anemName;
+        }
+
+        /// <summary> Gets name of wind vane </summary>
+        public string GetVaneName(Vane_Data thisVane, bool inclSensType)
+        {
+            string vaneName = "";
+
+            if (inclSensType)
+                vaneName = "VANE ";
+
+            vaneName = vaneName + thisVane.height.ToString() + "-" + GetBoomOrientChars(thisVane.orientation);
+
+            return vaneName;
+        }
+
+        /// <summary> Gets name of temperature sensor </summary>
+        public string GetTempName(Temp_Data thisTemp, bool inclSensType)
+        {
+            string tempName = "";
+
+            if (inclSensType)
+                tempName = "TEMP ";
+
+            tempName = tempName + thisTemp.height.ToString();
+
+            return tempName;
+        }
+
+        /// <summary> Gets name of pressure sensor </summary>
+        public string GetPressName(Press_Data thisVane, bool inclSensType)
+        {
+            string pressName = "";
+
+            if (inclSensType)
+                pressName = "BARO ";
+
+            pressName = pressName + thisVane.height.ToString();
+
+            return pressName;
+        }
+
+        /// <summary> Returns boom orientation in N-S </summary>
+        public string GetBoomOrientChars(double thisOrient)
+        {
+            string boomOrient = "n";
+            int wdInd = Convert.ToInt32(Math.Round(thisOrient / 22.5, 0));
+
+            if (wdInd == 1)
+                boomOrient = "nne";
+            else if (wdInd == 2)
+                boomOrient = "ne";
+            else if (wdInd == 3)
+                boomOrient = "ene";
+            else if (wdInd == 4)
+                boomOrient = "e";
+            else if (wdInd == 5)
+                boomOrient = "ese";
+            else if (wdInd == 6)
+                boomOrient = "se";
+            else if (wdInd == 7)
+                boomOrient = "sse";
+            else if (wdInd == 8)
+                boomOrient = "s";
+            else if (wdInd == 9)
+                boomOrient = "ssw";
+            else if (wdInd == 10)
+                boomOrient = "sw";
+            else if (wdInd == 11)
+                boomOrient = "wsw";
+            else if (wdInd == 12)
+                boomOrient = "w";
+            else if (wdInd == 13)
+                boomOrient = "wnw";
+            else if (wdInd == 14)
+                boomOrient = "nw";
+            else if (wdInd == 15)
+                boomOrient = "nnw";
+            
+            return boomOrient;
         }
     }
          

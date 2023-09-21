@@ -28,11 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
             this.plotDirectionalWS_Ratios = new OxyPlot.WindowsForms.PlotView();
@@ -88,6 +88,33 @@
             this.lblMetTable = new System.Windows.Forms.Label();
             this.btnTurbines = new System.Windows.Forms.Button();
             this.btnLoadXYZ = new System.Windows.Forms.Button();
+            this.pgeMetDataTS = new System.Windows.Forms.TabPage();
+            this.splContMetTS = new System.Windows.Forms.SplitContainer();
+            this.chkMetsTS = new System.Windows.Forms.CheckedListBox();
+            this.label146 = new System.Windows.Forms.Label();
+            this.dataMetTS = new System.Windows.Forms.DataGridView();
+            this.chkTS_Params = new System.Windows.Forms.CheckedListBox();
+            this.label213 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label212 = new System.Windows.Forms.Label();
+            this.cboPlot3Type = new System.Windows.Forms.ComboBox();
+            this.label211 = new System.Windows.Forms.Label();
+            this.cboPlot2Type = new System.Windows.Forms.ComboBox();
+            this.label210 = new System.Windows.Forms.Label();
+            this.cboPlot1Type = new System.Windows.Forms.ComboBox();
+            this.label209 = new System.Windows.Forms.Label();
+            this.cboNumPlots = new System.Windows.Forms.ComboBox();
+            this.lblMetDataTS_Inc = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btnMetTS_Left = new System.Windows.Forms.Button();
+            this.btnMetTS_Right = new System.Windows.Forms.Button();
+            this.label208 = new System.Windows.Forms.Label();
+            this.label149 = new System.Windows.Forms.Label();
+            this.dateMetTS_End = new System.Windows.Forms.DateTimePicker();
+            this.dateMetTS_Start = new System.Windows.Forms.DateTimePicker();
+            this.plotTS_Temp = new OxyPlot.WindowsForms.PlotView();
+            this.plotTS_Vanes = new OxyPlot.WindowsForms.PlotView();
+            this.plotTS_Anems = new OxyPlot.WindowsForms.PlotView();
             this.pgeMetData = new System.Windows.Forms.TabPage();
             this.btnResetMaxRecovDates = new System.Windows.Forms.Button();
             this.chkMaxWS_Range = new System.Windows.Forms.CheckBox();
@@ -546,6 +573,19 @@
             this.lblIEC_Complexity = new System.Windows.Forms.Label();
             this.label147 = new System.Windows.Forms.Label();
             this.dataTerrainComplex = new System.Windows.Forms.DataGridView();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label199 = new System.Windows.Forms.Label();
             this.label198 = new System.Windows.Forms.Label();
             this.label197 = new System.Windows.Forms.Label();
@@ -941,21 +981,14 @@
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
+            this.pgeMetDataTS.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splContMetTS)).BeginInit();
+            this.splContMetTS.Panel1.SuspendLayout();
+            this.splContMetTS.Panel2.SuspendLayout();
+            this.splContMetTS.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataMetTS)).BeginInit();
             this.pgeMetData.SuspendLayout();
             this.pgeMERRA.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataLTRefNodes)).BeginInit();
@@ -986,6 +1019,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabContinuum.CausesValidation = false;
             this.tabContinuum.Controls.Add(this.pgeInput);
+            this.tabContinuum.Controls.Add(this.pgeMetDataTS);
             this.tabContinuum.Controls.Add(this.pgeMetData);
             this.tabContinuum.Controls.Add(this.pgeMERRA);
             this.tabContinuum.Controls.Add(this.pgeMCP);
@@ -1651,6 +1685,337 @@
             this.btnLoadXYZ.Text = "Import Elevation data (GeoTIFF or ADF)";
             this.btnLoadXYZ.UseVisualStyleBackColor = false;
             this.btnLoadXYZ.Click += new System.EventHandler(this.btnLoadXYZ_Click);
+            // 
+            // pgeMetDataTS
+            // 
+            this.pgeMetDataTS.Controls.Add(this.splContMetTS);
+            this.pgeMetDataTS.Location = new System.Drawing.Point(4, 27);
+            this.pgeMetDataTS.Name = "pgeMetDataTS";
+            this.pgeMetDataTS.Size = new System.Drawing.Size(1635, 905);
+            this.pgeMetDataTS.TabIndex = 21;
+            this.pgeMetDataTS.Text = "Met Data Time Series";
+            this.pgeMetDataTS.UseVisualStyleBackColor = true;
+            // 
+            // splContMetTS
+            // 
+            this.splContMetTS.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splContMetTS.Location = new System.Drawing.Point(0, 0);
+            this.splContMetTS.Name = "splContMetTS";
+            // 
+            // splContMetTS.Panel1
+            // 
+            this.splContMetTS.Panel1.AutoScroll = true;
+            this.splContMetTS.Panel1.BackColor = System.Drawing.Color.Azure;
+            this.splContMetTS.Panel1.Controls.Add(this.chkMetsTS);
+            this.splContMetTS.Panel1.Controls.Add(this.label146);
+            this.splContMetTS.Panel1.Controls.Add(this.dataMetTS);
+            this.splContMetTS.Panel1.Controls.Add(this.chkTS_Params);
+            // 
+            // splContMetTS.Panel2
+            // 
+            this.splContMetTS.Panel2.AutoScroll = true;
+            this.splContMetTS.Panel2.BackColor = System.Drawing.Color.PapayaWhip;
+            this.splContMetTS.Panel2.Controls.Add(this.label213);
+            this.splContMetTS.Panel2.Controls.Add(this.comboBox1);
+            this.splContMetTS.Panel2.Controls.Add(this.label212);
+            this.splContMetTS.Panel2.Controls.Add(this.cboPlot3Type);
+            this.splContMetTS.Panel2.Controls.Add(this.label211);
+            this.splContMetTS.Panel2.Controls.Add(this.cboPlot2Type);
+            this.splContMetTS.Panel2.Controls.Add(this.label210);
+            this.splContMetTS.Panel2.Controls.Add(this.cboPlot1Type);
+            this.splContMetTS.Panel2.Controls.Add(this.label209);
+            this.splContMetTS.Panel2.Controls.Add(this.cboNumPlots);
+            this.splContMetTS.Panel2.Controls.Add(this.lblMetDataTS_Inc);
+            this.splContMetTS.Panel2.Controls.Add(this.textBox1);
+            this.splContMetTS.Panel2.Controls.Add(this.btnMetTS_Left);
+            this.splContMetTS.Panel2.Controls.Add(this.btnMetTS_Right);
+            this.splContMetTS.Panel2.Controls.Add(this.label208);
+            this.splContMetTS.Panel2.Controls.Add(this.label149);
+            this.splContMetTS.Panel2.Controls.Add(this.dateMetTS_End);
+            this.splContMetTS.Panel2.Controls.Add(this.dateMetTS_Start);
+            this.splContMetTS.Panel2.Controls.Add(this.plotTS_Temp);
+            this.splContMetTS.Panel2.Controls.Add(this.plotTS_Vanes);
+            this.splContMetTS.Panel2.Controls.Add(this.plotTS_Anems);
+            this.splContMetTS.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splContMetTS_Panel2_Paint);
+            this.splContMetTS.Size = new System.Drawing.Size(1635, 905);
+            this.splContMetTS.SplitterDistance = 592;
+            this.splContMetTS.SplitterWidth = 10;
+            this.splContMetTS.TabIndex = 5;
+            // 
+            // chkMetsTS
+            // 
+            this.chkMetsTS.FormattingEnabled = true;
+            this.chkMetsTS.Location = new System.Drawing.Point(13, 71);
+            this.chkMetsTS.Name = "chkMetsTS";
+            this.chkMetsTS.Size = new System.Drawing.Size(122, 164);
+            this.chkMetsTS.TabIndex = 7;            
+            this.chkMetsTS.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkMetsTS_ItemCheck);
+            // 
+            // label146
+            // 
+            this.label146.AutoSize = true;
+            this.label146.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label146.Location = new System.Drawing.Point(8, 15);
+            this.label146.Name = "label146";
+            this.label146.Size = new System.Drawing.Size(222, 25);
+            this.label146.TabIndex = 6;
+            this.label146.Text = "Met Data Time Series";
+            // 
+            // dataMetTS
+            // 
+            this.dataMetTS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataMetTS.Location = new System.Drawing.Point(141, 71);
+            this.dataMetTS.Name = "dataMetTS";
+            this.dataMetTS.Size = new System.Drawing.Size(428, 749);
+            this.dataMetTS.TabIndex = 5;
+            // 
+            // chkTS_Params
+            // 
+            this.chkTS_Params.FormattingEnabled = true;
+            this.chkTS_Params.Location = new System.Drawing.Point(13, 276);
+            this.chkTS_Params.Name = "chkTS_Params";
+            this.chkTS_Params.Size = new System.Drawing.Size(122, 544);
+            this.chkTS_Params.TabIndex = 3;
+            // 
+            // label213
+            // 
+            this.label213.AutoSize = true;
+            this.label213.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label213.Location = new System.Drawing.Point(872, 43);
+            this.label213.Name = "label213";
+            this.label213.Size = new System.Drawing.Size(19, 18);
+            this.label213.TabIndex = 23;
+            this.label213.Text = "4)";
+            this.label213.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "WS",
+            "WD",
+            "Temp.",
+            "Press."});
+            this.comboBox1.Location = new System.Drawing.Point(895, 39);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(96, 26);
+            this.comboBox1.TabIndex = 22;
+            // 
+            // label212
+            // 
+            this.label212.AutoSize = true;
+            this.label212.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label212.Location = new System.Drawing.Point(872, 11);
+            this.label212.Name = "label212";
+            this.label212.Size = new System.Drawing.Size(19, 18);
+            this.label212.TabIndex = 21;
+            this.label212.Text = "3)";
+            this.label212.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // cboPlot3Type
+            // 
+            this.cboPlot3Type.FormattingEnabled = true;
+            this.cboPlot3Type.Items.AddRange(new object[] {
+            "WS",
+            "WD",
+            "Temp.",
+            "Press."});
+            this.cboPlot3Type.Location = new System.Drawing.Point(895, 7);
+            this.cboPlot3Type.Name = "cboPlot3Type";
+            this.cboPlot3Type.Size = new System.Drawing.Size(96, 26);
+            this.cboPlot3Type.TabIndex = 20;
+            // 
+            // label211
+            // 
+            this.label211.AutoSize = true;
+            this.label211.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label211.Location = new System.Drawing.Point(729, 43);
+            this.label211.Name = "label211";
+            this.label211.Size = new System.Drawing.Size(19, 18);
+            this.label211.TabIndex = 19;
+            this.label211.Text = "2)";
+            this.label211.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // cboPlot2Type
+            // 
+            this.cboPlot2Type.FormattingEnabled = true;
+            this.cboPlot2Type.Items.AddRange(new object[] {
+            "WS",
+            "WD",
+            "Temp.",
+            "Press."});
+            this.cboPlot2Type.Location = new System.Drawing.Point(752, 39);
+            this.cboPlot2Type.Name = "cboPlot2Type";
+            this.cboPlot2Type.Size = new System.Drawing.Size(96, 26);
+            this.cboPlot2Type.TabIndex = 18;
+            // 
+            // label210
+            // 
+            this.label210.AutoSize = true;
+            this.label210.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label210.Location = new System.Drawing.Point(729, 11);
+            this.label210.Name = "label210";
+            this.label210.Size = new System.Drawing.Size(19, 18);
+            this.label210.TabIndex = 17;
+            this.label210.Text = "1)";
+            this.label210.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // cboPlot1Type
+            // 
+            this.cboPlot1Type.FormattingEnabled = true;
+            this.cboPlot1Type.Items.AddRange(new object[] {
+            "WS",
+            "WD",
+            "Temp.",
+            "Press."});
+            this.cboPlot1Type.Location = new System.Drawing.Point(752, 7);
+            this.cboPlot1Type.Name = "cboPlot1Type";
+            this.cboPlot1Type.Size = new System.Drawing.Size(96, 26);
+            this.cboPlot1Type.TabIndex = 16;
+            // 
+            // label209
+            // 
+            this.label209.AutoSize = true;
+            this.label209.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label209.Location = new System.Drawing.Point(641, 15);
+            this.label209.Name = "label209";
+            this.label209.Size = new System.Drawing.Size(75, 18);
+            this.label209.TabIndex = 15;
+            this.label209.Text = "Num. Plots";
+            this.label209.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // cboNumPlots
+            // 
+            this.cboNumPlots.FormattingEnabled = true;
+            this.cboNumPlots.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4"});
+            this.cboNumPlots.Location = new System.Drawing.Point(644, 36);
+            this.cboNumPlots.Name = "cboNumPlots";
+            this.cboNumPlots.Size = new System.Drawing.Size(63, 26);
+            this.cboNumPlots.TabIndex = 14;
+            // 
+            // lblMetDataTS_Inc
+            // 
+            this.lblMetDataTS_Inc.AutoSize = true;
+            this.lblMetDataTS_Inc.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMetDataTS_Inc.Location = new System.Drawing.Point(523, 22);
+            this.lblMetDataTS_Inc.Name = "lblMetDataTS_Inc";
+            this.lblMetDataTS_Inc.Size = new System.Drawing.Size(38, 18);
+            this.lblMetDataTS_Inc.TabIndex = 13;
+            this.lblMetDataTS_Inc.Text = "Days";
+            this.lblMetDataTS_Inc.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(458, 18);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(59, 25);
+            this.textBox1.TabIndex = 12;
+            // 
+            // btnMetTS_Left
+            // 
+            this.btnMetTS_Left.BackColor = System.Drawing.Color.LightCyan;
+            this.btnMetTS_Left.Image = ((System.Drawing.Image)(resources.GetObject("btnMetTS_Left.Image")));
+            this.btnMetTS_Left.Location = new System.Drawing.Point(397, 10);
+            this.btnMetTS_Left.Name = "btnMetTS_Left";
+            this.btnMetTS_Left.Size = new System.Drawing.Size(55, 40);
+            this.btnMetTS_Left.TabIndex = 11;
+            this.btnMetTS_Left.UseVisualStyleBackColor = false;
+            // 
+            // btnMetTS_Right
+            // 
+            this.btnMetTS_Right.BackColor = System.Drawing.Color.LightCyan;
+            this.btnMetTS_Right.Image = ((System.Drawing.Image)(resources.GetObject("btnMetTS_Right.Image")));
+            this.btnMetTS_Right.Location = new System.Drawing.Point(567, 13);
+            this.btnMetTS_Right.Name = "btnMetTS_Right";
+            this.btnMetTS_Right.Size = new System.Drawing.Size(55, 40);
+            this.btnMetTS_Right.TabIndex = 10;
+            this.btnMetTS_Right.UseVisualStyleBackColor = false;
+            // 
+            // label208
+            // 
+            this.label208.AutoSize = true;
+            this.label208.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label208.Location = new System.Drawing.Point(214, 18);
+            this.label208.Name = "label208";
+            this.label208.Size = new System.Drawing.Size(23, 18);
+            this.label208.TabIndex = 9;
+            this.label208.Text = "To";
+            this.label208.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label149
+            // 
+            this.label149.AutoSize = true;
+            this.label149.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label149.Location = new System.Drawing.Point(14, 18);
+            this.label149.Name = "label149";
+            this.label149.Size = new System.Drawing.Size(40, 18);
+            this.label149.TabIndex = 8;
+            this.label149.Text = "From";
+            this.label149.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // dateMetTS_End
+            // 
+            this.dateMetTS_End.CustomFormat = "MM/dd/yy HH:mm";
+            this.dateMetTS_End.Enabled = false;
+            this.dateMetTS_End.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateMetTS_End.Location = new System.Drawing.Point(244, 15);
+            this.dateMetTS_End.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.dateMetTS_End.Name = "dateMetTS_End";
+            this.dateMetTS_End.Size = new System.Drawing.Size(140, 25);
+            this.dateMetTS_End.TabIndex = 5;
+            // 
+            // dateMetTS_Start
+            // 
+            this.dateMetTS_Start.CustomFormat = "MM/dd/yy HH:mm";
+            this.dateMetTS_Start.Enabled = false;
+            this.dateMetTS_Start.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateMetTS_Start.Location = new System.Drawing.Point(58, 15);
+            this.dateMetTS_Start.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.dateMetTS_Start.Name = "dateMetTS_Start";
+            this.dateMetTS_Start.Size = new System.Drawing.Size(140, 25);
+            this.dateMetTS_Start.TabIndex = 4;
+            // 
+            // plotTS_Temp
+            // 
+            this.plotTS_Temp.BackColor = System.Drawing.Color.AntiqueWhite;
+            this.plotTS_Temp.Location = new System.Drawing.Point(28, 588);
+            this.plotTS_Temp.Name = "plotTS_Temp";
+            this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTS_Temp.Size = new System.Drawing.Size(983, 239);
+            this.plotTS_Temp.TabIndex = 2;
+            this.plotTS_Temp.Text = "plotTS_Anems";
+            this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTS_Temp.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTS_Temp.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotTS_Vanes
+            // 
+            this.plotTS_Vanes.BackColor = System.Drawing.Color.AntiqueWhite;
+            this.plotTS_Vanes.Location = new System.Drawing.Point(28, 339);
+            this.plotTS_Vanes.Name = "plotTS_Vanes";
+            this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTS_Vanes.Size = new System.Drawing.Size(983, 239);
+            this.plotTS_Vanes.TabIndex = 1;
+            this.plotTS_Vanes.Text = "plotTS_Anems";
+            this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTS_Vanes.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTS_Vanes.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // plotTS_Anems
+            // 
+            this.plotTS_Anems.BackColor = System.Drawing.Color.AntiqueWhite;
+            this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
+            this.plotTS_Anems.Name = "plotTS_Anems";
+            this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTS_Anems.Size = new System.Drawing.Size(983, 257);
+            this.plotTS_Anems.TabIndex = 0;
+            this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTS_Anems.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // pgeMetData
             // 
@@ -6593,6 +6958,108 @@
             this.dataTerrainComplex.Size = new System.Drawing.Size(1024, 637);
             this.dataTerrainComplex.TabIndex = 292;
             // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Turbine";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Width = 80;
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "Elev. [m]";
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            this.Column4.Width = 70;
+            // 
+            // Column15
+            // 
+            this.Column15.HeaderText = "Complexity";
+            this.Column15.Name = "Column15";
+            this.Column15.ReadOnly = true;
+            // 
+            // Column5
+            // 
+            this.Column5.HeaderText = "5h 360 TSI";
+            this.Column5.Name = "Column5";
+            this.Column5.ReadOnly = true;
+            this.Column5.Width = 80;
+            // 
+            // Column6
+            // 
+            dataGridViewCellStyle1.Format = "P";
+            dataGridViewCellStyle1.NullValue = null;
+            this.Column6.DefaultCellStyle = dataGridViewCellStyle1;
+            this.Column6.HeaderText = "5h 360 TVI";
+            this.Column6.Name = "Column6";
+            this.Column6.ReadOnly = true;
+            this.Column6.Width = 80;
+            // 
+            // Column7
+            // 
+            this.Column7.HeaderText = "5h 30 TSI";
+            this.Column7.Name = "Column7";
+            this.Column7.ReadOnly = true;
+            this.Column7.Width = 80;
+            // 
+            // Column8
+            // 
+            dataGridViewCellStyle2.Format = "P";
+            dataGridViewCellStyle2.NullValue = null;
+            this.Column8.DefaultCellStyle = dataGridViewCellStyle2;
+            this.Column8.HeaderText = "5h 30 TVI";
+            this.Column8.Name = "Column8";
+            this.Column8.ReadOnly = true;
+            this.Column8.Width = 80;
+            // 
+            // Column9
+            // 
+            this.Column9.HeaderText = "10h 30 TSI";
+            this.Column9.Name = "Column9";
+            this.Column9.ReadOnly = true;
+            this.Column9.Width = 80;
+            // 
+            // Column10
+            // 
+            dataGridViewCellStyle3.Format = "P";
+            dataGridViewCellStyle3.NullValue = null;
+            this.Column10.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Column10.HeaderText = "10h 30 TVI";
+            this.Column10.Name = "Column10";
+            this.Column10.ReadOnly = true;
+            this.Column10.Width = 80;
+            // 
+            // Column11
+            // 
+            this.Column11.HeaderText = "20h 30 TSI";
+            this.Column11.Name = "Column11";
+            this.Column11.ReadOnly = true;
+            this.Column11.Width = 80;
+            // 
+            // Column12
+            // 
+            dataGridViewCellStyle4.Format = "P";
+            dataGridViewCellStyle4.NullValue = null;
+            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
+            this.Column12.HeaderText = "20h 30 TVI";
+            this.Column12.Name = "Column12";
+            this.Column12.ReadOnly = true;
+            this.Column12.Width = 80;
+            // 
+            // Column13
+            // 
+            this.Column13.HeaderText = "P10 UW Expo.";
+            this.Column13.Name = "Column13";
+            this.Column13.ReadOnly = true;
+            this.Column13.Width = 90;
+            // 
+            // Column14
+            // 
+            this.Column14.HeaderText = "P10 DW Expo";
+            this.Column14.Name = "Column14";
+            this.Column14.ReadOnly = true;
+            this.Column14.Width = 90;
+            // 
             // label199
             // 
             this.label199.AutoSize = true;
@@ -10488,108 +10955,6 @@
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Turbine";
-            this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
-            this.Column3.Width = 80;
-            // 
-            // Column4
-            // 
-            this.Column4.HeaderText = "Elev. [m]";
-            this.Column4.Name = "Column4";
-            this.Column4.ReadOnly = true;
-            this.Column4.Width = 70;
-            // 
-            // Column15
-            // 
-            this.Column15.HeaderText = "Complexity";
-            this.Column15.Name = "Column15";
-            this.Column15.ReadOnly = true;
-            // 
-            // Column5
-            // 
-            this.Column5.HeaderText = "5h 360 TSI";
-            this.Column5.Name = "Column5";
-            this.Column5.ReadOnly = true;
-            this.Column5.Width = 80;
-            // 
-            // Column6
-            // 
-            dataGridViewCellStyle1.Format = "P";
-            dataGridViewCellStyle1.NullValue = null;
-            this.Column6.DefaultCellStyle = dataGridViewCellStyle1;
-            this.Column6.HeaderText = "5h 360 TVI";
-            this.Column6.Name = "Column6";
-            this.Column6.ReadOnly = true;
-            this.Column6.Width = 80;
-            // 
-            // Column7
-            // 
-            this.Column7.HeaderText = "5h 30 TSI";
-            this.Column7.Name = "Column7";
-            this.Column7.ReadOnly = true;
-            this.Column7.Width = 80;
-            // 
-            // Column8
-            // 
-            dataGridViewCellStyle2.Format = "P";
-            dataGridViewCellStyle2.NullValue = null;
-            this.Column8.DefaultCellStyle = dataGridViewCellStyle2;
-            this.Column8.HeaderText = "5h 30 TVI";
-            this.Column8.Name = "Column8";
-            this.Column8.ReadOnly = true;
-            this.Column8.Width = 80;
-            // 
-            // Column9
-            // 
-            this.Column9.HeaderText = "10h 30 TSI";
-            this.Column9.Name = "Column9";
-            this.Column9.ReadOnly = true;
-            this.Column9.Width = 80;
-            // 
-            // Column10
-            // 
-            dataGridViewCellStyle3.Format = "P";
-            dataGridViewCellStyle3.NullValue = null;
-            this.Column10.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Column10.HeaderText = "10h 30 TVI";
-            this.Column10.Name = "Column10";
-            this.Column10.ReadOnly = true;
-            this.Column10.Width = 80;
-            // 
-            // Column11
-            // 
-            this.Column11.HeaderText = "20h 30 TSI";
-            this.Column11.Name = "Column11";
-            this.Column11.ReadOnly = true;
-            this.Column11.Width = 80;
-            // 
-            // Column12
-            // 
-            dataGridViewCellStyle4.Format = "P";
-            dataGridViewCellStyle4.NullValue = null;
-            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
-            this.Column12.HeaderText = "20h 30 TVI";
-            this.Column12.Name = "Column12";
-            this.Column12.ReadOnly = true;
-            this.Column12.Width = 80;
-            // 
-            // Column13
-            // 
-            this.Column13.HeaderText = "P10 UW Expo.";
-            this.Column13.Name = "Column13";
-            this.Column13.ReadOnly = true;
-            this.Column13.Width = 90;
-            // 
-            // Column14
-            // 
-            this.Column14.HeaderText = "P10 DW Expo";
-            this.Column14.Name = "Column14";
-            this.Column14.ReadOnly = true;
-            this.Column14.Width = 90;
-            // 
             // Continuum
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -10608,6 +10973,14 @@
             this.tabContinuum.ResumeLayout(false);
             this.pgeInput.ResumeLayout(false);
             this.pgeInput.PerformLayout();
+            this.pgeMetDataTS.ResumeLayout(false);
+            this.splContMetTS.Panel1.ResumeLayout(false);
+            this.splContMetTS.Panel1.PerformLayout();
+            this.splContMetTS.Panel2.ResumeLayout(false);
+            this.splContMetTS.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splContMetTS)).EndInit();
+            this.splContMetTS.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataMetTS)).EndInit();
             this.pgeMetData.ResumeLayout(false);
             this.pgeMetData.PerformLayout();
             this.pgeMERRA.ResumeLayout(false);
@@ -11575,6 +11948,33 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column13;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
+        private System.Windows.Forms.TabPage pgeMetDataTS;
+        private System.Windows.Forms.SplitContainer splContMetTS;
+        private System.Windows.Forms.Label label146;
+        private System.Windows.Forms.Label label149;
+        public System.Windows.Forms.DateTimePicker dateMetTS_End;
+        public System.Windows.Forms.DateTimePicker dateMetTS_Start;
+        private System.Windows.Forms.Button btnMetTS_Right;
+        private System.Windows.Forms.Label label208;
+        private System.Windows.Forms.Label lblMetDataTS_Inc;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button btnMetTS_Left;
+        public System.Windows.Forms.CheckedListBox chkTS_Params;
+        public System.Windows.Forms.DataGridView dataMetTS;
+        public OxyPlot.WindowsForms.PlotView plotTS_Anems;
+        public OxyPlot.WindowsForms.PlotView plotTS_Temp;
+        public OxyPlot.WindowsForms.PlotView plotTS_Vanes;
+        public System.Windows.Forms.CheckedListBox chkMetsTS;
+        private System.Windows.Forms.ComboBox cboNumPlots;
+        private System.Windows.Forms.Label label209;
+        private System.Windows.Forms.Label label211;
+        private System.Windows.Forms.ComboBox cboPlot2Type;
+        private System.Windows.Forms.Label label210;
+        private System.Windows.Forms.ComboBox cboPlot1Type;
+        private System.Windows.Forms.Label label213;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label212;
+        private System.Windows.Forms.ComboBox cboPlot3Type;
     }
 }
 

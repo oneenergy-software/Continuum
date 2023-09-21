@@ -6822,5 +6822,39 @@ namespace ContinuumNS
             if (okToUpdate)
                 updateThe.InflowAnglePlotAndTable(this);
         }
+
+        public bool IsMetSiteSelected(string thisMetName)
+        {
+            bool isSelected = false;
+
+            for (int m = 0; m < chkMetsTS.CheckedItems.Count; m++)
+                if (chkMetsTS.CheckedItems[m].ToString() == thisMetName)
+                    isSelected = true;
+
+            return isSelected;
+        }
+
+        public bool IsMetSensorSelected(string thisSensorName)
+        {
+            bool isSelected = false;
+
+            for (int m = 0; m < chkTS_Params.CheckedItems.Count; m++)
+                if (chkTS_Params.CheckedItems[m].ToString() == thisSensorName)
+                    isSelected = true;
+
+            return isSelected;
+        }
+
+        private void splContMetTS_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void chkMetsTS_ItemCheck(object sender, EventArgs e)
+        {
+            // Update checklist with sensors to only show sensors for selected mets
+            if (okToUpdate)
+                updateThe.MetDataTS_CheckList(this);
+        }
     }
 }
