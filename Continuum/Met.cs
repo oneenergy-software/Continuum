@@ -691,6 +691,12 @@ namespace ContinuumNS
             return thisInd;
         }
 
+        /// <summary> Reset/clear calculated turbulence intensity (after changing met data filter settings) </summary>
+        public void ClearTurbulenceCalc()
+        {
+            turbulence = new Turbulence();
+        }
+
         /// <summary> Calculates average and representative turbulence intensity. Bins the data by WS and WD and calculates the average standard deviation, average WS, avg + 1.28 SD, and P90 SD
         /// Uses extrapolated wind speed and standard deviation at height closest to extrapolated height.  </summary>
         public void CalcTurbulenceIntensity(DateTime startTime, DateTime endTime, double height, Continuum thisInst)
@@ -718,7 +724,7 @@ namespace ContinuumNS
             Array_of_SDs[,] arrayOfSDs = new Array_of_SDs[numWS, numWD];
 
             while (extrapData.WS_WD_data[timeInd].timeStamp <= endTime)
-            {
+            { 
                 if (extrapData.WS_WD_data[timeInd].WD != -999 && extrapData.WS_WD_data[timeInd].WS != -999
                     && extrapData.WS_WD_data[timeInd].SD != -999 && extrapData.WS_WD_data[timeInd].SD < extrapData.WS_WD_data[timeInd].WS / 3)
                 {
@@ -733,7 +739,7 @@ namespace ContinuumNS
                     Array.Resize(ref arrayOfSDs[WS_ind, WD_ind].SDs, binCount);
                     arrayOfSDs[WS_ind, WD_ind].SDs[binCount - 1] = extrapData.WS_WD_data[timeInd].SD;
                 }
-
+                
                 timeInd++;
 
                 if (timeInd >= extrapData.WS_WD_data.Length)

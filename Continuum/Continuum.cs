@@ -6257,15 +6257,16 @@ namespace ContinuumNS
             {
                 ResetTimeSeries();
 
-                if (checkState == CheckState.Checked && chkChanged == "Enabled")
+                if (checkState == CheckState.Checked && chkChanged == "Enable")
                     metList.filteringEnabled = true;
-                else if (chkChanged == "Enabled")
+                else if (chkChanged == "Enable")
                     metList.filteringEnabled = false;
 
                 for (int i = 0; i < metList.ThisCount; i++)
                 {
                     metList.metItem[i].metData.ClearAlphaAndSimulatedEstimates();
                     metList.metItem[i].metData.ClearFilterFlagsAndEstimatedData();
+                    metList.metItem[i].ClearTurbulenceCalc();
 
                     if (metList.filteringEnabled)
                         metList.metItem[i].metData.FilterData(GetFiltersToApply());
@@ -6312,13 +6313,13 @@ namespace ContinuumNS
 
             if (metList.ThisCount > 0 && metList.isTimeSeries)            
                 FilterChangeConfirmWithUser("Enable");            
-            else
-            {
+      //      else
+      //      {
                 if (checkState == CheckState.Checked)
                     metList.filteringEnabled = true;
                 else
                     metList.filteringEnabled = false;
-            }
+      //      }
 
             if (metList.filteringEnabled)
             {

@@ -2313,7 +2313,7 @@ namespace ContinuumNS
                             file.Write(Math.Round(thisMetData.anems[j].windData[thisInd].SD, 3));
                             file.Write(",");
                             if (thisMetData.anems[j].windData[thisInd].SD < (thisMetData.anems[j].windData[thisInd].avg / 3))
-                                file.Write("valid");
+                                file.Write("Valid");
                             else
                                 file.Write("SD out range");
 
@@ -3622,6 +3622,7 @@ namespace ContinuumNS
                 {
                     StreamWriter file = new StreamWriter(thisInst.sfd60mWS.FileName);
                     file.WriteLine(turbType + " Turbulence Intensity at Turbine: " + thisTurb.name + " using TI from Met: " + thisMet.name);
+                    file.WriteLine("Measured from " + thisMet.turbulence.startTime.ToString() + " to " + thisMet.turbulence.endTime.ToString());
                     file.WriteLine();
                     file.WriteLine(thisInst.savedParams.savedFileName);
                     file.WriteLine();
@@ -3666,6 +3667,7 @@ namespace ContinuumNS
                 {
                     StreamWriter file = new StreamWriter(thisInst.sfd60mWS.FileName);
                     file.WriteLine(turbType + " Turbulence Intensity at Met: " + thisMet.name);
+                    file.WriteLine("Measured from " + thisMet.turbulence.startTime.ToString() + " to " + thisMet.turbulence.endTime.ToString());
                     file.WriteLine();
                     file.WriteLine(thisInst.savedParams.savedFileName);
                     file.WriteLine();
@@ -3675,7 +3677,7 @@ namespace ContinuumNS
                     for (int i = 0; i < thisInst.metList.numWD; i++)
                         file.Write(Math.Round(i * 360.0 / thisInst.metList.numWD, 1).ToString() + ",");
 
-                    file.Write(", Overall");
+                    file.Write(", Overall, Count");
                     file.WriteLine();
 
                     Met.TIandCount[] overallTI = thisMet.CalcOverallTurbulenceIntensity(turbType, thisInst);
@@ -3702,7 +3704,7 @@ namespace ContinuumNS
                             }
                         }
 
-                        file.WriteLine("," + Math.Round(overallTI[WS_Ind].overallTI, 4).ToString());
+                        file.WriteLine("," + Math.Round(overallTI[WS_Ind].overallTI, 4).ToString() + "," + Math.Round((double)overallTI[WS_Ind].count, 4).ToString());
                     }
 
                     file.Close();

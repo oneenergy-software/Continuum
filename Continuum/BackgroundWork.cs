@@ -1884,7 +1884,7 @@ namespace ContinuumNS
 
                 gotThemAll = false;
 
-                while (gotThemAll == false)
+                while (gotThemAll == false && numTopo > 0)
                 {
                     textForProgBar = "Saving topography data...";
                     int prog = (int)(100 * (double)maxId / numTopo);
