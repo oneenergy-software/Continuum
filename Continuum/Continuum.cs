@@ -1464,6 +1464,317 @@ namespace ContinuumNS
 
         }
 
+        /// <summary>  Opens v3.0 CFM file (which uses one MERRA2 reference node), converts to list of reference nodes and updates GUI </summary>        
+        public void OpenFileWithOldMERRA(string Filename)
+        {
+            string wholePath = "";
+
+            if (savedParams.pathName == null)
+            {
+                wholePath = Filename;
+                SetDefaultFolderLocations(wholePath);
+            }
+
+            savedParams.savedFileName = Filename;
+
+            FileStream fstream = new FileStream(Filename, FileMode.Open, FileAccess.Read);
+            BinaryFormatter bin = new BinaryFormatter();
+            bin.AssemblyFormat = FormatterAssemblyStyle.Simple;
+
+            try
+            {
+                topo = (TopoInfo)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                try
+                {
+                    // try to cast old TopoInfo object to new one
+                }
+                catch
+                {
+                    MessageBox.Show("Error loading. Files created in previous versions of Continuum (prior to v2.2) cannot be opened and will need to be recreated.", "Continuum 3");
+                    fstream.Close();
+                    updateThe.NewProject(this);
+                    return;
+                }
+            }
+
+            try
+            {
+                radiiList = (InvestCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                //  MessageBox.Show("Error reading the list of radii and exponents.", "");
+                //  fstream.Close();
+                //  updateThe.NewProject(this);
+                //  return;
+            }
+
+            try
+            {
+                metList = (MetCollection)bin.Deserialize(fstream);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString() + "Error reading the list of met sites.", "");
+                fstream.Close();
+                updateThe.NewProject(this);
+                return;
+            }
+
+            //    if (metList.ThisCount > 0) 
+            //        updateThe.WindRose(this);
+
+            okToUpdate = false;
+            if (metList.filteringEnabled)
+                chkDisableFilter.CheckState = CheckState.Checked;
+            else
+                chkDisableFilter.CheckState = CheckState.Unchecked;
+            okToUpdate = true;
+
+            try
+            {
+                turbineList = (TurbineCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the list of turbines.", "");
+                fstream.Close();
+                updateThe.NewProject(this);
+                return;
+            }
+
+            try
+            {
+                savedParams = (Saved_Parameters)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the file.", "");
+                fstream.Close();
+                updateThe.NewProject(this);
+                return;
+            }
+
+            savedParams.savedFileName = Filename;
+
+            try
+            {
+                mapList = (MapCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the maps.", "");
+                fstream.Close();
+                updateThe.NewProject(this);
+                return;
+            }
+
+            try
+            {
+                metPairList = (MetPairCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the met pairs.", "");
+                fstream.Close();
+                updateThe.NewProject(this);
+                return;
+            }
+
+            try
+            {
+                modelList = (ModelCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the models.", "");
+                fstream.Close();
+                updateThe.NewProject(this);
+                return;
+            }
+
+            // check for database
+            NodeCollection nodeList = new NodeCollection();
+            string connString = nodeList.GetDB_ConnectionString(savedParams.savedFileName);
+
+            using (var ctx = new Continuum_EDMContainer(connString))
+            {
+                try
+                {
+                    ctx.Database.Exists();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    int slashInd = savedParams.savedFileName.LastIndexOf("\\");
+                    string DB_name = savedParams.savedFileName.Substring(slashInd + 2, savedParams.savedFileName.Length - slashInd);
+                    return;
+                }
+            }
+
+            try
+            {
+                UTM_conversions = (UTM_conversion)bin.Deserialize(fstream);
+                if (UTM_conversions.savedDatumIndex != 100 && UTM_conversions.UTMZoneNumber != -999)
+                {
+                    txtUTMDatum.Text = UTM_conversions.GetDatumString(UTM_conversions.savedDatumIndex);
+                    txtUTMZone.Text = UTM_conversions.UTMZoneNumber.ToString() + UTM_conversions.hemisphere.Substring(0, 1);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in UTM zone settings in Continuum file.", "Continuum 3");
+                return;
+            }
+
+            try
+            {
+                wakeModelList = (WakeCollection)bin.Deserialize(fstream);
+                wakeModelList.CleanUpWakeModelsAndGrid();
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in wake models in Continuum file.", "Continuum 3");
+                return;
+            }
+
+            try
+            {
+                modeledHeight = (double)bin.Deserialize(fstream);
+                txtModeledHeight.Text = Math.Round(modeledHeight, 0).ToString();
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in modeled height in Continuum file.", "Continuum 3");
+                return;
+            }
+
+            try
+            {
+                MERRACollection merraList = (MERRACollection)bin.Deserialize(fstream);
+                
+                for (int m = 0; m < merraList.numMERRA_Data; m++)
+                {
+                    Reference thisRef = new Reference();
+                    thisRef.earthdataUser = merraList.earthdataUser;
+                    thisRef.earthdataPwd = merraList.earthdataPwd;
+                    thisRef.startDate = merraList.startDate;
+                    thisRef.endDate = merraList.endDate;
+
+                    thisRef.numNodes = merraList.merraData[m].numMERRA_Nodes;
+                    // Convert MERRA2 nodes to generic nodes
+                    thisRef.nodes = new Reference.Node_Data[thisRef.numNodes];
+                    for (int n = 0; n < thisRef.numNodes; n++)
+                    {                        
+                        thisRef.nodes[n].XY_ind.X_ind = merraList.merraData[m].MERRA_Nodes[n].XY_ind.X_ind;
+                        thisRef.nodes[n].XY_ind.Y_ind = merraList.merraData[m].MERRA_Nodes[n].XY_ind.Y_ind;
+                        thisRef.nodes[n].XY_ind.Lat = merraList.merraData[m].MERRA_Nodes[n].XY_ind.Lat;
+                        thisRef.nodes[n].XY_ind.Lon = merraList.merraData[m].MERRA_Nodes[n].XY_ind.Lon;
+
+                        thisRef.nodes[n].TS_Data = new Reference.Wind_TS_with_Prod[merraList.merraData[m].MERRA_Nodes[n].TS_Data.Length];
+
+                        for (int t = 0; t < merraList.merraData[m].MERRA_Nodes[n].TS_Data.Length; t++)
+                        {
+                            thisRef.nodes[n].TS_Data[t].thisDate = merraList.merraData[m].MERRA_Nodes[n].TS_Data[t].ThisDate;                            
+                            thisRef.nodes[n].TS_Data[t].seaPress = merraList.merraData[m].MERRA_Nodes[n].TS_Data[t].SeaPress;
+                            thisRef.nodes[n].TS_Data[t].surfPress = merraList.merraData[m].MERRA_Nodes[n].TS_Data[t].SurfPress;
+                            thisRef.nodes[n].TS_Data[t].temperature = merraList.merraData[m].MERRA_Nodes[n].TS_Data[t].Temp10m;
+                            thisRef.nodes[n].TS_Data[t].WD = merraList.merraData[m].MERRA_Nodes[n].TS_Data[t].WD50m;
+                            thisRef.nodes[n].TS_Data[t].WS = merraList.merraData[m].MERRA_Nodes[n].TS_Data[t].WS50m;
+                        }
+                    }
+
+                 //   thisRef.interpData.
+                    thisRef.isUserDefined = merraList.merraData[m].isUserDefined;
+                    thisRef.latRes = 0.5;
+                    thisRef.lonRes = 0.625;                    
+                    thisRef.powerCurve = merraList.merraData[m].powerCurve;
+                    thisRef.refDataFolder = merraList.MERRAfolder;
+                    thisRef.referenceType = "MERRA2";
+                    thisRef.temperatureH = 10;
+                    thisRef.wswdH = 50;
+                    thisRef.WS_ScaleFactor = merraList.merraData[m].WS_ScaleFactor;
+                   
+                    
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in MERRA2 data in Continuum file.", "Continuum 3");
+                return;
+            }
+
+            try
+            {
+                siteSuitability = (SiteSuitability)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in Site Suitability data in Continuum file.", "Continuum 3");
+                return;
+            }
+
+            fstream.Close();
+
+            if (topo.useSR == true || (topo.gotSR == true && metList.ThisCount == 0))
+            {
+                chkUseSR.Checked = true;
+                topo.useSR = true;
+            }
+            else
+                chkUseSR.Checked = false;
+
+            if (topo.useSepMod == true)
+                chk_Use_Sep.Checked = true;
+            else
+                chk_Use_Sep.Checked = false;
+
+            if (turbineList.genTimeSeries && metList.allMCPd)
+                chkCreateTurbTS.Checked = true;
+            else
+                chkCreateTurbTS.Checked = false;
+
+            // Taking out, just get sensor data if toggling Met Data QC dropdown
+            // Get sensor data from database
+            //   if (metList.isTimeSeries)
+            //   for (int i = 0; i < metList.ThisCount; i++)
+            //       metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
+
+            // Get MCP reference and target data, if MCP done
+            /*      for (int i = 0; i < metList.ThisCount; i++)
+                  {
+                      Met thisMet = metList.metItem[i];
+
+                      if (thisMet.mcp != null)
+                      {
+                          UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+
+                          if (thisMet.mcp.gotMCP_Est == true)
+                          {
+                              MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                              thisMet.mcp.GetRefData(thisMERRA, ref thisMet, this);
+                              thisMet.mcp.GetTargetData(modeledHeight, thisMet);
+                          }
+                      }
+                  }
+                */
+            //   merraList.SetMERRA2LatLong(this);
+
+            turbineList.AreExpoCalcsDone();
+            turbineList.AreTurbCalcsDone(this);
+
+            updateThe.AllTABs(this);
+
+            Text = savedParams.savedFileName;
+            fileChanged = false;
+            saveToolStripMenuItem.Enabled = true;
+            tabContinuum.SelectedIndex = 0;
+
+        }
+
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Make sure the user wants a new project
@@ -3389,6 +3700,8 @@ namespace ContinuumNS
                     thisMetList = chkMetLabels;
                 else if (tabName == "Summary")
                     thisMetList = chkMetSumm;
+                else if (tabName == "Met Data TS")
+                    thisMetList = chkMetsTS;
                 else if (tabName == "Gross")
                     thisMetList = chkMetGross;
                 else if (tabName == "Map")
@@ -6855,6 +7168,129 @@ namespace ContinuumNS
             // Update checklist with sensors to only show sensors for selected mets
             if (okToUpdate)
                 updateThe.MetDataTS_CheckList(this);
+        }
+
+        private void chkMetsTS_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MetDataTS_Tab(this);
+        }
+
+        private void chkTS_Params_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MetDataTS_Tab(this);
+        }
+
+        private void treeDataParams_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
+        }
+
+        private void treeDataParams_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MetDataTS_Tab(this);
+        }
+
+        private void plotTS_Vanes_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateMetTS_Start_ValueChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+            {
+                updateThe.MetDataPlots(this);
+                updateThe.ScrollToSelectedMetDataStart(this);
+            }
+        }
+
+        private void dateMetTS_End_ValueChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+            {
+                updateThe.MetDataPlots(this);
+                updateThe.ScrollToSelectedMetDataStart(this);
+            }
+        }
+
+        private void btnMetTS_Left_Click(object sender, EventArgs e)
+        {
+            double numDays = 1;
+            try
+            {
+                numDays = Convert.ToDouble(txtNumDaysTS.Text);
+            }
+            catch
+            {
+                numDays = 1;
+            }
+
+            okToUpdate = false;
+            dateMetTS_Start.Value = dateMetTS_Start.Value.AddDays(-numDays);
+            okToUpdate = true;
+            dateMetTS_End.Value = dateMetTS_End.Value.AddDays(-numDays);
+
+        }
+
+        private void btnMetTS_Right_Click(object sender, EventArgs e)
+        {
+            double numDays = 1;
+            try
+            {
+                numDays = Convert.ToDouble(txtNumDaysTS.Text);
+            }
+            catch
+            {
+                numDays = 1;
+            }
+
+            okToUpdate = false;
+            dateMetTS_Start.Value = dateMetTS_Start.Value.AddDays(numDays);
+            okToUpdate = true;
+            dateMetTS_End.Value = dateMetTS_End.Value.AddDays(numDays);
+        }
+
+        /// <summary> Updates visibility of plot type dropdowns depending on number of plots selected </summary>        
+        private void cboNumPlots_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int numPlots = Convert.ToInt32(cboNumPlots.SelectedItem.ToString());
+
+            if (numPlots == 1)
+            {
+                cboPlot1Type.Enabled = true;
+                cboPlot2Type.Enabled = false;
+                cboPlot3Type.Enabled = false;
+                cboPlot4Type.Enabled = false;
+            }
+            else if (numPlots == 2)
+            {
+                cboPlot1Type.Enabled = true;
+                cboPlot2Type.Enabled = true;
+                cboPlot3Type.Enabled = false;
+                cboPlot4Type.Enabled = false;
+            }
+            else if (numPlots == 3)
+            {
+                cboPlot1Type.Enabled = true;
+                cboPlot2Type.Enabled = true;
+                cboPlot3Type.Enabled = true;
+                cboPlot4Type.Enabled = false;
+            }
+            else if (numPlots == 4)
+            {
+                cboPlot1Type.Enabled = true;
+                cboPlot2Type.Enabled = true;
+                cboPlot3Type.Enabled = true;
+                cboPlot4Type.Enabled = true;
+            }
+        }
+
+        private void cboPlot1Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

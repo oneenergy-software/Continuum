@@ -7507,6 +7507,7 @@ namespace ContinuumNS
 
             thisInst.okToUpdate = true;
             InputTAB(thisInst);
+            MetDataTS_Tab(thisInst);
             MetDataQC_TAB(thisInst);
             MCP_TAB(thisInst);
             LT_ReferenceTAB(thisInst);
@@ -12270,9 +12271,16 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary> Updates met data time series data table based on met stations and sensors selected </summary>
-        public void MetDataTS_DataTable(Continuum thisInst)
+        /// <summary> Updates Met data Time Series tab </summary>
+        public void MetDataTS_Tab(Continuum thisInst)
         {
+            MetDataTS_DataTable(thisInst);
+            MetDataPlots(thisInst);
+        }
+
+        /// <summary> Updates met data time series data table based on met stations and sensors selected.  Shows all met data </summary>
+        public void MetDataTS_DataTable(Continuum thisInst)
+        {            
             thisInst.dataMetTS.Rows.Clear();
             thisInst.dataMetTS.Columns.Clear();
 
@@ -12306,7 +12314,66 @@ namespace ContinuumNS
 
             // Now create columns for each selected sensor
             for (int s = 0; s < numSens; s++)
-                thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString());
+            {
+                string sensorType = thisInst.chkTS_Params.CheckedItems[s].ToString().Substring(0, thisInst.chkTS_Params.CheckedItems[s].ToString().IndexOf(" "));
+
+                if (sensorType == "Anem.")
+                {
+                    if (thisInst.treeDataParams.Nodes[0].Nodes[0].Checked) // Anemometer average
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Avg");
+
+                    if (thisInst.treeDataParams.Nodes[0].Nodes[1].Checked) // Anemometer st. dev.
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "SD");
+
+                    if (thisInst.treeDataParams.Nodes[0].Nodes[2].Checked) // Anemometer minimum
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Min");
+
+                    if (thisInst.treeDataParams.Nodes[0].Nodes[3].Checked) // Anemometer maximum
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Max");
+                }
+                else if (sensorType == "Vane")
+                {
+                    if (thisInst.treeDataParams.Nodes[1].Nodes[0].Checked) // Vane average
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Avg");
+
+                    if (thisInst.treeDataParams.Nodes[1].Nodes[1].Checked) // Vane st. dev.
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "SD");
+
+                    if (thisInst.treeDataParams.Nodes[1].Nodes[2].Checked) // Vane minimum
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Min");
+
+                    if (thisInst.treeDataParams.Nodes[1].Nodes[3].Checked) // Vane maximum
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Max");
+                }
+                else if (sensorType == "Temp")
+                {
+                    if (thisInst.treeDataParams.Nodes[2].Nodes[0].Checked) // Temperature average
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Avg");
+
+                    if (thisInst.treeDataParams.Nodes[2].Nodes[1].Checked) // Temperature st. dev.
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "SD");
+
+                    if (thisInst.treeDataParams.Nodes[2].Nodes[2].Checked) // Temperature minimum
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Min");
+
+                    if (thisInst.treeDataParams.Nodes[2].Nodes[3].Checked) // Temperature maximum
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Max");
+                }
+                else if (sensorType == "Baro")
+                {
+                    if (thisInst.treeDataParams.Nodes[3].Nodes[0].Checked) // Pressure average
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Avg");
+
+                    if (thisInst.treeDataParams.Nodes[3].Nodes[1].Checked) // Pressure st. dev.
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "SD");
+
+                    if (thisInst.treeDataParams.Nodes[3].Nodes[2].Checked) // Pressure minimum
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Min");
+
+                    if (thisInst.treeDataParams.Nodes[3].Nodes[3].Checked) // Pressure maximum
+                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Max");
+                }  
+            }
 
             // Get all anems, vanes, temps, and press sensors selected in list
             Met_Data_Filter.Anem_Data[] anems = new Met_Data_Filter.Anem_Data[0];
@@ -12349,20 +12416,647 @@ namespace ContinuumNS
                     }
             }
 
-           
+           Met_Data_Filter met_Data_Filter = new Met_Data_Filter();
 
             // Now populate table and color code data that is flagged
             for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(10))
             {
                 int rowInd = thisInst.dataMetTS.Rows.Add(thisTS.ToString());
+                int colInd = 1;
 
                 for (int a = 0; a < numAnems; a++)
                 {
-                    int tsIndex = anems[a].get
+                    int tsIndex = anems[a].GetTS_Index(thisTS);
+                    Met_Data_Filter.Filter_Flags thisFlag = anems[a].windData[tsIndex].filterFlag;
+                    Color flagcolor = met_Data_Filter.GetFilterFlagColor(thisFlag);
+                    
+                    if (thisInst.treeDataParams.Nodes[0].Nodes[0].Checked) // Anemometer average
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = anems[a].windData[tsIndex].avg.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;                        
+                    }
+
+                    if (thisInst.treeDataParams.Nodes[0].Nodes[1].Checked) // Anemometer st. dev.
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = anems[a].windData[tsIndex].SD.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }
+                        
+
+                    if (thisInst.treeDataParams.Nodes[0].Nodes[2].Checked) // Anemometer minimum
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = anems[a].windData[tsIndex].min.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[0].Nodes[3].Checked) // Anemometer maximum
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = anems[a].windData[tsIndex].max.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }  
+                }
+
+                for (int v = 0; v < numVanes; v++)
+                {
+                    int tsIndex = vanes[v].GetTS_Index(thisTS);
+
+                    Met_Data_Filter.Filter_Flags thisFlag = vanes[v].dirData[tsIndex].filterFlag;
+                    Color flagcolor = met_Data_Filter.GetFilterFlagColor(thisFlag);
+
+                    if (thisInst.treeDataParams.Nodes[1].Nodes[0].Checked) // Vane average
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = vanes[v].dirData[tsIndex].avg.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[1].Nodes[1].Checked) // Vane st. dev.
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = vanes[v].dirData[tsIndex].SD.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[1].Nodes[2].Checked) // Vane minimum
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = vanes[v].dirData[tsIndex].min.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[1].Nodes[3].Checked) // Vane maximum
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = vanes[v].dirData[tsIndex].max.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+                }
+
+                for (int t = 0; t < numTemp; t++)
+                {
+                    int tsIndex = temps[t].GetTS_Index(thisTS);
+                    Met_Data_Filter.Filter_Flags thisFlag = temps[t].temp[tsIndex].filterFlag;
+                    Color flagcolor = met_Data_Filter.GetFilterFlagColor(thisFlag);
+
+                    if (thisInst.treeDataParams.Nodes[2].Nodes[0].Checked) // Temperature average
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = temps[t].temp[tsIndex].avg.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[2].Nodes[1].Checked) // Temperature st. dev.
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = temps[t].temp[tsIndex].SD.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[2].Nodes[2].Checked) // Temperature minimum
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = temps[t].temp[tsIndex].min.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[2].Nodes[3].Checked) // Temperature maximum
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = temps[t].temp[tsIndex].max.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+                }
+
+                for (int p = 0; p < numBaro; p++)
+                {
+                    int tsIndex = baros[p].GetTS_Index(thisTS);
+                    Met_Data_Filter.Filter_Flags thisFlag = baros[p].pressure[tsIndex].filterFlag;
+                    Color flagcolor = met_Data_Filter.GetFilterFlagColor(thisFlag);
+
+                    if (thisInst.treeDataParams.Nodes[3].Nodes[0].Checked) // Pressure average
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = baros[p].pressure[tsIndex].avg.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[3].Nodes[1].Checked) // Pressure st. dev.
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = baros[p].pressure[tsIndex].SD.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[3].Nodes[2].Checked) // Pressure minimum
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = baros[p].pressure[tsIndex].min.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                        
+
+                    if (thisInst.treeDataParams.Nodes[3].Nodes[3].Checked) // Pressure maximum
+                    {
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Value = baros[p].pressure[tsIndex].max.ToString();
+                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = flagcolor;
+                        colInd++;
+                    }                       
+                }
+            }            
+        }
+
+        /// <summary> Scrolls to row of met data time series that corresponds to selected start time  </summary>
+        public void ScrollToSelectedMetDataStart(Continuum thisInst)
+        {
+            // Figure out what row index corresponds to selected start date
+            DateTime selStart = thisInst.dateMetTS_Start.Value;
+
+            int lastRow = 0;
+            int startRow = thisInst.dataMetTS.RowCount / 2; // Start at midpoint of dataset
+            
+            TimeSpan timeDiff = new TimeSpan();
+            bool diffGettingSmaller = true;
+
+            DateTime thisRowTS = Convert.ToDateTime(thisInst.dataMetTS.Rows[startRow].Cells[0].Value);
+            timeDiff = selStart.Subtract(thisRowTS);
+
+            if (timeDiff.TotalMinutes < 0)
+                lastRow = thisInst.dataMetTS.RowCount;
+
+            while (Math.Abs(timeDiff.TotalMinutes) > 10 && diffGettingSmaller)
+            {
+                if (timeDiff.TotalMinutes > 0)
+                {
+                    // thisRowTS is before selStart
+                    int newRowInd = Convert.ToInt16((startRow + lastRow) / 2);
+                    lastRow = startRow;
+                    startRow = newRowInd;
+                }
+                else
+                {
+                    // thisRowTS is after selStart
+                    int newRowInd = Convert.ToInt16((startRow + lastRow) / 2);
+                    lastRow = startRow;
+                    startRow = newRowInd;
+
                 }
             }
 
-            
+            thisInst.dataMetTS.FirstDisplayedScrollingRowIndex = startRow;
+        }
+
+        /// <summary> Updates plots on Met Data TS tab </summary>       
+        public void MetDataPlots(Continuum thisInst)
+        {
+            // Clear all plots
+            thisInst.plotTS_Anems.Model = new PlotModel();
+            thisInst.plotTS_Vanes.Model = new PlotModel();
+            thisInst.plotTS_Temp.Model = new PlotModel();
+            thisInst.plotTS_Baros.Model = new PlotModel();
+
+            if (thisInst.cboNumPlots.SelectedItem == null)
+                thisInst.cboNumPlots.SelectedIndex = 0;
+
+            // Figure out how and what kind of plots to create
+            int numPlots = Convert.ToInt16(thisInst.cboNumPlots.SelectedItem.ToString());
+            bool showAnems = false;
+            bool showVanes = false;
+            bool showTemps = false;
+            bool showBaros = false;
+
+            if (numPlots >= 1)
+            {
+                if (thisInst.cboPlot1Type.SelectedItem == null)
+                    thisInst.cboPlot1Type.SelectedIndex = 0;
+
+                if (thisInst.cboPlot1Type.SelectedItem.ToString() == "WS")
+                    showAnems = true;
+                else if (thisInst.cboPlot1Type.SelectedItem.ToString() == "WD")
+                    showVanes = true;
+                else if (thisInst.cboPlot1Type.SelectedItem.ToString() == "Temp.")
+                    showTemps = true;
+                else if (thisInst.cboPlot1Type.SelectedItem.ToString() == "Press.")
+                    showBaros = true;
+            }
+
+            if (numPlots >= 2)
+            {
+                if (thisInst.cboPlot2Type.SelectedItem.ToString() == "WS")
+                    showAnems = true;
+                else if (thisInst.cboPlot2Type.SelectedItem.ToString() == "WD")
+                    showVanes = true;
+                else if (thisInst.cboPlot2Type.SelectedItem.ToString() == "Temp.")
+                    showTemps = true;
+                else if (thisInst.cboPlot2Type.SelectedItem.ToString() == "Press.")
+                    showBaros = true;
+            }
+
+            if (numPlots >= 3)
+            {
+                if (thisInst.cboPlot3Type.SelectedItem.ToString() == "WS")
+                    showAnems = true;
+                else if (thisInst.cboPlot3Type.SelectedItem.ToString() == "WD")
+                    showVanes = true;
+                else if (thisInst.cboPlot3Type.SelectedItem.ToString() == "Temp.")
+                    showTemps = true;
+                else if (thisInst.cboPlot3Type.SelectedItem.ToString() == "Press.")
+                    showBaros = true;
+            }
+
+            // if numPlots is 4 then all are true
+            if (numPlots == 4)
+            {
+                showAnems = true;
+                showVanes = true;
+                showTemps = true;
+                showBaros = true;
+            }
+
+            // Set plot height based on number selected
+            int plotHeight = 840;
+
+            if (numPlots == 2)
+                plotHeight = 420;
+            else if (numPlots == 3)
+                plotHeight = 280;
+            else if (numPlots == 4)
+                plotHeight = 210;
+
+            int[] plotY_Loca = new int[numPlots];
+
+            for (int l = 0; l < numPlots; l++)
+                plotY_Loca[l] = 72 + l * plotHeight;
+
+            int localInd = 0;
+
+            DateTime startTime = thisInst.dateMetTS_Start.Value;
+            DateTime endTime = thisInst.dateMetTS_End.Value;
+
+            Met[] selMets = thisInst.GetCheckedMets("Met Data TS");
+
+            if (showAnems)
+            {
+                // Create and populate wind speed plots
+                thisInst.plotTS_Anems.Location = new Point(28, plotY_Loca[localInd]);
+                thisInst.plotTS_Anems.Height = plotHeight;
+                DateTimeAxis timeAxis = new DateTimeAxis();
+         //       timeAxis.AxisChanged += AnemTS_AxisChanged;
+                thisInst.plotTS_Anems.Model.Axes.Add(timeAxis);
+                localInd++;
+
+                for (int m = 0; m < selMets.Length; m++)
+                {
+                    Met thisMet = selMets[m];
+
+                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                        AddAnemDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisInst, thisMet, startTime, endTime);
+                }
+            }
+            else
+                thisInst.plotTS_Anems.Visible = false;
+
+            if (showVanes)
+            {
+                // Create and populate wind direction plots
+                thisInst.plotTS_Vanes.Location = new Point(28, plotY_Loca[localInd]);
+                thisInst.plotTS_Vanes.Height = plotHeight;
+                localInd++;                                
+
+                for (int m = 0; m < selMets.Length; m++)
+                {
+                    Met thisMet = selMets[m];
+
+                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                        AddVaneDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisInst, thisMet, startTime, endTime);
+                }
+
+            }
+            else
+                thisInst.plotTS_Vanes.Visible = false;
+
+            if (showTemps)
+            {
+                // Create and populate temperature plots
+                thisInst.plotTS_Temp.Location = new Point(28, plotY_Loca[localInd]);
+                thisInst.plotTS_Temp.Height = plotHeight;
+                localInd++;
+
+                for (int m = 0; m < selMets.Length; m++)
+                {
+                    Met thisMet = selMets[m];
+
+                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                        AddTempDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisInst, thisMet, startTime, endTime);
+                }
+            }
+            else
+                thisInst.plotTS_Temp.Visible = false;
+
+            if (showBaros)
+            {
+                // Create and populate pressure plots
+                thisInst.plotTS_Baros.Location = new Point(28, plotY_Loca[localInd]);
+                thisInst.plotTS_Baros.Height = plotHeight;
+                localInd++;
+
+                for (int m = 0; m < selMets.Length; m++)
+                {
+                    Met thisMet = selMets[m];
+
+                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                        AddPressDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisInst, thisMet, startTime, endTime);
+                }
+            }
+            else
+                thisInst.plotTS_Baros.Visible = false;
+
+        }
+
+        /// <summary> Gets called when user zooms in on anemometer plot.  This syncs the rest of the plots to the same X min/max </summary>        
+  //      public void AnemTS_AxisChanged(object sender, AxisChangedEventArgs e)
+  //      {
+  //          DateTime anemMinTS = 
+
+//        }
+
+
+        /// <summary> Add vane data to TS plot </summary>        
+        public void AddVaneDataToTS_Plot(string checkedItem, Continuum thisInst, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            // Check to see what metrics to plot (i.e. Avg, Min, Max, and/or SD)
+            bool showAvg = thisInst.treeDataParams.Nodes[1].Nodes[0].Checked;
+            bool showSD = thisInst.treeDataParams.Nodes[1].Nodes[1].Checked;
+            bool showMin = thisInst.treeDataParams.Nodes[1].Nodes[2].Checked;
+            bool showMax = thisInst.treeDataParams.Nodes[1].Nodes[3].Checked;
+
+            for (int v = 0; v < thisMet.metData.GetNumVanes(); v++)
+            {
+                Met_Data_Filter.Vane_Data thisVane = thisMet.metData.vanes[v];
+
+                if (checkedItem == (thisMet.name + " " + thisMet.metData.GetVaneName(thisVane, true)))
+                {
+                    int startInd = thisVane.GetTS_Index(startTime);
+                    int endInd = thisVane.GetTS_Index(startTime);
+
+                    if (showAvg)
+                    {
+                        LineSeries thisVaneAvg = new LineSeries();
+                        thisVaneAvg.Title = checkedItem + " Avg";
+                        thisVaneAvg.LineStyle = LineStyle.Solid;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisVaneAvg.Points.Add(new DataPoint(thisVane.dirData[t].timeStamp.ToOADate(), thisVane.dirData[t].avg));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisVaneAvg);
+                    }
+
+                    if (showSD)
+                    {
+                        LineSeries thisVaneSD = new LineSeries();
+                        thisVaneSD.Title = checkedItem + " SD";
+                        thisVaneSD.LineStyle = LineStyle.Dot;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisVaneSD.Points.Add(new DataPoint(thisVane.dirData[t].timeStamp.ToOADate(), thisVane.dirData[t].SD));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisVaneSD);
+                    }
+
+                    if (showMin)
+                    {
+                        LineSeries thisVaneMin = new LineSeries();
+                        thisVaneMin.Title = checkedItem + " Min";
+                        thisVaneMin.LineStyle = LineStyle.Dash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisVaneMin.Points.Add(new DataPoint(thisVane.dirData[t].timeStamp.ToOADate(), thisVane.dirData[t].min));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisVaneMin);
+                    }
+
+                    if (showMax)
+                    {
+                        LineSeries thisVaneMax = new LineSeries();
+                        thisVaneMax.Title = checkedItem + " Max";
+                        thisVaneMax.LineStyle = LineStyle.LongDash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisVaneMax.Points.Add(new DataPoint(thisVane.dirData[t].timeStamp.ToOADate(), thisVane.dirData[t].max));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisVaneMax);
+                    }
+                }
+            }
+        }
+
+        /// <summary> Add anemometer data to TS plot </summary>        
+        public void AddAnemDataToTS_Plot(string checkedItem, Continuum thisInst, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            // Check to see what metrics to plot (i.e. Avg, Min, Max, and/or SD)
+            bool showAvg = thisInst.treeDataParams.Nodes[0].Nodes[0].Checked;
+            bool showSD = thisInst.treeDataParams.Nodes[0].Nodes[1].Checked;
+            bool showMin = thisInst.treeDataParams.Nodes[0].Nodes[2].Checked;
+            bool showMax = thisInst.treeDataParams.Nodes[0].Nodes[3].Checked;
+
+            for (int a = 0; a < thisMet.metData.GetNumAnems(); a++)
+            {
+                Met_Data_Filter.Anem_Data thisAnem = thisMet.metData.anems[a];
+
+                if (checkedItem == (thisMet.name + " " + thisMet.metData.GetAnemName(thisAnem, true)))
+                {
+                    int startInd = thisAnem.GetTS_Index(startTime);
+                    int endInd = thisAnem.GetTS_Index(endTime);
+
+                    if (showAvg)
+                    {
+                        LineSeries thisAnemAvg = new LineSeries();
+                        thisAnemAvg.Title = checkedItem + " Avg";
+                        thisAnemAvg.LineStyle = LineStyle.Solid;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisAnemAvg.Points.Add(new DataPoint(thisAnem.windData[t].timeStamp.ToOADate(), thisAnem.windData[t].avg));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisAnemAvg);
+                    }
+
+                    if (showSD)
+                    {
+                        LineSeries thisAnemSD = new LineSeries();
+                        thisAnemSD.Title = checkedItem + " SD";
+                        thisAnemSD.LineStyle = LineStyle.Dot;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisAnemSD.Points.Add(new DataPoint(thisAnem.windData[t].timeStamp.ToOADate(), thisAnem.windData[t].SD));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisAnemSD);
+                    }
+
+                    if (showMin)
+                    {
+                        LineSeries thisAnemMin = new LineSeries();
+                        thisAnemMin.Title = checkedItem + " Min";
+                        thisAnemMin.LineStyle = LineStyle.Dash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisAnemMin.Points.Add(new DataPoint(thisAnem.windData[t].timeStamp.ToOADate(), thisAnem.windData[t].min));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisAnemMin);
+                    }
+
+                    if (showMax)
+                    {
+                        LineSeries thisAnemMax = new LineSeries();
+                        thisAnemMax.Title = checkedItem + " Max";
+                        thisAnemMax.LineStyle = LineStyle.LongDash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisAnemMax.Points.Add(new DataPoint(thisAnem.windData[t].timeStamp.ToOADate(), thisAnem.windData[t].max));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisAnemMax);
+                    }
+                }
+            }
+        }
+
+        /// <summary> Add temperature data to TS plot </summary>        
+        public void AddTempDataToTS_Plot(string checkedItem, Continuum thisInst, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            // Check to see what metrics to plot (i.e. Avg, Min, Max, and/or SD)
+            bool showAvg = thisInst.treeDataParams.Nodes[2].Nodes[0].Checked;
+            bool showSD = thisInst.treeDataParams.Nodes[2].Nodes[1].Checked;
+            bool showMin = thisInst.treeDataParams.Nodes[2].Nodes[2].Checked;
+            bool showMax = thisInst.treeDataParams.Nodes[2].Nodes[3].Checked;
+
+            for (int n = 0; n < thisMet.metData.GetNumTemps(); n++)
+            {
+                Met_Data_Filter.Temp_Data thisTemp = thisMet.metData.temps[n];
+
+                if (checkedItem == (thisMet.name + " " + thisMet.metData.GetTempName(thisTemp, true)))
+                {
+                    int startInd = thisTemp.GetTS_Index(startTime);
+                    int endInd = thisTemp.GetTS_Index(startTime);
+
+                    if (showAvg)
+                    {
+                        LineSeries thisTempAvg = new LineSeries();
+                        thisTempAvg.Title = checkedItem + " Avg";
+                        thisTempAvg.LineStyle = LineStyle.Solid;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisTempAvg.Points.Add(new DataPoint(thisTemp.temp[t].timeStamp.ToOADate(), thisTemp.temp[t].avg));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisTempAvg);
+                    }
+
+                    if (showSD)
+                    {
+                        LineSeries thisTempSD = new LineSeries();
+                        thisTempSD.Title = checkedItem + " SD";
+                        thisTempSD.LineStyle = LineStyle.Dot;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisTempSD.Points.Add(new DataPoint(thisTemp.temp[t].timeStamp.ToOADate(), thisTemp.temp[t].SD));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisTempSD);
+                    }
+
+                    if (showMin)
+                    {
+                        LineSeries thisTempMin = new LineSeries();
+                        thisTempMin.Title = checkedItem + " Min";
+                        thisTempMin.LineStyle = LineStyle.Dash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisTempMin.Points.Add(new DataPoint(thisTemp.temp[t].timeStamp.ToOADate(), thisTemp.temp[t].min));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisTempMin);
+                    }
+
+                    if (showMax)
+                    {
+                        LineSeries thisTempMax = new LineSeries();
+                        thisTempMax.Title = checkedItem + " Max";
+                        thisTempMax.LineStyle = LineStyle.LongDash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisTempMax.Points.Add(new DataPoint(thisTemp.temp[t].timeStamp.ToOADate(), thisTemp.temp[t].max));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisTempMax);
+                    }
+                }
+            }
+        }
+
+        /// <summary> Add pressure data to TS plot </summary>        
+        public void AddPressDataToTS_Plot(string checkedItem, Continuum thisInst, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            // Check to see what metrics to plot (i.e. Avg, Min, Max, and/or SD)
+            bool showAvg = thisInst.treeDataParams.Nodes[2].Nodes[0].Checked;
+            bool showSD = thisInst.treeDataParams.Nodes[2].Nodes[1].Checked;
+            bool showMin = thisInst.treeDataParams.Nodes[2].Nodes[2].Checked;
+            bool showMax = thisInst.treeDataParams.Nodes[2].Nodes[3].Checked;
+
+            for (int p = 0; p < thisMet.metData.GetNumBaros(); p++)
+            {
+                Met_Data_Filter.Press_Data thisBaro = thisMet.metData.baros[p];
+
+                if (checkedItem == (thisMet.name + " " + thisMet.metData.GetPressName(thisBaro, true)))
+                {
+                    int startInd = thisBaro.GetTS_Index(startTime);
+                    int endInd = thisBaro.GetTS_Index(startTime);
+
+                    if (showAvg)
+                    {
+                        LineSeries thisBaroAvg = new LineSeries();
+                        thisBaroAvg.Title = checkedItem + " Avg";
+                        thisBaroAvg.LineStyle = LineStyle.Solid;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisBaroAvg.Points.Add(new DataPoint(thisBaro.pressure[t].timeStamp.ToOADate(), thisBaro.pressure[t].avg));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisBaroAvg);
+                    }
+
+                    if (showSD)
+                    {
+                        LineSeries thisBaroSD = new LineSeries();
+                        thisBaroSD.Title = checkedItem + " SD";
+                        thisBaroSD.LineStyle = LineStyle.Dot;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisBaroSD.Points.Add(new DataPoint(thisBaro.pressure[t].timeStamp.ToOADate(), thisBaro.pressure[t].SD));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisBaroSD);
+                    }
+
+                    if (showMin)
+                    {
+                        LineSeries thisBaroMin = new LineSeries();
+                        thisBaroMin.Title = checkedItem + " Min";
+                        thisBaroMin.LineStyle = LineStyle.Dash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisBaroMin.Points.Add(new DataPoint(thisBaro.pressure[t].timeStamp.ToOADate(), thisBaro.pressure[t].min));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisBaroMin);
+                    }
+
+                    if (showMax)
+                    {
+                        LineSeries thisBaroMax = new LineSeries();
+                        thisBaroMax.Title = checkedItem + " Max";
+                        thisBaroMax.LineStyle = LineStyle.LongDash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            thisBaroMax.Points.Add(new DataPoint(thisBaro.pressure[t].timeStamp.ToOADate(), thisBaro.pressure[t].max));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisBaroMax);
+                    }
+                }
+            }
         }
 
     }

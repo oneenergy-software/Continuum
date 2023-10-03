@@ -28,6 +28,42 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4});
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
+            treeNode6,
+            treeNode7,
+            treeNode8,
+            treeNode9});
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
+            treeNode11,
+            treeNode12,
+            treeNode13,
+            treeNode14});
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
+            treeNode16,
+            treeNode17,
+            treeNode18,
+            treeNode19});
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -90,12 +126,14 @@
             this.btnLoadXYZ = new System.Windows.Forms.Button();
             this.pgeMetDataTS = new System.Windows.Forms.TabPage();
             this.splContMetTS = new System.Windows.Forms.SplitContainer();
+            this.treeDataParams = new System.Windows.Forms.TreeView();
             this.chkMetsTS = new System.Windows.Forms.CheckedListBox();
             this.label146 = new System.Windows.Forms.Label();
             this.dataMetTS = new System.Windows.Forms.DataGridView();
             this.chkTS_Params = new System.Windows.Forms.CheckedListBox();
+            this.plotTS_Baros = new OxyPlot.WindowsForms.PlotView();
             this.label213 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cboPlot4Type = new System.Windows.Forms.ComboBox();
             this.label212 = new System.Windows.Forms.Label();
             this.cboPlot3Type = new System.Windows.Forms.ComboBox();
             this.label211 = new System.Windows.Forms.Label();
@@ -105,7 +143,7 @@
             this.label209 = new System.Windows.Forms.Label();
             this.cboNumPlots = new System.Windows.Forms.ComboBox();
             this.lblMetDataTS_Inc = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtNumDaysTS = new System.Windows.Forms.TextBox();
             this.btnMetTS_Left = new System.Windows.Forms.Button();
             this.btnMetTS_Right = new System.Windows.Forms.Button();
             this.label208 = new System.Windows.Forms.Label();
@@ -1706,6 +1744,7 @@
             // 
             this.splContMetTS.Panel1.AutoScroll = true;
             this.splContMetTS.Panel1.BackColor = System.Drawing.Color.Azure;
+            this.splContMetTS.Panel1.Controls.Add(this.treeDataParams);
             this.splContMetTS.Panel1.Controls.Add(this.chkMetsTS);
             this.splContMetTS.Panel1.Controls.Add(this.label146);
             this.splContMetTS.Panel1.Controls.Add(this.dataMetTS);
@@ -1715,8 +1754,9 @@
             // 
             this.splContMetTS.Panel2.AutoScroll = true;
             this.splContMetTS.Panel2.BackColor = System.Drawing.Color.PapayaWhip;
+            this.splContMetTS.Panel2.Controls.Add(this.plotTS_Baros);
             this.splContMetTS.Panel2.Controls.Add(this.label213);
-            this.splContMetTS.Panel2.Controls.Add(this.comboBox1);
+            this.splContMetTS.Panel2.Controls.Add(this.cboPlot4Type);
             this.splContMetTS.Panel2.Controls.Add(this.label212);
             this.splContMetTS.Panel2.Controls.Add(this.cboPlot3Type);
             this.splContMetTS.Panel2.Controls.Add(this.label211);
@@ -1726,7 +1766,7 @@
             this.splContMetTS.Panel2.Controls.Add(this.label209);
             this.splContMetTS.Panel2.Controls.Add(this.cboNumPlots);
             this.splContMetTS.Panel2.Controls.Add(this.lblMetDataTS_Inc);
-            this.splContMetTS.Panel2.Controls.Add(this.textBox1);
+            this.splContMetTS.Panel2.Controls.Add(this.txtNumDaysTS);
             this.splContMetTS.Panel2.Controls.Add(this.btnMetTS_Left);
             this.splContMetTS.Panel2.Controls.Add(this.btnMetTS_Right);
             this.splContMetTS.Panel2.Controls.Add(this.label208);
@@ -1742,13 +1782,71 @@
             this.splContMetTS.SplitterWidth = 10;
             this.splContMetTS.TabIndex = 5;
             // 
+            // treeDataParams
+            // 
+            this.treeDataParams.Location = new System.Drawing.Point(14, 241);
+            this.treeDataParams.Name = "treeDataParams";
+            treeNode1.Checked = true;
+            treeNode1.Name = "nodeAnemAvg";
+            treeNode1.Text = "Average";
+            treeNode2.Checked = true;
+            treeNode2.Name = "nodeAnemSD";
+            treeNode2.Text = "St. Dev.";
+            treeNode3.Checked = true;
+            treeNode3.Name = "nodeAnemMin";
+            treeNode3.Text = "Minimum";
+            treeNode4.Checked = true;
+            treeNode4.Name = "nodeAnemMax";
+            treeNode4.Text = "Maximum";
+            treeNode5.Name = "nodeAnems";
+            treeNode5.Text = "Anems";
+            treeNode6.Name = "nodeVaneAvg";
+            treeNode6.Text = "Average";
+            treeNode7.Name = "nodeVaneSD";
+            treeNode7.Text = "St. Dev.";
+            treeNode8.Name = "nodeVaneMax";
+            treeNode8.Text = "Minimum";
+            treeNode9.Name = "nodeVaneMax";
+            treeNode9.Text = "Maximum";
+            treeNode10.Name = "nodeVanes";
+            treeNode10.Text = "Vanes";
+            treeNode11.Name = "Node0";
+            treeNode11.Text = "Average";
+            treeNode12.Name = "Node1";
+            treeNode12.Text = "St. Dev.";
+            treeNode13.Name = "Node2";
+            treeNode13.Text = "Minimum";
+            treeNode14.Name = "Node3";
+            treeNode14.Text = "Maximum";
+            treeNode15.Name = "nodeTemps";
+            treeNode15.Text = "Temps.";
+            treeNode16.Name = "Node4";
+            treeNode16.Text = "Average";
+            treeNode17.Name = "Node5";
+            treeNode17.Text = "St. Dev.";
+            treeNode18.Name = "Node6";
+            treeNode18.Text = "Minimum";
+            treeNode19.Name = "Node7";
+            treeNode19.Text = "Maximum";
+            treeNode20.Name = "nodeBaros";
+            treeNode20.Text = "Baros.";
+            this.treeDataParams.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode5,
+            treeNode10,
+            treeNode15,
+            treeNode20});
+            this.treeDataParams.Size = new System.Drawing.Size(121, 169);
+            this.treeDataParams.TabIndex = 9;
+            this.treeDataParams.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterCheck);
+            this.treeDataParams.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterSelect);
+            // 
             // chkMetsTS
             // 
             this.chkMetsTS.FormattingEnabled = true;
             this.chkMetsTS.Location = new System.Drawing.Point(13, 71);
             this.chkMetsTS.Name = "chkMetsTS";
             this.chkMetsTS.Size = new System.Drawing.Size(122, 164);
-            this.chkMetsTS.TabIndex = 7;            
+            this.chkMetsTS.TabIndex = 7;
             this.chkMetsTS.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkMetsTS_ItemCheck);
             // 
             // label146
@@ -1772,10 +1870,24 @@
             // chkTS_Params
             // 
             this.chkTS_Params.FormattingEnabled = true;
-            this.chkTS_Params.Location = new System.Drawing.Point(13, 276);
+            this.chkTS_Params.Location = new System.Drawing.Point(13, 416);
             this.chkTS_Params.Name = "chkTS_Params";
-            this.chkTS_Params.Size = new System.Drawing.Size(122, 544);
+            this.chkTS_Params.Size = new System.Drawing.Size(122, 404);
             this.chkTS_Params.TabIndex = 3;
+            this.chkTS_Params.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkTS_Params_ItemCheck);
+            // 
+            // plotTS_Baros
+            // 
+            this.plotTS_Baros.BackColor = System.Drawing.Color.AntiqueWhite;
+            this.plotTS_Baros.Location = new System.Drawing.Point(28, 676);
+            this.plotTS_Baros.Name = "plotTS_Baros";
+            this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTS_Baros.Size = new System.Drawing.Size(983, 161);
+            this.plotTS_Baros.TabIndex = 24;
+            this.plotTS_Baros.Text = "plotTS_Anems";
+            this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTS_Baros.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTS_Baros.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // label213
             // 
@@ -1788,18 +1900,18 @@
             this.label213.Text = "4)";
             this.label213.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // comboBox1
+            // cboPlot4Type
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.cboPlot4Type.FormattingEnabled = true;
+            this.cboPlot4Type.Items.AddRange(new object[] {
             "WS",
             "WD",
             "Temp.",
             "Press."});
-            this.comboBox1.Location = new System.Drawing.Point(895, 39);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(96, 26);
-            this.comboBox1.TabIndex = 22;
+            this.cboPlot4Type.Location = new System.Drawing.Point(895, 39);
+            this.cboPlot4Type.Name = "cboPlot4Type";
+            this.cboPlot4Type.Size = new System.Drawing.Size(96, 26);
+            this.cboPlot4Type.TabIndex = 22;
             // 
             // label212
             // 
@@ -1872,6 +1984,7 @@
             this.cboPlot1Type.Name = "cboPlot1Type";
             this.cboPlot1Type.Size = new System.Drawing.Size(96, 26);
             this.cboPlot1Type.TabIndex = 16;
+            this.cboPlot1Type.SelectedIndexChanged += new System.EventHandler(this.cboPlot1Type_SelectedIndexChanged);
             // 
             // label209
             // 
@@ -1896,6 +2009,7 @@
             this.cboNumPlots.Name = "cboNumPlots";
             this.cboNumPlots.Size = new System.Drawing.Size(63, 26);
             this.cboNumPlots.TabIndex = 14;
+            this.cboNumPlots.SelectedIndexChanged += new System.EventHandler(this.cboNumPlots_SelectedIndexChanged);
             // 
             // lblMetDataTS_Inc
             // 
@@ -1908,12 +2022,12 @@
             this.lblMetDataTS_Inc.Text = "Days";
             this.lblMetDataTS_Inc.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // textBox1
+            // txtNumDaysTS
             // 
-            this.textBox1.Location = new System.Drawing.Point(458, 18);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(59, 25);
-            this.textBox1.TabIndex = 12;
+            this.txtNumDaysTS.Location = new System.Drawing.Point(458, 18);
+            this.txtNumDaysTS.Name = "txtNumDaysTS";
+            this.txtNumDaysTS.Size = new System.Drawing.Size(59, 25);
+            this.txtNumDaysTS.TabIndex = 12;
             // 
             // btnMetTS_Left
             // 
@@ -1924,6 +2038,7 @@
             this.btnMetTS_Left.Size = new System.Drawing.Size(55, 40);
             this.btnMetTS_Left.TabIndex = 11;
             this.btnMetTS_Left.UseVisualStyleBackColor = false;
+            this.btnMetTS_Left.Click += new System.EventHandler(this.btnMetTS_Left_Click);
             // 
             // btnMetTS_Right
             // 
@@ -1934,6 +2049,7 @@
             this.btnMetTS_Right.Size = new System.Drawing.Size(55, 40);
             this.btnMetTS_Right.TabIndex = 10;
             this.btnMetTS_Right.UseVisualStyleBackColor = false;
+            this.btnMetTS_Right.Click += new System.EventHandler(this.btnMetTS_Right_Click);
             // 
             // label208
             // 
@@ -1967,6 +2083,7 @@
             this.dateMetTS_End.Name = "dateMetTS_End";
             this.dateMetTS_End.Size = new System.Drawing.Size(140, 25);
             this.dateMetTS_End.TabIndex = 5;
+            this.dateMetTS_End.ValueChanged += new System.EventHandler(this.dateMetTS_End_ValueChanged);
             // 
             // dateMetTS_Start
             // 
@@ -1978,14 +2095,15 @@
             this.dateMetTS_Start.Name = "dateMetTS_Start";
             this.dateMetTS_Start.Size = new System.Drawing.Size(140, 25);
             this.dateMetTS_Start.TabIndex = 4;
+            this.dateMetTS_Start.ValueChanged += new System.EventHandler(this.dateMetTS_Start_ValueChanged);
             // 
             // plotTS_Temp
             // 
             this.plotTS_Temp.BackColor = System.Drawing.Color.AntiqueWhite;
-            this.plotTS_Temp.Location = new System.Drawing.Point(28, 588);
+            this.plotTS_Temp.Location = new System.Drawing.Point(28, 491);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(983, 239);
+            this.plotTS_Temp.Size = new System.Drawing.Size(983, 161);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -1995,15 +2113,16 @@
             // plotTS_Vanes
             // 
             this.plotTS_Vanes.BackColor = System.Drawing.Color.AntiqueWhite;
-            this.plotTS_Vanes.Location = new System.Drawing.Point(28, 339);
+            this.plotTS_Vanes.Location = new System.Drawing.Point(28, 282);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(983, 239);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(983, 186);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Vanes.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotTS_Vanes.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotTS_Vanes.Click += new System.EventHandler(this.plotTS_Vanes_Click);
             // 
             // plotTS_Anems
             // 
@@ -2011,7 +2130,7 @@
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(983, 257);
+            this.plotTS_Anems.Size = new System.Drawing.Size(983, 204);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -11957,7 +12076,6 @@
         private System.Windows.Forms.Button btnMetTS_Right;
         private System.Windows.Forms.Label label208;
         private System.Windows.Forms.Label lblMetDataTS_Inc;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnMetTS_Left;
         public System.Windows.Forms.CheckedListBox chkTS_Params;
         public System.Windows.Forms.DataGridView dataMetTS;
@@ -11965,16 +12083,19 @@
         public OxyPlot.WindowsForms.PlotView plotTS_Temp;
         public OxyPlot.WindowsForms.PlotView plotTS_Vanes;
         public System.Windows.Forms.CheckedListBox chkMetsTS;
-        private System.Windows.Forms.ComboBox cboNumPlots;
         private System.Windows.Forms.Label label209;
         private System.Windows.Forms.Label label211;
-        private System.Windows.Forms.ComboBox cboPlot2Type;
         private System.Windows.Forms.Label label210;
-        private System.Windows.Forms.ComboBox cboPlot1Type;
         private System.Windows.Forms.Label label213;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label212;
-        private System.Windows.Forms.ComboBox cboPlot3Type;
+        public System.Windows.Forms.TreeView treeDataParams;
+        public OxyPlot.WindowsForms.PlotView plotTS_Baros;
+        public System.Windows.Forms.ComboBox cboNumPlots;
+        public System.Windows.Forms.ComboBox cboPlot2Type;
+        public System.Windows.Forms.ComboBox cboPlot1Type;
+        public System.Windows.Forms.ComboBox cboPlot4Type;
+        public System.Windows.Forms.ComboBox cboPlot3Type;
+        public System.Windows.Forms.TextBox txtNumDaysTS;
     }
 }
 

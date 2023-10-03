@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows.Media;
 
 namespace ContinuumNS
 {    
@@ -148,12 +149,11 @@ namespace ContinuumNS
 
             /// <summary> Returns index with specified timestamp </summary>            
             public int GetTS_Index(DateTime thisDate)
-            {
-                int tsInd = 0;
+            {                
                 int indMid = windData.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(windData[indMid].timeStamp.Subtract(windData[indMid - 1].timeStamp).TotalMinutes, 0));
 
-                tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(windData[0].timeStamp).TotalMinutes / dataIntMins, 0));
+                int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(windData[0].timeStamp).TotalMinutes / dataIntMins, 0));
 
                 while (windData[tsInd].timeStamp < thisDate && tsInd < windData.Length - 1)
                     tsInd++;
@@ -190,6 +190,26 @@ namespace ContinuumNS
             public double orientation;
             /// <summary>  Wind direction time series data. </summary>
             public data[] dirData;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime thisDate)
+            {
+                int indMid = dirData.Length / 2;
+                int dataIntMins = Convert.ToInt32(Math.Round(dirData[indMid].timeStamp.Subtract(dirData[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(dirData[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                while (dirData[tsInd].timeStamp < thisDate && tsInd < dirData.Length - 1)
+                    tsInd++;
+
+                while (dirData[tsInd].timeStamp > thisDate && tsInd > 0)
+                    tsInd--;
+
+                if (dirData[tsInd].timeStamp != thisDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }
                 
         /// <summary> Holds temperature sensor time series data plus the height of the sensor and temperature units. </summary>
@@ -202,6 +222,26 @@ namespace ContinuumNS
             public char C_or_F;
             /// <summary>   Array of type data holding time series of temperature sensor data. </summary>
             public data[] temp;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime thisDate)
+            {
+                int indMid = temp.Length / 2;
+                int dataIntMins = Convert.ToInt32(Math.Round(temp[indMid].timeStamp.Subtract(temp[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(temp[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                while (temp[tsInd].timeStamp < thisDate && tsInd < temp.Length - 1)
+                    tsInd++;
+
+                while (temp[tsInd].timeStamp > thisDate && tsInd > 0)
+                    tsInd--;
+
+                if (temp[tsInd].timeStamp != thisDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }
 
 
@@ -215,6 +255,26 @@ namespace ContinuumNS
             public string units;
             /// <summary>   Array of type data holding time series of pressure sensor data. </summary>
             public data[] pressure;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime thisDate)
+            {
+                int indMid = pressure.Length / 2;
+                int dataIntMins = Convert.ToInt32(Math.Round(pressure[indMid].timeStamp.Subtract(pressure[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(pressure[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                while (pressure[tsInd].timeStamp < thisDate && tsInd < pressure.Length - 1)
+                    tsInd++;
+
+                while (pressure[tsInd].timeStamp > thisDate && tsInd > 0)
+                    tsInd--;
+
+                if (pressure[tsInd].timeStamp != thisDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }
 
         /// <summary> Holds anemometer height and time series of shear alpha, wind speed and wind direction data </summary>        
@@ -305,6 +365,42 @@ namespace ContinuumNS
             minWS = 7
             
         }   
+
+        /// <summary> Returns Color for Background of Met data tab </summary>        
+        public System.Drawing.Color GetColorForBackground(System.Windows.Media.Color thisColor)
+        {
+            return System.Drawing.Color.FromArgb(thisColor.A, thisColor.R, thisColor.G, thisColor.B);
+        }
+
+        /// <summary> Returns color assigned to each filter flag </summary>
+        public System.Drawing.Color GetFilterFlagColor(Filter_Flags thisFlag)
+        {
+            
+            if (thisFlag == Filter_Flags.Valid)
+                return GetColorForBackground(Colors.Transparent);
+
+            if (thisFlag == Filter_Flags.towerEffect)
+                return GetColorForBackground(Colors.LightPink);
+            else if (thisFlag == Filter_Flags.outsideRange)
+                return GetColorForBackground(Colors.LightGray);
+            else if (thisFlag == Filter_Flags.maxAnemRange)
+                return GetColorForBackground(Colors.LightCoral);
+            else if (thisFlag == Filter_Flags.Icing)
+                return GetColorForBackground(Colors.LightCyan);
+            else if (thisFlag == Filter_Flags.maxDeltaWS)
+                return GetColorForBackground(Colors.LightGreen);
+            else if (thisFlag == Filter_Flags.maxAnemSD)
+                return GetColorForBackground(Colors.LightSeaGreen);
+            else if (thisFlag == Filter_Flags.missing)
+                return GetColorForBackground(Colors.LightYellow);
+            else if (thisFlag == Filter_Flags.minWS)
+                return GetColorForBackground(Colors.LightSlateGray);
+            else if (thisFlag == Filter_Flags.minAnemSD)
+                return GetColorForBackground(Colors.LightSalmon);
+
+            return GetColorForBackground(Colors.Transparent);
+
+        }
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
