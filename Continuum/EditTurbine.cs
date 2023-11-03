@@ -34,10 +34,7 @@ namespace ContinuumNS
             bool inputTurbine = Check.NewTurbOrMet(thisInst.topo, name, UTMX, UTMY, true);
 
             if (inputTurbine == true) 
-                thisInst.turbineList.EditTurbine(name, UTMX, UTMY);                            
-            
-            Update updateThe = new Update();            
-            updateThe.AllTABs(thisInst);
+                thisInst.turbineList.EditTurbine(name, UTMX, UTMY); 
             
             Close();
         }

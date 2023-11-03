@@ -1,12 +1,21 @@
-﻿using System;
+﻿using Microsoft.Research.Science.Data;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Remoting.Messaging;
+using System.ServiceModel.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Research.Science.Data.Imperative;
+using static ContinuumNS.ReferenceCollection;
+using System.Runtime.CompilerServices;
+using static IronPython.Modules._ast;
+using System.Xml;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace ContinuumNS
 {
@@ -16,7 +25,46 @@ namespace ContinuumNS
     {
         /// <summary> List of Reference objects which contain interpolated (or closest if 1 node used) reference time series data and site location. </summary>
         public Reference[] reference = new Reference[0];
-        
+
+        /// <summary> List of RefDataDownloads which contain info of all downloaded reference data </summary>
+        public RefDataDownload[] refDataDownloads = new RefDataDownload[0];
+
+        /// <summary> Struct to hold info related to reference data downloads </summary>
+        [Serializable()]
+        public struct RefDataDownload
+        {
+            /// <summary> Struct to hold info related to reference data downloads </summary>
+            public string refType; // MERRA2 or ERA5
+            /// <summary> File folder location of daily reference data files </summary>
+            public string folderLocation;
+            /// <summary> Username for download access </summary>
+            public string userName;
+            /// <summary> Password for download access </summary>
+            public string userPassword;
+            /// <summary> Specified start date of reference data </summary>
+            public DateTime startDate;
+            /// <summary> Specified end date of reference data </summary>
+            public DateTime endDate;
+            /// <summary> Min latitude of downloaded nodes in files </summary>
+            public double minLat;
+            /// <summary> Max latitude of downloaded nodes in files </summary>
+            public double maxLat;
+            /// <summary> Min longitude of downloaded nodes in files </summary>
+            public double minLon;
+            /// <summary> Max longitude of downloaded nodes in files </summary>
+            public double maxLon;
+
+            /// <summary> Creates and returns name for specified reference data download </summary>
+            public string GetName()
+            {               
+                string refDownName = refType + " Lat range: " + minLat.ToString() + " to " + maxLat.ToString() + ", Long range: " +
+                    minLon.ToString() + " to " + maxLon.ToString();
+
+                return refDownName;
+            }
+        }
+
+
         /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public int numReferences
@@ -27,6 +75,18 @@ namespace ContinuumNS
                     return 0;
                 else
                     return reference.Length;
+            }
+        }
+
+        /// <summary> Returns number of reference data download objects in list. </summary>
+        public int numRefDataDownloads
+        {
+            get
+            {
+                if (refDataDownloads == null)
+                    return 0;
+                else
+                    return refDataDownloads.Length;
             }
         }
 
@@ -53,8 +113,8 @@ namespace ContinuumNS
             return theseRefs;
         }
 
-        /// <summary> Returns Reference object with specified type, latitude and longitude. </summary>
-        public Reference GetReference(string refType, double latitude, double longitude, int numNodes)
+ /*       /// <summary> Returns Reference object with specified type, latitude and longitude. </summary>
+       public Reference GetReference(string refType, double latitude, double longitude, int numNodes)
         {
             Reference thisRef = new Reference();
 
@@ -65,7 +125,7 @@ namespace ContinuumNS
 
             return thisRef;
         }
-
+ */
         /// <summary> Returns Reference object with name. </summary>
         public Reference GetReferenceByName(string thisName, MetCollection metList, UTM_conversion utmConv)
         {
@@ -78,6 +138,29 @@ namespace ContinuumNS
                     break;
                 }
 
+            return thisRef;
+        }
+
+        /// <summary> Get Reference with closest lat and long  </summary>        
+        public Reference GetReferenceByUTM(double thisUTMX, double thisUTMY, string refType)
+        {
+            Reference thisRef = new Reference();            
+            double closestCoord = 1000;
+
+            for (int i = 0; i < numReferences; i++)
+            {
+                if (refType != reference[i].refDataDownload.refType)
+                    continue;
+
+                double thisDist = Math.Abs(thisUTMX - reference[i].interpData.UTM.UTMEasting) + Math.Abs(thisUTMY - reference[i].interpData.UTM.UTMNorthing);
+
+                if (thisDist < closestCoord)
+                {                    
+                    closestCoord = thisDist;
+                    thisRef = reference[i];
+                }
+            }
+            
             return thisRef;
         }
 
@@ -275,7 +358,7 @@ namespace ContinuumNS
             bool areSameRef = false;
 
             if (ref1.interpData.Coords.latitude == ref2.interpData.Coords.latitude && ref1.interpData.Coords.longitude == ref2.interpData.Coords.longitude
-                && ref1.numNodes == ref2.numNodes && ref1.referenceType == ref2.referenceType)
+                && ref1.numNodes == ref2.numNodes && IsSameRefDataDownload(ref1.refDataDownload, ref2.refDataDownload))
                 areSameRef = true;
 
             return areSameRef;
@@ -355,7 +438,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Clears all MERRA data from DB. </summary> 
+        /// <summary> Clears all ERA5 data from DB. </summary> 
         public void DeleteAllERADataFromDB(Continuum thisInst)
         {
             NodeCollection nodeList = new NodeCollection();
@@ -376,7 +459,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Deletes MERRA Node data with specified lat/long from DB. </summary> 
+        /// <summary> Deletes ERA5 Node data with specified lat/long from DB. </summary> 
         public void DeleteERANodeDataFromDB(double latitude, double longitude, Continuum thisInst)
         {
             NodeCollection nodeList = new NodeCollection();
@@ -401,7 +484,7 @@ namespace ContinuumNS
 
         }              
 
-        /// <summary> Clears all MERRA2 node and interpolated data. </summary> 
+        /// <summary> Clears all reference node and interpolated data.  This is called when saving file (so the generated time series data is not saved to DB. </summary> 
         public void ClearReferenceData()
         {
             for (int i = 0; i < numReferences; i++)
@@ -430,7 +513,7 @@ namespace ContinuumNS
             for (int i = 0; i < numReferences; i++)
                 if (reference[i].interpData.Coords.latitude == newRef.interpData.Coords.latitude && 
                     reference[i].interpData.Coords.longitude == newRef.interpData.Coords.longitude && 
-                    reference[i].referenceType == newRef.referenceType && reference[i].numNodes == newRef.numNodes && 
+                    IsSameRefDataDownload(reference[i].refDataDownload, newRef.refDataDownload) && reference[i].numNodes == newRef.numNodes && 
                     reference[i].startDate == newRef.startDate && reference[i].endDate == newRef.endDate && i != indexToIgnore)
                     gotIt = true;
 
@@ -438,34 +521,102 @@ namespace ContinuumNS
         }
 
         /// <summary> Logs user into NASA's EarthData system and begins MERRA2 data download (in background worker). </summary> 
-        public async Task NASA_LogInAsync(Continuum thisInst, MERRA2_Download merraDownload)
+        public async Task NASA_LogInAsync(Continuum thisInst, ReferenceCollection.RefDataDownload merraDownload)
         {
-            BackgroundWork.Vars_for_MERRA_Download Vars_for_MERRA = new BackgroundWork.Vars_for_MERRA_Download();
+            BackgroundWork.Vars_for_Reference_Download Vars_for_MERRA = new BackgroundWork.Vars_for_Reference_Download();
             Vars_for_MERRA.thisInst = thisInst;
-            Vars_for_MERRA.thisMERRA = merraDownload;
+            Vars_for_MERRA.thisRefDownload = merraDownload;
 
             thisInst.BW_worker = new BackgroundWork();
             thisInst.BW_worker.Call_BW_MERRA2_Download(Vars_for_MERRA);
         }
 
-        /// <summary> Returns MERRA2 data file latitude index. </summary> 
-        public int GetLatitudeIndex(double thisLat)
+        /// <summary> Calls ERA5 data download (in background worker). </summary> 
+        public async Task DownloadERA5(Continuum thisInst, ReferenceCollection.RefDataDownload era5Download)
         {
-            int latInd = (int)(2 * thisLat + 180);
+            BackgroundWork.Vars_for_Reference_Download Vars_for_ERA5 = new BackgroundWork.Vars_for_Reference_Download();
+            Vars_for_ERA5.thisInst = thisInst;
+            Vars_for_ERA5.thisRefDownload = era5Download;
+
+            thisInst.BW_worker = new BackgroundWork();
+            thisInst.BW_worker.Call_BW_ERA5_Download(Vars_for_ERA5);
+        }
+
+        /// <summary> Returns latitude resolution of specified RefDataDownload. </summary> 
+        public double GetLatRes(RefDataDownload thisRefData)
+        {
+            double latRes = 0;
+
+            if (thisRefData.refType == "MERRA2")
+                latRes = 0.5;
+            else if (thisRefData.refType == "ERA5")
+                latRes = 0.25;
+
+            return latRes;
+        }
+
+        /// <summary> Returns longitude resolution of specified RefDataDownload. </summary> 
+        public double GetLongRes(RefDataDownload thisRefData)
+        {
+            double lonRes = 0;
+
+            if (thisRefData.refType == "MERRA2")
+                lonRes = 0.625;
+            else if (thisRefData.refType == "ERA5")
+                lonRes = 0.25;
+
+            return lonRes;
+        }
+
+        /// <summary> Gets and returns all latitudes or longitudes in specified RefDataDownload. </summary> 
+        public double[] GetAllLatsOrLongs(RefDataDownload thisRefData, string latOrLong)
+        {
+            double[] allLLs = new double[0];
+
+            if (latOrLong == "Lats")
+            {
+                double latRes = GetLatRes(thisRefData);
+                int numLats = Convert.ToInt16((thisRefData.maxLat - thisRefData.minLat) / latRes) + 1;
+                Array.Resize(ref allLLs, numLats);
+
+                for (int l = 0; l < numLats; l++)
+                    allLLs[l] = thisRefData.minLat + l * latRes;
+            }
+            else
+            {
+                double lonRes = GetLongRes(thisRefData);
+                int numLongs = Convert.ToInt16((thisRefData.maxLon - thisRefData.minLon) / lonRes) + 1;
+                Array.Resize(ref allLLs, numLongs);
+
+                for (int l = 0; l < numLongs; l++)
+                    allLLs[l] = thisRefData.minLon + l * lonRes;
+            }
+
+            return allLLs;
+        }
+
+        /// <summary> Returns index of specified latitude for specified RefDataDownload. </summary> 
+        public int GetLatitudeIndex(RefDataDownload thisRefData, double thisLat)
+        {
+            double latRes = GetLatRes(thisRefData);
+            int latInd = (int)(1 / latRes * thisLat + 180 / latRes / 2);
+      //      int latInd = (int)(2 * thisLat + 180);
 
             return latInd;
         }
 
-        /// <summary> Returns MERRA2 data file longitude index. </summary> 
-        public int GetLongitudeIndex(double thisLong)
+        /// <summary> Returns index of specified longitude for specified RefDataDownload. </summary> 
+        public int GetLongitudeIndex(RefDataDownload thisRefData, double thisLong)
         {
-            int longInd = (int)(1.6 * thisLong + 288);
+            double lonRes = GetLongRes(thisRefData);
+            //      int longInd = (int)(1.6 * thisLong + 288);
+            int longInd = (int)(1 / lonRes * thisLong + 360 / lonRes / 2);
 
             return longInd;
         }
 
         /// <summary> Returns URL of MERRA2 data file to download. </summary> 
-        public string GetMERRA2URL(DateTime thisDay, double minLat, double maxLat, double minLong, double maxLong)
+        public string GetMERRA2URL(DateTime thisDay, RefDataDownload merraDownload)
         {
             int dateNum = 0;
 
@@ -492,10 +643,10 @@ namespace ContinuumNS
             else
                 dateNum = 400;
 
-            int minLatInd = GetLatitudeIndex(minLat);
-            int maxLatInd = GetLatitudeIndex(maxLat);
-            int minLongInd = GetLongitudeIndex(minLong);
-            int maxLongInd = GetLongitudeIndex(maxLong);
+            int minLatInd = GetLatitudeIndex(merraDownload, merraDownload.minLat);
+            int maxLatInd = GetLatitudeIndex(merraDownload, merraDownload.maxLat);
+            int minLongInd = GetLongitudeIndex(merraDownload, merraDownload.minLon);
+            int maxLongInd = GetLongitudeIndex(merraDownload, merraDownload.maxLon);
 
             string URL = "https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXSLV.5.12.4/";
             URL += thisYear + "/" + thisMonth + "/";
@@ -620,11 +771,9 @@ namespace ContinuumNS
             file.Close();
         }
    */
-              
+                     
 
-        
-
-        public int GetNumNodesInRange(double minDeg, double maxDeg, string latOrLong)
+        public int GetNumNodesInRange(double minDeg, double maxDeg, string latOrLong, RefDataDownload refDataDownload)
         {
             // Returns the number of nodes included between specified range (either "lat" or "lon")
 
@@ -635,14 +784,14 @@ namespace ContinuumNS
             // Find lat/long index of min and max value
             if (latOrLong == "lat")
             {
-                minInd = GetLatitudeIndex(minDeg);
-                maxInd = GetLatitudeIndex(maxDeg);
+                minInd = GetLatitudeIndex(refDataDownload, minDeg);
+                maxInd = GetLatitudeIndex(refDataDownload, maxDeg);
 
             }
             else
             {
-                minInd = GetLongitudeIndex(minDeg);
-                maxInd = GetLongitudeIndex(maxDeg);
+                minInd = GetLongitudeIndex(refDataDownload, minDeg);
+                maxInd = GetLongitudeIndex(refDataDownload, maxDeg);
             }
 
             numNodes = maxInd - minInd;
@@ -650,23 +799,23 @@ namespace ContinuumNS
             return numNodes;
         }
 
-        /// <summary> Returns EarthData username and password of a MERRA2 object if it exists </summary>
-        public string[] GetEarthDataUserPsd()
+        /// <summary> Returns username and password of a reference object with specified refType (MERRA2 or ERA5) if it exists </summary>
+        public string[] GetUserPasswordbyRefType(string refType)
         {
             // Returns the username and password of NASA earth data credentials if saved in a MERRA object
             string[] userPsd = new string[2];
 
-            for (int r = 0; r < numReferences; r++)
-                if (reference[r].referenceType == "MERRA2" && reference[r].earthdataUser != "")
+            for (int r = 0; r < numRefDataDownloads; r++)
+                if (refType == refDataDownloads[r].refType && refDataDownloads[r].userName != "")
                 {
-                    userPsd[0] = reference[r].earthdataUser;
-                    userPsd[1] = reference[r].earthdataPwd;
+                    userPsd[0] = refDataDownloads[r].userName;
+                    userPsd[1] = refDataDownloads[r].userPassword;
                 }
 
             return userPsd;
         }
 
-        /// <summary> Returns folder location of reference of same type if it exists </summary>
+ /*       /// <summary> Returns folder location of reference of same type if it exists </summary>
         public string GetReferenceDataFolder(string thisRefType)
         {
             // Returns the folder location of another reference object of the same type
@@ -677,6 +826,38 @@ namespace ContinuumNS
                     refLocation = reference[r].refDataFolder;                    
 
             return refLocation;
+        }
+ */
+        
+
+        /// <summary> Finds and returns the index for specified reference data download </summary>
+        public int GetReferenceDownloadIndex(string refDownName)
+        {
+            int refDownInd = 0;
+
+            for (int d = 0; d < numRefDataDownloads; d++)
+                if (refDownName == refDataDownloads[d].GetName())
+                {
+                    refDownInd = d;
+                    break;
+                }
+
+            return refDownInd;
+        }
+
+        /// <summary> Finds and returns the Reference Data Download object based on specified name </summary>
+        public RefDataDownload GetRefDataDownloadByName(string refDownName)
+        {
+            RefDataDownload refDown = new RefDataDownload();
+
+            for (int d = 0; d < numRefDataDownloads; d++)
+                if (refDownName == refDataDownloads[d].GetName())
+                {
+                    refDown = refDataDownloads[d];
+                    break;
+                }
+
+            return refDown;
         }
 
         /// <summary> Calculates and returns average wind rose </summary>
@@ -700,6 +881,459 @@ namespace ContinuumNS
 
             return avgRose;
         }
+
+        /// <summary> Creates and returns ERA5 filename based on specified date and min/max lat/lon </summary>        
+        public string CreateERA5Filename(DateTime thisDate, RefDataDownload thisRefData)
+        {
+            string filename = "ERA5_N" + thisRefData.minLat.ToString() + "_to_" + thisRefData.maxLat.ToString() + "_W" + thisRefData.minLon.ToString() 
+                + "_to_" + thisRefData.maxLon.ToString() + "_" + thisDate.ToString("%yyyy_%MM_%dd") + ".nc";
+
+            return filename;
+        }
+
+  /*      /// <summary> Returns true if reference daily datafile exists in folder. </summary>
+        public bool ReferenceFileExists(DateTime thisDate, RefDataDownload thisRefData)
+        {
+            bool fileExists = false;
+            string fileName = CreateERA5Filename(thisDate, thisRefData);
+
+            try
+            {
+                string[] thisFile = Directory.GetFiles(thisRefData.folderLocation, fileName);
+                if (thisFile.Length == 1)
+                    fileExists = true;
+                else
+                    fileExists = false;
+            }
+            catch
+            {
+                return fileExists;
+            }
+
+            return fileExists;
+        }
+  */
+        /// <summary> Adds a new reference data download </summary>
+        public void AddRefDataDownload(RefDataDownload newDataDownload)
+        {
+            // Add Reference Data download object to list
+            Array.Resize(ref refDataDownloads, numRefDataDownloads + 1);
+            refDataDownloads[numRefDataDownloads - 1] = newDataDownload;
+        }
+
+        /// <summary> Returns true if there is already a reference data download folder with the same settings </summary>
+        public bool HaveThisRefDataDownload(RefDataDownload thisDataDownload)
+        {
+            bool gotIt = false;
+
+            for (int r = 0; r < numRefDataDownloads; r++)
+            {
+                if (thisDataDownload.refType == refDataDownloads[r].refType && thisDataDownload.minLat == refDataDownloads[r].minLat &&
+                    thisDataDownload.maxLat == refDataDownloads[r].maxLat && thisDataDownload.minLon == refDataDownloads[r].minLon
+                    && thisDataDownload.maxLon == refDataDownloads[r].maxLon)
+                {
+                    gotIt = true;
+                    break;
+                }
+            }
+
+            return gotIt;
+        }
+
+        public void UpdateRefDataDownload(RefDataDownload updatedRefData)
+        {
+            // Updates reference data download with new start/end dates
+            for (int r = 0; r < numRefDataDownloads; r++)
+            {
+                if (updatedRefData.refType == refDataDownloads[r].refType && updatedRefData.minLat == refDataDownloads[r].minLat &&
+                    updatedRefData.maxLat == refDataDownloads[r].maxLat && updatedRefData.minLon == refDataDownloads[r].minLon
+                    && updatedRefData.maxLon == refDataDownloads[r].maxLon)
+                {
+                    refDataDownloads[r].startDate = updatedRefData.startDate;
+                    refDataDownloads[r].endDate = updatedRefData.endDate;
+                    break;
+                }
+            }
+        }
+
+        /// <summary> Returns true if specified RefDataDownload objects are the same </summary>        
+        public bool IsSameRefDataDownload(RefDataDownload refData1, RefDataDownload refData2)
+        {
+            bool areSame = true;
+
+            if (refData1.refType != refData2.refType || refData1.startDate != refData2.startDate || refData1.endDate != refData2.endDate
+                || refData1.minLat != refData2.minLat || refData1.maxLat != refData2.maxLat || refData1.minLon != refData2.minLon || refData1.maxLon != refData2.maxLon
+                || refData1.folderLocation != refData2.folderLocation) 
+                areSame = false;
+
+            return areSame;
+        }
+
+        /// <summary> Calculates % completion of downloaded data files </summary>
+        public double CalcDownloadedDataCompletion(RefDataDownload thisRefData)
+        {
+            double complete = 0;
+            
+            DateTime[] startEndDates = GetDataFileStartEndDate(thisRefData.folderLocation, thisRefData.refType);
+            int numTotalDays = (int)Math.Round(thisRefData.endDate.Subtract(thisRefData.startDate).TotalDays,0);
+            int daysWithData = 0;
+
+            for (DateTime thisDate = startEndDates[0]; thisDate <= startEndDates[1]; thisDate = thisDate.AddDays(1))
+            {
+                if (ReferenceFileExists(thisDate, thisRefData))
+                    daysWithData++;
+            }
+
+            if (numTotalDays > 0)
+                complete = 100.0 * daysWithData / numTotalDays;
+
+            if (complete > 100)
+                complete = 100;
+
+            return complete;
+        }
+
+        /// <summary> Opens reference data file and finds min/max lat/long and start/end date  </summary>
+        public RefDataDownload ReadFileAndDefineRefDataDownload(string refDataFolder)
+        {
+            RefDataDownload refDataDownload = new RefDataDownload();
+            refDataDownload.folderLocation = refDataFolder;
+
+            // Check to make sure that there are reference files in this folder
+            // Make sure folder exists first
+            if (Directory.Exists(refDataFolder) == false)
+            {
+                // See if folder exists under a different user name
+                int usersFirstInd = refDataFolder.IndexOf("Users");
+                
+                int usersInd = refDataFolder.IndexOf('\\', refDataFolder.IndexOf("Users") + 7);
+                string refFolderNoUser = refDataFolder.Substring(usersInd + 1, refDataFolder.Length - usersInd - 1);
+
+                string thisUserName = Environment.GetEnvironmentVariable("USERPROFILE");
+                string newRefFolderName = thisUserName + "\\" + refFolderNoUser;
+
+                if (Directory.Exists(newRefFolderName) == false)
+                {
+                    MessageBox.Show("Could not find reference data folder: " + refFolderNoUser + ". Please select folder with reference data files.");
+                    FolderBrowserDialog fbd = new FolderBrowserDialog();
+
+                    if (fbd.ShowDialog() == DialogResult.OK)
+                    {
+                        // Read first file and figure out parameters for RefDataDownload and assign to dataToDownload
+
+                        if (Directory.Exists(fbd.SelectedPath) == false) // user renamed 'new folder' so need to go grab new name
+                        {
+                            DirectoryInfo[] allFolders = new DirectoryInfo(fbd.SelectedPath).Parent.GetDirectories();
+                            allFolders.OrderByDescending(d => d.LastWriteTimeUtc).First();
+                            fbd.SelectedPath = allFolders[0].FullName;
+                        }
+                    }
+
+                    refDataFolder = fbd.SelectedPath;
+                    refDataDownload.folderLocation = fbd.SelectedPath;
+                }
+                else
+                {
+                    refDataFolder = newRefFolderName;
+                    refDataDownload.folderLocation = newRefFolderName;
+                }
+            }
+
+            // Figure out if it's MERRA2 or ERA5 data
+            string fileRefType = "";
+
+            try
+            {
+                string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii");
+                string[] ERA5Files = Directory.GetFiles(refDataFolder, "*.nc");
+
+                if (MERRAfiles.Length > 0 && ERA5Files.Length > 0)
+                {
+                    if (MERRAfiles.Length > ERA5Files.Length)
+                        fileRefType = "MERRA2";
+                    else
+                        fileRefType = "ERA5";
+
+                    MessageBox.Show("There are " + MERRAfiles.Length.ToString() + " .ascii files and " + ERA5Files.Length.ToString() + " .nc files.  " +
+                        "Assuming that reference is " + fileRefType);
+
+                }
+                else if (MERRAfiles.Length > 0)
+                    fileRefType = "MERRA2";
+                else if (ERA5Files.Length > 0)
+                    fileRefType = "ERA5";
+                else if (MERRAfiles.Length == 0 && ERA5Files.Length == 0)
+                    return refDataDownload;
+
+                refDataDownload.refType = fileRefType;
+
+                double[] lats = new double[0];
+                double[] longs = new double[0];
+
+
+                if (refDataDownload.refType == "MERRA2")
+                {
+                    string line;
+
+                    // Open one of the MERRA .ascii files and find the lat/lon closest TWO lats/lons to that of the input
+                    StreamReader file;
+
+                    try
+                    {
+                        file = new StreamReader(MERRAfiles[0]);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error opening MERRA data file. Check that it's not open in another program.");
+                        return refDataDownload;
+                    }
+
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        char[] delims = { ',' };
+                        string[] substrings = line.Split(delims);
+
+
+                        if (substrings[0] == "lat") // read in all latitudes
+                        {
+                            Array.Resize(ref lats, substrings.Length - 1);
+
+                            for (int i = 1; i < substrings.Length; i++)
+                                lats[i - 1] = Convert.ToDouble(substrings[i]);
+                        }
+
+                        if (substrings[0] == "lon") // read in all latitudes
+                        {
+                            Array.Resize(ref longs, substrings.Length - 1);
+
+                            for (int i = 1; i < substrings.Length; i++)
+                                longs[i - 1] = Convert.ToDouble(substrings[i]);
+                        }
+                    }
+
+                    file.Close();
+                }
+                else
+                {
+                    // Read ERA5 file and get coords and indices                                
+
+                    try
+                    {
+                        DataSet thisERA5Data = DataSet.Open(ERA5Files[0]);
+                        Variable[] allVars = thisERA5Data.Variables.ToArray();
+
+                        Single[] singlats = thisERA5Data.GetData<Single[]>("latitude");
+                        Single[] singlons = thisERA5Data.GetData<Single[]>("longitude");
+
+                        lats = new double[singlats.Length];
+                        longs = new double[singlons.Length];
+
+                        for (int l = 0; l < singlats.Length; l++)
+                            lats[l] = Convert.ToDouble(singlats[l]);
+
+                        for (int l = 0; l < singlons.Length; l++)
+                            longs[l] = Convert.ToDouble(singlons[l]);
+
+                        Array.Sort(lats);
+                        Array.Sort(longs);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error opening ERA5 data file.");
+                        return refDataDownload;
+                    }
+                }
+
+                if (lats.Length > 0 && longs.Length > 0)
+                {
+                    refDataDownload.minLat = lats.Min();
+                    refDataDownload.maxLat = lats.Max();
+                    refDataDownload.minLon = longs.Min();
+                    refDataDownload.maxLon = longs.Max();
+                }
+
+                // Check other downloads for crdentials
+                for (int r = 0; r < numRefDataDownloads; r++)
+                    if (refDataDownloads[r].refType == refDataDownload.refType)
+                    {
+                        refDataDownload.userName = refDataDownloads[r].userName;
+                        refDataDownload.userPassword = refDataDownloads[r].userPassword;
+                    }
+            }
+            catch
+            {
+                // Assume reference data is MERRA2
+                refDataDownload.refType = "MERRA2";
+            }            
+
+            return refDataDownload;
+
+        }
+
+        /// <summary> Finds and returns the start and end date of the downloaded reference data files. </summary>
+        public DateTime[] GetDataFileStartEndDate(string refDataFolder, string refType)
+        {
+            DateTime[] startEndDates = new DateTime[2];
+
+            bool folderExists = Directory.Exists(refDataFolder);
+            if (folderExists == false)
+                return startEndDates;
+
+            if (refType == "MERRA2")
+            {
+                string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii");
+
+                for (int f = 0; f < MERRAfiles.Length; f++)
+                {
+                    // Get date from filename
+                    int ncIndex = MERRAfiles[f].IndexOf("nc4");
+                    string dateStr = MERRAfiles[f].Substring(ncIndex - 9, 8);
+                    int thisYear = Convert.ToInt16(dateStr.Substring(0, 4));
+                    int thisMonth = Convert.ToInt16(dateStr.Substring(4, 2));
+                    int thisDay = Convert.ToInt16(dateStr.Substring(6, 2));
+
+                    DateTime thisDate = new DateTime(thisYear, thisMonth, thisDay);
+
+                    if (thisDate < startEndDates[0] || startEndDates[0].Year == 1)
+                        startEndDates[0] = thisDate;
+
+                    if (thisDate > startEndDates[1])
+                        startEndDates[1] = thisDate;
+                }
+            }
+            else if (refType == "ERA5")
+            {
+                // Read netCDF to get start and end dates
+                string[] refDataFiles = Directory.GetFiles(refDataFolder, "*.nc");
+                DateTime baseTime = new DateTime(1900, 01, 01, 0, 0, 0); //time that all the ERA5 'time' variable values are relative to
+
+                if (refDataFiles == null)
+                {
+                    MessageBox.Show("Could not find netCDF file. Check specified folder path and try again.");
+                    return startEndDates;
+                }
+
+                try
+                {
+                    for (int r = 0; r < refDataFiles.Length; r++)
+                    {
+                        DataSet thisERA5Data = DataSet.Open(refDataFiles[r]);
+                        Variable[] allVars = thisERA5Data.Variables.ToArray();
+
+                        Int32[] allTime = thisERA5Data.GetData<Int32[]>("time");
+
+                        DateTime firstDate = baseTime.AddHours(allTime[0]);
+                        DateTime lastDate = baseTime.AddHours(allTime[allTime.Length - 1]);
+
+                        if (firstDate < startEndDates[0] || startEndDates[0].Year == 1)
+                            startEndDates[0] = firstDate;
+
+                        if (lastDate > startEndDates[1])
+                            startEndDates[1] = lastDate;
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("Error opening ERA5 data file.");
+                    return startEndDates;
+                }
+            }
+
+            return startEndDates;
+        }
+
+        /// <summary> Creates filename for exported MERRA2 data. </summary>
+        public string CreateReferenceDatafilename(DateTime thisDate, RefDataDownload refData)
+        {
+            string fileName = "";            
+
+            if (refData.refType == "ERA5")
+            {
+                fileName = "ERA5_N" + refData.minLat.ToString("#.0") + "_to_" + refData.maxLat.ToString("#.0") + "_W" + refData.minLon.ToString("#.0")
+                + "_to_" + refData.maxLon.ToString("#.0") + "_" + thisDate.ToString("yyyy_MM_dd") + ".nc";
+            }
+            else if (refData.refType == "MERRA2")
+            {
+                int dateNum = 0;
+                if (thisDate.Year <= 1991)
+                    dateNum = 100;
+                else if (thisDate.Year <= 2000)
+                    dateNum = 200;
+                else if (thisDate.Year <= 2010)
+                    dateNum = 300;
+                else
+                    dateNum = 400;
+
+                string thisMonth = thisDate.Month.ToString();
+                if (thisDate.Month < 10)
+                    thisMonth = "0" + thisMonth;
+
+                string thisDay = thisDate.Day.ToString();
+                if (thisDate.Day < 10)
+                    thisDay = "0" + thisDay;
+
+                fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";                                
+            }
+
+            return fileName;
+        }               
+
+        /// <summary> Returns true if reference daily datafile exists in folder. </summary>
+        public bool ReferenceFileExists(DateTime thisDate, RefDataDownload refDataDown)
+        {
+            bool fileExists = false;
+            string fileName = CreateReferenceDatafilename(thisDate, refDataDown);
+
+            try
+            {
+                string[] thisFile = Directory.GetFiles(refDataDown.folderLocation, fileName);
+                if (thisFile.Length == 1)
+                    fileExists = true;
+                else
+                    fileExists = false;
+            }
+            catch
+            {
+                return fileExists;
+            }
+
+            return fileExists;
+        }
+
+        /// <summary> Downloads and save MERRA2 datafile for specified day.     </summary>
+        public bool SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate, RefDataDownload refDataDown)
+        {
+            // Now access the data            
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+            string MERRA2filename = CreateReferenceDatafilename(thisDate, refDataDown);
+            StreamWriter writer = new StreamWriter(refDataDown.folderLocation + "\\" + MERRA2filename);
+
+            bool isDataset = false;
+            bool isFirstLine = true;
+
+            // Save to file
+            while (reader.EndOfStream == false)
+            {
+                string thisLine = reader.ReadLine();
+                writer.WriteLine(thisLine);
+
+                if (isFirstLine)
+                {
+                    if (thisLine.Length > 8)
+                        if (thisLine.Substring(0, 8) == "Dataset:")
+                            isDataset = true;
+                    isFirstLine = false;
+                }
+            }
+
+            writer.Close();
+            stream.Close();
+            reader.Close();
+
+            return isDataset;
+        }
+
 
     }
 }

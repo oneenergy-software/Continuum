@@ -9,7 +9,7 @@ namespace Continuum_Tests
     public class MCP_Tests
     {
         string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MCP";
-        string MERRA2Folder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
+  //      string MERRA2Folder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
 
         [TestMethod]
         public void CalcOrthoSlope_Test()
@@ -291,13 +291,14 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
             MCP thisMCP = thisMet.mcp;
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-            thisInst.merraList.MERRAfolder = MERRA2Folder;
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+         //   UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+            //      thisInst.merraList.MERRAfolder = MERRA2Folder;
+            //      MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+            Reference thisRef = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
                         
             thisMCP.numWD = 16;
             thisInst.metList.numWD = 16;
-            thisMCP.Do_MCP_Uncertainty(thisInst, merra, thisMet);
+            thisMCP.Do_MCP_Uncertainty(thisInst, thisRef, thisMet);
 
             Assert.AreEqual(thisMCP.uncertOrtho[0].avg, 6.411818, 0.001, "Wrong calculated average of LT estimates in uncertainty analysis");
             Assert.AreEqual(thisMCP.uncertOrtho[0].stDev, 0.19069, 0.001, "Wrong calculated standard deviation of LT estimates in uncertainty analysis");
@@ -314,11 +315,12 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
             MCP thisMCP = thisMet.mcp;
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+         //   UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+            Reference thisRef = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+         //   MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
             thisMCP.numWD = 16;
 
-            thisMCP.Do_MCP_Uncertainty(thisInst, merra, thisMet);
+            thisMCP.Do_MCP_Uncertainty(thisInst, thisRef, thisMet);
 
             Assert.AreEqual(thisMCP.uncertOrtho.Length, 12, 0, "Wrong number of uncertainty objects");
             Assert.AreEqual(thisMCP.uncertOrtho[0].NWindows, 12, 0, "Wrong number of monthly intervals");

@@ -322,13 +322,13 @@ namespace ContinuumNS
                                 for (int j = 0; j < otherRefs[a].numNodes; j++)
                                     if (theRefs[r].nodes[i].XY_ind.Lat == otherRefs[a].nodes[j].XY_ind.Lat
                                     && theRefs[r].nodes[i].XY_ind.Lon == otherRefs[a].nodes[j].XY_ind.Lon
-                                    && theRefs[r].referenceType == otherRefs[a].referenceType)
+                                    && theRefs[r].refDataDownload.refType == otherRefs[a].refDataDownload.refType)
                                         usedByOtherMets = true;
                         }
 
-                        if (usedByOtherMets == false && theRefs[r].referenceType == "MERRA2")
+                        if (usedByOtherMets == false && theRefs[r].refDataDownload.refType == "MERRA2")
                             thisInst.refList.DeleteMERRANodeDataFromDB(theRefs[r].nodes[i].XY_ind.Lat, theRefs[r].nodes[i].XY_ind.Lon, thisInst);
-                        else if (usedByOtherMets == false && theRefs[r].referenceType == "ERA5")
+                        else if (usedByOtherMets == false && theRefs[r].refDataDownload.refType == "ERA5")
                             thisInst.refList.DeleteERANodeDataFromDB(theRefs[r].nodes[i].XY_ind.Lat, theRefs[r].nodes[i].XY_ind.Lon, thisInst);
 
                     }
@@ -978,6 +978,25 @@ namespace ContinuumNS
             }
 
             return theseMets;
+        }
+
+        // Finds and returns start and end date of all met datasets
+        public DateTime[] GetMetStartEndDates()
+        {
+            DateTime[] startEnd = new DateTime[2];
+            startEnd[0] = new DateTime();
+            startEnd[1] = DateTime.Now;
+
+            for (int m = 0; m < ThisCount; m++)
+            {
+                if (metItem[m].metData.startDate > startEnd[0])
+                    startEnd[0] = metItem[m].metData.startDate;
+
+                if (metItem[m].metData.endDate < startEnd[1])
+                    startEnd[1] = metItem[m].metData.endDate;
+            }
+
+            return startEnd;
         }
 
         /// <summary> Returns Met object with specified name. </summary>  

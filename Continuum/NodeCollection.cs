@@ -34,6 +34,8 @@ namespace ContinuumNS
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        
+
         /// <summary> Returns connection string to database. </summary>
         public string GetDB_ConnectionString(string savedFileName)
         {            

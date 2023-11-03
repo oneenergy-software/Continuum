@@ -7,7 +7,7 @@ using System.Threading;
 namespace Continuum_Tests
 {
     [TestClass]
-    public class MERRA_Tests
+    public class Reference_Tests
     {
         string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MERRA";
         string merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
@@ -23,8 +23,8 @@ namespace Continuum_Tests
             double thisLat = 41.0;
             double thisLong = -83.75;
 
-            MERRA thisMERRA = thisInst.merraList.GetMERRA(thisLat, thisLong);
-            thisMERRA.GetMERRADataFromDB(thisInst);
+            Reference thisMERRA = thisInst.refList.GetAllRefsAtLatLong(thisLat, thisLong)[0];
+            thisMERRA.GetReferenceDataFromDB(thisInst);
             thisMERRA.GetInterpData(thisInst.UTM_conversions);
 
             Met.MaxYearlyWind[] theseMaxWS = thisMERRA.GetMaxHourlyWindSpeeds();
@@ -48,12 +48,12 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+       //     UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
+            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
 
             if (merra.interpData.TS_Data.Length == 0)
             {
-                merra.GetMERRADataFromDB(thisInst);
+                merra.GetReferenceDataFromDB(thisInst);
                 merra.GetInterpData(thisInst.UTM_conversions);
             }
                        
@@ -92,12 +92,11 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
 
-            Met thisMet = thisInst.metList.metItem[0];
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+            Met thisMet = thisInst.metList.metItem[0];            
+            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
 
             // Test 1: All Months, all years
-            double[] thisWR = merra.Calc_Wind_Rose(100, 100, thisInst.UTM_conversions); // all years all months
+            double[] thisWR = merra.Calc_Wind_Rose(100, 100, thisInst.UTM_conversions, thisInst.metList.numWD); // all years all months
             string WR_file = testingFolder + "\\Calc_Wind_Rose\\All Months All Years Wind Rose.csv";
 
             StreamReader sr = new StreamReader(WR_file);
@@ -111,7 +110,7 @@ namespace Continuum_Tests
             sr.Close();
 
             // Test 2: March 2009
-            thisWR = merra.Calc_Wind_Rose(3, 2009, thisInst.UTM_conversions); // March 2009
+            thisWR = merra.Calc_Wind_Rose(3, 2009, thisInst.UTM_conversions, thisInst.metList.numWD); // March 2009
             WR_file = testingFolder + "\\Calc_Wind_Rose\\March 2009 Wind Rose.csv";
 
             sr = new StreamReader(WR_file);
@@ -125,7 +124,7 @@ namespace Continuum_Tests
             sr.Close();
 
             // Test 3: June All Years
-            thisWR = merra.Calc_Wind_Rose(6, 100, thisInst.UTM_conversions); // June LT
+            thisWR = merra.Calc_Wind_Rose(6, 100, thisInst.UTM_conversions, thisInst.metList.numWD); // June LT
             WR_file = testingFolder + "\\Calc_Wind_Rose\\June All Years Wind Rose.csv";
 
             sr = new StreamReader(WR_file);
@@ -139,7 +138,7 @@ namespace Continuum_Tests
             sr.Close();
 
             // Test 4: 2010 All Months
-            thisWR = merra.Calc_Wind_Rose(100, 2010, thisInst.UTM_conversions); // 2010
+            thisWR = merra.Calc_Wind_Rose(100, 2010, thisInst.UTM_conversions, thisInst.metList.numWD); // 2010
             WR_file = testingFolder + "\\Calc_Wind_Rose\\2010 Wind Rose.csv";
 
             sr = new StreamReader(WR_file);
@@ -164,20 +163,20 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-            merra.Calc_LT_Avg_Prod(ref merra.interpData.Annual_Prod);            
+            
+            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+            merra.Calc_LT_Avg_Prod(ref merra.interpData.annualProd);            
 
             // Test 1
-            double thisProd = merra.interpData.Annual_Prod.LT_Avg;
+            double thisProd = merra.interpData.annualProd.LT_Avg;
             Assert.AreEqual(3302607.8, thisProd, 50, "Wrong LT Avg Prod");
 
             // Test 2
-            thisProd = merra.interpData.Annual_Prod.Yearly_Prod[0].prod;
+            thisProd = merra.interpData.annualProd.Yearly_Prod[0].prod;
             Assert.AreEqual(3612674.8, thisProd, 50, "Wrong 2008 Prod");
 
             // Test 3
-            Assert.AreEqual(3, merra.interpData.Annual_Prod.Yearly_Prod.Length, "Wrong number of years");
+            Assert.AreEqual(3, merra.interpData.annualProd.Yearly_Prod.Length, "Wrong number of years");
             
             thisInst.Close();
         }
@@ -188,8 +187,8 @@ namespace Continuum_Tests
             string UVfile = testingFolder + "\\Calc_MERRA_WS_WD\\U50_V50_WS.csv";
             StreamReader srUVs = new StreamReader(UVfile);
                                     
-            MERRA.East_North_WSs[] theseUVs = new MERRA.East_North_WSs[3];
-            MERRA thisMERRA = new MERRA();
+            Reference.East_North_WSs[] theseUVs = new Reference.East_North_WSs[3];
+            Reference thisMERRA = new Reference();
             thisMERRA.Size_East_North_WS_Data(ref theseUVs, 2);
 
             for (int i = 0; i < 3; i++)
@@ -199,35 +198,35 @@ namespace Continuum_Tests
                     string theseUVstr = srUVs.ReadLine();
                     string[] UVs = theseUVstr.Split(',');
 
-                    theseUVs[i].U50[j] = Convert.ToDouble(UVs[0]);
-                    theseUVs[i].V50[j] = Convert.ToDouble(UVs[1]);
+                    theseUVs[i].U_WS[j] = Convert.ToDouble(UVs[0]);
+                    theseUVs[i].V_WS[j] = Convert.ToDouble(UVs[1]);
                 }
             }
-            
-            MERRA.MERRA_Pull[] theseMERRA = new MERRA.MERRA_Pull[3];
+
+            Reference.RefData_Pull[] theseMERRA = new Reference.RefData_Pull[3];
             Array.Resize(ref theseMERRA[0].Data, 2);
             Array.Resize(ref theseMERRA[1].Data, 2);
             Array.Resize(ref theseMERRA[2].Data, 2);
 
-            thisMERRA.Calc_MERRA2_WS_WD(ref theseMERRA, theseUVs);                 
+            thisMERRA.Calc_WS_WD(ref theseMERRA, theseUVs);                 
 
-            Assert.AreEqual(4.07736, theseMERRA[0].Data[0].WS50m, 0.01, "Wrong WS Node 1 Hour 1");
-            Assert.AreEqual(284.9041, theseMERRA[0].Data[0].WD50m, 0.01, "Wrong WD Node 1 Hour 1");
+            Assert.AreEqual(4.07736, theseMERRA[0].Data[0].WS, 0.01, "Wrong WS Node 1 Hour 1");
+            Assert.AreEqual(284.9041, theseMERRA[0].Data[0].WD, 0.01, "Wrong WD Node 1 Hour 1");
 
-            Assert.AreEqual(5.18769, theseMERRA[0].Data[1].WS50m, 0.01, "Wrong WS Node 1 Hour 2");
-            Assert.AreEqual(237.5902, theseMERRA[0].Data[1].WD50m, 0.01, "Wrong WD Node 1 Hour 2");
+            Assert.AreEqual(5.18769, theseMERRA[0].Data[1].WS, 0.01, "Wrong WS Node 1 Hour 2");
+            Assert.AreEqual(237.5902, theseMERRA[0].Data[1].WD, 0.01, "Wrong WD Node 1 Hour 2");
 
-            Assert.AreEqual(4.7727, theseMERRA[1].Data[0].WS50m, 0.01, "Wrong WS Node 2 Hour 1");
-            Assert.AreEqual(81.1243, theseMERRA[1].Data[0].WD50m, 0.01, "Wrong WD Node 2 Hour 1");
+            Assert.AreEqual(4.7727, theseMERRA[1].Data[0].WS, 0.01, "Wrong WS Node 2 Hour 1");
+            Assert.AreEqual(81.1243, theseMERRA[1].Data[0].WD, 0.01, "Wrong WD Node 2 Hour 1");
 
-            Assert.AreEqual(5.70873, theseMERRA[1].Data[1].WS50m, 0.01, "Wrong WS Node 2 Hour 2");
-            Assert.AreEqual(99.0641, theseMERRA[1].Data[1].WD50m, 0.01, "Wrong WD Node 2 Hour 2");
+            Assert.AreEqual(5.70873, theseMERRA[1].Data[1].WS, 0.01, "Wrong WS Node 2 Hour 2");
+            Assert.AreEqual(99.0641, theseMERRA[1].Data[1].WD, 0.01, "Wrong WD Node 2 Hour 2");
 
-            Assert.AreEqual(1.24520, theseMERRA[2].Data[0].WS50m, 0.01, "Wrong WS Node 3 Hour 1");
-            Assert.AreEqual(342.719, theseMERRA[2].Data[0].WD50m, 0.01, "Wrong WD Node 3 Hour 1");
+            Assert.AreEqual(1.24520, theseMERRA[2].Data[0].WS, 0.01, "Wrong WS Node 3 Hour 1");
+            Assert.AreEqual(342.719, theseMERRA[2].Data[0].WD, 0.01, "Wrong WD Node 3 Hour 1");
 
-            Assert.AreEqual(5.0064, theseMERRA[2].Data[1].WS50m, 0.01, "Wrong WS Node 3 Hour 2");
-            Assert.AreEqual(272.743, theseMERRA[2].Data[1].WD50m, 0.01, "Wrong WD Node 3 Hour 2");
+            Assert.AreEqual(5.0064, theseMERRA[2].Data[1].WS, 0.01, "Wrong WS Node 3 Hour 2");
+            Assert.AreEqual(272.743, theseMERRA[2].Data[1].WD, 0.01, "Wrong WD Node 3 Hour 2");
 
             srUVs.Close();
         }
@@ -240,16 +239,15 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
 
-            Met thisMet = thisInst.metList.metItem[0];
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+            Met thisMet = thisInst.metList.metItem[0];            
+            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
             merra.Calc_MonthProdStats(thisInst.UTM_conversions);
 
-            Assert.AreEqual(539195.69, merra.interpData.Monthly_Prod[0].YearProd[0].prod, 10, "Wrong Prod Jan 2008");
-            Assert.AreEqual(326853.70, merra.interpData.Monthly_Prod[1].LT_Avg, 10, "Wrong Prod Feb LT Avg");
-            Assert.AreEqual(395500.22, merra.interpData.Monthly_Prod[3].YearProd[1].prod, 10, "Wrong Prod April 2009");
-            Assert.AreEqual(327228.91, merra.interpData.Monthly_Prod[9].YearProd[2].prod, 10, "Wrong Prod Oct 2010");           
-            Assert.AreEqual(400752.219, merra.interpData.Monthly_Prod[11].LT_Avg, 10, "Wrong Prod Dec LT Avg");
+            Assert.AreEqual(539195.69, merra.interpData.monthlyProd[0].YearProd[0].prod, 10, "Wrong Prod Jan 2008");
+            Assert.AreEqual(326853.70, merra.interpData.monthlyProd[1].LT_Avg, 10, "Wrong Prod Feb LT Avg");
+            Assert.AreEqual(395500.22, merra.interpData.monthlyProd[3].YearProd[1].prod, 10, "Wrong Prod April 2009");
+            Assert.AreEqual(327228.91, merra.interpData.monthlyProd[9].YearProd[2].prod, 10, "Wrong Prod Oct 2010");           
+            Assert.AreEqual(400752.219, merra.interpData.monthlyProd[11].LT_Avg, 10, "Wrong Prod Dec LT Avg");
             
             thisInst.Close();
         }
@@ -262,17 +260,16 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
 
-            Met thisMet = thisInst.metList.metItem[0];
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+            Met thisMet = thisInst.metList.metItem[0];            
+            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
 
-            double thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.Monthly_Prod[0], 2008);
+            double thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[0], 2008);
             Assert.AreEqual(0.390928274, thisDiff, 0.001, "Wrong Perc Diff Jan 2008");
 
-            thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.Monthly_Prod[4], 2009);
+            thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[4], 2009);
             Assert.AreEqual(-0.186664345, thisDiff, 0.001, "Wrong Perc Diff May 2009");
 
-            thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.Monthly_Prod[11], 2010);
+            thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[11], 2010);
             Assert.AreEqual(-0.2157710, thisDiff, 0.001, "Wrong Perc Diff Dec 2010");
 
             thisInst.Close();
@@ -286,17 +283,16 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
 
-            Met thisMet = thisInst.metList.metItem[0];
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+            Met thisMet = thisInst.metList.metItem[0];            
+            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
 
-            double This_Diff = merra.Calc_Perc_Diff_from_LT_Yearly(merra.interpData.Annual_Prod, 2008);
+            double This_Diff = merra.Calc_Perc_Diff_from_LT_Yearly(merra.interpData.annualProd, 2008);
             Assert.AreEqual(0.09389, This_Diff, 0.001, "Wrong Perc Diff 2008");
 
-            This_Diff = merra.Calc_Perc_Diff_from_LT_Yearly(merra.interpData.Annual_Prod, 2009);
+            This_Diff = merra.Calc_Perc_Diff_from_LT_Yearly(merra.interpData.annualProd, 2009);
             Assert.AreEqual(-0.0113, This_Diff, 0.001, "Wrong Perc Diff 2009");
 
-            This_Diff = merra.Calc_Perc_Diff_from_LT_Yearly(merra.interpData.Annual_Prod, 2010);
+            This_Diff = merra.Calc_Perc_Diff_from_LT_Yearly(merra.interpData.annualProd, 2010);
             Assert.AreEqual(-0.08254, This_Diff, 0.001, "Wrong Perc Diff 2010");
 
             thisInst.Close();
@@ -311,13 +307,12 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-
-            double thisDev = merra.Calc_Dev_from_LT(merra.interpData.Monthly_Prod, merra.interpData.Annual_Prod, 2010, 11);
+            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+            
+            double thisDev = merra.Calc_Dev_from_LT(merra.interpData.monthlyProd, merra.interpData.annualProd, 2010, 11);
             Assert.AreEqual(0.0404134, thisDev, 0.001, "Wrong deviation in Nov 2010");
 
-            thisDev = merra.Calc_Dev_from_LT(merra.interpData.Monthly_Prod, merra.interpData.Annual_Prod, 2010, 100);
+            thisDev = merra.Calc_Dev_from_LT(merra.interpData.monthlyProd, merra.interpData.annualProd, 2010, 100);
             Assert.AreEqual(-0.082540128, thisDev, 0.001, "Wrong deviation in 2010");
                         
             thisInst.Close();
@@ -332,8 +327,7 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");            
             TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0];
 
             Assert.AreEqual(0.338060246, merra.Calc_CF(456, 1, 2000, powerCurve), 0.001, "Wrong CF 31 days");            
@@ -355,44 +349,43 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
-            MERRA merra = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-
+            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+            
             // Test 1
-            bool Get_MERRA_Coords = merra.Find_MERRA_Coords(merraFolder);            
-            Assert.AreEqual(4, merra.MERRA_Nodes[0].XY_ind.X_ind, "Wrong x ind");
-            Assert.AreEqual(2, merra.MERRA_Nodes[0].XY_ind.Y_ind, "Wrong y ind");
+            merra.FindCoords(thisInst.refList);            
+            Assert.AreEqual(4, merra.nodes[0].XY_ind.X_ind, "Wrong x ind");
+            Assert.AreEqual(2, merra.nodes[0].XY_ind.Y_ind, "Wrong y ind");
 
             // Test 2
-            merra.numMERRA_Nodes = 4;            
-            Array.Resize(ref merra.MERRA_Nodes, merra.numMERRA_Nodes);
+            merra.numNodes = 4;            
+            Array.Resize(ref merra.nodes, merra.numNodes);
             merra.ClearAll();            
-            merra.Set_Interp_LatLon_Dates_Offset(41.2, -83.8, thisInst.UTM_conversions.GetUTC_Offset(41.2, -83.8), thisInst);
+            merra.Set_Interp_LatLon_Dates_Offset(41.2, -83.8, thisInst.UTM_conversions.GetUTC_Offset(41.2, -83.8), thisInst.UTM_conversions);
             
-            Get_MERRA_Coords = merra.Find_MERRA_Coords(merraFolder);
-            Assert.AreEqual(4, merra.MERRA_Nodes[0].XY_ind.X_ind, "Wrong x ind 0");
-            Assert.AreEqual(1, merra.MERRA_Nodes[0].XY_ind.Y_ind, "Wrong y ind 0");
-            Assert.AreEqual(5, merra.MERRA_Nodes[1].XY_ind.X_ind, "Wrong x ind 1");
-            Assert.AreEqual(1, merra.MERRA_Nodes[1].XY_ind.Y_ind, "Wrong y ind 1");
-            Assert.AreEqual(4, merra.MERRA_Nodes[2].XY_ind.X_ind, "Wrong x ind 2");
-            Assert.AreEqual(2, merra.MERRA_Nodes[2].XY_ind.Y_ind, "Wrong y ind 2");
-            Assert.AreEqual(5, merra.MERRA_Nodes[3].XY_ind.X_ind, "Wrong x ind 3");
-            Assert.AreEqual(2, merra.MERRA_Nodes[3].XY_ind.Y_ind, "Wrong y ind 3");
+            merra.FindCoords(thisInst.refList);
+            Assert.AreEqual(4, merra.nodes[0].XY_ind.X_ind, "Wrong x ind 0");
+            Assert.AreEqual(1, merra.nodes[0].XY_ind.Y_ind, "Wrong y ind 0");
+            Assert.AreEqual(5, merra.nodes[1].XY_ind.X_ind, "Wrong x ind 1");
+            Assert.AreEqual(1, merra.nodes[1].XY_ind.Y_ind, "Wrong y ind 1");
+            Assert.AreEqual(4, merra.nodes[2].XY_ind.X_ind, "Wrong x ind 2");
+            Assert.AreEqual(2, merra.nodes[2].XY_ind.Y_ind, "Wrong y ind 2");
+            Assert.AreEqual(5, merra.nodes[3].XY_ind.X_ind, "Wrong x ind 3");
+            Assert.AreEqual(2, merra.nodes[3].XY_ind.Y_ind, "Wrong y ind 3");
 
             // Test 3
-            merra.numMERRA_Nodes = 16;            
-            Array.Resize(ref merra.MERRA_Nodes, merra.numMERRA_Nodes);
+            merra.numNodes = 16;            
+            Array.Resize(ref merra.nodes, merra.numNodes);
             merra.ClearAll();
-            merra.Set_Interp_LatLon_Dates_Offset(40.4, -82.9, thisInst.UTM_conversions.GetUTC_Offset(40.4, -82.9), thisInst);            
-            Get_MERRA_Coords = merra.Find_MERRA_Coords(merraFolder);
-            Assert.AreEqual(1, merra.MERRA_Nodes[0].XY_ind.X_ind, "Wrong x ind 0");
-            Assert.AreEqual(2, merra.MERRA_Nodes[0].XY_ind.Y_ind, "Wrong y ind 0");
-            Assert.AreEqual(2, merra.MERRA_Nodes[1].XY_ind.X_ind, "Wrong x ind 1");
-            Assert.AreEqual(2, merra.MERRA_Nodes[1].XY_ind.Y_ind, "Wrong y ind 1");
-            Assert.AreEqual(3, merra.MERRA_Nodes[2].XY_ind.X_ind, "Wrong x ind 2");
-            Assert.AreEqual(2, merra.MERRA_Nodes[2].XY_ind.Y_ind, "Wrong y ind 2");
-            Assert.AreEqual(4, merra.MERRA_Nodes[3].XY_ind.X_ind, "Wrong x ind 2");
-            Assert.AreEqual(2, merra.MERRA_Nodes[3].XY_ind.Y_ind, "Wrong y ind 2");
+            merra.Set_Interp_LatLon_Dates_Offset(40.4, -82.9, thisInst.UTM_conversions.GetUTC_Offset(40.4, -82.9), thisInst.UTM_conversions);            
+            merra.FindCoords(thisInst.refList);
+            Assert.AreEqual(1, merra.nodes[0].XY_ind.X_ind, "Wrong x ind 0");
+            Assert.AreEqual(2, merra.nodes[0].XY_ind.Y_ind, "Wrong y ind 0");
+            Assert.AreEqual(2, merra.nodes[1].XY_ind.X_ind, "Wrong x ind 1");
+            Assert.AreEqual(2, merra.nodes[1].XY_ind.Y_ind, "Wrong y ind 1");
+            Assert.AreEqual(3, merra.nodes[2].XY_ind.X_ind, "Wrong x ind 2");
+            Assert.AreEqual(2, merra.nodes[2].XY_ind.Y_ind, "Wrong y ind 2");
+            Assert.AreEqual(4, merra.nodes[3].XY_ind.X_ind, "Wrong x ind 2");
+            Assert.AreEqual(2, merra.nodes[3].XY_ind.Y_ind, "Wrong y ind 2");
                        
             thisInst.Close();
         }

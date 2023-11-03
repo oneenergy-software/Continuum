@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ContinuumNS
@@ -15,41 +6,29 @@ namespace ContinuumNS
     /// <summary>Form used to define a new long-term reference site  </summary>
     public partial class AddEditReference : Form
     {
+        /// <summary> New or Existing Reference object to be created or editted </summary>
         public Reference thisRef;
-        MetCollection metList;
+        /// <summary> Reference Collection </summary>
+        public ReferenceCollection refList;
+        MetCollection metList; // Used to extract reference data at nodes closest to met site lat/long coordinates
         UTM_conversion utmConv = new UTM_conversion();
+        /// <summary> Set to true if all user inputs are ok </summary>
         public bool goodToGo = false;
 
         /// <summary> Constructor.  Selects MERRA2 by default </summary>
-        public AddEditReference(MetCollection metCollection, ReferenceCollection refList, Reference newOrEditRef = null)
+        public AddEditReference(MetCollection metCollection, ReferenceCollection referenceList, Reference newOrEditRef = null)
         {
             InitializeComponent();
             metList = metCollection;
+            refList = referenceList;                        
 
-            if (newOrEditRef == null) // Adding new reference.  Set to default settings and use folder location and
-                                      // Earthdata username and password for last MERRA2 reference (if any)
+            if (newOrEditRef == null) // If null then we're adding new reference.  
             {
                 thisRef = new Reference();
-
-                if (refList.numReferences > 0)
-                {
-                    // Use same folder as MERRA2 reference
-                    for (int r = refList.numReferences - 1; r >= 0; r--)
-                    {
-                        if (refList.reference[r].referenceType == "MERRA2")
-                        {
-                            thisRef.refDataFolder = refList.reference[r].refDataFolder;
-                            thisRef.earthdataUser = refList.reference[r].earthdataUser;
-                            thisRef.earthdataPwd = refList.reference[r].earthdataPwd;
-                            break;
-                        }    
-                    }                    
-                }
-
-                if (thisRef.refDataFolder == "") // Didn't find another MERRA2 so set it to Desktop folder
-                    thisRef.refDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-                thisRef.referenceType = "MERRA2";
+                              
+                // Set default values
+                // Assign most recently downloaded reference data
+                thisRef.refDataDownload = refList.refDataDownloads[refList.numRefDataDownloads - 1];
                 thisRef.SetDefaultsForReferenceType();
                 thisRef.numNodes = 1;
                 thisRef.startDate = new DateTime(2002, 1, 1);
@@ -65,21 +44,34 @@ namespace ContinuumNS
                 thisRef = newOrEditRef;
             }
 
-            txtRefFolder.Text = thisRef.refDataFolder;
-            UpdateLT_RefNodesAndCompleteness();
+            // Populate dropdown with all downloaded reference data
+            UpdateDropdownReferenceDownloads();
 
-            if (thisRef.referenceType == "MERRA2")
-                cboLTRefType.SelectedIndex = 0; 
-            else
-                cboLTRefType.SelectedIndex = 1;                        
-
+            // Populate list of met sites (used to extract data at closest coordinates)
             PopulateMetList();
+
         }
 
-        /// <summary> Updates textboxes and dropdown lists </summary>
+        /// <summary> Updates list of refernce data downloads to choose from </summary>
+        public void UpdateDropdownReferenceDownloads()
+        {
+            // Updates dropdown list showing all defined reference downloads
+            cboRefDataDownloads.Items.Clear();
+
+            for (int d = 0; d < refList.numRefDataDownloads; d++)
+                cboRefDataDownloads.Items.Add(refList.refDataDownloads[d].GetName());
+
+            if (thisRef.refDataDownload.minLat == 0)
+                cboRefDataDownloads.SelectedIndex = cboRefDataDownloads.Items.Count - 1;
+            else            
+                cboRefDataDownloads.SelectedIndex = refList.GetReferenceDownloadIndex(thisRef.refDataDownload.GetName());
+            
+        }
+
+        /// <summary> Updates textboxes and dropdown lists based on selected 'Reference Data Downloads' </summary>
         public void UpdateForm()
         {
-            txtRefFolder.Text = thisRef.refDataFolder;
+            
             cboNumNodes.SelectedItem = thisRef.numNodes;
             txtWS_ScaleFact.Text = thisRef.WS_ScaleFactor.ToString();
 
@@ -118,7 +110,8 @@ namespace ContinuumNS
         public void UpdateLT_RefNodesAndCompleteness()
         {
             dataLTRefNodes.Rows.Clear();
-                        
+            txtRefDataFolder.Text = thisRef.refDataDownload.folderLocation;
+
             Reference.Node_Data[] refNodes = thisRef.GetAllNodesInFile();
 
             for (int m = 0; m < refNodes.Length; m++)
@@ -130,7 +123,7 @@ namespace ContinuumNS
             if (refNodes.Length == 0)
                 return;
 
-            DateTime[] startEndDates = thisRef.GetDataFileStartEndDate();
+            DateTime[] startEndDates = refList.GetDataFileStartEndDate(thisRef.refDataDownload.folderLocation, thisRef.refDataDownload.refType);
             int offset = utmConv.GetUTC_Offset(refNodes[0].XY_ind.Lat, refNodes[0].XY_ind.Lon);
 
             if (startEndDates[0].Year != 1)
@@ -138,45 +131,15 @@ namespace ContinuumNS
                 dateLTRefAvailStart.Value = startEndDates[0].AddHours(offset);
                 dateLTRefAvailEnd.Value = startEndDates[1].AddHours(offset);
 
-                double completePerc = thisRef.CalcDownloadedDataCompletion();
+                double completePerc = refList.CalcDownloadedDataCompletion(thisRef.refDataDownload);
 
                 if (completePerc > 100)
                     completePerc = 100;
 
                 txtRefDataAvail.Text = Math.Round(completePerc, 1).ToString();
             }            
-        }
-
-        private void cboLTRefType_SelectedIndexChanged(object sender, EventArgs e)
-        {            
-            thisRef.referenceType = cboLTRefType.SelectedItem.ToString();
-
-            thisRef.SetDefaultsForReferenceType();
-
-        }
-
-        private void btnChangeFolder_Click(object sender, EventArgs e)
-        {
-            if (fbdRefDataFolder.ShowDialog() == DialogResult.OK)
-            {
-                thisRef.refDataFolder = fbdRefDataFolder.SelectedPath;
-                txtRefFolder.Text = thisRef.refDataFolder;
-                UpdateLT_RefNodesAndCompleteness();
-
-                if (dateRefStart.Value < dateLTRefAvailStart.Value)
-                {
-                    thisRef.startDate = dateLTRefAvailStart.Value;
-                    dateRefStart.Value = dateLTRefAvailStart.Value;
-                }
-
-                if (dateRefEnd.Value > dateLTRefAvailEnd.Value)
-                {
-                    thisRef.endDate = dateLTRefAvailEnd.Value;
-                    dateRefEnd.Value = dateLTRefAvailEnd.Value;
-                }
-            }
-        }
-
+        }               
+        
         private void cboNumNodes_SelectedIndexChanged(object sender, EventArgs e)
         {
             thisRef.numNodes = Convert.ToInt16(cboNumNodes.SelectedItem.ToString());
@@ -207,16 +170,27 @@ namespace ContinuumNS
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            // Check to see if data files have necessary nodes for interpolation
-
-            // Figure out if reference textfile has the necessary lat/long range and get reference node coordinates
+            // Get entered coordinates and make sure that they are within the RefDataDown area
 
             double thisLat = Convert.ToDouble(txtReferenceLat.Text);
             double thisLon = Convert.ToDouble(txtReferenceLong.Text);
 
+            if (thisLat < thisRef.refDataDownload.minLat || thisLat > thisRef.refDataDownload.maxLat)
+            {
+                goodToGo = false;
+                MessageBox.Show("Requested latitude is outside the bounds of the downloaded data.");
+                return;
+            }
+            else if (thisLon < thisRef.refDataDownload.minLon || thisLon > thisRef.refDataDownload.maxLon)
+            {
+                goodToGo = false;
+                MessageBox.Show("Requested longitude is outside the bounds of the downloaded data.");
+                return;
+            }
+
             int offset = utmConv.GetUTC_Offset(thisLat, thisLon);
             thisRef.Set_Interp_LatLon_Dates_Offset(thisLat, thisLon, offset, utmConv);
-            bool gotCoords = thisRef.FindCoords();
+            bool gotCoords = thisRef.FindCoords(refList);
 
             if (gotCoords == false)
                 return;
@@ -243,6 +217,40 @@ namespace ContinuumNS
         private void dateRefEnd_ValueChanged(object sender, EventArgs e)
         {
             thisRef.endDate = dateRefEnd.Value;
+        }
+
+        private void cboRefDataDownloads_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void AddEditReference_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cboRefDataDownloads_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            UpdateLT_RefNodesAndCompleteness();
+            thisRef.refDataDownload = refList.GetRefDataDownloadByName(cboRefDataDownloads.SelectedItem.ToString());
+            
+        }
+
+        private void dateLTRefAvailStart_ValueChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void txtReferenceLat_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void btnDownloadHelp_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Click Tools -> Download Reanalysis Data to download reference data or to link project to folder with previously-downloaded " +
+                "reference data");
+
         }
     }
 }

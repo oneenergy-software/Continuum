@@ -148,20 +148,57 @@ namespace ContinuumNS
             public data[] windData;
 
             /// <summary> Returns index with specified timestamp </summary>            
-            public int GetTS_Index(DateTime thisDate)
+            public int GetTS_Index(DateTime targetDate)
             {                
                 int indMid = windData.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(windData[indMid].timeStamp.Subtract(windData[indMid - 1].timeStamp).TotalMinutes, 0));
 
-                int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(windData[0].timeStamp).TotalMinutes / dataIntMins, 0));
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(windData[0].timeStamp).TotalMinutes / dataIntMins, 0));
 
-                while (windData[tsInd].timeStamp < thisDate && tsInd < windData.Length - 1)
-                    tsInd++;
+                if (tsInd < 0)
+                    return 0;
 
-                while (windData[tsInd].timeStamp > thisDate && tsInd > 0)
-                    tsInd--;
+                if (tsInd >= windData.Length)
+                    return windData.Length - 1;
 
-                if (windData[tsInd].timeStamp != thisDate)
+                DateTime thisDate = windData[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+                
+                while (timeDiffMins > dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)                    
+                        tsInd = tsInd + stepSize;                    
+                    else                    
+                        tsInd = tsInd - stepSize;
+
+                    thisDate = windData[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) == Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                }               
+
+          //      while (windData[tsInd].timeStamp < targetDate && tsInd < windData.Length - 1)
+          //          tsInd++;
+
+          //      while (windData[tsInd].timeStamp > targetDate && tsInd > 0)
+          //          tsInd--;
+
+                if (windData[tsInd].timeStamp != targetDate)
                     tsInd = -999;
 
                 return tsInd;
@@ -199,6 +236,12 @@ namespace ContinuumNS
 
                 int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(dirData[0].timeStamp).TotalMinutes / dataIntMins, 0));
 
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= dirData.Length)
+                    return dirData.Length - 1;
+
                 while (dirData[tsInd].timeStamp < thisDate && tsInd < dirData.Length - 1)
                     tsInd++;
 
@@ -230,6 +273,12 @@ namespace ContinuumNS
                 int dataIntMins = Convert.ToInt32(Math.Round(temp[indMid].timeStamp.Subtract(temp[indMid - 1].timeStamp).TotalMinutes, 0));
 
                 int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(temp[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= temp.Length)
+                    return temp.Length - 1;
 
                 while (temp[tsInd].timeStamp < thisDate && tsInd < temp.Length - 1)
                     tsInd++;
@@ -263,6 +312,12 @@ namespace ContinuumNS
                 int dataIntMins = Convert.ToInt32(Math.Round(pressure[indMid].timeStamp.Subtract(pressure[indMid - 1].timeStamp).TotalMinutes, 0));
 
                 int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(pressure[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= pressure.Length)
+                    return pressure.Length - 1;
 
                 while (pressure[tsInd].timeStamp < thisDate && tsInd < pressure.Length - 1)
                     tsInd++;
@@ -426,6 +481,9 @@ namespace ContinuumNS
         /// <summary>   Gets the number of pressure sensors. </summary>
         public int GetNumBaros()
         {
+            if (baros == null)
+                return 0;
+
             return baros.Length;
         }
 
@@ -1076,6 +1134,10 @@ namespace ContinuumNS
                     {
                         avgWS = avgWS + thisAnem.windData[thisInd].avg;
                         dataCount++;
+                    }
+                    else
+                    {
+                        avgWS = avgWS;
                     }
                 }
 
@@ -1860,7 +1922,7 @@ namespace ContinuumNS
                     validCount = 0;
                     for (int i = 0; i < anems[anemInds[0]].windData.Length; i++)
                     {
-                        bool gotOne = false;
+                        bool gotOne = false;                                                
 
                         for (int a = 0; a < numAnems; a++)
                             if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
@@ -1922,7 +1984,7 @@ namespace ContinuumNS
                     if (alphaByAnem[heightInd].WS_WD_Alpha[i].alpha != -999 && alphaByAnem[heightInd].WS_WD_Alpha[i].WS != -999)
                     {                        
                         simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS *
-                            Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha);
+                            Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha);                                              
 
                         // SD filter: SD must be less than WS / 3
                         if (alphaByAnem[heightInd].WS_WD_Alpha[i].SD < alphaByAnem[heightInd].WS_WD_Alpha[i].WS / 3 &&
@@ -2338,28 +2400,30 @@ namespace ContinuumNS
                 using (var context = new Continuum_EDMContainer(connString))
                 {
                     var sensorData = from N in context.Anem_table where N.metName == metName && N.height == thisHeight && N.sensorChar == thisSensorChar select N;
-                    if (sensorData.Count() == 0)
+
+                    if (sensorData.Count() > 0)
+                        foreach (var anemData in sensorData)
+                            context.Anem_table.Remove(anemData);                                        
+                        
+                    Anem_table anemTable = new Anem_table();
+                    anemTable.metName = metName;
+                    anemTable.height = anems[i].height;
+                    anemTable.sensorChar = anems[i].ID.ToString();
+
+                    MemoryStream MS1 = new MemoryStream();
+                    bin.Serialize(MS1, anems[i].windData);
+                    anemTable.windData = MS1.ToArray();
+
+                    try
                     {
-                        Anem_table anemTable = new Anem_table();
-                        anemTable.metName = metName;
-                        anemTable.height = anems[i].height;
-                        anemTable.sensorChar = anems[i].ID.ToString();
-
-                        MemoryStream MS1 = new MemoryStream();
-                        bin.Serialize(MS1, anems[i].windData);
-                        anemTable.windData = MS1.ToArray();
-
-                        try
-                        {
-                            context.Anem_table.Add(anemTable);
-                            context.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.InnerException.ToString());                            
-                            return;
-                        }
+                        context.Anem_table.Add(anemTable);
+                        context.SaveChanges();
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());                            
+                        return;
+                    }                   
                     
                 }
                 // Clear anem data
@@ -2376,27 +2440,29 @@ namespace ContinuumNS
                 using (var context = new Continuum_EDMContainer(connString))
                 {
                     var sensorData = from N in context.Vane_table where N.metName == metName && N.height == thisHeight select N;
-                    if (sensorData.Count() == 0)
-                    {
-                        Vane_table vaneTable = new Vane_table();
-                        vaneTable.metName = metName;
-                        vaneTable.height = vanes[i].height;
-                        
-                        MemoryStream MS1 = new MemoryStream();
-                        bin.Serialize(MS1, vanes[i].dirData);
-                        vaneTable.dirData = MS1.ToArray();
 
-                        try
-                        {
-                            context.Vane_table.Add(vaneTable);
-                            context.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.InnerException.ToString());                            
-                            return;
-                        }
+                    if (sensorData.Count() > 0)
+                        foreach (var vaneData in sensorData)
+                            context.Vane_table.Remove(vaneData);
+
+                    Vane_table vaneTable = new Vane_table();
+                    vaneTable.metName = metName;
+                    vaneTable.height = vanes[i].height;
+                        
+                    MemoryStream MS1 = new MemoryStream();
+                    bin.Serialize(MS1, vanes[i].dirData);
+                    vaneTable.dirData = MS1.ToArray();
+
+                    try
+                    {
+                        context.Vane_table.Add(vaneTable);
+                        context.SaveChanges();
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());                            
+                        return;
+                    }                    
                     
                 }
                 // Clear vane data
@@ -2413,31 +2479,72 @@ namespace ContinuumNS
                 using (var context = new Continuum_EDMContainer(connString))
                 {
                     var sensorData = from N in context.Temp_table where N.metName == metName && N.height == thisHeight select N;
-                    if (sensorData.Count() == 0)
+
+                    if (sensorData.Count() > 0)
+                        foreach (var tempData in sensorData)
+                            context.Temp_table.Remove(tempData);
+
+                    Temp_table tempTable = new Temp_table();
+                    tempTable.metName = metName;
+                    tempTable.height = temps[i].height;
+
+                    MemoryStream MS1 = new MemoryStream();
+                    bin.Serialize(MS1, temps[i].temp);
+                    tempTable.temp = MS1.ToArray();
+
+                    try
                     {
-                        Temp_table tempTable = new Temp_table();
-                        tempTable.metName = metName;
-                        tempTable.height = temps[i].height;
-
-                        MemoryStream MS1 = new MemoryStream();
-                        bin.Serialize(MS1, temps[i].temp);
-                        tempTable.temp = MS1.ToArray();
-
-                        try
-                        {
-                            context.Temp_table.Add(tempTable);
-                            context.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.InnerException.ToString());                            
-                            return;
-                        }
+                        context.Temp_table.Add(tempTable);
+                        context.SaveChanges();
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());                            
+                        return;
+                    }                    
                     
                 }
                 // Clear temperature data
                 temps[i].temp = null;
+
+            }
+
+            // Save pressure data
+            for (int i = 0; i < GetNumBaros(); i++)
+            {
+                double thisHeight = baros[i].height;
+
+                // Check to see if it's already in database
+                using (var context = new Continuum_EDMContainer(connString))
+                {
+                    var sensorData = from N in context.Baro_table where N.metName == metName && N.height == thisHeight select N;
+
+                    if (sensorData.Count() > 0)
+                        foreach (var baroData in sensorData)
+                            context.Baro_table.Remove(baroData);
+
+                    Baro_table baroTable = new Baro_table();
+                    baroTable.metName = metName;
+                    baroTable.height = temps[i].height;
+
+                    MemoryStream MS1 = new MemoryStream();
+                    bin.Serialize(MS1, temps[i].temp);
+                    baroTable.baro = MS1.ToArray();
+
+                    try
+                    {
+                        context.Baro_table.Add(baroTable);
+                        context.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());
+                        return;
+                    }
+
+                }
+                // Clear pressure data
+                baros[i].pressure = null;
 
             }
 
@@ -2465,6 +2572,11 @@ namespace ContinuumNS
                         MemoryStream MS = new MemoryStream(N.windData);
                         anems[i].windData = (data[])bin.Deserialize(MS);
                         MS.Close();
+
+                        for (int a = 0; a < anems[i].windData.Length; a++)
+                            if (anems[i].windData[a].filterFlag != Filter_Flags.Valid)
+                                a = a;
+
                     }
                 }               
             }

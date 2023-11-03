@@ -11,6 +11,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Net;
 using Microsoft.Research.Science.Data.Imperative;
 using Microsoft.Research.Science.Data;
+using Python;
+using Python.Runtime;
+using Microsoft.VisualBasic;
+using System.Threading;
 
 namespace ContinuumNS
 {
@@ -30,7 +34,7 @@ namespace ContinuumNS
     /// </summary>
     public partial class BackgroundWork : Form
     {
-        Update updateThe = new Update();
+
         /// <summary> Set to true when task is finished. Checked during unit tests </summary>
         public bool DoWorkDone = false;
         /// <summary> Set to true if Background worker did not finish and was cancelled  </summary>
@@ -50,7 +54,7 @@ namespace ContinuumNS
             /// <summary> Continuum instance </summary>
             public Continuum thisInst;
             /// <summary> File to be imported </summary>
-            public string Filename;
+            public string Filename;            
         }
 
         /// <summary> Struct containg info needed to create WRG file </summary>
@@ -106,7 +110,7 @@ namespace ContinuumNS
             public Continuum thisInst;
             /// <summary> Selected MCP method </summary>
             public string MCP_Method;
-        }               
+        }
 
         /// <summary> Contains MERRA2 object to extract from local files </summary>
         public struct Vars_for_MERRA
@@ -131,17 +135,24 @@ namespace ContinuumNS
             /// <summary> Reference nodes to pull from local files </summary>
             public Reference.RefData_Pull[] nodesToPull;
             /// <summary> Continuum instance </summary>
-            public Continuum thisInst;            
+            public Continuum thisInst;
         }
 
-        /// <summary> Contains MERRA2 download form </summary>
-        public struct Vars_for_MERRA_Download
+        /// <summary> Contains LT Reference data download form </summary>
+        public struct Vars_for_Reference_Download
         {
-            /// <summary> MERRA2 download form </summary>
-            public MERRA2_Download thisMERRA;            
+            /// <summary> Reference data download form </summary>
+            public ReferenceCollection.RefDataDownload thisRefDownload;
             /// <summary> Continuum instance </summary>
             public Continuum thisInst;
-            
+
+        }
+
+        public struct Vars_for_MetTS_Import
+        {
+            public Continuum thisInst;
+            public List<DataGridViewColumn> cols;
+            public List<DataGridViewRow> rows;
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,12 +173,12 @@ namespace ContinuumNS
             WasReturned = false;
             Vars_for_BW theArgs = (Vars_for_BW)e.Argument;
             Continuum thisInst = theArgs.thisInst;
-     
+
             MetCollection metList = thisInst.metList;
-            TopoInfo topo = thisInst.topo;      
+            TopoInfo topo = thisInst.topo;
             MetPairCollection metPairs = thisInst.metPairList;
             ModelCollection modelList = thisInst.modelList;
-            NodeCollection nodeList = new NodeCollection();                 
+            NodeCollection nodeList = new NodeCollection();
 
             string textForProgBar = "Importing Met Sites";
             BackgroundWorker_MetCalcs.ReportProgress(0, textForProgBar);
@@ -236,8 +247,8 @@ namespace ContinuumNS
 
             // Create met pairs with single met models at all radii in list.  First checks to see what pairs already exist before making new ones.
             metPairs.CreateMetPairs(thisInst);
-            int numPairs = metPairs.PairCount;                       
-                  
+            int numPairs = metPairs.PairCount;
+
             // if imported coeffs are used, don't do site-calibration
             int importedInd = modelList.GetImportedModelInd();
             int Keep_Imported = 0;
@@ -345,9 +356,8 @@ namespace ContinuumNS
                 if (thisInst.IsDisposed == false)
                 {
                     thisInst.SaveFile(false);
-                    updateThe.AllTABs(thisInst);
-                }               
-
+                    thisInst.updateThe.AllTABs();
+                }
             }
 
             Close();
@@ -355,7 +365,7 @@ namespace ContinuumNS
 
         /// <summary> Calls topography file import background worker and runs background task </summary>        
         public void Call_BW_TopoImport(Vars_for_BW Args)
-        {            
+        {
             Show();
             BackgroundWorker_Topo.RunWorkerAsync(Args);
         }
@@ -363,7 +373,7 @@ namespace ContinuumNS
         private void BackgroundWorker_Topo_DoWork(object sender, DoWorkEventArgs e)
         {
             // Opens and reads topography data from a .XYZ, .TIF, or .ADF file. Saves elevation data to local database.
-            NodeCollection nodeList = new NodeCollection();            
+            NodeCollection nodeList = new NodeCollection();
             Vars_for_BW args = (Vars_for_BW)e.Argument;
             Continuum thisInst = args.thisInst;
             DoWorkDone = false;
@@ -457,7 +467,7 @@ namespace ContinuumNS
                             if (BackgroundWorker_Topo.CancellationPending == true)
                             {
                                 thisInst.topo.topoElevs = null;
-                                updateThe.Clear_Topo_DB(thisInst.savedParams.savedFileName);
+                                thisInst.updateThe.Clear_Topo_DB(thisInst.savedParams.savedFileName);
                                 e.Cancel = true;
                                 WasReturned = true; // for unit tests
                                 return;
@@ -471,7 +481,7 @@ namespace ContinuumNS
             }
 
             topo.gotTopo = true;
-            
+
             DoWorkDone = true;
             e.Result = thisInst;
         }
@@ -501,9 +511,8 @@ namespace ContinuumNS
                 if (thisInst.IsDisposed == false)
                 {
                     thisInst.SaveFile(false);
-                    updateThe.AllTABs((Continuum)e.Result);
+                    thisInst.updateThe.AllTABs();
                 }
-                
             }
 
             Close();
@@ -512,7 +521,7 @@ namespace ContinuumNS
         /// <summary> Calls land cover file import background worker and runs background task      /// </summary>
         /// <param name="Args"></param>
         public void Call_BW_LandCoverImport(Vars_for_BW Args)
-        {            
+        {
             Show();
             BackgroundWorker_LandCover.RunWorkerAsync(Args);
         }
@@ -600,7 +609,7 @@ namespace ContinuumNS
                         if (BackgroundWorker_LandCover.CancellationPending == true)
                         {
                             thisInst.topo.gotSR = false;
-                            updateThe.Clear_LandCover_DB(thisInst.savedParams.savedFileName);
+                            thisInst.updateThe.Clear_LandCover_DB(thisInst.savedParams.savedFileName);
                             e.Result = thisInst;
                             WasReturned = true; // for unit tests
                             return;
@@ -689,15 +698,15 @@ namespace ContinuumNS
                     context.SaveChanges();
                     context.Database.Connection.Close();
                 }
-                
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.InnerException.ToString());
                 WasReturned = true; // for unit tests
                 return;
-            }                       
-           
+            }
+
             DoWorkDone = true;
             e.Result = thisInst;
         }
@@ -726,15 +735,15 @@ namespace ContinuumNS
                 if (e.Cancelled == false)
                     thisInst.SaveFile(false);
 
-                updateThe.AllTABs(thisInst);
+                thisInst.updateThe.AllTABs();
             }
-            
+
             Close();
         }
 
         /// <summary> Calls .MAP roughness file import background worker and runs background task </summary>        
         public void Call_BW_WAsP_Map(Vars_for_BW Args)
-        {            
+        {
             Show();
             BackgroundWorker_WAsP_Map.RunWorkerAsync(Args);
         }
@@ -752,20 +761,20 @@ namespace ContinuumNS
             string savedFilename = thisInst.savedParams.savedFileName;
             NodeCollection nodeList = new NodeCollection();
 
-        /*    bool Is_TIF = false;
-            bool Is_SHP = false;
+            /*    bool Is_TIF = false;
+                bool Is_SHP = false;
 
-            if (fileName.Substring(fileName.Length - 3) == "TIF" || fileName.Substring(fileName.Length - 3) == "tif")
-                Is_TIF = true;
-            else if (fileName.Substring(fileName.Length - 3) == "SHP" || fileName.Substring(fileName.Length - 3) == "shp")
-                Is_SHP = true;
+                if (fileName.Substring(fileName.Length - 3) == "TIF" || fileName.Substring(fileName.Length - 3) == "tif")
+                    Is_TIF = true;
+                else if (fileName.Substring(fileName.Length - 3) == "SHP" || fileName.Substring(fileName.Length - 3) == "shp")
+                    Is_SHP = true;
 
-            if (Is_SHP == true)
-            {
-                UTM_conversion UTM = new UTM_conversion();
-                topo.Read_SHP_Roughness(fileName, UTM); //// this doesn;t work yet
-            }
-*/
+                if (Is_SHP == true)
+                {
+                    UTM_conversion UTM = new UTM_conversion();
+                    topo.Read_SHP_Roughness(fileName, UTM); //// this doesn;t work yet
+                }
+    */
 
             StreamReader sr = new StreamReader(fileName);
 
@@ -774,7 +783,7 @@ namespace ContinuumNS
 
             TopoInfo.Roughness_Map_Struct[] theseShapes = null;
             int shapeCount = 0;
-            
+
             string textForProgBar = "";
             BackgroundWorker_WAsP_Map.ReportProgress(20, textForProgBar);
 
@@ -1038,7 +1047,7 @@ namespace ContinuumNS
                 Continuum thisInst = (Continuum)e.Result;
                 if (thisInst.IsDisposed == false)
                 {
-                    updateThe.AllTABs(thisInst);
+                    thisInst.updateThe.AllTABs();
                     thisInst.ChangesMade();
                 }
             }
@@ -1050,7 +1059,7 @@ namespace ContinuumNS
         /// <summary> Calls Turbine Calcs and Estimates background worker and runs background task. Calculates exposure and SRDH at each turbine site, calls DoTurbineCalcs, 
         /// generates avg WS estimates and energy estimate and wake loss calcs (if net calcs) </summary>        
         public void Call_BW_TurbCalcs(Vars_for_TurbCalcs Args)
-        {            
+        {
             Show();
             BackgroundWorker_TurbCalcs.RunWorkerAsync(Args);
         }
@@ -1059,23 +1068,23 @@ namespace ContinuumNS
         {
             Vars_for_TurbCalcs theArgs = (Vars_for_TurbCalcs)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
-            string MCP_Method = theArgs.MCP_Method; 
+            string MCP_Method = theArgs.MCP_Method;
             Wake_Model wakeModel = theArgs.thisWakeModel;
             NodeCollection nodeList = new NodeCollection();
             TurbineCollection turbList = thisInst.turbineList;
             int numTurbs = turbList.TurbineCount;
-         //   int numWD = thisInst.metList.numWD;
-            
+            //   int numWD = thisInst.metList.numWD;
+
             DoWorkDone = false;
             WasReturned = false;
 
             string textForProgBar = "Turbine calculations starting...";
             BackgroundWorker_TurbCalcs.ReportProgress(0, textForProgBar);
 
-            if (wakeModel != null)            
-                textForProgBar = "Calculating wake losses at turbine sites.";            
-            else            
-                textForProgBar = "Calculating exposures at turbine sites.";            
+            if (wakeModel != null)
+                textForProgBar = "Calculating wake losses at turbine sites.";
+            else
+                textForProgBar = "Calculating exposures at turbine sites.";
 
             BackgroundWorker_TurbCalcs.ReportProgress(0, textForProgBar);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false); // Get elevs for calcs           
@@ -1219,12 +1228,12 @@ namespace ContinuumNS
                         return;
                     }
                 }
-            }                        
+            }
 
             if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0 && thisInst.turbineList.PowerCurveCount > 0) // Gross estimates using time series calculated earlier
             {
                 textForProgBar = "Calculating gross AEP at turbine sites.";
-                BackgroundWorker_TurbCalcs.ReportProgress(90, textForProgBar);                                
+                BackgroundWorker_TurbCalcs.ReportProgress(90, textForProgBar);
                 turbList.CalcGrossAEPFromTABs(thisInst);
             }
 
@@ -1250,7 +1259,7 @@ namespace ContinuumNS
                     minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
                     if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
                     WakeCollection.WakeLossCoeffs[] wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, thisInst.metList);
-                    
+
                     //   counter = 0;
                     //   integerList = Enumerable.Range(0, thisInst.turbineList.TurbineCount).ToList();
                     //   Parallel.ForEach(integerList, i =>
@@ -1326,20 +1335,20 @@ namespace ContinuumNS
 
             if (thisInst.IsDisposed == false)
             {
-                updateThe.AllTABs(thisInst);
+                thisInst.updateThe.AllTABs();
                 thisInst.ChangesMade();
-            }            
+            }
 
             Close();
         }
 
         /// <summary> Calls background worker to generate map </summary>        
         public void Call_BW_GenMap(Vars_for_Gen_Map Args)
-        {            
+        {
             Show();
             BackgroundWorker_Map.RunWorkerAsync(Args);
         }
-        
+
         private void BackgroundWorker_Map_DoWork(object sender, DoWorkEventArgs e)
         {
             // for each map node, calculates exposure, SRDH, grid stats, and calls DoMapCalcs
@@ -1350,12 +1359,12 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             TopoInfo topo = thisInst.topo;
             Map thisMap = theArgs.thisMap;
-            string MCP_Method = theArgs.MCP_Method;      
+            string MCP_Method = theArgs.MCP_Method;
             MetCollection metList = thisInst.metList;
-            NodeCollection nodeList = new NodeCollection();        
-            TurbineCollection turbList = thisInst.turbineList;        
+            NodeCollection nodeList = new NodeCollection();
+            TurbineCollection turbList = thisInst.turbineList;
             WakeCollection wakeModelList = thisInst.wakeModelList;
-                  
+
             int numWD = thisInst.metList.numWD;
 
             int numX = thisMap.numX;
@@ -1374,26 +1383,26 @@ namespace ContinuumNS
 
             if (thisMap.parameterToMap == null)
             {
-                thisMap.parameterToMap = new double[numX, numY];                
+                thisMap.parameterToMap = new double[numX, numY];
                 thisMap.sectorParamToMap = new double[numX, numY, numWD];
             }
 
             Stopwatch thisStopwatch = new Stopwatch();
             thisStopwatch.Start();
 
-            double timeElapsed = 0;            
+            double timeElapsed = 0;
             double timeToFinish;
-            
-     //       NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets = null;
 
-      //      Nodes[] allNodesInX = new Nodes[numY];
-      //      Nodes firstNodeLastCol = new Nodes();
+            //       NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets = null;
+
+            //      Nodes[] allNodesInX = new Nodes[numY];
+            //      Nodes firstNodeLastCol = new Nodes();
 
             Nodes[] nodesToAdd = new Nodes[1];
-       //     Nodes[] nodesFromDB = null;
+            //     Nodes[] nodesFromDB = null;
 
             WakeCollection.WakeLossCoeffs[] wakeCoeffs = null;
-            
+
             if (thisMap.isWaked == true)
             {
                 // Find wake loss coeffs
@@ -1419,10 +1428,10 @@ namespace ContinuumNS
             for (int xind = 0; xind < numX; xind++)
             {
                 double thisX = thisMap.minUTMX + xind * thisMap.reso;
-             //   int minY = thisMap.minUTMY;
-             //   int maxY = thisMap.minUTMY + thisMap.numY * thisMap.reso;
+                //   int minY = thisMap.minUTMY;
+                //   int maxY = thisMap.minUTMY + thisMap.numY * thisMap.reso;
 
-              //  nodesFromDB = nodeList.GetNodes(thisX, minY, thisX, maxY, thisInst, false); // To do: this isn't used anywhere...
+                //  nodesFromDB = nodeList.GetNodes(thisX, minY, thisX, maxY, thisInst, false); // To do: this isn't used anywhere...
 
                 for (int yind = 0; yind <= numY - 1; yind++)
                 {
@@ -1438,7 +1447,7 @@ namespace ContinuumNS
                         thisMapNode.elev = thisNode.elev;
                         thisMapNode.expo = thisNode.expo;
                         thisMapNode.gridStats = thisNode.gridStats;
-                     
+
                         if (BackgroundWorker_Map.CancellationPending == true)
                         {
                             //  nodeList.AddNodes(Nodes_to_add, thisInst.savedParams.savedFileName);                            
@@ -1460,17 +1469,17 @@ namespace ContinuumNS
 
                         if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || thisMap.useTimeSeries == false || thisMap.modelType <= 1)
                         {
-                           // if (mapNodeCount > 0 && mapNodeCount % 10 == 0)
-                          //  {
-                                timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
-                                double avgTimePerNode = (thisStopwatch.Elapsed.TotalSeconds / (mapNodeCount + 1));
-                                timeToFinish = (numMapNodes - mapNodeCount) * avgTimePerNode / 60;
-                                textForProgBar = "Node " + mapNodeCount + "/" + numMapNodes + " Avg time/node: " + Math.Round(avgTimePerNode, 1) +
-                                    " secs." + " Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.";
-                                int Prog = Convert.ToInt16(100.0f * mapNodeCount / numMapNodes);
-                                BackgroundWorker_Map.ReportProgress(Prog, textForProgBar);
-                          //  }
-                            
+                            // if (mapNodeCount > 0 && mapNodeCount % 10 == 0)
+                            //  {
+                            timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
+                            double avgTimePerNode = (thisStopwatch.Elapsed.TotalSeconds / (mapNodeCount + 1));
+                            timeToFinish = (numMapNodes - mapNodeCount) * avgTimePerNode / 60;
+                            textForProgBar = "Node " + mapNodeCount + "/" + numMapNodes + " Avg time/node: " + Math.Round(avgTimePerNode, 1) +
+                                " secs." + " Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.";
+                            int Prog = Convert.ToInt16(100.0f * mapNodeCount / numMapNodes);
+                            BackgroundWorker_Map.ReportProgress(Prog, textForProgBar);
+                            //  }
+
                             if (thisMapNode.windRose == null)
                                 thisMapNode.windRose = metList.GetInterpolatedWindRose(metList.GetMetsUsed(), thisMapNode.UTMX, thisMapNode.UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
 
@@ -1478,7 +1487,7 @@ namespace ContinuumNS
 
                             if (thisMap.modelType == 2 || thisMap.modelType == 3)
                                 thisMap.DoMapCalcs(ref thisMapNode, thisInst);
-                            
+
                             // Combine WS ests from various mets into one average
                             if (thisMap.modelType >= 2)
                                 thisMap.GenerateAvgWS_AtOneMapNode(ref thisMapNode, thisInst);
@@ -1505,7 +1514,7 @@ namespace ContinuumNS
 
                             TurbineCollection.PowerCurve thisPowerCurve = thisInst.turbineList.GetPowerCurve(thisMap.powerCurve);
                             Nodes targetNode = nodeList.GetMapAsNode(thisMapNode);
-                            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, 
+                            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
                                 thisPowerCurve, thisMap.wakeModel, wakeCoeffs, MCP_Method);
 
                             string wakedOrFreestream = "Freestream";
@@ -1534,7 +1543,7 @@ namespace ContinuumNS
                                 else
                                 {
                                     Turbine.Net_Energy_Est thisNet = new Turbine.Net_Energy_Est();
-                                    thisNet.wakeModel = thisMap.wakeModel;                              
+                                    thisNet.wakeModel = thisMap.wakeModel;
                                     thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst);
                                     thisMapNode.netEnergyEsts.est = thisNet.AEP;
                                     thisMapNode.netEnergyEsts.sectorEnergy = thisNet.sectorEnergy;
@@ -1543,7 +1552,7 @@ namespace ContinuumNS
 
                                     // Get gross estimates to calculate wake loss
                                     ModelCollection.TimeSeries[] grossTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
-                                        thisPowerCurve, null, null, MCP_Method);                                    
+                                        thisPowerCurve, null, null, MCP_Method);
                                     Turbine.Gross_Energy_Est thisGross = new Turbine.Gross_Energy_Est();
                                     thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, grossTS, thisInst);
                                     thisMapNode.grossAEP = thisGross.AEP;
@@ -1566,13 +1575,13 @@ namespace ContinuumNS
                             thisMap.parameterToMap[xind, yind] = thisMapNode.expo[thisMap.expoMapRadius].GetOverallValue(thisMapNode.windRose, "Expo", "UW");
                             for (int WD = 0; WD < numWD; WD++)
                                 thisMap.sectorParamToMap[xind, yind, WD] = thisMapNode.expo[thisMap.expoMapRadius].expo[WD];
-                        }                            
+                        }
                         else if (thisMap.modelType == 1)  // DW Exposure
                         {
                             thisMap.parameterToMap[xind, yind] = thisMapNode.expo[thisMap.expoMapRadius].GetOverallValue(thisMapNode.windRose, "Expo", "DW");
                             for (int WD = 0; WD < numWD; WD++)
                                 thisMap.sectorParamToMap[xind, yind, WD] = thisMapNode.expo[thisMap.expoMapRadius].GetDW_Param(WD, "Expo");
-                        }                            
+                        }
                         else if (thisMap.modelType == 2 || thisMap.modelType == 4)
                         {
                             thisMap.parameterToMap[xind, yind] = thisMapNode.avgWS_Est;
@@ -1618,8 +1627,8 @@ namespace ContinuumNS
 
             if (thisInst.IsDisposed == false)
             {
-                updateThe.MapsTAB(thisInst);
-                updateThe.NetTurbineEstsTAB(thisInst);
+                thisInst.updateThe.MapsTAB();
+                thisInst.updateThe.NetTurbineEstsTAB();
 
                 thisInst.SaveFile(false);
             }
@@ -1629,13 +1638,13 @@ namespace ContinuumNS
 
         /// <summary> Calls Round Robin ucertainty analysis background worker </summary>        
         public void Call_BW_RoundRobin(Vars_for_RoundRobin Args)
-        {            
+        {
             Show();
             BackgroundWorker_RoundRobin.RunWorkerAsync(Args);
         }
 
         private void BackgroundWorker_RoundRobin_DoWork(object sender, DoWorkEventArgs e)
-        {           
+        {
             Vars_for_RoundRobin theArgs = (Vars_for_RoundRobin)e.Argument;
 
             Continuum thisInst = theArgs.thisInst;
@@ -1646,7 +1655,7 @@ namespace ContinuumNS
             int minRR_Size = theArgs.Min_RR_Size;
             string[] metsUsed = metList.GetMetsUsed();
 
-            int numMets = metsUsed.Length;                        
+            int numMets = metsUsed.Length;
             MetPairCollection.RR_funct_obj[] RR_obj_coll = new MetPairCollection.RR_funct_obj[1];
 
             string textForProgBar = "Preparing for Round Robin Analysis";
@@ -1654,7 +1663,7 @@ namespace ContinuumNS
 
             for (int n = metsUsed.Length - minRR_Size; n <= numMets - minRR_Size; n++)
             {
-                int numMetsInModel = metsUsed.Length - n;                
+                int numMetsInModel = metsUsed.Length - n;
                 bool RR_Done = metPairList.RR_DoneAlready(metsUsed, numMetsInModel, metList);
 
                 if (RR_Done == false)
@@ -1705,12 +1714,12 @@ namespace ContinuumNS
         {
             // Updates Round Robin dropdown menu on main form
 
-            if (e.Cancelled == false)            
+            if (e.Cancelled == false)
             {
                 Continuum thisInst = (Continuum)e.Result;
                 if (thisInst.IsDisposed == false)
                 {
-                    updateThe.Uncertainty_TAB_Round_Robin(thisInst);
+                    thisInst.updateThe.Uncertainty_TAB_Round_Robin();
                     thisInst.ChangesMade();
                 }
             }
@@ -1720,13 +1729,13 @@ namespace ContinuumNS
 
         /// <summary> Calls Save As background worker. Saves CFM file and a copy of database at new save location </summary>        
         public void Call_BW_SaveAs(Vars_for_Save_As Args)
-        {            
+        {
             Show();
             BackgroundWorker_SaveAs.RunWorkerAsync(Args);
         }
 
         private void BackgroundWorker_SaveAs_DoWork(object sender, DoWorkEventArgs e)
-        {            
+        {
             NodeCollection nodeList = new NodeCollection();
             DoWorkDone = false;
             Vars_for_Save_As The_args = (Vars_for_Save_As)e.Argument;
@@ -1741,8 +1750,6 @@ namespace ContinuumNS
             {
                 string textForProgBar = "Preparing to copy database...";
                 BackgroundWorker_SaveAs.ReportProgress(0, textForProgBar);
-                // Copy Nodes (and expo, GridStats, MapNodes and MapWSEsts)
-                int numNodes;
 
                 // Delete old database if there is one
                 try
@@ -1761,12 +1768,486 @@ namespace ContinuumNS
                     return;
                 }
 
-                // Copy over node data
+                CopyNodeDataToNewDB(oldConnString, newConnString);
+
+                CopyTopoDataToNewDB(oldConnString, newConnString);
+
+                CopyLandCoverDataToNewDB(oldConnString, newConnString);
+
+                CopyMERRA2DataToNewDB(oldConnString, newConnString);
+
+                CopyAnemDataToNewDB(oldConnString, newConnString);
+
+                CopyVaneDataToNewDB(oldConnString, newConnString);
+
+                CopyTempDataToNewDB(oldConnString, newConnString);
+
+            }
+            else
+            {
+                // See if there is an existing DB and delete it if there is
+                if (File.Exists(newFilename) == true)
+                {
+                    try
+                    {
+                        using (var ctx = new Continuum_EDMContainer(newConnString))
+                        {
+                            if (ctx.Database.Exists())
+                                ctx.Database.Delete();
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());
+                        return;
+                    }
+
+                }
+            }
+
+            DoWorkDone = true;
+        }
+
+        /// <summary> Copy Pressure data from old to new database </summary>        
+        public void CopyPressDataToNewDB(string oldConnString, string newConnString)
+        {
+            int numBaros = 0;
+            try
+            {
+                using (var ctx = new Continuum_EDMContainer(oldConnString))
+                {
+                    numBaros = ctx.Baro_table.Count();
+                    ctx.Database.Connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString());
+                return;
+            }
+
+            string textForProgBar = "Saving pressure data...";
+
+            for (int t = 0; t < numBaros; t++)
+            {
+                Baro_table press_Table = new Baro_table();
+                int prog = (int)(100 * (double)(t + 1) / numBaros);
+                BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+
                 try
                 {
                     using (var ctx = new Continuum_EDMContainer(oldConnString))
                     {
-                        numNodes = ctx.Node_table.Count();
+                        var baro_exist_db = from N in ctx.Baro_table where N.Id == (t + 1) select N;
+
+                        foreach (var N in baro_exist_db)
+                        {
+                            press_Table.Id = N.Id;
+                            press_Table.height = N.height;
+                            press_Table.metName = N.metName;
+                            press_Table.baro = N.baro;
+                        }
+
+                        ctx.Database.Connection.Close();
+                    }
+
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.Baro_table.Add(press_Table);
+                        ctx.SaveChanges();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+            }
+        }
+
+        /// <summary> Copy Temperature data from old to new database </summary>        
+        public void CopyTempDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        {
+            int numTemps = 0;
+            try
+            {
+                if (fromOldToNew)
+                {
+                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    {
+                        numTemps = ctx.Temp_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                else
+                {
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numTemps = ctx.Temp_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString());
+                return;
+            }
+
+            string textForProgBar = "Saving temperature data...";
+
+            for (int t = 0; t < numTemps; t++)
+            {
+                Temp_table temp_Table = new Temp_table();
+                int prog = (int)(100 * (double)(t + 1) / numTemps);
+                if (fromOldToNew)
+                    BackgroundWorker_DBUpdate.ReportProgress(prog, textForProgBar);
+                else
+                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        {
+                            var temp_exist_db = from N in ctx.Temp_table where N.Id == (t + 1) select N;
+
+                            foreach (var N in temp_exist_db)
+                            {
+                                temp_Table.Id = N.Id;
+                                temp_Table.height = N.height;
+                                temp_Table.metName = N.metName;
+                                temp_Table.temp = N.temp;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else
+                    {
+                        using (var ctx = new Continuum_EDMContainer(oldConnString))
+                        {
+                            var temp_exist_db = from N in ctx.Temp_table where N.Id == (t + 1) select N;
+
+                            foreach (var N in temp_exist_db)
+                            {
+                                temp_Table.Id = N.Id;
+                                temp_Table.height = N.height;
+                                temp_Table.metName = N.metName;
+                                temp_Table.temp = N.temp;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.Temp_table.Add(temp_Table);
+                        ctx.SaveChanges();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+            }
+        }
+
+        /// <summary> Copy Vane data from old to new database </summary>        
+        public void CopyVaneDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        {
+            int numVanes = 0;
+            try
+            {
+                if (fromOldToNew)
+                {
+                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    {
+                        numVanes = ctx.Vane_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                else
+                {
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numVanes = ctx.Vane_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString());
+                return;
+            }
+
+            string textForProgBar = "Saving vane data...";
+
+            for (int v = 0; v < numVanes; v++)
+            {
+                Vane_table vane_Table = new Vane_table();
+                int prog = (int)(100 * (double)(v + 1) / numVanes);
+                if (fromOldToNew)
+                    BackgroundWorker_DBUpdate.ReportProgress(prog, textForProgBar);
+                else
+                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        {
+                            var vane_exist_db = from N in ctx.Vane_table where N.Id == (v + 1) select N;
+
+                            foreach (var N in vane_exist_db)
+                            {
+                                vane_Table.Id = N.Id;
+                                vane_Table.height = N.height;
+                                vane_Table.metName = N.metName;
+                                vane_Table.dirData = N.dirData;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else
+                    {
+                        using (var ctx = new Continuum_EDMContainer(oldConnString))
+                        {
+                            var vane_exist_db = from N in ctx.Vane_table where N.Id == (v + 1) select N;
+
+                            foreach (var N in vane_exist_db)
+                            {
+                                vane_Table.Id = N.Id;
+                                vane_Table.height = N.height;
+                                vane_Table.metName = N.metName;
+                                vane_Table.dirData = N.dirData;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.Vane_table.Add(vane_Table);
+                        ctx.SaveChanges();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+            }
+        }
+
+        /// <summary> Copy Anem data from old to new database. If fromOldToNew is true, it grabs data from old DB context </summary>        
+        public void CopyAnemDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        {
+            int numAnems = 0;
+            try
+            {
+                if (fromOldToNew)
+                {
+                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    {
+                        numAnems = ctx.Anem_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                else
+                {
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numAnems = ctx.Anem_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString());
+                return;
+            }
+
+            string textForProgBar = "Saving anemometer data...";
+
+            for (int a = 0; a < numAnems; a++)
+            {
+                Anem_table anem_Table = new Anem_table();
+                int prog = (int)(100 * (double)(a + 1) / numAnems);
+                if (fromOldToNew)
+                    BackgroundWorker_DBUpdate.ReportProgress(prog, textForProgBar);
+                else
+                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        {
+                            var anem_exist_db = from N in ctx.Anem_table where N.Id == (a + 1) select N;
+
+                            foreach (var N in anem_exist_db)
+                            {
+                                anem_Table.Id = N.Id;
+                                anem_Table.height = N.height;
+                                anem_Table.metName = N.metName;
+                                anem_Table.sensorChar = N.sensorChar;
+                                anem_Table.windData = N.windData;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else
+                    {
+                        using (var ctx = new Continuum_EDMContainer(oldConnString))
+                        {
+                            var anem_exist_db = from N in ctx.Anem_table where N.Id == (a + 1) select N;
+
+                            foreach (var N in anem_exist_db)
+                            {
+                                anem_Table.Id = N.Id;
+                                anem_Table.height = N.height;
+                                anem_Table.metName = N.metName;
+                                anem_Table.sensorChar = N.sensorChar;
+                                anem_Table.windData = N.windData;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+
+
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.Anem_table.Add(anem_Table);
+                        ctx.SaveChanges();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+            }
+        }
+
+        /// <summary> Copy MERRA2 data from old to new database </summary>        
+        public void CopyMERRA2DataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        {
+            int numMERRA2Nodes = 0;
+            try
+            {
+                if (fromOldToNew)
+                {
+                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    {
+                        numMERRA2Nodes = ctx.MERRA_Node_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                else
+                {
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numMERRA2Nodes = ctx.MERRA_Node_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString());
+                return;
+            }
+
+            int minId = 1;
+            int maxId = 1;
+            MERRA_Node_table[] merraDB = new MERRA_Node_table[20000];
+            if (numMERRA2Nodes > 20000)
+                maxId = minId + 19999;
+            else
+            {
+                maxId = numMERRA2Nodes;
+                merraDB = new MERRA_Node_table[numMERRA2Nodes];
+            }
+
+            bool gotThemAll = false;
+
+            while (numMERRA2Nodes > 0 && gotThemAll == false)
+            {
+                string textForProgBar = "Saving MERRA2 data...";
+                int prog = (int)(100 * (double)maxId / numMERRA2Nodes);
+                if (fromOldToNew)
+                    BackgroundWorker_DBUpdate.ReportProgress(prog, textForProgBar);
+                else
+                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+                int dataInd = 0;
+                // Copy up to 20000 entries from old DB
+
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        {
+                            var merra_exist_db = from N in ctx.MERRA_Node_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in merra_exist_db)
+                            {
+                                merraDB[dataInd] = new MERRA_Node_table();
+                                merraDB[dataInd].latitude = N.latitude;
+                                merraDB[dataInd].longitude = N.longitude;
+                                merraDB[dataInd].merraData = N.merraData;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else
+                    {
+                        using (var ctx = new Continuum_EDMContainer(oldConnString))
+                        {
+                            var merra_exist_db = from N in ctx.MERRA_Node_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in merra_exist_db)
+                            {
+                                merraDB[dataInd] = new MERRA_Node_table();
+                                merraDB[dataInd].latitude = N.latitude;
+                                merraDB[dataInd].longitude = N.longitude;
+                                merraDB[dataInd].merraData = N.merraData;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+
+
+
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.MERRA_Node_table.AddRange(merraDB);
+                        ctx.SaveChanges();
+                        dataInd = 0;
+                        merraDB = new MERRA_Node_table[20000];
                         ctx.Database.Connection.Close();
                     }
                 }
@@ -1776,27 +2257,363 @@ namespace ContinuumNS
                     return;
                 }
 
-                int minId = 1;
-                int maxId;
-                Node_table[] nodeDB = new Node_table[2000];
-                if (numNodes > 2000)
-                    maxId = minId + 1999;
+                if (maxId == numMERRA2Nodes)
+                    gotThemAll = true;
+
+                minId = maxId + 1;
+                maxId = maxId + 20000;
+
+                if (maxId > numMERRA2Nodes)
+                {
+                    maxId = numMERRA2Nodes;
+                    merraDB = new MERRA_Node_table[maxId - minId + 1];
+                }
+            }
+        }
+
+        /// <summary> Copies land cover data from old to new database </summary>        
+        public void CopyLandCoverDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        {
+            int numLC = 0;
+            try
+            {
+                if (fromOldToNew)
+                {
+                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    {
+                        numLC = ctx.LandCover_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
                 else
                 {
-                    maxId = numNodes;
-                    nodeDB = new Node_table[numNodes];
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numLC = ctx.LandCover_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
                 }
-                bool gotThemAll = false;
 
-                while (gotThemAll == false && numNodes > 0)
-                {
-                    textForProgBar = "Saving node data...";
-                    int prog = (int)(100 * (double)maxId / numNodes);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString());
+                return;
+            }
+
+            int minId = 1;
+            int maxId = 1;
+            LandCover_table[] landCoverDB = new LandCover_table[20000];
+            if (numLC > 20000)
+                maxId = minId + 19999;
+            else
+            {
+                maxId = numLC;
+                landCoverDB = new LandCover_table[numLC];
+            }
+
+            bool gotThemAll = false;
+
+            while (numLC > 0 && gotThemAll == false)
+            {
+                string textForProgBar = "Saving land cover data...";
+                int prog = (int)(100 * (double)maxId / numLC);
+                if (fromOldToNew)
+                    BackgroundWorker_DBUpdate.ReportProgress(prog, textForProgBar);
+                else
                     BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
-                    int dataInd = 0;
+                int dataInd = 0;
+                // Copy 20000 entries from old DB
 
-                    // Copy 20000 entries from old DB
-                    try
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        {
+                            var lc_exist_db = from N in ctx.LandCover_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in lc_exist_db)
+                            {
+                                landCoverDB[dataInd] = new LandCover_table();
+                                landCoverDB[dataInd].LandCover = N.LandCover;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else
+                    {
+                        using (var ctx = new Continuum_EDMContainer(oldConnString))
+                        {
+                            var lc_exist_db = from N in ctx.LandCover_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in lc_exist_db)
+                            {
+                                landCoverDB[dataInd] = new LandCover_table();
+                                landCoverDB[dataInd].LandCover = N.LandCover;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.LandCover_table.AddRange(landCoverDB);
+                        ctx.SaveChanges();
+                        dataInd = 0;
+                        landCoverDB = new LandCover_table[20000];
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+
+                if (maxId == numLC)
+                    gotThemAll = true;
+
+                minId = maxId + 1;
+                maxId = maxId + 20000;
+
+                if (maxId > numLC)
+                {
+                    maxId = numLC;
+                    landCoverDB = new LandCover_table[maxId - minId + 1];
+                }
+            }
+        }
+
+        /// <summary> Copies topography data from old to new DB </summary>        
+        public void CopyTopoDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        {
+            int numTopo = 0;
+            try
+            {
+                if (fromOldToNew)
+                {
+                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    {
+                        numTopo = ctx.Topo_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                else
+                {
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numTopo = ctx.Topo_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString());
+                return;
+            }
+
+            int minId = 1;
+            int maxId = 1;
+            Topo_table[] topoDB = new Topo_table[20000];
+            if (numTopo > 20000)
+                maxId = minId + 19999;
+            else
+            {
+                maxId = numTopo;
+                topoDB = new Topo_table[numTopo];
+            }
+
+            bool gotThemAll = false;
+
+            while (gotThemAll == false && numTopo > 0)
+            {
+                string textForProgBar = "Saving topography data...";
+                int prog = (int)(100 * (double)maxId / numTopo);
+                if (fromOldToNew)
+                    BackgroundWorker_DBUpdate.ReportProgress(prog, textForProgBar);
+                else
+                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+                int dataInd = 0;
+                // Copy 20000 entries from old DB
+
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        {
+                            var topo_exist_db = from N in ctx.Topo_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in topo_exist_db)
+                            {
+                                topoDB[dataInd] = new Topo_table();
+                                topoDB[dataInd].Elevs = N.Elevs;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else
+                    {
+                        using (var ctx = new Continuum_EDMContainer(oldConnString))
+                        {
+                            var topo_exist_db = from N in ctx.Topo_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in topo_exist_db)
+                            {
+                                topoDB[dataInd] = new Topo_table();
+                                topoDB[dataInd].Elevs = N.Elevs;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.Topo_table.AddRange(topoDB);
+                        ctx.SaveChanges();
+                        dataInd = 0;
+                        topoDB = new Topo_table[20000];
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+
+                if (maxId == numTopo)
+                    gotThemAll = true;
+
+                minId = maxId + 1;
+                maxId = maxId + 20000;
+
+                if (maxId > numTopo)
+                {
+                    maxId = numTopo;
+                    topoDB = new Topo_table[maxId - minId + 1];
+                }
+            }
+        }
+
+        /// <summary> Copies node data in old database to new database </summary>        
+        public void CopyNodeDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        {
+            string textForProgBar = "";
+            int numNodes = 0;
+
+            try
+            {
+                if (fromOldToNew)
+                {
+                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    {
+                        numNodes = ctx.Node_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                else
+                {
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numNodes = ctx.Node_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+                return;
+            }
+
+            int minId = 1;
+            int maxId;
+            Node_table[] nodeDB = new Node_table[2000];
+            if (numNodes > 2000)
+                maxId = minId + 1999;
+            else
+            {
+                maxId = numNodes;
+                nodeDB = new Node_table[numNodes];
+            }
+            bool gotThemAll = false;
+
+            while (gotThemAll == false && numNodes > 0)
+            {
+                textForProgBar = "Saving node data...";
+                int prog = (int)(100 * (double)maxId / numNodes);
+
+                if (fromOldToNew)
+                    BackgroundWorker_DBUpdate.ReportProgress(prog, textForProgBar);
+                else
+                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+
+                int dataInd = 0;
+
+                // Copy 20000 entries from old DB
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        {
+                            for (int This_Id = minId; This_Id <= maxId; This_Id++)
+                            {
+                                var node_expo_db = from N in ctx.Node_table.Include("expo") where N.Id == This_Id select N;
+
+                                foreach (var N in node_expo_db)
+                                {
+                                    nodeDB[dataInd] = new Node_table();
+                                    nodeDB[dataInd].UTMX = N.UTMX;
+                                    nodeDB[dataInd].UTMY = N.UTMY;
+                                    nodeDB[dataInd].elev = N.elev;
+
+                                    int numExpos = N.expo.Count();
+
+                                    for (int expInd = 0; expInd < numExpos; expInd++)
+                                    {
+                                        Expo_table newExpo = new Expo_table();
+                                        newExpo.Expo_Array = N.expo.ElementAt(expInd).Expo_Array;
+                                        newExpo.ExpoDist_Array = N.expo.ElementAt(expInd).ExpoDist_Array;
+                                        newExpo.radius = N.expo.ElementAt(expInd).radius;
+                                        newExpo.exponent = N.expo.ElementAt(expInd).exponent;
+                                        newExpo.UW_Cross_Grade = N.expo.ElementAt(expInd).UW_Cross_Grade;
+                                        newExpo.UW_ParallelGrade = N.expo.ElementAt(expInd).UW_ParallelGrade;
+                                        newExpo.SR_Array = N.expo.ElementAt(expInd).SR_Array;
+                                        newExpo.DH_Array = N.expo.ElementAt(expInd).DH_Array;
+                                        nodeDB[dataInd].expo.Add(newExpo);
+                                    }
+                                }
+
+                                var node_gridstat_db = from N in ctx.Node_table.Include("GridStats") where N.Id == This_Id select N;
+
+                                foreach (var N in node_gridstat_db)
+                                {
+                                    int numGridStats = N.GridStats.Count();
+                                    for (int gridStatInd = 0; gridStatInd <= numGridStats - 1; gridStatInd++)
+                                    {
+                                        GridStat_table newGridStat = new GridStat_table();
+                                        newGridStat.radius = N.GridStats.ElementAt(gridStatInd).radius;
+                                        newGridStat.P10_UW = N.GridStats.ElementAt(gridStatInd).P10_UW;
+                                        newGridStat.P10_DW = N.GridStats.ElementAt(gridStatInd).P10_DW;
+                                        nodeDB[dataInd].GridStats.Add(newGridStat);
+                                    }
+                                }
+
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else
                     {
                         using (var ctx = new Continuum_EDMContainer(oldConnString))
                         {
@@ -1848,49 +2665,23 @@ namespace ContinuumNS
                             ctx.Database.Connection.Close();
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.InnerException.ToString());
-                        return;
-                    }
 
-                    try
-                    {
-                        using (var ctx = new Continuum_EDMContainer(newConnString))
-                        {
-                            ctx.Node_table.AddRange(nodeDB);
-                            ctx.SaveChanges();
-                            dataInd = 0;
-                            nodeDB = new Node_table[2000];
-                            ctx.Database.Connection.Close();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.InnerException.ToString());
-                        return;
-                    }
 
-                    if (maxId == numNodes)
-                        gotThemAll = true;
-
-                    minId = maxId + 1;
-                    maxId = maxId + 2000;
-
-                    if (maxId > numNodes)
-                    {
-                        maxId = numNodes;
-                        nodeDB = new Node_table[maxId - minId + 1];
-                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
                 }
 
-                // Copy over topo data
-                int numTopo = 0;
                 try
                 {
-                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
                     {
-                        numTopo = ctx.Topo_table.Count();
+                        ctx.Node_table.AddRange(nodeDB);
+                        ctx.SaveChanges();
+                        dataInd = 0;
+                        nodeDB = new Node_table[2000];
                         ctx.Database.Connection.Close();
                     }
                 }
@@ -1900,253 +2691,18 @@ namespace ContinuumNS
                     return;
                 }
 
-                minId = 1;
-                Topo_table[] topoDB = new Topo_table[20000];
-                if (numTopo > 20000)
-                    maxId = minId + 19999;
-                else
+                if (maxId == numNodes)
+                    gotThemAll = true;
+
+                minId = maxId + 1;
+                maxId = maxId + 2000;
+
+                if (maxId > numNodes)
                 {
-                    maxId = numTopo;
-                    topoDB = new Topo_table[numTopo];
-                }
-
-                gotThemAll = false;
-
-                while (gotThemAll == false)
-                {
-                    textForProgBar = "Saving topography data...";
-                    int prog = (int)(100 * (double)maxId / numTopo);
-                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
-                    int dataInd = 0;
-                    // Copy 20000 entries from old DB
-
-                    try
-                    {
-                        using (var ctx = new Continuum_EDMContainer(oldConnString))
-                        {
-                            var topo_exist_db = from N in ctx.Topo_table where N.Id >= minId && N.Id <= maxId select N;
-
-                            foreach (var N in topo_exist_db)
-                            {
-                                topoDB[dataInd] = new Topo_table();
-                                topoDB[dataInd].Elevs = N.Elevs;
-                                dataInd++;
-                            }
-                            ctx.Database.Connection.Close();
-                        }
-
-                        using (var ctx = new Continuum_EDMContainer(newConnString))
-                        {
-                            ctx.Topo_table.AddRange(topoDB);
-                            ctx.SaveChanges();
-                            dataInd = 0;
-                            topoDB = new Topo_table[20000];
-                            ctx.Database.Connection.Close();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.InnerException.ToString());
-                        return;
-                    }
-
-                    if (maxId == numTopo)
-                        gotThemAll = true;
-
-                    minId = maxId + 1;
-                    maxId = maxId + 20000;
-
-                    if (maxId > numTopo)
-                    {
-                        maxId = numTopo;
-                        topoDB = new Topo_table[maxId - minId + 1];
-                    }
-                }
-
-                // Copy over land cover data
-                int numLC = 0;
-                try
-                {
-                    using (var ctx = new Continuum_EDMContainer(oldConnString))
-                    {
-                        numLC = ctx.LandCover_table.Count();
-                        ctx.Database.Connection.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.InnerException.ToString());
-                    return;
-                }
-
-                minId = 1;
-                LandCover_table[] landCoverDB = new LandCover_table[20000];
-                if (numLC > 20000)
-                    maxId = minId + 19999;
-                else
-                {
-                    maxId = numLC;
-                    landCoverDB = new LandCover_table[numLC];
-                }
-
-                gotThemAll = false;
-
-                while (numLC > 0 && gotThemAll == false)
-                {
-                    textForProgBar = "Saving land cover data...";
-                    int prog = (int)(100 * (double)maxId / numLC);
-                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
-                    int dataInd = 0;
-                    // Copy 20000 entries from old DB
-
-                    try
-                    {
-                        using (var ctx = new Continuum_EDMContainer(oldConnString))
-                        {
-                            var lc_exist_db = from N in ctx.LandCover_table where N.Id >= minId && N.Id <= maxId select N;
-
-                            foreach (var N in lc_exist_db)
-                            {
-                                landCoverDB[dataInd] = new LandCover_table();
-                                landCoverDB[dataInd].LandCover = N.LandCover;
-                                dataInd++;
-                            }
-                            ctx.Database.Connection.Close();
-                        }
-
-                        using (var ctx = new Continuum_EDMContainer(newConnString))
-                        {
-                            ctx.LandCover_table.AddRange(landCoverDB);
-                            ctx.SaveChanges();
-                            dataInd = 0;
-                            landCoverDB = new LandCover_table[20000];
-                            ctx.Database.Connection.Close();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.InnerException.ToString());
-                        return;
-                    }
-
-                    if (maxId == numLC)
-                        gotThemAll = true;
-
-                    minId = maxId + 1;
-                    maxId = maxId + 20000;
-
-                    if (maxId > numLC)
-                    {
-                        maxId = numLC;
-                        landCoverDB = new LandCover_table[maxId - minId + 1];
-                    }
-                }
-
-                // Copy over MERRA2 data
-                int numMERRA2Nodes = 0;
-                try
-                {
-                    using (var ctx = new Continuum_EDMContainer(oldConnString))
-                    {
-                        numMERRA2Nodes = ctx.MERRA_Node_table.Count();
-                        ctx.Database.Connection.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.InnerException.ToString());
-                    return;
-                }
-
-                minId = 1;
-                MERRA_Node_table[] merraDB = new MERRA_Node_table[20000];
-                if (numMERRA2Nodes > 20000)
-                    maxId = minId + 19999;
-                else
-                {
-                    maxId = numMERRA2Nodes;
-                    merraDB = new MERRA_Node_table[numMERRA2Nodes];
-                }
-
-                gotThemAll = false;
-
-                while (numMERRA2Nodes > 0 && gotThemAll == false)
-                {
-                    textForProgBar = "Saving MERRA2 data...";
-                    int prog = (int)(100 * (double)maxId / numMERRA2Nodes);
-                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
-                    int dataInd = 0;
-                    // Copy up to 20000 entries from old DB
-
-                    try
-                    {
-                        using (var ctx = new Continuum_EDMContainer(oldConnString))
-                        {
-                            var merra_exist_db = from N in ctx.MERRA_Node_table where N.Id >= minId && N.Id <= maxId select N;
-
-                            foreach (var N in merra_exist_db)
-                            {
-                                merraDB[dataInd] = new MERRA_Node_table();
-                                merraDB[dataInd].latitude = N.latitude;
-                                merraDB[dataInd].longitude = N.longitude;
-                                merraDB[dataInd].merraData = N.merraData;
-                                dataInd++;
-                            }
-                            ctx.Database.Connection.Close();
-                        }
-
-                        using (var ctx = new Continuum_EDMContainer(newConnString))
-                        {
-                            ctx.MERRA_Node_table.AddRange(merraDB);
-                            ctx.SaveChanges();
-                            dataInd = 0;
-                            merraDB = new MERRA_Node_table[20000];
-                            ctx.Database.Connection.Close();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.InnerException.ToString());
-                        return;
-                    }
-
-                    if (maxId == numMERRA2Nodes)
-                        gotThemAll = true;
-
-                    minId = maxId + 1;
-                    maxId = maxId + 20000;
-
-                    if (maxId > numMERRA2Nodes)
-                    {
-                        maxId = numMERRA2Nodes;
-                        merraDB = new MERRA_Node_table[maxId - minId + 1];
-                    }
+                    maxId = numNodes;
+                    nodeDB = new Node_table[maxId - minId + 1];
                 }
             }
-            else
-            {
-                // See if there is an existing DB and delete it if there is
-                if (File.Exists(newFilename) == true)
-                {
-                    try
-                    {
-                        using (var ctx = new Continuum_EDMContainer(newConnString))
-                        {
-                            if (ctx.Database.Exists())
-                                ctx.Database.Delete();
-                            ctx.Database.Connection.Close();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.InnerException.ToString());
-                        return;
-                    }
-
-                }
-            }
-
-            DoWorkDone = true;
         }
 
         private void BackgroundWorker_SaveAs_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -2171,7 +2727,7 @@ namespace ContinuumNS
         /// <summary> Calls node surface roughness and displacement height (SRDH) recalculation background worker. (When land cover key changes) </summary>
         /// <param name="thisInst"></param>
         public void Call_BW_Node_Recalc(Continuum thisInst)
-        {            
+        {
             Show();
             BackgroundWorker_Node_SR_Recalc.RunWorkerAsync(thisInst);
         }
@@ -2255,8 +2811,8 @@ namespace ContinuumNS
                     }
 
                     // Save DB
-                    context.SaveChanges();                    
-                    
+                    context.SaveChanges();
+
                 }
             }
             catch (Exception ex)
@@ -2291,7 +2847,7 @@ namespace ContinuumNS
 
         /// <summary> Calls WRG file creation background worker </summary>        
         public void Call_BW_WRG_create(Vars_for_WRG_file Args)
-        {            
+        {
             Show();
             BackgroundWorker_WRG.RunWorkerAsync(Args);
 
@@ -2304,13 +2860,13 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             MetCollection metList = thisInst.metList;
             MapCollection mapList = thisInst.mapList;
-            string mapName = theArgs.mapName;           
-            double density = theArgs.density;     
-            string outputFile = theArgs.outputFile;     
+            string mapName = theArgs.mapName;
+            double density = theArgs.density;
+            string outputFile = theArgs.outputFile;
             TopoInfo topo = thisInst.topo;
             double[] windRose = metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
             Map thisMap = new Map();
-     
+
             if (mapList.ThisCount > 0)
             {
                 for (int i = 0; i < mapList.ThisCount; i++)
@@ -2344,7 +2900,7 @@ namespace ContinuumNS
             {
                 MessageBox.Show("No maps defined.", "Continuum 3");
                 return;
-            }                        
+            }
 
             StreamWriter sw = new StreamWriter(outputFile);
 
@@ -2378,14 +2934,14 @@ namespace ContinuumNS
             sw.Write(resoString);
             sw.WriteLine();
 
-         //   double[] power = null;
+            //   double[] power = null;
 
-         //   if (turbList.PowerCurveCount > 0)
-         //       power = turbList.powerCurves[0].power;
+            //   if (turbList.PowerCurveCount > 0)
+            //       power = turbList.powerCurves[0].power;
 
             int numPoints = numX * numY;
             int pointInd = 0;
-            string[] metsUsed = metList.GetMetsUsed();                      
+            string[] metsUsed = metList.GetMetsUsed();
 
             // Get elevs for calcs
             topo.GetElevsAndSRDH_ForCalcs(thisInst, thisMap, false);
@@ -2393,8 +2949,8 @@ namespace ContinuumNS
             for (int xind = 0; xind <= numX - 1; xind++)
             {
                 double thisX = thisMap.minUTMX + xind * thisMap.reso;
-            //    double minY = thisMap.minUTMY;
-            //    double maxY = thisMap.minUTMY + (numY - 1) * thisMap.reso;
+                //    double minY = thisMap.minUTMY;
+                //    double maxY = thisMap.minUTMY + (numY - 1) * thisMap.reso;
 
                 for (int yind = 0; yind <= numY - 1; yind++)
                 {
@@ -2516,7 +3072,7 @@ namespace ContinuumNS
             else
                 Close();
         }
-               
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
             // Cancels background worker and closes progress bar           
@@ -2599,21 +3155,21 @@ namespace ContinuumNS
         /// <summary> Checks to see if BackgroundWorkers are currently running  </summary>
         /// <returns> True if background worker is busy</returns>
         public bool IsBusy()
-        {            
+        {
             bool Busy = false;
-                       
+
             if (BackgroundWorker_LandCover.IsBusy || BackgroundWorker_Map.IsBusy || BackgroundWorker_MetCalcs.IsBusy || BackgroundWorker_Node_SR_Recalc.IsBusy
                 || BackgroundWorker_RoundRobin.IsBusy || BackgroundWorker_SaveAs.IsBusy || BackgroundWorker_Topo.IsBusy || BackgroundWorker_TurbCalcs.IsBusy
                 || BackgroundWorker_WAsP_Map.IsBusy || BackgroundWorker_WRG.IsBusy || BackgroundWorker_RefDataExtract.IsBusy || BackgroundWorker_IceThrow.IsBusy
                 || BackgroundWorker_Exceed.IsBusy || BackgroundWorker_Shadow.IsBusy)
-                Busy = true;                        
+                Busy = true;
 
             return Busy;
         }
 
         /// <summary> Calls reference data extractor background worker (extracts required data from local reference files) </summary>        
         public void Call_BW_RefDataImport(Vars_for_ReferenceData_Extract vars_For_refData)
-        {            
+        {
             Show();
             BackgroundWorker_RefDataExtract.RunWorkerAsync(vars_For_refData);
         }
@@ -2627,16 +3183,16 @@ namespace ContinuumNS
             Reference.RefData_Pull[] nodesToPull = theArgs.nodesToPull;
             int numNodesToPull = nodesToPull.Length;
             ReferenceCollection refList = thisInst.refList;
-            
+
             int last_file_ind = 0;
             char[] delims = { ',', '\n' };
 
             string[] refDataFiles = new string[0];
-            
-            if (thisRef.referenceType == "MERRA2")
-                refDataFiles = Directory.GetFiles(thisRef.refDataFolder, "*.ascii");
+
+            if (thisRef.refDataDownload.refType == "MERRA2")
+                refDataFiles = Directory.GetFiles(thisRef.refDataDownload.folderLocation, "*.ascii");
             else
-                refDataFiles = Directory.GetFiles(thisRef.refDataFolder, "*.nc"); // NetCDF files
+                refDataFiles = Directory.GetFiles(thisRef.refDataDownload.folderLocation, "*.nc"); // NetCDF files
 
             StreamReader file;
             DateTime startTime = thisRef.startDate;
@@ -2649,7 +3205,7 @@ namespace ContinuumNS
             // all files have been read, the data is trimmed to the actual start and end times
             DateTime startTimeZeroHour = startTime.AddHours(-startTime.Hour);
             DateTime endTimeZeroHour = endTime.AddHours(-endTime.Hour);
-         //   endTimeZeroHour = endTimeZeroHour.AddDays(1); // Adding one more day to account for UTC - Local time diffs
+            //   endTimeZeroHour = endTimeZeroHour.AddDays(1); // Adding one more day to account for UTC - Local time diffs
 
             TimeSpan timeSpan = endTimeZeroHour - startTimeZeroHour;
             int numRefHours = Convert.ToInt32(timeSpan.TotalHours) + 24;
@@ -2662,13 +3218,13 @@ namespace ContinuumNS
                 Array.Resize(ref nodesToPull[i].Data, numRefHours);
                 Array.Resize(ref nodeEastNorthWS[i].timeStamp, numRefHours);
                 Array.Resize(ref nodeEastNorthWS[i].U_WS, numRefHours);
-                Array.Resize(ref nodeEastNorthWS[i].V_WS, numRefHours);               
+                Array.Resize(ref nodeEastNorthWS[i].V_WS, numRefHours);
             }
 
             int lastInd = 0;
             int counter = 0;
 
-            if (thisRef.referenceType == "MERRA2")
+            if (thisRef.refDataDownload.refType == "MERRA2")
             {
                 // Looping through every day in specified date range
                 for (DateTime thisDate = startTimeZeroHour; thisDate <= endTimeZeroHour; thisDate = thisDate.AddDays(1))
@@ -2684,8 +3240,8 @@ namespace ContinuumNS
 
                     if (BackgroundWorker_RefDataExtract.CancellationPending == true)
                     {
-                  //      if (thisMet != null) // Met data calcs should be unrelated to reference data pulls
-                  //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+                        //      if (thisMet != null) // Met data calcs should be unrelated to reference data pulls
+                        //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                         e.Result = thisInst;
                         return;
                     }
@@ -2727,7 +3283,7 @@ namespace ContinuumNS
 
                                     open_bracket = file_strings[file_ind].LastIndexOf("[");
                                     close_bracket = file_strings[file_ind].LastIndexOf("]");
-                                    int This_X_ind = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));                                                                     
+                                    int This_X_ind = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));
 
                                     for (int j = 0; j < nodesToPull.Length; j++)
                                     {
@@ -2814,15 +3370,15 @@ namespace ContinuumNS
                             Int16[,,] currentVar = thisDataFile.GetData<Int16[,,]>(allVars[v].ID);
                             var metaData = allVars[v].Metadata;
 
-                            double scaleFactor = (double)metaData["scale_factor"]; 
-                            double addOffset = (double)metaData["add_offset"]; 
-                            
+                            double scaleFactor = (double)metaData["scale_factor"];
+                            double addOffset = (double)metaData["add_offset"];
+
                             if (allVars[v].Name == "sp")
                             {
                                 // Surface pressure
-                                for (int t = 0; t < currentVar.GetUpperBound(0); t++)
+                                for (int t = 0; t <= currentVar.GetUpperBound(0); t++)
                                 {
-                                    thisDate = baseTime.AddHours(allTime[t]);  
+                                    thisDate = baseTime.AddHours(allTime[t]);
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
 
                                     if (tsInd >= numRefHours)
@@ -2835,7 +3391,7 @@ namespace ContinuumNS
                             else if (allVars[v].Name == "t2m")
                             {
                                 // 10 m temperature
-                                for (int t = 0; t < currentVar.GetUpperBound(0); t++)
+                                for (int t = 0; t <= currentVar.GetUpperBound(0); t++)
                                 {
                                     thisDate = baseTime.AddHours(allTime[t]);
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
@@ -2850,7 +3406,7 @@ namespace ContinuumNS
                             else if (allVars[v].Name == "u100")
                             {
                                 // 100 m U component of WS
-                                for (int t = 0; t < currentVar.GetUpperBound(0); t++)
+                                for (int t = 0; t <= currentVar.GetUpperBound(0); t++)
                                 {
                                     thisDate = baseTime.AddHours(allTime[t]);
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
@@ -2865,7 +3421,7 @@ namespace ContinuumNS
                             else if (allVars[v].Name == "v100")
                             {
                                 // 100 m V component of WS
-                                for (int t = 0; t < currentVar.GetUpperBound(0); t++)
+                                for (int t = 0; t <= currentVar.GetUpperBound(0); t++)
                                 {
                                     thisDate = baseTime.AddHours(allTime[t]);
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
@@ -2894,8 +3450,8 @@ namespace ContinuumNS
             if (startTime < nodesToPull[0].Data[startInd].thisDate)
             {
                 MessageBox.Show("Available MERRA2 data does not cover desired date range.", "Continuum 3");
-          //      if (thisMet != null)
-          //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+                //      if (thisMet != null)
+                //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                 e.Result = thisInst;
                 return;
             }
@@ -2911,12 +3467,12 @@ namespace ContinuumNS
                 Array.Copy(nodesToPull[i].Data, startInd, croppedData, 0, endInd - startInd + 1);
                 nodesToPull[i].Data = croppedData;
 
-                Reference.East_North_WSs[] croppedEastNorth = new Reference.East_North_WSs[1];                
-                croppedEastNorth[0].U_WS = new double[endInd - startInd + 1];                
-                croppedEastNorth[0].V_WS = new double[endInd - startInd + 1];                                
+                Reference.East_North_WSs[] croppedEastNorth = new Reference.East_North_WSs[1];
+                croppedEastNorth[0].U_WS = new double[endInd - startInd + 1];
+                croppedEastNorth[0].V_WS = new double[endInd - startInd + 1];
 
                 Array.Copy(nodeEastNorthWS[i].U_WS, startInd, croppedEastNorth[0].U_WS, 0, endInd - startInd + 1);
-                nodeEastNorthWS[i].U_WS = croppedEastNorth[0].U_WS;                                
+                nodeEastNorthWS[i].U_WS = croppedEastNorth[0].U_WS;
 
                 Array.Copy(nodeEastNorthWS[i].V_WS, startInd, croppedEastNorth[0].V_WS, 0, endInd - startInd + 1);
                 nodeEastNorthWS[i].V_WS = croppedEastNorth[0].V_WS;
@@ -2928,8 +3484,8 @@ namespace ContinuumNS
             bool gotItAll = thisRef.WasDataFullyLoaded(nodesToPull);
             if (gotItAll == false)
             {
-           //     if (thisMet != null)
-           //         thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+                //     if (thisMet != null)
+                //         thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                 e.Result = thisInst;
                 return;
             }
@@ -2951,19 +3507,19 @@ namespace ContinuumNS
             thisRef.CalcAnnualProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, thisInst.UTM_conversions);
 
             // Runs MCP at met sites if MCP_type not null.  Taking this out... let users define as many reference sites as they want and then run MCP on MCP tab
-       /*     if (theArgs.MCP_type != null && theArgs.thisMet.name != null)
-            {
-                thisMet.mcp = new MCP();
-                thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
-                thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);  // Runs MCP and generates LT WS estimates                   
-                thisMet.CalcAllLT_WSWD_Dists(thisInst, thisMet.mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)                               
+            /*     if (theArgs.MCP_type != null && theArgs.thisMet.name != null)
+                 {
+                     thisMet.mcp = new MCP();
+                     thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
+                     thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);  // Runs MCP and generates LT WS estimates                   
+                     thisMet.CalcAllLT_WSWD_Dists(thisInst, thisMet.mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)                               
 
-                thisInst.metList.isMCPd = true;
+                     thisInst.metList.isMCPd = true;
 
-                // Checks to see if all mets have MCP estimates and sets metList.allMCPd boolean
-                thisInst.metList.AreAllMetsMCPd();
-            }
-       */
+                     // Checks to see if all mets have MCP estimates and sets metList.allMCPd boolean
+                     thisInst.metList.AreAllMetsMCPd();
+                 }
+            */
 
             DoWorkDone = true;
             e.Result = thisInst;
@@ -2978,8 +3534,8 @@ namespace ContinuumNS
                 if (thisInst.IsDisposed == false)
                 {
                     thisInst.ChangesMade();
-                    updateThe.AllTABs(thisInst);
-                }                
+                    thisInst.updateThe.AllTABs();
+                }
             }
 
             Close();
@@ -2999,7 +3555,7 @@ namespace ContinuumNS
         /// <summary>  Calls Ice Throw model background worker </summary>
         /// <param name="varsForBW"></param>
         public void Call_BW_IceThrow(Vars_for_BW varsForBW)
-        {             
+        {
             Show();
             BackgroundWorker_IceThrow.RunWorkerAsync(varsForBW);
         }
@@ -3145,12 +3701,12 @@ namespace ContinuumNS
 
             if (thisInst.IsDisposed == false)
             {
-                thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Ice Throw");
-                thisInst.updateThe.IcingYearsDropDown(thisInst);
-                thisInst.updateThe.SiteSuitabilityTAB(thisInst);
+                thisInst.updateThe.SiteSuitabilityDropdown("Ice Throw");
+                thisInst.updateThe.IcingYearsDropDown();
+                thisInst.updateThe.SiteSuitabilityTAB();
                 thisInst.ChangesMade();
 
-                thisInst.updateThe.ColoredButtons(thisInst);
+                thisInst.updateThe.ColoredButtons();
             }
 
             Close();
@@ -3158,17 +3714,17 @@ namespace ContinuumNS
 
         /// <summary>  Calls Shadow Flicker model background worker </summary>               
         public void Call_BW_Shadow(Vars_for_BW varsForBW)
-        {            
+        {
             Show();
             BackgroundWorker_Shadow.RunWorkerAsync(varsForBW);
         }
 
         private void BackgroundWorker_Shadow_DoWork(object sender, DoWorkEventArgs e)
-        {           
+        {
             Vars_for_BW theArgs = (Vars_for_BW)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
             SiteSuitability siteSuit = thisInst.siteSuitability;
-            
+
             DateTime dateTime = new DateTime(2019, 1, 1);
             DateTime stopTime = new DateTime(2020, 1, 1);
             DateTime lastDay = dateTime;
@@ -3179,7 +3735,7 @@ namespace ContinuumNS
             //     SiteSuitability.FlickerAngles minFlickerAngles = siteSuit.FindMinSolarAngles(thisInst); // not quite working. taking out for now
 
             while (dateTime < stopTime)
-            {             
+            {
                 if (dateTime.Day != lastDay.Day)
                 {
                     // Calculate sunrise and sunset time
@@ -3196,6 +3752,9 @@ namespace ContinuumNS
                     totalDailyMins = new int[siteSuit.GetNumZones()];
                     lastDay = dateTime;
                 }
+
+                if (dateTime.Month == 5 && dateTime.Day == 13 && dateTime.Hour == 6)
+                    dateTime = dateTime;
 
                 // Only check sun position if time is between 6 am and 10 pm.
                 if (dateTime.Hour >= sunRiseAndSet[0].Hour && dateTime.Hour <= sunRiseAndSet[1].Hour)
@@ -3221,7 +3780,7 @@ namespace ContinuumNS
                                         double altDiff = sunPosition.altitude - siteSuit.zones[z].flickerAngles[i].targetAltitudeAngle;
                                         double angleErrorSqr = aziDiff * aziDiff + altDiff * altDiff;
                                         double angleVarSqr = siteSuit.zones[z].flickerAngles[i].angleVariance * siteSuit.zones[z].flickerAngles[i].angleVariance;
-                                                                               
+
                                         if (sunPosition.isSunUp && (angleErrorSqr <= angleVarSqr))
                                         {
                                             int monthInd = dateTime.Month - 1;
@@ -3246,7 +3805,7 @@ namespace ContinuumNS
                                             double altDiff = sunPosition.altitude - siteSuit.flickerMap[flickerInd].flickerAngles[t].targetAltitudeAngle;
                                             double angleErrorSqr = aziDiff * aziDiff + altDiff * altDiff;
                                             double angleVarSqr = siteSuit.flickerMap[flickerInd].flickerAngles[t].angleVariance * siteSuit.flickerMap[flickerInd].flickerAngles[t].angleVariance;
-                                                                                        
+
                                             if (sunPosition.isSunUp && (angleErrorSqr <= angleVarSqr))
                                             {
                                                 int monthInd = dateTime.Month - 1;
@@ -3303,9 +3862,9 @@ namespace ContinuumNS
             Continuum thisInst = (Continuum)e.Result;
             if (thisInst.IsDisposed == false)
             {
-                thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Shadow Flicker");
-                thisInst.updateThe.SiteSuitabilityTAB(thisInst);
-                thisInst.updateThe.ColoredButtons(thisInst);
+                thisInst.updateThe.SiteSuitabilityDropdown("Shadow Flicker");
+                thisInst.updateThe.SiteSuitabilityTAB();
+                thisInst.updateThe.ColoredButtons();
 
                 if (thisInst.siteSuitability.numXFlicker != 0)
                     thisInst.SaveFile(false);
@@ -3317,7 +3876,7 @@ namespace ContinuumNS
         /// <summary> Calls Monte Carlo exceedance background worker </summary>
         /// <param name="varsForBW"></param>
         public void Call_BW_Exceed(Vars_for_BW varsForBW)
-        {            
+        {
             Show();
             BackgroundWorker_Exceed.RunWorkerAsync(varsForBW);
         }
@@ -3334,19 +3893,19 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             Exceedance exceedance = thisInst.turbineList.exceed;
             int numSims = exceedance.numSims;
-            
+
             int numYears = 1;
             int count = 0;
             int totalCount = numSims * exceedance.Num_Exceed() + numSims * exceedance.Num_Exceed() * 10 + numSims * exceedance.Num_Exceed() * 20;
 
             for (int yearInd = 0; yearInd < 3; yearInd++)
-            {               
+            {
                 Random thisRand = exceedance.GetRandomNumber();
-                
+
                 double[] totalPFs = new double[numSims];
 
                 for (int i = 0; i < numSims; i++)
-                {                    
+                {
                     double avgPF = 0;
 
                     double Prog = Math.Min(100 * (double)count / totalCount, 100);
@@ -3366,8 +3925,8 @@ namespace ContinuumNS
                         {
                             double randNum = thisRand.NextDouble();
                             double thisPF = exceedance.Get_PF_Value(randNum, exceedance.exceedCurves[j]);
-                            totalPF = totalPF * thisPF;                            
-                            count++;                                                        
+                            totalPF = totalPF * thisPF;
+                            count++;
                         }
                         avgPF = avgPF + totalPF;
                     }
@@ -3446,23 +4005,24 @@ namespace ContinuumNS
             }
 
             if (thisInst.IsDisposed == false)
-                thisInst.updateThe.AllTABs(thisInst);
+                thisInst.updateThe.AllTABs();
 
             Close();
         }
 
         /// <summary> Calls MERRA2 download background worker. Connects to NASA website and downloads daily files to local PC. </summary>        
-        public void Call_BW_MERRA2_Download(Vars_for_MERRA_Download vars_For_MERRA)
-        {            
+        public void Call_BW_MERRA2_Download(Vars_for_Reference_Download vars_For_MERRA)
+        {
             Show();
             BackgroundWorker_MERRADownload.RunWorkerAsync(vars_For_MERRA);
         }
 
         private void BackgroundWorker_MERRADownload_DoWork(object sender, DoWorkEventArgs e)
         {
-            Vars_for_MERRA_Download theArgs = (Vars_for_MERRA_Download)(e.Argument);
+            Vars_for_Reference_Download theArgs = (Vars_for_Reference_Download)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
-            MERRA2_Download download = theArgs.thisMERRA;
+            ReferenceCollection.RefDataDownload refDownload = theArgs.thisRefDownload;
+            //       Reanalysis_Download download = theArgs.thisRef;
             ReferenceCollection refList = thisInst.refList;
 
             string urs = "https://urs.earthdata.nasa.gov";
@@ -3471,32 +4031,20 @@ namespace ContinuumNS
             // Create a credential cache for authenticating when redirected to Earthdata Login
 
             CredentialCache cache = new CredentialCache();
-            cache.Add(new Uri(urs), "Basic", new NetworkCredential(download.merraToDownload.earthdataUser, download.merraToDownload.earthdataPwd));   
-            
-            if (download.txtMinLat.Text == "" || download.txtMaxLat.Text == "" || download.txtMinLong.Text == "" || download.txtMaxLong.Text == "")
-            {
-                MessageBox.Show("Specify the latitude/longitude bounding box before clicking 'Download MERRA2'.  This will begin the download process of MERRA2 data files to the specified MERRA2 folder location");
-                return;
-            }
+            cache.Add(new Uri(urs), "Basic", new NetworkCredential(refDownload.userName, refDownload.userPassword));
 
-            double minLat = Convert.ToDouble(download.txtMinLat.Text);
-            double maxLat = Convert.ToDouble(download.txtMaxLat.Text);
-            double minLong = Convert.ToDouble(download.txtMinLong.Text);
-            double maxLong = Convert.ToDouble(download.txtMaxLong.Text);
+            double minLat = Convert.ToDouble(refDownload.minLat);
+            double maxLat = Convert.ToDouble(refDownload.maxLat);
+            double minLong = Convert.ToDouble(refDownload.minLon);
+            double maxLong = Convert.ToDouble(refDownload.maxLon);
 
-            minLat = Math.Round(minLat / 0.5, 0) * 0.5;
-            maxLat = Math.Round(maxLat / 0.5, 0) * 0.5;
+            minLat = Math.Round(minLat / 0.5) * 0.5;
+            maxLat = Math.Round(maxLat / 0.5) * 0.5;
             minLong = Math.Round(minLong / 0.625) * 0.625;
             maxLong = Math.Round(maxLong / 0.625) * 0.625;
 
-            int offset = thisInst.UTM_conversions.GetUTC_Offset(minLat, minLong);
-            DateTime startDate = download.dateMERRAStart.Value;
-            startDate = startDate.AddHours(-offset);
-            DateTime endDate = download.dateMERRAEnd.Value;
-            endDate = endDate.AddHours(-offset);
-
-            DateTime startDayOnly = new DateTime(startDate.Year, startDate.Month, startDate.Day);
-            DateTime endDayOnly = new DateTime(endDate.Year, endDate.Month, endDate.Day);
+            DateTime startDayOnly = new DateTime(refDownload.startDate.Year, refDownload.startDate.Month, refDownload.startDate.Day);
+            DateTime endDayOnly = new DateTime(refDownload.endDate.Year, refDownload.endDate.Month, refDownload.endDate.Day);
 
             int numDays = endDayOnly.Subtract(startDayOnly).Days + 1;
 
@@ -3511,8 +4059,8 @@ namespace ContinuumNS
             double timeToFinish;
 
             // Attempt to connect and test credentials
-            string testResource = thisInst.refList.GetMERRA2URL(startDate, minLat, maxLat, minLong, maxLong);
-                       
+            string testResource = thisInst.refList.GetMERRA2URL(refDownload.startDate, refDownload);
+
             HttpWebRequest testRequest = (HttpWebRequest)WebRequest.Create(testResource);
             testRequest.Method = "GET";
             testRequest.Credentials = cache;
@@ -3530,26 +4078,26 @@ namespace ContinuumNS
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message.ToString());
-                download.merraToDownload.earthdataUser = "";
-                download.merraToDownload.earthdataPwd = "";
+                refDownload.userName = "";
+                refDownload.userPassword = "";
                 e.Result = thisInst;
                 return;
-            }            
+            }
 
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
             {
-                DateTime thisDate = startDate.AddDays(i);
-                bool fileExists = download.merraToDownload.MERRA2FileExists(thisDate);
+                DateTime thisDate = refDownload.startDate.AddDays(i);
+                bool fileExists = refList.ReferenceFileExists(thisDate, refDownload);
 
                 double Prog = Math.Min(100 * (double)count / numDays, 100);
                 if (count % 10 == 0)
                 {
                     timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
                     avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (count + 1));
-                    timeToFinish = (numDays - count) * avgTimePerFile / 60;                    
+                    timeToFinish = (numDays - count) * avgTimePerFile / 60;
                     BackgroundWorker_MERRADownload.ReportProgress((int)Prog, "Downloading MERRA2 data. Avg time/file: " + Math.Round(avgTimePerFile, 1) +
                         " secs. Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.");
-                }                    
+                }
 
                 if (BackgroundWorker_MERRADownload.CancellationPending == true)
                 {
@@ -3560,8 +4108,8 @@ namespace ContinuumNS
                 if (fileExists == false)
                 {
                     // Execute the request
-                    string resource = thisInst.refList.GetMERRA2URL(thisDate, minLat, maxLat, minLong, maxLong);
-                                        
+                    string resource = thisInst.refList.GetMERRA2URL(thisDate, refDownload);
+
                     HttpWebResponse response = null;
 
                     while (response == null)
@@ -3573,16 +4121,16 @@ namespace ContinuumNS
                         request.PreAuthenticate = false;
                         request.AllowAutoRedirect = true;
                         request.Timeout = 30000;
-                                                
+
                         response = null;
 
                         try
                         {
                             response = (HttpWebResponse)request.GetResponse();
                         }
-                        catch (WebException ex) 
+                        catch (WebException ex)
                         {
-                          //  MessageBox.Show(ex.Message);
+                            //  MessageBox.Show(ex.Message);
                         }
                     }
 
@@ -3590,7 +4138,7 @@ namespace ContinuumNS
                     {
                         try
                         {
-                            bool allGood = download.merraToDownload.SaveMERRA2DataFile(response, thisDate);
+                            bool allGood = thisInst.refList.SaveMERRA2DataFile(response, thisDate, refDownload);
                             if (allGood == false)
                             {
                                 MessageBox.Show("Downloaded file does not contain the expected dataset.  Check your Earthdata credentials at https://urs.earthdata.nasa.gov/.  Aborting download");
@@ -3617,7 +4165,7 @@ namespace ContinuumNS
             DoWorkDone = true;
             e.Result = thisInst;
         }
-               
+
         private void BackgroundWorker_MERRADownload_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             // Updates the MERRA2 download progress bar
@@ -3633,9 +4181,529 @@ namespace ContinuumNS
         {
             Continuum thisInst = (Continuum)e.Result;
             if (thisInst != null)
-                thisInst.updateThe.LT_ReferenceTAB(thisInst);
+                thisInst.updateThe.LT_ReferenceTAB();
 
             Close();
+        }
+
+        /// <summary> Calls ERA5 download background worker. Connects to NASA website and downloads daily files to local PC. </summary>        
+        public void Call_BW_ERA5_Download(Vars_for_Reference_Download vars_For_ERA5)
+        {
+            Show();
+            BackgroundWorker_ERA5Download.RunWorkerAsync(vars_For_ERA5);
+        }
+
+        private void BackgroundWorker_ERA5Download_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // Updates the ERA5 download progress bar
+            BringToFront();
+            string textForLabel = e.UserState.ToString();
+            progbar.Value = e.ProgressPercentage;
+            Text = "Continuum 3";
+            lblprogbar.Text = textForLabel;
+            Refresh();
+        }
+
+        private void BackgroundWorker_ERA5Download_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Continuum thisInst = (Continuum)e.Result;
+            if (thisInst != null)
+                thisInst.updateThe.LT_ReferenceTAB();
+
+            Close();
+        }
+
+
+        private void BackgroundWorker_ERA5Download_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Vars_for_Reference_Download theArgs = (Vars_for_Reference_Download)(e.Argument);
+            Continuum thisInst = theArgs.thisInst;
+            ReferenceCollection.RefDataDownload refData = theArgs.thisRefDownload;
+            ReferenceCollection refList = thisInst.refList;
+
+            double minLat = refData.minLat;
+            double maxLat = refData.maxLat;
+            double minLong = refData.minLon;
+            double maxLong = refData.maxLon;
+
+            minLat = Math.Round(minLat / refList.GetLatRes(refData), 0) * refList.GetLatRes(refData);
+            maxLat = Math.Round(maxLat / refList.GetLatRes(refData), 0) * refList.GetLatRes(refData);
+            minLong = Math.Round(minLong / refList.GetLongRes(refData)) * refList.GetLongRes(refData);
+            maxLong = Math.Round(maxLong / refList.GetLongRes(refData)) * refList.GetLongRes(refData);
+
+            DateTime startDayOnly = new DateTime(refData.startDate.Year, refData.startDate.Month, refData.startDate.Day);
+            DateTime endDayOnly = new DateTime(refData.endDate.Year, refData.endDate.Month, refData.endDate.Day);
+
+            int numDays = endDayOnly.Subtract(startDayOnly).Days + 1;
+
+            List<int> integerList = Enumerable.Range(0, numDays).ToList();
+            int count = 0;
+
+            Stopwatch thisStopwatch = new Stopwatch();
+            thisStopwatch.Start();
+
+            double timeElapsed = 0;
+            double avgTimePerFile = 0;
+            double timeToFinish;
+            DateTime thisDate = refData.startDate;
+            int i = 0;
+
+            // Trying one file at a time, may go to parallel processing
+            //   Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
+            while (thisDate <= refData.endDate)
+            {
+                thisDate = refData.startDate.AddDays(i);
+                bool fileExists = refList.ReferenceFileExists(thisDate, refData);
+
+                double Prog = Math.Min(100 * (double)i / numDays, 100);
+                if (i % 10 == 0)
+                {
+                    timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
+                    avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (i + 1));
+                    timeToFinish = (numDays - i) * avgTimePerFile / 60;
+                    BackgroundWorker_ERA5Download.ReportProgress((int)Prog, "Downloading ERA5 data. Avg time/file: " + Math.Round(avgTimePerFile, 1) +
+                        " secs. Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.");
+                }
+
+                if (BackgroundWorker_ERA5Download.CancellationPending == true)
+                {
+                    e.Result = thisInst;
+                    return;
+                }
+
+                if (fileExists == false)
+                {
+                    string pythonPath = Environment.GetEnvironmentVariable("python") + "\\python.exe";
+
+                    string pythonScript = "ERA5_Downloader.py " + refData.folderLocation + " " + thisDate.Year + " " + thisDate.Month + " "
+                        + thisDate.Day + " " + minLat.ToString() + " " + maxLat.ToString() + " " + minLong.ToString() + " " + maxLong.ToString();
+
+                    ProcessStartInfo start = new ProcessStartInfo();
+                    start.WorkingDirectory = Directory.GetCurrentDirectory();
+                    start.FileName = pythonPath;
+                    start.Arguments = pythonScript;
+                    start.UseShellExecute = false;
+                    start.RedirectStandardOutput = true;
+                    start.ErrorDialog = true;
+                    start.CreateNoWindow = true;
+
+                    Process process = Process.Start(start);
+
+                    process.WaitForExit();
+                }
+
+                i++;
+            }
+            // });
+
+            DoWorkDone = true;
+            e.Result = thisInst;
+
+
+
+
+        }
+
+        private void BackgroundWorker_DBUpdate_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Vars_for_Save_As theArgs = (Vars_for_Save_As)e.Argument;
+            NodeCollection nodeList = new NodeCollection();
+
+            string oldConnString = nodeList.GetDB_ConnectionString(theArgs.oldFilename);
+
+            int dotInd = theArgs.oldFilename.LastIndexOf(".");
+            string newFileName = theArgs.oldFilename.Substring(0, dotInd) + "_DBUPDATE23.cfm";
+
+            string newConnString = nodeList.GetDB_ConnectionString(newFileName);
+
+            // Check to see if there is a database to copy over
+            if (File.Exists(theArgs.oldFilename) == true)
+            {
+                string textForProgBar = "Updating database...";
+                BackgroundWorker_DBUpdate.ReportProgress(0, textForProgBar);
+
+                // Delete old database if there is one
+                try
+                {
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        if (ctx.Database.Exists())
+                            ctx.Database.Delete();
+
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+
+                CopyNodeDataToNewDB(oldConnString, newConnString, true);
+
+                CopyTopoDataToNewDB(oldConnString, newConnString, true);
+
+                CopyLandCoverDataToNewDB(oldConnString, newConnString, true);
+
+                CopyMERRA2DataToNewDB(oldConnString, newConnString, true);
+
+                CopyAnemDataToNewDB(oldConnString, newConnString, true);
+
+                CopyVaneDataToNewDB(oldConnString, newConnString, true);
+
+                CopyTempDataToNewDB(oldConnString, newConnString, true);
+
+                // Now delete old DB and rename new one to same name
+                using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                {
+                    if (ctx.Database.Exists())
+                        ctx.Database.Delete();
+
+                    ctx.Database.Connection.Close();
+                }
+
+                dotInd = newFileName.LastIndexOf(".");
+                string mdfFilePath = newFileName.Substring(0, dotInd) + ".mdf";
+                string renamedMdf = mdfFilePath.Replace("_DBUPDATE23", "");
+                
+                while (File.Exists(mdfFilePath) == false)
+                    Thread.Sleep(100); // Renaming too quickly causing an error in FileSystem.Rename
+
+                bool renameSuccess = false;
+                int numTries = 0;
+
+                while (renameSuccess == false && numTries < 10)
+                {
+                    try
+                    {
+                        FileSystem.Rename(mdfFilePath, renamedMdf);
+                        renameSuccess = true;
+                    }
+                    catch
+                    {
+                        numTries++;
+                        Thread.Sleep(1000);
+                    }
+                }
+
+                if (renameSuccess == false)
+                    MessageBox.Show("Unable to create updated database");                
+
+                string ldfFilePath = newFileName.Substring(0, dotInd) + "_log.ldf";
+                string renamedldf = ldfFilePath.Replace("_DBUPDATE23", "");
+
+                while (File.Exists(ldfFilePath) == false)
+                    Thread.Sleep(100); // Renaming too quickly causing an error in FileSystem.Rename
+
+                renameSuccess = false;
+                numTries = 0;
+
+                while (renameSuccess == false && numTries < 10)
+                {
+                    try
+                    {
+                        FileSystem.Rename(ldfFilePath, renamedldf);
+                        renameSuccess = true;
+                    }
+                    catch
+                    {
+                        numTries++;
+                        Thread.Sleep(1000);
+                    }
+                }
+
+                if (renameSuccess == false)
+                    MessageBox.Show("Unable to create updated database log file");
+
+            }
+
+            DoWorkDone = true;
+
+        }
+
+        public void Call_BW_UpdateDB(Vars_for_Save_As Args)
+        {
+            Show();
+            BackgroundWorker_DBUpdate.RunWorkerAsync(Args);
+        }
+
+        private void BackgroundWorker_DBUpdate_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // Updates the 'DB Update' progress bar
+            string Text_for_label = e.UserState.ToString();
+            if (e.ProgressPercentage <= 100)
+                progbar.Value = e.ProgressPercentage;
+            else
+                progbar.Value = 100;
+
+            Text = "Continuum 3";
+            lblprogbar.Text = Text_for_label;
+            Refresh();
+        }
+
+        private void BackgroundWorker_DBUpdate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Close();
+        }
+
+        public void AddColToList(ref List<DataGridViewColumn> cols, string colName, string colText)
+        {
+            DataGridViewColumn newCol = new DataGridViewColumn();
+            newCol.CellTemplate = new DataGridViewTextBoxCell();
+            newCol.Name = colName;
+            newCol.HeaderText = colText;            
+            cols.Add(newCol);
+        }        
+
+        private void BackgroundWorker_MetImport_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Vars_for_MetTS_Import theArgs = (Vars_for_MetTS_Import)e.Argument;
+            Continuum thisInst = theArgs.thisInst;
+
+            DataGridView metTable = new DataGridView();
+            
+            // Get selected met sites
+            int numMets = thisInst.metList.ThisCount;
+            Met[] selMets = thisInst.metList.metItem;
+
+            if (numMets == 0)
+                return;
+
+            // Figure out first and last timestamp
+            DateTime startTime = DateTime.Now;
+            DateTime endTime = new DateTime(); // Initializes to year 1
+
+            string textForProgBar = "Importing met data...";
+            BackgroundWorker_MetImport.ReportProgress(0, textForProgBar);
+
+            for (int m = 0; m < numMets; m++)
+            {
+                if (selMets[m].metData.startDate < startTime)
+                    startTime = selMets[m].metData.allStartDate;
+
+                if (selMets[m].metData.endDate > endTime)
+                    endTime = selMets[m].metData.allEndDate;
+            }
+
+            List<DataGridViewColumn> cols = new List<DataGridViewColumn>();
+            AddColToList(ref cols, "colTS", "Timestamp");                               
+
+            // Now create columns for each sensor and metric
+            int totalNumSens = 0;
+
+            for (int m = 0; m < numMets; m++)
+            {
+                for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
+                {
+                    AddColToList(ref cols, "colTS_ParamAvg" + (s + 1).ToString(), selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " Avg");
+                    AddColToList(ref cols, "colTS_ParamSD" + (s + 1).ToString(), selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " SD");
+                    AddColToList(ref cols, "colTS_ParamMin" + (s + 1).ToString(), selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " Min");
+                    AddColToList(ref cols, "colTS_ParamMax" + (s + 1).ToString(), selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " Max");
+                    totalNumSens = totalNumSens + 4;
+                }
+
+                for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
+                {
+                    AddColToList(ref cols,"colTS_ParamAvg" + (s + 1).ToString(), selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " Avg");
+                    AddColToList(ref cols,"colTS_ParamSD" + (s + 1).ToString(), selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " SD");
+                    AddColToList(ref cols,"colTS_ParamMin" + (s + 1).ToString(), selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " Min");
+                    AddColToList(ref cols,"colTS_ParamMax" + (s + 1).ToString(), selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " Max");
+                    totalNumSens = totalNumSens + 4;
+                }
+
+                for (int s = 0; s < selMets[m].metData.GetNumTemps(); s++)
+                {
+                    AddColToList(ref cols,"colTS_ParamAvg" + (s + 1).ToString(), selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " Avg");
+                    AddColToList(ref cols,"colTS_ParamSD" + (s + 1).ToString(), selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " SD");
+                    AddColToList(ref cols,"colTS_ParamMin" + (s + 1).ToString(), selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " Min");
+                    AddColToList(ref cols,"colTS_ParamMax" + (s + 1).ToString(), selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " Max");
+                    totalNumSens = totalNumSens + 4;
+                }
+
+                for (int s = 0; s < selMets[m].metData.GetNumBaros(); s++)
+                {
+                    AddColToList(ref cols,"colTS_ParamAvg" + (s + 1).ToString(), selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " Avg");
+                    AddColToList(ref cols,"colTS_ParamSD" + (s + 1).ToString(), selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " SD");
+                    AddColToList(ref cols,"colTS_ParamMin" + (s + 1).ToString(), selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " Min");
+                    AddColToList(ref cols,"colTS_ParamMax" + (s + 1).ToString(), selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " Max");
+                    totalNumSens = totalNumSens + 4;
+                }
+            }
+
+            for (int c = 0; c < cols.Count; c++)
+                metTable.Columns.Add(cols[c]);
+            
+            int numRecs = Convert.ToInt32(endTime.Subtract(startTime).TotalMinutes / 10.0);
+            int timeInd = 0;
+            List<DataGridViewRow> rows = new List<DataGridViewRow>();
+
+            for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(10))
+            {
+                if (timeInd % 10 == 0)
+                {
+                    int prog = Convert.ToInt32(100 * timeInd / numRecs);
+                    BackgroundWorker_MetImport.ReportProgress(prog, textForProgBar);
+                }
+
+                int colInd = 1;
+                DataGridViewRow strDataForTableRow = new DataGridViewRow();
+                strDataForTableRow.CreateCells(metTable);
+
+                double[] dataForTableRow = new double[totalNumSens + 1]; // Plus one for timestamp  // reset array
+                dataForTableRow[0] = thisTS.ToOADate();
+
+                for (int m = 0; m < numMets; m++)
+                {
+                    for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
+                    {
+                        if (selMets[m].metData.anems[s].windData == null)
+                            selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
+
+                        int tsIndex = selMets[m].metData.anems[s].GetTS_Index(thisTS);
+
+                        if (tsIndex != -999) // Found record at specified TS
+                        {
+                            dataForTableRow[colInd] = selMets[m].metData.anems[s].windData[tsIndex].avg;
+                            dataForTableRow[colInd + 1] = selMets[m].metData.anems[s].windData[tsIndex].SD;
+                            dataForTableRow[colInd + 2] = selMets[m].metData.anems[s].windData[tsIndex].min;
+                            dataForTableRow[colInd + 3] = selMets[m].metData.anems[s].windData[tsIndex].max;
+                        }
+
+                        colInd = colInd + 4;
+                    }
+
+                    for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
+                    {
+                        if (selMets[m].metData.vanes[s].dirData == null)
+                            selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
+
+                        int tsIndex = selMets[m].metData.vanes[s].GetTS_Index(thisTS);
+
+                        if (tsIndex != -999) // Found record at specified TS
+                        {
+                            dataForTableRow[colInd] = selMets[m].metData.vanes[s].dirData[tsIndex].avg;
+                            dataForTableRow[colInd + 1] = selMets[m].metData.vanes[s].dirData[tsIndex].SD;
+                            dataForTableRow[colInd + 2] = selMets[m].metData.vanes[s].dirData[tsIndex].min;
+                            dataForTableRow[colInd + 3] = selMets[m].metData.vanes[s].dirData[tsIndex].max;
+                        }
+
+                        colInd = colInd + 4;
+                    }
+
+                    for (int s = 0; s < selMets[m].metData.GetNumTemps(); s++)
+                    {
+                        if (selMets[m].metData.temps[s].temp == null)
+                            selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
+
+                        int tsIndex = selMets[m].metData.temps[s].GetTS_Index(thisTS);
+
+                        if (tsIndex != -999) // Found record at specified TS
+                        {
+                            dataForTableRow[colInd] = selMets[m].metData.temps[s].temp[tsIndex].avg;
+                            dataForTableRow[colInd + 1] = selMets[m].metData.temps[s].temp[tsIndex].SD;
+                            dataForTableRow[colInd + 2] = selMets[m].metData.temps[s].temp[tsIndex].min;
+                            dataForTableRow[colInd + 3] = selMets[m].metData.temps[s].temp[tsIndex].max;
+                        }
+
+                        colInd = colInd + 4;
+                    }
+
+                    for (int s = 0; s < selMets[m].metData.GetNumBaros(); s++)
+                    {
+                        if (selMets[m].metData.baros[s].pressure == null)
+                            selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
+
+                        int tsIndex = selMets[m].metData.baros[s].GetTS_Index(thisTS);
+
+                        if (tsIndex != -999) // Found record at specified TS
+                        {
+                            dataForTableRow[colInd] = selMets[m].metData.baros[s].pressure[tsIndex].avg;
+                            dataForTableRow[colInd + 1] = selMets[m].metData.baros[s].pressure[tsIndex].SD;
+                            dataForTableRow[colInd + 2] = selMets[m].metData.baros[s].pressure[tsIndex].min;
+                            dataForTableRow[colInd + 3] = selMets[m].metData.baros[s].pressure[tsIndex].max;
+                        }
+
+                        colInd = colInd + 4;
+                    }
+                }
+
+                for (int d = 0; d < totalNumSens + 1; d++)
+                {
+                    if (d == 0)
+                        strDataForTableRow.Cells[0].Value = DateTime.FromOADate(dataForTableRow[d]).ToString("yyyy-MM-dd HH:mm");
+                    else
+                        strDataForTableRow.Cells[d].Value = Math.Round(dataForTableRow[d], 2).ToString();
+                }
+
+                rows.Add(strDataForTableRow);               
+
+                timeInd++;
+            }
+
+          //  metTable.Rows.AddRange(rows.ToArray());                       
+
+            
+            theArgs.cols = cols;
+            theArgs.rows = rows;
+            e.Result = theArgs;
+            DoWorkDone = true;
+
+        }
+
+        public void Call_BW_MetImport(Vars_for_MetTS_Import theArgs)
+        {
+            Show();
+            BackgroundWorker_MetImport.RunWorkerAsync(theArgs);
+        }
+
+        private void BackgroundWorker_MetImport_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // Updates the 'DB Update' progress bar
+            string Text_for_label = e.UserState.ToString();
+            if (e.ProgressPercentage <= 100)
+                progbar.Value = e.ProgressPercentage;
+            else
+                progbar.Value = 100;
+
+            Text = "Continuum 3";
+
+            lblprogbar.Text = Text_for_label;
+            Refresh();
+        }
+
+        private void BackgroundWorker_MetImport_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Vars_for_MetTS_Import theArgs = (Vars_for_MetTS_Import)e.Result;
+            Continuum thisInst = theArgs.thisInst;
+            List<DataGridViewRow> rows = theArgs.rows;
+            int numCols = theArgs.cols.Count;
+            List<DataGridViewColumn> cols = new List<DataGridViewColumn>();
+
+            for (int c = 0; c < numCols; c++)
+            {
+                DataGridViewColumn newCol = new DataGridViewColumn();
+                newCol.Name = theArgs.cols[c].Name + "disp";
+                newCol.HeaderText = theArgs.cols[c].HeaderText;
+                newCol.CellTemplate = theArgs.cols[c].CellTemplate;
+                cols.Add(newCol);
+            }               
+
+            thisInst.dataMetTS.Rows.Clear();
+            thisInst.dataMetTS.Columns.Clear();
+
+            for (int c = 0; c < cols.Count; c++)
+                thisInst.dataMetTS.Columns.Add(cols[c]);
+
+            thisInst.dataMetTS.Rows.AddRange(rows.ToArray());
+
+            //       thisInst.dataMetTS.Refresh();
+            thisInst.dataMetTS.Update();
+
+            thisInst.updateThe.SetMetDataFlagColors();
+            thisInst.updateThe.MetDataTS_TableVisibleColumns();
+            thisInst.updateThe.MetDataPlots();
+            Close();
+
         }
     }
 }

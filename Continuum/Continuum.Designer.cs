@@ -28,47 +28,47 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4});
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
-            treeNode6,
-            treeNode7,
-            treeNode8,
-            treeNode9});
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
-            treeNode11,
-            treeNode12,
-            treeNode13,
-            treeNode14});
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
-            treeNode16,
-            treeNode17,
-            treeNode18,
-            treeNode19});
+            System.Windows.Forms.TreeNode treeNode61 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode62 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode63 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode64 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode65 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
+            treeNode61,
+            treeNode62,
+            treeNode63,
+            treeNode64});
+            System.Windows.Forms.TreeNode treeNode66 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode67 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode68 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode69 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode70 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
+            treeNode66,
+            treeNode67,
+            treeNode68,
+            treeNode69});
+            System.Windows.Forms.TreeNode treeNode71 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode72 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode73 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode74 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode75 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
+            treeNode71,
+            treeNode72,
+            treeNode73,
+            treeNode74});
+            System.Windows.Forms.TreeNode treeNode76 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode77 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode78 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode79 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode80 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
+            treeNode76,
+            treeNode77,
+            treeNode78,
+            treeNode79});
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
             this.plotDirectionalWS_Ratios = new OxyPlot.WindowsForms.PlotView();
@@ -126,11 +126,15 @@
             this.btnLoadXYZ = new System.Windows.Forms.Button();
             this.pgeMetDataTS = new System.Windows.Forms.TabPage();
             this.splContMetTS = new System.Windows.Forms.SplitContainer();
+            this.btnShowFilterFlags = new System.Windows.Forms.Button();
+            this.spltMetDataTableAndCheckboxes = new System.Windows.Forms.SplitContainer();
             this.treeDataParams = new System.Windows.Forms.TreeView();
             this.chkMetsTS = new System.Windows.Forms.CheckedListBox();
-            this.label146 = new System.Windows.Forms.Label();
-            this.dataMetTS = new System.Windows.Forms.DataGridView();
             this.chkTS_Params = new System.Windows.Forms.CheckedListBox();
+            this.dataMetTS = new System.Windows.Forms.DataGridView();
+            this.label146 = new System.Windows.Forms.Label();
+            this.chkShowFilteredData = new System.Windows.Forms.CheckBox();
+            this.chkShowLegenMetDataTS = new System.Windows.Forms.CheckBox();
             this.plotTS_Baros = new OxyPlot.WindowsForms.PlotView();
             this.label213 = new System.Windows.Forms.Label();
             this.cboPlot4Type = new System.Windows.Forms.ComboBox();
@@ -236,6 +240,18 @@
             this.columnHeader72 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader73 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgeMERRA = new System.Windows.Forms.TabPage();
+            this.label217 = new System.Windows.Forms.Label();
+            this.txtMaxLong = new System.Windows.Forms.TextBox();
+            this.label218 = new System.Windows.Forms.Label();
+            this.txtMinLong = new System.Windows.Forms.TextBox();
+            this.label219 = new System.Windows.Forms.Label();
+            this.txtMaxLat = new System.Windows.Forms.TextBox();
+            this.label220 = new System.Windows.Forms.Label();
+            this.txtMinLat = new System.Windows.Forms.TextBox();
+            this.txtRefDataDownloadName = new System.Windows.Forms.TextBox();
+            this.label216 = new System.Windows.Forms.Label();
+            this.txtRefDataDownloadFolder = new System.Windows.Forms.TextBox();
+            this.btnRefDataDownloads = new System.Windows.Forms.Button();
             this.btnDelRef = new System.Windows.Forms.Button();
             this.btnEditReference = new System.Windows.Forms.Button();
             this.btnAddNew = new System.Windows.Forms.Button();
@@ -248,10 +264,6 @@
             this.dateLTRefAvailStart = new System.Windows.Forms.DateTimePicker();
             this.label52 = new System.Windows.Forms.Label();
             this.label54 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.dataLTRefNodes = new System.Windows.Forms.DataGridView();
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnExplainMERRA2Tab = new System.Windows.Forms.Button();
             this.plotMERRA_WindRose = new OxyPlot.WindowsForms.PlotView();
             this.plotMERRA_Monthly = new OxyPlot.WindowsForms.PlotView();
@@ -287,8 +299,6 @@
             this.label152 = new System.Windows.Forms.Label();
             this.label153 = new System.Windows.Forms.Label();
             this.label154 = new System.Windows.Forms.Label();
-            this.txt_MERRA2_folder = new System.Windows.Forms.TextBox();
-            this.btn_Import_MERRA = new System.Windows.Forms.Button();
             this.label151 = new System.Windows.Forms.Label();
             this.pgeMCP = new System.Windows.Forms.TabPage();
             this.label206 = new System.Windows.Forms.Label();
@@ -638,6 +648,10 @@
             this.cboInflowWD = new System.Windows.Forms.ComboBox();
             this.label171 = new System.Windows.Forms.Label();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.cboTI_TerrainComplexCorr = new System.Windows.Forms.ComboBox();
+            this.chkApplyTCCtoEffTI = new System.Windows.Forms.CheckBox();
+            this.label215 = new System.Windows.Forms.Label();
+            this.label214 = new System.Windows.Forms.Label();
             this.plotTurbInt = new OxyPlot.WindowsForms.PlotView();
             this.btnExportTI = new System.Windows.Forms.Button();
             this.label188 = new System.Windows.Forms.Label();
@@ -996,7 +1010,7 @@
             this.aboutContinuumToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateHeadersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.downloadMERRA2DataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.downloadReanalysisDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ofdXYZfile = new System.Windows.Forms.OpenFileDialog();
             this.ofdPowerCurve = new System.Windows.Forms.OpenFileDialog();
             this.sfdrsf = new System.Windows.Forms.SaveFileDialog();
@@ -1026,10 +1040,13 @@
             this.splContMetTS.Panel1.SuspendLayout();
             this.splContMetTS.Panel2.SuspendLayout();
             this.splContMetTS.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.spltMetDataTableAndCheckboxes)).BeginInit();
+            this.spltMetDataTableAndCheckboxes.Panel1.SuspendLayout();
+            this.spltMetDataTableAndCheckboxes.Panel2.SuspendLayout();
+            this.spltMetDataTableAndCheckboxes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataMetTS)).BeginInit();
             this.pgeMetData.SuspendLayout();
             this.pgeMERRA.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataLTRefNodes)).BeginInit();
             this.pgeMCP.SuspendLayout();
             this.pgeMetSumm.SuspendLayout();
             this.pgeGrossTurbs.SuspendLayout();
@@ -1164,6 +1181,9 @@
             // 
             // plotTopo
             // 
+            this.plotTopo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.plotTopo.Location = new System.Drawing.Point(824, 26);
             this.plotTopo.Name = "plotTopo";
             this.plotTopo.PanCursor = System.Windows.Forms.Cursors.Hand;
@@ -1313,6 +1333,7 @@
             // 
             // cboTopo_Or_Roughness
             // 
+            this.cboTopo_Or_Roughness.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cboTopo_Or_Roughness.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTopo_Or_Roughness.FormattingEnabled = true;
             this.cboTopo_Or_Roughness.Items.AddRange(new object[] {
@@ -1439,6 +1460,7 @@
             // 
             // chkAllTurbLabels
             // 
+            this.chkAllTurbLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkAllTurbLabels.AutoSize = true;
             this.chkAllTurbLabels.Checked = true;
             this.chkAllTurbLabels.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -1453,6 +1475,7 @@
             // 
             // chkAllMetLabels
             // 
+            this.chkAllMetLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkAllMetLabels.AutoSize = true;
             this.chkAllMetLabels.Checked = true;
             this.chkAllMetLabels.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -1468,6 +1491,7 @@
             // 
             // Label23
             // 
+            this.Label23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Label23.AutoSize = true;
             this.Label23.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label23.Location = new System.Drawing.Point(1095, 651);
@@ -1478,6 +1502,7 @@
             // 
             // lblMetLabels
             // 
+            this.lblMetLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMetLabels.AutoSize = true;
             this.lblMetLabels.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMetLabels.Location = new System.Drawing.Point(820, 651);
@@ -1488,6 +1513,7 @@
             // 
             // chkTurbLabels
             // 
+            this.chkTurbLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkTurbLabels.CheckOnClick = true;
             this.chkTurbLabels.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkTurbLabels.FormattingEnabled = true;
@@ -1500,6 +1526,7 @@
             // 
             // chkMetLabels
             // 
+            this.chkMetLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkMetLabels.CheckOnClick = true;
             this.chkMetLabels.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkMetLabels.FormattingEnabled = true;
@@ -1512,6 +1539,7 @@
             // 
             // txtMainMax
             // 
+            this.txtMainMax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtMainMax.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMainMax.Location = new System.Drawing.Point(1483, 721);
             this.txtMainMax.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -1521,6 +1549,7 @@
             // 
             // txtMainMin
             // 
+            this.txtMainMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtMainMin.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMainMin.Location = new System.Drawing.Point(1483, 692);
             this.txtMainMin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -1530,6 +1559,7 @@
             // 
             // Label21
             // 
+            this.Label21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Label21.AutoSize = true;
             this.Label21.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label21.Location = new System.Drawing.Point(1439, 725);
@@ -1540,6 +1570,7 @@
             // 
             // Label22
             // 
+            this.Label22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Label22.AutoSize = true;
             this.Label22.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label22.Location = new System.Drawing.Point(1441, 693);
@@ -1620,6 +1651,7 @@
             // 
             // txtTopoSource
             // 
+            this.txtTopoSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTopoSource.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTopoSource.Location = new System.Drawing.Point(822, 799);
             this.txtTopoSource.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -1743,17 +1775,17 @@
             // splContMetTS.Panel1
             // 
             this.splContMetTS.Panel1.AutoScroll = true;
-            this.splContMetTS.Panel1.BackColor = System.Drawing.Color.Azure;
-            this.splContMetTS.Panel1.Controls.Add(this.treeDataParams);
-            this.splContMetTS.Panel1.Controls.Add(this.chkMetsTS);
+            this.splContMetTS.Panel1.BackColor = System.Drawing.Color.Transparent;
+            this.splContMetTS.Panel1.Controls.Add(this.btnShowFilterFlags);
+            this.splContMetTS.Panel1.Controls.Add(this.spltMetDataTableAndCheckboxes);
             this.splContMetTS.Panel1.Controls.Add(this.label146);
-            this.splContMetTS.Panel1.Controls.Add(this.dataMetTS);
-            this.splContMetTS.Panel1.Controls.Add(this.chkTS_Params);
             // 
             // splContMetTS.Panel2
             // 
             this.splContMetTS.Panel2.AutoScroll = true;
-            this.splContMetTS.Panel2.BackColor = System.Drawing.Color.PapayaWhip;
+            this.splContMetTS.Panel2.BackColor = System.Drawing.Color.Transparent;
+            this.splContMetTS.Panel2.Controls.Add(this.chkShowFilteredData);
+            this.splContMetTS.Panel2.Controls.Add(this.chkShowLegenMetDataTS);
             this.splContMetTS.Panel2.Controls.Add(this.plotTS_Baros);
             this.splContMetTS.Panel2.Controls.Add(this.label213);
             this.splContMetTS.Panel2.Controls.Add(this.cboPlot4Type);
@@ -1781,73 +1813,130 @@
             this.splContMetTS.SplitterDistance = 592;
             this.splContMetTS.SplitterWidth = 10;
             this.splContMetTS.TabIndex = 5;
+            this.splContMetTS.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splContMetTS_SplitterMoved);
+            // 
+            // btnShowFilterFlags
+            // 
+            this.btnShowFilterFlags.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnShowFilterFlags.Location = new System.Drawing.Point(518, 12);
+            this.btnShowFilterFlags.Name = "btnShowFilterFlags";
+            this.btnShowFilterFlags.Size = new System.Drawing.Size(66, 43);
+            this.btnShowFilterFlags.TabIndex = 8;
+            this.btnShowFilterFlags.Text = "Flag Legend";
+            this.btnShowFilterFlags.UseVisualStyleBackColor = true;
+            // 
+            // spltMetDataTableAndCheckboxes
+            // 
+            this.spltMetDataTableAndCheckboxes.Location = new System.Drawing.Point(3, 62);
+            this.spltMetDataTableAndCheckboxes.Name = "spltMetDataTableAndCheckboxes";
+            this.spltMetDataTableAndCheckboxes.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // spltMetDataTableAndCheckboxes.Panel1
+            // 
+            this.spltMetDataTableAndCheckboxes.Panel1.Controls.Add(this.treeDataParams);
+            this.spltMetDataTableAndCheckboxes.Panel1.Controls.Add(this.chkMetsTS);
+            this.spltMetDataTableAndCheckboxes.Panel1.Controls.Add(this.chkTS_Params);
+            // 
+            // spltMetDataTableAndCheckboxes.Panel2
+            // 
+            this.spltMetDataTableAndCheckboxes.Panel2.Controls.Add(this.dataMetTS);
+            this.spltMetDataTableAndCheckboxes.Size = new System.Drawing.Size(586, 775);
+            this.spltMetDataTableAndCheckboxes.SplitterDistance = 189;
+            this.spltMetDataTableAndCheckboxes.TabIndex = 7;
             // 
             // treeDataParams
             // 
-            this.treeDataParams.Location = new System.Drawing.Point(14, 241);
+            this.treeDataParams.CheckBoxes = true;
+            this.treeDataParams.Location = new System.Drawing.Point(181, 10);
             this.treeDataParams.Name = "treeDataParams";
-            treeNode1.Checked = true;
-            treeNode1.Name = "nodeAnemAvg";
-            treeNode1.Text = "Average";
-            treeNode2.Checked = true;
-            treeNode2.Name = "nodeAnemSD";
-            treeNode2.Text = "St. Dev.";
-            treeNode3.Checked = true;
-            treeNode3.Name = "nodeAnemMin";
-            treeNode3.Text = "Minimum";
-            treeNode4.Checked = true;
-            treeNode4.Name = "nodeAnemMax";
-            treeNode4.Text = "Maximum";
-            treeNode5.Name = "nodeAnems";
-            treeNode5.Text = "Anems";
-            treeNode6.Name = "nodeVaneAvg";
-            treeNode6.Text = "Average";
-            treeNode7.Name = "nodeVaneSD";
-            treeNode7.Text = "St. Dev.";
-            treeNode8.Name = "nodeVaneMax";
-            treeNode8.Text = "Minimum";
-            treeNode9.Name = "nodeVaneMax";
-            treeNode9.Text = "Maximum";
-            treeNode10.Name = "nodeVanes";
-            treeNode10.Text = "Vanes";
-            treeNode11.Name = "Node0";
-            treeNode11.Text = "Average";
-            treeNode12.Name = "Node1";
-            treeNode12.Text = "St. Dev.";
-            treeNode13.Name = "Node2";
-            treeNode13.Text = "Minimum";
-            treeNode14.Name = "Node3";
-            treeNode14.Text = "Maximum";
-            treeNode15.Name = "nodeTemps";
-            treeNode15.Text = "Temps.";
-            treeNode16.Name = "Node4";
-            treeNode16.Text = "Average";
-            treeNode17.Name = "Node5";
-            treeNode17.Text = "St. Dev.";
-            treeNode18.Name = "Node6";
-            treeNode18.Text = "Minimum";
-            treeNode19.Name = "Node7";
-            treeNode19.Text = "Maximum";
-            treeNode20.Name = "nodeBaros";
-            treeNode20.Text = "Baros.";
+            treeNode61.Checked = true;
+            treeNode61.Name = "nodeAnemAvg";
+            treeNode61.Text = "Average";
+            treeNode62.Name = "nodeAnemSD";
+            treeNode62.Text = "St. Dev.";
+            treeNode63.Name = "nodeAnemMin";
+            treeNode63.Text = "Minimum";
+            treeNode64.Name = "nodeAnemMax";
+            treeNode64.Text = "Maximum";
+            treeNode65.Checked = true;
+            treeNode65.Name = "nodeAnems";
+            treeNode65.Text = "Anems";
+            treeNode66.Name = "nodeVaneAvg";
+            treeNode66.Text = "Average";
+            treeNode67.Name = "nodeVaneSD";
+            treeNode67.Text = "St. Dev.";
+            treeNode68.Name = "nodeVaneMax";
+            treeNode68.Text = "Minimum";
+            treeNode69.Name = "nodeVaneMax";
+            treeNode69.Text = "Maximum";
+            treeNode70.Name = "nodeVanes";
+            treeNode70.Text = "Vanes";
+            treeNode71.Name = "Node0";
+            treeNode71.Text = "Average";
+            treeNode72.Name = "Node1";
+            treeNode72.Text = "St. Dev.";
+            treeNode73.Name = "Node2";
+            treeNode73.Text = "Minimum";
+            treeNode74.Name = "Node3";
+            treeNode74.Text = "Maximum";
+            treeNode75.Name = "nodeTemps";
+            treeNode75.Text = "Temps.";
+            treeNode76.Name = "Node4";
+            treeNode76.Text = "Average";
+            treeNode77.Name = "Node5";
+            treeNode77.Text = "St. Dev.";
+            treeNode78.Name = "Node6";
+            treeNode78.Text = "Minimum";
+            treeNode79.Name = "Node7";
+            treeNode79.Text = "Maximum";
+            treeNode80.Name = "nodeBaros";
+            treeNode80.Text = "Baros.";
             this.treeDataParams.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode10,
-            treeNode15,
-            treeNode20});
-            this.treeDataParams.Size = new System.Drawing.Size(121, 169);
+            treeNode65,
+            treeNode70,
+            treeNode75,
+            treeNode80});
+            this.treeDataParams.Size = new System.Drawing.Size(121, 164);
             this.treeDataParams.TabIndex = 9;
             this.treeDataParams.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterCheck);
             this.treeDataParams.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterSelect);
             // 
             // chkMetsTS
             // 
+            this.chkMetsTS.CheckOnClick = true;
             this.chkMetsTS.FormattingEnabled = true;
-            this.chkMetsTS.Location = new System.Drawing.Point(13, 71);
+            this.chkMetsTS.HorizontalScrollbar = true;
+            this.chkMetsTS.Location = new System.Drawing.Point(10, 10);
             this.chkMetsTS.Name = "chkMetsTS";
-            this.chkMetsTS.Size = new System.Drawing.Size(122, 164);
+            this.chkMetsTS.Size = new System.Drawing.Size(161, 164);
             this.chkMetsTS.TabIndex = 7;
             this.chkMetsTS.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkMetsTS_ItemCheck);
+            // 
+            // chkTS_Params
+            // 
+            this.chkTS_Params.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkTS_Params.CheckOnClick = true;
+            this.chkTS_Params.FormattingEnabled = true;
+            this.chkTS_Params.HorizontalScrollbar = true;
+            this.chkTS_Params.Location = new System.Drawing.Point(311, 11);
+            this.chkTS_Params.Name = "chkTS_Params";
+            this.chkTS_Params.Size = new System.Drawing.Size(270, 164);
+            this.chkTS_Params.TabIndex = 3;
+            this.chkTS_Params.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkTS_Params_ItemCheck);
+            // 
+            // dataMetTS
+            // 
+            this.dataMetTS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataMetTS.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataMetTS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataMetTS.Location = new System.Drawing.Point(0, 0);
+            this.dataMetTS.Name = "dataMetTS";
+            this.dataMetTS.Size = new System.Drawing.Size(586, 582);
+            this.dataMetTS.TabIndex = 5;
+            this.dataMetTS.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataMetTS_CellContentClick);
+            this.dataMetTS.Scroll += new System.Windows.Forms.ScrollEventHandler(this.MetDataTS_ScrollEvent);
             // 
             // label146
             // 
@@ -1859,30 +1948,39 @@
             this.label146.TabIndex = 6;
             this.label146.Text = "Met Data Time Series";
             // 
-            // dataMetTS
+            // chkShowFilteredData
             // 
-            this.dataMetTS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataMetTS.Location = new System.Drawing.Point(141, 71);
-            this.dataMetTS.Name = "dataMetTS";
-            this.dataMetTS.Size = new System.Drawing.Size(428, 749);
-            this.dataMetTS.TabIndex = 5;
+            this.chkShowFilteredData.AutoSize = true;
+            this.chkShowFilteredData.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.chkShowFilteredData.Location = new System.Drawing.Point(142, 47);
+            this.chkShowFilteredData.Name = "chkShowFilteredData";
+            this.chkShowFilteredData.Size = new System.Drawing.Size(131, 21);
+            this.chkShowFilteredData.TabIndex = 26;
+            this.chkShowFilteredData.Text = "Show Filtered data";
+            this.chkShowFilteredData.UseVisualStyleBackColor = true;
+            this.chkShowFilteredData.CheckedChanged += new System.EventHandler(this.chkShowFilteredData_CheckedChanged);
             // 
-            // chkTS_Params
+            // chkShowLegenMetDataTS
             // 
-            this.chkTS_Params.FormattingEnabled = true;
-            this.chkTS_Params.Location = new System.Drawing.Point(13, 416);
-            this.chkTS_Params.Name = "chkTS_Params";
-            this.chkTS_Params.Size = new System.Drawing.Size(122, 404);
-            this.chkTS_Params.TabIndex = 3;
-            this.chkTS_Params.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkTS_Params_ItemCheck);
+            this.chkShowLegenMetDataTS.AutoSize = true;
+            this.chkShowLegenMetDataTS.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.chkShowLegenMetDataTS.Location = new System.Drawing.Point(28, 47);
+            this.chkShowLegenMetDataTS.Name = "chkShowLegenMetDataTS";
+            this.chkShowLegenMetDataTS.Size = new System.Drawing.Size(108, 21);
+            this.chkShowLegenMetDataTS.TabIndex = 25;
+            this.chkShowLegenMetDataTS.Text = "Show Legends";
+            this.chkShowLegenMetDataTS.UseVisualStyleBackColor = true;
+            this.chkShowLegenMetDataTS.CheckedChanged += new System.EventHandler(this.chkShowLegenMetDataTS_CheckedChanged);
             // 
             // plotTS_Baros
             // 
-            this.plotTS_Baros.BackColor = System.Drawing.Color.AntiqueWhite;
-            this.plotTS_Baros.Location = new System.Drawing.Point(28, 676);
+            this.plotTS_Baros.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotTS_Baros.BackColor = System.Drawing.Color.Gainsboro;
+            this.plotTS_Baros.Location = new System.Drawing.Point(28, 652);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(983, 161);
+            this.plotTS_Baros.Size = new System.Drawing.Size(971, 185);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -1912,6 +2010,7 @@
             this.cboPlot4Type.Name = "cboPlot4Type";
             this.cboPlot4Type.Size = new System.Drawing.Size(96, 26);
             this.cboPlot4Type.TabIndex = 22;
+            this.cboPlot4Type.SelectedIndexChanged += new System.EventHandler(this.cboPlot4Type_SelectedIndexChanged);
             // 
             // label212
             // 
@@ -1936,6 +2035,7 @@
             this.cboPlot3Type.Name = "cboPlot3Type";
             this.cboPlot3Type.Size = new System.Drawing.Size(96, 26);
             this.cboPlot3Type.TabIndex = 20;
+            this.cboPlot3Type.SelectedIndexChanged += new System.EventHandler(this.cboPlot3Type_SelectedIndexChanged);
             // 
             // label211
             // 
@@ -1960,6 +2060,7 @@
             this.cboPlot2Type.Name = "cboPlot2Type";
             this.cboPlot2Type.Size = new System.Drawing.Size(96, 26);
             this.cboPlot2Type.TabIndex = 18;
+            this.cboPlot2Type.SelectedIndexChanged += new System.EventHandler(this.cboPlot2Type_SelectedIndexChanged);
             // 
             // label210
             // 
@@ -2076,7 +2177,6 @@
             // dateMetTS_End
             // 
             this.dateMetTS_End.CustomFormat = "MM/dd/yy HH:mm";
-            this.dateMetTS_End.Enabled = false;
             this.dateMetTS_End.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateMetTS_End.Location = new System.Drawing.Point(244, 15);
             this.dateMetTS_End.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -2088,7 +2188,6 @@
             // dateMetTS_Start
             // 
             this.dateMetTS_Start.CustomFormat = "MM/dd/yy HH:mm";
-            this.dateMetTS_Start.Enabled = false;
             this.dateMetTS_Start.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateMetTS_Start.Location = new System.Drawing.Point(58, 15);
             this.dateMetTS_Start.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -2099,11 +2198,13 @@
             // 
             // plotTS_Temp
             // 
-            this.plotTS_Temp.BackColor = System.Drawing.Color.AntiqueWhite;
-            this.plotTS_Temp.Location = new System.Drawing.Point(28, 491);
+            this.plotTS_Temp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotTS_Temp.BackColor = System.Drawing.Color.Gainsboro;
+            this.plotTS_Temp.Location = new System.Drawing.Point(28, 458);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(983, 161);
+            this.plotTS_Temp.Size = new System.Drawing.Size(971, 185);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2112,11 +2213,13 @@
             // 
             // plotTS_Vanes
             // 
-            this.plotTS_Vanes.BackColor = System.Drawing.Color.AntiqueWhite;
-            this.plotTS_Vanes.Location = new System.Drawing.Point(28, 282);
+            this.plotTS_Vanes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotTS_Vanes.BackColor = System.Drawing.Color.Gainsboro;
+            this.plotTS_Vanes.Location = new System.Drawing.Point(28, 264);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(983, 186);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(971, 185);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2126,11 +2229,13 @@
             // 
             // plotTS_Anems
             // 
-            this.plotTS_Anems.BackColor = System.Drawing.Color.AntiqueWhite;
+            this.plotTS_Anems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotTS_Anems.BackColor = System.Drawing.Color.Gainsboro;
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(983, 204);
+            this.plotTS_Anems.Size = new System.Drawing.Size(971, 185);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -2898,6 +3003,7 @@
             this.All_Start_Time.Name = "All_Start_Time";
             this.All_Start_Time.Size = new System.Drawing.Size(140, 25);
             this.All_Start_Time.TabIndex = 3;
+            this.All_Start_Time.ValueChanged += new System.EventHandler(this.All_Start_Time_ValueChanged);
             // 
             // label24
             // 
@@ -2999,6 +3105,18 @@
             // 
             // pgeMERRA
             // 
+            this.pgeMERRA.Controls.Add(this.label217);
+            this.pgeMERRA.Controls.Add(this.txtMaxLong);
+            this.pgeMERRA.Controls.Add(this.label218);
+            this.pgeMERRA.Controls.Add(this.txtMinLong);
+            this.pgeMERRA.Controls.Add(this.label219);
+            this.pgeMERRA.Controls.Add(this.txtMaxLat);
+            this.pgeMERRA.Controls.Add(this.label220);
+            this.pgeMERRA.Controls.Add(this.txtMinLat);
+            this.pgeMERRA.Controls.Add(this.txtRefDataDownloadName);
+            this.pgeMERRA.Controls.Add(this.label216);
+            this.pgeMERRA.Controls.Add(this.txtRefDataDownloadFolder);
+            this.pgeMERRA.Controls.Add(this.btnRefDataDownloads);
             this.pgeMERRA.Controls.Add(this.btnDelRef);
             this.pgeMERRA.Controls.Add(this.btnEditReference);
             this.pgeMERRA.Controls.Add(this.btnAddNew);
@@ -3011,8 +3129,6 @@
             this.pgeMERRA.Controls.Add(this.dateLTRefAvailStart);
             this.pgeMERRA.Controls.Add(this.label52);
             this.pgeMERRA.Controls.Add(this.label54);
-            this.pgeMERRA.Controls.Add(this.label5);
-            this.pgeMERRA.Controls.Add(this.dataLTRefNodes);
             this.pgeMERRA.Controls.Add(this.btnExplainMERRA2Tab);
             this.pgeMERRA.Controls.Add(this.plotMERRA_WindRose);
             this.pgeMERRA.Controls.Add(this.plotMERRA_Monthly);
@@ -3041,8 +3157,6 @@
             this.pgeMERRA.Controls.Add(this.label152);
             this.pgeMERRA.Controls.Add(this.label153);
             this.pgeMERRA.Controls.Add(this.label154);
-            this.pgeMERRA.Controls.Add(this.txt_MERRA2_folder);
-            this.pgeMERRA.Controls.Add(this.btn_Import_MERRA);
             this.pgeMERRA.Controls.Add(this.label151);
             this.pgeMERRA.Location = new System.Drawing.Point(4, 27);
             this.pgeMERRA.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -3051,6 +3165,128 @@
             this.pgeMERRA.TabIndex = 16;
             this.pgeMERRA.Text = "LT Reference Data";
             this.pgeMERRA.UseVisualStyleBackColor = true;
+            this.pgeMERRA.Click += new System.EventHandler(this.pgeMERRA_Click);
+            // 
+            // label217
+            // 
+            this.label217.AutoSize = true;
+            this.label217.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label217.Location = new System.Drawing.Point(388, 414);
+            this.label217.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label217.Name = "label217";
+            this.label217.Size = new System.Drawing.Size(20, 18);
+            this.label217.TabIndex = 268;
+            this.label217.Text = "to";
+            // 
+            // txtMaxLong
+            // 
+            this.txtMaxLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMaxLong.Location = new System.Drawing.Point(409, 411);
+            this.txtMaxLong.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMaxLong.Name = "txtMaxLong";
+            this.txtMaxLong.Size = new System.Drawing.Size(44, 25);
+            this.txtMaxLong.TabIndex = 267;
+            // 
+            // label218
+            // 
+            this.label218.AutoSize = true;
+            this.label218.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label218.Location = new System.Drawing.Point(229, 414);
+            this.label218.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label218.Name = "label218";
+            this.label218.Size = new System.Drawing.Size(109, 18);
+            this.label218.TabIndex = 266;
+            this.label218.Text = "Longitude range:";
+            // 
+            // txtMinLong
+            // 
+            this.txtMinLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMinLong.Location = new System.Drawing.Point(341, 411);
+            this.txtMinLong.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMinLong.Name = "txtMinLong";
+            this.txtMinLong.Size = new System.Drawing.Size(44, 25);
+            this.txtMinLong.TabIndex = 265;
+            // 
+            // label219
+            // 
+            this.label219.AutoSize = true;
+            this.label219.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label219.Location = new System.Drawing.Point(388, 381);
+            this.label219.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label219.Name = "label219";
+            this.label219.Size = new System.Drawing.Size(20, 18);
+            this.label219.TabIndex = 264;
+            this.label219.Text = "to";
+            // 
+            // txtMaxLat
+            // 
+            this.txtMaxLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMaxLat.Location = new System.Drawing.Point(409, 378);
+            this.txtMaxLat.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMaxLat.Name = "txtMaxLat";
+            this.txtMaxLat.Size = new System.Drawing.Size(44, 25);
+            this.txtMaxLat.TabIndex = 263;
+            // 
+            // label220
+            // 
+            this.label220.AutoSize = true;
+            this.label220.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label220.Location = new System.Drawing.Point(237, 381);
+            this.label220.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label220.Name = "label220";
+            this.label220.Size = new System.Drawing.Size(99, 18);
+            this.label220.TabIndex = 262;
+            this.label220.Text = "Latitude range:";
+            // 
+            // txtMinLat
+            // 
+            this.txtMinLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMinLat.Location = new System.Drawing.Point(341, 378);
+            this.txtMinLat.Margin = new System.Windows.Forms.Padding(2);
+            this.txtMinLat.Name = "txtMinLat";
+            this.txtMinLat.Size = new System.Drawing.Size(44, 25);
+            this.txtMinLat.TabIndex = 261;
+            // 
+            // txtRefDataDownloadName
+            // 
+            this.txtRefDataDownloadName.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRefDataDownloadName.Location = new System.Drawing.Point(19, 272);
+            this.txtRefDataDownloadName.Margin = new System.Windows.Forms.Padding(2);
+            this.txtRefDataDownloadName.Name = "txtRefDataDownloadName";
+            this.txtRefDataDownloadName.ReadOnly = true;
+            this.txtRefDataDownloadName.Size = new System.Drawing.Size(434, 25);
+            this.txtRefDataDownloadName.TabIndex = 260;
+            // 
+            // label216
+            // 
+            this.label216.AutoSize = true;
+            this.label216.Location = new System.Drawing.Point(21, 247);
+            this.label216.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label216.Name = "label216";
+            this.label216.Size = new System.Drawing.Size(220, 19);
+            this.label216.TabIndex = 259;
+            this.label216.Text = "Extracted from Reference Dataset:";
+            // 
+            // txtRefDataDownloadFolder
+            // 
+            this.txtRefDataDownloadFolder.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRefDataDownloadFolder.Location = new System.Drawing.Point(19, 325);
+            this.txtRefDataDownloadFolder.Margin = new System.Windows.Forms.Padding(2);
+            this.txtRefDataDownloadFolder.Name = "txtRefDataDownloadFolder";
+            this.txtRefDataDownloadFolder.ReadOnly = true;
+            this.txtRefDataDownloadFolder.Size = new System.Drawing.Size(434, 25);
+            this.txtRefDataDownloadFolder.TabIndex = 257;
+            // 
+            // btnRefDataDownloads
+            // 
+            this.btnRefDataDownloads.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.btnRefDataDownloads.Location = new System.Drawing.Point(352, 226);
+            this.btnRefDataDownloads.Name = "btnRefDataDownloads";
+            this.btnRefDataDownloads.Size = new System.Drawing.Size(103, 40);
+            this.btnRefDataDownloads.TabIndex = 256;
+            this.btnRefDataDownloads.Text = "View/Edit Ref. Data Downloads";
+            this.btnRefDataDownloads.UseVisualStyleBackColor = true;
+            this.btnRefDataDownloads.Click += new System.EventHandler(this.btnRefDataDownloads_Click);
             // 
             // btnDelRef
             // 
@@ -3111,7 +3347,7 @@
             this.label205.AutoSize = true;
             this.label205.Enabled = false;
             this.label205.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label205.Location = new System.Drawing.Point(21, 477);
+            this.label205.Location = new System.Drawing.Point(249, 467);
             this.label205.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label205.Name = "label205";
             this.label205.Size = new System.Drawing.Size(95, 18);
@@ -3121,7 +3357,7 @@
             // txtRefDataAvail
             // 
             this.txtRefDataAvail.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRefDataAvail.Location = new System.Drawing.Point(119, 474);
+            this.txtRefDataAvail.Location = new System.Drawing.Point(347, 464);
             this.txtRefDataAvail.Margin = new System.Windows.Forms.Padding(2);
             this.txtRefDataAvail.Name = "txtRefDataAvail";
             this.txtRefDataAvail.ReadOnly = true;
@@ -3133,7 +3369,7 @@
             this.label204.AutoSize = true;
             this.label204.Enabled = false;
             this.label204.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label204.Location = new System.Drawing.Point(20, 307);
+            this.label204.Location = new System.Drawing.Point(20, 358);
             this.label204.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label204.Name = "label204";
             this.label204.Size = new System.Drawing.Size(175, 36);
@@ -3148,7 +3384,7 @@
             this.dateLTRefAvailEnd.Enabled = false;
             this.dateLTRefAvailEnd.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateLTRefAvailEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateLTRefAvailEnd.Location = new System.Drawing.Point(23, 433);
+            this.dateLTRefAvailEnd.Location = new System.Drawing.Point(23, 484);
             this.dateLTRefAvailEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateLTRefAvailEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
             this.dateLTRefAvailEnd.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
@@ -3164,7 +3400,7 @@
             this.dateLTRefAvailStart.Enabled = false;
             this.dateLTRefAvailStart.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateLTRefAvailStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateLTRefAvailStart.Location = new System.Drawing.Point(22, 374);
+            this.dateLTRefAvailStart.Location = new System.Drawing.Point(22, 425);
             this.dateLTRefAvailStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateLTRefAvailStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
             this.dateLTRefAvailStart.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
@@ -3178,7 +3414,7 @@
             this.label52.AutoSize = true;
             this.label52.Enabled = false;
             this.label52.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label52.Location = new System.Drawing.Point(20, 413);
+            this.label52.Location = new System.Drawing.Point(20, 464);
             this.label52.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(74, 18);
@@ -3190,56 +3426,12 @@
             this.label54.AutoSize = true;
             this.label54.Enabled = false;
             this.label54.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label54.Location = new System.Drawing.Point(21, 354);
+            this.label54.Location = new System.Drawing.Point(21, 405);
             this.label54.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(81, 18);
             this.label54.TabIndex = 242;
             this.label54.Text = "Start (Local)";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Enabled = false;
-            this.label5.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(207, 307);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(248, 18);
-            this.label5.TabIndex = 241;
-            this.label5.Text = "Node Coordinates in Reference data files";
-            // 
-            // dataLTRefNodes
-            // 
-            this.dataLTRefNodes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataLTRefNodes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column1,
-            this.Column2});
-            this.dataLTRefNodes.Enabled = false;
-            this.dataLTRefNodes.Location = new System.Drawing.Point(207, 332);
-            this.dataLTRefNodes.Margin = new System.Windows.Forms.Padding(2);
-            this.dataLTRefNodes.Name = "dataLTRefNodes";
-            this.dataLTRefNodes.ReadOnly = true;
-            this.dataLTRefNodes.RowHeadersWidth = 51;
-            this.dataLTRefNodes.RowTemplate.Height = 24;
-            this.dataLTRefNodes.Size = new System.Drawing.Size(246, 184);
-            this.dataLTRefNodes.TabIndex = 240;
-            // 
-            // Column1
-            // 
-            this.Column1.HeaderText = "Latitude [degs]";
-            this.Column1.MinimumWidth = 6;
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            this.Column1.Width = 125;
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Longitude [degs]";
-            this.Column2.MinimumWidth = 6;
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
-            this.Column2.Width = 125;
             // 
             // btnExplainMERRA2Tab
             // 
@@ -3434,7 +3626,7 @@
             // btn_ExportWR
             // 
             this.btn_ExportWR.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_ExportWR.Location = new System.Drawing.Point(279, 682);
+            this.btn_ExportWR.Location = new System.Drawing.Point(32, 738);
             this.btn_ExportWR.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btn_ExportWR.Name = "btn_ExportWR";
             this.btn_ExportWR.Size = new System.Drawing.Size(128, 59);
@@ -3446,7 +3638,7 @@
             // btn_Export_All_Months_All_Years
             // 
             this.btn_Export_All_Months_All_Years.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Export_All_Months_All_Years.Location = new System.Drawing.Point(279, 606);
+            this.btn_Export_All_Months_All_Years.Location = new System.Drawing.Point(32, 661);
             this.btn_Export_All_Months_All_Years.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Export_All_Months_All_Years.Name = "btn_Export_All_Months_All_Years";
             this.btn_Export_All_Months_All_Years.Size = new System.Drawing.Size(128, 58);
@@ -3571,10 +3763,10 @@
             // btn_Export_Interp
             // 
             this.btn_Export_Interp.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Export_Interp.Location = new System.Drawing.Point(34, 681);
+            this.btn_Export_Interp.Location = new System.Drawing.Point(31, 577);
             this.btn_Export_Interp.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Export_Interp.Name = "btn_Export_Interp";
-            this.btn_Export_Interp.Size = new System.Drawing.Size(203, 62);
+            this.btn_Export_Interp.Size = new System.Drawing.Size(129, 62);
             this.btn_Export_Interp.TabIndex = 138;
             this.btn_Export_Interp.Text = "Export Interpolated Data";
             this.btn_Export_Interp.UseVisualStyleBackColor = true;
@@ -3642,35 +3834,12 @@
             this.label154.AutoSize = true;
             this.label154.Enabled = false;
             this.label154.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label154.Location = new System.Drawing.Point(15, 242);
+            this.label154.Location = new System.Drawing.Point(20, 303);
             this.label154.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label154.Name = "label154";
-            this.label154.Size = new System.Drawing.Size(215, 20);
+            this.label154.Size = new System.Drawing.Size(111, 20);
             this.label154.TabIndex = 109;
-            this.label154.Text = "Reference Data Folder location:";
-            // 
-            // txt_MERRA2_folder
-            // 
-            this.txt_MERRA2_folder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_MERRA2_folder.Location = new System.Drawing.Point(19, 267);
-            this.txt_MERRA2_folder.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txt_MERRA2_folder.Name = "txt_MERRA2_folder";
-            this.txt_MERRA2_folder.ReadOnly = true;
-            this.txt_MERRA2_folder.Size = new System.Drawing.Size(459, 21);
-            this.txt_MERRA2_folder.TabIndex = 108;
-            // 
-            // btn_Import_MERRA
-            // 
-            this.btn_Import_MERRA.BackColor = System.Drawing.Color.LightCoral;
-            this.btn_Import_MERRA.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Import_MERRA.Location = new System.Drawing.Point(46, 595);
-            this.btn_Import_MERRA.Margin = new System.Windows.Forms.Padding(2);
-            this.btn_Import_MERRA.Name = "btn_Import_MERRA";
-            this.btn_Import_MERRA.Size = new System.Drawing.Size(184, 71);
-            this.btn_Import_MERRA.TabIndex = 107;
-            this.btn_Import_MERRA.Text = "Extract Data for Selected Met or Lat/Long";
-            this.btn_Import_MERRA.UseVisualStyleBackColor = false;
-            this.btn_Import_MERRA.Click += new System.EventHandler(this.btn_Import_MERRA_Click);
+            this.label154.Text = "Folder location:";
             // 
             // label151
             // 
@@ -7007,7 +7176,6 @@
             this.plotComplexHisto.PanCursor = System.Windows.Forms.Cursors.Hand;
             this.plotComplexHisto.Size = new System.Drawing.Size(489, 206);
             this.plotComplexHisto.TabIndex = 297;
-            this.plotComplexHisto.Text = "plotView1";
             this.plotComplexHisto.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotComplexHisto.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotComplexHisto.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
@@ -7106,9 +7274,9 @@
             // 
             // Column6
             // 
-            dataGridViewCellStyle1.Format = "P";
-            dataGridViewCellStyle1.NullValue = null;
-            this.Column6.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle13.Format = "P";
+            dataGridViewCellStyle13.NullValue = null;
+            this.Column6.DefaultCellStyle = dataGridViewCellStyle13;
             this.Column6.HeaderText = "5h 360 TVI";
             this.Column6.Name = "Column6";
             this.Column6.ReadOnly = true;
@@ -7123,9 +7291,9 @@
             // 
             // Column8
             // 
-            dataGridViewCellStyle2.Format = "P";
-            dataGridViewCellStyle2.NullValue = null;
-            this.Column8.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle14.Format = "P";
+            dataGridViewCellStyle14.NullValue = null;
+            this.Column8.DefaultCellStyle = dataGridViewCellStyle14;
             this.Column8.HeaderText = "5h 30 TVI";
             this.Column8.Name = "Column8";
             this.Column8.ReadOnly = true;
@@ -7140,9 +7308,9 @@
             // 
             // Column10
             // 
-            dataGridViewCellStyle3.Format = "P";
-            dataGridViewCellStyle3.NullValue = null;
-            this.Column10.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle15.Format = "P";
+            dataGridViewCellStyle15.NullValue = null;
+            this.Column10.DefaultCellStyle = dataGridViewCellStyle15;
             this.Column10.HeaderText = "10h 30 TVI";
             this.Column10.Name = "Column10";
             this.Column10.ReadOnly = true;
@@ -7157,9 +7325,9 @@
             // 
             // Column12
             // 
-            dataGridViewCellStyle4.Format = "P";
-            dataGridViewCellStyle4.NullValue = null;
-            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle16.Format = "P";
+            dataGridViewCellStyle16.NullValue = null;
+            this.Column12.DefaultCellStyle = dataGridViewCellStyle16;
             this.Column12.HeaderText = "20h 30 TVI";
             this.Column12.Name = "Column12";
             this.Column12.ReadOnly = true;
@@ -7328,6 +7496,10 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.cboTI_TerrainComplexCorr);
+            this.tabPage1.Controls.Add(this.chkApplyTCCtoEffTI);
+            this.tabPage1.Controls.Add(this.label215);
+            this.tabPage1.Controls.Add(this.label214);
             this.tabPage1.Controls.Add(this.plotTurbInt);
             this.tabPage1.Controls.Add(this.btnExportTI);
             this.tabPage1.Controls.Add(this.label188);
@@ -7354,13 +7526,63 @@
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Turbulence Intensity";
             this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
+            // 
+            // cboTI_TerrainComplexCorr
+            // 
+            this.cboTI_TerrainComplexCorr.FormattingEnabled = true;
+            this.cboTI_TerrainComplexCorr.Items.AddRange(new object[] {
+            "1.00 - Not Complex ",
+            "1.05 - Low Complex ",
+            "1.10 - Moderate Complex ",
+            "1.15 - High Complex "});
+            this.cboTI_TerrainComplexCorr.Location = new System.Drawing.Point(268, 586);
+            this.cboTI_TerrainComplexCorr.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTI_TerrainComplexCorr.Name = "cboTI_TerrainComplexCorr";
+            this.cboTI_TerrainComplexCorr.Size = new System.Drawing.Size(235, 26);
+            this.cboTI_TerrainComplexCorr.TabIndex = 293;
+            this.cboTI_TerrainComplexCorr.SelectedIndexChanged += new System.EventHandler(this.cboTI_TerrainComplexCorr_SelectedIndexChanged);
+            // 
+            // chkApplyTCCtoEffTI
+            // 
+            this.chkApplyTCCtoEffTI.AutoSize = true;
+            this.chkApplyTCCtoEffTI.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.chkApplyTCCtoEffTI.Location = new System.Drawing.Point(266, 558);
+            this.chkApplyTCCtoEffTI.Name = "chkApplyTCCtoEffTI";
+            this.chkApplyTCCtoEffTI.Size = new System.Drawing.Size(238, 21);
+            this.chkApplyTCCtoEffTI.TabIndex = 292;
+            this.chkApplyTCCtoEffTI.Text = "Apply Terrain Complexity Adjustment";
+            this.chkApplyTCCtoEffTI.UseVisualStyleBackColor = true;
+            this.chkApplyTCCtoEffTI.CheckedChanged += new System.EventHandler(this.chkApplyTCCtoEffTI_CheckedChanged);
+            // 
+            // label215
+            // 
+            this.label215.AutoSize = true;
+            this.label215.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label215.Location = new System.Drawing.Point(269, 73);
+            this.label215.Name = "label215";
+            this.label215.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.label215.Size = new System.Drawing.Size(104, 22);
+            this.label215.TabIndex = 291;
+            this.label215.Text = "TI Parameters";
+            // 
+            // label214
+            // 
+            this.label214.AutoSize = true;
+            this.label214.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label214.Location = new System.Drawing.Point(272, 356);
+            this.label214.Name = "label214";
+            this.label214.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.label214.Size = new System.Drawing.Size(166, 22);
+            this.label214.TabIndex = 290;
+            this.label214.Text = "Effective TI Parameters";
             // 
             // plotTurbInt
             // 
-            this.plotTurbInt.Location = new System.Drawing.Point(279, 141);
+            this.plotTurbInt.Location = new System.Drawing.Point(523, 79);
             this.plotTurbInt.Name = "plotTurbInt";
             this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(444, 251);
+            this.plotTurbInt.Size = new System.Drawing.Size(1029, 626);
             this.plotTurbInt.TabIndex = 289;
             this.plotTurbInt.Text = "plotView1";
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -7369,19 +7591,20 @@
             // 
             // btnExportTI
             // 
-            this.btnExportTI.Location = new System.Drawing.Point(729, 141);
+            this.btnExportTI.Location = new System.Drawing.Point(274, 643);
             this.btnExportTI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportTI.Name = "btnExportTI";
             this.btnExportTI.Size = new System.Drawing.Size(87, 62);
             this.btnExportTI.TabIndex = 288;
             this.btnExportTI.Text = "Export TI";
             this.btnExportTI.UseVisualStyleBackColor = true;
+            this.btnExportTI.Click += new System.EventHandler(this.btnExportTI_Click);
             // 
             // label188
             // 
             this.label188.AutoSize = true;
             this.label188.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label188.Location = new System.Drawing.Point(481, 46);
+            this.label188.Location = new System.Drawing.Point(266, 395);
             this.label188.Name = "label188";
             this.label188.Size = new System.Drawing.Size(93, 18);
             this.label188.TabIndex = 287;
@@ -7391,39 +7614,42 @@
             // 
             this.cboTurbPowerCurve.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTurbPowerCurve.FormattingEnabled = true;
-            this.cboTurbPowerCurve.Location = new System.Drawing.Point(579, 43);
+            this.cboTurbPowerCurve.Location = new System.Drawing.Point(269, 417);
             this.cboTurbPowerCurve.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTurbPowerCurve.Name = "cboTurbPowerCurve";
-            this.cboTurbPowerCurve.Size = new System.Drawing.Size(229, 26);
+            this.cboTurbPowerCurve.Size = new System.Drawing.Size(234, 26);
             this.cboTurbPowerCurve.TabIndex = 286;
+            this.cboTurbPowerCurve.SelectedIndexChanged += new System.EventHandler(this.cboTurbPowerCurve_SelectedIndexChanged);
             // 
             // dateTIStart
             // 
             this.dateTIStart.CustomFormat = "MM/dd/yy";
             this.dateTIStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTIStart.Location = new System.Drawing.Point(523, 76);
+            this.dateTIStart.Location = new System.Drawing.Point(321, 283);
             this.dateTIStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTIStart.Name = "dateTIStart";
             this.dateTIStart.Size = new System.Drawing.Size(76, 25);
             this.dateTIStart.TabIndex = 285;
+            this.dateTIStart.ValueChanged += new System.EventHandler(this.dateTIStart_ValueChanged);
             // 
             // label186
             // 
             this.label186.AutoSize = true;
-            this.label186.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label186.Location = new System.Drawing.Point(614, 80);
+            this.label186.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label186.Location = new System.Drawing.Point(281, 322);
             this.label186.Name = "label186";
-            this.label186.Size = new System.Drawing.Size(29, 18);
+            this.label186.Size = new System.Drawing.Size(34, 19);
             this.label186.TabIndex = 284;
             this.label186.Text = "To :";
+            this.label186.Click += new System.EventHandler(this.label186_Click);
             // 
             // label187
             // 
             this.label187.AutoSize = true;
-            this.label187.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label187.Location = new System.Drawing.Point(476, 80);
+            this.label187.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label187.Location = new System.Drawing.Point(264, 286);
             this.label187.Name = "label187";
-            this.label187.Size = new System.Drawing.Size(46, 18);
+            this.label187.Size = new System.Drawing.Size(51, 19);
             this.label187.TabIndex = 283;
             this.label187.Text = "From :";
             // 
@@ -7431,11 +7657,12 @@
             // 
             this.dateTIEnd.CustomFormat = "MM/dd/yy";
             this.dateTIEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTIEnd.Location = new System.Drawing.Point(648, 76);
+            this.dateTIEnd.Location = new System.Drawing.Point(321, 319);
             this.dateTIEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTIEnd.Name = "dateTIEnd";
             this.dateTIEnd.Size = new System.Drawing.Size(76, 25);
             this.dateTIEnd.TabIndex = 282;
+            this.dateTIEnd.ValueChanged += new System.EventHandler(this.dateTIEnd_ValueChanged_1);
             // 
             // cboTurbineTI
             // 
@@ -7444,16 +7671,17 @@
             "Average",
             "Representative",
             "Effective"});
-            this.cboTurbineTI.Location = new System.Drawing.Point(552, 108);
+            this.cboTurbineTI.Location = new System.Drawing.Point(269, 480);
             this.cboTurbineTI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTurbineTI.Name = "cboTurbineTI";
-            this.cboTurbineTI.Size = new System.Drawing.Size(173, 26);
+            this.cboTurbineTI.Size = new System.Drawing.Size(234, 26);
             this.cboTurbineTI.TabIndex = 281;
+            this.cboTurbineTI.SelectedIndexChanged += new System.EventHandler(this.cboTurbineTI_SelectedIndexChanged);
             // 
             // label179
             // 
             this.label179.AutoSize = true;
-            this.label179.Location = new System.Drawing.Point(487, 110);
+            this.label179.Location = new System.Drawing.Point(265, 457);
             this.label179.Name = "label179";
             this.label179.Size = new System.Drawing.Size(67, 19);
             this.label179.TabIndex = 280;
@@ -7462,11 +7690,11 @@
             // label178
             // 
             this.label178.AutoSize = true;
-            this.label178.Location = new System.Drawing.Point(394, 112);
+            this.label178.Location = new System.Drawing.Point(295, 519);
             this.label178.Name = "label178";
-            this.label178.Size = new System.Drawing.Size(29, 19);
+            this.label178.Size = new System.Drawing.Size(147, 19);
             this.label178.TabIndex = 279;
-            this.label178.Text = "m :";
+            this.label178.Text = "Wohler exponent, m :";
             // 
             // cboEffectiveTI_m
             // 
@@ -7474,11 +7702,12 @@
             this.cboEffectiveTI_m.Items.AddRange(new object[] {
             "1",
             "10"});
-            this.cboEffectiveTI_m.Location = new System.Drawing.Point(423, 107);
+            this.cboEffectiveTI_m.Location = new System.Drawing.Point(448, 516);
             this.cboEffectiveTI_m.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboEffectiveTI_m.Name = "cboEffectiveTI_m";
             this.cboEffectiveTI_m.Size = new System.Drawing.Size(55, 26);
             this.cboEffectiveTI_m.TabIndex = 278;
+            this.cboEffectiveTI_m.SelectedIndexChanged += new System.EventHandler(this.cboEffectiveTI_m_SelectedIndexChanged);
             // 
             // cboTI_Type
             // 
@@ -7487,16 +7716,17 @@
             "Average",
             "Representative",
             "Effective"});
-            this.cboTI_Type.Location = new System.Drawing.Point(324, 76);
+            this.cboTI_Type.Location = new System.Drawing.Point(269, 196);
             this.cboTI_Type.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTI_Type.Name = "cboTI_Type";
-            this.cboTI_Type.Size = new System.Drawing.Size(132, 26);
+            this.cboTI_Type.Size = new System.Drawing.Size(234, 26);
             this.cboTI_Type.TabIndex = 277;
+            this.cboTI_Type.SelectedIndexChanged += new System.EventHandler(this.cboTI_Type_SelectedIndexChanged);
             // 
             // label177
             // 
             this.label177.AutoSize = true;
-            this.label177.Location = new System.Drawing.Point(258, 78);
+            this.label177.Location = new System.Drawing.Point(265, 173);
             this.label177.Name = "label177";
             this.label177.Size = new System.Drawing.Size(66, 19);
             this.label177.TabIndex = 276;
@@ -7514,7 +7744,7 @@
             this.lstTurbulence.Location = new System.Drawing.Point(35, 96);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 290);
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 609);
             this.lstTurbulence.TabIndex = 275;
             this.lstTurbulence.UseCompatibleStateImageBehavior = false;
             this.lstTurbulence.View = System.Windows.Forms.View.Details;
@@ -7538,25 +7768,26 @@
             // label174
             // 
             this.label174.AutoSize = true;
-            this.label174.Location = new System.Drawing.Point(252, 46);
+            this.label174.Location = new System.Drawing.Point(268, 104);
             this.label174.Name = "label174";
-            this.label174.Size = new System.Drawing.Size(41, 19);
+            this.label174.Size = new System.Drawing.Size(64, 19);
             this.label174.TabIndex = 274;
-            this.label174.Text = "Met :";
+            this.label174.Text = "Met Site:";
             // 
             // cboTurbMet
             // 
             this.cboTurbMet.FormattingEnabled = true;
-            this.cboTurbMet.Location = new System.Drawing.Point(296, 44);
+            this.cboTurbMet.Location = new System.Drawing.Point(269, 127);
             this.cboTurbMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTurbMet.Name = "cboTurbMet";
-            this.cboTurbMet.Size = new System.Drawing.Size(177, 26);
+            this.cboTurbMet.Size = new System.Drawing.Size(234, 26);
             this.cboTurbMet.TabIndex = 273;
+            this.cboTurbMet.SelectedIndexChanged += new System.EventHandler(this.cboTurbMet_SelectedIndexChanged);
             // 
             // label172
             // 
             this.label172.AutoSize = true;
-            this.label172.Location = new System.Drawing.Point(259, 110);
+            this.label172.Location = new System.Drawing.Point(265, 244);
             this.label172.Name = "label172";
             this.label172.Size = new System.Drawing.Size(42, 19);
             this.label172.TabIndex = 272;
@@ -7565,11 +7796,12 @@
             // cboTurbWD
             // 
             this.cboTurbWD.FormattingEnabled = true;
-            this.cboTurbWD.Location = new System.Drawing.Point(302, 107);
+            this.cboTurbWD.Location = new System.Drawing.Point(313, 241);
             this.cboTurbWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTurbWD.Name = "cboTurbWD";
             this.cboTurbWD.Size = new System.Drawing.Size(84, 26);
             this.cboTurbWD.TabIndex = 271;
+            this.cboTurbWD.SelectedIndexChanged += new System.EventHandler(this.cboTurbWD_SelectedIndexChanged);
             // 
             // label93
             // 
@@ -7605,10 +7837,10 @@
             // 
             // plotExtremeShear
             // 
-            this.plotExtremeShear.Location = new System.Drawing.Point(52, 141);
+            this.plotExtremeShear.Location = new System.Drawing.Point(513, 74);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeShear.Size = new System.Drawing.Size(394, 251);
+            this.plotExtremeShear.Size = new System.Drawing.Size(1029, 626);
             this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -7619,29 +7851,30 @@
             // 
             this.dateTimeExtremeShearStart.CustomFormat = "MM/dd/yy";
             this.dateTimeExtremeShearStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimeExtremeShearStart.Location = new System.Drawing.Point(573, 69);
+            this.dateTimeExtremeShearStart.Location = new System.Drawing.Point(192, 207);
             this.dateTimeExtremeShearStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTimeExtremeShearStart.Name = "dateTimeExtremeShearStart";
             this.dateTimeExtremeShearStart.Size = new System.Drawing.Size(76, 25);
             this.dateTimeExtremeShearStart.TabIndex = 291;
+            this.dateTimeExtremeShearStart.ValueChanged += new System.EventHandler(this.dateTimeExtremeShearStart_ValueChanged);
             // 
             // label202
             // 
             this.label202.AutoSize = true;
-            this.label202.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label202.Location = new System.Drawing.Point(664, 73);
+            this.label202.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label202.Location = new System.Drawing.Point(148, 247);
             this.label202.Name = "label202";
-            this.label202.Size = new System.Drawing.Size(29, 18);
+            this.label202.Size = new System.Drawing.Size(34, 19);
             this.label202.TabIndex = 290;
             this.label202.Text = "To :";
             // 
             // label203
             // 
             this.label203.AutoSize = true;
-            this.label203.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label203.Location = new System.Drawing.Point(526, 73);
+            this.label203.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label203.Location = new System.Drawing.Point(134, 210);
             this.label203.Name = "label203";
-            this.label203.Size = new System.Drawing.Size(46, 18);
+            this.label203.Size = new System.Drawing.Size(51, 19);
             this.label203.TabIndex = 289;
             this.label203.Text = "From :";
             // 
@@ -7649,17 +7882,18 @@
             // 
             this.dateTimeExtremeShearEnd.CustomFormat = "MM/dd/yy";
             this.dateTimeExtremeShearEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimeExtremeShearEnd.Location = new System.Drawing.Point(698, 69);
+            this.dateTimeExtremeShearEnd.Location = new System.Drawing.Point(192, 244);
             this.dateTimeExtremeShearEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTimeExtremeShearEnd.Name = "dateTimeExtremeShearEnd";
             this.dateTimeExtremeShearEnd.Size = new System.Drawing.Size(76, 25);
             this.dateTimeExtremeShearEnd.TabIndex = 288;
+            this.dateTimeExtremeShearEnd.ValueChanged += new System.EventHandler(this.dateTimeExtremeShearEnd_ValueChanged);
             // 
             // label201
             // 
             this.label201.AutoSize = true;
             this.label201.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label201.Location = new System.Drawing.Point(470, 141);
+            this.label201.Location = new System.Drawing.Point(42, 296);
             this.label201.Name = "label201";
             this.label201.Size = new System.Drawing.Size(175, 19);
             this.label201.TabIndex = 287;
@@ -7668,7 +7902,7 @@
             // label190
             // 
             this.label190.AutoSize = true;
-            this.label190.Location = new System.Drawing.Point(243, 74);
+            this.label190.Location = new System.Drawing.Point(56, 164);
             this.label190.Name = "label190";
             this.label190.Size = new System.Drawing.Size(135, 19);
             this.label190.TabIndex = 286;
@@ -7682,16 +7916,17 @@
             "10 - 15 m/s",
             "15+ m/s",
             "All > Cut-In"});
-            this.cboExtremeShearRange.Location = new System.Drawing.Point(379, 70);
+            this.cboExtremeShearRange.Location = new System.Drawing.Point(197, 160);
             this.cboExtremeShearRange.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeShearRange.Name = "cboExtremeShearRange";
-            this.cboExtremeShearRange.Size = new System.Drawing.Size(104, 26);
+            this.cboExtremeShearRange.Size = new System.Drawing.Size(132, 26);
             this.cboExtremeShearRange.TabIndex = 285;
+            this.cboExtremeShearRange.SelectedIndexChanged += new System.EventHandler(this.cboExtremeShearRange_SelectedIndexChanged);
             // 
             // label189
             // 
             this.label189.AutoSize = true;
-            this.label189.Location = new System.Drawing.Point(253, 43);
+            this.label189.Location = new System.Drawing.Point(56, 86);
             this.label189.Name = "label189";
             this.label189.Size = new System.Drawing.Size(41, 19);
             this.label189.TabIndex = 284;
@@ -7700,21 +7935,23 @@
             // cboExtremeShearMet
             // 
             this.cboExtremeShearMet.FormattingEnabled = true;
-            this.cboExtremeShearMet.Location = new System.Drawing.Point(296, 37);
+            this.cboExtremeShearMet.Location = new System.Drawing.Point(60, 109);
             this.cboExtremeShearMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeShearMet.Name = "cboExtremeShearMet";
-            this.cboExtremeShearMet.Size = new System.Drawing.Size(187, 26);
+            this.cboExtremeShearMet.Size = new System.Drawing.Size(269, 26);
             this.cboExtremeShearMet.TabIndex = 283;
+            this.cboExtremeShearMet.SelectedIndexChanged += new System.EventHandler(this.cboExtremeShearMet_SelectedIndexChanged);
             // 
             // btnExportShearStats
             // 
-            this.btnExportShearStats.Location = new System.Drawing.Point(707, 331);
+            this.btnExportShearStats.Location = new System.Drawing.Point(279, 504);
             this.btnExportShearStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportShearStats.Name = "btnExportShearStats";
             this.btnExportShearStats.Size = new System.Drawing.Size(101, 66);
             this.btnExportShearStats.TabIndex = 282;
             this.btnExportShearStats.Text = "Export Shear Stats";
             this.btnExportShearStats.UseVisualStyleBackColor = true;
+            this.btnExportShearStats.Click += new System.EventHandler(this.btnExportShearStats_Click);
             // 
             // lstExtremeShear
             // 
@@ -7727,7 +7964,7 @@
             this.lstExtremeShear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstExtremeShear.GridLines = true;
             this.lstExtremeShear.HideSelection = false;
-            this.lstExtremeShear.Location = new System.Drawing.Point(474, 176);
+            this.lstExtremeShear.Location = new System.Drawing.Point(46, 331);
             this.lstExtremeShear.Margin = new System.Windows.Forms.Padding(2);
             this.lstExtremeShear.Name = "lstExtremeShear";
             this.lstExtremeShear.Size = new System.Drawing.Size(334, 142);
@@ -7817,7 +8054,7 @@
             // label103
             // 
             this.label103.AutoSize = true;
-            this.label103.Location = new System.Drawing.Point(49, 132);
+            this.label103.Location = new System.Drawing.Point(51, 175);
             this.label103.Name = "label103";
             this.label103.Size = new System.Drawing.Size(75, 19);
             this.label103.TabIndex = 289;
@@ -7826,54 +8063,58 @@
             // cboExtremeWSRef
             // 
             this.cboExtremeWSRef.FormattingEnabled = true;
-            this.cboExtremeWSRef.Location = new System.Drawing.Point(126, 129);
+            this.cboExtremeWSRef.Location = new System.Drawing.Point(53, 198);
             this.cboExtremeWSRef.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeWSRef.Name = "cboExtremeWSRef";
-            this.cboExtremeWSRef.Size = new System.Drawing.Size(197, 26);
+            this.cboExtremeWSRef.Size = new System.Drawing.Size(266, 26);
             this.cboExtremeWSRef.TabIndex = 288;
+            this.cboExtremeWSRef.SelectedIndexChanged += new System.EventHandler(this.cboExtremeWSRef_SelectedIndexChanged);
             // 
             // plotExtremeWS
             // 
-            this.plotExtremeWS.Location = new System.Drawing.Point(358, 67);
+            this.plotExtremeWS.Location = new System.Drawing.Point(505, 70);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(444, 251);
+            this.plotExtremeWS.Size = new System.Drawing.Size(1029, 626);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotExtremeWS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotExtremeWS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotExtremeWS.Click += new System.EventHandler(this.plotExtremeWS_Click);
             // 
             // lblExtremeWS
             // 
             this.lblExtremeWS.AutoSize = true;
-            this.lblExtremeWS.Location = new System.Drawing.Point(180, 318);
+            this.lblExtremeWS.Location = new System.Drawing.Point(176, 407);
             this.lblExtremeWS.Name = "lblExtremeWS";
             this.lblExtremeWS.Size = new System.Drawing.Size(0, 19);
             this.lblExtremeWS.TabIndex = 286;
             // 
             // btnExtremeWS
             // 
-            this.btnExtremeWS.Location = new System.Drawing.Point(56, 318);
+            this.btnExtremeWS.Location = new System.Drawing.Point(219, 615);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(100, 63);
             this.btnExtremeWS.TabIndex = 285;
             this.btnExtremeWS.Text = "Export Extreme WS";
             this.btnExtremeWS.UseVisualStyleBackColor = true;
+            this.btnExtremeWS.Click += new System.EventHandler(this.btnExtremeWS_Click);
             // 
             // cboExtremeWSMet
             // 
             this.cboExtremeWSMet.FormattingEnabled = true;
-            this.cboExtremeWSMet.Location = new System.Drawing.Point(96, 95);
+            this.cboExtremeWSMet.Location = new System.Drawing.Point(53, 124);
             this.cboExtremeWSMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeWSMet.Name = "cboExtremeWSMet";
-            this.cboExtremeWSMet.Size = new System.Drawing.Size(227, 26);
+            this.cboExtremeWSMet.Size = new System.Drawing.Size(266, 26);
             this.cboExtremeWSMet.TabIndex = 284;
+            this.cboExtremeWSMet.SelectedIndexChanged += new System.EventHandler(this.cboExtremeWSMet_SelectedIndexChanged_1);
             // 
             // txt1yrExtremeGust
             // 
-            this.txt1yrExtremeGust.Location = new System.Drawing.Point(223, 270);
+            this.txt1yrExtremeGust.Location = new System.Drawing.Point(219, 359);
             this.txt1yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt1yrExtremeGust.Name = "txt1yrExtremeGust";
             this.txt1yrExtremeGust.Size = new System.Drawing.Size(96, 25);
@@ -7881,7 +8122,7 @@
             // 
             // txt1yrExtreme10min
             // 
-            this.txt1yrExtreme10min.Location = new System.Drawing.Point(223, 235);
+            this.txt1yrExtreme10min.Location = new System.Drawing.Point(219, 324);
             this.txt1yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt1yrExtreme10min.Name = "txt1yrExtreme10min";
             this.txt1yrExtreme10min.Size = new System.Drawing.Size(96, 25);
@@ -7889,7 +8130,7 @@
             // 
             // txt50yrExtremeGust
             // 
-            this.txt50yrExtremeGust.Location = new System.Drawing.Point(224, 201);
+            this.txt50yrExtremeGust.Location = new System.Drawing.Point(220, 290);
             this.txt50yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt50yrExtremeGust.Name = "txt50yrExtremeGust";
             this.txt50yrExtremeGust.Size = new System.Drawing.Size(96, 25);
@@ -7897,7 +8138,7 @@
             // 
             // txt50yrExtreme10min
             // 
-            this.txt50yrExtreme10min.Location = new System.Drawing.Point(225, 167);
+            this.txt50yrExtreme10min.Location = new System.Drawing.Point(221, 256);
             this.txt50yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt50yrExtreme10min.Name = "txt50yrExtreme10min";
             this.txt50yrExtreme10min.Size = new System.Drawing.Size(96, 25);
@@ -7906,7 +8147,7 @@
             // label193
             // 
             this.label193.AutoSize = true;
-            this.label193.Location = new System.Drawing.Point(51, 270);
+            this.label193.Location = new System.Drawing.Point(47, 359);
             this.label193.Name = "label193";
             this.label193.Size = new System.Drawing.Size(166, 19);
             this.label193.TabIndex = 279;
@@ -7916,7 +8157,7 @@
             // label194
             // 
             this.label194.AutoSize = true;
-            this.label194.Location = new System.Drawing.Point(51, 237);
+            this.label194.Location = new System.Drawing.Point(47, 326);
             this.label194.Name = "label194";
             this.label194.Size = new System.Drawing.Size(147, 19);
             this.label194.TabIndex = 278;
@@ -7925,7 +8166,7 @@
             // label192
             // 
             this.label192.AutoSize = true;
-            this.label192.Location = new System.Drawing.Point(52, 205);
+            this.label192.Location = new System.Drawing.Point(48, 294);
             this.label192.Name = "label192";
             this.label192.Size = new System.Drawing.Size(173, 19);
             this.label192.TabIndex = 277;
@@ -7934,7 +8175,7 @@
             // label191
             // 
             this.label191.AutoSize = true;
-            this.label191.Location = new System.Drawing.Point(52, 171);
+            this.label191.Location = new System.Drawing.Point(48, 260);
             this.label191.Name = "label191";
             this.label191.Size = new System.Drawing.Size(154, 19);
             this.label191.TabIndex = 276;
@@ -7944,11 +8185,12 @@
             // 
             this.label170.AutoSize = true;
             this.label170.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label170.Location = new System.Drawing.Point(52, 54);
+            this.label170.Location = new System.Drawing.Point(38, 48);
             this.label170.Name = "label170";
             this.label170.Size = new System.Drawing.Size(201, 23);
             this.label170.TabIndex = 275;
             this.label170.Text = "Extreme Wind Speed";
+            this.label170.Click += new System.EventHandler(this.label170_Click);
             // 
             // label92
             // 
@@ -10949,7 +11191,7 @@
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.generateHeadersToolStripMenuItem,
-            this.downloadMERRA2DataToolStripMenuItem});
+            this.downloadReanalysisDataToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(50, 21);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -10957,16 +11199,16 @@
             // generateHeadersToolStripMenuItem
             // 
             this.generateHeadersToolStripMenuItem.Name = "generateHeadersToolStripMenuItem";
-            this.generateHeadersToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.generateHeadersToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             this.generateHeadersToolStripMenuItem.Text = "Generate Headers";
             this.generateHeadersToolStripMenuItem.Click += new System.EventHandler(this.generateHeadersToolStripMenuItem_Click);
             // 
-            // downloadMERRA2DataToolStripMenuItem
+            // downloadReanalysisDataToolStripMenuItem
             // 
-            this.downloadMERRA2DataToolStripMenuItem.Name = "downloadMERRA2DataToolStripMenuItem";
-            this.downloadMERRA2DataToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.downloadMERRA2DataToolStripMenuItem.Text = "Download MERRA2 data";
-            this.downloadMERRA2DataToolStripMenuItem.Click += new System.EventHandler(this.downloadMERRA2DataToolStripMenuItem_Click);
+            this.downloadReanalysisDataToolStripMenuItem.Name = "downloadReanalysisDataToolStripMenuItem";
+            this.downloadReanalysisDataToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.downloadReanalysisDataToolStripMenuItem.Text = "Download Reanalysis Data";
+            this.downloadReanalysisDataToolStripMenuItem.Click += new System.EventHandler(this.downloadMERRA2DataToolStripMenuItem_Click);
             // 
             // ofdXYZfile
             // 
@@ -11099,12 +11341,15 @@
             this.splContMetTS.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splContMetTS)).EndInit();
             this.splContMetTS.ResumeLayout(false);
+            this.spltMetDataTableAndCheckboxes.Panel1.ResumeLayout(false);
+            this.spltMetDataTableAndCheckboxes.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.spltMetDataTableAndCheckboxes)).EndInit();
+            this.spltMetDataTableAndCheckboxes.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataMetTS)).EndInit();
             this.pgeMetData.ResumeLayout(false);
             this.pgeMetData.PerformLayout();
             this.pgeMERRA.ResumeLayout(false);
             this.pgeMERRA.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataLTRefNodes)).EndInit();
             this.pgeMCP.ResumeLayout(false);
             this.pgeMCP.PerformLayout();
             this.pgeMetSumm.ResumeLayout(false);
@@ -11700,8 +11945,6 @@
         public System.Windows.Forms.TextBox txtMERRA_WS_ScaleFact;        
         public System.Windows.Forms.ListView lstMERRAAnnualProd;
         public System.Windows.Forms.ListView lstMERRA_MonthlyProd;
-        public System.Windows.Forms.Button btn_Import_MERRA;
-        public System.Windows.Forms.TextBox txt_MERRA2_folder;
         public System.Windows.Forms.FolderBrowserDialog fbd_Export;
         private System.Windows.Forms.TabPage pgeMonthlyAnalysis;
         internal System.Windows.Forms.Label label163;
@@ -11950,18 +12193,14 @@
         internal System.Windows.Forms.CheckBox chkTowerShadow;
         private System.Windows.Forms.Button btnResetMaxRecovDates;
         private System.Windows.Forms.Button btnExplainMERRA2Tab;
-        private System.Windows.Forms.ToolStripMenuItem downloadMERRA2DataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem downloadReanalysisDataToolStripMenuItem;
         public System.Windows.Forms.DateTimePicker dateLTRefAvailEnd;
         public System.Windows.Forms.DateTimePicker dateLTRefAvailStart;
         private System.Windows.Forms.Label label52;
         private System.Windows.Forms.Label label54;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.Label label205;
         public System.Windows.Forms.TextBox txtRefDataAvail;
         private System.Windows.Forms.Label label204;
-        public System.Windows.Forms.DataGridView dataLTRefNodes;
         private System.Windows.Forms.Label label206;
         public System.Windows.Forms.ComboBox cboMCP_Ref;
         private System.Windows.Forms.Label label207;
@@ -12096,6 +12335,26 @@
         public System.Windows.Forms.ComboBox cboPlot4Type;
         public System.Windows.Forms.ComboBox cboPlot3Type;
         public System.Windows.Forms.TextBox txtNumDaysTS;
+        private System.Windows.Forms.Label label214;
+        private System.Windows.Forms.Label label215;
+        public System.Windows.Forms.CheckBox chkShowLegenMetDataTS;
+        public System.Windows.Forms.CheckBox chkShowFilteredData;
+        private System.Windows.Forms.SplitContainer spltMetDataTableAndCheckboxes;
+        private System.Windows.Forms.Button btnRefDataDownloads;
+        private System.Windows.Forms.Label label216;
+        public System.Windows.Forms.TextBox txtRefDataDownloadFolder;
+        public System.Windows.Forms.TextBox txtRefDataDownloadName;
+        private System.Windows.Forms.Label label217;
+        public System.Windows.Forms.TextBox txtMaxLong;
+        private System.Windows.Forms.Label label218;
+        public System.Windows.Forms.TextBox txtMinLong;
+        private System.Windows.Forms.Label label219;
+        public System.Windows.Forms.TextBox txtMaxLat;
+        private System.Windows.Forms.Label label220;
+        public System.Windows.Forms.TextBox txtMinLat;
+        public System.Windows.Forms.ComboBox cboTI_TerrainComplexCorr;
+        public System.Windows.Forms.CheckBox chkApplyTCCtoEffTI;
+        private System.Windows.Forms.Button btnShowFilterFlags;
     }
 }
 

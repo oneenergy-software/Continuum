@@ -693,7 +693,7 @@ namespace ContinuumNS
                         }
 
                         thisInst.metList.numWD = WD_Ind;
-                        thisInst.updateThe.WindDirectionToDisplay(thisInst);                        
+                        thisInst.updateThe.WindDirectionToDisplay();                        
 
                     }
                 }
@@ -705,7 +705,7 @@ namespace ContinuumNS
                 sr.Close();
                 
                 AddModel(importModel);
-                thisInst.updateThe.AdvancedTAB(thisInst);
+                thisInst.updateThe.AdvancedTAB();
                 
             }
         }

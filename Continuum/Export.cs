@@ -2867,15 +2867,15 @@ namespace ContinuumNS
                 return;
 
             if (Month_str != "All")
-                filename = Output_folder + "\\" + thisRef.referenceType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Month_str + "_" + Year_str + "_Wind_Rose" + ".csv";
+                filename = Output_folder + "\\" + thisRef.refDataDownload.refType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Month_str + "_" + Year_str + "_Wind_Rose" + ".csv";
             else
-                filename = Output_folder + "\\" + thisRef.referenceType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Year_str + "_Wind_Rose" + ".csv";
+                filename = Output_folder + "\\" + thisRef.refDataDownload.refType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Year_str + "_Wind_Rose" + ".csv";
 
             // Header
             StreamWriter file = new StreamWriter(filename);
             try
             {
-                file.WriteLine("Wind Rose Estimated from " + thisRef.referenceType);
+                file.WriteLine("Wind Rose Estimated from " + thisRef.refDataDownload.refType);
                 if (thisRef.numNodes == 1)
                     file.WriteLine("Using closest node: ," + thisRef.nodes[0].XY_ind.Lat + ", " + thisRef.nodes[0].XY_ind.Lon);
                 else
@@ -2999,16 +2999,16 @@ namespace ContinuumNS
             else
                 return;
 
-            string filename = Output_folder + "\\" + thisRef.referenceType + "_Lat_" + thisRef.interpData.Coords.latitude + "_" + "Lon_" + thisRef.interpData.Coords.longitude + "_" + thisRef.Make_MERRA2_Date_String(thisRef.startDate)
+            string filename = Output_folder + "\\" + thisRef.refDataDownload.refType + "_Lat_" + thisRef.interpData.Coords.latitude + "_" + "Lon_" + thisRef.interpData.Coords.longitude + "_" + thisRef.Make_MERRA2_Date_String(thisRef.startDate)
                 + "_to_" + thisRef.Make_MERRA2_Date_String(thisRef.endDate) + ".csv";
 
             // Header
             StreamWriter file = new StreamWriter(filename);
-            file.WriteLine("Interpolated " + thisRef.referenceType + " Hourly Data");
+            file.WriteLine("Interpolated " + thisRef.refDataDownload.refType + " Hourly Data");
             if (thisRef.numNodes == 1)
-                file.WriteLine("Using closest " + thisRef.referenceType + " node: Lat = " + thisRef.nodes[0].XY_ind.Lat.ToString() + "; Long = " + thisRef.nodes[0].XY_ind.Lon.ToString());
+                file.WriteLine("Using closest " + thisRef.refDataDownload.refType + " node: Lat = " + thisRef.nodes[0].XY_ind.Lat.ToString() + "; Long = " + thisRef.nodes[0].XY_ind.Lon.ToString());
             else
-                file.WriteLine("Interpolated between " + thisRef.numNodes + " " + thisRef.referenceType + " nodes");
+                file.WriteLine("Interpolated between " + thisRef.numNodes + " " + thisRef.refDataDownload.refType + " nodes");
 
             file.WriteLine();
             file.WriteLine("Lat: ," + thisRef.interpData.Coords.latitude + ", Long: ," + thisRef.interpData.Coords.longitude);
@@ -3599,12 +3599,8 @@ namespace ContinuumNS
             Met thisMet = thisInst.GetSelectedMet("Site Conditions TI");
             if (thisMet.name == null) return;
             DateTime startTime = thisInst.dateTIStart.Value;
-            DateTime endTime = thisInst.dateTIEnd.Value;
-
-            if (thisMet.turbulence.avgWS == null)
-                thisMet.CalcTurbulenceIntensity(startTime, endTime, thisInst.modeledHeight, thisInst);
-            else if (thisMet.turbulence.startTime != startTime || thisMet.turbulence.endTime != endTime)
-                thisMet.CalcTurbulenceIntensity(startTime, endTime, thisInst.modeledHeight, thisInst);
+            DateTime endTime = thisInst.dateTIEnd.Value;                        
+            thisMet.CalcTurbulenceIntensity(startTime, endTime, thisInst.modeledHeight, thisInst);
 
             string turbType = thisInst.cboTI_Type.SelectedItem.ToString();
             double[] effectiveTI = new double[thisInst.metList.numWD];
@@ -3614,11 +3610,25 @@ namespace ContinuumNS
                 Turbine thisTurb = thisInst.GetSelectedTurbine("Turbulence");
                 double wohler = Convert.ToDouble(thisInst.cboEffectiveTI_m.SelectedItem.ToString());
                 TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Turbulence");
+                double terrComplCorr = 1.0;
+                if (thisInst.chkApplyTCCtoEffTI.Checked)
+                {
+                    if (thisInst.cboTI_TerrainComplexCorr.SelectedIndex == 1)
+                        terrComplCorr = 1.05;
+                    else if (thisInst.cboTI_TerrainComplexCorr.SelectedIndex == 2)
+                        terrComplCorr = 1.10;
+                    else if (thisInst.cboTI_TerrainComplexCorr.SelectedIndex == 3)
+                        terrComplCorr = 1.15;
+                }                                
 
                 if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
                 {
                     StreamWriter file = new StreamWriter(thisInst.sfd60mWS.FileName);
                     file.WriteLine(turbType + " Turbulence Intensity at Turbine: " + thisTurb.name + " using TI from Met: " + thisMet.name);
+
+                    if (turbType == "Effective" && thisInst.chkApplyTCCtoEffTI.Checked)
+                        file.WriteLine("Adjusted by terrain complexity factor: " + thisInst.cboTI_TerrainComplexCorr.SelectedItem.ToString());
+
                     file.WriteLine();
                     file.WriteLine(thisInst.savedParams.savedFileName);
                     file.WriteLine();
@@ -3637,7 +3647,7 @@ namespace ContinuumNS
 
                         for (int WD_Ind = 0; WD_Ind < thisInst.metList.numWD; WD_Ind++)
                         {
-                            effectiveTI = thisTurb.CalcEffectiveTI(thisMet, wohler, thisInst, powerCurve, WD_Ind);
+                            effectiveTI = thisTurb.CalcEffectiveTI(thisMet, wohler, thisInst, powerCurve, WD_Ind, terrComplCorr);
 
                             if (effectiveTI[WS_Ind] > 0)
                                 file.Write(Math.Round(effectiveTI[WS_Ind], 4).ToString() + ",");
@@ -3646,7 +3656,7 @@ namespace ContinuumNS
                         }
 
                         file.Write(",");
-                        effectiveTI = thisTurb.CalcEffectiveTI(thisMet, wohler, thisInst, powerCurve, thisInst.metList.numWD); // Calculates overall effective TI
+                        effectiveTI = thisTurb.CalcEffectiveTI(thisMet, wohler, thisInst, powerCurve, thisInst.metList.numWD, terrComplCorr); // Calculates overall effective TI
                         if (effectiveTI[WS_Ind] > 0)
                             file.WriteLine(Math.Round(effectiveTI[WS_Ind], 4).ToString());
                         else

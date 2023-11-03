@@ -251,7 +251,7 @@ namespace ContinuumNS
                         return;
 
                     //SetMERRA2LatLong(thisInst);
-                    thisInst.updateThe.LT_RefNodesAndCompleteness(thisInst);
+                    thisInst.updateThe.LT_RefNodesAndCompleteness();
                 }
                 catch
                 {
@@ -332,7 +332,7 @@ namespace ContinuumNS
                     thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
           //          thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, thisInst.Get_MCP_Method());
                     thisMet.CalcAllLT_WSWD_Dists(thisInst, thisMet.mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
-                    thisInst.updateThe.AllTABs(thisInst);
+                    thisInst.updateThe.AllTABs();
                 }
                 else
                 {
@@ -458,16 +458,16 @@ namespace ContinuumNS
         }
 
         /// <summary> Logs user into NASA's EarthData system and begins MERRA2 data download (in background worker). </summary> 
-        public async Task NASA_LogInAsync(Continuum thisInst, MERRA2_Download merraDownload)
+  /*      public async Task NASA_LogInAsync(Continuum thisInst, Reanalysis_Download merraDownload)
         {  
-            BackgroundWork.Vars_for_MERRA_Download Vars_for_MERRA = new BackgroundWork.Vars_for_MERRA_Download();
+            BackgroundWork.Vars_for_Reference_Download Vars_for_MERRA = new BackgroundWork.Vars_for_Reference_Download();
             Vars_for_MERRA.thisInst = thisInst;
-            Vars_for_MERRA.thisMERRA = merraDownload;
+            Vars_for_MERRA.thisRef = merraDownload;
             
             thisInst.BW_worker = new BackgroundWork();
             thisInst.BW_worker.Call_BW_MERRA2_Download(Vars_for_MERRA);
         }
-
+  */
         /// <summary> Returns MERRA2 data file latitude index. </summary> 
         public int GetLatitudeIndex(double thisLat)
         {            
@@ -532,7 +532,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Prompts user for new MERRA2 data file folder. </summary> 
-        public void ChangeMERRA2Folder(Continuum thisInst)
+  /*      public void ChangeMERRA2Folder(Continuum thisInst)
         {
             MessageBox.Show("Please select folder containing MERRA2 .ascii data files.");
             if (thisInst.fbd_MERRAData.ShowDialog() == DialogResult.OK)
@@ -545,7 +545,7 @@ namespace ContinuumNS
          //   SetMERRA2LatLong(thisInst);
             
         }
-
+  */
         /// <summary>  Return node lat/longs in MERRA2 file </summary>
         public MERRA.MERRA_Node_Data[] GetAllNodesInFile(Continuum thisInst)
         {

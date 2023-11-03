@@ -7,7 +7,7 @@ using System.Threading;
 namespace Continuum_Tests
 {
     [TestClass]
-    public class MERRACollection_Tests
+    public class ReferenceCollection_Tests
     {
         string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MERRACollection";
         string MERRA2Folder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
@@ -19,15 +19,24 @@ namespace Continuum_Tests
             
             string Filename = testingFolder + "\\GetInterpData test.cfm";
             thisInst.Open(Filename);
-            thisInst.merraList.MERRAfolder = MERRA2Folder;
-
+            
             // Test site
             double thisLat = 41.23;
             double thisLong = -83.4;
+
             Met thisMet = new Met();
 
-            thisInst.merraList.numMERRA_Nodes = 4;
-            thisInst.merraList.AddMERRA_GetDataFromTextFiles(thisLat, thisLong, -5, thisInst, thisMet, true);
+            ReferenceCollection.RefDataDownload refDataDown = thisInst.refList.ReadFileAndDefineRefDataDownload(MERRA2Folder);
+            if (thisInst.refList.HaveThisRefDataDownload(refDataDown) == false)
+                thisInst.refList.AddRefDataDownload(refDataDown);
+
+            Reference newRef = new Reference();
+            newRef.Set_Interp_LatLon_Dates_Offset(thisLat, thisLong, thisInst.UTM_conversions.GetUTC_Offset(thisLat, thisLong), thisInst.UTM_conversions);
+            newRef.numNodes = 4;
+            newRef.refDataDownload = refDataDown;
+            thisInst.refList.AddReference(newRef);
+
+            thisInst.refList.GetDataFromTextFiles(newRef, thisInst);                       
 
             while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false && thisInst.BW_worker.IsBusy()) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
                 Thread.Sleep(1000);
@@ -35,18 +44,17 @@ namespace Continuum_Tests
             if (thisInst.BW_worker.WasReturned)
                 Assert.Fail();
 
-            MERRA thisMERRA = thisInst.merraList.GetMERRA(thisLat, thisLong);
+            Reference thisMERRA = thisInst.refList.GetAllRefsAtLatLong(thisLat, thisLong)[0];
            
+            Assert.AreEqual(thisMERRA.interpData.TS_Data[226].WS, 14.60535, 0.001, "Wrong interp WS Index 226");
+            Assert.AreEqual(thisMERRA.interpData.TS_Data[1000].WS, 6.364464, 0.001, "Wrong interp WS Index 1000");
+            Assert.AreEqual(thisMERRA.interpData.TS_Data[2475].WS, 6.745679, 0.001, "Wrong interp WS Index 2475");
+            Assert.AreEqual(thisMERRA.interpData.TS_Data[4444].WS, 4.426161, 0.001, "Wrong interp WS Index 4444");
 
-            Assert.AreEqual(thisMERRA.interpData.TS_Data[226].WS50m, 14.60535, 0.001, "Wrong interp WS Index 226");
-            Assert.AreEqual(thisMERRA.interpData.TS_Data[1000].WS50m, 6.364464, 0.001, "Wrong interp WS Index 1000");
-            Assert.AreEqual(thisMERRA.interpData.TS_Data[2475].WS50m, 6.745679, 0.001, "Wrong interp WS Index 2475");
-            Assert.AreEqual(thisMERRA.interpData.TS_Data[4444].WS50m, 4.426161, 0.001, "Wrong interp WS Index 4444");
-
-            Assert.AreEqual(thisMERRA.interpData.TS_Data[226].WD50m, 220.7011, 0.01, "Wrong interp WD Index 226");
-            Assert.AreEqual(thisMERRA.interpData.TS_Data[1000].WD50m, 347.4748, 0.01, "Wrong interp WD Index 1000");
-            Assert.AreEqual(thisMERRA.interpData.TS_Data[2475].WD50m, 131.8697, 0.01, "Wrong interp WD Index 2475");
-            Assert.AreEqual(thisMERRA.interpData.TS_Data[4444].WD50m, 44.31306, 0.01, "Wrong interp WD Index 4444");
+            Assert.AreEqual(thisMERRA.interpData.TS_Data[226].WD, 220.7011, 0.01, "Wrong interp WD Index 226");
+            Assert.AreEqual(thisMERRA.interpData.TS_Data[1000].WD, 347.4748, 0.01, "Wrong interp WD Index 1000");
+            Assert.AreEqual(thisMERRA.interpData.TS_Data[2475].WD, 131.8697, 0.01, "Wrong interp WD Index 2475");
+            Assert.AreEqual(thisMERRA.interpData.TS_Data[4444].WD, 44.31306, 0.01, "Wrong interp WD Index 4444");
 
             thisInst.Close();
         }

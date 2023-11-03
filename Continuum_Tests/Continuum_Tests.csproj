@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" />
   <Import Project="..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -40,10 +41,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="gdalconst_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
       <HintPath>..\packages\GDAL.2.4.2\lib\net40\gdalconst_csharp.dll</HintPath>
@@ -122,39 +123,15 @@
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GenMap_Tests.cs" />
     <Compile Include="Grid_Info_Tests.cs" />
-    <Compile Include="GUI Tests\TAB file Tests\DelOneMetTAB_Tests.cs" />
-    <Compile Include="GUI Tests\Filtered LT TS file Tests\DelOneMetTSNoMERRA.cs" />
-    <Compile Include="GUI Tests\Filtered TS file Tests\DelOneMetTSNotFilt_Tests.cs" />
-    <Compile Include="GUI Tests\Raw TS file Tests\DelOneMetTS_Tests.cs" />
-    <Compile Include="GUI Tests\TAB file Tests\DelOneTAB.cs" />
-    <Compile Include="GUI Tests\TAB file Tests\DelThreeMetTABs_Tests.cs" />
-    <Compile Include="GUI Tests\Filtered LT TS file Tests\DelThreeMetTSNoMERRA_Tests.cs" />
-    <Compile Include="GUI Tests\Filtered TS file Tests\DelThreeMetTSNotFilt_Tests.cs" />
-    <Compile Include="GUI Tests\Raw TS file Tests\DelThreeMetTS_Tests.cs" />
-    <Compile Include="GUI Tests\TAB file Tests\DelTwoMetTABs_Tests.cs" />
-    <Compile Include="GUI Tests\Filtered LT TS file Tests\DelTwoMetTSNoMERRA.cs" />
-    <Compile Include="GUI Tests\Filtered TS file Tests\DelTwoMetTSNotFilt_Tests.cs" />
-    <Compile Include="GUI Tests\Raw TS file Tests\DelTwoMetTS_Tests.cs" />
     <Compile Include="GUI Tests\Map_tests.cs" />
     <Compile Include="GUI Tests\MCP_Tests.cs" />
-    <Compile Include="GUI Tests\MERRA_node_Tests.cs" />
-    <Compile Include="GUI Tests\Filtered LT TS file Tests\OneMetTSNotFiltLTAndGrossNet.cs" />
-    <Compile Include="GUI Tests\Filtered TS file Tests\OneMetTSNotFiltWithMERRAAndMCP.cs" />
-    <Compile Include="GUI Tests\Raw TS file Tests\OneMetRawTSWithMERRAAndMCP.cs" />
-    <Compile Include="GUI Tests\TAB file Tests\OneMetTABAndGrossNet_Tests.cs" />
+    <Compile Include="GUI Tests\ReferenceSite_Tests.cs" />
     <Compile Include="GUI Tests\SiteSuitability_Tests.cs" />
-    <Compile Include="GUI Tests\Raw TS file Tests\ThreeMetRawTSWithMERRAAndMCP.cs" />
-    <Compile Include="GUI Tests\TAB file Tests\ThreeMetTABAndGrossNet.cs" />
-    <Compile Include="GUI Tests\Filtered LT TS file Tests\ThreeMetTSNotFiltLTAndGrossNet.cs" />
-    <Compile Include="GUI Tests\Filtered TS file Tests\ThreeMetTSNotFiltWithMERRAAndMCP.cs" />
-    <Compile Include="GUI Tests\Raw TS file Tests\TwoMetRawTSWithMERRAAndMCP.cs" />
-    <Compile Include="GUI Tests\TAB file Tests\TwoMetTABAndGrossNet.cs" />
-    <Compile Include="GUI Tests\Filtered TS file Tests\TwoMetTSNotFiltWithMERRAAndMCP.cs" />
     <Compile Include="GUI Tests\WakeModel_Tests.cs" />
     <Compile Include="LC_Key_Tests.cs" />
     <Compile Include="MCP_Tests.cs" />
-    <Compile Include="MERRACollection_Tests.cs" />
-    <Compile Include="MERRA_Tests.cs" />
+    <Compile Include="ReferenceCollection_Tests.cs" />
+    <Compile Include="Reference_Tests.cs" />
     <Compile Include="MetCollection_Tests.cs" />
     <Compile Include="MetDataFilter_Tests.cs" />
     <Compile Include="MetPairCollection_Tests.cs" />
@@ -169,7 +146,6 @@
     <Compile Include="TopoInfo_Tests.cs" />
     <Compile Include="TurbineCollection_Tests.cs" />
     <Compile Include="Turbine_Tests.cs" />
-    <Compile Include="GUI Tests\Filtered LT TS file Tests\TwoMetTSNotFiltLTAndGrossNet.cs" />
     <Compile Include="UTM_Conversion_Tests.cs" />
     <Compile Include="WakeCollection_Tests.cs" />
   </ItemGroup>
@@ -196,6 +172,12 @@
       <Name>Continuum</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GUI Tests\Filtered LT TS file Tests\" />
+    <Folder Include="GUI Tests\Filtered TS file Tests\" />
+    <Folder Include="GUI Tests\Raw TS file Tests\" />
+    <Folder Include="GUI Tests\TAB file Tests\" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets" Condition="Exists('..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" />
@@ -206,6 +188,9 @@
     <Error Condition="!Exists('..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets'))" />
     <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.props'))" />
     <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.4.0\build\net45\MSTest.TestAdapter.targets')" />
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
 </Project>

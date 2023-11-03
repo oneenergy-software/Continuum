@@ -14,6 +14,7 @@ namespace GUI_Test_Creator
 {
     public partial class GUI_Creator2 : Form
     {
+        // TO DO: Get user folder and create folder names
         string testFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder\\Snippets";
      
         string saveToFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
@@ -295,8 +296,8 @@ namespace GUI_Test_Creator
             {
                 // (got a new permutation)
                 for (int i = 0; i < a.Length; i++)
-                    inputOrderAllPerms[i, comboInd] = a[i];
 
+                    inputOrderAllPerms[i, comboInd] = a[i];
                 comboInd++;
                 return;
             }
@@ -1616,7 +1617,7 @@ namespace GUI_Test_Creator
         public void UpdateDeleteTables()
         {
             string continuumFile = cboCFNFiles.SelectedItem.ToString();
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum(continuumFile);
 
             try
             {

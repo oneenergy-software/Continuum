@@ -1403,7 +1403,7 @@ namespace ContinuumNS
    
             thisInst.ChangesMade();
             thisInst.turbineList.AreTurbCalcsDone(thisInst);
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
         }
 
         /// <summary> Deletes any duplicate or unneeded AvgWSEsts. </summary>

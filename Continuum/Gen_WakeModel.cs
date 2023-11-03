@@ -150,8 +150,7 @@ namespace ContinuumNS
             else
             {
                 // Update Net turb tab
-                Update updateThe = new Update();
-                updateThe.NetTurbineEstsTAB(thisInst);
+                thisInst.updateThe.NetTurbineEstsTAB();
             }
 
             Close();

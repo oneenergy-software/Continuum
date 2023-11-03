@@ -35,9 +35,9 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.BW_worker.Close();
             
             // Called in RunWorkerCompleted
-            thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Shadow Flicker");
-            thisInst.updateThe.SiteSuitabilityTAB(thisInst);
-            thisInst.updateThe.ColoredButtons(thisInst);
+            thisInst.updateThe.SiteSuitabilityDropdown("Shadow Flicker");
+            thisInst.updateThe.SiteSuitabilityTAB();
+            thisInst.updateThe.ColoredButtons();
 
             if (thisInst.siteSuitability.numXFlicker != 0)
                 thisInst.SaveFile(false);
@@ -79,12 +79,12 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.BW_worker.Close();
 
             // Called in RunCompleted
-            thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Ice Throw");
-            thisInst.updateThe.IcingYearsDropDown(thisInst);
-            thisInst.updateThe.SiteSuitabilityTAB(thisInst);
+            thisInst.updateThe.SiteSuitabilityDropdown("Ice Throw");
+            thisInst.updateThe.IcingYearsDropDown();
+            thisInst.updateThe.SiteSuitabilityTAB();
             thisInst.ChangesMade();
 
-            thisInst.updateThe.ColoredButtons(thisInst);
+            thisInst.updateThe.ColoredButtons();
 
             Assert.AreNotEqual(thisInst.siteSuitability.yearlyIceHits.Length, 0, "Didn't calculate ice throw");
             Assert.AreNotEqual(thisInst.siteSuitability.yearlyIceHits[0].iceHits.Length, 0, "Didn't calculate ice throw");
@@ -105,11 +105,11 @@ namespace Continuum_Tests.GUI_Tests
             {
                 thisInst.siteSuitability.turbineSound = turbineSound;
                 thisInst.siteSuitability.CreateSoundMap(thisInst);
-                thisInst.updateThe.SoundMap(thisInst);
-                thisInst.updateThe.SoundAtZones(thisInst);
-                thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Sound");
-                thisInst.updateThe.ColoredButtons(thisInst);
-                thisInst.updateThe.SiteSuitabilityVisibility(thisInst);
+                thisInst.updateThe.SoundMap();
+                thisInst.updateThe.SoundAtZones();
+                thisInst.updateThe.SiteSuitabilityDropdown("Sound");
+                thisInst.updateThe.ColoredButtons();
+                thisInst.updateThe.SiteSuitabilityVisibility();
             }
 
             Assert.AreNotEqual(thisInst.siteSuitability.soundMap, null, "Didn't calculate turbine noise");

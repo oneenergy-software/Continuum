@@ -1854,11 +1854,10 @@ namespace ContinuumNS
 
             continuum.turbineList.ClearAllCalcs();
             continuum.ChangesMade();
-
-            Update update = new Update();
-            update.TopoMap(continuum);
-            update.ClearMapsPlotsAndTables(continuum);
-            update.ClearStats(continuum);
+           
+            continuum.updateThe.TopoMap();
+            continuum.updateThe.ClearMapsPlotsAndTables();
+            continuum.updateThe.ClearStats();
 
         }
 

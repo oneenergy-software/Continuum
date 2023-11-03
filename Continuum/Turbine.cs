@@ -1755,11 +1755,16 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates and returns effective TI at turbine site for a specified wind direction sector using ambient TI measured at met site. </summary>        
-        public double[] CalcEffectiveTI(Met thisMet, double wohler, Continuum thisInst, TurbineCollection.PowerCurve powerCurve, int WD_Ind)
+        public double[] CalcEffectiveTI(Met thisMet, double wohler, Continuum thisInst, TurbineCollection.PowerCurve powerCurve, int WD_Ind, double terrComplCorr)
         {            
             double[] effectiveTI = new double[thisInst.metList.numWS];
             double[,] probWake = thisInst.turbineList.CalcProbOfWakeForEffectiveTI(thisInst, UTMX, UTMY, powerCurve);
-                      
+            double[,] p90SD = new double[thisMet.turbulence.p90SD.GetUpperBound(0) + 1, thisMet.turbulence.p90SD.GetUpperBound(1) + 1];
+                        
+            for (int i = 0; i < thisInst.metList.numWS; i++)
+                for (int j = 0; j < thisInst.metList.numWD; j++)
+                    p90SD[i, j] = thisMet.turbulence.p90SD[i, j] * terrComplCorr;
+
             for (int i = 0; i < thisInst.metList.numWS; i++)
             {
                 if (WD_Ind != thisInst.metList.numWD) // get TI for specfic WD
@@ -1775,15 +1780,15 @@ namespace ContinuumNS
                             if (thisInst.turbineList.turbineEsts[j].name != name)
                             {
                                 double wakedSD = CalcWakedStDev(thisInst.turbineList.turbineEsts[j].UTMX, thisInst.turbineList.turbineEsts[j].UTMY, powerCurve,
-                                    thisMet.turbulence.p90SD[i, WD_Ind], thisMet.turbulence.avgWS[i, WD_Ind], thisInst);
+                                    p90SD[i, WD_Ind], thisMet.turbulence.avgWS[i, WD_Ind], thisInst);
                                 sumWeightedWakeProb = sumWeightedWakeProb + probWake[j, WD_Ind] * Math.Pow(wakedSD, wohler);
                                 sumWakeProb = sumWakeProb + probWake[j, WD_Ind];
                             }
                         }
 
-                        effectiveTI[i] = Math.Pow((1 - sumWakeProb) * Math.Pow(thisMet.turbulence.p90SD[i, WD_Ind], wohler) + sumWeightedWakeProb, (1 / wohler));
+                        effectiveTI[i] = Math.Pow((1 - sumWakeProb) * Math.Pow(p90SD[i, WD_Ind], wohler) + sumWeightedWakeProb, (1 / wohler));
 
-                        if (thisMet.turbulence.avgWS[i, WD_Ind] > 0 && thisMet.turbulence.p90SD[i, WD_Ind] > 0)
+                        if (thisMet.turbulence.avgWS[i, WD_Ind] > 0 && p90SD[i, WD_Ind] > 0)
                             effectiveTI[i] = effectiveTI[i] / thisMet.turbulence.avgWS[i, WD_Ind];
                         else
                             effectiveTI[i] = 0;
@@ -1791,7 +1796,7 @@ namespace ContinuumNS
                     else
                     {
                         if (thisMet.turbulence.avgWS[i, WD_Ind] > 0)
-                            effectiveTI[i] = thisMet.turbulence.p90SD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind];
+                            effectiveTI[i] = p90SD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind];
                         else
                             effectiveTI[i] = 0;
                     }
@@ -1814,7 +1819,7 @@ namespace ContinuumNS
                                     if (thisInst.turbineList.turbineEsts[j].name != name)
                                     {
                                         double wakedSD = CalcWakedStDev(thisInst.turbineList.turbineEsts[j].UTMX, thisInst.turbineList.turbineEsts[j].UTMY, powerCurve,
-                                            thisMet.turbulence.p90SD[i, WD], thisMet.turbulence.avgWS[i, WD], thisInst);
+                                            p90SD[i, WD], thisMet.turbulence.avgWS[i, WD], thisInst);
                                         sumWeightedWakeProb = sumWeightedWakeProb + probWake[j, WD] * Math.Pow(wakedSD, wohler);
                                         sumWakeProb = sumWakeProb + probWake[j, WD];
                                     }
@@ -1823,8 +1828,8 @@ namespace ContinuumNS
                                 if (thisMet.turbulence.count[i, WD] > 2)
                                 {
                                     sumCount = sumCount + thisMet.turbulence.count[i, WD];
-                                    double sectorEffTI = Math.Pow((1 - sumWakeProb) * Math.Pow(thisMet.turbulence.p90SD[i, WD], wohler) + sumWeightedWakeProb, (1 / wohler));
-
+                                    double sectorEffTI = Math.Pow((1 - sumWakeProb) * Math.Pow(p90SD[i, WD], wohler) + sumWeightedWakeProb, (1 / wohler));
+                                                                        
                                     if (thisMet.turbulence.avgWS[i, WD] > 0)
                                         sectorEffTI = sectorEffTI / thisMet.turbulence.avgWS[i, WD];
 
@@ -1839,7 +1844,7 @@ namespace ContinuumNS
                         {
                             if (thisMet.turbulence.avgWS[i, WD] > 0 && thisMet.turbulence.p90SD[i, WD] > 0)
                             {
-                                effectiveTI[i] = effectiveTI[i] + thisMet.turbulence.p90SD[i, WD] / thisMet.turbulence.avgWS[i, WD] * thisMet.turbulence.count[i, WD];
+                                effectiveTI[i] = effectiveTI[i] + p90SD[i, WD] / thisMet.turbulence.avgWS[i, WD] * thisMet.turbulence.count[i, WD];
                                 sumCount = sumCount + thisMet.turbulence.count[i, WD];
                             }                            
                         }                        
@@ -1848,9 +1853,7 @@ namespace ContinuumNS
                     if (sumCount > 0)
                         effectiveTI[i] = effectiveTI[i] / sumCount;
                 }
-
             }
-
 
             return effectiveTI;
         }

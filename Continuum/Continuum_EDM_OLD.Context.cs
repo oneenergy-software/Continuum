@@ -8,9 +8,9 @@ using System.Data.Entity.Infrastructure;
 
 namespace ContinuumNS
 {
-    public partial class Continuum_EDMContainer : DbContext
+    public partial class Continuum_EDMContainerOLD : DbContext
     {
-        public Continuum_EDMContainer(string connectionString) : base(connectionString)
+        public Continuum_EDMContainerOLD(string connectionString) : base(connectionString)
         {
         }
         public DbSet<Node_table> Node_table { get; set; }
@@ -21,10 +21,7 @@ namespace ContinuumNS
         public DbSet<Anem_table> Anem_table { get; set; }
         public DbSet<Vane_table> Vane_table { get; set; }
         public DbSet<Temp_table> Temp_table { get; set; }
-        public DbSet<MERRA_Node_table> MERRA_Node_table { get; set; }
+        public DbSet<MERRA_Node_table> MERRA_Node_table { get; set; }        
         
-        public DbSet<ERA_Node_table> ERA_Node_table { get; set; }
-
-        public DbSet<Baro_table> Baro_table { get; set; }
     }
 }

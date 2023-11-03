@@ -11,6 +11,7 @@ using Microsoft.Research.Science.Data.Imperative;
 using Microsoft.Research.Science.Data;
 using System.Net;
 using Microsoft.VisualBasic;
+using System.Windows.Media.Media3D;
 
 namespace ContinuumNS
 {
@@ -20,19 +21,19 @@ namespace ContinuumNS
     [Serializable()]
     public class Reference
     {
-        /// <summary> Reference data type: ERA5 or MERRA2. </summary>
-        public string referenceType;
+      //  /// <summary> Reference data type: ERA5 or MERRA2. </summary>
+      //  public string referenceType; // this is stored in RefDataDownload
         
         /// <summary> Start of reference dataset. </summary>
         public DateTime startDate = new DateTime(1989, 1, 1, 0, 0, 0);
         /// <summary> End of reference dataset. </summary>
         public DateTime endDate = new DateTime(2018, 12, 31, 23, 0, 0);
-        /// <summary> Reference data file location. </summary>
-        public string refDataFolder = "";
-        /// <summary> NASA Earth Data system username. </summary>
-        public string earthdataUser = "";
-        /// <summary> NASA Earth Data system password. </summary>
-        public string earthdataPwd = "";
+        /// <summary> Reference data download object (contains folder location, start/end, coords). </summary>
+        public ReferenceCollection.RefDataDownload refDataDownload;
+   //     /// <summary> Renalysis data provider username (NASA EarthData). This is now stored in ReferenceCollection.RefDataDownload objects </summary>
+   //     public string earthdataUser = "";
+   //     /// <summary> Renalysis data provider password. This is now stored in ReferenceCollection.RefDataDownload objects </summary>
+   //     public string earthdataPwd = "";
 
         /// <summary> Site location coordinates, interpolated reference time series data (WS, WD, pressure, and temp), and calculated monthly and annual energy production. </summary>
         public Wind_Data_and_Prod_Stats interpData;
@@ -51,10 +52,10 @@ namespace ContinuumNS
         public double wswdH;
         /// <summary> Height of Temperature estimates </summary>
         public double temperatureH;
-        /// <summary> Latitude resolution in degs </summary>
-        public double latRes = 0.5;
-        /// <summary> Longitude resolution in degs </summary>
-        public double lonRes = 0.625;
+   //     /// <summary> Latitude resolution in degs </summary> // Moved this to ReferenceCollection.GetLatRes(RefDataDownload)
+   //     public double latRes = 0.5;
+   //     /// <summary> Longitude resolution in degs </summary>
+   //     public double lonRes = 0.625;                
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,6 +75,28 @@ namespace ContinuumNS
             public UTM_conversion.UTM_coords UTM;
             /// <summary> UTM hour offset. </summary>
             public int UTC_offset;
+
+            /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary>            
+            public Wind_Data_and_Prod_Stats(MERRA.Wind_Data_and_Prod_Stats merraObj) : this()
+            {
+                if (TS_Data != null)
+                {
+                    for (int t = 0; t < this.TS_Data.Length; t++)
+                        this.TS_Data[t] = (Wind_TS_with_Prod)merraObj.TS_Data[t];
+                }
+
+                if (monthlyProd != null)
+                {
+                    for (int m = 0; m < this.monthlyProd.Length; m++)
+                        this.monthlyProd[m] = (MonthlyProdByYearAndLTAvg)merraObj.Monthly_Prod[m];
+                }
+
+                this.annualProd = (YearlyProdAndLTAvg)merraObj.Annual_Prod;
+                this.Coords = merraObj.Coords;
+                this.UTM = merraObj.UTM;
+            }
+
+            public static explicit operator Wind_Data_and_Prod_Stats(MERRA.Wind_Data_and_Prod_Stats merraObj) => new Wind_Data_and_Prod_Stats(merraObj);
         }
 
   /*      /// <summary> Contains time stamp, wind speed, direction, pressure, and temperature data </summary>
@@ -112,6 +135,21 @@ namespace ContinuumNS
             public double seaPress;
             /// <summary> Temperature at temperatureH  </summary>
             public double temperature;
+
+            /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary> 
+            public Wind_TS_with_Prod(MERRA.Wind_TS_with_Prod merraObj) : this()
+            {
+                this.thisDate = merraObj.ThisDate;
+                this.WS = merraObj.WS50m;
+                this.WD = merraObj.WD50m;
+                this.prod = merraObj.Prod;
+                this.seaPress = merraObj.SeaPress;
+                this.surfPress = merraObj.SurfPress;
+                this.temperature = merraObj.Temp10m;
+            }
+
+            /// <summary> Data conversion operator from MERRA2 object </summary>            
+            public static explicit operator Wind_TS_with_Prod(MERRA.Wind_TS_with_Prod merraObj) => new Wind_TS_with_Prod(merraObj);
         }
 
         /// <summary> Contains WS, WD, temperature, and pressure time series data and lat/long and corresponding datafile X/Y indices </summary>
@@ -161,6 +199,20 @@ namespace ContinuumNS
             public YearAndProd[] YearProd;
             /// <summary>   Long-term average monthly energy production. </summary>
             public double LT_Avg;
+
+            /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary> 
+            public MonthlyProdByYearAndLTAvg(MERRA.MonthlyProdByYearAndLTAvg merraObj) : this()
+            {
+                this.Month = merraObj.Month;
+
+                for (int i = 0; i < YearProd.Length; i++)
+                    this.YearProd[i] = (YearAndProd)merraObj.YearProd[i];
+                
+                this.LT_Avg = merraObj.LT_Avg;                
+            }
+
+            /// <summary> Data conversion operator from MERRA2 object </summary>            
+            public static explicit operator MonthlyProdByYearAndLTAvg(MERRA.MonthlyProdByYearAndLTAvg merraObj) => new MonthlyProdByYearAndLTAvg(merraObj);
         }
 
         /// <summary> Contains yearly energy production for each year and long-term AEP</summary>
@@ -171,6 +223,21 @@ namespace ContinuumNS
             public YearAndProd[] Yearly_Prod;
             /// <summary>   Long-term average annual energy production  </summary>
             public double LT_Avg;
+
+            /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary> 
+            public YearlyProdAndLTAvg(MERRA.YearlyProdAndLTAvg merraObj) : this()
+            {
+                if (Yearly_Prod != null)
+                {
+                    for (int i = 0; i < Yearly_Prod.Length; i++)
+                        this.Yearly_Prod[i] = (YearAndProd)merraObj.Yearly_Prod[i];
+                }
+
+                this.LT_Avg = merraObj.LT_Avg;
+            }
+
+            /// <summary> Data conversion operator from MERRA2 object </summary>            
+            public static explicit operator YearlyProdAndLTAvg(MERRA.YearlyProdAndLTAvg merraObj) => new YearlyProdAndLTAvg(merraObj);
         }
 
 
@@ -182,6 +249,16 @@ namespace ContinuumNS
             public int year;
             /// <summary>  Energy Production</summary>
             public double prod;
+
+            /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary> 
+            public YearAndProd(MERRA.YearAndProd merraObj) : this()
+            {
+                this.year = merraObj.year;
+                this.prod = merraObj.prod;
+            }
+
+            /// <summary> Data conversion operator from MERRA2 object </summary>            
+            public static explicit operator YearAndProd(MERRA.YearAndProd merraObj) => new YearAndProd(merraObj);
         }
 
         /// <summary> Holds hourly timestamps and east/north (i.e. U/V) wind speeds for 24 hour period (i.e. 1 day) </summary>
@@ -203,12 +280,12 @@ namespace ContinuumNS
             string refName = "";
             
             if (isUserDefined)
-                refName = referenceType + " Lat: " + interpData.Coords.latitude.ToString() + ", Long: " + interpData.Coords.longitude.ToString() +
+                refName = refDataDownload.refType + " Lat: " + interpData.Coords.latitude.ToString() + ", Long: " + interpData.Coords.longitude.ToString() +
                 " , Num Nodes: " + numNodes.ToString();
             else
             {
                 Met thisMet = metList.GetMetAtLatLon(interpData.Coords.latitude, interpData.Coords.longitude, utmConv);
-                refName = referenceType + " interp. at " + thisMet.name + " , Num Nodes: " + numNodes.ToString();
+                refName = refDataDownload.refType + " interp. at " + thisMet.name + " , Num Nodes: " + numNodes.ToString();
             }                
 
             return refName;            
@@ -323,7 +400,7 @@ namespace ContinuumNS
             bool Need_it = false;
             int String_Len = thisString.Length;
 
-            if (referenceType == "MERRA2")
+            if (refDataDownload.refType == "MERRA2")
             {
                 if (String_Len >= 11)
                     if (thisString.Substring(0, 11) == "PRECTOTCORR") // Bias-corrected precipitation
@@ -877,9 +954,9 @@ namespace ContinuumNS
             double[] lats = new double[numLats];
             double[] longs = new double[numLongs];
 
-            if (referenceType == "MERRA2")
+            if (refDataDownload.refType == "MERRA2")
             {
-                string[] refDataFiles = Directory.GetFiles(refDataFolder, "*.ascii");
+                string[] refDataFiles = Directory.GetFiles(refDataDownload.folderLocation, "*.ascii");
                 string line;
 
                 if (refDataFiles == null)
@@ -925,10 +1002,10 @@ namespace ContinuumNS
 
                 file.Close();
             }
-            else
+            else if (refDataDownload.refType == "ERA5")
             {
                 // Get ERA5 pull index
-                string[] refDataFiles = Directory.GetFiles(refDataFolder, "*.nc");
+                string[] refDataFiles = Directory.GetFiles(refDataDownload.folderLocation, "*.nc");
 
                 if (refDataFiles == null)
                 {
@@ -1020,121 +1097,31 @@ namespace ContinuumNS
             return gotAllIndices;
         }
 
-
-
-        /// <summary> Finds lat/long and MERRA2 datafile X/Y indices for MERRA2 node(s) closest to project site. Returns true if required MERRA2 data are available (i.e. locally downloaded). </summary>        
-        public bool FindCoords()
+        /// <summary> Finds lat/long and datafile X/Y indices for reference node(s) closest to project site. Returns true if required reference data are available (i.e. locally downloaded). </summary>        
+        public bool FindCoords(ReferenceCollection refList)
         {
             bool foundInds = false;
-
-            double[] lats = new double[0];
-            double[] longs = new double[0];
+            
+            double[] lats = refList.GetAllLatsOrLongs(refDataDownload, "Lats");
+            double[] longs = refList.GetAllLatsOrLongs(refDataDownload, "Longs");
             int numPerRC = 1; // Number of nodes per row/column
             numPerRC = (int)Math.Pow(numNodes, 0.5);
+                
 
-            if (referenceType == "MERRA2")
-            {
-                // Grabbing filepaths for all MERRA data containing files
-                string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii");
-                string line;
-
-                if (MERRAfiles == null)
-                {
-                    MessageBox.Show("Check specified folderpath and try again.");
-                    return foundInds;
-                }
-
-                // Open one of the MERRA .ascii files and find the lat/lon closest TWO lats/lons to that of the input
-                StreamReader file;
-
-                try
-                {
-                    file = new StreamReader(MERRAfiles[0]);
-                }
-                catch
-                {
-                    MessageBox.Show("Error opening MERRA data file. Check that it's not open in another program.");
-                    return foundInds;
-                }
-                                
-                while ((line = file.ReadLine()) != null)
-                {
-                    char[] delims = { ',' };
-                    string[] substrings = line.Split(delims);
-
-
-                    if (substrings[0] == "lat") // read in all latitudes
-                    {
-                        Array.Resize(ref lats, substrings.Length - 1);
-
-                        for (int i = 1; i < substrings.Length; i++)
-                            lats[i - 1] = Convert.ToDouble(substrings[i]);
-                    }
-
-                    if (substrings[0] == "lon") // read in all latitudes
-                    {
-                        Array.Resize(ref longs, substrings.Length - 1);
-
-                        for (int i = 1; i < substrings.Length; i++)
-                            longs[i - 1] = Convert.ToDouble(substrings[i]);
-                    }
-                }
-
-                file.Close();
-            }
-            else
-            {
-                // Read ERA5 file and get coords and indices
-                string[] refDataFiles = Directory.GetFiles(refDataFolder, "*.nc");
-
-                if (refDataFiles == null)
-                {
-                    MessageBox.Show("Check specified folder path and try again.");
-                    return foundInds;
-                }
-
-                try
-                {
-                    DataSet thisERA5Data = DataSet.Open(refDataFiles[0]);
-                    Variable[] allVars = thisERA5Data.Variables.ToArray();
-
-                    Single[] singlats = thisERA5Data.GetData<Single[]>("latitude");
-                    Single[] singlons = thisERA5Data.GetData<Single[]>("longitude");                                       
-
-                    lats = new double[singlats.Length];
-                    longs = new double[singlons.Length];
-
-                    for (int l = 0; l < singlats.Length; l++)
-                        lats[l] = Convert.ToDouble(singlats[l]);
-
-                    for (int l = 0; l < singlons.Length; l++)
-                        longs[l] = Convert.ToDouble(singlons[l]);
-
-                    Array.Sort(lats);
-                    Array.Sort(longs);
-                }
-                catch
-                {
-                    MessageBox.Show("Error opening ERA5 data file.");
-                    return foundInds;
-                }
-
-            }
-
-            if ((lats.Length < 4 || longs.Length < 4) & numPerRC == 4) // 16 MERRA nodes
+            if ((lats.Length < 4 || longs.Length < 4) && numPerRC == 4) // 16 MERRA nodes
             {
                 MessageBox.Show("Reference data range is too small. A minimum of four latitudes and four longitudes are needed if 16 nodes are used.", "Continuum 3");
                 return foundInds;
             }
-            else if (lats.Length < 2 || longs.Length < 2)
+            else if ((lats.Length < 2 || longs.Length < 2) && numPerRC == 2) // 4 reference nodes
             {
-                MessageBox.Show("Reference data range is too small. A minimum of two latitudes and two longitudes are needed.", "Continuum 3");
+                MessageBox.Show("Reference data range is too small. A minimum of two latitudes and two longitudes are needed if 4 nodes are used.", "Continuum 3");
                 return foundInds;
             }
 
             // Figure out if the Reference files have nodes covering the specified area
-            double latReso = lats[1] - lats[0];
-            double longReso = longs[1] - longs[0];
+            double latReso = refList.GetLatRes(refDataDownload);
+            double longReso = refList.GetLongRes(refDataDownload);
 
             //  double minReqLat = interpData.Coords.Lat - (numPerRC / 2) * latReso;
             double minReqLat = lats[0];
@@ -1274,7 +1261,7 @@ namespace ContinuumNS
 
             using (var context = new Continuum_EDMContainer(connString))
             {
-                if (referenceType == "MERRA2")
+                if (refDataDownload.refType == "MERRA2")
                 {
                     for (int i = 0; i < numNewData; i++)
                     {
@@ -1299,7 +1286,7 @@ namespace ContinuumNS
 
                     }
                 }
-                else if (referenceType == "ERA5")
+                else if (refDataDownload.refType == "ERA5")
                 {
                     for (int i = 0; i < numNewData; i++)
                     {
@@ -1313,7 +1300,7 @@ namespace ContinuumNS
 
                         try
                         {
-                            context.ERA_Node_table.Add(eraNodeTable);
+                      //      context.ERA_Node_table.Add(eraNodeTable);
                             context.SaveChanges();
                         }
                         catch (Exception ex)
@@ -1346,18 +1333,59 @@ namespace ContinuumNS
                     thisLat = nodes[i].XY_ind.Lat;
                     thisLong = nodes[i].XY_ind.Lon;
 
-                    if (referenceType == "MERRA2")
+                    if (refDataDownload.refType == "MERRA2")
                     {
                         var thisMERRAData = from N in context.MERRA_Node_table where N.latitude == thisLat && N.longitude == thisLong select N;
 
                         foreach (var N in thisMERRAData)
                         {
                             MemoryStream MS = new MemoryStream(N.merraData);
-                            nodes[i].TS_Data = (Wind_TS_with_Prod[])bin.Deserialize(MS);
+
+                            // Data may be stored using old MERRA.Wind_TS struct
+                            var thisTSData = bin.Deserialize(MS);
                             MS.Close();
+
+                            Wind_TS_with_Prod[] newStructTSData = new Wind_TS_with_Prod[0];
+                            MERRA.Wind_TS[] oldStructTSData = new MERRA.Wind_TS[0];
+
+                            try
+                            {
+                                // Try new struct first
+                                newStructTSData = (Wind_TS_with_Prod[])thisTSData;
+                                nodes[i].TS_Data = newStructTSData;
+                            }
+                            catch
+                            {
+                                // Threw error so try old one
+                                try
+                                {
+                                    oldStructTSData = (MERRA.Wind_TS[])thisTSData;
+
+                                    // Populate nodes.TS_Data with data
+                                    int numRecs = oldStructTSData.Length;
+                                    nodes[i].TS_Data = new Wind_TS_with_Prod[numRecs];
+
+                                    for (int r = 0; r < numRecs; r++)
+                                    {
+                                        nodes[i].TS_Data[r].thisDate = oldStructTSData[r].ThisDate;
+                                        nodes[i].TS_Data[r].WS = oldStructTSData[r].WS50m;
+                                        nodes[i].TS_Data[r].WD = oldStructTSData[r].WD50m;
+                                        nodes[i].TS_Data[r].temperature = oldStructTSData[r].Temp10m;
+                                        nodes[i].TS_Data[r].surfPress = oldStructTSData[r].SurfPress;
+                                        nodes[i].TS_Data[r].seaPress = oldStructTSData[r].SeaPress;
+                                    }
+
+                                }
+                                catch
+                                {
+                                    MessageBox.Show("Error reading MERRA2 data from database file");
+                                }
+                            }
+                                                                                    
+                            
                         }
                     }
-                    else if (referenceType == "ERA5")
+                    else if (refDataDownload.refType == "ERA5")
                     {
                         var thisERA5Data = from N in context.ERA_Node_table where N.latitude == thisLat && N.longitude == thisLong select N;
 
@@ -1367,6 +1395,7 @@ namespace ContinuumNS
                             nodes[i].TS_Data = (Wind_TS_with_Prod[])bin.Deserialize(MS);
                             MS.Close();
                         }
+                  
                     }
                 }
 
@@ -1519,14 +1548,17 @@ namespace ContinuumNS
 
 
         /// <summary> Returns array of lat/long coordinates of reference data coordinates for specified lat/long </summary>        
-        public UTM_conversion.Lat_Long[] GetRequiredCoords()
+        public UTM_conversion.Lat_Long[] GetRequiredCoords(ReferenceCollection refList)
         {
             UTM_conversion.Lat_Long[] theseReqCoords = new UTM_conversion.Lat_Long[numNodes];
 
             double latitude = interpData.Coords.latitude;
             double longitude = interpData.Coords.longitude;
 
-            double minReqLat = Math.Round(interpData.Coords.latitude / latRes, 0) * latRes;
+            double latRes = refList.GetLatRes(refDataDownload);
+            double lonRes = refList.GetLongRes(refDataDownload);
+
+            double minReqLat = Math.Round(latitude / latRes, 0) * latRes;
             double minReqLong = Math.Round(longitude / lonRes) * lonRes;
             double maxReqLat = minReqLat;
             double maxReqLong = minReqLong;
@@ -1617,7 +1649,7 @@ namespace ContinuumNS
             UTM_conversion.Lat_Long[] newRequiredMERRANodes = new UTM_conversion.Lat_Long[0];
             int numNewReqNodes = 0;
 
-            UTM_conversion.Lat_Long[] theseRequiredNodes = GetRequiredCoords();
+            UTM_conversion.Lat_Long[] theseRequiredNodes = GetRequiredCoords(thisInst.refList);
             UTM_conversion.Lat_Long[] existingNodes = new UTM_conversion.Lat_Long[0];
             int numExistingNodes = 0;
 
@@ -1627,7 +1659,7 @@ namespace ContinuumNS
 
             using (var context = new Continuum_EDMContainer(connString))
             {
-                if (referenceType == "MERRA2")
+                if (refDataDownload.refType == "MERRA2")
                 {
                     var theseNodes = from N in context.MERRA_Node_table select N;
 
@@ -1642,15 +1674,16 @@ namespace ContinuumNS
                 else
                 {
                     // To do: ERA5 DB
-                    var theseNodes = from N in context.ERA_Node_table select N;
+          //          var theseNodes = from N in context.ERA_Node_table select N;
 
-                    foreach (var N in theseNodes)
+          /*          foreach (var N in theseNodes)
                     {
                         numExistingNodes++;
                         Array.Resize(ref existingNodes, numExistingNodes);
                         existingNodes[numExistingNodes - 1].latitude = N.latitude;
                         existingNodes[numExistingNodes - 1].longitude = N.longitude;
                     }
+          */
                 }
             }
 
@@ -1678,109 +1711,8 @@ namespace ContinuumNS
             return newRequiredMERRANodes;
         }
 
-        /// <summary> Prompts user for new reference data file folder. </summary> 
-        public void ChangeReferenceDataFolder(Continuum thisInst)
-        {
-            MessageBox.Show("Please select folder containing reference data files.");
-            if (thisInst.fbd_MERRAData.ShowDialog() == DialogResult.OK)
-                refDataFolder = thisInst.fbd_MERRAData.SelectedPath;
-            else
-                return;
 
-            thisInst.txt_MERRA2_folder.Text = refDataFolder;           
-
-        }
-
-        /// <summary> Returns true if MERRA2 daily datafile exists in folder. </summary>
-        public bool MERRA2FileExists(DateTime thisDate)
-        {
-            bool fileExists = false;
-            string fileName = CreateMERRA2filename(thisDate);
-
-            try
-            {
-                string[] thisFile = Directory.GetFiles(refDataFolder, fileName);
-                if (thisFile.Length == 1)
-                    fileExists = true;
-                else
-                    fileExists = false;
-            }
-            catch
-            {
-                return fileExists;
-            }
-
-            return fileExists;
-        }
-
-        /// <summary> Creates filename for exported MERRA2 data. </summary>
-        public string CreateMERRA2filename(DateTime thisDate)
-        {
-            int dateNum = 0;
-            if (thisDate.Year <= 1991)
-                dateNum = 100;
-            else if (thisDate.Year <= 2000)
-                dateNum = 200;
-            else if (thisDate.Year <= 2010)
-                dateNum = 300;
-            else
-                dateNum = 400;
-
-            string thisMonth = thisDate.Month.ToString();
-            if (thisDate.Month < 10)
-                thisMonth = "0" + thisMonth;
-
-            string thisDay = thisDate.Day.ToString();
-            if (thisDate.Day < 10)
-                thisDay = "0" + thisDay;
-
-            string MERRA2name = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
-
-            return MERRA2name;
-        }
-
-        /// <summary> Downloads and save MERRA2 datafile for specified day.     </summary>
-        public bool SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate)
-        {
-            // Now access the data            
-            Stream stream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(stream);
-            string MERRA2filename = CreateMERRA2filename(thisDate);
-            StreamWriter writer = new StreamWriter(refDataFolder + "\\" + MERRA2filename);
-
-            bool isDataset = false;
-            bool isFirstLine = true;
-
-            // Save to file
-            while (reader.EndOfStream == false)
-            {
-                string thisLine = reader.ReadLine();
-                writer.WriteLine(thisLine);
-
-                if (isFirstLine)
-                {
-                    if (thisLine.Length > 8)
-                        if (thisLine.Substring(0, 8) == "Dataset:")
-                            isDataset = true;
-                    isFirstLine = false;
-                }
-            }
-
-            writer.Close();
-            stream.Close();
-            reader.Close();
-
-            return isDataset;
-        }
-
-        /// <summary> Returns number of hours in long-term ref data. </summary> 
-        public int GetLTRefLength()
-        {
-            TimeSpan timeSpan = endDate - startDate;
-            int thisLength = timeSpan.Days * 24 + timeSpan.Hours + 1;
-
-            return thisLength;
-        }
+       
 
         /// <summary>  Return node lat/longs in reference data file </summary>
         public Node_Data[] GetAllNodesInFile()
@@ -1788,7 +1720,7 @@ namespace ContinuumNS
             // Opens first file in folder and creates MERRA objects for each set of latitude and longitude
             Node_Data[] allRefnodes = new Node_Data[0];
 
-            bool folderExists = Directory.Exists(refDataFolder);
+            bool folderExists = Directory.Exists(refDataDownload.folderLocation);
             if (folderExists == false)
                 return allRefnodes;
 
@@ -1797,9 +1729,9 @@ namespace ContinuumNS
             double[] lats = new double[numLats];
             double[] longs = new double[numLongs];
 
-            if (referenceType == "MERRA2")
+            if (refDataDownload.refType == "MERRA2")
             {
-                string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii");
+                string[] MERRAfiles = Directory.GetFiles(refDataDownload.folderLocation, "*.ascii");
                 string line;
 
                 if (MERRAfiles.Length > 0)
@@ -1830,9 +1762,9 @@ namespace ContinuumNS
                     }                    
                 }
             }
-            else if (referenceType == "ERA5")
+            else if (refDataDownload.refType == "ERA5")
             {                
-                string[] refDataFiles = Directory.GetFiles(refDataFolder, "*.nc");
+                string[] refDataFiles = Directory.GetFiles(refDataDownload.folderLocation, "*.nc");
 
                 if (refDataFiles == null)
                 {
@@ -1884,119 +1816,25 @@ namespace ContinuumNS
             return allRefnodes;
         }
 
-        /// <summary> Finds and returns the start and end date of the downloaded data files. </summary>
-        public DateTime[] GetDataFileStartEndDate()
-        {
-            DateTime[] startEndDates = new DateTime[2];
-
-            bool folderExists = Directory.Exists(refDataFolder);
-            if (folderExists == false)
-                return startEndDates;
-
-            if (referenceType == "MERRA2")
-            {
-                string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii");
-
-                for (int f = 0; f < MERRAfiles.Length; f++)
-                {
-                    // Get date from filename
-                    int ncIndex = MERRAfiles[f].IndexOf("nc4");
-                    string dateStr = MERRAfiles[f].Substring(ncIndex - 9, 8);
-                    int thisYear = Convert.ToInt16(dateStr.Substring(0, 4));
-                    int thisMonth = Convert.ToInt16(dateStr.Substring(4, 2));
-                    int thisDay = Convert.ToInt16(dateStr.Substring(6, 2));
-
-                    DateTime thisDate = new DateTime(thisYear, thisMonth, thisDay);
-
-                    if (thisDate < startEndDates[0] || startEndDates[0].Year == 1)
-                        startEndDates[0] = thisDate;
-
-                    if (thisDate > startEndDates[1])
-                        startEndDates[1] = thisDate;
-                }
-            }
-            else if (referenceType == "ERA5")
-            {
-                // Read netCDF to get start and end dates
-                string[] refDataFiles = Directory.GetFiles(refDataFolder, "*.nc");
-                DateTime baseTime = new DateTime(1900, 01, 01, 0, 0, 0); //time that all the ERA5 'time' variable values are relative to
-
-                if (refDataFiles == null)
-                {
-                    MessageBox.Show("Could not find netCDF file. Check specified folder path and try again.");
-                    return startEndDates;
-                }
-
-                try
-                {
-                    for (int r = 0; r < refDataFiles.Length; r++)
-                    {
-                        DataSet thisERA5Data = DataSet.Open(refDataFiles[r]);
-                        Variable[] allVars = thisERA5Data.Variables.ToArray();
-
-                        Int32[] allTime = thisERA5Data.GetData<Int32[]>("time");
-
-                        DateTime firstDate = baseTime.AddHours(allTime[0]);
-                        DateTime lastDate = baseTime.AddHours(allTime[allTime.Length - 1]);
-
-                        if (firstDate < startEndDates[0] || startEndDates[0].Year == 1)
-                            startEndDates[0] = firstDate;
-
-                        if (lastDate > startEndDates[1])
-                            startEndDates[1] = lastDate;
-                    }
-                   
-                }
-                catch
-                {
-                    MessageBox.Show("Error opening ERA5 data file.");
-                    return startEndDates;
-                }
-            }
-
-            return startEndDates;
-        }
-
-        /// <summary> Calculates % completion of downloaded data files </summary>
-        public double CalcDownloadedDataCompletion()
-        {
-            double complete = 0;
-
-            DateTime[] startEndDates = GetDataFileStartEndDate();
-            double numTotalDays = startEndDates[1].Subtract(startEndDates[0]).TotalDays;
-            int daysWithData = 0;
-
-            for (DateTime thisDate = startEndDates[0]; thisDate <= startEndDates[1]; thisDate = thisDate.AddDays(1))
-            {
-                if (MERRA2FileExists(thisDate))
-                    daysWithData++;
-            }
-
-            if (numTotalDays > 0)
-                complete = 100.0 * daysWithData / numTotalDays;
-
-            return complete;
-        }
-
         /// <summary> Sets new object to default settings for selected referency type </summary>
         public void SetDefaultsForReferenceType()
         {
             // Sets settings to default values for reference type
-            if (referenceType == "MERRA2")
+            if (refDataDownload.refType == "MERRA2")
             {
                 WS_ScaleFactor = 0.85;
                 wswdH = 50;
                 temperatureH = 10;
-                latRes = 0.5;
-                lonRes = 0.625;
+                //      latRes = 0.5; Lat/long resolution are stored in ReferenceCollection.GetLatRes and .GetLongRes
+                //      lonRes = 0.625;
             }
-            else if (referenceType == "ERA5")
+            else if (refDataDownload.refType == "ERA5")
             {
                 WS_ScaleFactor = 1.0;
                 wswdH = 100;
                 temperatureH = 10;
-                latRes = 0.25;
-                lonRes = 0.25;
+          //      latRes = 0.25;
+          //      lonRes = 0.25;
             }
         }
 

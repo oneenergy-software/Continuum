@@ -92,7 +92,7 @@ namespace Continuum_Tests.GUI_Tests
                         Array.Resize(ref wakedEsts, wakeModelInd);
                         wakedEsts[wakeModelInd - 1] = thisEst.waked.WS;
 
-                        thisInst.updateThe.AllTABs(thisInst);
+                        thisInst.updateThe.AllTABs();
                         thisInst.BW_worker.Close();
                         
                     }
