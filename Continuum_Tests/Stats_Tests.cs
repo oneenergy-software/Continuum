@@ -6,8 +6,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class Stats_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Stats";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public Stats_Tests()
+        {
+            testingFolder = globals.testingFolder + "Stats";
+        }
 
         [TestMethod]
         public void Calc_Avg_WS_Test()

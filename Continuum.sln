@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29306.81
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Continuum", "Continuum\Continuum.csproj", "{CCF3FE40-1BAE-43EA-88B0-8226DE400DA7}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI Test Creator", "GUI Test Creator\GUI Test Creator.csproj", "{3170A9F3-691E-4534-B454-75FC671B8707}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Continuum_Setup", "Continuum_Setup\Continuum_Setup.vdproj", "{192FD6DD-650B-423F-9408-F2E59183E566}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Continuum_Setup_new", "Continuum_Setup_new\Continuum_Setup_new.vdproj", "{7C081312-F6E8-4FC2-95DB-948D0C1E120D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{192FD6DD-650B-423F-9408-F2E59183E566}.Release|Any CPU.Build.0 = Release
 		{192FD6DD-650B-423F-9408-F2E59183E566}.Release|x86.ActiveCfg = Release
 		{192FD6DD-650B-423F-9408-F2E59183E566}.Release|x86.Build.0 = Release
+		{7C081312-F6E8-4FC2-95DB-948D0C1E120D}.Debug|Any CPU.ActiveCfg = Debug
+		{7C081312-F6E8-4FC2-95DB-948D0C1E120D}.Debug|x86.ActiveCfg = Debug
+		{7C081312-F6E8-4FC2-95DB-948D0C1E120D}.Release|Any CPU.ActiveCfg = Release
+		{7C081312-F6E8-4FC2-95DB-948D0C1E120D}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

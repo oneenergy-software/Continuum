@@ -1545,6 +1545,12 @@ namespace ContinuumNS
         public void AreExpoCalcsDone()
         {
             // Check the exposure at each turbine (in case calculations were interupted) and set to false and exit function if exposure or grid stats are null.
+            if (TurbineCount == 0)
+            {
+                expoCalcsDone = false;
+                return;
+            }    
+            
             expoCalcsDone = true;
 
             for (int t = 0; t < TurbineCount; t++)

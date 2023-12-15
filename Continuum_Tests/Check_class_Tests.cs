@@ -11,12 +11,17 @@ namespace Continuum_Tests
     [TestClass]
     public class Check_class_Tests
     {
-        string testingFolder = "C:\\Users\\OEE2021_03\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Check_class";
+        Globals globals = new Globals();
+        string testingFolder;
        
+        public Check_class_Tests()
+        {
+            testingFolder = globals.testingFolder + "Check_class";
+        }
+
         [TestMethod]
         public void TopoCheck_Test()
         {
-            // Tests whether specified UTM coordinates fall within or outside allowable area for topography
             Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoCheck model.cfm";
@@ -47,7 +52,6 @@ namespace Continuum_Tests
         [TestMethod]
         public void LandCoverCheck_Test()
         {
-            // Tests whether specified UTM coordinates fall within or outside allowable area for land cover
             Continuum thisInst = new Continuum("");
             
             string Filename = testingFolder + "\\TopoCheck model.cfm";

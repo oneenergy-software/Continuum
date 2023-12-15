@@ -122,14 +122,13 @@
     <Compile Include="Exposure_Tests.cs" />
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GenMap_Tests.cs" />
+    <Compile Include="Globals.cs" />
     <Compile Include="Grid_Info_Tests.cs" />
     <Compile Include="GUI Tests\Map_tests.cs" />
     <Compile Include="GUI Tests\MCP_Tests.cs" />
-    <Compile Include="GUI Tests\ReferenceSite_Tests.cs" />
     <Compile Include="GUI Tests\SiteSuitability_Tests.cs" />
     <Compile Include="GUI Tests\WakeModel_Tests.cs" />
     <Compile Include="LC_Key_Tests.cs" />
-    <Compile Include="MCP_Tests.cs" />
     <Compile Include="ReferenceCollection_Tests.cs" />
     <Compile Include="Reference_Tests.cs" />
     <Compile Include="MetCollection_Tests.cs" />
@@ -141,7 +140,6 @@
     <Compile Include="NodeCollection_Tests.cs" />
     <Compile Include="Nodes_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SiteSuitability_Tests.cs" />
     <Compile Include="Stats_Tests.cs" />
     <Compile Include="TopoInfo_Tests.cs" />
     <Compile Include="TurbineCollection_Tests.cs" />

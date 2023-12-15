@@ -12,8 +12,14 @@ namespace Continuum_Tests
     /// </summary>
     [TestClass]
     public class ModelCollection_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\ModelCollection";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public ModelCollection_Tests()
+        {
+            testingFolder = globals.testingFolder + "ModelCollection";
+        }
 
         [TestMethod]
         public void GetDeltaWS_DW_Expo_Test()

@@ -457,6 +457,7 @@ namespace ContinuumNS
             // Calculate the Local Solar Azimuth Angle in degrees
        //     sunPosition.azimuth = Math.Atan2(Math.Sin(hourAngle * degsToRad), (Math.Cos(hourAngle * degsToRad) * Math.Sin(thisLat * degsToRad) - Math.Tan(dec) * Math.Cos(thisLat * degsToRad))) * radToDegs;
 
+            // Solar zenith = 90 - altitude... update this
             double solarZenith = radToDegs * (Math.Acos(Math.Sin(degsToRad * thisLat) * Math.Sin(dec) + Math.Cos(degsToRad * thisLat) * Math.Cos(dec) * Math.Cos(degsToRad * hourAngle)));
 
             if (hourAngle > 0)
@@ -500,7 +501,8 @@ namespace ContinuumNS
                 * Math.Sin(2 * degsToRad * geomMeanAnom));
 
 
-            double HASunrise = radToDegs * (Math.Acos(Math.Cos(degsToRad * (90.833)) / (Math.Cos(degsToRad * (thisLat)) * Math.Cos(dec)) - Math.Tan(degsToRad * (thisLat)) * Math.Tan(dec)));
+            double HASunrise = radToDegs * Math.Acos(Math.Cos(degsToRad * (90.833)) / (Math.Cos(degsToRad * thisLat) * Math.Cos(dec)) 
+                - Math.Tan(degsToRad * thisLat) * Math.Tan(dec));
             double solarNoon = (720 - 4 * thisLong - eqOfTime + offset * 60) / 1440;
 
             double sunRiseDouble = solarNoon - HASunrise * 4 / 1440;
@@ -577,7 +579,7 @@ namespace ContinuumNS
             double z_old = 0;
             double time2Ground = 0.0;
 
-            double delta_t = 0.001;
+            double delta_t = 0.1;
             double x_new;
             double y_new;
             double z_new;
@@ -670,10 +672,19 @@ namespace ContinuumNS
 
         /// <summary> Calculates and returns the angle the ice came off the blade in the plane of the blade rotation in radians. </summary>
         public int GetDegrees(double thisRand)
-        {            
-            double n = thisRand * 2 - 1;
-            double angle = Math.Asin(n);
-            int degrees = (int)(angle * 180 / Math.PI + 270);
+        {
+            int randMax = 32767; // Max value of random number in C++ (which is language TAILS is written in)
+            thisRand = thisRand * randMax;
+            int degrees = 0;
+
+            if (thisRand % 1000 < 700)
+                degrees = Convert.ToInt32(thisRand % 360);
+            else
+            {
+                double n = thisRand / randMax * 2 - 1;
+                double angle = Math.Asin(n);
+                degrees = (int)(angle * 180 / Math.PI + 270);
+            }            
 
             return degrees;
         }
@@ -1018,9 +1029,13 @@ namespace ContinuumNS
                 // Loop through all WDs and gather all distance and elevation values in arrays
 
                 int numDataPoints = Convert.ToInt32(360 * radius / topoRes); // Estimates approx number of total points so array resizing is reduced 
-                double[] allXVals = new double[numDataPoints];
-                double[] allYVals = new double[numDataPoints];
+          //      double[] allXVals = new double[numDataPoints];
+          //      double[] allYVals = new double[numDataPoints];
                 int valInd = 0;
+
+                //      Tuple<double, double>[] utmXandYs = new Tuple<double, double>[numDataPoints];
+                double[][] utmXandYs = new double[numDataPoints][];
+                double[] elevData = new double[numDataPoints];
 
                 for (int d = 0; d < 180; d++) // Only going to 180 since elevation profile is NOT just UW of POI, it goes to +/- specified radius
                 {
@@ -1028,21 +1043,44 @@ namespace ContinuumNS
 
                     for (int p = 0;  p < elevProfData.Length; p++)
                     {
-                        if (valInd >= allXVals.Length)
+                        if (valInd >= numDataPoints)
                         {
-                            Array.Resize(ref allXVals, valInd + 1);
-                            Array.Resize(ref allYVals, valInd + 1);
+                            Array.Resize(ref utmXandYs, valInd + 1);
+                            Array.Resize(ref elevData, valInd + 1);
                         }
+                        
+                        utmXandYs[valInd] = new double[2];
+                        utmXandYs[valInd][0] = elevProfData[p].UTMX;
+                        utmXandYs[valInd][1] = elevProfData[p].UTMY;
+                        elevData[valInd] = elevProfData[p].elev;
 
-                        allXVals[valInd] = p * topoRes;
-                        allYVals[valInd] = elevProfData[p].elev;
                         valInd++;
                     }
                 }
 
                 // Find avg slope and standard deviation of elevation deviations across 360 degree plane. Multiply slope by 5/3 and divide st. dev. of 
                 // elevation deviations by 3 and by radius
-                avgSlopeAndVar = topo.CalcSlopeAndVariation(allXVals, allYVals);
+
+                // Find fitted plane by fitting a linear regression using UTM X and Ys and elevation data.  
+                double[] regressionResults = MathNet.Numerics.LinearRegression.MultipleRegression.NormalEquations(utmXandYs, elevData);
+
+                // Calculate slope along centerline of each 30 deg sector based on slopes of fitted plane (i.e. along X and Y axes) and assign maximum (absolute) slope                
+                double maxSlope = 0;
+
+                for (int d = 0; d < 12; d++)
+                {
+                    double thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regressionResults[0], regressionResults[1], radius, d * 30.0, UTMX, UTMY);
+
+                    if (Math.Abs(thisSlope) > maxSlope)
+                        maxSlope = thisSlope;
+                }               
+
+                avgSlopeAndVar[0] = maxSlope;
+
+                // Calculate variation of elevation from fitted plane
+                avgSlopeAndVar[1] = topo.CalcElevVariationInFittedPlane(regressionResults[0], regressionResults[1], utmXandYs, elevData);
+
+                //      avgSlopeAndVar = topo.CalcSlopeAndVariation(allXVals, allYVals);
                 avgSlopeAndVar[0] = avgSlopeAndVar[0] * 5.0 / 3.0;
                 avgSlopeAndVar[1] = avgSlopeAndVar[1] / 3.0 / radius;
 
@@ -1060,32 +1098,62 @@ namespace ContinuumNS
                     // Calculate average slope in sector                    
                     double[] allXVals = new double[ptsPerSect];
                     double[] allYVals = new double[ptsPerSect];
+                    double[] allUTMXs = new double[ptsPerSect];
+                    double[] allUTMYs = new double[ptsPerSect];
+
                     int valInd = 0;
                     int minWD = i * degsPerSect - degsPerSect / 2;
                     int maxWD = i * degsPerSect + degsPerSect / 2;
+                    double midWD = i * degsPerSect;
+
+                    double[][] utmXandYs = new double[ptsPerSect][];
+                    double[] elevData = new double[ptsPerSect];
 
                     for (int d = minWD; d <= maxWD; d++) // Get distance and elevation data at every WD within sector (including min and max WD)
                     {
                         TopoInfo.TopoGrid[] elevProfData = topo.GetElevationProfile(UTMX, UTMY, d, (int)radius, (int)topoRes, true); // UW profile only
-
+                        
                         for (int p = 0; p < elevProfData.Length; p++)
                         {
-                            if (valInd >= allXVals.Length)
+                            if (valInd >= ptsPerSect)
                             {
+                                Array.Resize(ref utmXandYs, valInd + 1);
+                                Array.Resize(ref elevData, valInd + 1);
+
                                 Array.Resize(ref allXVals, valInd + 1);
                                 Array.Resize(ref allYVals, valInd + 1);
+
+                                Array.Resize(ref allUTMXs, valInd + 1);
+                                Array.Resize(ref allUTMYs, valInd + 1);
                             }
 
-                            allXVals[valInd] = p * topoRes;
+                            allXVals[valInd] = Math.Sqrt(Math.Pow(elevProfData[p].UTMX - UTMX, 2) + Math.Pow(elevProfData[p].UTMY - UTMY, 2));
                             allYVals[valInd] = elevProfData[p].elev;
+                            allUTMXs[valInd] = elevProfData[p].UTMX;
+                            allUTMYs[valInd] = elevProfData[p].UTMY;
+
+                            utmXandYs[valInd] = new double[2];
+                            utmXandYs[valInd][0] = elevProfData[p].UTMX;
+                            utmXandYs[valInd][1] = elevProfData[p].UTMY;
+                            elevData[valInd] = elevProfData[p].elev;
+
                             valInd++;
                         }
                     }
 
                     // Find avg slope across all 360 degree plane 
-                    double[] thisSlopeAndVar = topo.CalcSlopeAndVariation(allXVals, allYVals);
-                    sectorSlopes[i] = thisSlopeAndVar[0];
-                    sectorVars[i] = thisSlopeAndVar[1] / radius;
+                    
+                    // Find fitted plane by fitting a linear regression using UTM X and Ys and elevation data.  
+                    double[] regressionResults = MathNet.Numerics.LinearRegression.MultipleRegression.NormalEquations(utmXandYs, elevData);
+
+                    // Calculate slope along centerline based on slopes of fitted plane (i.e. along X and Y axes) 
+                    sectorSlopes[i] = topo.CalcSlopeAlongCenterlineOfFittedPlane(regressionResults[0], regressionResults[1], radius, midWD, UTMX, UTMY);
+
+                    // Calculate variation of elevation from fitted plane
+                    sectorVars[i] = topo.CalcElevVariationInFittedPlane(regressionResults[0], regressionResults[1], utmXandYs, elevData) / radius;
+
+              //      sectorSlopes[i] = thisSlopeAndVar[0];
+              //      sectorVars[i] = thisSlopeAndVar[1] / radius;
                 }
 
                 // Combine sectorwise slopes (absolute values?) with energy rose

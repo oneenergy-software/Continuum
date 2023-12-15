@@ -121,7 +121,7 @@
             this.dateLTRefAvailEnd.Location = new System.Drawing.Point(34, 327);
             this.dateLTRefAvailEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateLTRefAvailEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
-            this.dateLTRefAvailEnd.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateLTRefAvailEnd.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
             this.dateLTRefAvailEnd.Name = "dateLTRefAvailEnd";
             this.dateLTRefAvailEnd.Size = new System.Drawing.Size(163, 25);
             this.dateLTRefAvailEnd.TabIndex = 303;
@@ -137,12 +137,11 @@
             this.dateLTRefAvailStart.Location = new System.Drawing.Point(33, 268);
             this.dateLTRefAvailStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateLTRefAvailStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
-            this.dateLTRefAvailStart.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateLTRefAvailStart.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
             this.dateLTRefAvailStart.Name = "dateLTRefAvailStart";
             this.dateLTRefAvailStart.Size = new System.Drawing.Size(163, 25);
             this.dateLTRefAvailStart.TabIndex = 302;
             this.dateLTRefAvailStart.Value = new System.DateTime(2002, 1, 1, 0, 0, 0, 0);
-            this.dateLTRefAvailStart.ValueChanged += new System.EventHandler(this.dateLTRefAvailStart_ValueChanged);
             // 
             // label52
             // 
@@ -267,7 +266,7 @@
             this.dateRefEnd.Location = new System.Drawing.Point(146, 655);
             this.dateRefEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateRefEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
-            this.dateRefEnd.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateRefEnd.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
             this.dateRefEnd.Name = "dateRefEnd";
             this.dateRefEnd.Size = new System.Drawing.Size(163, 25);
             this.dateRefEnd.TabIndex = 290;
@@ -283,7 +282,7 @@
             this.dateRefStart.Location = new System.Drawing.Point(146, 621);
             this.dateRefStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateRefStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
-            this.dateRefStart.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateRefStart.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
             this.dateRefStart.Name = "dateRefStart";
             this.dateRefStart.Size = new System.Drawing.Size(163, 25);
             this.dateRefStart.TabIndex = 289;
@@ -375,7 +374,6 @@
             this.txtReferenceLat.Name = "txtReferenceLat";
             this.txtReferenceLat.Size = new System.Drawing.Size(110, 25);
             this.txtReferenceLat.TabIndex = 281;
-            this.txtReferenceLat.TextChanged += new System.EventHandler(this.txtReferenceLat_TextChanged);
             // 
             // label154
             // 
@@ -504,7 +502,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AddEditReference";
             this.Text = "Add/Edit New Long-Term Reference";
-            this.Load += new System.EventHandler(this.AddEditReference_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataLTRefNodes)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

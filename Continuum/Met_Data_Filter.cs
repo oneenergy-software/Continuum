@@ -171,12 +171,18 @@ namespace ContinuumNS
                 int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
                 bool diffGettingSmaller = true;
                 
-                while (timeDiffMins > dataIntMins && diffGettingSmaller)
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
                 {
                     if (timeDiffMins < 0)                    
-                        tsInd = tsInd + stepSize;                    
+                        tsInd = tsInd - stepSize;                    
                     else                    
-                        tsInd = tsInd - stepSize;
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= windData.Length)
+                    {
+                        tsInd = windData.Length - 1;
+                        break;
+                    }
 
                     thisDate = windData[tsInd].timeStamp;
 
@@ -185,18 +191,21 @@ namespace ContinuumNS
 
                     timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
 
-                    if (Math.Abs(timeDiffMins) == Math.Abs(lastTimeDiff))
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
                         diffGettingSmaller = false;
 
                     lastTimeDiff = timeDiffMins;
-                    stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
                 }               
 
-          //      while (windData[tsInd].timeStamp < targetDate && tsInd < windData.Length - 1)
-          //          tsInd++;
+                while (windData[tsInd].timeStamp < targetDate && tsInd < windData.Length - 1)
+                    tsInd++;
 
-          //      while (windData[tsInd].timeStamp > targetDate && tsInd > 0)
-          //          tsInd--;
+                while (windData[tsInd].timeStamp > targetDate && tsInd > 0)
+                    tsInd--;
 
                 if (windData[tsInd].timeStamp != targetDate)
                     tsInd = -999;
@@ -1250,20 +1259,19 @@ namespace ContinuumNS
                 firstHour = thisVane.dirData[firstHourInd].timeStamp.Hour;
             }
 
-            int numPointsPerHour = 0;
+            int midData = Convert.ToInt32(thisVane.dirData.Length / 2);
+            int timeInt = Convert.ToInt32(thisVane.dirData[midData].timeStamp.Subtract(thisVane.dirData[midData - 1].timeStamp).TotalMinutes);
 
-            while (thisVane.dirData[firstHourInd].timeStamp.Hour == firstHour)
-            {
-                numPointsPerHour++;
-                firstHourInd++;
-            }
+            double totesDays = 0;
+
+            if (timeInt == 10)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 * 6 + 1;
+            else if (timeInt == 60)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 + 1;                  
             
-            if (thisVane.dirData.Length > 0)
-            {
-                double totesDays = endDate.Subtract(startDate).TotalDays * 24 * numPointsPerHour + 1;
+            if (totesDays > 0)  
                 dataRec = dataCount / totesDays; // data recovery over whole period (Start to End)
-            }
-
+            
             return dataRec;
         }
                 
@@ -1284,9 +1292,18 @@ namespace ContinuumNS
                 if (thisTemp.temp[thisInd].filterFlag == 0)
                     dataCount++;
                 thisInd++;
-            }                
+            }              
+            
+            int midData = Convert.ToInt32(thisTemp.temp.Length / 2);
+            int timeInt = Convert.ToInt32(thisTemp.temp[midData].timeStamp.Subtract(thisTemp.temp[midData - 1].timeStamp).TotalMinutes);
 
-            double totesDays = endDate.Subtract(startDate).TotalDays * 24 * 6 + 1;
+            double totesDays = 0;
+            
+            if (timeInt == 10)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 * 6 + 1;
+            else if (timeInt == 60)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 + 1;
+
             double dataRec = 1.0;
             
             if (totesDays > 0)
@@ -1379,12 +1396,15 @@ namespace ContinuumNS
 
             if (filterList != null)
             {
-                for (int i = 0; i < filterList.Length; i++)
-                    if (filterList[i] == thisFilter)
-                        isInList = true;
+                if (filterList.Length > 0)
+                {
+                    for (int i = 0; i < filterList.Length; i++)
+                        if (filterList[i] == thisFilter)
+                            isInList = true;
 
-                if (filterList[0] == "All")
-                    isInList = true;
+                    if (filterList[0] == "All")
+                        isInList = true;
+                }
             }
              
             return isInList;
@@ -2214,8 +2234,21 @@ namespace ContinuumNS
 
                 thisInd++;
             }
+
+            int midData = Convert.ToInt32(thisSim.WS_WD_data.Length / 2);
+            int timeInt = Convert.ToInt32(thisSim.WS_WD_data[midData].timeStamp.Subtract(thisSim.WS_WD_data[midData - 1].timeStamp).TotalMinutes);
+
+            double totesDays = 0;
+
+            if (timeInt == 10)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 * 6 + 1;
+            else if (timeInt == 60)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 + 1;
+
+            double extrapRec = 0;
             
-            double extrapRec = numValid / (endDate.Subtract(startDate).TotalDays * 24 * 6 + 1);                       
+            if (totesDays > 0)
+                extrapRec = numValid / totesDays;                       
 
             return extrapRec;
         }

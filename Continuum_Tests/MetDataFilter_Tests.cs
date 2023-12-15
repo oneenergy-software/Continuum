@@ -8,8 +8,14 @@ namespace Continuum_Tests
     
     [TestClass]
     public class MetDataFilter_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MetDataFilter";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public MetDataFilter_Tests()
+        {
+            testingFolder = globals.testingFolder + "MetDataFilter";
+        }
 
         [TestMethod]
         public void ConvertToMPS_Test()

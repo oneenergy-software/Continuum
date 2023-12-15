@@ -11,8 +11,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class TopoInfo_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\TopoInfo";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public TopoInfo_Tests()
+        {
+            testingFolder = globals.testingFolder + "TopoInfo";
+        }
 
         [TestMethod]
         public void ExportTopoData()

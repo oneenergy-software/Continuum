@@ -18,6 +18,8 @@ namespace ContinuumNS
     [Serializable()]
     public class TopoInfo
     {
+        /// <summary> Null value in topography file (default = -99999) </summary>
+        public int topoNull = -99999;
         /// <summary> Elevation data used for plotting only. </summary>
         public double[,] topoElevs;
         /// <summary> Elevation data used for calculations. </summary>
@@ -226,8 +228,13 @@ namespace ContinuumNS
 
             for (int i = 0; i <= param.GetUpperBound(0); i++)
                 for (int j = 0; j <= param.GetUpperBound(1); j++)
-                    if (param[i, j] < thisMin && param[i,j] != -999 && ((ignoreZeros == true && param[i, j] != 0) || (ignoreZeros == false)))
+                    if (param[i, j] < thisMin && ((ignoreZeros == true && Convert.ToInt32(Math.Round(param[i, j], 0)) != topoNull) || (ignoreZeros == false)))
+                    {                        
+                        if (param[i, j] < -1)
+                            i = i;
+
                         thisMin = param[i, j];
+                    }
 
             return thisMin;
         }
@@ -2673,7 +2680,7 @@ namespace ContinuumNS
                 {
                     double thisX = new_MinX + i * topoNumXY.X.all.reso;
                     double thisY = new_MinY + j * topoNumXY.Y.all.reso;
-                    double Interp_Elev = -999;                                       
+                    double Interp_Elev = topoNull;                                       
 
                     UTM_Point[0] = thisX; // convert desired UTMX/Y to lat/long
                     UTM_Point[1] = thisY; 
@@ -2713,41 +2720,40 @@ namespace ContinuumNS
                                 Interp_Elev = rawGeoTiff[index4].elev;
                             else
                             {
-                                Interp_Elev = 0;
+                                Interp_Elev = topoNull;
                                 double sumDist = 0;
-                                if (rawGeoTiff[index1].elev > 0)
+                                if (rawGeoTiff[index1].elev != topoNull)
                                 {
                                     Interp_Elev = rawGeoTiff[index1].elev / dist1;
                                     sumDist = 1 / dist1;
                                 }
                                 
-                                if (rawGeoTiff[index2].elev > 0)
+                                if (rawGeoTiff[index2].elev != topoNull)
                                 {
                                     Interp_Elev = Interp_Elev + rawGeoTiff[index2].elev / dist2;
                                     sumDist = sumDist + 1 / dist2;
                                 }
 
-                                if (rawGeoTiff[index3].elev > 0)
+                                if (rawGeoTiff[index3].elev != topoNull)
                                 {
                                     Interp_Elev = Interp_Elev + rawGeoTiff[index3].elev / dist3;
                                     sumDist = sumDist + 1 / dist3;
                                 }
 
-                                if (rawGeoTiff[index4].elev > 0)
+                                if (rawGeoTiff[index4].elev != topoNull)
                                 {
                                     Interp_Elev = Interp_Elev + rawGeoTiff[index4].elev / dist4;
                                     sumDist = sumDist + 1 / dist4;
                                 }
 
-                                if (Interp_Elev > 0 && sumDist > 0)
+                                if (Interp_Elev != topoNull && sumDist > 0)
                                     Interp_Elev = Interp_Elev / sumDist;
                                 else
-                                    Interp_Elev = -999;
-                           
-                            }
+                                    Interp_Elev = topoNull;
 
-                            if (Interp_Elev < 0 && Interp_Elev != -999)
-                                Interp_Elev = Interp_Elev;
+                                if (Interp_Elev < -1)
+                                    Interp_Elev = Interp_Elev;
+                            }                            
                         }
                     }                
                     Proj_Elev[i, j] = Interp_Elev;         
@@ -4168,14 +4174,28 @@ namespace ContinuumNS
                 numPoints = radius / elevReso + 1;
 
             elevProfile = new TopoGrid[numPoints];
-                        
-            for (int i = 0; i < numPoints; i++)
+                      
+            if (UW_only)
             {
-                int relDist = -radius + i * elevReso;
-                elevProfile[i].UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * relDist;
-                elevProfile[i].UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * relDist;
-                elevProfile[i].elev = CalcElevs(elevProfile[i].UTMX, elevProfile[i].UTMY);
+                for (int i = 0; i < numPoints; i++)
+                {
+                    int relDist = i * elevReso;
+                    elevProfile[i].UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * relDist;
+                    elevProfile[i].UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * relDist;
+                    elevProfile[i].elev = CalcElevs(elevProfile[i].UTMX, elevProfile[i].UTMY);
+                }
             }
+            else
+            {
+                for (int i = 0; i < numPoints; i++)
+                {
+                    int relDist = -radius + i * elevReso;
+                    elevProfile[i].UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * relDist;
+                    elevProfile[i].UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * relDist;
+                    elevProfile[i].elev = CalcElevs(elevProfile[i].UTMX, elevProfile[i].UTMY);
+                }
+            }
+            
             
             return elevProfile;
         }
@@ -4184,7 +4204,7 @@ namespace ContinuumNS
         public double[] CalcSlopeAndVariation(double[] xVals, double[] yVals)
         {             
             double[] slopeAndVarSD = new double[2]; // Index 0: Slope, Index 1: St. dev. of Variation
-
+                        
             if (xVals == null || yVals == null)
                 return slopeAndVarSD;
 
@@ -4239,6 +4259,45 @@ namespace ContinuumNS
             return slopeAndVarSD;
         }
 
+        /// <summary> Calculate and return the slope along centerline of fitted plane </summary>        
+        public double CalcSlopeAlongCenterlineOfFittedPlane(double xCoeff, double yCoeff, double radius, double WD, double UTMX, double UTMY)
+        {            
+            // Define two points to calculate slope in between
+            UTM_X_Y point1 = new TopoInfo.UTM_X_Y(); // Center point
+            point1.UTMX = UTMX;
+            point1.UTMY = UTMY;
+            double point1_FittedElev = xCoeff * point1.UTMX + yCoeff * point1.UTMY;
+
+            TopoInfo.UTM_X_Y point2 = new TopoInfo.UTM_X_Y(); // Point at edge of sector
+            point2.UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * radius;
+            point2.UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * radius;
+            double point2_FittedElev = xCoeff * point2.UTMX + yCoeff * point2.UTMY;
+
+            double slopeCenter = Math.Atan2(point2_FittedElev - point1_FittedElev, radius);
+            double slopeDegs = slopeCenter * 180.0 / Math.PI;
+
+            return slopeDegs;
+        }
+
+        /// <summary> Calculates and returns the standard deviation of the elevation variations from a fitted plane </summary>
+        /// <returns></returns>
+        public double CalcElevVariationInFittedPlane(double xCoeff, double yCoeff, double[][] utmXandYs, double[] actElevs)
+        {
+            double elevVar = 0;
+            double[] elevDiffs = new double[actElevs.Length];
+
+            for (int i = 0; i < actElevs.Length; i++)
+            {
+                double elevFitted = xCoeff * utmXandYs[i][0] + yCoeff * utmXandYs[i][1];
+                elevDiffs[i] = actElevs[i] - elevFitted;
+            }
+
+            elevVar = Statistics.StandardDeviation(elevDiffs);
+
+            double avgDiff = Statistics.Mean(elevDiffs);
+
+            return elevVar;
+        }
         
         
     }

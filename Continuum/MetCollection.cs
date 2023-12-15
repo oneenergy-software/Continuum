@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Windows.Forms;
 using System.Security.Cryptography.Xml;
+using System.Security.RightsManagement;
 
 namespace ContinuumNS
 {
@@ -980,12 +981,12 @@ namespace ContinuumNS
             return theseMets;
         }
 
-        // Finds and returns start and end date of all met datasets
+        /// <summary>  Finds and returns start and end date of all met datasets  </summary>
         public DateTime[] GetMetStartEndDates()
         {
             DateTime[] startEnd = new DateTime[2];
             startEnd[0] = new DateTime();
-            startEnd[1] = DateTime.Now;
+            startEnd[1] = new DateTime(2050,1,1);
 
             for (int m = 0; m < ThisCount; m++)
             {
@@ -1004,7 +1005,7 @@ namespace ContinuumNS
         {            
             Met thisMet = new Met();
             
-            if (metName == "") return thisMet;
+            if (metName == "" || metName == "User-defined" || metName == "User-defined lat/long") return thisMet;
                         
             for (int i = 0; i < metItem.Length; i++)
             {
@@ -1027,7 +1028,7 @@ namespace ContinuumNS
                 metsUsed[i] = metItem[i].name;
             
             return metsUsed;
-        }
+        }                
 
         /// <summary> Calculates and returns Weibull parameters fit to the specified WS distribution. In this function, the RMS difference in Weibull Freq dist and WS dist then sweeps k value 
         /// until the min is found. Returns weibull estimates for overall and sector. </summary>  
@@ -1071,6 +1072,8 @@ namespace ContinuumNS
             }
 
             // Sweep k from Last Min k - 0.5 to Last Min k + 0.5 and find k with min freq diff
+            double newK_Min_RMS = K_Min_RMS;
+
             for (double k = K_Min_RMS - 0.5f; k <= K_Min_RMS + 0.5f; k = k + 0.1f)
             {
                 double freqDiffSqr = 0;
@@ -1087,13 +1090,14 @@ namespace ContinuumNS
                 }
 
                 freqDiffSqr = Convert.ToSingle(Math.Pow((freqDiffSqr / numWS), 0.5));
-                if ( freqDiffSqr<freqDiffMin )
+                if (freqDiffSqr < freqDiffMin )
                 {
                     freqDiffMin = freqDiffSqr;
-                    K_Min_RMS = k;
+                    newK_Min_RMS = k;
                 }
             }
 
+            K_Min_RMS = newK_Min_RMS;
             // Sweep k from Last Min k - 0.1 to Last Min k + 0.1 and find k with min freq diff
             for (double k = K_Min_RMS - 0.1f; k <= K_Min_RMS + 0.1f; k = k + 0.02f)
             {
@@ -1114,10 +1118,11 @@ namespace ContinuumNS
                 if (freqDiffSqr<freqDiffMin)
                 {
                     freqDiffMin = freqDiffSqr;
-                    K_Min_RMS = k;
+                    newK_Min_RMS = k;
                 }
             }
 
+            K_Min_RMS = newK_Min_RMS;
             weibull.overall_k = K_Min_RMS;            
             weibull.overall_A = CalcWeibullA(avgWS, 1 + 1 / weibull.overall_k);
 
@@ -1138,6 +1143,7 @@ namespace ContinuumNS
                     sectSum = sectSum + sectDist[i, j];
                 }
                 avgSectWS = avgSectWS / sectSum;
+                K_Min_RMS = 0;
 
                 // Sweep k from 1.5 to 3.5 and find k with min freq diff
                 for (double k = 1.5f; k <= 3.5f; k = k + 0.5f)
@@ -1170,6 +1176,8 @@ namespace ContinuumNS
                 }
 
                 // Sweep k from Last Min k - 0.5 to Last Min k + 0.5 and find k with min freq diff
+                newK_Min_RMS = K_Min_RMS;
+
                 for (double k = K_Min_RMS - 0.5f; k <= K_Min_RMS + 0.5f; k = k + 0.1f)
                 {
                     freqDiffSqr = 0;
@@ -1190,11 +1198,13 @@ namespace ContinuumNS
                     if (freqDiffSqr < freqDiffMin)
                     {
                         freqDiffMin = freqDiffSqr;
-                        K_Min_RMS = k;
+                        newK_Min_RMS = k;
                     }
                 }
 
                 // Sweep k from Last Min k - 0.1 to Last Min k + 0.1 and find k with min freq diff
+                K_Min_RMS = newK_Min_RMS;
+
                 for (double k = K_Min_RMS - 0.1f; k <= K_Min_RMS + 0.1f; k = k + 0.02f)
                 {
                     freqDiffSqr = 0;
@@ -1214,9 +1224,10 @@ namespace ContinuumNS
                     if (freqDiffSqr < freqDiffMin)
                     {
                         freqDiffMin = freqDiffSqr;
-                        K_Min_RMS = k;
+                        newK_Min_RMS = k;
                     }
                 }
+                K_Min_RMS = newK_Min_RMS;
 
                 weibull.sector_k[i] = K_Min_RMS;
                 double This_m = 1 + 1 / weibull.sector_k[i];
@@ -1440,6 +1451,11 @@ namespace ContinuumNS
                         file.Close();
                         return false;
                     }
+
+                    inputMet = check.NewTurbOrMet(thisInst.topo, thisName, thisUTMX, thisUTMY, true); // checks the distance between met and topo grid edges to make sure that there//s enough distance for expo calcs
+
+                    if (inputMet == false)
+                        return false;
 
                     line = file.ReadLine();                    
                     line = line.Trim(',');
@@ -1887,7 +1903,7 @@ namespace ContinuumNS
             for (int m = 0; m < ThisCount; m++)
             {
                 UTM_conversion.Lat_Long thisLL = utmConv.UTMtoLL(metItem[m].UTMX, metItem[m].UTMY);
-                if (thisLL.latitude == thisLat && thisLL.longitude == thisLong)
+                if (Math.Abs(thisLL.latitude - thisLat) < 0.1 && Math.Abs(thisLL.longitude - thisLong) < 0.1)
                 {
                     thisMet = metItem[m];
                     break;
@@ -1916,6 +1932,116 @@ namespace ContinuumNS
 
             return thisRef;
 
+        }
+
+        /// <summary> Returns true if met data time series data is imported </summary>
+        public bool HaveTimeSeriesData()
+        {
+            bool haveTS = false;
+
+            for (int m = 0; m < ThisCount; m++)
+                for (int a = 0; a < metItem[m].metData.GetNumAnems(); a++)
+                    if (metItem[m].metData.anems[a].windData != null)
+                    {
+                        haveTS = true;
+                        break;
+                    }
+
+            return haveTS;
+        }
+
+        /// <summary> Retrieves all sensor time series data from database </summary>
+        public void GetTimeSeriesData(Continuum thisInst)
+        {
+            for (int m = 0; m < ThisCount; m++)
+                metItem[m].metData.GetSensorDataFromDB(thisInst, metItem[m].name);
+            
+        }
+
+        /// <summary> Returns time interval of met data  </summary>        
+        public string GetMetDataInterval()
+        {
+            string dataInt = "10-min";
+            TimeSpan timeInt = new TimeSpan();
+
+            for (int m = 0; m < ThisCount; m++)
+                if (metItem[m].metData.GetNumAnems() > 0)
+                {
+                    Met_Data_Filter.Anem_Data thisAnem = metItem[m].metData.anems[0];
+
+                    int midData = Convert.ToInt32(thisAnem.windData.Length / 2);
+                    timeInt = thisAnem.windData[midData].timeStamp.Subtract(thisAnem.windData[midData - 1].timeStamp);
+                    break;
+                }
+
+            if (Math.Round(timeInt.TotalMinutes, 0) == 10)
+                dataInt = "10-min";
+            else if (Math.Round(timeInt.TotalMinutes, 0) == 60)
+                dataInt = "60-min";
+
+            return dataInt;
+        }
+
+        /// <summary> Returns array of MCP.Site_data (which contains timestamp, WS, and WD) for specified met site for time period concurrent with all met sites  </summary>
+        
+        public MCP.Site_data[] GetConcurrentMetDataTS(string metName, double height)
+        {           
+            DateTime[] startEnd = GetMetStartEndDates();
+            string dataInt = GetMetDataInterval();
+            int numData = Convert.ToInt32(Math.Round(startEnd[1].Subtract(startEnd[0]).TotalMinutes, 0));
+
+            if (dataInt == "10-min")
+                numData = numData / 10;
+            else if (dataInt == "60-min")
+                numData = numData / 60;
+
+            MCP.Site_data[] concData = new MCP.Site_data[numData];
+
+            Met thisMet = GetMet(metName);
+            Met_Data_Filter.Sim_TS extrapData = thisMet.metData.GetSimulatedTimeSeries(height);
+            int startInd = 0;
+            int endInd = extrapData.WS_WD_data.Length - 1;
+
+            while (extrapData.WS_WD_data[startInd].timeStamp < startEnd[0])
+                startInd++;
+
+            while (extrapData.WS_WD_data[endInd].timeStamp > startEnd[1])
+                endInd--;
+
+            DateTime thisTS = startEnd[0];
+            int extrapInd = startInd;
+
+            for (int d = 0; d < numData; d++)
+            {
+                concData[d].thisDate = thisTS;
+
+                if (extrapData.WS_WD_data[extrapInd].timeStamp == thisTS)
+                {
+                    concData[d].thisWS = extrapData.WS_WD_data[extrapInd].WS;
+                    concData[d].thisWD = extrapData.WS_WD_data[extrapInd].WD;
+                    extrapInd++;
+
+                    if (extrapInd >= extrapData.WS_WD_data.Length)
+                        break;
+                }
+
+                if (dataInt == "10-min")
+                    thisTS = thisTS.AddMinutes(10);
+                else if (dataInt == "60-min")
+                    thisTS = thisTS.AddMinutes(60);
+            }
+
+            return concData;
+        }
+
+        public string GetMCP_MethodUsed()
+        {
+            string mcpMethod = "";
+
+            for (int m = 0; m < ThisCount; m++)
+                mcpMethod = metItem[m].GetMCP_Method_Used();
+
+            return mcpMethod;
         }
                 
     }

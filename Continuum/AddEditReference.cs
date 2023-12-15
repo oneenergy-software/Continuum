@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography.Xml;
 using System.Windows.Forms;
 
 namespace ContinuumNS
@@ -31,9 +32,9 @@ namespace ContinuumNS
                 thisRef.refDataDownload = refList.refDataDownloads[refList.numRefDataDownloads - 1];
                 thisRef.SetDefaultsForReferenceType();
                 thisRef.numNodes = 1;
-                thisRef.startDate = new DateTime(2002, 1, 1);
-                DateTime lastmonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 23, 0, 0);
-                thisRef.endDate = lastmonth.AddMonths(-1).AddDays(-1); // Set end date to last day of month
+                
+                thisRef.startDate = thisRef.refDataDownload.startDate;                 
+                thisRef.endDate = thisRef.refDataDownload.endDate; // Set end date to last day of month
                 dateRefEnd.Value = thisRef.endDate;
 
                 thisRef.isUserDefined = true; // Default to user-specified lat/lon
@@ -49,6 +50,8 @@ namespace ContinuumNS
 
             // Populate list of met sites (used to extract data at closest coordinates)
             PopulateMetList();
+
+            UpdateForm();
 
         }
 
@@ -147,7 +150,7 @@ namespace ContinuumNS
 
         private void cboTargetMet_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboTargetMet.SelectedItem.ToString() == "User-defined lat/long")
+            if (cboTargetMet.SelectedItem.ToString() == "User-defined")
             {
                 txtReferenceLat.Enabled = true;
                 txtReferenceLong.Enabled = true;
@@ -190,6 +193,7 @@ namespace ContinuumNS
 
             int offset = utmConv.GetUTC_Offset(thisLat, thisLon);
             thisRef.Set_Interp_LatLon_Dates_Offset(thisLat, thisLon, offset, utmConv);
+            thisRef.nodes = new Reference.Node_Data[thisRef.numNodes];
             bool gotCoords = thisRef.FindCoords(refList);
 
             if (gotCoords == false)
@@ -217,34 +221,14 @@ namespace ContinuumNS
         private void dateRefEnd_ValueChanged(object sender, EventArgs e)
         {
             thisRef.endDate = dateRefEnd.Value;
-        }
-
-        private void cboRefDataDownloads_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void AddEditReference_Load(object sender, EventArgs e)
-        {
-
-        }
+        }               
 
         private void cboRefDataDownloads_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             UpdateLT_RefNodesAndCompleteness();
-            thisRef.refDataDownload = refList.GetRefDataDownloadByName(cboRefDataDownloads.SelectedItem.ToString());
-            
-        }
-
-        private void dateLTRefAvailStart_ValueChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void txtReferenceLat_TextChanged(object sender, EventArgs e)
-        {
-            
-        }
+            thisRef.refDataDownload = refList.GetRefDataDownloadByName(cboRefDataDownloads.SelectedItem.ToString());            
+            UpdateForm();
+        }                
 
         private void btnDownloadHelp_Click(object sender, EventArgs e)
         {

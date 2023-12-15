@@ -7,8 +7,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class MetCollection_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MetCollection";
+    {       
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public MetCollection_Tests()
+        {
+            testingFolder = globals.testingFolder + "MetCollection";
+        }
 
         [TestMethod]
         public void CalcWS_DistForTurbOrMap_Test()

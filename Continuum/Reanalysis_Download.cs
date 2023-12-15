@@ -264,6 +264,8 @@ namespace ContinuumNS
                 thisInst.refList.DownloadERA5(thisInst, dataToDownload);  
             }
 
+            thisInst.ChangesMade();
+
             Close();
         }
         /// <summary> Updates textboxes, dropdowns, and dateTimePickers Enabled flag based on specified boolean </summary>        

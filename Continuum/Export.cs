@@ -3344,11 +3344,11 @@ namespace ContinuumNS
                 {
                     file.WriteLine("1 year P-table");                    
                     file.WriteLine("P_Value, 1-yr Total_PF, 1-yr AEP");
-                    file.WriteLine("P1," + Math.Round(thisComp.pVals1yr[0], 3) + "," + Math.Round(thisComp.pVals1yr[0] * AEP, 2));
-                    file.WriteLine("P10," + Math.Round(thisComp.pVals1yr[9], 3) + "," + Math.Round(thisComp.pVals1yr[9] * AEP, 2));
-                    file.WriteLine("P50," + Math.Round(thisComp.pVals1yr[49], 3) + "," + Math.Round(thisComp.pVals1yr[49] * AEP, 2));
-                    file.WriteLine("P90," + Math.Round(thisComp.pVals1yr[89], 3) + "," + Math.Round(thisComp.pVals1yr[89] * AEP, 2));
-                    file.WriteLine("P99," + Math.Round(thisComp.pVals1yr[98], 3) + "," + Math.Round(thisComp.pVals1yr[98] * AEP, 2));
+                    file.WriteLine("P1," + Math.Round(thisComp.pVals1yr[0], 6) + "," + Math.Round(thisComp.pVals1yr[0] * AEP, 2));
+                    file.WriteLine("P10," + Math.Round(thisComp.pVals1yr[9], 6) + "," + Math.Round(thisComp.pVals1yr[9] * AEP, 2));
+                    file.WriteLine("P50," + Math.Round(thisComp.pVals1yr[49], 6) + "," + Math.Round(thisComp.pVals1yr[49] * AEP, 2));
+                    file.WriteLine("P90," + Math.Round(thisComp.pVals1yr[89], 6) + "," + Math.Round(thisComp.pVals1yr[89] * AEP, 2));
+                    file.WriteLine("P99," + Math.Round(thisComp.pVals1yr[98], 6) + "," + Math.Round(thisComp.pVals1yr[98] * AEP, 2));
                     file.WriteLine("");
                 }
                 else if (Exp_All_P_Vals & thisComp.isComplete)

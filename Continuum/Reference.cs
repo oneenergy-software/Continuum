@@ -1300,7 +1300,7 @@ namespace ContinuumNS
 
                         try
                         {
-                      //      context.ERA_Node_table.Add(eraNodeTable);
+                            context.ERA_Node_table.Add(eraNodeTable);
                             context.SaveChanges();
                         }
                         catch (Exception ex)

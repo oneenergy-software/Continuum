@@ -7,8 +7,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class TurbineCollection_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\TurbineCollection";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public TurbineCollection_Tests()
+        {
+            testingFolder = globals.testingFolder + "TurbineCollection";
+        }
 
         [TestMethod]
         public void ExportWSDist()
@@ -136,8 +142,8 @@ namespace Continuum_Tests
         {
             // Tests changing LC key after a met has been imported and turbine estimates have been created
             
-            string LC_Change_Before = "Test_Change_LCKey_Before_Mets_and_Turbs.cfm";
-            string LC_Change_After = "Test_Change_LCKey_After_Mets_and_Turbs.cfm";
+            string LC_Change_Before = "Test_Change_LCKey_Before_Mets_and_Turbines.cfm";
+            string LC_Change_After = "Test_Change_LCKey_After_Mets_and_Turbines.cfm";
 
             Continuum Change_Before = new Continuum("");
             Change_Before.Open(testingFolder + "\\Node_ReCalc\\" + LC_Change_Before);

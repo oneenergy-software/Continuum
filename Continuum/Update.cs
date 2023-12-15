@@ -9,6 +9,7 @@ using OxyPlot.Axes;
 using System.Linq.Expressions;
 using System.Security.Policy;
 using System.Threading;
+using System.IO.Packaging;
 
 namespace ContinuumNS
 {
@@ -19,7 +20,7 @@ namespace ContinuumNS
         Continuum thisInst; 
         /// <summary> List view item used to update tables. </summary>
         ListViewItem objListItem = new ListViewItem();
-
+        
         /// <summary> Holds booleans to determine which parameters to plot on Advanced tab "Path of Nodes" plot and table. </summary>
         public struct Advanced_to_show
         {
@@ -154,7 +155,7 @@ namespace ContinuumNS
                 thisInst.btnGenTurbGross.BackColor = Color.LightCoral;
             }
 
-            if (thisInst.metList.isTimeSeries == false || thisInst.metList.allMCPd == false)
+            if (thisInst.metList.isTimeSeries == false) // 12/11/2023 Updating to allow time series modeling without MCP 
             {
                 thisInst.chkCreateTurbTS.Enabled = false;
                 thisInst.chkCreateTurbTS.CheckState = CheckState.Unchecked;
@@ -1023,7 +1024,10 @@ namespace ContinuumNS
                     thisInst.cboMCP_Type.SelectedIndex = 0;
                 else if (thisMet.mcp != null)
                 {
-                    if (thisMet.mcp.MCP_Ortho.allR_Sq != 0)
+                    string mcpMethod = thisMet.GetMCP_Method_Used();
+                    thisInst.cboMCP_Type.SelectedItem = mcpMethod;
+
+           /*         if (thisMet.mcp.MCP_Ortho.allR_Sq != 0)
                         thisInst.cboMCP_Type.SelectedIndex = 0; // Orthogonal                    
                     else if (thisMet.mcp.MCP_Bins.binAvgSD_Cnt != null)
                         thisInst.cboMCP_Type.SelectedIndex = 1; // Method of Bins
@@ -1033,6 +1037,7 @@ namespace ContinuumNS
                         thisInst.cboMCP_Type.SelectedIndex = 3; // Matrix
                     else
                         thisInst.cboMCP_Type.SelectedIndex = 0;
+           */
 
                 }
             }
@@ -2707,17 +2712,19 @@ namespace ContinuumNS
 
             int numWD = thisInst.GetNumWD();
 
-            // Update WD dropdown on MCP tab            
-            if (numWD == 4)
+            // Update WD dropdown on MCP tab
+            if (numWD == 1)
                 thisInst.cboMCPNumWD.SelectedIndex = 0;
-            else if (numWD == 8)
+            else if (numWD == 4)
                 thisInst.cboMCPNumWD.SelectedIndex = 1;
-            else if (numWD == 12)
+            else if (numWD == 8)
                 thisInst.cboMCPNumWD.SelectedIndex = 2;
-            else if (numWD == 16)
+            else if (numWD == 12)
                 thisInst.cboMCPNumWD.SelectedIndex = 3;
-            else if (numWD == 24)
+            else if (numWD == 16)
                 thisInst.cboMCPNumWD.SelectedIndex = 4;
+            else if (numWD == 24)
+                thisInst.cboMCPNumWD.SelectedIndex = 5;
 
             thisInst.cboAdvancedWD.Items.Clear();
             thisInst.cboSummaryWD.Items.Clear();
@@ -6576,6 +6583,7 @@ namespace ContinuumNS
         /// <summary> Updates map on Input tab to show either elevation, surface roughness, displacement height, or land cover codes. </summary>   
         public void TopoMap()
         {
+            thisInst.txtTopoNullValue.Text = thisInst.topo.topoNull.ToString();
             string topoOrRough = GetSelectedTopoMapParam();
             thisInst.plotTopo.Model = new PlotModel();
             var model = thisInst.plotTopo.Model;
@@ -6626,7 +6634,7 @@ namespace ContinuumNS
                     Palette = OxyPalettes.Jet(500),
                     HighColor = OxyColors.Red,
                     LowColor = OxyColors.Gray,
-                    Minimum = thisInst.topo.GetMin(paramToPlot, false),
+                    Minimum = thisInst.topo.GetMin(paramToPlot, true),
                     Maximum = thisInst.topo.GetMax(paramToPlot)
                 });
 
@@ -7408,9 +7416,13 @@ namespace ContinuumNS
 
                 MapLabels();
             }
+            else
+            {
+                thisInst.plotGenMap.Model = new PlotModel();
+            }
 
             thisInst.plotGenMap.Refresh();
-
+            
         }
 
         /// <summary> Updates textboxes on Map tab showing statistics of selected map. </summary>
@@ -9193,7 +9205,7 @@ namespace ContinuumNS
             int firstYear = thisRef.startDate.Year;
             int lastYear = thisRef.endDate.Year;
 
-            if (thisRef.interpData.annualProd.LT_Avg == 0)
+            if (thisRef.interpData.annualProd.LT_Avg == 0 || thisRef.interpData.annualProd.Yearly_Prod == null)
             {
                 thisRef.Calc_MonthProdStats(thisInst.UTM_conversions);
                 thisRef.CalcAnnualProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, thisInst.UTM_conversions);
@@ -9490,6 +9502,22 @@ namespace ContinuumNS
         {           
             Reference thisRef = thisInst.GetSelectedReference("LT Ref");
 
+            if (thisRef.numNodes == 0) // No reference site selected so clear textboxes and return
+            {
+                thisInst.txtRefDataDownloadName.Text = "";
+                
+                thisInst.txtRefDataDownloadFolder.Text = "";
+
+                thisInst.txtMinLat.Text = "";
+                thisInst.txtMinLong.Text = "";
+                thisInst.txtMaxLat.Text = "";
+                thisInst.txtMaxLong.Text = "";
+
+                thisInst.txtRefDataAvail.Text = "";
+
+                return;
+            }
+
             thisInst.txtRefDataDownloadName.Text = thisRef.refDataDownload.GetName();
             thisInst.txtRefDataDownloadFolder.Text = thisRef.refDataDownload.folderLocation;
 
@@ -9608,6 +9636,7 @@ namespace ContinuumNS
         {         
             // List of references on LT Reference tab
             thisInst.cboLTReferences.Items.Clear();
+            thisInst.cboLTReferences.Text = "";
 
             for (int r = 0; r < thisInst.refList.numReferences; r++)
                 thisInst.cboLTReferences.Items.Add(thisInst.refList.reference[r].GetName(thisInst.metList, thisInst.UTM_conversions));
@@ -9822,6 +9851,31 @@ namespace ContinuumNS
 
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
             Turbine.Avg_Est thisAvgEst = thisTurb.GetAvgWS_Est(thisWakeModel);
+
+            if (thisAvgEst.timeSeries.Length == 0)
+            {
+                NodeCollection nodeList = new NodeCollection();
+                Nodes targetNode = nodeList.GetTurbNode(thisTurb);
+
+                // Find wake loss coeffs                    
+                int minDistance = 10000000;
+                int maxDistance = 0;
+                                
+                int[] Min_Max_Dist = thisInst.turbineList.CalcMinMaxDistanceToTurbines(thisTurb.UTMX, thisTurb.UTMY);
+                if (Min_Max_Dist[0] < minDistance) minDistance = Min_Max_Dist[0]; // this is min distance to turbine but when WD is at a different angle (not in line with turbines) the X dist is less than this value so making this always equal to 2*RD
+                if (Min_Max_Dist[1] > maxDistance) maxDistance = Min_Max_Dist[1];                
+
+                minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
+                if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
+                WakeCollection.WakeLossCoeffs[] wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, thisInst.metList);
+
+                thisAvgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
+                    powerCurve, thisWakeModel, wakeCoeffs, thisInst.metList.GetMCP_MethodUsed());
+
+                thisTurb.UpdateAvgWS_EstWithTS(thisAvgEst);
+                
+            }
+
             int firstYear = thisAvgEst.timeSeries[0].dateTime.Year; // thisInst.merraList.startDate.Year;
             int lastYear = thisAvgEst.timeSeries[thisAvgEst.timeSeries.Length - 1].dateTime.Year; // thisInst.merraList.endDate.Year;
 
@@ -10709,6 +10763,9 @@ namespace ContinuumNS
         {
             string zoneStr = "";
             SiteSuitability.Zone zone = new SiteSuitability.Zone();
+
+            if (thisInst.cboZoneList.SelectedItem == null)
+                return zone;
 
             try
             {
@@ -12009,7 +12066,7 @@ namespace ContinuumNS
             double[] windRose = thisInst.metList.GetAvgWindRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
             double[] energyRose = new double[12]; // TO DO: Add CalcEnergyRose from 
             double[] refWindRose = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 12); // 12 sectors used in IEC
-            double[] refWindRose16 = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 16); // Default used in Continuum model (i.e. grid stats)
+            double[] refWindRoseNumWD = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, thisInst.metList.numWD); // Num WD sectors used in Continuum model (i.e. grid stats)
 
             if (windRose == null)
                 windRose = refWindRose;                        
@@ -12057,8 +12114,8 @@ namespace ContinuumNS
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[10].Value = Math.Round(slopeAndVarInds[1], 3);
 
                 // P10 UW & DW Exposure R = 6000
-                double thisUWP10 = thisTurb.gridStats.GetOverallP10(refWindRose16, 2, "UW");
-                double thisDWP10 = thisTurb.gridStats.GetOverallP10(refWindRose16, 2, "DW");
+                double thisUWP10 = thisTurb.gridStats.GetOverallP10(refWindRoseNumWD, 2, "UW");
+                double thisDWP10 = thisTurb.gridStats.GetOverallP10(refWindRoseNumWD, 2, "DW");
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[11].Value = Math.Round(thisUWP10, 1);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[12].Value = Math.Round(thisDWP10, 1);
             }
@@ -12156,6 +12213,9 @@ namespace ContinuumNS
 
             xAxis.ItemsSource = histoLabels;
 
+            if (histoSize > complexVals.Length)
+                return;
+
             for (int i = 0; i < histoSize; i++)
             {
                 // Get count for this histoVal
@@ -12169,6 +12229,8 @@ namespace ContinuumNS
                     
                 complexHisto.Items.Add(new ColumnItem { Value = histoCount });  
             }
+
+            thisInst.plotComplexHisto.Refresh();
         }
 
         /// <summary> Calculates the statistics (avg, min, max, SD) of map and updates the textboxes on Maps tab. </summary> 
@@ -12962,7 +13024,12 @@ namespace ContinuumNS
             if (selStart > tableEnd)
                 selStart = tableEnd;
 
-            int startRow = Convert.ToInt32(selStart.Subtract(tableStart).TotalMinutes / 10);
+            string dataInt = thisInst.metList.GetMetDataInterval();
+            int numMinsPerInt = 10;
+            if (dataInt == "60-min")
+                numMinsPerInt = 60;
+
+            int startRow = Convert.ToInt32(selStart.Subtract(tableStart).TotalMinutes / numMinsPerInt);
 
             if (startRow < 0)
                 startRow = 0;
@@ -12976,7 +13043,7 @@ namespace ContinuumNS
             double stepSize = startRow / 2;
             TimeSpan lastTimeDiff = timeDiff;
             
-            while (Math.Abs(timeDiff.TotalMinutes) > 10 && diffGettingSmaller)
+            while (Math.Abs(timeDiff.TotalMinutes) > numMinsPerInt && diffGettingSmaller)
             {
                 lastTimeDiff = timeDiff;
 
@@ -13007,7 +13074,7 @@ namespace ContinuumNS
             thisInst.plotTS_Temp.Model = new PlotModel();
             thisInst.plotTS_Baros.Model = new PlotModel();
 
-            if (thisInst.metList.isTimeSeries == false)
+            if (thisInst.metList.isTimeSeries == false || thisInst.metList.HaveTimeSeriesData() == false)
                 return;
 
             if (thisInst.cboNumPlots.SelectedItem == null)
@@ -13252,14 +13319,23 @@ namespace ContinuumNS
 
         /// <summary> Gets called when Met data anemometer TS plot axis is changed by user </summary>        
         void MetTS_Anem_AxisChanged(object sender, AxisChangedEventArgs e)
-        {
+        {           
+
             if (thisInst.okToUpdate)
             {
+                thisInst.okToUpdate = false;
+
                 // Limit zooms to met start/end date
                 DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Anems.Model.Axes[0].ActualMinimum);
                 DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Anems.Model.Axes[0].ActualMaximum);
 
                 DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates();
+
+                if (startDate < metStartEnd[0])
+                    startDate = metStartEnd[0];
+
+                if (endDate > metStartEnd[1])
+                    endDate = metStartEnd[1];
 
                 // Make sure start time is at a 10-min value otherwise set to closest one
                 if (startDate.Minute % 10 != 0 || startDate.Second != 0)                
@@ -13267,35 +13343,29 @@ namespace ContinuumNS
 
                 // Make sure start time is at a 10-min value otherwise set to closest one
                 if (endDate.Minute % 10 != 0 || endDate.Second != 0)                
-                    endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
-
+                    endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);                               
+                
                 // Update min/max of axes for all other visible plots
-                if (thisInst.plotTS_Vanes.Visible)
+                if (thisInst.plotTS_Vanes.Visible && startDate.ToOADate() != thisInst.plotTS_Vanes.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Vanes.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
-             //       thisInst.plotTS_Vanes.Model.Axes[0].Minimum = startDate.ToOADate();
-             //       thisInst.plotTS_Vanes.Model.Axes[0].Maximum = endDate.ToOADate();
-
-             //       thisInst.plotTS_Vanes.Model.Axes[0].AbsoluteMinimum = startDate.ToOADate();
-             //       thisInst.plotTS_Vanes.Model.Axes[0].AbsoluteMaximum = endDate.ToOADate();
-             //       thisInst.plotTS_Vanes.Refresh();
+                    thisInst.plotTS_Vanes.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());             
                     thisInst.plotTS_Vanes.InvalidatePlot(false);
                 }
 
-                if (thisInst.plotTS_Temp.Visible)
+                if (thisInst.plotTS_Temp.Visible && startDate.ToOADate() != thisInst.plotTS_Temp.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Temp.Model.Axes[0].Minimum = startDate.ToOADate();
-                    thisInst.plotTS_Temp.Model.Axes[0].Maximum = endDate.ToOADate();
+                    thisInst.plotTS_Temp.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Temp.InvalidatePlot(false);                    
                 }
 
-                if (thisInst.plotTS_Baros.Visible)
+                if (thisInst.plotTS_Baros.Visible && startDate.ToOADate() != thisInst.plotTS_Baros.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Baros.Model.Axes[0].Minimum = startDate.ToOADate();
-                    thisInst.plotTS_Baros.Model.Axes[0].Maximum = endDate.ToOADate();
+                    thisInst.plotTS_Baros.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Baros.InvalidatePlot(false);                    
                 }
 
                 // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
-                thisInst.okToUpdate = false;
+                
                 thisInst.dateMetTS_Start.Value = startDate;
                 thisInst.dateMetTS_End.Value = endDate;
 
@@ -13305,8 +13375,7 @@ namespace ContinuumNS
                 thisInst.okToUpdate = true;
 
                 // Update table to same start row
-                ScrollToSelectedMetDataStart();
-                
+                ScrollToSelectedMetDataStart();                                
             }
         }
 
@@ -13315,27 +13384,49 @@ namespace ContinuumNS
         {
             if (thisInst.okToUpdate)
             {
+                thisInst.okToUpdate = false;
+
+                // Limit zooms to met start/end date
+                DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMinimum);
+                DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMaximum);
+
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates();
+
+                if (startDate < metStartEnd[0])
+                    startDate = metStartEnd[0];
+
+                if (endDate > metStartEnd[1])
+                    endDate = metStartEnd[1];
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (startDate.Minute % 10 != 0 || startDate.Second != 0)
+                    startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (endDate.Minute % 10 != 0 || endDate.Second != 0)
+                    endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
+
                 // Update min/max of axes for all other visible plots
-                if (thisInst.plotTS_Anems.Visible)
+                if (thisInst.plotTS_Anems.Visible && startDate.ToOADate() != thisInst.plotTS_Anems.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Anems.Model.Axes[0].Minimum = thisInst.plotTS_Vanes.Model.Axes[0].ActualMinimum;
-                    thisInst.plotTS_Anems.Model.Axes[0].Maximum = thisInst.plotTS_Vanes.Model.Axes[0].ActualMaximum;
+                    thisInst.plotTS_Anems.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Anems.InvalidatePlot(false);
                 }
 
-                if (thisInst.plotTS_Temp.Visible)
+                if (thisInst.plotTS_Temp.Visible && startDate.ToOADate() != thisInst.plotTS_Temp.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Temp.Model.Axes[0].Minimum = thisInst.plotTS_Vanes.Model.Axes[0].ActualMinimum;
-                    thisInst.plotTS_Temp.Model.Axes[0].Maximum = thisInst.plotTS_Vanes.Model.Axes[0].Maximum;
+                    thisInst.plotTS_Temp.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Temp.InvalidatePlot(false);
                 }
 
-                if (thisInst.plotTS_Baros.Visible)
+                if (thisInst.plotTS_Baros.Visible && startDate.ToOADate() != thisInst.plotTS_Baros.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Baros.Model.Axes[0].Minimum = thisInst.plotTS_Vanes.Model.Axes[0].ActualMinimum;
-                    thisInst.plotTS_Baros.Model.Axes[0].Maximum = thisInst.plotTS_Vanes.Model.Axes[0].Maximum;
+                    thisInst.plotTS_Baros.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Baros.InvalidatePlot(false);
                 }
 
                 // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
-                thisInst.okToUpdate = false;
+                
                 thisInst.dateMetTS_Start.Value = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMinimum);
                 thisInst.dateMetTS_End.Value = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMaximum);
 
@@ -13353,27 +13444,49 @@ namespace ContinuumNS
         {
             if (thisInst.okToUpdate)
             {
+                thisInst.okToUpdate = false;
+
+                // Limit zooms to met start/end date
+                DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMinimum);
+                DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMaximum);
+
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates();
+
+                if (startDate < metStartEnd[0])
+                    startDate = metStartEnd[0];
+
+                if (endDate > metStartEnd[1])
+                    endDate = metStartEnd[1];
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (startDate.Minute % 10 != 0 || startDate.Second != 0)
+                    startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (endDate.Minute % 10 != 0 || endDate.Second != 0)
+                    endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
+
                 // Update min/max of axes for all other visible plots
-                if (thisInst.plotTS_Anems.Visible)
+                if (thisInst.plotTS_Anems.Visible && startDate.ToOADate() != thisInst.plotTS_Anems.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Anems.Model.Axes[0].Minimum = thisInst.plotTS_Temp.Model.Axes[0].ActualMinimum;
-                    thisInst.plotTS_Anems.Model.Axes[0].Maximum = thisInst.plotTS_Temp.Model.Axes[0].ActualMaximum;
+                    thisInst.plotTS_Anems.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Anems.InvalidatePlot(false);
                 }
 
-                if (thisInst.plotTS_Vanes.Visible)
+                if (thisInst.plotTS_Vanes.Visible && startDate.ToOADate() != thisInst.plotTS_Vanes.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Vanes.Model.Axes[0].Minimum = thisInst.plotTS_Temp.Model.Axes[0].ActualMinimum;
-                    thisInst.plotTS_Vanes.Model.Axes[0].Maximum = thisInst.plotTS_Temp.Model.Axes[0].ActualMaximum;
+                    thisInst.plotTS_Vanes.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Vanes.InvalidatePlot(false);
                 }
 
-                if (thisInst.plotTS_Baros.Visible)
+                if (thisInst.plotTS_Baros.Visible && startDate.ToOADate() != thisInst.plotTS_Baros.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Baros.Model.Axes[0].Minimum = thisInst.plotTS_Temp.Model.Axes[0].ActualMinimum;
-                    thisInst.plotTS_Baros.Model.Axes[0].Maximum = thisInst.plotTS_Temp.Model.Axes[0].ActualMaximum;
+                    thisInst.plotTS_Baros.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Baros.InvalidatePlot(false);
                 }
 
                 // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
-                thisInst.okToUpdate = false;
+                
                 thisInst.dateMetTS_Start.Value = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMinimum);
                 thisInst.dateMetTS_End.Value = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMaximum);
 
@@ -13391,27 +13504,49 @@ namespace ContinuumNS
         {
             if (thisInst.okToUpdate)
             {
+                thisInst.okToUpdate = false;
+
+                // Limit zooms to met start/end date
+                DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMinimum);
+                DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMaximum);
+
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates();
+
+                if (startDate < metStartEnd[0])
+                    startDate = metStartEnd[0];
+
+                if (endDate > metStartEnd[1])
+                    endDate = metStartEnd[1];
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (startDate.Minute % 10 != 0 || startDate.Second != 0)
+                    startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (endDate.Minute % 10 != 0 || endDate.Second != 0)
+                    endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
+                
                 // Update min/max of axes for all other visible plots
-                if (thisInst.plotTS_Anems.Visible)
+                if (thisInst.plotTS_Anems.Visible && startDate.ToOADate() != thisInst.plotTS_Anems.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Anems.Model.Axes[0].Minimum = thisInst.plotTS_Baros.Model.Axes[0].ActualMinimum;
-                    thisInst.plotTS_Anems.Model.Axes[0].Maximum = thisInst.plotTS_Baros.Model.Axes[0].ActualMaximum;
+                    thisInst.plotTS_Anems.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Anems.InvalidatePlot(false);
                 }
 
-                if (thisInst.plotTS_Vanes.Visible)
+                if (thisInst.plotTS_Vanes.Visible && startDate.ToOADate() != thisInst.plotTS_Vanes.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Vanes.Model.Axes[0].Minimum = thisInst.plotTS_Baros.Model.Axes[0].ActualMinimum;
-                    thisInst.plotTS_Vanes.Model.Axes[0].Maximum = thisInst.plotTS_Baros.Model.Axes[0].ActualMaximum;
+                    thisInst.plotTS_Vanes.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Vanes.InvalidatePlot(false);
                 }
 
-                if (thisInst.plotTS_Temp.Visible)
+                if (thisInst.plotTS_Temp.Visible && startDate.ToOADate() != thisInst.plotTS_Temp.Model.Axes[0].Minimum)
                 {
-                    thisInst.plotTS_Temp.Model.Axes[0].Minimum = thisInst.plotTS_Baros.Model.Axes[0].ActualMinimum;
-                    thisInst.plotTS_Temp.Model.Axes[0].Maximum = thisInst.plotTS_Baros.Model.Axes[0].ActualMaximum;
+                    thisInst.plotTS_Temp.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Temp.InvalidatePlot(false);
                 }
 
                 // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
-                thisInst.okToUpdate = false;
+                
                 thisInst.dateMetTS_Start.Value = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMinimum);
                 thisInst.dateMetTS_End.Value = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMaximum);
 
@@ -13524,6 +13659,20 @@ namespace ContinuumNS
                     int startInd = thisAnem.GetTS_Index(startTime);
                     int endInd = thisAnem.GetTS_Index(endTime);
 
+             /*       if (startInd == -999) // Adjust start time until find a valid index
+                        while (startInd == -999)
+                        {
+                            startTime = startTime.AddMinutes(10);
+                            startInd = thisAnem.GetTS_Index(startTime);
+                        }
+
+                    if (endInd == -999) // Adjust start time until find a valid index
+                        while (endInd == -999)
+                        {
+                            endTime = endTime.AddMinutes(-10);
+                            endInd = thisAnem.GetTS_Index(endTime);
+                        }
+             */
                     if (startInd < 0)
                         startInd = 0;
 

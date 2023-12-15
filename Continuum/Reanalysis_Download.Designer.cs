@@ -138,12 +138,13 @@
             // btnDownloadMERRA2
             // 
             this.btnDownloadMERRA2.BackColor = System.Drawing.Color.LightCoral;
+            this.btnDownloadMERRA2.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDownloadMERRA2.Location = new System.Drawing.Point(421, 318);
             this.btnDownloadMERRA2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDownloadMERRA2.Name = "btnDownloadMERRA2";
             this.btnDownloadMERRA2.Size = new System.Drawing.Size(121, 53);
             this.btnDownloadMERRA2.TabIndex = 241;
-            this.btnDownloadMERRA2.Text = "Download Data";
+            this.btnDownloadMERRA2.Text = "Add Reanalysis Dataset";
             this.btnDownloadMERRA2.UseVisualStyleBackColor = false;
             this.btnDownloadMERRA2.Click += new System.EventHandler(this.btnDownloadMERRA2_Click);
             // 

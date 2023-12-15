@@ -8,9 +8,16 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class ReferenceCollection_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MERRACollection";
-        string MERRA2Folder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+        string MERRA2Folder;
+
+        public ReferenceCollection_Tests()
+        {
+            testingFolder = globals.testingFolder + "ReferenceCollection";
+            MERRA2Folder = globals.merraFolder;
+        }
 
         [TestMethod]
         public void GetInterpData_Test()
@@ -19,24 +26,26 @@ namespace Continuum_Tests
             
             string Filename = testingFolder + "\\GetInterpData test.cfm";
             thisInst.Open(Filename);
-            
+       //     thisInst.merraList.MERRAfolder = MERRA2Folder;
+
             // Test site
             double thisLat = 41.23;
             double thisLong = -83.4;
-
             Met thisMet = new Met();
+                        
+            Reference thisRef = new Reference();
+            thisRef.numNodes = 4;
+            thisRef.refDataDownload = thisInst.refList.refDataDownloads[0];
+            thisRef.Set_Interp_LatLon_Dates_Offset(thisLat, thisLong, thisInst.UTM_conversions.GetUTC_Offset(thisLat, thisLong), thisInst.UTM_conversions);
+            thisRef.nodes = new Reference.Node_Data[thisRef.numNodes];
+            thisRef.FindCoords(thisInst.refList);
+            thisRef.GetReferenceDataFromDB(thisInst);
+            thisInst.refList.GetDataFromTextFiles(thisRef, thisInst);
+            thisRef.GetInterpData(thisInst.UTM_conversions);
 
-            ReferenceCollection.RefDataDownload refDataDown = thisInst.refList.ReadFileAndDefineRefDataDownload(MERRA2Folder);
-            if (thisInst.refList.HaveThisRefDataDownload(refDataDown) == false)
-                thisInst.refList.AddRefDataDownload(refDataDown);
+            thisInst.refList.AddReference(thisRef);
 
-            Reference newRef = new Reference();
-            newRef.Set_Interp_LatLon_Dates_Offset(thisLat, thisLong, thisInst.UTM_conversions.GetUTC_Offset(thisLat, thisLong), thisInst.UTM_conversions);
-            newRef.numNodes = 4;
-            newRef.refDataDownload = refDataDown;
-            thisInst.refList.AddReference(newRef);
-
-            thisInst.refList.GetDataFromTextFiles(newRef, thisInst);                       
+            //      thisInst.merraList.AddMERRA_GetDataFromTextFiles(thisLat, thisLong, -5, thisInst, thisMet, true);
 
             while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false && thisInst.BW_worker.IsBusy()) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
                 Thread.Sleep(1000);
@@ -44,8 +53,9 @@ namespace Continuum_Tests
             if (thisInst.BW_worker.WasReturned)
                 Assert.Fail();
 
-            Reference thisMERRA = thisInst.refList.GetAllRefsAtLatLong(thisLat, thisLong)[0];
+            Reference thisMERRA = thisInst.refList.GetAllRefsAtLatLong(thisLat, thisLong)[1];
            
+
             Assert.AreEqual(thisMERRA.interpData.TS_Data[226].WS, 14.60535, 0.001, "Wrong interp WS Index 226");
             Assert.AreEqual(thisMERRA.interpData.TS_Data[1000].WS, 6.364464, 0.001, "Wrong interp WS Index 1000");
             Assert.AreEqual(thisMERRA.interpData.TS_Data[2475].WS, 6.745679, 0.001, "Wrong interp WS Index 2475");
@@ -62,19 +72,27 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetRequiredMERRACoords_Test()
         {
-            MERRACollection merraList = new MERRACollection();
-            merraList.numMERRA_Nodes = 1;
+            ReferenceCollection refList = new ReferenceCollection();
+            ReferenceCollection.RefDataDownload refDataDown = new ReferenceCollection.RefDataDownload();
+            refDataDown.refType = "MERRA2";
+            refList.AddRefDataDownload(refDataDown);
+
+            Reference thisRef = new Reference();
+            thisRef.refDataDownload = refDataDown;
+            thisRef.numNodes = 1;
 
             double thisLat = 41.09805;
             double thisLong = -83.6422;
+            UTM_conversion utmConvs = new UTM_conversion();
+            thisRef.Set_Interp_LatLon_Dates_Offset(thisLat, thisLong, utmConvs.GetUTC_Offset(thisLat, thisLong), utmConvs);
 
-            UTM_conversion.Lat_Long[] theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
+            UTM_conversion.Lat_Long[] theseNodes = thisRef.GetRequiredCoords(refList);
 
             Assert.AreEqual(theseNodes[0].latitude, 41.0, 0, "Wrong lat Test 1");
             Assert.AreEqual(theseNodes[0].longitude, -83.75, 0, "Wrong long Test 1");
 
-            merraList.numMERRA_Nodes = 4;
-            theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
+            thisRef.numNodes = 4;
+            theseNodes = thisRef.GetRequiredCoords(refList);
 
             Assert.AreEqual(theseNodes[0].latitude, 41.0, 0, "Wrong lat Test 2");
             Assert.AreEqual(theseNodes[0].longitude, -83.75, 0, "Wrong long Test 2");
@@ -85,8 +103,8 @@ namespace Continuum_Tests
             Assert.AreEqual(theseNodes[3].latitude, 41.5, 0, "Wrong lat Test 2");
             Assert.AreEqual(theseNodes[3].longitude, -83.125, 0, "Wrong long Test 2");
 
-            merraList.numMERRA_Nodes = 16;
-            theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
+            thisRef.numNodes = 16;
+            theseNodes = thisRef.GetRequiredCoords(refList);
 
             Assert.AreEqual(theseNodes[0].latitude, 40.5, 0, "Wrong lat Test 3");
             Assert.AreEqual(theseNodes[0].longitude, -84.375, 0, "Wrong long Test 3");
@@ -125,17 +143,16 @@ namespace Continuum_Tests
             Assert.AreEqual(theseNodes[15].longitude, -82.5, 0, "Wrong long Test 3");
 
             // Southern hemisphere
-            thisLat = -35.279;
-            thisLong = 149.118;
+            thisRef.Set_Interp_LatLon_Dates_Offset(-35.279, 149.118, utmConvs.GetUTC_Offset(-35.279, 149.118), utmConvs);
 
-            merraList.numMERRA_Nodes = 1;
-            theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
+            thisRef.numNodes = 1;
+            theseNodes = thisRef.GetRequiredCoords(refList);
 
             Assert.AreEqual(theseNodes[0].latitude, -35.5, 0, "Wrong lat Test 4");
             Assert.AreEqual(theseNodes[0].longitude, 149.375, 0, "Wrong long Test 4");
 
-            merraList.numMERRA_Nodes = 4;
-            theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
+            thisRef.numNodes = 4;
+            theseNodes = thisRef.GetRequiredCoords(refList);
 
             Assert.AreEqual(theseNodes[0].latitude, -35.5, 0, "Wrong lat Test 5");
             Assert.AreEqual(theseNodes[0].longitude, 148.75, 0, "Wrong long Test 5");
@@ -146,8 +163,8 @@ namespace Continuum_Tests
             Assert.AreEqual(theseNodes[3].latitude, -35.0, 0, "Wrong lat Test 5");
             Assert.AreEqual(theseNodes[3].longitude, 149.375, 0, "Wrong long Test 5");
 
-            merraList.numMERRA_Nodes = 16;
-            theseNodes = merraList.GetRequiredMERRACoords(thisLat, thisLong);
+            thisRef.numNodes = 16;
+            theseNodes = thisRef.GetRequiredCoords(refList);
 
             Assert.AreEqual(theseNodes[0].latitude, -36, 0, "Wrong lat Test 6");
             Assert.AreEqual(theseNodes[0].longitude, 148.125, 0, "Wrong long Test 6");

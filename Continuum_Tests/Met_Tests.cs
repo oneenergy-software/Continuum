@@ -7,8 +7,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class Met_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Met";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public Met_Tests()
+        {
+            testingFolder = globals.testingFolder + "Met";
+        }
 
         [TestMethod]
         public void CalcAvgWS_Test()
@@ -73,9 +79,8 @@ namespace Continuum_Tests
             string MCP_Method = "Orth. Regression";
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             int offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            //     MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-            Reference thisRef = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
-            thisInst.metList.RunMCP(ref thisMet, thisRef, thisInst, MCP_Method);
+            Reference thisMERRA = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
+            thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
             thisInst.metList.isMCPd = true;
 
             // Test 1
@@ -90,7 +95,7 @@ namespace Continuum_Tests
             // Test 2 - 3
             thisInst.ResetTimeSeries();
             thisInst.metList.numTOD = 2;
-            thisInst.metList.RunMCP(ref thisMet, thisRef, thisInst, MCP_Method);
+            thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
             thisInst.metList.isMCPd = true;
 
             thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Day, Met.Season.All, thisInst, thisMet.mcp.LT_WS_Ests);
@@ -113,7 +118,7 @@ namespace Continuum_Tests
             thisInst.ResetTimeSeries();
             thisInst.metList.numTOD = 1;
             thisInst.metList.numSeason = 4;
-            thisInst.metList.RunMCP(ref thisMet, thisRef, thisInst, MCP_Method);
+            thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
             thisInst.metList.isMCPd = true;
 
             thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Winter, thisInst, thisMet.mcp.LT_WS_Ests);
@@ -150,7 +155,7 @@ namespace Continuum_Tests
             thisInst.metList.numTOD = 2;
             thisInst.metList.numSeason = 4;
             thisInst.metList.numWD = 24;
-            thisInst.metList.RunMCP(ref thisMet, thisRef, thisInst, MCP_Method);
+            thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
             thisInst.metList.isMCPd = true;
 
             thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.Summer, thisInst, thisMet.mcp.LT_WS_Ests);
@@ -417,9 +422,8 @@ namespace Continuum_Tests
             string fileName = testingFolder + "\\Extreme WS\\Extreme WS Ashta Iten.cfm";
             thisInst.Open(fileName);
             Met thisMet = thisInst.metList.metItem[0];
-            Reference thisRef = thisInst.refList.reference[0];
 
-            Met.Extreme_WindSpeed maxWS = thisMet.CalcExtremeWindSpeeds(thisInst, thisRef);
+            Met.Extreme_WindSpeed maxWS = thisMet.CalcExtremeWindSpeeds(thisInst, thisInst.refList.reference[0]);
 
             Assert.AreEqual(maxWS.gust1yr, 27.0, 0.1, "Wrong Gust 1-year WS");
             Assert.AreEqual(maxWS.tenMin1yr, 16.87, 0.1, "Wrong Ten-Min 1yrear WS");

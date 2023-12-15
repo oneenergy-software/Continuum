@@ -6,8 +6,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class GenMap_Tests
-    {
-        string testingFolder = "C:\\Users\\OEE2021_03\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\GenMap";
+    { 
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public GenMap_Tests()
+        {
+            testingFolder = globals.testingFolder + "GenMap";
+        }
 
         [TestMethod]
         public void UpdateLimits_Test()

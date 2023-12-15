@@ -8,9 +8,16 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class Reference_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MERRA";
-        string merraFolder = "C:\\Users\\liz_w\\Desktop\\MERRA2";
+    {       
+        Globals globals = new Globals();
+        string testingFolder;
+        string merraFolder;
+
+        public Reference_Tests()
+        {
+            testingFolder = globals.testingFolder + "Reference";
+            merraFolder = globals.merraFolder;
+        }
 
         [TestMethod]
         public void GetMaxHourlyWindSpeeds_Test()
@@ -48,8 +55,8 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-       //     UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
-            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
+            Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
 
             if (merra.interpData.TS_Data.Length == 0)
             {
@@ -92,11 +99,12 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
 
-            Met thisMet = thisInst.metList.metItem[0];            
-            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+            Met thisMet = thisInst.metList.metItem[0];
+            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+            Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
 
             // Test 1: All Months, all years
-            double[] thisWR = merra.Calc_Wind_Rose(100, 100, thisInst.UTM_conversions, thisInst.metList.numWD); // all years all months
+            double[] thisWR = merra.Calc_Wind_Rose(100, 100, thisInst.UTM_conversions, 16); // all years all months
             string WR_file = testingFolder + "\\Calc_Wind_Rose\\All Months All Years Wind Rose.csv";
 
             StreamReader sr = new StreamReader(WR_file);
@@ -110,7 +118,7 @@ namespace Continuum_Tests
             sr.Close();
 
             // Test 2: March 2009
-            thisWR = merra.Calc_Wind_Rose(3, 2009, thisInst.UTM_conversions, thisInst.metList.numWD); // March 2009
+            thisWR = merra.Calc_Wind_Rose(3, 2009, thisInst.UTM_conversions, 16); // March 2009
             WR_file = testingFolder + "\\Calc_Wind_Rose\\March 2009 Wind Rose.csv";
 
             sr = new StreamReader(WR_file);
@@ -124,7 +132,7 @@ namespace Continuum_Tests
             sr.Close();
 
             // Test 3: June All Years
-            thisWR = merra.Calc_Wind_Rose(6, 100, thisInst.UTM_conversions, thisInst.metList.numWD); // June LT
+            thisWR = merra.Calc_Wind_Rose(6, 100, thisInst.UTM_conversions, 16); // June LT
             WR_file = testingFolder + "\\Calc_Wind_Rose\\June All Years Wind Rose.csv";
 
             sr = new StreamReader(WR_file);
@@ -138,7 +146,7 @@ namespace Continuum_Tests
             sr.Close();
 
             // Test 4: 2010 All Months
-            thisWR = merra.Calc_Wind_Rose(100, 2010, thisInst.UTM_conversions, thisInst.metList.numWD); // 2010
+            thisWR = merra.Calc_Wind_Rose(100, 2010, thisInst.UTM_conversions, 16); // 2010
             WR_file = testingFolder + "\\Calc_Wind_Rose\\2010 Wind Rose.csv";
 
             sr = new StreamReader(WR_file);
@@ -163,8 +171,8 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            
-            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
+            Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
             merra.Calc_LT_Avg_Prod(ref merra.interpData.annualProd);            
 
             // Test 1
@@ -186,7 +194,7 @@ namespace Continuum_Tests
         {
             string UVfile = testingFolder + "\\Calc_MERRA_WS_WD\\U50_V50_WS.csv";
             StreamReader srUVs = new StreamReader(UVfile);
-                                    
+
             Reference.East_North_WSs[] theseUVs = new Reference.East_North_WSs[3];
             Reference thisMERRA = new Reference();
             thisMERRA.Size_East_North_WS_Data(ref theseUVs, 2);
@@ -239,8 +247,9 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
 
-            Met thisMet = thisInst.metList.metItem[0];            
-            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+            Met thisMet = thisInst.metList.metItem[0];
+            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
+            Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
             merra.Calc_MonthProdStats(thisInst.UTM_conversions);
 
             Assert.AreEqual(539195.69, merra.interpData.monthlyProd[0].YearProd[0].prod, 10, "Wrong Prod Jan 2008");
@@ -260,8 +269,9 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
 
-            Met thisMet = thisInst.metList.metItem[0];            
-            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+            Met thisMet = thisInst.metList.metItem[0];
+            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
+            Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
 
             double thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[0], 2008);
             Assert.AreEqual(0.390928274, thisDiff, 0.001, "Wrong Perc Diff Jan 2008");
@@ -283,8 +293,9 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MERRA_Testing.cfm";
             thisInst.Open(Filename);
 
-            Met thisMet = thisInst.metList.metItem[0];            
-            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
+            Met thisMet = thisInst.metList.metItem[0];
+            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
+            Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
 
             double This_Diff = merra.Calc_Perc_Diff_from_LT_Yearly(merra.interpData.annualProd, 2008);
             Assert.AreEqual(0.09389, This_Diff, 0.001, "Wrong Perc Diff 2008");
@@ -307,8 +318,9 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
-            
+            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
+            Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
+
             double thisDev = merra.Calc_Dev_from_LT(merra.interpData.monthlyProd, merra.interpData.annualProd, 2010, 11);
             Assert.AreEqual(0.0404134, thisDev, 0.001, "Wrong deviation in Nov 2010");
 
@@ -327,7 +339,8 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");            
+            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
+            Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
             TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0];
 
             Assert.AreEqual(0.338060246, merra.Calc_CF(456, 1, 2000, powerCurve), 0.001, "Wrong CF 31 days");            
@@ -349,10 +362,11 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             Met thisMet = thisInst.metList.metItem[0];
-            Reference merra = thisInst.refList.GetReferenceByUTM(thisMet.UTMX, thisMet.UTMY, "MERRA2");
-            
+            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
+            Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
+
             // Test 1
-            merra.FindCoords(thisInst.refList);            
+            bool Get_MERRA_Coords = merra.FindCoords(thisInst.refList);            
             Assert.AreEqual(4, merra.nodes[0].XY_ind.X_ind, "Wrong x ind");
             Assert.AreEqual(2, merra.nodes[0].XY_ind.Y_ind, "Wrong y ind");
 
@@ -362,7 +376,7 @@ namespace Continuum_Tests
             merra.ClearAll();            
             merra.Set_Interp_LatLon_Dates_Offset(41.2, -83.8, thisInst.UTM_conversions.GetUTC_Offset(41.2, -83.8), thisInst.UTM_conversions);
             
-            merra.FindCoords(thisInst.refList);
+            Get_MERRA_Coords = merra.FindCoords(thisInst.refList);
             Assert.AreEqual(4, merra.nodes[0].XY_ind.X_ind, "Wrong x ind 0");
             Assert.AreEqual(1, merra.nodes[0].XY_ind.Y_ind, "Wrong y ind 0");
             Assert.AreEqual(5, merra.nodes[1].XY_ind.X_ind, "Wrong x ind 1");
@@ -377,7 +391,7 @@ namespace Continuum_Tests
             Array.Resize(ref merra.nodes, merra.numNodes);
             merra.ClearAll();
             merra.Set_Interp_LatLon_Dates_Offset(40.4, -82.9, thisInst.UTM_conversions.GetUTC_Offset(40.4, -82.9), thisInst.UTM_conversions);            
-            merra.FindCoords(thisInst.refList);
+            Get_MERRA_Coords = merra.FindCoords(thisInst.refList);
             Assert.AreEqual(1, merra.nodes[0].XY_ind.X_ind, "Wrong x ind 0");
             Assert.AreEqual(2, merra.nodes[0].XY_ind.Y_ind, "Wrong y ind 0");
             Assert.AreEqual(2, merra.nodes[1].XY_ind.X_ind, "Wrong x ind 1");

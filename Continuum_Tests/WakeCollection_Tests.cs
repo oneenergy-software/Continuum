@@ -7,8 +7,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class WakeCollection_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\WakeCollection";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+       
+        public WakeCollection_Tests()
+        {
+            testingFolder = globals.testingFolder + "WakeCollection";            
+        }
 
         [TestMethod]
         public void CalcWakeProfileFit_Test()

@@ -8,8 +8,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class Turbine_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Turbine";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public Turbine_Tests()
+        {
+            testingFolder = globals.testingFolder + "Turbine";
+        }
 
         [TestMethod]
         public void DoWS_EstAlongNodes_Test()

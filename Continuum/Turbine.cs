@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using static ContinuumNS.TurbineCollection;
 
 namespace ContinuumNS
 {
@@ -1884,6 +1885,21 @@ namespace ContinuumNS
             }
             
             return haveEst;
+        }
+
+        /// <summary> Updates AvgWS_Est object with calculated time series </summary>        
+        public void UpdateAvgWS_EstWithTS(Avg_Est avgEstToUpdate)
+        {
+            WakeCollection wakeList = new WakeCollection();
+
+            for (int i = 0; i < AvgWSEst_Count; i++)
+            {
+                if (wakeList.IsSameWakeModel(avgEstToUpdate.wakeModel, avgWS_Est[i].wakeModel))
+                {
+                    avgWS_Est[i] = avgEstToUpdate;
+                    break;
+                }                
+            }
         }
     }
 }

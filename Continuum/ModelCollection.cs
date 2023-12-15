@@ -2476,11 +2476,13 @@ namespace ContinuumNS
         /// </summary>
 
         public TimeSeries[] GenerateTimeSeries(Continuum thisInst, string[] metsUsed, Nodes targetNode, TurbineCollection.PowerCurve powerCurve,
-            Wake_Model wakeModel, WakeCollection.WakeLossCoeffs[] wakeCoeffs, string MCP_Method)
+            Wake_Model wakeModel, WakeCollection.WakeLossCoeffs[] wakeCoeffs, string MCP_Method = "")
         {
             
             TimeSeries[] thisTS = new TimeSeries[0];
             int numMets = metsUsed.Length;
+            MetLTEsts[] metLT_Ests = new MetLTEsts[numMets];
+            int TS_Length = 0;
 
             if (metsUsed == null)
                 return thisTS;
@@ -2491,30 +2493,62 @@ namespace ContinuumNS
             if (thisInst.topo.elevsForCalcs == null)
                 thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
-            // Size time series array to same length at met's long-term estimates
-            Reference thisRef = thisInst.metList.GetReferenceUsedInMCP(metsUsed);
-            int TS_Length = thisRef.interpData.TS_Data.Length;
-            Array.Resize(ref thisTS, TS_Length);
-
-            // Get LT Estimates at each met used in model. Save in MetLTEsts struct which holds an array of MCP.Site_Data struct           
-            MetLTEsts[] metLT_Ests = new MetLTEsts[numMets];
-
-            for (int i = 0; i < numMets; i++)
+            if (MCP_Method != null && MCP_Method != "")
             {
-                for (int j = 0; j < thisInst.metList.ThisCount; j++)
-                    if (metsUsed[i] == thisInst.metList.metItem[j].name)
-                    {
-                        if (thisInst.metList.metItem[j].mcp.LT_WS_Ests.Length == 0)
-                            thisInst.metList.metItem[j].mcp.LT_WS_Ests = thisInst.metList.metItem[j].mcp.GenerateLT_WS_TS(thisInst, thisInst.metList.metItem[j], MCP_Method);
+                // Size time series array to same length at met's long-term estimates
+                Reference thisRef = thisInst.metList.GetReferenceUsedInMCP(metsUsed);
 
-                        metLT_Ests[i].estWS = thisInst.metList.metItem[j].mcp.LT_WS_Ests;
-                    }                 
-                     
+                if (thisRef.interpData.TS_Data.Length == 0)
+                {
+                    thisRef.GetReferenceDataFromDB(thisInst);
+                    thisRef.GetInterpData(thisInst.UTM_conversions);
+                }
+
+                TS_Length = thisRef.interpData.TS_Data.Length;
+                Array.Resize(ref thisTS, TS_Length);
+
+                // Get LT Estimates at each met used in model. Save in MetLTEsts struct which holds an array of MCP.Site_Data struct           
+
+                for (int i = 0; i < numMets; i++)
+                {
+                    for (int j = 0; j < thisInst.metList.ThisCount; j++)
+                        if (metsUsed[i] == thisInst.metList.metItem[j].name)
+                        {
+                            if (thisInst.metList.metItem[j].mcp.LT_WS_Ests.Length == 0)
+                                thisInst.metList.metItem[j].mcp.LT_WS_Ests = thisInst.metList.metItem[j].mcp.GenerateLT_WS_TS(thisInst, thisInst.metList.metItem[j], MCP_Method);
+
+                            metLT_Ests[i].estWS = thisInst.metList.metItem[j].mcp.LT_WS_Ests;
+                        }
+
+                }
+            }
+            else
+            {
+                // Using concurrent data period of all mets used in model
+                DateTime[] startEnd = thisInst.metList.GetMetStartEndDates();
+                string dataInterval = thisInst.metList.GetMetDataInterval();
+                double totalHours = startEnd[1].Subtract(startEnd[0]).TotalHours;
+
+                if (dataInterval == "10-min")                
+                    TS_Length = Convert.ToInt32(Math.Round(totalHours, 0) * 6);                
+                else                
+                    TS_Length = Convert.ToInt32(Math.Round(totalHours, 0));
+
+                Array.Resize(ref thisTS, TS_Length);
+
+                for (int i = 0; i < numMets; i++)
+                {
+                    for (int j = 0; j < thisInst.metList.ThisCount; j++)
+                        if (metsUsed[i] == thisInst.metList.metItem[j].name) 
+                            metLT_Ests[i].estWS = thisInst.metList.GetConcurrentMetDataTS(metsUsed[i], thisInst.modeledHeight);                        
+
+                }
+
             }
 
             // Get all models used. 
-            int numTODs = thisInst.metList.metItem[0].mcp.numTODs;
-            int numSeasons = thisInst.metList.metItem[0].mcp.numSeasons;
+         //   int numTODs = thisInst.metList.metItem[0].mcp.numTODs;
+         //   int numSeasons = thisInst.metList.metItem[0].mcp.numSeasons;
 
             // Get all models used
             Models[] models = GetAllModelsUsed(thisInst);

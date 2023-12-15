@@ -113,19 +113,36 @@ namespace ContinuumNS
             return theseRefs;
         }
 
- /*       /// <summary> Returns Reference object with specified type, latitude and longitude. </summary>
-       public Reference GetReference(string refType, double latitude, double longitude, int numNodes)
+        /// <summary> Returns reference with specified latitude, longitude, and number of nodes </summary>
+        
+        public Reference GetRefAtLatLongNumNodes(double latitude, double longitude, int numNodes)
         {
             Reference thisRef = new Reference();
-
+            
             for (int i = 0; i < numReferences; i++)
-                if (reference[i].referenceType == refType && reference[i].interpData.Coords.latitude == Math.Round(latitude, 3) 
-                    && reference[i].interpData.Coords.longitude == Math.Round(longitude, 3) && reference[i].numNodes == numNodes)
+                if (reference[i].numNodes == numNodes && reference[i].interpData.Coords.latitude == Math.Round(latitude, 3) 
+                    && reference[i].interpData.Coords.longitude == Math.Round(longitude, 3))
+                {                    
                     thisRef = reference[i];
+                    break;
+                }
 
             return thisRef;
         }
- */
+
+        /*       /// <summary> Returns Reference object with specified type, latitude and longitude. </summary>
+              public Reference GetReference(string refType, double latitude, double longitude, int numNodes)
+               {
+                   Reference thisRef = new Reference();
+
+                   for (int i = 0; i < numReferences; i++)
+                       if (reference[i].referenceType == refType && reference[i].interpData.Coords.latitude == Math.Round(latitude, 3) 
+                           && reference[i].interpData.Coords.longitude == Math.Round(longitude, 3) && reference[i].numNodes == numNodes)
+                           thisRef = reference[i];
+
+                   return thisRef;
+               }
+        */
         /// <summary> Returns Reference object with name. </summary>
         public Reference GetReferenceByName(string thisName, MetCollection metList, UTM_conversion utmConv)
         {

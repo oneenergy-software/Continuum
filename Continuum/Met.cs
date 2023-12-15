@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Research.Science.Data;
+using System;
 using System.Windows.Forms;
 
 namespace ContinuumNS
@@ -1173,6 +1174,23 @@ namespace ContinuumNS
             }                       
 
             return extremeWinds;
+        }
+
+        /// <summary> Returns MCP method used at the Met </summary>        
+        public string GetMCP_Method_Used()
+        {
+            string MCP_Method = "";
+
+            if (mcp.MCP_Ortho.allR_Sq != 0)
+                MCP_Method = "Orth. Regression"; // Orthogonal                    
+            else if (mcp.MCP_Bins.binAvgSD_Cnt != null)
+                MCP_Method = "Method of Bins"; // Method of Bins
+            else if (mcp.MCP_Varrat.allR_Sq != 0)
+                MCP_Method = "Variance Ratio"; // Variance
+            else if (mcp.MCP_Matrix.WS_CDFs != null)
+                MCP_Method = "Matrix"; // Matrix
+
+            return MCP_Method;
         }
         
     }

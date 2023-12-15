@@ -9,8 +9,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class LC_Key_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\LC_Key";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public LC_Key_Tests()
+        {
+            testingFolder = globals.testingFolder + "LC_Key";
+        }
 
         [TestMethod]
         public void LCKeyOK_Test()

@@ -1146,8 +1146,9 @@ namespace ContinuumNS
                 BackgroundWorker_TurbCalcs.ReportProgress(prog, textForProgBar);
             }
 
-            if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || thisInst.turbineList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0)
+            if ((thisInst.metList.isTimeSeries == false || thisInst.turbineList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0)
             {
+                // Generate average estimates based on average WS/WD distributions
                 for (int i = 0; i < turbList.TurbineCount; i++)
                 {
                     Turbine turbine = turbList.turbineEsts[i];
@@ -1189,10 +1190,12 @@ namespace ContinuumNS
 
                         if (haveWS == false)
                         {
-                            ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, new TurbineCollection.PowerCurve(),
-                                null, null, MCP_Method);
+                            
+                                ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, new TurbineCollection.PowerCurve(),
+                                    null, null, MCP_Method);
 
-                            turbine.GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), false, MCP_Method, false, new TurbineCollection.PowerCurve());  // Creates and adds new Avg_Est based on time series data
+                                turbine.GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), false, MCP_Method, false, new TurbineCollection.PowerCurve());  // Creates and adds new Avg_Est based on time series data
+                                                        
                         }
                     }
                     else
@@ -3034,7 +3037,7 @@ namespace ContinuumNS
                         if (weibull.sector_k != null)
                             weibull_k_100 = weibull.sector_k[k] * 100;
                         else
-                            weibull_k_100 = 0;
+                            weibull_k_100 = 0;                                                
 
                         string Weibull_k_100_str = Math.Round(weibull_k_100, 0).ToString();
                         Weibull_k_100_str = Weibull_k_100_str.PadRight(5);
@@ -3656,7 +3659,8 @@ namespace ContinuumNS
                             if (iceHitCount >= totalIceHits) // Due to rounding, there may be a few more or a few less than 3000 throws
                                 Array.Resize(ref siteSuit.yearlyIceHits[y].iceHits, iceHitCount + 1);
 
-                            siteSuit.yearlyIceHits[y].iceHits[iceHitCount] = siteSuit.ModelIceThrow(degrees, thisInst.modeledHeight, elevDiff, randRadius, iceSpeed, Cd, iceCrossSecArea, iceMass, thisWS, WD, thisTurbine);
+                            siteSuit.yearlyIceHits[y].iceHits[iceHitCount] = siteSuit.ModelIceThrow(degrees, thisInst.modeledHeight, elevDiff, randRadius, iceSpeed, 
+                                Cd, iceCrossSecArea, iceMass, thisWS, WD, thisTurbine);
                             iceHitCount++;
                             totalCount++;
 
@@ -4084,6 +4088,8 @@ namespace ContinuumNS
                 return;
             }
 
+            int numDownloaded = 0;
+
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
             {
                 DateTime thisDate = refDownload.startDate.AddDays(i);
@@ -4093,7 +4099,7 @@ namespace ContinuumNS
                 if (count % 10 == 0)
                 {
                     timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
-                    avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (count + 1));
+                    avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (numDownloaded + 1));
                     timeToFinish = (numDays - count) * avgTimePerFile / 60;
                     BackgroundWorker_MERRADownload.ReportProgress((int)Prog, "Downloading MERRA2 data. Avg time/file: " + Math.Round(avgTimePerFile, 1) +
                         " secs. Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.");
@@ -4127,6 +4133,7 @@ namespace ContinuumNS
                         try
                         {
                             response = (HttpWebResponse)request.GetResponse();
+                            
                         }
                         catch (WebException ex)
                         {
@@ -4156,6 +4163,8 @@ namespace ContinuumNS
                         e.Result = thisInst;
                         return;
                     }
+
+                    numDownloaded++;
 
                 }
 
@@ -4537,14 +4546,22 @@ namespace ContinuumNS
             int timeInd = 0;
             List<DataGridViewRow> rows = new List<DataGridViewRow>();
 
-            for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(10))
+            if (thisInst.metList.HaveTimeSeriesData() == false)
+                thisInst.metList.GetTimeSeriesData(thisInst);
+
+            string dataInterval = thisInst.metList.GetMetDataInterval();
+            int minsToAdd = 10;
+            if (dataInterval == "60-min")
+                minsToAdd = 60;
+
+            for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(minsToAdd))
             {
                 if (timeInd % 10 == 0)
                 {
                     int prog = Convert.ToInt32(100 * timeInd / numRecs);
                     BackgroundWorker_MetImport.ReportProgress(prog, textForProgBar);
                 }
-
+                                
                 int colInd = 1;
                 DataGridViewRow strDataForTableRow = new DataGridViewRow();
                 strDataForTableRow.CreateCells(metTable);
