@@ -7,13 +7,19 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class SiteSuitability_Tests
-    {
-        string testingFolder = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\SiteSuitability";
-        
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public SiteSuitability_Tests()
+        {
+            testingFolder = globals.testingFolder + "SiteSuitability";
+        }
+
         [TestMethod]
         public void GetFlickerAngles_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Site Suitability testing.cfm";
             thisInst.Open(fileName);
@@ -208,7 +214,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcNoiseLevel_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Site Suitability testing.cfm";
             thisInst.Open(fileName);
@@ -357,7 +363,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetTipSpeed_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Site Suitability testing.cfm";
             thisInst.Open(fileName);
@@ -410,7 +416,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcIceHitVersusDistance_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Site Suitability testing.cfm";
             thisInst.Open(fileName);
@@ -442,7 +448,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcProbabilityOfHits()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Site Suitability testing.cfm";
             thisInst.Open(fileName);
@@ -537,7 +543,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetTotalFlickerHoursByMonthAndH_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Site Suitability testing.cfm";
             thisInst.Open(fileName);
@@ -568,7 +574,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetTotalFlickerHours_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Site Suitability testing.cfm";
             thisInst.Open(fileName);
@@ -587,7 +593,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GenerateWS_CDFs_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = testingFolder + "\\Site Suitability testing.cfm";
             thisInst.Open(fileName);
@@ -606,7 +612,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FindCDF_WS_Test()
         {
-            Continuum thisInst = new Continuum();
+            Continuum thisInst = new Continuum("");
             
             string fileName = "\\Site Suitability testing.cfm";
             thisInst.Open(fileName);

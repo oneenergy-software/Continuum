@@ -140,6 +140,7 @@
     <Compile Include="NodeCollection_Tests.cs" />
     <Compile Include="Nodes_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SiteSuitability_Tests.cs" />
     <Compile Include="Stats_Tests.cs" />
     <Compile Include="TopoInfo_Tests.cs" />
     <Compile Include="TurbineCollection_Tests.cs" />
