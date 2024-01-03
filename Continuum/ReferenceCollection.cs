@@ -41,9 +41,9 @@ namespace ContinuumNS
             public string userName;
             /// <summary> Password for download access </summary>
             public string userPassword;
-            /// <summary> Specified start date of reference data </summary>
+            /// <summary> Specified start date of reference data (UTC-0) </summary>
             public DateTime startDate;
-            /// <summary> Specified end date of reference data </summary>
+            /// <summary> Specified end date of reference data (UTC-0) </summary>
             public DateTime endDate;
             /// <summary> Min latitude of downloaded nodes in files </summary>
             public double minLat;
@@ -406,6 +406,32 @@ namespace ContinuumNS
             else
             {
                 reference = new Reference[0];
+            }
+        }
+
+        /// <summary> Deletes specified reference data download from list. </summary>        
+        public void DeleteRefDataDownload(RefDataDownload refDownToDelete)
+        {
+            int newCount = numRefDataDownloads - 1;
+
+            if (newCount > 0)
+            {
+                RefDataDownload[] tempList = new RefDataDownload[newCount]; 
+                int tempIndex = 0;
+
+                for (int i = 0; i < numRefDataDownloads; i++)
+                {
+                    if (refDownToDelete.GetName() != refDataDownloads[i].GetName())
+                    {
+                        tempList[tempIndex] = refDataDownloads[i];
+                        tempIndex++;
+                    }
+                }
+                refDataDownloads = tempList;
+            }
+            else
+            {
+                refDataDownloads = new RefDataDownload[0];
             }
         }
 
@@ -887,7 +913,29 @@ namespace ContinuumNS
 
             for (int r = 0; r < reference.Length; r++)
             {
-                double[] thisRose = reference[r].Calc_Wind_Rose(100, 100, utmConv, numWD);
+                double[] thisRose = reference[r].CalcWindOrEnergyRose(100, 100, utmConv, numWD, "Wind Rose", 0, 0);
+
+                for (int d = 0; d < thisRose.Length; d++)
+                    avgRose[d] = avgRose[d] + thisRose[d];
+            }
+
+            for (int d = 0; d < numWD; d++)
+                avgRose[d] = avgRose[d] / reference.Length;
+
+            return avgRose;
+        }
+
+        /// <summary> Calculates and returns average wind rose </summary>
+        public double[] CalcAvgEnergyRose(UTM_conversion utmConv, int numWD, double airDens, double rotorDiam)
+        {
+            double[] avgRose = new double[numWD];
+
+            if (reference.Length == 0)
+                return avgRose;
+
+            for (int r = 0; r < reference.Length; r++)
+            {
+                double[] thisRose = reference[r].CalcWindOrEnergyRose(100, 100, utmConv, numWD, "Energy Rose", airDens, rotorDiam);
 
                 for (int d = 0; d < thisRose.Length; d++)
                     avgRose[d] = avgRose[d] + thisRose[d];
@@ -942,6 +990,9 @@ namespace ContinuumNS
         public bool HaveThisRefDataDownload(RefDataDownload thisDataDownload)
         {
             bool gotIt = false;
+
+            if (thisDataDownload.minLat == 0) // Empty data download, don't add it yet
+                return gotIt;
 
             for (int r = 0; r < numRefDataDownloads; r++)
             {
@@ -1215,7 +1266,7 @@ namespace ContinuumNS
                         startEndDates[0] = thisDate;
 
                     if (thisDate > startEndDates[1])
-                        startEndDates[1] = thisDate;
+                        startEndDates[1] = thisDate.AddHours(23); // End of day
                 }
             }
             else if (refType == "ERA5")
@@ -1349,6 +1400,22 @@ namespace ContinuumNS
             reader.Close();
 
             return isDataset;
+        }
+
+        /// <summary> Returns true if a Reference (other than refIndToIgnore) has a node with the specified lat and long </summary>        
+        public bool IsThisReferenceNodeBeingUsed(string refType, double thisLat, double thisLong, int refIndToIgnore)
+        {
+            bool beingUsed = false;
+
+            for (int r = 0; r < numReferences; r++)
+                for (int n = 0; n < reference[r].numNodes; n++)
+                    if (reference[r].nodes[n].XY_ind.Lat == thisLat && reference[r].nodes[n].XY_ind.Lon == thisLong && r != refIndToIgnore)
+                    {
+                        beingUsed = true;
+                        break;
+                    }
+
+            return beingUsed;
         }
 
 

@@ -12,6 +12,7 @@ using Microsoft.Research.Science.Data;
 using System.Net;
 using Microsoft.VisualBasic;
 using System.Windows.Media.Media3D;
+using System.Runtime.CompilerServices;
 
 namespace ContinuumNS
 {
@@ -24,9 +25,9 @@ namespace ContinuumNS
       //  /// <summary> Reference data type: ERA5 or MERRA2. </summary>
       //  public string referenceType; // this is stored in RefDataDownload
         
-        /// <summary> Start of reference dataset. </summary>
+        /// <summary> Start of reference dataset in local UTC time. </summary>
         public DateTime startDate = new DateTime(1989, 1, 1, 0, 0, 0);
-        /// <summary> End of reference dataset. </summary>
+        /// <summary> End of reference dataset in local UTC time. </summary>
         public DateTime endDate = new DateTime(2018, 12, 31, 23, 0, 0);
         /// <summary> Reference data download object (contains folder location, start/end, coords). </summary>
         public ReferenceCollection.RefDataDownload refDataDownload;
@@ -782,11 +783,11 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Calculates and returns the average wind rose for specified month and year. For long-term wind rose, thisMonth and thisYear = 100. </summary>        
-        public double[] Calc_Wind_Rose(int thisMonth, int thisYear, UTM_conversion utm, int numWD)
+        /// <summary> Calculates and returns the average wind rose or energy rose for specified month and year. For long-term wind rose, thisMonth and thisYear = 100. </summary>        
+        public double[] CalcWindOrEnergyRose(int thisMonth, int thisYear, UTM_conversion utm, int numWD, string windOrEnergy, double airDens, double rotorDiam)
         {            
             double[] windRose = new double[numWD];
-            int allCount = 0;
+            double allCount = 0;
 
             if (GotWindTS(utm) == false)
                 return windRose;
@@ -798,8 +799,18 @@ namespace ContinuumNS
                 {
                     int WD_ind = (int)Math.Round(interpData.TS_Data[i].WD / (360 / (double)numWD), 0, MidpointRounding.AwayFromZero);
                     if (WD_ind == numWD) WD_ind = 0;
-                    windRose[WD_ind]++;
-                    allCount++;
+
+                    if (windOrEnergy == "Wind Rose")
+                    {
+                        windRose[WD_ind]++;
+                        allCount++;
+                    }
+                    else if (windOrEnergy == "Energy Rose")
+                    {
+                        double thisPower = 0.5 * airDens * Math.PI * Math.Pow(rotorDiam / 2, 2) * Math.Pow(interpData.TS_Data[i].WS, 3) / 1000; // Power in wind
+                        windRose[WD_ind] = windRose[WD_ind] + thisPower;
+                        allCount = allCount + thisPower;
+                    }
                 }
             }
 
@@ -1247,7 +1258,7 @@ namespace ContinuumNS
             return numDays;
         }
 
-        /// <summary> Adds new MERRA2 data to database. </summary>
+        /// <summary> Adds new MERRA2 data to database. Saved in local time. </summary>
         public void AddNewDataToDB(Continuum thisInst, RefData_Pull[] newDataToAdd)
         {
             NodeCollection nodeList = new NodeCollection();
@@ -1316,6 +1327,97 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Checks the database to see if the saved reference data covers to specified start/end times </summary>        
+        public bool DoesDB_HaveRequestedDataRange(Continuum thisInst)
+        {
+            // Returns true if data saved in DB covers the start/end range
+            bool gotTheData = true;
+
+            NodeCollection nodeList = new NodeCollection();
+            BinaryFormatter bin = new BinaryFormatter();
+            string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
+
+            using (var context = new Continuum_EDMContainer(connString))
+            {
+                for (int i = 0; i < numNodes; i++)
+                {
+                    double thisLat = nodes[i].XY_ind.Lat;
+                    double thisLong = nodes[i].XY_ind.Lon;
+
+                    if (refDataDownload.refType == "MERRA2")
+                    {
+                        var thisMERRAData = from N in context.MERRA_Node_table where N.latitude == thisLat && N.longitude == thisLong select N;
+
+                        foreach (var N in thisMERRAData)
+                        {
+                            MemoryStream MS = new MemoryStream(N.merraData);
+
+                            // Data may be stored using old MERRA.Wind_TS struct
+                            var thisTSData = bin.Deserialize(MS);
+                            MS.Close();
+
+                            Wind_TS_with_Prod[] newStructTSData = new Wind_TS_with_Prod[0];
+                            MERRA.Wind_TS[] oldStructTSData = new MERRA.Wind_TS[0];
+
+                            try
+                            {
+                                // Try new struct first
+                                newStructTSData = (Wind_TS_with_Prod[])thisTSData;
+
+                                if (newStructTSData[0].thisDate > startDate.AddHours(-interpData.UTC_offset))
+                                    gotTheData = false;
+                                else if (newStructTSData[newStructTSData.Length - 1].thisDate < endDate.AddHours(-interpData.UTC_offset))
+                                    gotTheData = false;
+                            }
+                            catch
+                            {
+                                // Threw error so try old one
+                                try
+                                {
+                                    oldStructTSData = (MERRA.Wind_TS[])thisTSData;
+
+                                    if (oldStructTSData[0].ThisDate > startDate.AddHours(-interpData.UTC_offset))
+                                        gotTheData = false;
+                                    else if (oldStructTSData[newStructTSData.Length - 1].ThisDate < endDate.AddHours(-interpData.UTC_offset))
+                                        gotTheData = false;
+                                }
+                                catch
+                                {
+                                    MessageBox.Show("Error reading MERRA2 data from database file");
+                                }
+                            }
+
+
+                        }
+                    }
+                    else if (refDataDownload.refType == "ERA5")
+                    {
+                        Wind_TS_with_Prod[] newStructTSData = new Wind_TS_with_Prod[0];
+                        var thisERA5Data = from N in context.ERA_Node_table where N.latitude == thisLat && N.longitude == thisLong select N;
+
+                        foreach (var N in thisERA5Data)
+                        {
+                            MemoryStream MS = new MemoryStream(N.eraData);
+                            newStructTSData = (Wind_TS_with_Prod[])bin.Deserialize(MS);
+                            MS.Close();
+
+                            if (newStructTSData[0].thisDate > startDate.AddHours(-interpData.UTC_offset))
+                                gotTheData = false;
+                            else if (newStructTSData[newStructTSData.Length - 1].thisDate < endDate.AddHours(-interpData.UTC_offset))
+                                gotTheData = false;
+                        }
+
+                    }
+                }
+
+                context.Database.Connection.Close();
+            }
+
+
+                return gotTheData;
+
+        }
+
         /// <summary> Gets reference data from database. </summary>
         public void GetReferenceDataFromDB(Continuum thisInst)
         {
@@ -1327,6 +1429,8 @@ namespace ContinuumNS
             {
                 double thisLat = interpData.Coords.latitude;
                 double thisLong = interpData.Coords.longitude;
+                DateTime startTimeUTC0 = startDate.AddHours(-interpData.UTC_offset);
+                DateTime endTimeUTC0 = endDate.AddHours(-interpData.UTC_offset);
 
                 for (int i = 0; i < numNodes; i++)
                 {
@@ -1352,7 +1456,22 @@ namespace ContinuumNS
                             {
                                 // Try new struct first
                                 newStructTSData = (Wind_TS_with_Prod[])thisTSData;
-                                nodes[i].TS_Data = newStructTSData;
+
+                                // Find start/end indices
+                                int startInd = 0;
+                                int endInd = newStructTSData.Length - 1;
+
+                                while (newStructTSData[startInd].thisDate < startTimeUTC0)
+                                    startInd++;
+
+                                while (newStructTSData[endInd].thisDate > endTimeUTC0)
+                                    endInd--;
+
+                                nodes[i].TS_Data = newStructTSData.Skip(startInd).Take(endInd - startInd + 1).ToArray();
+
+                                // Convert nodes timestamp to local time
+                                for (int t = 0; t < nodes[i].TS_Data.Length; t++)
+                                    nodes[i].TS_Data[t].thisDate = nodes[i].TS_Data[t].thisDate.AddHours(interpData.UTC_offset);
                             }
                             catch
                             {
@@ -1361,28 +1480,35 @@ namespace ContinuumNS
                                 {
                                     oldStructTSData = (MERRA.Wind_TS[])thisTSData;
 
+                                    // Find start/end indices
+                                    int startInd = 0;
+                                    int endInd = oldStructTSData.Length - 1;
+
+                                    while (oldStructTSData[startInd].ThisDate < startTimeUTC0)
+                                        startInd++;
+
+                                    while (oldStructTSData[endInd].ThisDate > endTimeUTC0)
+                                        endInd--;
+                                                                        
                                     // Populate nodes.TS_Data with data
-                                    int numRecs = oldStructTSData.Length;
+                                    int numRecs = endInd - startInd + 1;
                                     nodes[i].TS_Data = new Wind_TS_with_Prod[numRecs];
 
                                     for (int r = 0; r < numRecs; r++)
                                     {
-                                        nodes[i].TS_Data[r].thisDate = oldStructTSData[r].ThisDate;
-                                        nodes[i].TS_Data[r].WS = oldStructTSData[r].WS50m;
-                                        nodes[i].TS_Data[r].WD = oldStructTSData[r].WD50m;
-                                        nodes[i].TS_Data[r].temperature = oldStructTSData[r].Temp10m;
-                                        nodes[i].TS_Data[r].surfPress = oldStructTSData[r].SurfPress;
-                                        nodes[i].TS_Data[r].seaPress = oldStructTSData[r].SeaPress;
+                                        nodes[i].TS_Data[r].thisDate = oldStructTSData[r + startInd].ThisDate.AddHours(interpData.UTC_offset);
+                                        nodes[i].TS_Data[r].WS = oldStructTSData[r + startInd].WS50m;
+                                        nodes[i].TS_Data[r].WD = oldStructTSData[r + startInd].WD50m;
+                                        nodes[i].TS_Data[r].temperature = oldStructTSData[r + startInd].Temp10m;
+                                        nodes[i].TS_Data[r].surfPress = oldStructTSData[r + startInd].SurfPress;
+                                        nodes[i].TS_Data[r].seaPress = oldStructTSData[r + startInd].SeaPress;
                                     }
-
                                 }
                                 catch
                                 {
                                     MessageBox.Show("Error reading MERRA2 data from database file");
                                 }
-                            }
-                                                                                    
-                            
+                            }  
                         }
                     }
                     else if (refDataDownload.refType == "ERA5")
@@ -1392,10 +1518,25 @@ namespace ContinuumNS
                         foreach (var N in thisERA5Data)
                         {
                             MemoryStream MS = new MemoryStream(N.eraData);
-                            nodes[i].TS_Data = (Wind_TS_with_Prod[])bin.Deserialize(MS);
+                            Wind_TS_with_Prod[] allERA5Data = (Wind_TS_with_Prod[])bin.Deserialize(MS);
                             MS.Close();
-                        }
-                  
+
+                            // Find start/end indices
+                            int startInd = 0;
+                            int endInd = allERA5Data.Length - 1;
+
+                            while (allERA5Data[startInd].thisDate < startTimeUTC0)
+                                startInd++;
+
+                            while (allERA5Data[endInd].thisDate > endTimeUTC0)
+                                endInd--;
+
+                            nodes[i].TS_Data = allERA5Data.Skip(startInd).Take(endInd - startInd + 1).ToArray();
+
+                            // Convert nodes timestamp to local time
+                            for (int t = 0; t < nodes[i].TS_Data.Length; t++)
+                                nodes[i].TS_Data[t].thisDate = nodes[i].TS_Data[t].thisDate.AddHours(interpData.UTC_offset);
+                        }                  
                     }
                 }
 
@@ -1570,7 +1711,7 @@ namespace ContinuumNS
             }
             else if (numNodes == 4)
             {
-                if (latitude > minReqLat)
+                if (latitude >= minReqLat)
                     maxReqLat = minReqLat + latRes;
                 else
                 {
@@ -1578,7 +1719,7 @@ namespace ContinuumNS
                     maxReqLat = minReqLat + latRes;
                 }
 
-                if (longitude > minReqLong)
+                if (longitude >= minReqLong)
                     maxReqLong = minReqLong + lonRes;
                 else
                 {
@@ -1646,7 +1787,7 @@ namespace ContinuumNS
         /// <summary> Finds the min/max lat/long of nodes needed for specified latitude and longitude. Returns coordinates of additional data needed (if any). </summary>
         public UTM_conversion.Lat_Long[] GetRequiredNewNodeCoords(Continuum thisInst)
         {
-            UTM_conversion.Lat_Long[] newRequiredMERRANodes = new UTM_conversion.Lat_Long[0];
+            UTM_conversion.Lat_Long[] newRequiredRefNodes = new UTM_conversion.Lat_Long[0];
             int numNewReqNodes = 0;
 
             UTM_conversion.Lat_Long[] theseRequiredNodes = GetRequiredCoords(thisInst.refList);
@@ -1671,19 +1812,19 @@ namespace ContinuumNS
                         existingNodes[numExistingNodes - 1].longitude = N.longitude;
                     }
                 }
-                else
+                else if (refDataDownload.refType == "ERA5")
                 {
-                    // To do: ERA5 DB
-          //          var theseNodes = from N in context.ERA_Node_table select N;
+                    // ERA5 DB
+                    var theseNodes = from N in context.ERA_Node_table select N;
 
-          /*          foreach (var N in theseNodes)
+                    foreach (var N in theseNodes)
                     {
                         numExistingNodes++;
                         Array.Resize(ref existingNodes, numExistingNodes);
                         existingNodes[numExistingNodes - 1].latitude = N.latitude;
                         existingNodes[numExistingNodes - 1].longitude = N.longitude;
                     }
-          */
+          
                 }
             }
 
@@ -1702,13 +1843,13 @@ namespace ContinuumNS
                 if (gotIt == false)
                 {
                     numNewReqNodes++;
-                    Array.Resize(ref newRequiredMERRANodes, numNewReqNodes);
-                    newRequiredMERRANodes[numNewReqNodes - 1].latitude = theseRequiredNodes[i].latitude;
-                    newRequiredMERRANodes[numNewReqNodes - 1].longitude = theseRequiredNodes[i].longitude;
+                    Array.Resize(ref newRequiredRefNodes, numNewReqNodes);
+                    newRequiredRefNodes[numNewReqNodes - 1].latitude = theseRequiredNodes[i].latitude;
+                    newRequiredRefNodes[numNewReqNodes - 1].longitude = theseRequiredNodes[i].longitude;
                 }
             }
 
-            return newRequiredMERRANodes;
+            return newRequiredRefNodes;
         }
 
 
@@ -1824,17 +1965,13 @@ namespace ContinuumNS
             {
                 WS_ScaleFactor = 0.85;
                 wswdH = 50;
-                temperatureH = 10;
-                //      latRes = 0.5; Lat/long resolution are stored in ReferenceCollection.GetLatRes and .GetLongRes
-                //      lonRes = 0.625;
+                temperatureH = 10;                
             }
             else if (refDataDownload.refType == "ERA5")
             {
                 WS_ScaleFactor = 1.0;
                 wswdH = 100;
-                temperatureH = 10;
-          //      latRes = 0.25;
-          //      lonRes = 0.25;
+                temperatureH = 10;          
             }
         }
 

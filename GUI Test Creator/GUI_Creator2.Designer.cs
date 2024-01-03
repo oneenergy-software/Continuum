@@ -44,6 +44,8 @@
             this.label43 = new System.Windows.Forms.Label();
             this.label42 = new System.Windows.Forms.Label();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label56 = new System.Windows.Forms.Label();
+            this.cboTestFolder = new System.Windows.Forms.ComboBox();
             this.label36 = new System.Windows.Forms.Label();
             this.chkZonesToDelete = new System.Windows.Forms.CheckedListBox();
             this.label37 = new System.Windows.Forms.Label();
@@ -150,6 +152,16 @@
             this.label27 = new System.Windows.Forms.Label();
             this.btnCreateTest = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.cboProject_GUITests = new System.Windows.Forms.ComboBox();
+            this.label55 = new System.Windows.Forms.Label();
+            this.btnCreateGUI_SetupFiles = new System.Windows.Forms.Button();
+            this.cboHemisphereMaps = new System.Windows.Forms.ComboBox();
+            this.label53 = new System.Windows.Forms.Label();
+            this.cboUTMZoneMaps = new System.Windows.Forms.ComboBox();
+            this.label54 = new System.Windows.Forms.Label();
+            this.chkDoMetFiltMaps = new System.Windows.Forms.CheckBox();
+            this.cboPowerCrvsMaps = new System.Windows.Forms.ComboBox();
+            this.label52 = new System.Windows.Forms.Label();
             this.cboWakeModelMaps = new System.Windows.Forms.ComboBox();
             this.label51 = new System.Windows.Forms.Label();
             this.txtMapsTestFilename = new System.Windows.Forms.TextBox();
@@ -173,13 +185,6 @@
             this.fbd_Folder = new System.Windows.Forms.FolderBrowserDialog();
             this.label41 = new System.Windows.Forms.Label();
             this.txtContinuumTestsVS = new System.Windows.Forms.TextBox();
-            this.cboPowerCrvsMaps = new System.Windows.Forms.ComboBox();
-            this.label52 = new System.Windows.Forms.Label();
-            this.chkDoMetFiltMaps = new System.Windows.Forms.CheckBox();
-            this.cboHemisphereMaps = new System.Windows.Forms.ComboBox();
-            this.label53 = new System.Windows.Forms.Label();
-            this.cboUTMZoneMaps = new System.Windows.Forms.ComboBox();
-            this.label54 = new System.Windows.Forms.Label();
             this.tabGUITester.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -343,6 +348,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label56);
+            this.tabPage1.Controls.Add(this.cboTestFolder);
             this.tabPage1.Controls.Add(this.label36);
             this.tabPage1.Controls.Add(this.chkZonesToDelete);
             this.tabPage1.Controls.Add(this.label37);
@@ -394,6 +401,156 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Create Tests All Perms";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label56
+            // 
+            this.label56.AutoSize = true;
+            this.label56.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label56.Location = new System.Drawing.Point(22, 271);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(103, 18);
+            this.label56.TabIndex = 131;
+            this.label56.Text = "Test File Folder :";
+            // 
+            // cboTestFolder
+            // 
+            this.cboTestFolder.AutoCompleteCustomSource.AddRange(new string[] {
+            "-60",
+            "-59",
+            "-58",
+            "-57",
+            "-56",
+            "-55",
+            "-54",
+            "-53",
+            "-52",
+            "-51",
+            "-50",
+            "-49",
+            "-48",
+            "-47",
+            "-46",
+            "-45",
+            "-44",
+            "-43",
+            "-42",
+            "-41",
+            "-40",
+            "-39",
+            "-38",
+            "-37",
+            "-36",
+            "-35",
+            "-34",
+            "-33",
+            "-32",
+            "-31",
+            "-30",
+            "-29",
+            "-28",
+            "-27",
+            "-26",
+            "-25",
+            "-24",
+            "-23",
+            "-22",
+            "-21",
+            "-20",
+            "-19",
+            "-18",
+            "-17",
+            "-16",
+            "-15",
+            "-14",
+            "-13",
+            "-12",
+            "-11",
+            "-10",
+            "-9",
+            "-8",
+            "-7",
+            "-6",
+            "-5",
+            "-4",
+            "-3",
+            "-2",
+            "-1",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39",
+            "40",
+            "41",
+            "42",
+            "43",
+            "44",
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "60"});
+            this.cboTestFolder.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboTestFolder.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboTestFolder.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboTestFolder.FormattingEnabled = true;
+            this.cboTestFolder.Items.AddRange(new object[] {
+            "GUI Tests",
+            "GUI Tests\\1 - TAB file Tests",
+            "GUI Tests\\2 - Raw TS file Tests",
+            "GUI Tests\\3 - Raw LT TS file Tests",
+            "GUI Tests\\4 - Filtered TS file Tests",
+            "GUI Tests\\5 - Filtered LT TS file Tests"});
+            this.cboTestFolder.Location = new System.Drawing.Point(23, 290);
+            this.cboTestFolder.MaxDropDownItems = 11;
+            this.cboTestFolder.Name = "cboTestFolder";
+            this.cboTestFolder.Size = new System.Drawing.Size(272, 25);
+            this.cboTestFolder.TabIndex = 130;
             // 
             // label36
             // 
@@ -668,7 +825,7 @@
             // 
             this.dateMERRAEnd.CustomFormat = "MM/dd/yyyy hh:mm";
             this.dateMERRAEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateMERRAEnd.Location = new System.Drawing.Point(194, 292);
+            this.dateMERRAEnd.Location = new System.Drawing.Point(326, 320);
             this.dateMERRAEnd.Name = "dateMERRAEnd";
             this.dateMERRAEnd.Size = new System.Drawing.Size(120, 20);
             this.dateMERRAEnd.TabIndex = 114;
@@ -678,7 +835,7 @@
             // 
             this.label30.AutoSize = true;
             this.label30.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label30.Location = new System.Drawing.Point(219, 271);
+            this.label30.Location = new System.Drawing.Point(351, 299);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(91, 18);
             this.label30.TabIndex = 113;
@@ -688,7 +845,7 @@
             // 
             this.label29.AutoSize = true;
             this.label29.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label29.Location = new System.Drawing.Point(82, 267);
+            this.label29.Location = new System.Drawing.Point(344, 251);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(98, 18);
             this.label29.TabIndex = 112;
@@ -698,7 +855,7 @@
             // 
             this.dateMERRAStart.CustomFormat = "MM/dd/yyyy hh:mm";
             this.dateMERRAStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateMERRAStart.Location = new System.Drawing.Point(60, 292);
+            this.dateMERRAStart.Location = new System.Drawing.Point(322, 276);
             this.dateMERRAStart.Name = "dateMERRAStart";
             this.dateMERRAStart.Size = new System.Drawing.Size(120, 20);
             this.dateMERRAStart.TabIndex = 111;
@@ -896,7 +1053,7 @@
             "Goldwind 87-1500 PC_1.205",
             "Vestas_V150@1.041kgm^-3",
             "Goldwind 93-1500 PC_1.205"});
-            this.cboPowerCurves.Location = new System.Drawing.Point(326, 286);
+            this.cboPowerCurves.Location = new System.Drawing.Point(458, 290);
             this.cboPowerCurves.MaxDropDownItems = 11;
             this.cboPowerCurves.Name = "cboPowerCurves";
             this.cboPowerCurves.Size = new System.Drawing.Size(131, 26);
@@ -906,7 +1063,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(323, 261);
+            this.label7.Location = new System.Drawing.Point(455, 265);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(93, 18);
             this.label7.TabIndex = 101;
@@ -1042,7 +1199,7 @@
             this.cboZones.Items.AddRange(new object[] {
             "Northern",
             "Southern"});
-            this.cboZones.Location = new System.Drawing.Point(326, 218);
+            this.cboZones.Location = new System.Drawing.Point(326, 207);
             this.cboZones.MaxDropDownItems = 11;
             this.cboZones.Name = "cboZones";
             this.cboZones.Size = new System.Drawing.Size(131, 26);
@@ -1052,7 +1209,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(323, 193);
+            this.label6.Location = new System.Drawing.Point(323, 182);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(71, 18);
             this.label6.TabIndex = 99;
@@ -3105,6 +3262,9 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.cboProject_GUITests);
+            this.tabPage3.Controls.Add(this.label55);
+            this.tabPage3.Controls.Add(this.btnCreateGUI_SetupFiles);
             this.tabPage3.Controls.Add(this.cboHemisphereMaps);
             this.tabPage3.Controls.Add(this.label53);
             this.tabPage3.Controls.Add(this.cboUTMZoneMaps);
@@ -3136,6 +3296,734 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Create Standard Tests";
             this.tabPage3.UseVisualStyleBackColor = true;
+            this.tabPage3.Click += new System.EventHandler(this.tabPage3_Click);
+            // 
+            // cboProject_GUITests
+            // 
+            this.cboProject_GUITests.AutoCompleteCustomSource.AddRange(new string[] {
+            "-60",
+            "-59",
+            "-58",
+            "-57",
+            "-56",
+            "-55",
+            "-54",
+            "-53",
+            "-52",
+            "-51",
+            "-50",
+            "-49",
+            "-48",
+            "-47",
+            "-46",
+            "-45",
+            "-44",
+            "-43",
+            "-42",
+            "-41",
+            "-40",
+            "-39",
+            "-38",
+            "-37",
+            "-36",
+            "-35",
+            "-34",
+            "-33",
+            "-32",
+            "-31",
+            "-30",
+            "-29",
+            "-28",
+            "-27",
+            "-26",
+            "-25",
+            "-24",
+            "-23",
+            "-22",
+            "-21",
+            "-20",
+            "-19",
+            "-18",
+            "-17",
+            "-16",
+            "-15",
+            "-14",
+            "-13",
+            "-12",
+            "-11",
+            "-10",
+            "-9",
+            "-8",
+            "-7",
+            "-6",
+            "-5",
+            "-4",
+            "-3",
+            "-2",
+            "-1",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39",
+            "40",
+            "41",
+            "42",
+            "43",
+            "44",
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "60"});
+            this.cboProject_GUITests.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboProject_GUITests.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboProject_GUITests.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboProject_GUITests.FormattingEnabled = true;
+            this.cboProject_GUITests.Items.AddRange(new object[] {
+            "Findlay",
+            "NW Ohio",
+            "Firewheel",
+            "Bobcat Bluff"});
+            this.cboProject_GUITests.Location = new System.Drawing.Point(141, 418);
+            this.cboProject_GUITests.MaxDropDownItems = 11;
+            this.cboProject_GUITests.Name = "cboProject_GUITests";
+            this.cboProject_GUITests.Size = new System.Drawing.Size(282, 26);
+            this.cboProject_GUITests.TabIndex = 138;
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label55.Location = new System.Drawing.Point(28, 421);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(56, 18);
+            this.label55.TabIndex = 137;
+            this.label55.Text = "Project :";
+            // 
+            // btnCreateGUI_SetupFiles
+            // 
+            this.btnCreateGUI_SetupFiles.Location = new System.Drawing.Point(474, 418);
+            this.btnCreateGUI_SetupFiles.Name = "btnCreateGUI_SetupFiles";
+            this.btnCreateGUI_SetupFiles.Size = new System.Drawing.Size(99, 42);
+            this.btnCreateGUI_SetupFiles.TabIndex = 136;
+            this.btnCreateGUI_SetupFiles.Text = "Create Model Setup Tests";
+            this.btnCreateGUI_SetupFiles.UseVisualStyleBackColor = true;
+            this.btnCreateGUI_SetupFiles.Click += new System.EventHandler(this.btnCreateGUI_SetupFiles_Click);
+            // 
+            // cboHemisphereMaps
+            // 
+            this.cboHemisphereMaps.AutoCompleteCustomSource.AddRange(new string[] {
+            "-60",
+            "-59",
+            "-58",
+            "-57",
+            "-56",
+            "-55",
+            "-54",
+            "-53",
+            "-52",
+            "-51",
+            "-50",
+            "-49",
+            "-48",
+            "-47",
+            "-46",
+            "-45",
+            "-44",
+            "-43",
+            "-42",
+            "-41",
+            "-40",
+            "-39",
+            "-38",
+            "-37",
+            "-36",
+            "-35",
+            "-34",
+            "-33",
+            "-32",
+            "-31",
+            "-30",
+            "-29",
+            "-28",
+            "-27",
+            "-26",
+            "-25",
+            "-24",
+            "-23",
+            "-22",
+            "-21",
+            "-20",
+            "-19",
+            "-18",
+            "-17",
+            "-16",
+            "-15",
+            "-14",
+            "-13",
+            "-12",
+            "-11",
+            "-10",
+            "-9",
+            "-8",
+            "-7",
+            "-6",
+            "-5",
+            "-4",
+            "-3",
+            "-2",
+            "-1",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39",
+            "40",
+            "41",
+            "42",
+            "43",
+            "44",
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "60"});
+            this.cboHemisphereMaps.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboHemisphereMaps.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboHemisphereMaps.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboHemisphereMaps.FormattingEnabled = true;
+            this.cboHemisphereMaps.Items.AddRange(new object[] {
+            "Northern",
+            "Southern"});
+            this.cboHemisphereMaps.Location = new System.Drawing.Point(137, 123);
+            this.cboHemisphereMaps.MaxDropDownItems = 11;
+            this.cboHemisphereMaps.Name = "cboHemisphereMaps";
+            this.cboHemisphereMaps.Size = new System.Drawing.Size(131, 26);
+            this.cboHemisphereMaps.TabIndex = 135;
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label53.Location = new System.Drawing.Point(23, 126);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(83, 18);
+            this.label53.TabIndex = 134;
+            this.label53.Text = "Hemisphere:";
+            // 
+            // cboUTMZoneMaps
+            // 
+            this.cboUTMZoneMaps.AutoCompleteCustomSource.AddRange(new string[] {
+            "-60",
+            "-59",
+            "-58",
+            "-57",
+            "-56",
+            "-55",
+            "-54",
+            "-53",
+            "-52",
+            "-51",
+            "-50",
+            "-49",
+            "-48",
+            "-47",
+            "-46",
+            "-45",
+            "-44",
+            "-43",
+            "-42",
+            "-41",
+            "-40",
+            "-39",
+            "-38",
+            "-37",
+            "-36",
+            "-35",
+            "-34",
+            "-33",
+            "-32",
+            "-31",
+            "-30",
+            "-29",
+            "-28",
+            "-27",
+            "-26",
+            "-25",
+            "-24",
+            "-23",
+            "-22",
+            "-21",
+            "-20",
+            "-19",
+            "-18",
+            "-17",
+            "-16",
+            "-15",
+            "-14",
+            "-13",
+            "-12",
+            "-11",
+            "-10",
+            "-9",
+            "-8",
+            "-7",
+            "-6",
+            "-5",
+            "-4",
+            "-3",
+            "-2",
+            "-1",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39",
+            "40",
+            "41",
+            "42",
+            "43",
+            "44",
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "60"});
+            this.cboUTMZoneMaps.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboUTMZoneMaps.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboUTMZoneMaps.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboUTMZoneMaps.FormattingEnabled = true;
+            this.cboUTMZoneMaps.Items.AddRange(new object[] {
+            "-60",
+            "-59",
+            "-58",
+            "-57",
+            "-56",
+            "-55",
+            "-54",
+            "-53",
+            "-52",
+            "-51",
+            "-50",
+            "-49",
+            "-48",
+            "-47",
+            "-46",
+            "-45",
+            "-44",
+            "-43",
+            "-42",
+            "-41",
+            "-40",
+            "-39",
+            "-38",
+            "-37",
+            "-36",
+            "-35",
+            "-34",
+            "-33",
+            "-32",
+            "-31",
+            "-30",
+            "-29",
+            "-28",
+            "-27",
+            "-26",
+            "-25",
+            "-24",
+            "-23",
+            "-22",
+            "-21",
+            "-20",
+            "-19",
+            "-18",
+            "-17",
+            "-16",
+            "-15",
+            "-14",
+            "-13",
+            "-12",
+            "-11",
+            "-10",
+            "-9",
+            "-8",
+            "-7",
+            "-6",
+            "-5",
+            "-4",
+            "-3",
+            "-2",
+            "-1",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39",
+            "40",
+            "41",
+            "42",
+            "43",
+            "44",
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "60",
+            ""});
+            this.cboUTMZoneMaps.Location = new System.Drawing.Point(32, 182);
+            this.cboUTMZoneMaps.MaxDropDownItems = 11;
+            this.cboUTMZoneMaps.Name = "cboUTMZoneMaps";
+            this.cboUTMZoneMaps.Size = new System.Drawing.Size(70, 26);
+            this.cboUTMZoneMaps.TabIndex = 133;
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label54.Location = new System.Drawing.Point(28, 161);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(74, 18);
+            this.label54.TabIndex = 132;
+            this.label54.Text = "UTM Zone:";
+            // 
+            // chkDoMetFiltMaps
+            // 
+            this.chkDoMetFiltMaps.AutoSize = true;
+            this.chkDoMetFiltMaps.Location = new System.Drawing.Point(137, 281);
+            this.chkDoMetFiltMaps.Name = "chkDoMetFiltMaps";
+            this.chkDoMetFiltMaps.Size = new System.Drawing.Size(126, 17);
+            this.chkDoMetFiltMaps.TabIndex = 131;
+            this.chkDoMetFiltMaps.Text = "Do Met Data Filtering";
+            this.chkDoMetFiltMaps.UseVisualStyleBackColor = true;
+            // 
+            // cboPowerCrvsMaps
+            // 
+            this.cboPowerCrvsMaps.AutoCompleteCustomSource.AddRange(new string[] {
+            "-60",
+            "-59",
+            "-58",
+            "-57",
+            "-56",
+            "-55",
+            "-54",
+            "-53",
+            "-52",
+            "-51",
+            "-50",
+            "-49",
+            "-48",
+            "-47",
+            "-46",
+            "-45",
+            "-44",
+            "-43",
+            "-42",
+            "-41",
+            "-40",
+            "-39",
+            "-38",
+            "-37",
+            "-36",
+            "-35",
+            "-34",
+            "-33",
+            "-32",
+            "-31",
+            "-30",
+            "-29",
+            "-28",
+            "-27",
+            "-26",
+            "-25",
+            "-24",
+            "-23",
+            "-22",
+            "-21",
+            "-20",
+            "-19",
+            "-18",
+            "-17",
+            "-16",
+            "-15",
+            "-14",
+            "-13",
+            "-12",
+            "-11",
+            "-10",
+            "-9",
+            "-8",
+            "-7",
+            "-6",
+            "-5",
+            "-4",
+            "-3",
+            "-2",
+            "-1",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39",
+            "40",
+            "41",
+            "42",
+            "43",
+            "44",
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "60"});
+            this.cboPowerCrvsMaps.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboPowerCrvsMaps.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cboPowerCrvsMaps.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboPowerCrvsMaps.FormattingEnabled = true;
+            this.cboPowerCrvsMaps.Items.AddRange(new object[] {
+            "GE_1_85_CRV",
+            "Goldwind 87-1500 PC_1.205",
+            "Vestas_V150@1.041kgm^-3",
+            "Goldwind 93-1500 PC_1.205"});
+            this.cboPowerCrvsMaps.Location = new System.Drawing.Point(415, 199);
+            this.cboPowerCrvsMaps.MaxDropDownItems = 11;
+            this.cboPowerCrvsMaps.Name = "cboPowerCrvsMaps";
+            this.cboPowerCrvsMaps.Size = new System.Drawing.Size(158, 26);
+            this.cboPowerCrvsMaps.TabIndex = 130;
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label52.Location = new System.Drawing.Point(307, 203);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(93, 18);
+            this.label52.TabIndex = 129;
+            this.label52.Text = "Power curves:";
             // 
             // cboWakeModelMaps
             // 
@@ -3974,575 +4862,6 @@
             this.txtContinuumTestsVS.Size = new System.Drawing.Size(632, 20);
             this.txtContinuumTestsVS.TabIndex = 120;
             // 
-            // cboPowerCrvsMaps
-            // 
-            this.cboPowerCrvsMaps.AutoCompleteCustomSource.AddRange(new string[] {
-            "-60",
-            "-59",
-            "-58",
-            "-57",
-            "-56",
-            "-55",
-            "-54",
-            "-53",
-            "-52",
-            "-51",
-            "-50",
-            "-49",
-            "-48",
-            "-47",
-            "-46",
-            "-45",
-            "-44",
-            "-43",
-            "-42",
-            "-41",
-            "-40",
-            "-39",
-            "-38",
-            "-37",
-            "-36",
-            "-35",
-            "-34",
-            "-33",
-            "-32",
-            "-31",
-            "-30",
-            "-29",
-            "-28",
-            "-27",
-            "-26",
-            "-25",
-            "-24",
-            "-23",
-            "-22",
-            "-21",
-            "-20",
-            "-19",
-            "-18",
-            "-17",
-            "-16",
-            "-15",
-            "-14",
-            "-13",
-            "-12",
-            "-11",
-            "-10",
-            "-9",
-            "-8",
-            "-7",
-            "-6",
-            "-5",
-            "-4",
-            "-3",
-            "-2",
-            "-1",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-            "21",
-            "22",
-            "23",
-            "24",
-            "25",
-            "26",
-            "27",
-            "28",
-            "29",
-            "30",
-            "31",
-            "32",
-            "33",
-            "34",
-            "35",
-            "36",
-            "37",
-            "38",
-            "39",
-            "40",
-            "41",
-            "42",
-            "43",
-            "44",
-            "45",
-            "46",
-            "47",
-            "48",
-            "49",
-            "50",
-            "51",
-            "52",
-            "53",
-            "54",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "60"});
-            this.cboPowerCrvsMaps.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboPowerCrvsMaps.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboPowerCrvsMaps.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboPowerCrvsMaps.FormattingEnabled = true;
-            this.cboPowerCrvsMaps.Items.AddRange(new object[] {
-            "GE_1_85_CRV",
-            "Goldwind 87-1500 PC_1.205",
-            "Vestas_V150@1.041kgm^-3",
-            "Goldwind 93-1500 PC_1.205"});
-            this.cboPowerCrvsMaps.Location = new System.Drawing.Point(415, 199);
-            this.cboPowerCrvsMaps.MaxDropDownItems = 11;
-            this.cboPowerCrvsMaps.Name = "cboPowerCrvsMaps";
-            this.cboPowerCrvsMaps.Size = new System.Drawing.Size(158, 26);
-            this.cboPowerCrvsMaps.TabIndex = 130;
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label52.Location = new System.Drawing.Point(307, 203);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(93, 18);
-            this.label52.TabIndex = 129;
-            this.label52.Text = "Power curves:";
-            // 
-            // chkDoMetFiltMaps
-            // 
-            this.chkDoMetFiltMaps.AutoSize = true;
-            this.chkDoMetFiltMaps.Location = new System.Drawing.Point(145, 501);
-            this.chkDoMetFiltMaps.Name = "chkDoMetFiltMaps";
-            this.chkDoMetFiltMaps.Size = new System.Drawing.Size(126, 17);
-            this.chkDoMetFiltMaps.TabIndex = 131;
-            this.chkDoMetFiltMaps.Text = "Do Met Data Filtering";
-            this.chkDoMetFiltMaps.UseVisualStyleBackColor = true;
-            // 
-            // cboHemisphereMaps
-            // 
-            this.cboHemisphereMaps.AutoCompleteCustomSource.AddRange(new string[] {
-            "-60",
-            "-59",
-            "-58",
-            "-57",
-            "-56",
-            "-55",
-            "-54",
-            "-53",
-            "-52",
-            "-51",
-            "-50",
-            "-49",
-            "-48",
-            "-47",
-            "-46",
-            "-45",
-            "-44",
-            "-43",
-            "-42",
-            "-41",
-            "-40",
-            "-39",
-            "-38",
-            "-37",
-            "-36",
-            "-35",
-            "-34",
-            "-33",
-            "-32",
-            "-31",
-            "-30",
-            "-29",
-            "-28",
-            "-27",
-            "-26",
-            "-25",
-            "-24",
-            "-23",
-            "-22",
-            "-21",
-            "-20",
-            "-19",
-            "-18",
-            "-17",
-            "-16",
-            "-15",
-            "-14",
-            "-13",
-            "-12",
-            "-11",
-            "-10",
-            "-9",
-            "-8",
-            "-7",
-            "-6",
-            "-5",
-            "-4",
-            "-3",
-            "-2",
-            "-1",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-            "21",
-            "22",
-            "23",
-            "24",
-            "25",
-            "26",
-            "27",
-            "28",
-            "29",
-            "30",
-            "31",
-            "32",
-            "33",
-            "34",
-            "35",
-            "36",
-            "37",
-            "38",
-            "39",
-            "40",
-            "41",
-            "42",
-            "43",
-            "44",
-            "45",
-            "46",
-            "47",
-            "48",
-            "49",
-            "50",
-            "51",
-            "52",
-            "53",
-            "54",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "60"});
-            this.cboHemisphereMaps.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboHemisphereMaps.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboHemisphereMaps.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboHemisphereMaps.FormattingEnabled = true;
-            this.cboHemisphereMaps.Items.AddRange(new object[] {
-            "Northern",
-            "Southern"});
-            this.cboHemisphereMaps.Location = new System.Drawing.Point(137, 123);
-            this.cboHemisphereMaps.MaxDropDownItems = 11;
-            this.cboHemisphereMaps.Name = "cboHemisphereMaps";
-            this.cboHemisphereMaps.Size = new System.Drawing.Size(131, 26);
-            this.cboHemisphereMaps.TabIndex = 135;
-            // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label53.Location = new System.Drawing.Point(23, 126);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(83, 18);
-            this.label53.TabIndex = 134;
-            this.label53.Text = "Hemisphere:";
-            // 
-            // cboUTMZoneMaps
-            // 
-            this.cboUTMZoneMaps.AutoCompleteCustomSource.AddRange(new string[] {
-            "-60",
-            "-59",
-            "-58",
-            "-57",
-            "-56",
-            "-55",
-            "-54",
-            "-53",
-            "-52",
-            "-51",
-            "-50",
-            "-49",
-            "-48",
-            "-47",
-            "-46",
-            "-45",
-            "-44",
-            "-43",
-            "-42",
-            "-41",
-            "-40",
-            "-39",
-            "-38",
-            "-37",
-            "-36",
-            "-35",
-            "-34",
-            "-33",
-            "-32",
-            "-31",
-            "-30",
-            "-29",
-            "-28",
-            "-27",
-            "-26",
-            "-25",
-            "-24",
-            "-23",
-            "-22",
-            "-21",
-            "-20",
-            "-19",
-            "-18",
-            "-17",
-            "-16",
-            "-15",
-            "-14",
-            "-13",
-            "-12",
-            "-11",
-            "-10",
-            "-9",
-            "-8",
-            "-7",
-            "-6",
-            "-5",
-            "-4",
-            "-3",
-            "-2",
-            "-1",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-            "21",
-            "22",
-            "23",
-            "24",
-            "25",
-            "26",
-            "27",
-            "28",
-            "29",
-            "30",
-            "31",
-            "32",
-            "33",
-            "34",
-            "35",
-            "36",
-            "37",
-            "38",
-            "39",
-            "40",
-            "41",
-            "42",
-            "43",
-            "44",
-            "45",
-            "46",
-            "47",
-            "48",
-            "49",
-            "50",
-            "51",
-            "52",
-            "53",
-            "54",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "60"});
-            this.cboUTMZoneMaps.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboUTMZoneMaps.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboUTMZoneMaps.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboUTMZoneMaps.FormattingEnabled = true;
-            this.cboUTMZoneMaps.Items.AddRange(new object[] {
-            "-60",
-            "-59",
-            "-58",
-            "-57",
-            "-56",
-            "-55",
-            "-54",
-            "-53",
-            "-52",
-            "-51",
-            "-50",
-            "-49",
-            "-48",
-            "-47",
-            "-46",
-            "-45",
-            "-44",
-            "-43",
-            "-42",
-            "-41",
-            "-40",
-            "-39",
-            "-38",
-            "-37",
-            "-36",
-            "-35",
-            "-34",
-            "-33",
-            "-32",
-            "-31",
-            "-30",
-            "-29",
-            "-28",
-            "-27",
-            "-26",
-            "-25",
-            "-24",
-            "-23",
-            "-22",
-            "-21",
-            "-20",
-            "-19",
-            "-18",
-            "-17",
-            "-16",
-            "-15",
-            "-14",
-            "-13",
-            "-12",
-            "-11",
-            "-10",
-            "-9",
-            "-8",
-            "-7",
-            "-6",
-            "-5",
-            "-4",
-            "-3",
-            "-2",
-            "-1",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-            "21",
-            "22",
-            "23",
-            "24",
-            "25",
-            "26",
-            "27",
-            "28",
-            "29",
-            "30",
-            "31",
-            "32",
-            "33",
-            "34",
-            "35",
-            "36",
-            "37",
-            "38",
-            "39",
-            "40",
-            "41",
-            "42",
-            "43",
-            "44",
-            "45",
-            "46",
-            "47",
-            "48",
-            "49",
-            "50",
-            "51",
-            "52",
-            "53",
-            "54",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "60",
-            ""});
-            this.cboUTMZoneMaps.Location = new System.Drawing.Point(32, 182);
-            this.cboUTMZoneMaps.MaxDropDownItems = 11;
-            this.cboUTMZoneMaps.Name = "cboUTMZoneMaps";
-            this.cboUTMZoneMaps.Size = new System.Drawing.Size(70, 26);
-            this.cboUTMZoneMaps.TabIndex = 133;
-            // 
-            // label54
-            // 
-            this.label54.AutoSize = true;
-            this.label54.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label54.Location = new System.Drawing.Point(28, 161);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(74, 18);
-            this.label54.TabIndex = 132;
-            this.label54.Text = "UTM Zone:";
-            // 
             // GUI_Creator2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4723,5 +5042,10 @@
         internal System.Windows.Forms.Label label53;
         internal System.Windows.Forms.ComboBox cboUTMZoneMaps;
         internal System.Windows.Forms.Label label54;
+        private System.Windows.Forms.Button btnCreateGUI_SetupFiles;
+        internal System.Windows.Forms.ComboBox cboProject_GUITests;
+        internal System.Windows.Forms.Label label55;
+        internal System.Windows.Forms.Label label56;
+        internal System.Windows.Forms.ComboBox cboTestFolder;
     }
 }

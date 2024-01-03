@@ -548,6 +548,30 @@ namespace ContinuumNS
 
         }
 
+        /// <summary>  Forms and returns average wind rose using all mets in list. </summary>
+        public double[] GetAvgEnergyRose(double thisHeight, Met.TOD thisTOD, Met.Season thisSeason, int thisNumWD)
+        {
+            double[] avgWindRose = null;
+
+            if (ThisCount > 0)
+            {
+                avgWindRose = new double[thisNumWD];
+
+                for (int i = 0; i < ThisCount; i++)
+                {
+                    Met.WSWD_Dist thisDist = metItem[i].GetWS_WD_Dist(thisHeight, thisTOD, thisSeason);
+                    for (int j = 0; j < thisNumWD; j++)
+                        avgWindRose[j] = avgWindRose[j] + thisDist.energyRose[j];
+                }
+
+                for (int i = 0; i < thisNumWD; i++)
+                    avgWindRose[i] = avgWindRose[i] / ThisCount;
+            }
+
+            return avgWindRose;
+
+        }
+
         /// <summary> Returns wind rose interpolated from mets in specified list of mets and weighted based on distance to specified UTM X/Y coordinates. </summary>
         public double[] GetInterpolatedWindRose(string[] metsUsed, double UTMX, double UTMY, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
         {            
@@ -1463,11 +1487,11 @@ namespace ContinuumNS
                     Array.Resize(ref headerDeets, header.Length - 1); // minus one since not keeping time stamp header
 
                     for (int headInd = 1; headInd < header.Length; headInd++)
-                    {
+                    {                        
                         String thisHeader = header[headInd];
                         string sensorType = thisHeader.Substring(0, 4);
                         // check to see if Anem, Vane or temp
-                        if ((sensorType == "Anem") || (sensorType == "Vane") || (sensorType == "Temp"))
+                        if ((sensorType == "Anem") || (sensorType == "Vane") || (sensorType == "Temp") || (sensorType == "Baro"))
                         {
                             headerDeets[headInd - 1].sensorType = sensorType;
 
@@ -1579,6 +1603,29 @@ namespace ContinuumNS
 
                                 headerDeets[headInd - 1].measType = thisHeader.Substring(secInd + 1, lastInd - secInd - 1);
                             }
+                            else if (thisHeader.Substring(0, 4) == "Baro")
+                            {
+                                // check to see if baro has been created already
+                                bool alreadyGotIt = false;
+
+                                foreach (Met_Data_Filter.Press_Data thisBaro in thisMetData.baros)
+                                {
+                                    if (thisBaro.height == thisHeight)
+                                    {
+                                        alreadyGotIt = true;
+                                        break;
+                                    }
+                                }
+
+                                if (alreadyGotIt == false)
+                                {
+                                    Array.Resize(ref thisMetData.baros, thisMetData.GetNumBaros() + 1);
+                                    thisMetData.baros[thisMetData.GetNumBaros() - 1].height = thisHeight;
+                                    thisMetData.baros[thisMetData.GetNumBaros() - 1].units = "mB";
+                                }
+
+                                headerDeets[headInd - 1].measType = thisHeader.Substring(lastInd + 1, thisHeader.Length - lastInd - 1);
+                            }
 
                         }
                     }
@@ -1616,6 +1663,8 @@ namespace ContinuumNS
                     for (int i = 0; i < thisMetData.GetNumTemps(); i++)
                         Array.Resize(ref thisMetData.temps[i].temp, dataCount);
 
+                    for (int i = 0; i < thisMetData.GetNumBaros(); i++)
+                        Array.Resize(ref thisMetData.baros[i].pressure, dataCount);
 
                     file.Close();
                     file = new StreamReader(filename);
@@ -1646,6 +1695,9 @@ namespace ContinuumNS
 
                         for (int i = 0; i < thisMetData.GetNumTemps(); i++)
                             thisMetData.temps[i].temp[dataCount - 1].timeStamp = thisTimeStamp;
+
+                        for (int i = 0; i < thisMetData.GetNumBaros(); i++)
+                            thisMetData.baros[i].pressure[dataCount - 1].timeStamp = thisTimeStamp;
 
                         for (int i = 1; i < data.Length; i++)
                         {
@@ -1724,6 +1776,26 @@ namespace ContinuumNS
                                         break;
                                     }
                             }
+                            else if (sensorType == "Baro")
+                            {
+                                for (int j = 0; j < thisMetData.GetNumBaros(); j++)
+                                    if (thisMetData.baros[j].height == headerDeets[i - 1].height)
+                                    {
+                                        if (headerDeets[i - 1].measType == "Avg")
+                                            thisMetData.baros[j].pressure[dataCount - 1].avg = thisData;
+                                        else if (headerDeets[i - 1].measType == "SD")
+                                            thisMetData.baros[j].pressure[dataCount - 1].SD = thisData;
+                                        else if (headerDeets[i - 1].measType == "Min")
+                                            thisMetData.baros[j].pressure[dataCount - 1].min = thisData;
+                                        else if (headerDeets[i - 1].measType == "Max")
+                                            thisMetData.baros[j].pressure[dataCount - 1].max = thisData;
+
+                                        if ((thisData == -999) && (headerDeets[i - 1].measType == "Avg"))
+                                            thisMetData.baros[j].pressure[dataCount - 1].filterFlag = Met_Data_Filter.Filter_Flags.missing;                                                                               
+
+                                        break;
+                                    }
+                            }
 
                         }
 
@@ -1767,6 +1839,7 @@ namespace ContinuumNS
                     thisMetData.anems = new Met_Data_Filter.Anem_Data[0];
                     thisMetData.vanes = new Met_Data_Filter.Vane_Data[0];
                     thisMetData.temps = new Met_Data_Filter.Temp_Data[0];
+                    thisMetData.baros = new Met_Data_Filter.Press_Data[0];
                     file.Close();
                     return false;
                 }                

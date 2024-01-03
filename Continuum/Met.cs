@@ -56,6 +56,8 @@ namespace ContinuumNS
             public double[,] sectorWS_Dist;
             /// <summary>  Overall Wind speed distribution </summary>
             public double[] WS_Dist;
+            /// <summary> Wind energy distribtuion (energy rose) </summary>
+            public double[] energyRose;            
         }
 
         /// <summary> Holds average and representative turbulence intensity (calculated between start/end times) in each direction sector </summary>
@@ -215,7 +217,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Adds wind speed / wind direction distribution to Met's list of WSWD_Dists from TAB file input </summary>
+        /// <summary> Adds wind speed / wind direction distribution to Met's list of WSWD_Dists from TAB file input. (Energy rose cannot be calculated from TAB file) </summary>
         public void AddWSWD_DistFromTAB(TOD thisTOD, Season thisSeason, double height, double[,] sectorWS_Dist, double[] windRose)
         {            
             
@@ -241,18 +243,18 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary> Returns true if WSWD distribution with specified height, time of day, and season has been created already. </summary>
+        /// <summary> Returns true if WSWD distribution with specified height, time of day, season, and power curve has been created already. </summary> 
         public bool AlreadyHaveWSWD_Dist(TOD thisTOD, Season thisSeason, double height)
         {
             bool alreadyGotIt = false;
-
+            
             for (int i = 0; i < WSWD_DistCount; i++)
                 if (WSWD_Dists[i].height == height && WSWD_Dists[i].season == thisSeason && WSWD_Dists[i].timeOfDay == thisTOD)
                     alreadyGotIt = true;
             
             return alreadyGotIt;
         }
-
+       
         /// <summary> Clears all calculated exposures, surface roughness, and displacement height. </summary>
         public void ClearExposures()
         {
@@ -407,10 +409,12 @@ namespace ContinuumNS
             thisDist.season = thisSeason;            
             thisDist.WS_Dist = new double[thisInst.metList.numWS];
             thisDist.windRose = new double[thisInst.metList.numWD];
+            thisDist.energyRose = new double[thisInst.metList.numWD];
             thisDist.sectorWS_Ratio = new double[thisInst.metList.numWD];
             thisDist.sectorWS_Dist = new double[thisInst.metList.numWD, thisInst.metList.numWS];
 
             int allCount = 0; // Count of all WSWD used for overall WS, wind speed distribution, and wind rose
+            double sumPower = 0; // Sum of estimated power used for energy rose
             int[] secCount = new int[thisInst.metList.numWD]; // Sectorwise count used for sectorwise wind speed ratios and sectorwise wind speed distributions             
             
             for (int i = 0; i < LT_WS_Ests.Length; i++)            
@@ -420,12 +424,16 @@ namespace ContinuumNS
                 
                 if ((thisTOD == TOD.All || thisTOD == siteDataTOD) && (thisSeason == Season.All || thisSeason == siteDataSeason))
                 {
+                    double thisPower = 0.5 * thisInst.modelList.airDens * Math.PI * Math.Pow(thisInst.modelList.rotorDiam / 2, 2) * Math.Pow(LT_WS_Ests[i].thisWS, 3) / 1000; // Power in wind
                     int WS_ind = mcp.Get_WS_ind(LT_WS_Ests[i].thisWS, 1);
                     int WD_ind = mcp.Get_WD_ind(LT_WS_Ests[i].thisWD);
 
                     if (WS_ind >= thisInst.metList.numWS) WS_ind = thisInst.metList.numWS - 1;
 
                     thisDist.windRose[WD_ind]++; // Wind direction count
+                    thisDist.energyRose[WD_ind] = thisDist.energyRose[WD_ind] + thisPower;
+                    sumPower = sumPower + thisPower;
+
                     thisDist.WS_Dist[WS_ind]++; // Overall wind speed distribution
                     thisDist.sectorWS_Dist[WD_ind, WS_ind]++; // Sectorwise wind speed distribution                   
                     
@@ -448,7 +456,11 @@ namespace ContinuumNS
                 for (int i = 0; i < thisInst.metList.numWD; i++)
                     thisDist.windRose[i] = thisDist.windRose[i] / allCount;
             }
-            
+
+            if (sumPower > 0)
+                for (int i = 0; i < thisInst.metList.numWD; i++)
+                    thisDist.energyRose[i] = thisDist.energyRose[i] / sumPower;
+
             // Calculate sectorwise wind speed ratios and wind speed distribution
             for (int WD_ind = 0; WD_ind < thisInst.metList.numWD; WD_ind++)
             {
@@ -474,6 +486,7 @@ namespace ContinuumNS
             thisDist.season = thisSeason;
             thisDist.WS_Dist = new double[thisInst.metList.numWS];
             thisDist.windRose = new double[thisInst.metList.numWD];
+            thisDist.energyRose = new double[thisInst.metList.numWD];
             thisDist.sectorWS_Ratio = new double[thisInst.metList.numWD];
             thisDist.sectorWS_Dist = new double[thisInst.metList.numWD, thisInst.metList.numWS];
 
@@ -483,6 +496,7 @@ namespace ContinuumNS
             thisMCP.numTODs = thisInst.metList.numTOD;
 
             int allCount = 0; // Count of all WSWD used for overall WS, wind speed distribution, and wind rose
+            double sumPower = 0;
             int[] secCount = new int[thisInst.metList.numWD]; // Sectorwise count used for sectorwise wind speed ratios and sectorwise wind speed distributions                
 
             for (int i = 0; i < extrapData.WS_WD_data.Length; i++)
@@ -493,12 +507,17 @@ namespace ContinuumNS
                 if (extrapData.WS_WD_data[i].WS != -999 && extrapData.WS_WD_data[i].WD != -999 && 
                     (thisTOD == TOD.All || thisTOD == siteDataTOD) && (thisSeason == Season.All || thisSeason == siteDataSeason))
                 {
+                    double thisPower = 0.5 * thisInst.modelList.airDens * Math.PI * Math.Pow(thisInst.modelList.rotorDiam / 2, 2) * Math.Pow(extrapData.WS_WD_data[i].WS, 3) / 1000; // Power in wind
+
                     int WS_ind = thisMCP.Get_WS_ind(extrapData.WS_WD_data[i].WS, 1);
                     int WD_ind = thisMCP.Get_WD_ind(extrapData.WS_WD_data[i].WD);
                                         
                     if (WS_ind >= thisInst.metList.numWS) WS_ind = thisInst.metList.numWS - 1;
 
                     thisDist.windRose[WD_ind]++; // Wind direction count
+                    thisDist.energyRose[WD_ind] = thisDist.energyRose[WD_ind] + thisPower;
+                    sumPower = sumPower + thisPower;
+
                     thisDist.WS_Dist[WS_ind]++; // Overall wind speed distribution
                     thisDist.sectorWS_Dist[WD_ind, WS_ind]++; // Sectorwise wind speed distribution                   
 
@@ -521,6 +540,11 @@ namespace ContinuumNS
                 for (int i = 0; i < thisInst.metList.numWD; i++)
                     thisDist.windRose[i] = thisDist.windRose[i] / allCount;
             }
+
+            // Calculate energy rose
+            if (sumPower > 0)
+                for (int i = 0; i < thisInst.metList.numWD; i++)
+                    thisDist.energyRose[i] = thisDist.energyRose[i] / sumPower;
 
             // Calculate sectorwise wind speed ratios and wind speed distribution
             for (int WD_ind = 0; WD_ind < thisInst.metList.numWD; WD_ind++)

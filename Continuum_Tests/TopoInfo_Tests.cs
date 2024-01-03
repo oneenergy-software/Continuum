@@ -359,5 +359,45 @@ namespace Continuum_Tests
             sr.Close();
             thisInst.Close();
         }
+
+        [TestMethod]
+        public void CalcSlopeAlongCenterlineOfFittedPlane()
+        {
+            TopoInfo topo = new TopoInfo();
+
+            // Test 1: Forced through base
+            double[] regression = new double[2];
+            regression[0] = 0.01;
+            regression[1] = -0.01;
+            double radius = 400;
+            double WD = 90;
+            double UTMX = 434210;
+            double UTMY = 4515955;
+            double elev = 900;
+
+            double thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, true);
+            Assert.AreEqual(thisSlope, 0.572939, 0.0001);
+
+            // Test 2: NOT Forced through base
+            regression = new double[3];
+            regression[0] = -3;
+            regression[1] = 0.005;
+            regression[2] = -0.03;
+            radius = 400;
+            WD = 225;
+
+            thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, false);
+            Assert.AreEqual(thisSlope, 1.01275037, 0.0001);
+
+            // Test 2: NOT Forced through base
+            regression[0] = 4.2;
+            regression[1] = -0.025;
+            regression[2] = 0.025;
+            radius = 800;
+            WD = 315;
+
+            thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, false);
+            Assert.AreEqual(thisSlope, 2.024868297, 0.0001);
+        }
     }
 }

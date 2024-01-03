@@ -2852,6 +2852,11 @@ namespace ContinuumNS
             else
                 return;
 
+            if (thisInst.cboRefWindOrEnergy.SelectedItem == null)
+                thisInst.cboRefWindOrEnergy.SelectedIndex = 0;
+
+            string windOrEnergyRose = thisInst.cboRefWindOrEnergy.SelectedItem.ToString();
+
             string Month_str;
             if (thisInst.cboReferenceMonth.SelectedItem.ToString() == "All Months")
                 Month_str = "All";
@@ -2867,9 +2872,11 @@ namespace ContinuumNS
                 return;
 
             if (Month_str != "All")
-                filename = Output_folder + "\\" + thisRef.refDataDownload.refType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Month_str + "_" + Year_str + "_Wind_Rose" + ".csv";
+                filename = Output_folder + "\\" + thisRef.refDataDownload.refType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) 
+                    + "_" + "Lon_" + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Month_str + "_" + Year_str + "_" + thisInst.metList.numWD + "Sector " + windOrEnergyRose + ".csv";
             else
-                filename = Output_folder + "\\" + thisRef.refDataDownload.refType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) + "_" + "Lon_" + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Year_str + "_Wind_Rose" + ".csv";
+                filename = Output_folder + "\\" + thisRef.refDataDownload.refType + "_" + "Lat_" + Math.Round(thisRef.interpData.Coords.latitude, 3) + "_" + "Lon_" 
+                    + Math.Round(thisRef.interpData.Coords.longitude, 3) + "_" + Year_str + "_" + thisInst.metList.numWD + "Sector " + windOrEnergyRose + ".csv";
 
             // Header
             StreamWriter file = new StreamWriter(filename);
@@ -2900,16 +2907,17 @@ namespace ContinuumNS
 
             int monthInd = 100;
             int yearInd = 100;
-            if (thisInst.cboReferenceMonth.SelectedItem.ToString() != "All")
+            if (thisInst.cboReferenceMonth.SelectedItem.ToString() != "All Months")
                 monthInd = thisInst.cboReferenceMonth.SelectedIndex + 1;
 
             if (thisInst.cboReferenceYear.SelectedItem.ToString() != "LT Avg")
                 yearInd = Convert.ToInt16(thisInst.cboReferenceYear.SelectedItem.ToString());
 
-            double[] thisWR = thisRef.Calc_Wind_Rose(monthInd, yearInd, thisInst.UTM_conversions, thisInst.metList.numWD);
+            double[] thisWR = thisRef.CalcWindOrEnergyRose(monthInd, yearInd, thisInst.UTM_conversions, thisInst.metList.numWD, windOrEnergyRose, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);
+            double sectWidth = 360.0 / thisInst.metList.numWD;
 
-            for (int i = 0; i < 16; i++)
-                file.WriteLine(i * 22.5 + "," + thisWR[i].ToString());
+            for (int i = 0; i < thisInst.metList.numWD; i++)
+                file.WriteLine(i * sectWidth + "," + thisWR[i].ToString());
 
             file.Close();
         }
@@ -3967,14 +3975,19 @@ namespace ContinuumNS
 
                 sw.WriteLine("Terrain Complexity Values by Turbine Site");
                 sw.WriteLine();
+
+                if (thisInst.siteSuitability.forceThruTurbBase)
+                    sw.WriteLine("Fitted planes forced through turbine base elevation");
+                else
+                    sw.WriteLine("Fitted planes NOT forced through turbine base elevation");
                 
                 sw.WriteLine("Turbine, Elev. [m], Complexity, 5h 360 TSI, 5h 360 TVI, 5h 30 TSI, 5h 30 TVI, 10h 30 TSI, 10h 30 TVI, 20h 30 TSI, 20h 30 TVI, P10 UW, P10 DW");
 
                 double hubH = thisInst.modeledHeight;
-                double[] energyRose = thisInst.metList.GetAvgWindRose(hubH, Met.TOD.All, Met.Season.All);
+                double[] energyRose = thisInst.metList.GetAvgEnergyRose(hubH, Met.TOD.All, Met.Season.All, thisInst.metList.numWD);
 
                 if (energyRose == null)
-                    energyRose = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 12);
+                    energyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, thisInst.metList.numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);
 
                 for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
                 {
@@ -3983,16 +3996,16 @@ namespace ContinuumNS
 
                     sw.Write(thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo, thisInst.modeledHeight, energyRose, "WTG", thisTurb) + ",");
 
-                    double[] terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, 5 * hubH, 1, thisInst.topo);
+                    double[] terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 5 * hubH, thisInst.topo);
                     sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
 
-                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, 5 * hubH, 12, thisInst.topo, energyRose);
+                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, energyRose);
                     sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
 
-                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, 10 * hubH, 12, thisInst.topo, energyRose);
+                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 10 * hubH, thisInst.topo, energyRose);
                     sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
 
-                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, 20 * hubH, 12, thisInst.topo, energyRose);
+                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 20 * hubH, thisInst.topo, energyRose);
                     sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
 
                     double thisUW_P10 = thisTurb.gridStats.GetOverallP10(energyRose, 1, "UW");

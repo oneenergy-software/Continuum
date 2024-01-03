@@ -17,7 +17,11 @@ namespace ContinuumNS
         public double maxElevAllowed = 300;
         /// <summary> Maximum P10 exposure difference between predictor and target site for wind speed estimate to be formed (not currently used)  </summary>
         public double maxP10ExpoAllowed = 200;
-        
+
+        public double rotorDiam = 100; // Wind turbine rotor diameter.  Default is 100 m until user imports a power curve (or edits from Input tab)
+        public double airDens = 1.225; // Air density kg/m^3 (default of 1.225)
+
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary> Holds sectorwise wind speeds at site of interest and sectorwise wind speed estimates at each node in path of nodes  </summary>

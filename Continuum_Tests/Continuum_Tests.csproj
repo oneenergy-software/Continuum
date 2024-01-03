@@ -124,11 +124,18 @@
     <Compile Include="GenMap_Tests.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Grid_Info_Tests.cs" />
+    <Compile Include="GUI Tests\1 - TAB file Tests\ThreeMetTABAndGrossNet.cs" />
+    <Compile Include="GUI Tests\1 - TAB file Tests\TwoMetTABAndGrossNet.cs" />
+    <Compile Include="GUI Tests\2 - Raw TS file Tests\OneMetRawTS_GrossNet_Tests.cs" />
+    <Compile Include="GUI Tests\2 - Raw TS file Tests\ThreeMetRawTS_GrossNet_Tests.cs" />
+    <Compile Include="GUI Tests\2 - Raw TS file Tests\TwoMetRawTS_GrossNet_Tests.cs" />
     <Compile Include="GUI Tests\Map_tests.cs" />
     <Compile Include="GUI Tests\MCP_Tests.cs" />
     <Compile Include="GUI Tests\SiteSuitability_Tests.cs" />
+    <Compile Include="GUI Tests\1 - TAB file Tests\OneMetTABAndGrossNet_Tests.cs" />
     <Compile Include="GUI Tests\WakeModel_Tests.cs" />
     <Compile Include="LC_Key_Tests.cs" />
+    <Compile Include="MCP_Tests.cs" />
     <Compile Include="ReferenceCollection_Tests.cs" />
     <Compile Include="Reference_Tests.cs" />
     <Compile Include="MetCollection_Tests.cs" />
@@ -172,10 +179,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="GUI Tests\3 - Raw LT TS file Tests\" />
+    <Folder Include="GUI Tests\4 - Filtered TS file Tests\" />
     <Folder Include="GUI Tests\Filtered LT TS file Tests\" />
-    <Folder Include="GUI Tests\Filtered TS file Tests\" />
-    <Folder Include="GUI Tests\Raw TS file Tests\" />
-    <Folder Include="GUI Tests\TAB file Tests\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

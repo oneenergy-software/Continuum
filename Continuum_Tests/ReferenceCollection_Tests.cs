@@ -12,11 +12,13 @@ namespace Continuum_Tests
         Globals globals = new Globals();
         string testingFolder;
         string MERRA2Folder;
+        string ERA5Folder;
 
         public ReferenceCollection_Tests()
         {
             testingFolder = globals.testingFolder + "ReferenceCollection";
             MERRA2Folder = globals.merraFolder;
+            ERA5Folder = globals.era5Folder;
         }
 
         [TestMethod]
@@ -202,5 +204,161 @@ namespace Continuum_Tests
             Assert.AreEqual(theseNodes[15].latitude, -34.5, 0, "Wrong lat Test 6");
             Assert.AreEqual(theseNodes[15].longitude, 150, 0, "Wrong long Test 6");
         }
+
+        [TestMethod]
+        public void GetDataFromTextFiles_Test()
+        {
+            string cfmName = testingFolder + "\\Reference Textfiles\\Reference Textfile Test";
+
+            if (File.Exists(cfmName + ".cfm"))
+                File.Delete(cfmName + ".cfm");
+
+            if (File.Exists(cfmName + ".mdf"))
+                File.Delete(cfmName + ".mdf");
+
+            if (File.Exists(cfmName + "_log.ldf"))
+                File.Delete(cfmName + "_log.ldf");
+
+            cfmName = cfmName + ".cfm";
+
+            Continuum thisInst = new Continuum("");
+            thisInst.savedParams.savedFileName = cfmName;
+            thisInst.UTM_conversions.savedDatumIndex = 0;
+            thisInst.UTM_conversions.UTMZoneNumber = 17;
+            thisInst.UTM_conversions.hemisphere = "Northern";
+
+            thisInst.modeledHeight = 80;
+            thisInst.SaveFile(true);
+
+            // Test MERRA2 file reading
+            ReferenceCollection.RefDataDownload refDataDown = new ReferenceCollection.RefDataDownload();
+            refDataDown.refType = "MERRA2";
+            refDataDown.folderLocation = testingFolder + "\\Reference Textfiles\\MERRA2";
+            refDataDown = thisInst.refList.ReadFileAndDefineRefDataDownload(refDataDown.folderLocation);
+            thisInst.refList.AddRefDataDownload(refDataDown);
+
+            Reference thisRef = new Reference();
+            thisRef.refDataDownload = refDataDown;
+            thisRef.numNodes = 1;
+
+            double thisLat = 39.5;
+            double thisLong = -84.375;
+
+            int offset = thisInst.UTM_conversions.GetUTC_Offset(thisLat, thisLong);
+            thisRef.Set_Interp_LatLon_Dates_Offset(thisLat, thisLong, offset, thisInst.UTM_conversions);
+            thisRef.nodes = new Reference.Node_Data[thisRef.numNodes];
+            thisRef.startDate = new DateTime(2017, 12, 31, 19, 0, 0);
+            thisRef.endDate = new DateTime(2018, 1, 1, 18, 0, 0);
+            bool gotCoords = thisRef.FindCoords(thisInst.refList);
+
+            thisInst.refList.GetDataFromTextFiles(thisRef, thisInst);
+
+            while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
+            Assert.AreEqual(thisRef.interpData.TS_Data[0].WS, 5.333604607, 0.001);
+            Assert.AreEqual(thisRef.interpData.TS_Data[9].WS, 5.616514144, 0.001);
+            Assert.AreEqual(thisRef.interpData.TS_Data[22].WS, 6.315440694, 0.001);
+
+            // Test ERA5 file reading
+            refDataDown = new ReferenceCollection.RefDataDownload();
+            refDataDown.refType = "ERA5";
+            refDataDown.folderLocation = testingFolder + "\\Reference Textfiles\\ERA5";
+            refDataDown = thisInst.refList.ReadFileAndDefineRefDataDownload(refDataDown.folderLocation);
+            thisInst.refList.AddRefDataDownload(refDataDown);
+
+            thisRef = new Reference();
+            thisRef.refDataDownload = refDataDown;
+            thisRef.numNodes = 1;
+
+            thisLat = 41.25;
+            thisLong = -83;
+
+            offset = thisInst.UTM_conversions.GetUTC_Offset(thisLat, thisLong);
+            thisRef.Set_Interp_LatLon_Dates_Offset(thisLat, thisLong, offset, thisInst.UTM_conversions);
+            thisRef.nodes = new Reference.Node_Data[thisRef.numNodes];
+            thisRef.startDate = new DateTime(2002, 3, 31, 19, 0, 0);
+            thisRef.endDate = new DateTime(2002, 4, 1, 18, 0, 0);
+            gotCoords = thisRef.FindCoords(thisInst.refList);
+
+            thisInst.refList.GetDataFromTextFiles(thisRef, thisInst);
+
+            while (thisInst.BW_worker.DoWorkDone == false && thisInst.BW_worker.WasReturned == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
+            Assert.AreEqual(thisRef.interpData.TS_Data[0].WS, 0.760626764, 0.001);
+            Assert.AreEqual(thisRef.interpData.TS_Data[9].WS, 7.018839979, 0.001);
+            Assert.AreEqual(thisRef.interpData.TS_Data[22].WS, 2.659684626, 0.001);
+
+            thisInst.Close();
+        }
+
+        
+
+        [TestMethod]
+        public void CalcAvgWindRose_Test()
+        {
+            Continuum thisInst = new Continuum("");
+
+            string Filename = testingFolder + "\\CalcAvgWindRose\\CalcAvgWindRose file.cfm";
+            thisInst.Open(Filename);
+
+            double[] avgRose = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 16);
+
+            // Compare average wind rose to the values calculated in Excel
+
+            Assert.AreEqual(avgRose[0], 0.042547415, 0.001);
+            Assert.AreEqual(avgRose[3], 0.049527886, 0.001);
+            Assert.AreEqual(avgRose[9], 0.103742867, 0.001);
+            Assert.AreEqual(avgRose[15], 0.050240757, 0.001);
+
+            avgRose = thisInst.refList.CalcAvgWindRose(thisInst.UTM_conversions, 12);
+
+            Assert.AreEqual(avgRose[0], 0.057100056, 0.001);
+            Assert.AreEqual(avgRose[3], 0.048960511, 0.001);
+            Assert.AreEqual(avgRose[9], 0.117506955, 0.001);
+            
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void ReadFileAndDefineRefDataDownload_Test()
+        {
+            ReferenceCollection refList = new ReferenceCollection();
+
+            ReferenceCollection.RefDataDownload merraData = refList.ReadFileAndDefineRefDataDownload(MERRA2Folder);
+            ReferenceCollection.RefDataDownload eraData = refList.ReadFileAndDefineRefDataDownload(ERA5Folder);
+
+            Assert.AreSame(merraData.refType, "MERRA2");
+            Assert.AreEqual(merraData.minLat, 39, 0);
+            Assert.AreEqual(merraData.maxLat, 41.5, 0);
+            Assert.AreEqual(merraData.minLon, -85, 0);
+            Assert.AreEqual(merraData.maxLon, -80.625, 0);
+            
+            Assert.AreSame(eraData.refType, "ERA5");
+            Assert.AreEqual(eraData.minLat, 39, 0);
+            Assert.AreEqual(eraData.maxLat, 41.5, 0);
+            Assert.AreEqual(eraData.minLon, -85, 0);
+            Assert.AreEqual(eraData.maxLon, -80, 0);
+            
+        }
+
+        [TestMethod]
+        public void GetDataFileStartEndDate_Test()
+        {
+            ReferenceCollection refList = new ReferenceCollection();
+            DateTime[] merraStartEnd = refList.GetDataFileStartEndDate(MERRA2Folder, "MERRA2");
+            
+            Assert.AreEqual(merraStartEnd[0], new DateTime(1988, 1, 1));
+            Assert.AreEqual(merraStartEnd[1], new DateTime(2019, 1, 31, 23, 0, 0));
+
+            DateTime[] eraStartEnd = refList.GetDataFileStartEndDate(ERA5Folder, "ERA5");
+
+            Assert.AreEqual(eraStartEnd[0], new DateTime(2002, 1, 1));
+            Assert.AreEqual(eraStartEnd[1], new DateTime(2003, 1, 2, 23, 0, 0));
+
+        }
+
+        
     }
 }

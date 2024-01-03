@@ -53,6 +53,7 @@
             this.btnCreateNew = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.txtPercComplete = new System.Windows.Forms.TextBox();
+            this.btnRemove = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label54
@@ -158,7 +159,7 @@
             this.dateReferenceEnd.Location = new System.Drawing.Point(123, 275);
             this.dateReferenceEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateReferenceEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
-            this.dateReferenceEnd.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateReferenceEnd.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
             this.dateReferenceEnd.Name = "dateReferenceEnd";
             this.dateReferenceEnd.Size = new System.Drawing.Size(153, 25);
             this.dateReferenceEnd.TabIndex = 240;
@@ -174,7 +175,7 @@
             this.dateReferenceStart.Location = new System.Drawing.Point(123, 241);
             this.dateReferenceStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateReferenceStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
-            this.dateReferenceStart.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateReferenceStart.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
             this.dateReferenceStart.Name = "dateReferenceStart";
             this.dateReferenceStart.Size = new System.Drawing.Size(153, 25);
             this.dateReferenceStart.TabIndex = 239;
@@ -296,7 +297,7 @@
             // btnCreateNew
             // 
             this.btnCreateNew.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.btnCreateNew.Location = new System.Drawing.Point(487, 42);
+            this.btnCreateNew.Location = new System.Drawing.Point(413, 42);
             this.btnCreateNew.Name = "btnCreateNew";
             this.btnCreateNew.Size = new System.Drawing.Size(55, 28);
             this.btnCreateNew.TabIndex = 258;
@@ -324,12 +325,24 @@
             this.txtPercComplete.Size = new System.Drawing.Size(63, 27);
             this.txtPercComplete.TabIndex = 259;
             // 
+            // btnRemove
+            // 
+            this.btnRemove.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.btnRemove.Location = new System.Drawing.Point(474, 42);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(55, 28);
+            this.btnRemove.TabIndex = 261;
+            this.btnRemove.Text = "Delete";
+            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+            // 
             // Reanalysis_Download
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(568, 407);
+            this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtPercComplete);
             this.Controls.Add(this.btnCreateNew);
@@ -389,5 +402,6 @@
         private System.Windows.Forms.Button btnCreateNew;
         private System.Windows.Forms.Label label3;
         public System.Windows.Forms.TextBox txtPercComplete;
+        private System.Windows.Forms.Button btnRemove;
     }
 }

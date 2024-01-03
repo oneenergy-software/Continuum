@@ -3200,7 +3200,7 @@ namespace ContinuumNS
             StreamReader file;
             DateTime startTime = thisRef.startDate;
             DateTime endTime = thisRef.endDate;
-            // Convert start and end time to UTC
+            // Convert start and end time to UTC-0
             startTime = startTime.AddHours(-thisRef.interpData.UTC_offset);
             endTime = endTime.AddHours(-thisRef.interpData.UTC_offset);
 
@@ -3246,6 +3246,7 @@ namespace ContinuumNS
                         //      if (thisMet != null) // Met data calcs should be unrelated to reference data pulls
                         //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                         e.Result = thisInst;
+                        DoWorkDone = true;
                         return;
                     }
 
@@ -3261,8 +3262,9 @@ namespace ContinuumNS
                                 file = new StreamReader(thisFile);
                                 last_file_ind = i + 1;
                             }
-                            catch
+                            catch (Exception ex)
                             {
+                                MessageBox.Show(ex.Message);
                                 MessageBox.Show("Error opening the MERRA data file. Check that it's not open in another program.", "", MessageBoxButtons.OK);
                                 return;
                             }
@@ -3304,9 +3306,9 @@ namespace ContinuumNS
                                             else if (file_strings[file_ind].Substring(0, 3) == "SLP")
                                                 nodesToPull[j].Data[thisInd].seaPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
 
-                                            // Save dates in local time
-                                            nodesToPull[j].Data[thisInd].thisDate = thisDate.AddHours(ThisHour + thisRef.interpData.UTC_offset);
-                                            nodeEastNorthWS[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour + thisRef.interpData.UTC_offset);
+                                            // Save dates in UTC-0 time
+                                            nodesToPull[j].Data[thisInd].thisDate = thisDate.AddHours(ThisHour); // + thisRef.interpData.UTC_offset);
+                                            nodeEastNorthWS[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour); // + thisRef.interpData.UTC_offset);
                                         }
                                     }
                                 }
@@ -3339,16 +3341,16 @@ namespace ContinuumNS
             {
                 // Read and extract ERA5 netCDF files
 
-                // Populate nodesToPull and nodeEastNorthWS with timestamps
+                // Populate nodesToPull and nodeEastNorthWS with timestamps in UTC-0 time
                 for (int hourInd = 0; hourInd < numRefHours; hourInd++)
                 {
                     DateTime thisTS = startTimeZeroHour.AddHours(hourInd);
 
                     for (int n = 0; n < nodeEastNorthWS.Length; n++)
-                        nodeEastNorthWS[n].timeStamp[hourInd] = thisTS;
+                        nodeEastNorthWS[n].timeStamp[hourInd] = thisTS; //.AddHours(thisRef.interpData.UTC_offset);
 
                     for (int n = 0; n < nodesToPull.Length; n++)
-                        nodesToPull[n].Data[hourInd].thisDate = thisTS;
+                        nodesToPull[n].Data[hourInd].thisDate = thisTS; //.AddHours(thisRef.interpData.UTC_offset);
                 }
 
                 DateTime baseTime = new DateTime(1900, 01, 01, 0, 0, 0); //time that all the ERA5 'time' variable values are relative to
@@ -3384,7 +3386,7 @@ namespace ContinuumNS
                                     thisDate = baseTime.AddHours(allTime[t]);
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
 
-                                    if (tsInd >= numRefHours)
+                                    if (tsInd >= numRefHours || tsInd < 0)
                                         break;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
@@ -3399,7 +3401,7 @@ namespace ContinuumNS
                                     thisDate = baseTime.AddHours(allTime[t]);
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
 
-                                    if (tsInd >= numRefHours)
+                                    if (tsInd >= numRefHours || tsInd < 0)
                                         break;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
@@ -3414,7 +3416,7 @@ namespace ContinuumNS
                                     thisDate = baseTime.AddHours(allTime[t]);
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
 
-                                    if (tsInd >= numRefHours)
+                                    if (tsInd >= numRefHours || tsInd < 0)
                                         break;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
@@ -3429,7 +3431,7 @@ namespace ContinuumNS
                                     thisDate = baseTime.AddHours(allTime[t]);
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
 
-                                    if (tsInd >= numRefHours)
+                                    if (tsInd >= numRefHours || tsInd < 0)
                                         break;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
@@ -3442,10 +3444,7 @@ namespace ContinuumNS
 
             }
 
-            // Find index of start date (with the conversion b/w UTC and local, there will be some additional entries to trim)
-            // Convert start and end time back to Local
-            startTime = startTime.AddHours(thisRef.interpData.UTC_offset);
-            endTime = endTime.AddHours(thisRef.interpData.UTC_offset);
+            // Trim nodesToPull to only include data between start and end time (in UTC-0)
             int startInd = 0;
             while (nodesToPull[0].Data[startInd].thisDate < startTime)
                 startInd++;
@@ -3456,6 +3455,7 @@ namespace ContinuumNS
                 //      if (thisMet != null)
                 //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                 e.Result = thisInst;
+                DoWorkDone = true;
                 return;
             }
 
@@ -3490,17 +3490,14 @@ namespace ContinuumNS
                 //     if (thisMet != null)
                 //         thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                 e.Result = thisInst;
+                DoWorkDone = true;
                 return;
             }
 
-            // Add new reference nodes to database
-            thisRef.AddNewDataToDB(thisInst, nodesToPull);
+            // Add new reference nodes to database (saved in UTC-0)
+            thisRef.AddNewDataToDB(thisInst, nodesToPull);                       
 
-            // Add reference object to list // The reference object should already have been added...
-            //   Array.Resize(ref thisInst.refList.reference, thisInst.refList.numReferences + 1);
-            //   thisInst.refList.reference[thisInst.refList.numReferences - 1] = thisMERRA;
-
-            // Get all nodes from database
+            // Get all nodes from database (timestamps are adjusted to local time)
             thisRef.GetReferenceDataFromDB(thisInst);
 
             // Generate interpData
@@ -4284,7 +4281,7 @@ namespace ContinuumNS
                 {
                     string pythonPath = Environment.GetEnvironmentVariable("python") + "\\python.exe";
 
-                    string pythonScript = "ERA5_Downloader.py " + refData.folderLocation + " " + thisDate.Year + " " + thisDate.Month + " "
+                    string pythonScript = "ERA5_Downloader.py \"" + refData.folderLocation + "\" " + thisDate.Year + " " + thisDate.Month + " "
                         + thisDate.Day + " " + minLat.ToString() + " " + maxLat.ToString() + " " + minLong.ToString() + " " + maxLong.ToString();
 
                     ProcessStartInfo start = new ProcessStartInfo();

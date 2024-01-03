@@ -38,13 +38,15 @@ namespace ContinuumNS
 
         private void btnDownloadMERRA2_Click(object sender, EventArgs e)
         {
+            bool needToDownload = false;
+
             if (cboRefDataDownloads.SelectedItem == null)
             {
                 MessageBox.Show("Select 'New' to create a new reference data download");
                 return;
             }
 
-            if (cboReanalysisType.SelectedItem == "ERA5")
+            if (cboReanalysisType.SelectedItem.ToString() == "ERA5")
             {
                 // Check system for Python and for cdsapi
                 bool pythonInstalled = thisInst.IsPythonInstalled();
@@ -76,20 +78,24 @@ namespace ContinuumNS
                 {
                     MessageBox.Show("You have to choose a folder to save the " + dataToDownload.refType + " datafiles.  Click 'Change Folder' button to select folder");
                     return;
-                }
-
-                dataToDownload.startDate = dateReferenceStart.Value;
-                dataToDownload.endDate = dateReferenceEnd.Value;
+                }                                
 
                 int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);                
-                dataToDownload.startDate = dataToDownload.startDate.AddHours(-offset);                
-                dataToDownload.endDate = dataToDownload.endDate.AddHours(-offset);
+                dataToDownload.startDate = dateReferenceStart.Value.AddHours(-offset);                
+                dataToDownload.endDate = dateReferenceEnd.Value.AddHours(-offset);
 
                 if (dateReferenceEnd.Value > DateTime.Now)
                 {
                     MessageBox.Show("End date cannot be in the future.");
                     return;
                 }
+
+                // Check to see if new files need to be downloaded
+                DateTime[] currentStartEnd = thisInst.refList.GetDataFileStartEndDate(dataToDownload.folderLocation, dataToDownload.refType);
+                if (currentStartEnd[0] != dataToDownload.startDate || currentStartEnd[1] != dataToDownload.endDate)
+                    needToDownload = true;
+                else if (Convert.ToInt16(txtPercComplete.Text) < 100)
+                    needToDownload = true;
 
                 // Make sure that the lat/long range includes at least one node, min < max, and show message displaying number of nodes and time range selected to download (give chance to cancel)
                 if (txtMinLat.Text == "" || txtMaxLat.Text == "" || txtMinLong.Text == "" || txtMaxLong.Text == "")
@@ -156,7 +162,8 @@ namespace ContinuumNS
                 if (goodToGo == DialogResult.No)
                     return;
 
-                if (dataToDownload.userName == "" || dataToDownload.userPassword == "")
+                if (needToDownload && (dataToDownload.userName == "" || dataToDownload.userPassword == "" || dataToDownload.userName == null 
+                    || dataToDownload.userPassword == null))
                 {
                     // See if user credentials are saved in another MERRA2 object
                     string[] userPsd = thisInst.refList.GetUserPasswordbyRefType(dataToDownload.refType);
@@ -189,24 +196,8 @@ namespace ContinuumNS
                         }
                         else if (dataToDownload.refType == "ERA5")
                         {
-                            // Apparently you don't need credentials to download? 
-                            /*       Copernicus_LogIn copernicusCreds = new Copernicus_LogIn();
-                                   copernicusCreds.ShowDialog();
+                            // Don't need to enter credentials since the download uses the CDS API program which includes the user's API key
 
-                                   if (copernicusCreds.goodToGo == false)
-                                       return;
-
-                                   try
-                                   {
-                                       dataToDownload.earthdataUser = copernicusCreds.txtUsername.Text;
-                                       dataToDownload.earthdataPwd = copernicusCreds.txtPassword.Text;
-                                   }
-                                   catch
-                                   {
-                                       MessageBox.Show("Invalid Copernicus credentials");
-                                       return;
-                                   }
-                            */
                         }
                     }
                 }
@@ -222,17 +213,24 @@ namespace ContinuumNS
             }                    
             else
             {
+                // Check to see if new files need to be downloaded
+                DateTime[] currentStartEnd = thisInst.refList.GetDataFileStartEndDate(dataToDownload.folderLocation, dataToDownload.refType);
+                if (currentStartEnd[0] != dataToDownload.startDate || currentStartEnd[1] != dataToDownload.endDate)
+                    needToDownload = true;
+                else if (Convert.ToInt16(Math.Round(Convert.ToDouble(txtPercComplete.Text),0)) < 100)
+                    needToDownload = true;
+
                 if (dataToDownload.refType == "MERRA2" && (dataToDownload.userName == null || dataToDownload.userPassword == null))
                 {
                     // See if user credentials are saved in another MERRA2 object
-                    string[] userPsd = thisInst.refList.GetUserPasswordbyRefType(dataToDownload.refType);
+                    string[] userPsd = thisInst.refList.GetUserPasswordbyRefType(dataToDownload.refType);                                                            
 
                     if ((userPsd[0] != "" && userPsd[1] != "") && (userPsd[0] != null && userPsd[1] != null))
                     {
                         dataToDownload.userName = userPsd[0];
                         dataToDownload.userPassword = userPsd[1];
                     }
-                    else
+                    else if (needToDownload)
                     {                        
                         NASA_LogIn nasaCreds = new NASA_LogIn();
                         nasaCreds.ShowDialog();
@@ -252,16 +250,19 @@ namespace ContinuumNS
                         }
                         
                     }
-                }
+                }                
 
                 thisInst.refList.UpdateRefDataDownload(dataToDownload);
-            }         
+            }
 
-            if (dataToDownload.refType == "MERRA2")
-                thisInst.refList.NASA_LogInAsync(thisInst, dataToDownload);
-            else
+            if (needToDownload)
             {
-                thisInst.refList.DownloadERA5(thisInst, dataToDownload);  
+                if (dataToDownload.refType == "MERRA2")
+                    thisInst.refList.NASA_LogInAsync(thisInst, dataToDownload);
+                else
+                {
+                    thisInst.refList.DownloadERA5(thisInst, dataToDownload);
+                }
             }
 
             thisInst.ChangesMade();
@@ -338,18 +339,19 @@ namespace ContinuumNS
                 txtMaxLong.Text = dataToDownload.maxLon.ToString();
 
                 cboReanalysisType.SelectedItem = dataToDownload.refType;
+                int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
 
                 if (dataToDownload.startDate.Year != 1)
-                {
-                    dateReferenceStart.Value = dataToDownload.startDate;                    
-                    dateReferenceEnd.Value = dataToDownload.endDate;                    
+                {                    
+                    dateReferenceStart.Value = dataToDownload.startDate.AddHours(offset); // dateReference are local time start/end                    
+                    dateReferenceEnd.Value = dataToDownload.endDate.AddHours(offset); // dataToDownload start/end are in UTC-0
                 }
                 else
                 {
                     dateReferenceStart.Enabled = true;
                     dateReferenceEnd.Enabled = true;
-                    dataToDownload.startDate = dateReferenceStart.Value;
-                    dataToDownload.endDate = dateReferenceEnd.Value;
+                    dataToDownload.startDate = dateReferenceStart.Value.AddHours(-offset);
+                    dataToDownload.endDate = dateReferenceEnd.Value.AddHours(-offset);
                 }
 
                 double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
@@ -387,7 +389,7 @@ namespace ContinuumNS
                     dataToDownload.endDate = startEnd[1];
                 }
 
-                if (thisInst.refList.HaveThisRefDataDownload(dataToDownload) == false)
+                if (thisInst.refList.HaveThisRefDataDownload(dataToDownload) == false && dataToDownload.minLat != 0)
                 {
                     thisInst.refList.AddRefDataDownload(dataToDownload);
                     UpdateListOfRefDataDownloads();
@@ -441,8 +443,9 @@ namespace ContinuumNS
         {
             // Update start date of selected RefDataDownload
             DateTime newStart = dateReferenceStart.Value;
-            dataToDownload.startDate = dateReferenceStart.Value;
-
+            int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
+            dataToDownload.startDate = dateReferenceStart.Value.AddHours(-offset);
+                        
             double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
             txtPercComplete.Text = Math.Round(percCompl, 1).ToString();
         }
@@ -451,10 +454,20 @@ namespace ContinuumNS
         {
             // Update end date of selected RefDataDownload
             DateTime newEnd = dateReferenceEnd.Value;
-            dataToDownload.endDate = dateReferenceEnd.Value;
+            int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
+            dataToDownload.endDate = dateReferenceEnd.Value.AddHours(-offset);
 
             double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
             txtPercComplete.Text = Math.Round(percCompl, 1).ToString();
+        }
+
+        private void btnRemove_Click(object sender, EventArgs e)
+        {
+            // Removes selected Reference Data Download from list
+            string selRefData = cboRefDataDownloads.SelectedItem.ToString();
+            RefDataDownload selRefDataDown = thisInst.refList.GetRefDataDownloadByName(selRefData);
+            thisInst.refList.DeleteRefDataDownload(selRefDataDown);
+            UpdateListOfRefDataDownloads();
         }
     }
 }

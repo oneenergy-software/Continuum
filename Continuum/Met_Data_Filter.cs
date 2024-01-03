@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Media;
+using Python.Runtime;
 
 namespace ContinuumNS
 {    
@@ -149,17 +150,17 @@ namespace ContinuumNS
 
             /// <summary> Returns index with specified timestamp </summary>            
             public int GetTS_Index(DateTime targetDate)
-            {                
+            {   
                 int indMid = windData.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(windData[indMid].timeStamp.Subtract(windData[indMid - 1].timeStamp).TotalMinutes, 0));
 
                 int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(windData[0].timeStamp).TotalMinutes / dataIntMins, 0));
 
                 if (tsInd < 0)
-                    return 0;
+                    tsInd = 0;
 
                 if (tsInd >= windData.Length)
-                    return windData.Length - 1;
+                    tsInd = windData.Length - 1;
 
                 DateTime thisDate = windData[tsInd].timeStamp;
 
@@ -238,26 +239,66 @@ namespace ContinuumNS
             public data[] dirData;
 
             /// <summary> Returns index with specified timestamp </summary>            
-            public int GetTS_Index(DateTime thisDate)
+            public int GetTS_Index(DateTime targetDate)
             {
                 int indMid = dirData.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(dirData[indMid].timeStamp.Subtract(dirData[indMid - 1].timeStamp).TotalMinutes, 0));
 
-                int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(dirData[0].timeStamp).TotalMinutes / dataIntMins, 0));
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(dirData[0].timeStamp).TotalMinutes / dataIntMins, 0));
 
                 if (tsInd < 0)
                     tsInd = 0;
 
                 if (tsInd >= dirData.Length)
-                    return dirData.Length - 1;
+                    tsInd = dirData.Length - 1;
 
-                while (dirData[tsInd].timeStamp < thisDate && tsInd < dirData.Length - 1)
+                DateTime thisDate = dirData[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)
+                        tsInd = tsInd - stepSize;
+                    else
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= dirData.Length)
+                    {
+                        tsInd = dirData.Length - 1;
+                        break;
+                    }
+
+                    thisDate = dirData[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }
+
+                while (dirData[tsInd].timeStamp < targetDate && tsInd < dirData.Length - 1)
                     tsInd++;
 
-                while (dirData[tsInd].timeStamp > thisDate && tsInd > 0)
+                while (dirData[tsInd].timeStamp > targetDate && tsInd > 0)
                     tsInd--;
 
-                if (dirData[tsInd].timeStamp != thisDate)
+                if (dirData[tsInd].timeStamp != targetDate)
                     tsInd = -999;
 
                 return tsInd;
@@ -276,26 +317,66 @@ namespace ContinuumNS
             public data[] temp;
 
             /// <summary> Returns index with specified timestamp </summary>            
-            public int GetTS_Index(DateTime thisDate)
+            public int GetTS_Index(DateTime targetDate)
             {
                 int indMid = temp.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(temp[indMid].timeStamp.Subtract(temp[indMid - 1].timeStamp).TotalMinutes, 0));
 
-                int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(temp[0].timeStamp).TotalMinutes / dataIntMins, 0));
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(temp[0].timeStamp).TotalMinutes / dataIntMins, 0));
 
                 if (tsInd < 0)
                     tsInd = 0;
 
                 if (tsInd >= temp.Length)
-                    return temp.Length - 1;
+                    tsInd = temp.Length - 1;
 
-                while (temp[tsInd].timeStamp < thisDate && tsInd < temp.Length - 1)
+                DateTime thisDate = temp[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)
+                        tsInd = tsInd - stepSize;
+                    else
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= temp.Length)
+                    {
+                        tsInd = temp.Length - 1;
+                        break;
+                    }
+
+                    thisDate = temp[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }
+
+                while (temp[tsInd].timeStamp < targetDate && tsInd < temp.Length - 1)
                     tsInd++;
 
-                while (temp[tsInd].timeStamp > thisDate && tsInd > 0)
+                while (temp[tsInd].timeStamp > targetDate && tsInd > 0)
                     tsInd--;
 
-                if (temp[tsInd].timeStamp != thisDate)
+                if (temp[tsInd].timeStamp != targetDate)
                     tsInd = -999;
 
                 return tsInd;
@@ -315,26 +396,66 @@ namespace ContinuumNS
             public data[] pressure;
 
             /// <summary> Returns index with specified timestamp </summary>            
-            public int GetTS_Index(DateTime thisDate)
+            public int GetTS_Index(DateTime targetDate)
             {
                 int indMid = pressure.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(pressure[indMid].timeStamp.Subtract(pressure[indMid - 1].timeStamp).TotalMinutes, 0));
 
-                int tsInd = Convert.ToInt32(Math.Round(thisDate.Subtract(pressure[0].timeStamp).TotalMinutes / dataIntMins, 0));
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(pressure[0].timeStamp).TotalMinutes / dataIntMins, 0));
 
                 if (tsInd < 0)
                     tsInd = 0;
 
                 if (tsInd >= pressure.Length)
-                    return pressure.Length - 1;
+                    tsInd = pressure.Length - 1;
 
-                while (pressure[tsInd].timeStamp < thisDate && tsInd < pressure.Length - 1)
+                DateTime thisDate = pressure[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)
+                        tsInd = tsInd - stepSize;
+                    else
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= pressure.Length)
+                    {
+                        tsInd = pressure.Length - 1;
+                        break;
+                    }
+
+                    thisDate = pressure[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }
+
+                while (pressure[tsInd].timeStamp < targetDate && tsInd < pressure.Length - 1)
                     tsInd++;
 
-                while (pressure[tsInd].timeStamp > thisDate && tsInd > 0)
+                while (pressure[tsInd].timeStamp > targetDate && tsInd > 0)
                     tsInd--;
 
-                if (pressure[tsInd].timeStamp != thisDate)
+                if (pressure[tsInd].timeStamp != targetDate)
                     tsInd = -999;
 
                 return tsInd;
@@ -2558,10 +2679,10 @@ namespace ContinuumNS
 
                     Baro_table baroTable = new Baro_table();
                     baroTable.metName = metName;
-                    baroTable.height = temps[i].height;
+                    baroTable.height = baros[i].height;
 
                     MemoryStream MS1 = new MemoryStream();
-                    bin.Serialize(MS1, temps[i].temp);
+                    bin.Serialize(MS1, baros[i].pressure);
                     baroTable.baro = MS1.ToArray();
 
                     try
@@ -2645,6 +2766,24 @@ namespace ContinuumNS
                     {
                         MemoryStream MS = new MemoryStream(N.temp);
                         temps[i].temp = (data[])bin.Deserialize(MS);
+                        MS.Close();
+                    }
+                }
+            }
+
+            // Get pressure data
+            for (int i = 0; i < GetNumBaros(); i++)
+            {
+                using (var context = new Continuum_EDMContainer(connString))
+                {
+                    double thisHeight = baros[i].height;
+
+                    var sensorData = from N in context.Baro_table where N.metName == metName && N.height == thisHeight select N;
+
+                    foreach (var N in sensorData)
+                    {
+                        MemoryStream MS = new MemoryStream(N.baro);
+                        baros[i].pressure = (data[])bin.Deserialize(MS);
                         MS.Close();
                     }
                 }

@@ -104,7 +104,7 @@ namespace Continuum_Tests
             Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
 
             // Test 1: All Months, all years
-            double[] thisWR = merra.Calc_Wind_Rose(100, 100, thisInst.UTM_conversions, 16); // all years all months
+            double[] thisWR = merra.CalcWindOrEnergyRose(100, 100, thisInst.UTM_conversions, 16, "Wind Rose", 0, 0); // all years all months
             string WR_file = testingFolder + "\\Calc_Wind_Rose\\All Months All Years Wind Rose.csv";
 
             StreamReader sr = new StreamReader(WR_file);
@@ -118,7 +118,7 @@ namespace Continuum_Tests
             sr.Close();
 
             // Test 2: March 2009
-            thisWR = merra.Calc_Wind_Rose(3, 2009, thisInst.UTM_conversions, 16); // March 2009
+            thisWR = merra.CalcWindOrEnergyRose(3, 2009, thisInst.UTM_conversions, 16, "Wind Rose", 0, 0); // March 2009
             WR_file = testingFolder + "\\Calc_Wind_Rose\\March 2009 Wind Rose.csv";
 
             sr = new StreamReader(WR_file);
@@ -132,7 +132,7 @@ namespace Continuum_Tests
             sr.Close();
 
             // Test 3: June All Years
-            thisWR = merra.Calc_Wind_Rose(6, 100, thisInst.UTM_conversions, 16); // June LT
+            thisWR = merra.CalcWindOrEnergyRose(6, 100, thisInst.UTM_conversions, 16, "Wind Rose", 0, 0); // June LT
             WR_file = testingFolder + "\\Calc_Wind_Rose\\June All Years Wind Rose.csv";
 
             sr = new StreamReader(WR_file);
@@ -146,7 +146,7 @@ namespace Continuum_Tests
             sr.Close();
 
             // Test 4: 2010 All Months
-            thisWR = merra.Calc_Wind_Rose(100, 2010, thisInst.UTM_conversions, 16); // 2010
+            thisWR = merra.CalcWindOrEnergyRose(100, 2010, thisInst.UTM_conversions, 16, "Wind Rose", 0, 0); // 2010
             WR_file = testingFolder + "\\Calc_Wind_Rose\\2010 Wind Rose.csv";
 
             sr = new StreamReader(WR_file);

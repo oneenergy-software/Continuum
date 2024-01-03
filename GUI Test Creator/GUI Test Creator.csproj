@@ -80,12 +80,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GUI_Creator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI_Creator.Designer.cs">
-      <DependentUpon>GUI_Creator.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI_Creator2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,9 +88,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="GUI_Creator.resx">
-      <DependentUpon>GUI_Creator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GUI_Creator2.resx">
       <DependentUpon>GUI_Creator2.cs</DependentUpon>
     </EmbeddedResource>

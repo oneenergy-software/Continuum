@@ -374,6 +374,7 @@
             this.txtReferenceLat.Name = "txtReferenceLat";
             this.txtReferenceLat.Size = new System.Drawing.Size(110, 25);
             this.txtReferenceLat.TabIndex = 281;
+            this.txtReferenceLat.TextChanged += new System.EventHandler(this.txtReferenceLat_TextChanged);
             // 
             // label154
             // 

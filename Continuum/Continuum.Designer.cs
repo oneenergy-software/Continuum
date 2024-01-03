@@ -73,13 +73,20 @@ namespace ContinuumNS
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
+            this.cboWindOrEnergy = new System.Windows.Forms.ComboBox();
+            this.btnEditAirDensity = new System.Windows.Forms.Button();
+            this.label222 = new System.Windows.Forms.Label();
+            this.txtAirDensity = new System.Windows.Forms.TextBox();
+            this.btnEditRotorDiam = new System.Windows.Forms.Button();
+            this.label221 = new System.Windows.Forms.Label();
+            this.txtRotorDiam = new System.Windows.Forms.TextBox();
             this.txtTopoNullValue = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.plotDirectionalWS_Ratios = new OxyPlot.WindowsForms.PlotView();
             this.plotInputWindRose = new OxyPlot.WindowsForms.PlotView();
             this.plotTopo = new OxyPlot.WindowsForms.PlotView();
             this.chkCreateTurbTS = new System.Windows.Forms.CheckBox();
-            this.btnModHeight = new System.Windows.Forms.Button();
+            this.btnEditModHeight = new System.Windows.Forms.Button();
             this.label168 = new System.Windows.Forms.Label();
             this.txtModeledHeight = new System.Windows.Forms.TextBox();
             this.btnImportMetTS = new System.Windows.Forms.Button();
@@ -243,6 +250,9 @@ namespace ContinuumNS
             this.columnHeader72 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader73 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgeMERRA = new System.Windows.Forms.TabPage();
+            this.cboNumWDRefTab = new System.Windows.Forms.ComboBox();
+            this.label223 = new System.Windows.Forms.Label();
+            this.cboRefWindOrEnergy = new System.Windows.Forms.ComboBox();
             this.label217 = new System.Windows.Forms.Label();
             this.txtMaxLong = new System.Windows.Forms.TextBox();
             this.label218 = new System.Windows.Forms.Label();
@@ -615,6 +625,7 @@ namespace ContinuumNS
             this.pgeSiteConditions = new System.Windows.Forms.TabPage();
             this.tabSiteConditions = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.chkForceThruBase = new System.Windows.Forms.CheckBox();
             this.btnCalcTerrainComplexity = new System.Windows.Forms.Button();
             this.label161 = new System.Windows.Forms.Label();
             this.cboTSIorTVIorP90 = new System.Windows.Forms.ComboBox();
@@ -1037,6 +1048,8 @@ namespace ContinuumNS
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
+            this.cboNumWDComplxTab = new System.Windows.Forms.ComboBox();
+            this.label224 = new System.Windows.Forms.Label();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pgeMetDataTS.SuspendLayout();
@@ -1098,13 +1111,20 @@ namespace ContinuumNS
             // 
             // pgeInput
             // 
+            this.pgeInput.Controls.Add(this.cboWindOrEnergy);
+            this.pgeInput.Controls.Add(this.btnEditAirDensity);
+            this.pgeInput.Controls.Add(this.label222);
+            this.pgeInput.Controls.Add(this.txtAirDensity);
+            this.pgeInput.Controls.Add(this.btnEditRotorDiam);
+            this.pgeInput.Controls.Add(this.label221);
+            this.pgeInput.Controls.Add(this.txtRotorDiam);
             this.pgeInput.Controls.Add(this.txtTopoNullValue);
             this.pgeInput.Controls.Add(this.label5);
             this.pgeInput.Controls.Add(this.plotDirectionalWS_Ratios);
             this.pgeInput.Controls.Add(this.plotInputWindRose);
             this.pgeInput.Controls.Add(this.plotTopo);
             this.pgeInput.Controls.Add(this.chkCreateTurbTS);
-            this.pgeInput.Controls.Add(this.btnModHeight);
+            this.pgeInput.Controls.Add(this.btnEditModHeight);
             this.pgeInput.Controls.Add(this.label168);
             this.pgeInput.Controls.Add(this.txtModeledHeight);
             this.pgeInput.Controls.Add(this.btnImportMetTS);
@@ -1156,6 +1176,89 @@ namespace ContinuumNS
             this.pgeInput.Text = "Input";
             this.pgeInput.UseVisualStyleBackColor = true;
             // 
+            // cboWindOrEnergy
+            // 
+            this.cboWindOrEnergy.FormattingEnabled = true;
+            this.cboWindOrEnergy.Items.AddRange(new object[] {
+            "Wind Rose",
+            "Energy Rose"});
+            this.cboWindOrEnergy.Location = new System.Drawing.Point(272, 515);
+            this.cboWindOrEnergy.Name = "cboWindOrEnergy";
+            this.cboWindOrEnergy.Size = new System.Drawing.Size(121, 21);
+            this.cboWindOrEnergy.TabIndex = 137;
+            this.cboWindOrEnergy.SelectedIndexChanged += new System.EventHandler(this.cboWindOrEnergy_SelectedIndexChanged);
+            // 
+            // btnEditAirDensity
+            // 
+            this.btnEditAirDensity.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEditAirDensity.Location = new System.Drawing.Point(768, 209);
+            this.btnEditAirDensity.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnEditAirDensity.Name = "btnEditAirDensity";
+            this.btnEditAirDensity.Size = new System.Drawing.Size(50, 32);
+            this.btnEditAirDensity.TabIndex = 136;
+            this.btnEditAirDensity.Text = "Edit";
+            this.btnEditAirDensity.UseVisualStyleBackColor = true;
+            this.btnEditAirDensity.Click += new System.EventHandler(this.btnEditAirDensity_Click);
+            // 
+            // label222
+            // 
+            this.label222.AutoSize = true;
+            this.label222.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label222.Location = new System.Drawing.Point(755, 131);
+            this.label222.Name = "label222";
+            this.label222.Size = new System.Drawing.Size(77, 36);
+            this.label222.TabIndex = 135;
+            this.label222.Text = "Air Density\r\n[kg/m3]:";
+            this.label222.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label222.Click += new System.EventHandler(this.label222_Click);
+            // 
+            // txtAirDensity
+            // 
+            this.txtAirDensity.Enabled = false;
+            this.txtAirDensity.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtAirDensity.Location = new System.Drawing.Point(768, 177);
+            this.txtAirDensity.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtAirDensity.Name = "txtAirDensity";
+            this.txtAirDensity.Size = new System.Drawing.Size(49, 25);
+            this.txtAirDensity.TabIndex = 134;
+            this.txtAirDensity.Text = "1.225";
+            this.txtAirDensity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // btnEditRotorDiam
+            // 
+            this.btnEditRotorDiam.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEditRotorDiam.Location = new System.Drawing.Point(768, 88);
+            this.btnEditRotorDiam.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnEditRotorDiam.Name = "btnEditRotorDiam";
+            this.btnEditRotorDiam.Size = new System.Drawing.Size(50, 32);
+            this.btnEditRotorDiam.TabIndex = 133;
+            this.btnEditRotorDiam.Text = "Edit";
+            this.btnEditRotorDiam.UseVisualStyleBackColor = true;
+            this.btnEditRotorDiam.Click += new System.EventHandler(this.btnRotorDiam_Click);
+            // 
+            // label221
+            // 
+            this.label221.AutoSize = true;
+            this.label221.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label221.Location = new System.Drawing.Point(758, 10);
+            this.label221.Name = "label221";
+            this.label221.Size = new System.Drawing.Size(71, 36);
+            this.label221.TabIndex = 132;
+            this.label221.Text = "Rotor \r\nDiam. [m]:";
+            this.label221.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // txtRotorDiam
+            // 
+            this.txtRotorDiam.Enabled = false;
+            this.txtRotorDiam.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRotorDiam.Location = new System.Drawing.Point(768, 56);
+            this.txtRotorDiam.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtRotorDiam.Name = "txtRotorDiam";
+            this.txtRotorDiam.Size = new System.Drawing.Size(49, 25);
+            this.txtRotorDiam.TabIndex = 131;
+            this.txtRotorDiam.Text = "100";
+            this.txtRotorDiam.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // txtTopoNullValue
             // 
             this.txtTopoNullValue.Font = new System.Drawing.Font("Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1206,7 +1309,7 @@ namespace ContinuumNS
             this.plotTopo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotTopo.Location = new System.Drawing.Point(824, 26);
+            this.plotTopo.Location = new System.Drawing.Point(835, 26);
             this.plotTopo.Name = "plotTopo";
             this.plotTopo.PanCursor = System.Windows.Forms.Cursors.Hand;
             this.plotTopo.Size = new System.Drawing.Size(772, 600);
@@ -1231,17 +1334,17 @@ namespace ContinuumNS
             this.chkCreateTurbTS.UseVisualStyleBackColor = true;
             this.chkCreateTurbTS.CheckedChanged += new System.EventHandler(this.cboCreateTurbTS_CheckedChanged);
             // 
-            // btnModHeight
+            // btnEditModHeight
             // 
-            this.btnModHeight.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnModHeight.Location = new System.Drawing.Point(493, 103);
-            this.btnModHeight.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnModHeight.Name = "btnModHeight";
-            this.btnModHeight.Size = new System.Drawing.Size(50, 32);
-            this.btnModHeight.TabIndex = 124;
-            this.btnModHeight.Text = "Edit";
-            this.btnModHeight.UseVisualStyleBackColor = true;
-            this.btnModHeight.Click += new System.EventHandler(this.btnModHeight_Click);
+            this.btnEditModHeight.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEditModHeight.Location = new System.Drawing.Point(493, 103);
+            this.btnEditModHeight.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnEditModHeight.Name = "btnEditModHeight";
+            this.btnEditModHeight.Size = new System.Drawing.Size(50, 32);
+            this.btnEditModHeight.TabIndex = 124;
+            this.btnEditModHeight.Text = "Edit";
+            this.btnEditModHeight.UseVisualStyleBackColor = true;
+            this.btnEditModHeight.Click += new System.EventHandler(this.btnModHeight_Click);
             // 
             // label168
             // 
@@ -1265,6 +1368,7 @@ namespace ContinuumNS
             this.txtModeledHeight.TabIndex = 122;
             this.txtModeledHeight.Text = "80";
             this.txtModeledHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtModeledHeight.TextChanged += new System.EventHandler(this.txtModeledHeight_TextChanged);
             // 
             // btnImportMetTS
             // 
@@ -1984,7 +2088,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 652);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(844, 185);
+            this.plotTS_Baros.Size = new System.Drawing.Size(784, 185);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2208,7 +2312,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 458);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(844, 185);
+            this.plotTS_Temp.Size = new System.Drawing.Size(784, 185);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2223,7 +2327,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 264);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(844, 185);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(784, 185);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2239,7 +2343,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(844, 185);
+            this.plotTS_Anems.Size = new System.Drawing.Size(784, 185);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -3109,6 +3213,9 @@ namespace ContinuumNS
             // 
             // pgeMERRA
             // 
+            this.pgeMERRA.Controls.Add(this.cboNumWDRefTab);
+            this.pgeMERRA.Controls.Add(this.label223);
+            this.pgeMERRA.Controls.Add(this.cboRefWindOrEnergy);
             this.pgeMERRA.Controls.Add(this.label217);
             this.pgeMERRA.Controls.Add(this.txtMaxLong);
             this.pgeMERRA.Controls.Add(this.label218);
@@ -3171,6 +3278,47 @@ namespace ContinuumNS
             this.pgeMERRA.UseVisualStyleBackColor = true;
             this.pgeMERRA.Click += new System.EventHandler(this.pgeMERRA_Click);
             // 
+            // cboNumWDRefTab
+            // 
+            this.cboNumWDRefTab.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboNumWDRefTab.FormattingEnabled = true;
+            this.cboNumWDRefTab.Items.AddRange(new object[] {
+            "1",
+            "4",
+            "8",
+            "12",
+            "16",
+            "24"});
+            this.cboNumWDRefTab.Location = new System.Drawing.Point(1401, 91);
+            this.cboNumWDRefTab.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboNumWDRefTab.Name = "cboNumWDRefTab";
+            this.cboNumWDRefTab.Size = new System.Drawing.Size(48, 26);
+            this.cboNumWDRefTab.TabIndex = 271;
+            this.cboNumWDRefTab.Text = "16";
+            this.cboNumWDRefTab.SelectedIndexChanged += new System.EventHandler(this.cboNumWDRefTab_SelectedIndexChanged);
+            // 
+            // label223
+            // 
+            this.label223.AutoSize = true;
+            this.label223.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label223.Location = new System.Drawing.Point(1292, 95);
+            this.label223.Name = "label223";
+            this.label223.Size = new System.Drawing.Size(103, 18);
+            this.label223.TabIndex = 270;
+            this.label223.Text = "Num. WD bins :";
+            // 
+            // cboRefWindOrEnergy
+            // 
+            this.cboRefWindOrEnergy.FormattingEnabled = true;
+            this.cboRefWindOrEnergy.Items.AddRange(new object[] {
+            "Wind Rose",
+            "Energy Rose"});
+            this.cboRefWindOrEnergy.Location = new System.Drawing.Point(1488, 91);
+            this.cboRefWindOrEnergy.Name = "cboRefWindOrEnergy";
+            this.cboRefWindOrEnergy.Size = new System.Drawing.Size(121, 26);
+            this.cboRefWindOrEnergy.TabIndex = 269;
+            this.cboRefWindOrEnergy.SelectedIndexChanged += new System.EventHandler(this.cboRefWindOrEnergy_SelectedIndexChanged);
+            // 
             // label217
             // 
             this.label217.AutoSize = true;
@@ -3188,6 +3336,7 @@ namespace ContinuumNS
             this.txtMaxLong.Location = new System.Drawing.Point(409, 411);
             this.txtMaxLong.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxLong.Name = "txtMaxLong";
+            this.txtMaxLong.ReadOnly = true;
             this.txtMaxLong.Size = new System.Drawing.Size(44, 25);
             this.txtMaxLong.TabIndex = 267;
             // 
@@ -3208,6 +3357,7 @@ namespace ContinuumNS
             this.txtMinLong.Location = new System.Drawing.Point(341, 411);
             this.txtMinLong.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinLong.Name = "txtMinLong";
+            this.txtMinLong.ReadOnly = true;
             this.txtMinLong.Size = new System.Drawing.Size(44, 25);
             this.txtMinLong.TabIndex = 265;
             // 
@@ -3228,6 +3378,7 @@ namespace ContinuumNS
             this.txtMaxLat.Location = new System.Drawing.Point(409, 378);
             this.txtMaxLat.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxLat.Name = "txtMaxLat";
+            this.txtMaxLat.ReadOnly = true;
             this.txtMaxLat.Size = new System.Drawing.Size(44, 25);
             this.txtMaxLat.TabIndex = 263;
             // 
@@ -3248,6 +3399,7 @@ namespace ContinuumNS
             this.txtMinLat.Location = new System.Drawing.Point(341, 378);
             this.txtMinLat.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinLat.Name = "txtMinLat";
+            this.txtMinLat.ReadOnly = true;
             this.txtMinLat.Size = new System.Drawing.Size(44, 25);
             this.txtMinLat.TabIndex = 261;
             // 
@@ -3391,7 +3543,7 @@ namespace ContinuumNS
             this.dateLTRefAvailEnd.Location = new System.Drawing.Point(23, 484);
             this.dateLTRefAvailEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateLTRefAvailEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
-            this.dateLTRefAvailEnd.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateLTRefAvailEnd.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
             this.dateLTRefAvailEnd.Name = "dateLTRefAvailEnd";
             this.dateLTRefAvailEnd.Size = new System.Drawing.Size(163, 25);
             this.dateLTRefAvailEnd.TabIndex = 245;
@@ -3407,7 +3559,7 @@ namespace ContinuumNS
             this.dateLTRefAvailStart.Location = new System.Drawing.Point(22, 425);
             this.dateLTRefAvailStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateLTRefAvailStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
-            this.dateLTRefAvailStart.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateLTRefAvailStart.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
             this.dateLTRefAvailStart.Name = "dateLTRefAvailStart";
             this.dateLTRefAvailStart.Size = new System.Drawing.Size(163, 25);
             this.dateLTRefAvailStart.TabIndex = 244;
@@ -3455,7 +3607,7 @@ namespace ContinuumNS
             this.plotMERRA_WindRose.Location = new System.Drawing.Point(1290, 91);
             this.plotMERRA_WindRose.Name = "plotMERRA_WindRose";
             this.plotMERRA_WindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMERRA_WindRose.Size = new System.Drawing.Size(348, 320);
+            this.plotMERRA_WindRose.Size = new System.Drawing.Size(323, 320);
             this.plotMERRA_WindRose.TabIndex = 226;
             this.plotMERRA_WindRose.Text = "plotView1";
             this.plotMERRA_WindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -3791,7 +3943,7 @@ namespace ContinuumNS
             this.dateMERRAEnd.Location = new System.Drawing.Point(142, 176);
             this.dateMERRAEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateMERRAEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
-            this.dateMERRAEnd.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateMERRAEnd.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
             this.dateMERRAEnd.Name = "dateMERRAEnd";
             this.dateMERRAEnd.Size = new System.Drawing.Size(163, 25);
             this.dateMERRAEnd.TabIndex = 124;
@@ -3807,7 +3959,7 @@ namespace ContinuumNS
             this.dateMERRAStart.Location = new System.Drawing.Point(142, 142);
             this.dateMERRAStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateMERRAStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
-            this.dateMERRAStart.MinDate = new System.DateTime(1980, 1, 1, 0, 0, 0, 0);
+            this.dateMERRAStart.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
             this.dateMERRAStart.Name = "dateMERRAStart";
             this.dateMERRAStart.Size = new System.Drawing.Size(163, 25);
             this.dateMERRAStart.TabIndex = 123;
@@ -7104,6 +7256,9 @@ namespace ContinuumNS
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.cboNumWDComplxTab);
+            this.tabPage2.Controls.Add(this.label224);
+            this.tabPage2.Controls.Add(this.chkForceThruBase);
             this.tabPage2.Controls.Add(this.btnCalcTerrainComplexity);
             this.tabPage2.Controls.Add(this.label161);
             this.tabPage2.Controls.Add(this.cboTSIorTVIorP90);
@@ -7134,11 +7289,23 @@ namespace ContinuumNS
             this.tabPage2.Text = "Terrain Complexity";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // chkForceThruBase
+            // 
+            this.chkForceThruBase.AutoSize = true;
+            this.chkForceThruBase.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.chkForceThruBase.Location = new System.Drawing.Point(592, 40);
+            this.chkForceThruBase.Name = "chkForceThruBase";
+            this.chkForceThruBase.Size = new System.Drawing.Size(253, 21);
+            this.chkForceThruBase.TabIndex = 301;
+            this.chkForceThruBase.Text = "Force Fitted Plane Through Turbine Base";
+            this.chkForceThruBase.UseVisualStyleBackColor = true;
+            this.chkForceThruBase.CheckedChanged += new System.EventHandler(this.chkForceThruBase_CheckedChanged);
+            // 
             // btnCalcTerrainComplexity
             // 
             this.btnCalcTerrainComplexity.BackColor = System.Drawing.Color.Transparent;
             this.btnCalcTerrainComplexity.Font = new System.Drawing.Font("Palatino Linotype", 9.5F);
-            this.btnCalcTerrainComplexity.Location = new System.Drawing.Point(232, 9);
+            this.btnCalcTerrainComplexity.Location = new System.Drawing.Point(213, 9);
             this.btnCalcTerrainComplexity.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCalcTerrainComplexity.Name = "btnCalcTerrainComplexity";
             this.btnCalcTerrainComplexity.Size = new System.Drawing.Size(146, 49);
@@ -7193,7 +7360,7 @@ namespace ContinuumNS
             // 
             this.label150.AutoSize = true;
             this.label150.Font = new System.Drawing.Font("Palatino Linotype", 12F);
-            this.label150.Location = new System.Drawing.Point(559, 36);
+            this.label150.Location = new System.Drawing.Point(548, 12);
             this.label150.Name = "label150";
             this.label150.Size = new System.Drawing.Size(219, 22);
             this.label150.TabIndex = 296;
@@ -11339,6 +11506,35 @@ namespace ContinuumNS
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
+            // cboNumWDComplxTab
+            // 
+            this.cboNumWDComplxTab.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboNumWDComplxTab.FormattingEnabled = true;
+            this.cboNumWDComplxTab.Items.AddRange(new object[] {
+            "1",
+            "4",
+            "8",
+            "12",
+            "16",
+            "24"});
+            this.cboNumWDComplxTab.Location = new System.Drawing.Point(479, 14);
+            this.cboNumWDComplxTab.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboNumWDComplxTab.Name = "cboNumWDComplxTab";
+            this.cboNumWDComplxTab.Size = new System.Drawing.Size(48, 26);
+            this.cboNumWDComplxTab.TabIndex = 303;
+            this.cboNumWDComplxTab.Text = "16";
+            this.cboNumWDComplxTab.SelectedIndexChanged += new System.EventHandler(this.cboNumWDComplxTab_SelectedIndexChanged);
+            // 
+            // label224
+            // 
+            this.label224.AutoSize = true;
+            this.label224.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label224.Location = new System.Drawing.Point(371, 17);
+            this.label224.Name = "label224";
+            this.label224.Size = new System.Drawing.Size(103, 18);
+            this.label224.TabIndex = 302;
+            this.label224.Text = "Num. WD bins :";
+            // 
             // Continuum
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -12132,7 +12328,7 @@ namespace ContinuumNS
         private System.Windows.Forms.Button btnGetDefaultExceed;
         private System.Windows.Forms.Button btnImportCurves;
         internal System.Windows.Forms.OpenFileDialog ofdExceedCurves;
-        internal System.Windows.Forms.Button btnModHeight;
+        internal System.Windows.Forms.Button btnEditModHeight;
         internal System.Windows.Forms.CheckBox chkDisableFilter;
         internal System.Windows.Forms.ColumnHeader columnHeader186;
         private System.Windows.Forms.ColumnHeader columnHeader193;
@@ -12377,6 +12573,19 @@ namespace ContinuumNS
         private System.Windows.Forms.Button btnZoneFileFormatHelp;
         internal TextBox txtTopoNullValue;
         internal Label label5;
+        public CheckBox chkForceThruBase;
+        internal Button btnEditRotorDiam;
+        internal Label label221;
+        public TextBox txtRotorDiam;
+        internal Button btnEditAirDensity;
+        internal Label label222;
+        public TextBox txtAirDensity;
+        public ComboBox cboWindOrEnergy;
+        public ComboBox cboRefWindOrEnergy;
+        public ComboBox cboNumWDRefTab;
+        private Label label223;
+        public ComboBox cboNumWDComplxTab;
+        private Label label224;
     }
 }
 

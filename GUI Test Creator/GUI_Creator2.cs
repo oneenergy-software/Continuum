@@ -43,6 +43,7 @@ namespace GUI_Test_Creator
         string powerCurveSnip = "\\Import Power Curve.txt";
         string zonesSnip = "\\Import Zones.txt";
         string merraSnip = "\\Import MERRA.txt";
+        string referenceSnip = "\\Import Reference.txt";
 
         // Action snippets
         string genTurbEstsSnip = "\\Action Gen Turb Ests.txt";
@@ -122,7 +123,7 @@ namespace GUI_Test_Creator
 
         public void WriteTopographySnippet(StreamWriter sw, string thisFile)
         {
-            StreamReader sr = new StreamReader(testFolder + topoSnip);
+            StreamReader sr = new StreamReader(snippetFolder + topoSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -138,7 +139,7 @@ namespace GUI_Test_Creator
 
         public void WriteLandCoverSnippet(StreamWriter sw, string thisFile)
         {
-            StreamReader sr = new StreamReader(testFolder + landCoverSnip);
+            StreamReader sr = new StreamReader(snippetFolder + landCoverSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -154,7 +155,7 @@ namespace GUI_Test_Creator
 
         public void WriteMetTABSnippet(StreamWriter sw, string thisFile)
         {
-            StreamReader sr = new StreamReader(testFolder + metTABSnip);
+            StreamReader sr = new StreamReader(snippetFolder + metTABSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -170,7 +171,7 @@ namespace GUI_Test_Creator
 
         public void WriteMetTSSnippet(StreamWriter sw, string thisFile, bool doFiltering)
         {
-            StreamReader sr = new StreamReader(testFolder + metTSSnip);
+            StreamReader sr = new StreamReader(snippetFolder + metTSSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -195,7 +196,7 @@ namespace GUI_Test_Creator
 
         public void WriteTurbineSnippet(StreamWriter sw, string thisFile, string projectName)
         {
-            StreamReader sr = new StreamReader(testFolder + turbineSnip);
+            StreamReader sr = new StreamReader(snippetFolder + turbineSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -211,7 +212,7 @@ namespace GUI_Test_Creator
 
         public void WritePowerCurveSnippet(StreamWriter sw, string thisFile)
         {
-            StreamReader sr = new StreamReader(testFolder + powerCurveSnip);
+            StreamReader sr = new StreamReader(snippetFolder + powerCurveSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -227,7 +228,7 @@ namespace GUI_Test_Creator
 
         public void WriteZoneSnippet(StreamWriter sw, string thisFile, string projectName)
         {
-            StreamReader sr = new StreamReader(testFolder + zonesSnip);
+            StreamReader sr = new StreamReader(snippetFolder + zonesSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -244,7 +245,7 @@ namespace GUI_Test_Creator
         public void WriteMERRA2Snippet(StreamWriter sw, int metInd, DateTime startTime, DateTime endTime, int merraFolderInd)
         {
             
-            StreamReader sr = new StreamReader(testFolder + merraSnip);
+            StreamReader sr = new StreamReader(snippetFolder + merraSnip);
             int merraFolderCount = 0; 
 
             while (sr.EndOfStream == false)
@@ -280,9 +281,37 @@ namespace GUI_Test_Creator
             sr.Close();
         }
 
+        public void WriteReferenceSnippet(StreamWriter sw, int metInd, string referenceName, int numNodes)
+        {
+
+            StreamReader sr = new StreamReader(snippetFolder + referenceSnip);
+            string refFolderPath = ohioMERRA;
+
+            if (referenceName == "Firewheel")
+                refFolderPath = firewheelMERRA;
+
+            while (sr.EndOfStream == false)
+            {
+                string lineToWrite = sr.ReadLine();
+                string trimmedLine = lineToWrite.Trim();
+                if (trimmedLine.Length > 6)
+                    if (trimmedLine.Substring(0, 7) == "thisMet")
+                        lineToWrite = lineToWrite + metInd + "];";                               
+
+                if (trimmedLine.Contains("ReadFileAndDefineRefDataDownload"))                    
+                    lineToWrite = lineToWrite + refFolderPath + ");";
+
+                if (trimmedLine.Contains("thisRef.numNodes ="))
+                    lineToWrite = lineToWrite + numNodes.ToString() + ";";
+
+                sw.WriteLine(lineToWrite);
+            }
+            sr.Close();
+        }
+
         public void WriteMCPSnippet(StreamWriter sw, int metInd)
         {
-            StreamReader sr = new StreamReader(testFolder + mcpSnip);
+            StreamReader sr = new StreamReader(snippetFolder + mcpSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -422,7 +451,7 @@ namespace GUI_Test_Creator
 
         public void WriteTurbineGrossEsts(StreamWriter sw)
         {
-            StreamReader sr = new StreamReader(testFolder + genTurbEstsSnip);
+            StreamReader sr = new StreamReader(snippetFolder + genTurbEstsSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -433,7 +462,7 @@ namespace GUI_Test_Creator
 
         public void WriteDoMonteCarlo(StreamWriter sw)
         {
-            StreamReader sr = new StreamReader(testFolder + monteCarloSnip);
+            StreamReader sr = new StreamReader(snippetFolder + monteCarloSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -444,7 +473,7 @@ namespace GUI_Test_Creator
 
         public void WriteNetEsts(StreamWriter sw)
         {
-            StreamReader sr = new StreamReader(testFolder + wakeNetEstSnip);
+            StreamReader sr = new StreamReader(snippetFolder + wakeNetEstSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -480,7 +509,7 @@ namespace GUI_Test_Creator
                 StreamWriter sw = new StreamWriter(fileName);
 
                 // First, write start of test
-                StreamReader sr = new StreamReader(testFolder + startSnip);
+                StreamReader sr = new StreamReader(snippetFolder + startSnip);
                 while (sr.EndOfStream == false)
                 {
                     string lineToWrite = sr.ReadLine();
@@ -596,7 +625,7 @@ namespace GUI_Test_Creator
                             WriteTurbineGrossEsts(sw);
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Analyze Mets")
                         {
-                            sr = new StreamReader(testFolder + analyzeMetsSnip);
+                            sr = new StreamReader(snippetFolder + analyzeMetsSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -612,7 +641,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Create wake map")
                         {
-                            sr = new StreamReader(testFolder + wakeMapSnip);
+                            sr = new StreamReader(snippetFolder + wakeMapSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -622,7 +651,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Create largest map")
                         {
-                            sr = new StreamReader(testFolder + mapLargest);
+                            sr = new StreamReader(snippetFolder + mapLargest);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -632,7 +661,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Create map around turbs")
                         {
-                            sr = new StreamReader(testFolder + mapTurbine);
+                            sr = new StreamReader(snippetFolder + mapTurbine);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -642,7 +671,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Run Round Robin")
                         {
-                            sr = new StreamReader(testFolder + roundRobinSnip);
+                            sr = new StreamReader(snippetFolder + roundRobinSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -652,7 +681,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Do Ice Throw")
                         {
-                            sr = new StreamReader(testFolder + iceThrowSnip);
+                            sr = new StreamReader(snippetFolder + iceThrowSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -662,7 +691,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Do Shadow")
                         {
-                            sr = new StreamReader(testFolder + shadowFlickerSnip);
+                            sr = new StreamReader(snippetFolder + shadowFlickerSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -672,7 +701,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Do Noise")
                         {
-                            sr = new StreamReader(testFolder + noiseModelSnip);
+                            sr = new StreamReader(snippetFolder + noiseModelSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -682,7 +711,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "MCP")
                         {
-                            sr = new StreamReader(testFolder + mcpSnip);
+                            sr = new StreamReader(snippetFolder + mcpSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -693,7 +722,7 @@ namespace GUI_Test_Creator
 
                 }
 
-                sr = new StreamReader(testFolder + endSnip);
+                sr = new StreamReader(snippetFolder + endSnip);
                 while (sr.EndOfStream == false)
                 {
                     string lineToWrite = sr.ReadLine();
@@ -1046,6 +1075,8 @@ namespace GUI_Test_Creator
             bool doNet = chkDoNetEsts.Checked;
             bool doMCP = chkDoMCP.Checked;
 
+            string folderLoc = testFolder + "\\Tests\\" + cboTestFolder.SelectedItem.ToString();
+
             int fileCount = 0;
             
             for (int i = 0; i < numCombos; i++)
@@ -1065,15 +1096,13 @@ namespace GUI_Test_Creator
 
                 if (merraOrder > metOrder || numInputs == 6)
                 {
+                    string fileName = folderLoc + "\\" + txtFileName + "_" + (fileCount + 1).ToString();
+                    StreamWriter sw = new StreamWriter(fileName);
 
                     try
                     {
-                        string fileName = testFolder + "\\" + txtFileName + "_" + (fileCount + 1).ToString();
-
-                        StreamWriter sw = new StreamWriter(fileName);
-
                         // First, write start of test
-                        StreamReader sr = new StreamReader(testFolder + startSnip);
+                        StreamReader sr = new StreamReader(snippetFolder + startSnip);
                         while (sr.EndOfStream == false)
                         {
                             string lineToWrite = sr.ReadLine();
@@ -1151,7 +1180,7 @@ namespace GUI_Test_Creator
                             }
                         }
 
-                        sr = new StreamReader(testFolder + endSnip);
+                        sr = new StreamReader(snippetFolder + endSnip);
                         while (sr.EndOfStream == false)
                         {
                             string lineToWrite = sr.ReadLine();
@@ -1161,13 +1190,55 @@ namespace GUI_Test_Creator
                         sw.Close();
                         fileCount++;
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        sw.Close();
+                        MessageBox.Show(ex.Message);
                     }
                 }
             }
             
+        }
+
+        public void WriteClassStart(StreamWriter sw, string className)
+        {
+            sw.WriteLine("using System;");
+            sw.WriteLine("using Microsoft.VisualStudio.TestTools.UnitTesting;");
+            sw.WriteLine("using ContinuumNS;");
+            sw.WriteLine("using System.Diagnostics;");
+            sw.WriteLine("using System.IO;");
+            sw.WriteLine("using System.Threading;");
+            sw.WriteLine();
+
+            sw.WriteLine("namespace Continuum_Tests.GUI_Tests");
+            sw.WriteLine("{");
+            sw.WriteLine("   [TestClass]");
+            sw.WriteLine("   public class " + className);
+            sw.WriteLine("   {");
+            sw.WriteLine("      string testingFolder;");
+            sw.WriteLine("      string saveFolder;");
+            sw.WriteLine("      string refFolder;");
+            sw.WriteLine("      Globals globals = new Globals();");
+            sw.WriteLine();
+            sw.WriteLine("      string metTSFile;");
+            sw.WriteLine("      string metName;");
+            sw.WriteLine("      string MCP_Method;");
+            sw.WriteLine("      Met thisMet;");
+            sw.WriteLine("      UTM_conversion.Lat_Long theseLL;");
+            sw.WriteLine("      int offset;");
+            sw.WriteLine("      Reference thisRef;");
+            sw.WriteLine();
+
+            // Constructor
+            sw.WriteLine("      public " + className + "()");
+            sw.WriteLine("      {");
+            sw.WriteLine("         testingFolder = globals.testFolder;");
+            sw.WriteLine("         saveFolder = globals.saveFolder;");
+            sw.WriteLine("         refFolder = globals.merraFolder;");
+            sw.WriteLine("      }");
+            sw.WriteLine();
+                       
+
         }
 
         private void BtnCombineTests_Click_1(object sender, EventArgs e)
@@ -1179,14 +1250,25 @@ namespace GUI_Test_Creator
             if (underScore != -1)
                 fileName = fileName.Substring(0, underScore);
 
-            string combinedFilename = fileName + "_Tests.txt";
+            // Ask user where to save the .cs file
+            string combinedFilename = fileName + "_Tests.cs";
+            combinedFilename = testFolder + "\\Tests\\" + cboTestFolder.SelectedItem.ToString() + "\\" + combinedFilename;
 
-            StreamWriter sw = new StreamWriter(combinedTestsFolder + "\\" + combinedFilename);
+            if (File.Exists(combinedFilename))
+                File.Delete(combinedFilename);
 
-            string[] testfiles = Directory.GetFiles(testFolder, fileName + "*");
+            StreamWriter sw = new StreamWriter(combinedFilename);
+
+            // First, write start of class
+            WriteClassStart(sw, fileName);
+
+            string[] testfiles = Directory.GetFiles(testFolder + "\\Tests\\" + cboTestFolder.SelectedItem.ToString(), fileName + "_*");
 
             foreach (string testfile in testfiles)
             {
+                if (testfile == combinedFilename)
+                    continue;
+
                 StreamReader sr = new StreamReader(testfile);
 
                 while (sr.EndOfStream == false)
@@ -1199,13 +1281,21 @@ namespace GUI_Test_Creator
                 sr.Close();
             }
 
+            sw.WriteLine("}");
+            sw.WriteLine("}");
+
             sw.Close();
 
             // Delete individual text files
             foreach (string testfile in testfiles)
             {
+                if (testfile == combinedFilename)
+                    continue;
+
                 File.Delete(testfile);
             }
+
+            UpdateListOfTests();
         }
 
         private void CboProject_SelectedIndexChanged_1(object sender, EventArgs e)
@@ -1476,7 +1566,7 @@ namespace GUI_Test_Creator
                     }
                 }
 
-                StreamReader sr = new StreamReader(testFolder + endDeleteSnip);
+                StreamReader sr = new StreamReader(snippetFolder + endDeleteSnip);
                 while (sr.EndOfStream == false)
                 {
                     string lineToWrite = sr.ReadLine();
@@ -1489,7 +1579,7 @@ namespace GUI_Test_Creator
 
         public void WriteDeleteMetSnippet(StreamWriter sw, string metName)
         {
-            StreamReader sr = new StreamReader(testFolder + deleteMet);
+            StreamReader sr = new StreamReader(snippetFolder + deleteMet);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1505,7 +1595,7 @@ namespace GUI_Test_Creator
 
         public void WriteDeleteOneTurbineSiteSnippet(StreamWriter sw, string turbineName)
         {
-            StreamReader sr = new StreamReader(testFolder + deleteTurbine);
+            StreamReader sr = new StreamReader(snippetFolder + deleteTurbine);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1526,7 +1616,7 @@ namespace GUI_Test_Creator
 
             int numCrvs = powerCurveNames.Length;
 
-            StreamReader sr = new StreamReader(testFolder + deleteCurves);
+            StreamReader sr = new StreamReader(snippetFolder + deleteCurves);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1558,7 +1648,7 @@ namespace GUI_Test_Creator
 
             int numZones = zoneNames.Length;
 
-            StreamReader sr = new StreamReader(testFolder + deleteZones);
+            StreamReader sr = new StreamReader(snippetFolder + deleteZones);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1584,7 +1674,7 @@ namespace GUI_Test_Creator
         public void WriteTestStartDelete(StreamWriter sw, string testName, string cfnName)
         {
             // Write start of test for delete test
-            StreamReader sr = new StreamReader(testFolder + startDeleteSnip);
+            StreamReader sr = new StreamReader(snippetFolder + startDeleteSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1626,7 +1716,7 @@ namespace GUI_Test_Creator
         public void WriteSaveAs(StreamWriter sw, string newFileName)
         {
             // Save file using filename
-            StreamReader sr = new StreamReader(testFolder + saveAsSnip);
+            StreamReader sr = new StreamReader(snippetFolder + saveAsSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1899,7 +1989,7 @@ namespace GUI_Test_Creator
                 StreamWriter sw = new StreamWriter(fileName);
 
                 // First, write start of test
-                StreamReader sr = new StreamReader(testFolder + startSnip);
+                StreamReader sr = new StreamReader(snippetFolder + startSnip);
                 while (sr.EndOfStream == false)
                 {
                     string lineToWrite = sr.ReadLine();
@@ -1964,7 +2054,7 @@ namespace GUI_Test_Creator
                     WriteTurbineSnippet(sw, cboTurbSitesMaps.SelectedItem.ToString(), projectName);
 
                 // Analzye mets            
-                sr = new StreamReader(testFolder + analyzeMetsSnip);
+                sr = new StreamReader(snippetFolder + analyzeMetsSnip);
                 while (sr.EndOfStream == false)
                 {
                     string lineToWrite = sr.ReadLine();
@@ -1977,7 +2067,7 @@ namespace GUI_Test_Creator
                     WritePowerCurveSnippet(sw, cboPowerCrvsMaps.SelectedItem.ToString());
                     WriteDoMonteCarlo(sw);
 
-                    sr = new StreamReader(testFolder + wakeMapSnip);
+                    sr = new StreamReader(snippetFolder + wakeMapSnip);
                     while (sr.EndOfStream == false)
                     {
                         string lineToWrite = sr.ReadLine();
@@ -1987,7 +2077,7 @@ namespace GUI_Test_Creator
                 }
                 else
                 {
-                    sr = new StreamReader(testFolder + mapLargest);
+                    sr = new StreamReader(snippetFolder + mapLargest);
                     while (sr.EndOfStream == false)
                     {
                         string lineToWrite = sr.ReadLine();
@@ -1995,7 +2085,7 @@ namespace GUI_Test_Creator
                     }
                     sr.Close();
 
-                    sr = new StreamReader(testFolder + mapTurbine);
+                    sr = new StreamReader(snippetFolder + mapTurbine);
                     while (sr.EndOfStream == false)
                     {
                         string lineToWrite = sr.ReadLine();
@@ -2005,7 +2095,7 @@ namespace GUI_Test_Creator
                 }
 
 
-                sr = new StreamReader(testFolder + endSnip);
+                sr = new StreamReader(snippetFolder + endSnip);
                 while (sr.EndOfStream == false)
                 {
                     string lineToWrite = sr.ReadLine();
@@ -2025,6 +2115,34 @@ namespace GUI_Test_Creator
         private void cboTAB_or_TS_Maps_SelectedIndexChanged(object sender, EventArgs e)
         {
            
+        }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnCreateGUI_SetupFiles_Click(object sender, EventArgs e)
+        {
+            // Using selected project input data, creates default model setup GUI tests with the following tests created and saved in 5 folders:
+            // Each folder represents a type of model that may be created in Continuum:
+            // 1) TAB file Tests: Met data imported as a WS/WD distribution in TAB file format (no filtering or MCP'ing may be done)
+            // 2) Raw TS file Tests: Met data imported as a time series.  Data is not filtered and is not MCP'd in these tests.
+            // 3) Raw LT TS file Tests: Met data imported as a time series.  Data is not filtered but is MCP'd in these tests.
+            // 4) Filtered TS file Tests: Met data imported as a time series.  Data is filtered but is not MCP'd in these tests.
+            // 5) Filtered LT TS file Tests: Met data imported as a time series.  Data is filtered and is MCP'd in these tests.
+
+            // Each folder contains 6 test class files with:
+            // 3 test class files testing the import of model inputs using 1, 2, or 3 met sites
+            // 3 tests class testing the delete of model inputs from a model with 1, 2, or 3 met sites
+
+            // Saves files in 'Continuum 3 GUI Testing folder'.  (They will need to be copied to VS project. Select them from list and click 'Copy Tests')
+
+
+
+            // Create TAB file Tests
+
+
         }
     }
 }

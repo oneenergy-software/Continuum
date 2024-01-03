@@ -15,6 +15,7 @@ namespace ContinuumNS
         UTM_conversion utmConv = new UTM_conversion();
         /// <summary> Set to true if all user inputs are ok </summary>
         public bool goodToGo = false;
+        
 
         /// <summary> Constructor.  Selects MERRA2 by default </summary>
         public AddEditReference(MetCollection metCollection, ReferenceCollection referenceList, Reference newOrEditRef = null)
@@ -32,9 +33,11 @@ namespace ContinuumNS
                 thisRef.refDataDownload = refList.refDataDownloads[refList.numRefDataDownloads - 1];
                 thisRef.SetDefaultsForReferenceType();
                 thisRef.numNodes = 1;
-                
-                thisRef.startDate = thisRef.refDataDownload.startDate;                 
-                thisRef.endDate = thisRef.refDataDownload.endDate; // Set end date to last day of month
+
+                int offset = utmConv.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
+
+                thisRef.startDate = thisRef.refDataDownload.startDate; // Make default starttime same as RefDataDownload start .AddHours(offset);                 
+                thisRef.endDate = thisRef.refDataDownload.endDate; //.AddHours(offset); // Set end date to last day of month
                 dateRefEnd.Value = thisRef.endDate;
 
                 thisRef.isUserDefined = true; // Default to user-specified lat/lon
@@ -74,8 +77,13 @@ namespace ContinuumNS
         /// <summary> Updates textboxes and dropdown lists based on selected 'Reference Data Downloads' </summary>
         public void UpdateForm()
         {
-            
-            cboNumNodes.SelectedItem = thisRef.numNodes;
+            if (thisRef.numNodes == 1)
+                cboNumNodes.SelectedIndex = 0;
+            else if (thisRef.numNodes == 4)
+                cboNumNodes.SelectedIndex = 1;
+            else if (thisRef.numNodes == 16)
+                cboNumNodes.SelectedIndex = 2;
+                        
             txtWS_ScaleFact.Text = thisRef.WS_ScaleFactor.ToString();
 
             cboTargetMet.Items.Clear();
@@ -189,7 +197,7 @@ namespace ContinuumNS
                 goodToGo = false;
                 MessageBox.Show("Requested longitude is outside the bounds of the downloaded data.");
                 return;
-            }
+            }                        
 
             int offset = utmConv.GetUTC_Offset(thisLat, thisLon);
             thisRef.Set_Interp_LatLon_Dates_Offset(thisLat, thisLon, offset, utmConv);
@@ -198,7 +206,7 @@ namespace ContinuumNS
 
             if (gotCoords == false)
                 return;
-
+            
             goodToGo = true;
             Close();
         }
@@ -234,6 +242,11 @@ namespace ContinuumNS
         {
             MessageBox.Show("Click Tools -> Download Reanalysis Data to download reference data or to link project to folder with previously-downloaded " +
                 "reference data");
+
+        }
+
+        private void txtReferenceLat_TextChanged(object sender, EventArgs e)
+        {
 
         }
     }

@@ -4187,9 +4187,11 @@ namespace ContinuumNS
             }
             else
             {
+                int stepSize = elevReso * ((numPoints - 1) / 2);
+
                 for (int i = 0; i < numPoints; i++)
                 {
-                    int relDist = -radius + i * elevReso;
+                    int relDist = -stepSize + i * elevReso;
                     elevProfile[i].UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * relDist;
                     elevProfile[i].UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * relDist;
                     elevProfile[i].elev = CalcElevs(elevProfile[i].UTMX, elevProfile[i].UTMY);
@@ -4260,19 +4262,27 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculate and return the slope along centerline of fitted plane </summary>        
-        public double CalcSlopeAlongCenterlineOfFittedPlane(double xCoeff, double yCoeff, double radius, double WD, double UTMX, double UTMY)
+        public double CalcSlopeAlongCenterlineOfFittedPlane(double[] regression, double radius, double WD, double UTMX, double UTMY, double elev, bool forceThruBase)
         {            
             // Define two points to calculate slope in between
             UTM_X_Y point1 = new TopoInfo.UTM_X_Y(); // Center point
             point1.UTMX = UTMX;
             point1.UTMY = UTMY;
-            double point1_FittedElev = xCoeff * point1.UTMX + yCoeff * point1.UTMY;
+            double point1_FittedElev = elev;
+            
+            if (forceThruBase == false)
+                point1_FittedElev = regression[0] + elev;
 
             TopoInfo.UTM_X_Y point2 = new TopoInfo.UTM_X_Y(); // Point at edge of sector
             point2.UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * radius;
             point2.UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * radius;
-            double point2_FittedElev = xCoeff * point2.UTMX + yCoeff * point2.UTMY;
+            double point2_FittedElev = 0;  
 
+            if (forceThruBase)
+                point2_FittedElev = elev + (point2.UTMX - point1.UTMX) * regression[0] + (point2.UTMY - point1.UTMY) * regression[1];
+            else
+                point2_FittedElev = regression[0] + elev + (point2.UTMX - point1.UTMX) * regression[1] + (point2.UTMY - point1.UTMY) * regression[2];
+                        
             double slopeCenter = Math.Atan2(point2_FittedElev - point1_FittedElev, radius);
             double slopeDegs = slopeCenter * 180.0 / Math.PI;
 
@@ -4281,14 +4291,20 @@ namespace ContinuumNS
 
         /// <summary> Calculates and returns the standard deviation of the elevation variations from a fitted plane </summary>
         /// <returns></returns>
-        public double CalcElevVariationInFittedPlane(double xCoeff, double yCoeff, double[][] utmXandYs, double[] actElevs)
+        public double CalcElevVariationInFittedPlane(double[] regression, double[][] utmXandYs, double[] actElevs, double elev, bool forceThruBase)
         {
             double elevVar = 0;
             double[] elevDiffs = new double[actElevs.Length];
 
             for (int i = 0; i < actElevs.Length; i++)
             {
-                double elevFitted = xCoeff * utmXandYs[i][0] + yCoeff * utmXandYs[i][1];
+                double elevFitted = 0;
+                
+                if (forceThruBase)
+                    elevFitted = regression[0] * utmXandYs[i][0] + regression[1] * utmXandYs[i][1] + elev;
+                else
+                    elevFitted = regression[0] + utmXandYs[i][0] * regression[1] + utmXandYs[i][1] * regression[2] + elev;
+                                
                 elevDiffs[i] = actElevs[i] - elevFitted;
             }
 
