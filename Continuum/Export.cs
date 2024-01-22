@@ -3762,21 +3762,21 @@ namespace ContinuumNS
             if (thisMet.metData == null)
                 return;
 
-            double alphaP1_5_to_10 = thisMet.GetAlphaPValue(5, 10, 1, thisInst, startTime, endTime);
-            double alphaP10_5_to_10 = thisMet.GetAlphaPValue(5, 10, 10, thisInst, startTime, endTime);
-            double alphaP50_5_to_10 = thisMet.GetAlphaPValue(5, 10, 50, thisInst, startTime, endTime);
+            double[] alphaP1_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 1, thisInst, startTime, endTime);
+            double[] alphaP10_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, startTime, endTime);
+            double[] alphaP50_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 50, thisInst, startTime, endTime);
 
-            double alphaP1_10_to_15 = thisMet.GetAlphaPValue(10, 15, 1, thisInst, startTime, endTime);
-            double alphaP10_10_to_15 = thisMet.GetAlphaPValue(10, 15, 10, thisInst, startTime, endTime);
-            double alphaP50_10_to_15 = thisMet.GetAlphaPValue(10, 15, 50, thisInst, startTime, endTime);
+            double[] alphaP1_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 1, thisInst, startTime, endTime);
+            double[] alphaP10_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 10, thisInst, startTime, endTime);
+            double[] alphaP50_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 50, thisInst, startTime, endTime);
 
-            double alphaP1_15plus = thisMet.GetAlphaPValue(15, 30, 1, thisInst, startTime, endTime);
-            double alphaP10_15plus = thisMet.GetAlphaPValue(15, 30, 10, thisInst, startTime, endTime);
-            double alphaP50_15plus = thisMet.GetAlphaPValue(15, 30, 50, thisInst, startTime, endTime);
+            double[] alphaP1_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 1, thisInst, startTime, endTime);
+            double[] alphaP10_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 10, thisInst, startTime, endTime);
+            double[] alphaP50_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 50, thisInst, startTime, endTime);
 
-            double alphaP1_All = thisMet.GetAlphaPValue(3, 30, 1, thisInst, startTime, endTime);
-            double alphaP10_All = thisMet.GetAlphaPValue(3, 30, 10, thisInst, startTime, endTime);
-            double alphaP50_All = thisMet.GetAlphaPValue(3, 30, 50, thisInst, startTime, endTime);
+            double[] alphaP1_All = thisMet.GetAlphaPValueAndCount(3, 30, 1, thisInst, startTime, endTime);
+            double[] alphaP10_All = thisMet.GetAlphaPValueAndCount(3, 30, 10, thisInst, startTime, endTime);
+            double[] alphaP50_All = thisMet.GetAlphaPValueAndCount(3, 30, 50, thisInst, startTime, endTime);
 
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
             {
@@ -3788,12 +3788,14 @@ namespace ContinuumNS
                 file.WriteLine(thisInst.savedParams.savedFileName);
                 file.WriteLine();
                 file.WriteLine("P Value, 5-10 m/s, 10-15 m/s, 15+ m/s, All WS > Cut-In");
-                file.WriteLine("P1, " + Math.Round(alphaP1_5_to_10, 3).ToString() + "," + Math.Round(alphaP1_10_to_15, 3).ToString() + "," +
-                    Math.Round(alphaP1_15plus, 3).ToString() + "," + Math.Round(alphaP1_All, 3).ToString());
-                file.WriteLine("P10, " + Math.Round(alphaP10_5_to_10, 3).ToString() + "," + Math.Round(alphaP10_10_to_15, 3).ToString() + "," +
-                    Math.Round(alphaP10_15plus, 3).ToString() + "," + Math.Round(alphaP10_All, 3).ToString());
-                file.WriteLine("P50, " + Math.Round(alphaP50_5_to_10, 3).ToString() + "," + Math.Round(alphaP50_10_to_15, 3).ToString() + "," +
-                    Math.Round(alphaP50_15plus, 3).ToString() + "," + Math.Round(alphaP50_All, 3).ToString());
+                file.WriteLine("P1, " + Math.Round(alphaP1_5_to_10[0], 3).ToString() + "," + Math.Round(alphaP1_10_to_15[0], 3).ToString() + "," +
+                    Math.Round(alphaP1_15plus[0], 3).ToString() + "," + Math.Round(alphaP1_All[0], 3).ToString());
+                file.WriteLine("P10, " + Math.Round(alphaP10_5_to_10[0], 3).ToString() + "," + Math.Round(alphaP10_10_to_15[0], 3).ToString() + "," +
+                    Math.Round(alphaP10_15plus[0], 3).ToString() + "," + Math.Round(alphaP10_All[0], 3).ToString());
+                file.WriteLine("P50, " + Math.Round(alphaP50_5_to_10[0], 3).ToString() + "," + Math.Round(alphaP50_10_to_15[0], 3).ToString() + "," +
+                    Math.Round(alphaP50_15plus[0], 3).ToString() + "," + Math.Round(alphaP50_All[0], 3).ToString());
+                file.WriteLine("Count, " + Math.Round(alphaP50_5_to_10[1], 0).ToString() + "," + Math.Round(alphaP50_10_to_15[1], 3).ToString() + "," +
+                    Math.Round(alphaP50_15plus[1], 3).ToString() + "," + Math.Round(alphaP50_All[1], 3).ToString());
 
                 file.Close();
             }
@@ -4014,6 +4016,40 @@ namespace ContinuumNS
                 }
 
                 sw.Close();
+            }
+        }
+
+        /// <summary> Exports histogram of shear exponents for selected met, date range, and wind speed range </summary>
+        /// <param name="thisInst"></param>
+        public void ExportShearHistogram(Continuum thisInst)
+        {
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
+
+                sw.WriteLine("Shear Exponent Histogram");
+                sw.WriteLine();
+
+                Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
+                DateTime startTime = thisInst.dateTimeExtremeShearStart.Value;
+                DateTime endTime = thisInst.dateTimeExtremeShearEnd.Value;
+
+                string rangeAlpha = thisInst.cboExtremeShearRange.SelectedItem.ToString();
+                double[] thisHisto = thisMet.GetAlphaHistogram(rangeAlpha, thisInst, startTime, endTime);
+
+                sw.WriteLine("Using met site:," + thisMet.name);
+                sw.WriteLine("From:," + startTime.ToString());
+                sw.WriteLine("To:," + startTime.ToString());
+                sw.WriteLine("Wind Speed Range:," + rangeAlpha.ToString());
+                sw.WriteLine();
+
+                sw.WriteLine("Alpha, Count");
+
+                for (int h = 0; h < thisHisto.Length; h++)
+                    sw.WriteLine(thisHisto[0] + "," + thisHisto[1]);
+
+                sw.Close();
+
             }
         }
     }

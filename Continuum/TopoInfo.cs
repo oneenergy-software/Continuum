@@ -4283,7 +4283,7 @@ namespace ContinuumNS
             else
                 point2_FittedElev = regression[0] + elev + (point2.UTMX - point1.UTMX) * regression[1] + (point2.UTMY - point1.UTMY) * regression[2];
                         
-            double slopeCenter = Math.Atan2(point2_FittedElev - point1_FittedElev, radius);
+            double slopeCenter = Math.Atan2(point1_FittedElev - point2_FittedElev, radius);
             double slopeDegs = slopeCenter * 180.0 / Math.PI;
 
             return slopeDegs;
@@ -4308,8 +4308,8 @@ namespace ContinuumNS
                 elevDiffs[i] = actElevs[i] - elevFitted;
             }
 
-            elevVar = Statistics.StandardDeviation(elevDiffs);
-
+            elevVar = Statistics.PopulationStandardDeviation(elevDiffs);
+            
             double avgDiff = Statistics.Mean(elevDiffs);
 
             return elevVar;

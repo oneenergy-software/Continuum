@@ -880,13 +880,14 @@ namespace ContinuumNS
         }
 
         /// <summary> Finds all alpha exponents for wind speeds within the specified minimum/maximum range and within specified start/end times and returns the alpha at the specified P-value  </summary>
-        public double GetAlphaPValue(double minWS, double maxWS, int pLevel, Continuum thisInst, DateTime startTime, DateTime endTime)
+        public double[] GetAlphaPValueAndCount(double minWS, double maxWS, int pLevel, Continuum thisInst, DateTime startTime, DateTime endTime)
         {            
             double alphaPVal = 0;
             int alphaCount = 0;
+            double[] alphaPValAndCount = new double[2];
 
             if (metData == null)
-                return alphaPVal;
+                return alphaPValAndCount;
 
             if (metData.anems[0].windData == null)
                 metData.GetSensorDataFromDB(thisInst, name);
@@ -918,7 +919,7 @@ namespace ContinuumNS
             alphaCount = 0;
 
             for (int i = startInd; i <= endInd; i++)
-                if (extrapData.WS_WD_data[i].WS >= minWS && extrapData.WS_WD_data[i].WS <= maxWS && extrapData.WS_WD_data[i].WS != -999)
+                if (extrapData.WS_WD_data[i].WS > minWS && extrapData.WS_WD_data[i].WS <= maxWS && extrapData.WS_WD_data[i].WS != -999)
                 {
                     alphaArray[alphaCount] = extrapData.WS_WD_data[i].alpha;
                     alphaCount++;
@@ -934,7 +935,11 @@ namespace ContinuumNS
                 alphaPVal = alphaArray[pInd];
             }
 
-            return alphaPVal;
+            
+            alphaPValAndCount[0] = alphaPVal;
+            alphaPValAndCount[1] = alphaCount;
+
+            return alphaPValAndCount;
         }
 
         /// <summary> Finds and returns maximum 10-minute or gust for each full year of data.  </summary>

@@ -1067,7 +1067,7 @@ namespace ContinuumNS
 
             thisInst.okToUpdate = true;
 
-            MetTS_CheckList();
+            
         }
 
         /// <summary> Updates table on Advanced tab that shows the met cross prediction of site-calibrated model with specified radius and WD sector. </summary>       
@@ -7561,9 +7561,10 @@ namespace ContinuumNS
       //      thisInst.dateMERRAEnd.Value = thisInst.merraList.endDate;
 
             thisInst.okToUpdate = true;
-            InputTAB();
-            MetDataTS_Tab();
+            InputTAB();            
             MetDataQC_TAB();
+            
+            MetDataTS_Tab(); // Doing this after the QC tab since it needs the extrapolated data to be generated
             MCP_TAB();
             LT_ReferenceTAB();
             Met_Turbine_Summary_TAB();
@@ -7581,6 +7582,8 @@ namespace ContinuumNS
             ExtremeWindSpeed();
             TerrainComplexityTab();
             InflowAnglePlotAndTable();
+
+            
         }
 
 
@@ -11822,6 +11825,7 @@ namespace ContinuumNS
         /// <summary> Updates extreme shear statistics on Site Conditions tab. </summary>
         public void SiteConditionsAlpha()
         {
+            // update alpha settings
             AlphaHistogram();
             ExtremeShearTable();
         }
@@ -11905,41 +11909,48 @@ namespace ContinuumNS
             DateTime startTime = thisInst.dateTimeExtremeShearStart.Value;
             DateTime endTime = thisInst.dateTimeExtremeShearEnd.Value;
 
-            double alphaP1_5_to_10 = thisMet.GetAlphaPValue(5, 10, 1, thisInst, startTime, endTime);
-            double alphaP10_5_to_10 = thisMet.GetAlphaPValue(5, 10, 10, thisInst, startTime, endTime);
-            double alphaP50_5_to_10 = thisMet.GetAlphaPValue(5, 10, 50, thisInst, startTime, endTime);
+            double[] alphaP1_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 1, thisInst, startTime, endTime);
+            double[] alphaP10_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, startTime, endTime);
+            double[] alphaP50_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 50, thisInst, startTime, endTime);
 
-            double alphaP1_10_to_15 = thisMet.GetAlphaPValue(10, 15, 1, thisInst, startTime, endTime);
-            double alphaP10_10_to_15 = thisMet.GetAlphaPValue(10, 15, 10, thisInst, startTime, endTime);
-            double alphaP50_10_to_15 = thisMet.GetAlphaPValue(10, 15, 50, thisInst, startTime, endTime);
+            double[] alphaP1_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 1, thisInst, startTime, endTime);
+            double[] alphaP10_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 10, thisInst, startTime, endTime);
+            double[] alphaP50_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 50, thisInst, startTime, endTime);
 
-            double alphaP1_15plus = thisMet.GetAlphaPValue(15, 30, 1, thisInst, startTime, endTime);
-            double alphaP10_15plus = thisMet.GetAlphaPValue(15, 30, 10, thisInst, startTime, endTime);
-            double alphaP50_15plus = thisMet.GetAlphaPValue(15, 30, 50, thisInst, startTime, endTime);
+            double[] alphaP1_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 1, thisInst, startTime, endTime);
+            double[] alphaP10_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 10, thisInst, startTime, endTime);
+            double[] alphaP50_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 50, thisInst, startTime, endTime);
 
-            double alphaP1_All = thisMet.GetAlphaPValue(3, 30, 1, thisInst, startTime, endTime);
-            double alphaP10_All = thisMet.GetAlphaPValue(3, 30, 10, thisInst, startTime, endTime);
-            double alphaP50_All = thisMet.GetAlphaPValue(3, 30, 50, thisInst, startTime, endTime);
+            double[] alphaP1_All = thisMet.GetAlphaPValueAndCount(3, 30, 1, thisInst, startTime, endTime);
+            double[] alphaP10_All = thisMet.GetAlphaPValueAndCount(3, 30, 10, thisInst, startTime, endTime);
+            double[] alphaP50_All = thisMet.GetAlphaPValueAndCount(3, 30, 50, thisInst, startTime, endTime);
 
             objListItem = new ListViewItem("P1");
-            objListItem.SubItems.Add(Math.Round(alphaP1_5_to_10, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP1_10_to_15, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP1_15plus, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP1_All, 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP1_5_to_10[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP1_10_to_15[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP1_15plus[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP1_All[0], 3).ToString());
             thisInst.lstExtremeShear.Items.Add(objListItem);
 
             objListItem = new ListViewItem("P10");
-            objListItem.SubItems.Add(Math.Round(alphaP10_5_to_10, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP10_10_to_15, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP10_15plus, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP10_All, 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP10_5_to_10[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP10_10_to_15[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP10_15plus[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP10_All[0], 3).ToString());
             thisInst.lstExtremeShear.Items.Add(objListItem);
 
             objListItem = new ListViewItem("P50");
-            objListItem.SubItems.Add(Math.Round(alphaP50_5_to_10, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP50_10_to_15, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP50_15plus, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP50_All, 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_5_to_10[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_10_to_15[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_15plus[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_All[0], 3).ToString());
+            thisInst.lstExtremeShear.Items.Add(objListItem);
+
+            objListItem = new ListViewItem("Count");
+            objListItem.SubItems.Add(Math.Round(alphaP50_5_to_10[1], 0).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_10_to_15[1], 0).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_15plus[1], 0).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_All[1], 0).ToString());
             thisInst.lstExtremeShear.Items.Add(objListItem);
         }
 
@@ -12086,7 +12097,7 @@ namespace ContinuumNS
             elevSeries.MarkerStroke = OxyColors.Blue;
 
             for (int i = 0; i < elevProfile.Length; i++)
-                elevSeries.Points.Add(new DataPoint(Math.Round((double)(i * reso), 1), Math.Round(elevProfile[i].elev, 2)));
+                elevSeries.Points.Add(new DataPoint(Math.Round((double)(i * reso), 1), Math.Round(elevProfile[elevProfile.Length - 1 - i].elev, 2)));
 
             LineSeries slopeSeries = new LineSeries();
             slopeSeries.Title = "Best-Fit Slope";
@@ -12094,7 +12105,7 @@ namespace ContinuumNS
             slopeSeries.MarkerStroke = OxyColors.Red;
             slopeSeries.LineStyle = LineStyle.Dash;
 
-            slopeSeries.Points.Add(new DataPoint(0, elevProfile[0].elev));
+            slopeSeries.Points.Add(new DataPoint(2 * radius, elevProfile[0].elev));
             slopeSeries.Points.Add(new DataPoint(radius, elevProfile[0].elev + radius * Math.Tan(Math.PI / 180.0 * slopeAndVars[0])));
 
             // Add point for turbine location
@@ -12272,7 +12283,7 @@ namespace ContinuumNS
             {
                 // Get count for this histoVal
                 int histoCount = 0;
-                double thisMinVal = complexVals[i];
+                double thisMinVal = i * histoWidth; ;
                 double thisMaxVal = thisMinVal + histoWidth;
 
                 for (int c = 0; c < complexVals.Length; c++)
@@ -12429,6 +12440,15 @@ namespace ContinuumNS
                 for (int s = 0; s < thisMet.metData.GetNumAnems(); s++)
                     thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetAnemName(thisMet.metData.anems[s], true), true);
 
+                // Shear exponent and extrapolated WS (if they exist)
+                if (thisMet.metData.GetNumSimData() > 0)
+                {
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " Shear", true);
+
+                    for (int h = 0; h < thisMet.metData.GetNumSimData(); h++)
+                        thisInst.chkTS_Params.Items.Add(thisMet.name + " Extrap WS " + thisMet.metData.simData[h].height, true);
+                }
+
                 // Vanes
                 for (int s = 0; s < thisMet.metData.GetNumVanes(); s++)
                     thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetVaneName(thisMet.metData.vanes[s], true));
@@ -12457,7 +12477,7 @@ namespace ContinuumNS
             if (thisInst.txtNumDaysTS.Text == "")            
                 MetDataTS_Dates();
 
-            if (thisInst.dataMetTS.Columns.Count == 0)
+            if (thisInst.dataMetTS.Columns.Count == 0 && thisInst.metList.ThisCount > 0)
                 MetDataTS_DataTableALL();
             else
             {
@@ -12512,8 +12532,12 @@ namespace ContinuumNS
                 return;
 
             int numMets = selMets.Length;
+            int dataInt = 10;
+            string dataIntStr = thisInst.metList.GetMetDataInterval();
+            if (dataIntStr == "60-min")
+                dataInt = 60;
 
-            for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(10))
+            for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(dataInt))
             {
                 int colInd = 1;
 
@@ -12593,7 +12617,7 @@ namespace ContinuumNS
             {
                 Met thisMet = thisInst.metList.metItem[m];
                 bool isMetChecked = thisInst.IsMetSiteSelected(thisMet.name);
-
+                 
                 for (int s = 0; s < thisMet.metData.GetNumAnems(); s++)
                 {
                     string sensName = thisMet.name + " " + thisMet.metData.GetAnemName(thisMet.metData.anems[s], true);
@@ -12631,6 +12655,24 @@ namespace ContinuumNS
 
                     colInd = colInd + 4;
                 }
+
+                for (int s = 0; s < thisMet.metData.GetNumSimData(); s++)
+                {
+                    if (s == 0 && thisInst.IsMetSensorSelected(thisMet.name + "Shear"))
+                        thisInst.dataMetTS.Columns[colInd].Visible = true;
+                    else if (thisInst.IsMetSensorSelected("Alpha") == false)
+                        thisInst.dataMetTS.Columns[colInd].Visible = false;
+
+                    string sensName = thisMet.name + " Extrap WS " + thisMet.metData.simData[s].height;
+
+                    if (thisInst.IsMetSensorSelected(sensName))
+                        thisInst.dataMetTS.Columns[colInd + 1 + s].Visible = true;
+                    else
+                        thisInst.dataMetTS.Columns[colInd + 1 + s].Visible = false;
+                }
+
+                if (thisMet.metData.GetNumSimData() > 0)
+                    colInd = colInd + 1 + thisMet.metData.GetNumSimData();
 
                 for (int s = 0; s < thisMet.metData.GetNumVanes(); s++)
                 {
@@ -13139,7 +13181,7 @@ namespace ContinuumNS
 
             // Figure out how and what kind of plots to create
             int numPlots = Convert.ToInt16(thisInst.cboNumPlots.SelectedItem.ToString());
-            bool showAnems = false;
+            bool showAnems = false;            
             bool showVanes = false;
             bool showTemps = false;
             bool showBaros = false;
@@ -13266,7 +13308,11 @@ namespace ContinuumNS
                    
                     for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
                         AddAnemDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
-                }
+
+                    if (thisMet.metData.GetNumSimData() > 0)
+                        for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                            AddExtrapWSDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
+                }                               
                                 
                 thisInst.plotTS_Anems.Visible = true;
             }
@@ -13788,6 +13834,36 @@ namespace ContinuumNS
 
                         thisInst.plotTS_Anems.Model.Series.Add(thisAnemMax);
                     }
+                }
+            }
+        }
+
+        /// <summary> Add extrapolated wind speed data to TS plot </summary>        
+        public void AddExtrapWSDataToTS_Plot(string checkedItem, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            for (int s = 0; s < thisMet.metData.GetNumSimData(); s++)
+            {
+                Met_Data_Filter.Sim_TS thisExtrapTS = thisMet.metData.simData[s];
+
+                if (checkedItem == (thisMet.name + " Extrap WS " + thisExtrapTS.height))
+                {
+                    int startInd = thisExtrapTS.GetTS_Index(startTime);
+                    int endInd = thisExtrapTS.GetTS_Index(endTime);
+                                       
+                    if (startInd < 0)
+                        startInd = 0;
+
+                    if (endInd < 0)
+                        endInd = thisExtrapTS.WS_WD_data.Length - 1;
+                                        
+                    LineSeries thisExtrapAvg = new LineSeries();
+                    thisExtrapAvg.Title = checkedItem;
+                    thisExtrapAvg.LineStyle = LineStyle.Dash;
+
+                    for (int t = startInd; t <= endInd; t++)
+                        thisExtrapAvg.Points.Add(new DataPoint(thisExtrapTS.WS_WD_data[t].timeStamp.ToOADate(), thisExtrapTS.WS_WD_data[t].WS));
+
+                    thisInst.plotTS_Anems.Model.Series.Add(thisExtrapAvg);                                       
                 }
             }
         }

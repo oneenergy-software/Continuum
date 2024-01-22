@@ -322,8 +322,9 @@ namespace ContinuumNS
                         break;
                     }
                 }
-            }                       
-                        
+            }
+
+            updateThe.MetTS_CheckList();
             modelList.ClearAllExceptImported();            
             mapList.DeleteMapsUsingDeletedMets(metNames);                      
 
@@ -888,8 +889,8 @@ namespace ContinuumNS
                         inputTurbine = check.CheckTurbName(turbineName, metList);
                     else
                     {
-                        if (showMsg == true)
-                            MessageBox.Show("Turbine CSV file not read successfully. CSV required format: Name, Latitude, Longitude");
+                 //       if (showMsg == true) // Message appears in check.NewTurbOrMet if it returns a false
+                 //           MessageBox.Show("Turbine CSV file not read successfully. CSV required format: Name, Latitude, Longitude");
                         showMsg = false;
                     }
                         
@@ -8032,6 +8033,73 @@ namespace ContinuumNS
                 return;
 
             ChangingNumWD_BinsOk("Terrain Complexity");
+        }
+
+        private void btnExportShearHisto_Click(object sender, EventArgs e)
+        {
+            // Exports histogram of shear exponents
+            export.ExportShearHistogram(this);
+        }
+
+        public void EditShearOfSelMet()
+        {
+            if (turbineList.genTimeSeries)
+            {
+                DialogResult goodToGo = MessageBox.Show("Changing the shear settings will reset the turbine estimates.  Do you want to continue?", "", MessageBoxButtons.YesNo);
+
+                if (goodToGo == DialogResult.No)
+                    return;
+                else
+                {
+                    turbineList.ClearAllWSEsts();
+                    turbineList.ClearAllGrossEsts();
+                    turbineList.ClearAllNetEsts();
+                }
+            }
+
+            if (metList.isTimeSeries && metList.isMCPd)
+            {
+                DialogResult goodToGo = MessageBox.Show("Changing the shear settings will reset the met MCP estimates.  Do you want to continue?", "", MessageBoxButtons.YesNo);
+
+                if (goodToGo == DialogResult.No)
+                    return;
+                else
+                    metList.DeleteAllTimeSeriesEsts(this);
+            }
+
+            Met selMet = GetSelectedMet("Met Data QC");
+            EditShearCalcSettings editShear = new EditShearCalcSettings(selMet);
+
+            editShear.ShowDialog();
+
+            if (editShear.goodToGo)
+            {
+
+                modelList.ClearAllExceptImported();
+                metPairList.ClearAll();
+                mapList.ClearAllWakedMaps();
+
+                // Update met shear calculation and generate met and turbine estimates
+                selMet.metData.shearSettings.shearCalcType = selMet.metData.GetShearCalcTypeFromName(editShear.cboShearCalcTypes.SelectedItem.ToString());
+                if (selMet.metData.shearSettings.shearCalcType == Met_Data_Filter.ShearCalculationTypes.bestFit)
+                {
+                    selMet.metData.shearSettings.minHeight = Convert.ToDouble(editShear.cboMinHeight.SelectedItem.ToString());
+                    selMet.metData.shearSettings.maxHeight = Convert.ToDouble(editShear.cboMaxHeight.SelectedItem.ToString());
+                }
+
+                selMet.CalcAllMeas_WSWD_Dists(this, selMet.metData.GetSimulatedTimeSeries(modeledHeight));
+                updateThe.AllTABs();
+            }
+        }
+
+        private void btnEditShearMethod_Click(object sender, EventArgs e)
+        {
+            EditShearOfSelMet();
+        }
+
+        private void btnEditShearFromSiteConds_Click(object sender, EventArgs e)
+        {
+            EditShearOfSelMet();
         }
     }
 }

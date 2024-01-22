@@ -231,6 +231,12 @@
     <Compile Include="Copernicus_LogIn.Designer.cs">
       <DependentUpon>Copernicus_LogIn.cs</DependentUpon>
     </Compile>
+    <Compile Include="EditShearCalcSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditShearCalcSettings.Designer.cs">
+      <DependentUpon>EditShearCalcSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Explaining_MERRA2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -436,6 +442,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Copernicus_LogIn.resx">
       <DependentUpon>Copernicus_LogIn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditShearCalcSettings.resx">
+      <DependentUpon>EditShearCalcSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Explaining_MERRA2.resx">
       <DependentUpon>Explaining_MERRA2.cs</DependentUpon>

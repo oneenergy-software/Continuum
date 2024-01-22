@@ -34,38 +34,42 @@ namespace ContinuumNS
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("St. Dev.");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Minimum");
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Alpha");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Extrap. WS");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
             treeNode3,
-            treeNode4});
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
-            treeNode6,
-            treeNode7,
+            treeNode4,
+            treeNode5,
+            treeNode6});
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
             treeNode8,
-            treeNode9});
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
-            treeNode11,
-            treeNode12,
+            treeNode9,
+            treeNode10,
+            treeNode11});
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
             treeNode13,
-            treeNode14});
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
-            treeNode16,
-            treeNode17,
+            treeNode14,
+            treeNode15,
+            treeNode16});
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
             treeNode18,
-            treeNode19});
+            treeNode19,
+            treeNode20,
+            treeNode21});
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -168,6 +172,13 @@ namespace ContinuumNS
             this.plotTS_Vanes = new OxyPlot.WindowsForms.PlotView();
             this.plotTS_Anems = new OxyPlot.WindowsForms.PlotView();
             this.pgeMetData = new System.Windows.Forms.TabPage();
+            this.txtShearCalcMethod = new System.Windows.Forms.TextBox();
+            this.label227 = new System.Windows.Forms.Label();
+            this.btnEditShearMethod = new System.Windows.Forms.Button();
+            this.label226 = new System.Windows.Forms.Label();
+            this.txtShearBestFitMaxHeight = new System.Windows.Forms.TextBox();
+            this.txtShearBestFitMinHeight = new System.Windows.Forms.TextBox();
+            this.label225 = new System.Windows.Forms.Label();
             this.btnResetMaxRecovDates = new System.Windows.Forms.Button();
             this.chkMaxWS_Range = new System.Windows.Forms.CheckBox();
             this.chkMaxWS_SD = new System.Windows.Forms.CheckBox();
@@ -625,6 +636,8 @@ namespace ContinuumNS
             this.pgeSiteConditions = new System.Windows.Forms.TabPage();
             this.tabSiteConditions = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.cboNumWDComplxTab = new System.Windows.Forms.ComboBox();
+            this.label224 = new System.Windows.Forms.Label();
             this.chkForceThruBase = new System.Windows.Forms.CheckBox();
             this.btnCalcTerrainComplexity = new System.Windows.Forms.Button();
             this.label161 = new System.Windows.Forms.Label();
@@ -690,6 +703,14 @@ namespace ContinuumNS
             this.cboTurbWD = new System.Windows.Forms.ComboBox();
             this.label93 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnEditShearFromSiteConds = new System.Windows.Forms.Button();
+            this.txtShearCalcTypes = new System.Windows.Forms.TextBox();
+            this.txtMaxHeight = new System.Windows.Forms.TextBox();
+            this.txtMinHeight = new System.Windows.Forms.TextBox();
+            this.label228 = new System.Windows.Forms.Label();
+            this.label229 = new System.Windows.Forms.Label();
+            this.label230 = new System.Windows.Forms.Label();
+            this.btnExportShearHisto = new System.Windows.Forms.Button();
             this.plotExtremeShear = new OxyPlot.WindowsForms.PlotView();
             this.dateTimeExtremeShearStart = new System.Windows.Forms.DateTimePicker();
             this.label202 = new System.Windows.Forms.Label();
@@ -1048,8 +1069,6 @@ namespace ContinuumNS
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
-            this.cboNumWDComplxTab = new System.Windows.Forms.ComboBox();
-            this.label224 = new System.Windows.Forms.Label();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pgeMetDataTS.SuspendLayout();
@@ -1082,7 +1101,8 @@ namespace ContinuumNS
             // 
             // tabContinuum
             // 
-            this.tabContinuum.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabContinuum.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabContinuum.CausesValidation = false;
             this.tabContinuum.Controls.Add(this.pgeInput);
@@ -1182,7 +1202,7 @@ namespace ContinuumNS
             this.cboWindOrEnergy.Items.AddRange(new object[] {
             "Wind Rose",
             "Energy Rose"});
-            this.cboWindOrEnergy.Location = new System.Drawing.Point(272, 515);
+            this.cboWindOrEnergy.Location = new System.Drawing.Point(272, 503);
             this.cboWindOrEnergy.Name = "cboWindOrEnergy";
             this.cboWindOrEnergy.Size = new System.Drawing.Size(121, 21);
             this.cboWindOrEnergy.TabIndex = 137;
@@ -1282,10 +1302,10 @@ namespace ContinuumNS
             // 
             // plotDirectionalWS_Ratios
             // 
-            this.plotDirectionalWS_Ratios.Location = new System.Drawing.Point(405, 505);
+            this.plotDirectionalWS_Ratios.Location = new System.Drawing.Point(405, 527);
             this.plotDirectionalWS_Ratios.Name = "plotDirectionalWS_Ratios";
             this.plotDirectionalWS_Ratios.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotDirectionalWS_Ratios.Size = new System.Drawing.Size(376, 327);
+            this.plotDirectionalWS_Ratios.Size = new System.Drawing.Size(376, 305);
             this.plotDirectionalWS_Ratios.TabIndex = 128;
             this.plotDirectionalWS_Ratios.Text = "plotView2";
             this.plotDirectionalWS_Ratios.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -1294,10 +1314,10 @@ namespace ContinuumNS
             // 
             // plotInputWindRose
             // 
-            this.plotInputWindRose.Location = new System.Drawing.Point(17, 505);
+            this.plotInputWindRose.Location = new System.Drawing.Point(17, 527);
             this.plotInputWindRose.Name = "plotInputWindRose";
             this.plotInputWindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotInputWindRose.Size = new System.Drawing.Size(376, 327);
+            this.plotInputWindRose.Size = new System.Drawing.Size(376, 305);
             this.plotInputWindRose.TabIndex = 127;
             this.plotInputWindRose.Text = "plotView1";
             this.plotInputWindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -1981,44 +2001,47 @@ namespace ContinuumNS
             treeNode3.Text = "Minimum";
             treeNode4.Name = "nodeAnemMax";
             treeNode4.Text = "Maximum";
-            treeNode5.Checked = true;
-            treeNode5.Name = "nodeAnems";
-            treeNode5.Text = "Anems";
-            treeNode6.Name = "nodeVaneAvg";
-            treeNode6.Text = "Average";
-            treeNode7.Name = "nodeVaneSD";
-            treeNode7.Text = "St. Dev.";
-            treeNode8.Name = "nodeVaneMax";
-            treeNode8.Text = "Minimum";
-            treeNode9.Name = "nodeVaneMax";
-            treeNode9.Text = "Maximum";
-            treeNode10.Name = "nodeVanes";
-            treeNode10.Text = "Vanes";
-            treeNode11.Name = "Node0";
-            treeNode11.Text = "Average";
-            treeNode12.Name = "Node1";
-            treeNode12.Text = "St. Dev.";
-            treeNode13.Name = "Node2";
-            treeNode13.Text = "Minimum";
-            treeNode14.Name = "Node3";
-            treeNode14.Text = "Maximum";
-            treeNode15.Name = "nodeTemps";
-            treeNode15.Text = "Temps.";
-            treeNode16.Name = "Node4";
-            treeNode16.Text = "Average";
-            treeNode17.Name = "Node5";
-            treeNode17.Text = "St. Dev.";
-            treeNode18.Name = "Node6";
-            treeNode18.Text = "Minimum";
-            treeNode19.Name = "Node7";
-            treeNode19.Text = "Maximum";
-            treeNode20.Name = "nodeBaros";
-            treeNode20.Text = "Baros.";
+            treeNode5.Name = "nodeAlpha";
+            treeNode5.Text = "Alpha";
+            treeNode6.Name = "nodeExtrapWS";
+            treeNode6.Text = "Extrap. WS";
+            treeNode7.Name = "nodeAnems";
+            treeNode7.Text = "Anems";
+            treeNode8.Name = "nodeVaneAvg";
+            treeNode8.Text = "Average";
+            treeNode9.Name = "nodeVaneSD";
+            treeNode9.Text = "St. Dev.";
+            treeNode10.Name = "nodeVaneMax";
+            treeNode10.Text = "Minimum";
+            treeNode11.Name = "nodeVaneMax";
+            treeNode11.Text = "Maximum";
+            treeNode12.Name = "nodeVanes";
+            treeNode12.Text = "Vanes";
+            treeNode13.Name = "Node0";
+            treeNode13.Text = "Average";
+            treeNode14.Name = "Node1";
+            treeNode14.Text = "St. Dev.";
+            treeNode15.Name = "Node2";
+            treeNode15.Text = "Minimum";
+            treeNode16.Name = "Node3";
+            treeNode16.Text = "Maximum";
+            treeNode17.Name = "nodeTemps";
+            treeNode17.Text = "Temps.";
+            treeNode18.Name = "Node4";
+            treeNode18.Text = "Average";
+            treeNode19.Name = "Node5";
+            treeNode19.Text = "St. Dev.";
+            treeNode20.Name = "Node6";
+            treeNode20.Text = "Minimum";
+            treeNode21.Name = "Node7";
+            treeNode21.Text = "Maximum";
+            treeNode22.Name = "nodeBaros";
+            treeNode22.Text = "Baros.";
             this.treeDataParams.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode10,
-            treeNode15,
-            treeNode20});
+            treeNode7,
+            treeNode12,
+            treeNode17,
+            treeNode22});
             this.treeDataParams.Size = new System.Drawing.Size(121, 164);
             this.treeDataParams.TabIndex = 32;
             this.treeDataParams.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterCheck);
@@ -2088,7 +2111,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 652);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(784, 185);
+            this.plotTS_Baros.Size = new System.Drawing.Size(742, 185);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2312,7 +2335,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 458);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(784, 185);
+            this.plotTS_Temp.Size = new System.Drawing.Size(742, 185);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2327,7 +2350,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 264);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(784, 185);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(742, 185);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2343,7 +2366,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(784, 185);
+            this.plotTS_Anems.Size = new System.Drawing.Size(742, 185);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -2351,6 +2374,13 @@ namespace ContinuumNS
             // 
             // pgeMetData
             // 
+            this.pgeMetData.Controls.Add(this.txtShearCalcMethod);
+            this.pgeMetData.Controls.Add(this.label227);
+            this.pgeMetData.Controls.Add(this.btnEditShearMethod);
+            this.pgeMetData.Controls.Add(this.label226);
+            this.pgeMetData.Controls.Add(this.txtShearBestFitMaxHeight);
+            this.pgeMetData.Controls.Add(this.txtShearBestFitMinHeight);
+            this.pgeMetData.Controls.Add(this.label225);
             this.pgeMetData.Controls.Add(this.btnResetMaxRecovDates);
             this.pgeMetData.Controls.Add(this.chkMaxWS_Range);
             this.pgeMetData.Controls.Add(this.chkMaxWS_SD);
@@ -2415,6 +2445,75 @@ namespace ContinuumNS
             this.pgeMetData.TabIndex = 14;
             this.pgeMetData.Text = "Met Data QC";
             this.pgeMetData.UseVisualStyleBackColor = true;
+            // 
+            // txtShearCalcMethod
+            // 
+            this.txtShearCalcMethod.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.txtShearCalcMethod.Location = new System.Drawing.Point(941, 12);
+            this.txtShearCalcMethod.Name = "txtShearCalcMethod";
+            this.txtShearCalcMethod.ReadOnly = true;
+            this.txtShearCalcMethod.Size = new System.Drawing.Size(94, 24);
+            this.txtShearCalcMethod.TabIndex = 245;
+            // 
+            // label227
+            // 
+            this.label227.AutoSize = true;
+            this.label227.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label227.Location = new System.Drawing.Point(825, 51);
+            this.label227.Name = "label227";
+            this.label227.Size = new System.Drawing.Size(38, 17);
+            this.label227.TabIndex = 244;
+            this.label227.Text = "From";
+            // 
+            // btnEditShearMethod
+            // 
+            this.btnEditShearMethod.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnEditShearMethod.Location = new System.Drawing.Point(996, 48);
+            this.btnEditShearMethod.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnEditShearMethod.Name = "btnEditShearMethod";
+            this.btnEditShearMethod.Size = new System.Drawing.Size(46, 25);
+            this.btnEditShearMethod.TabIndex = 243;
+            this.btnEditShearMethod.Text = "Edit";
+            this.btnEditShearMethod.UseVisualStyleBackColor = true;
+            this.btnEditShearMethod.Click += new System.EventHandler(this.btnEditShearMethod_Click);
+            // 
+            // label226
+            // 
+            this.label226.AutoSize = true;
+            this.label226.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label226.Location = new System.Drawing.Point(920, 51);
+            this.label226.Name = "label226";
+            this.label226.Size = new System.Drawing.Size(19, 17);
+            this.label226.TabIndex = 242;
+            this.label226.Text = "to";
+            // 
+            // txtShearBestFitMaxHeight
+            // 
+            this.txtShearBestFitMaxHeight.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.txtShearBestFitMaxHeight.Location = new System.Drawing.Point(941, 48);
+            this.txtShearBestFitMaxHeight.Name = "txtShearBestFitMaxHeight";
+            this.txtShearBestFitMaxHeight.ReadOnly = true;
+            this.txtShearBestFitMaxHeight.Size = new System.Drawing.Size(47, 24);
+            this.txtShearBestFitMaxHeight.TabIndex = 241;
+            // 
+            // txtShearBestFitMinHeight
+            // 
+            this.txtShearBestFitMinHeight.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.txtShearBestFitMinHeight.Location = new System.Drawing.Point(868, 48);
+            this.txtShearBestFitMinHeight.Name = "txtShearBestFitMinHeight";
+            this.txtShearBestFitMinHeight.ReadOnly = true;
+            this.txtShearBestFitMinHeight.Size = new System.Drawing.Size(50, 24);
+            this.txtShearBestFitMinHeight.TabIndex = 240;
+            // 
+            // label225
+            // 
+            this.label225.AutoSize = true;
+            this.label225.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label225.Location = new System.Drawing.Point(822, 19);
+            this.label225.Name = "label225";
+            this.label225.Size = new System.Drawing.Size(118, 17);
+            this.label225.TabIndex = 238;
+            this.label225.Text = "Shear Calc. Method";
             // 
             // btnResetMaxRecovDates
             // 
@@ -2764,10 +2863,10 @@ namespace ContinuumNS
             // cboMetQC_SelectedMet
             // 
             this.cboMetQC_SelectedMet.FormattingEnabled = true;
-            this.cboMetQC_SelectedMet.Location = new System.Drawing.Point(108, 38);
+            this.cboMetQC_SelectedMet.Location = new System.Drawing.Point(30, 38);
             this.cboMetQC_SelectedMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMetQC_SelectedMet.Name = "cboMetQC_SelectedMet";
-            this.cboMetQC_SelectedMet.Size = new System.Drawing.Size(192, 26);
+            this.cboMetQC_SelectedMet.Size = new System.Drawing.Size(270, 26);
             this.cboMetQC_SelectedMet.TabIndex = 206;
             this.cboMetQC_SelectedMet.SelectedIndexChanged += new System.EventHandler(this.cboMetQC_SelectedMet_SelectedIndexChanged);
             // 
@@ -2989,10 +3088,10 @@ namespace ContinuumNS
             this.columnHeader87,
             this.columnHeader114});
             this.lstAlphas.HideSelection = false;
-            this.lstAlphas.Location = new System.Drawing.Point(825, 62);
+            this.lstAlphas.Location = new System.Drawing.Point(825, 119);
             this.lstAlphas.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstAlphas.Name = "lstAlphas";
-            this.lstAlphas.Size = new System.Drawing.Size(210, 425);
+            this.lstAlphas.Size = new System.Drawing.Size(210, 368);
             this.lstAlphas.TabIndex = 12;
             this.lstAlphas.UseCompatibleStateImageBehavior = false;
             this.lstAlphas.View = System.Windows.Forms.View.Details;
@@ -3018,7 +3117,7 @@ namespace ContinuumNS
             // 
             this.label61.AutoSize = true;
             this.label61.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label61.Location = new System.Drawing.Point(827, 21);
+            this.label61.Location = new System.Drawing.Point(821, 84);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(130, 23);
             this.label61.TabIndex = 11;
@@ -3602,12 +3701,13 @@ namespace ContinuumNS
             // 
             // plotMERRA_WindRose
             // 
-            this.plotMERRA_WindRose.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.plotMERRA_WindRose.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotMERRA_WindRose.Location = new System.Drawing.Point(1290, 91);
+            this.plotMERRA_WindRose.Location = new System.Drawing.Point(1290, 123);
             this.plotMERRA_WindRose.Name = "plotMERRA_WindRose";
             this.plotMERRA_WindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMERRA_WindRose.Size = new System.Drawing.Size(323, 320);
+            this.plotMERRA_WindRose.Size = new System.Drawing.Size(323, 288);
             this.plotMERRA_WindRose.TabIndex = 226;
             this.plotMERRA_WindRose.Text = "plotView1";
             this.plotMERRA_WindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -3617,12 +3717,11 @@ namespace ContinuumNS
             // 
             // plotMERRA_Monthly
             // 
-            this.plotMERRA_Monthly.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotMERRA_Monthly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.plotMERRA_Monthly.Location = new System.Drawing.Point(1050, 421);
             this.plotMERRA_Monthly.Name = "plotMERRA_Monthly";
             this.plotMERRA_Monthly.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMERRA_Monthly.Size = new System.Drawing.Size(588, 405);
+            this.plotMERRA_Monthly.Size = new System.Drawing.Size(563, 405);
             this.plotMERRA_Monthly.TabIndex = 225;
             this.plotMERRA_Monthly.Text = "plotView1";
             this.plotMERRA_Monthly.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -3631,6 +3730,8 @@ namespace ContinuumNS
             // 
             // plotMERRA_Yearly
             // 
+            this.plotMERRA_Yearly.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.plotMERRA_Yearly.Location = new System.Drawing.Point(474, 421);
             this.plotMERRA_Yearly.Name = "plotMERRA_Yearly";
             this.plotMERRA_Yearly.PanCursor = System.Windows.Forms.Cursors.Hand;
@@ -3847,6 +3948,8 @@ namespace ContinuumNS
             // 
             // lstMERRAAnnualProd
             // 
+            this.lstMERRAAnnualProd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstMERRAAnnualProd.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader85,
             this.columnHeader116,
@@ -3881,6 +3984,8 @@ namespace ContinuumNS
             // 
             // lstMERRA_MonthlyProd
             // 
+            this.lstMERRA_MonthlyProd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstMERRA_MonthlyProd.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Month,
             this.ThisYear,
@@ -7289,6 +7394,35 @@ namespace ContinuumNS
             this.tabPage2.Text = "Terrain Complexity";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // cboNumWDComplxTab
+            // 
+            this.cboNumWDComplxTab.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboNumWDComplxTab.FormattingEnabled = true;
+            this.cboNumWDComplxTab.Items.AddRange(new object[] {
+            "1",
+            "4",
+            "8",
+            "12",
+            "16",
+            "24"});
+            this.cboNumWDComplxTab.Location = new System.Drawing.Point(479, 14);
+            this.cboNumWDComplxTab.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboNumWDComplxTab.Name = "cboNumWDComplxTab";
+            this.cboNumWDComplxTab.Size = new System.Drawing.Size(48, 26);
+            this.cboNumWDComplxTab.TabIndex = 303;
+            this.cboNumWDComplxTab.Text = "16";
+            this.cboNumWDComplxTab.SelectedIndexChanged += new System.EventHandler(this.cboNumWDComplxTab_SelectedIndexChanged);
+            // 
+            // label224
+            // 
+            this.label224.AutoSize = true;
+            this.label224.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label224.Location = new System.Drawing.Point(371, 17);
+            this.label224.Name = "label224";
+            this.label224.Size = new System.Drawing.Size(103, 18);
+            this.label224.TabIndex = 302;
+            this.label224.Text = "Num. WD bins :";
+            // 
             // chkForceThruBase
             // 
             this.chkForceThruBase.AutoSize = true;
@@ -7991,6 +8125,14 @@ namespace ContinuumNS
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.btnEditShearFromSiteConds);
+            this.tabPage3.Controls.Add(this.txtShearCalcTypes);
+            this.tabPage3.Controls.Add(this.txtMaxHeight);
+            this.tabPage3.Controls.Add(this.txtMinHeight);
+            this.tabPage3.Controls.Add(this.label228);
+            this.tabPage3.Controls.Add(this.label229);
+            this.tabPage3.Controls.Add(this.label230);
+            this.tabPage3.Controls.Add(this.btnExportShearHisto);
             this.tabPage3.Controls.Add(this.plotExtremeShear);
             this.tabPage3.Controls.Add(this.dateTimeExtremeShearStart);
             this.tabPage3.Controls.Add(this.label202);
@@ -8011,6 +8153,88 @@ namespace ContinuumNS
             this.tabPage3.Text = "Extreme Shear";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // btnEditShearFromSiteConds
+            // 
+            this.btnEditShearFromSiteConds.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnEditShearFromSiteConds.Location = new System.Drawing.Point(405, 178);
+            this.btnEditShearFromSiteConds.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnEditShearFromSiteConds.Name = "btnEditShearFromSiteConds";
+            this.btnEditShearFromSiteConds.Size = new System.Drawing.Size(46, 25);
+            this.btnEditShearFromSiteConds.TabIndex = 301;
+            this.btnEditShearFromSiteConds.Text = "Edit";
+            this.btnEditShearFromSiteConds.UseVisualStyleBackColor = true;
+            this.btnEditShearFromSiteConds.Click += new System.EventHandler(this.btnEditShearFromSiteConds_Click);
+            // 
+            // txtShearCalcTypes
+            // 
+            this.txtShearCalcTypes.Location = new System.Drawing.Point(63, 178);
+            this.txtShearCalcTypes.Name = "txtShearCalcTypes";
+            this.txtShearCalcTypes.ReadOnly = true;
+            this.txtShearCalcTypes.Size = new System.Drawing.Size(327, 25);
+            this.txtShearCalcTypes.TabIndex = 300;
+            // 
+            // txtMaxHeight
+            // 
+            this.txtMaxHeight.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMaxHeight.Location = new System.Drawing.Point(337, 215);
+            this.txtMaxHeight.Name = "txtMaxHeight";
+            this.txtMaxHeight.ReadOnly = true;
+            this.txtMaxHeight.Size = new System.Drawing.Size(53, 23);
+            this.txtMaxHeight.TabIndex = 299;
+            // 
+            // txtMinHeight
+            // 
+            this.txtMinHeight.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMinHeight.Location = new System.Drawing.Point(161, 215);
+            this.txtMinHeight.Name = "txtMinHeight";
+            this.txtMinHeight.ReadOnly = true;
+            this.txtMinHeight.Size = new System.Drawing.Size(53, 23);
+            this.txtMinHeight.TabIndex = 298;
+            // 
+            // label228
+            // 
+            this.label228.AutoSize = true;
+            this.label228.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label228.Location = new System.Drawing.Point(227, 218);
+            this.label228.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label228.Name = "label228";
+            this.label228.Size = new System.Drawing.Size(105, 17);
+            this.label228.TabIndex = 297;
+            this.label228.Text = "Max Height [m]:";
+            // 
+            // label229
+            // 
+            this.label229.AutoSize = true;
+            this.label229.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label229.Location = new System.Drawing.Point(61, 218);
+            this.label229.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label229.Name = "label229";
+            this.label229.Size = new System.Drawing.Size(102, 17);
+            this.label229.TabIndex = 296;
+            this.label229.Text = "Min Height [m]:";
+            // 
+            // label230
+            // 
+            this.label230.AutoSize = true;
+            this.label230.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label230.Location = new System.Drawing.Point(63, 156);
+            this.label230.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label230.Name = "label230";
+            this.label230.Size = new System.Drawing.Size(150, 16);
+            this.label230.TabIndex = 295;
+            this.label230.Text = "Shear Calculation Type:";
+            // 
+            // btnExportShearHisto
+            // 
+            this.btnExportShearHisto.Location = new System.Drawing.Point(301, 640);
+            this.btnExportShearHisto.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnExportShearHisto.Name = "btnExportShearHisto";
+            this.btnExportShearHisto.Size = new System.Drawing.Size(101, 66);
+            this.btnExportShearHisto.TabIndex = 293;
+            this.btnExportShearHisto.Text = "Export Shear Histogram";
+            this.btnExportShearHisto.UseVisualStyleBackColor = true;
+            this.btnExportShearHisto.Click += new System.EventHandler(this.btnExportShearHisto_Click);
+            // 
             // plotExtremeShear
             // 
             this.plotExtremeShear.Location = new System.Drawing.Point(513, 74);
@@ -8027,7 +8251,7 @@ namespace ContinuumNS
             // 
             this.dateTimeExtremeShearStart.CustomFormat = "MM/dd/yy";
             this.dateTimeExtremeShearStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimeExtremeShearStart.Location = new System.Drawing.Point(192, 207);
+            this.dateTimeExtremeShearStart.Location = new System.Drawing.Point(192, 323);
             this.dateTimeExtremeShearStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTimeExtremeShearStart.Name = "dateTimeExtremeShearStart";
             this.dateTimeExtremeShearStart.Size = new System.Drawing.Size(76, 25);
@@ -8038,7 +8262,7 @@ namespace ContinuumNS
             // 
             this.label202.AutoSize = true;
             this.label202.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label202.Location = new System.Drawing.Point(148, 247);
+            this.label202.Location = new System.Drawing.Point(148, 363);
             this.label202.Name = "label202";
             this.label202.Size = new System.Drawing.Size(34, 19);
             this.label202.TabIndex = 290;
@@ -8048,7 +8272,7 @@ namespace ContinuumNS
             // 
             this.label203.AutoSize = true;
             this.label203.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label203.Location = new System.Drawing.Point(134, 210);
+            this.label203.Location = new System.Drawing.Point(134, 326);
             this.label203.Name = "label203";
             this.label203.Size = new System.Drawing.Size(51, 19);
             this.label203.TabIndex = 289;
@@ -8058,7 +8282,7 @@ namespace ContinuumNS
             // 
             this.dateTimeExtremeShearEnd.CustomFormat = "MM/dd/yy";
             this.dateTimeExtremeShearEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimeExtremeShearEnd.Location = new System.Drawing.Point(192, 244);
+            this.dateTimeExtremeShearEnd.Location = new System.Drawing.Point(192, 360);
             this.dateTimeExtremeShearEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTimeExtremeShearEnd.Name = "dateTimeExtremeShearEnd";
             this.dateTimeExtremeShearEnd.Size = new System.Drawing.Size(76, 25);
@@ -8069,7 +8293,7 @@ namespace ContinuumNS
             // 
             this.label201.AutoSize = true;
             this.label201.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label201.Location = new System.Drawing.Point(42, 296);
+            this.label201.Location = new System.Drawing.Point(42, 412);
             this.label201.Name = "label201";
             this.label201.Size = new System.Drawing.Size(175, 19);
             this.label201.TabIndex = 287;
@@ -8078,7 +8302,7 @@ namespace ContinuumNS
             // label190
             // 
             this.label190.AutoSize = true;
-            this.label190.Location = new System.Drawing.Point(56, 164);
+            this.label190.Location = new System.Drawing.Point(56, 280);
             this.label190.Name = "label190";
             this.label190.Size = new System.Drawing.Size(135, 19);
             this.label190.TabIndex = 286;
@@ -8092,7 +8316,7 @@ namespace ContinuumNS
             "10 - 15 m/s",
             "15+ m/s",
             "All > Cut-In"});
-            this.cboExtremeShearRange.Location = new System.Drawing.Point(197, 160);
+            this.cboExtremeShearRange.Location = new System.Drawing.Point(197, 276);
             this.cboExtremeShearRange.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeShearRange.Name = "cboExtremeShearRange";
             this.cboExtremeShearRange.Size = new System.Drawing.Size(132, 26);
@@ -8114,13 +8338,13 @@ namespace ContinuumNS
             this.cboExtremeShearMet.Location = new System.Drawing.Point(60, 109);
             this.cboExtremeShearMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeShearMet.Name = "cboExtremeShearMet";
-            this.cboExtremeShearMet.Size = new System.Drawing.Size(269, 26);
+            this.cboExtremeShearMet.Size = new System.Drawing.Size(320, 26);
             this.cboExtremeShearMet.TabIndex = 283;
             this.cboExtremeShearMet.SelectedIndexChanged += new System.EventHandler(this.cboExtremeShearMet_SelectedIndexChanged);
             // 
             // btnExportShearStats
             // 
-            this.btnExportShearStats.Location = new System.Drawing.Point(279, 504);
+            this.btnExportShearStats.Location = new System.Drawing.Point(178, 640);
             this.btnExportShearStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportShearStats.Name = "btnExportShearStats";
             this.btnExportShearStats.Size = new System.Drawing.Size(101, 66);
@@ -8140,7 +8364,7 @@ namespace ContinuumNS
             this.lstExtremeShear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstExtremeShear.GridLines = true;
             this.lstExtremeShear.HideSelection = false;
-            this.lstExtremeShear.Location = new System.Drawing.Point(46, 331);
+            this.lstExtremeShear.Location = new System.Drawing.Point(46, 447);
             this.lstExtremeShear.Margin = new System.Windows.Forms.Padding(2);
             this.lstExtremeShear.Name = "lstExtremeShear";
             this.lstExtremeShear.Size = new System.Drawing.Size(334, 142);
@@ -11506,35 +11730,6 @@ namespace ContinuumNS
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
-            // cboNumWDComplxTab
-            // 
-            this.cboNumWDComplxTab.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboNumWDComplxTab.FormattingEnabled = true;
-            this.cboNumWDComplxTab.Items.AddRange(new object[] {
-            "1",
-            "4",
-            "8",
-            "12",
-            "16",
-            "24"});
-            this.cboNumWDComplxTab.Location = new System.Drawing.Point(479, 14);
-            this.cboNumWDComplxTab.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboNumWDComplxTab.Name = "cboNumWDComplxTab";
-            this.cboNumWDComplxTab.Size = new System.Drawing.Size(48, 26);
-            this.cboNumWDComplxTab.TabIndex = 303;
-            this.cboNumWDComplxTab.Text = "16";
-            this.cboNumWDComplxTab.SelectedIndexChanged += new System.EventHandler(this.cboNumWDComplxTab_SelectedIndexChanged);
-            // 
-            // label224
-            // 
-            this.label224.AutoSize = true;
-            this.label224.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label224.Location = new System.Drawing.Point(371, 17);
-            this.label224.Name = "label224";
-            this.label224.Size = new System.Drawing.Size(103, 18);
-            this.label224.TabIndex = 302;
-            this.label224.Text = "Num. WD bins :";
-            // 
             // Continuum
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -12586,6 +12781,21 @@ namespace ContinuumNS
         private Label label223;
         public ComboBox cboNumWDComplxTab;
         private Label label224;
+        private Button btnExportShearHisto;
+        private Label label225;
+        private TextBox txtShearBestFitMinHeight;
+        private TextBox txtShearBestFitMaxHeight;
+        private Label label226;
+        private Label label227;
+        private Button btnEditShearMethod;
+        private TextBox txtShearCalcMethod;
+        private Button btnEditShearFromSiteConds;
+        private TextBox txtShearCalcTypes;
+        private TextBox txtMaxHeight;
+        private TextBox txtMinHeight;
+        private Label label228;
+        private Label label229;
+        private Label label230;
     }
 }
 

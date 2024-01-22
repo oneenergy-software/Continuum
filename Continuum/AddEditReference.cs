@@ -232,9 +232,9 @@ namespace ContinuumNS
         }               
 
         private void cboRefDataDownloads_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
+        {            
+            thisRef.refDataDownload = refList.GetRefDataDownloadByName(cboRefDataDownloads.SelectedItem.ToString());
             UpdateLT_RefNodesAndCompleteness();
-            thisRef.refDataDownload = refList.GetRefDataDownloadByName(cboRefDataDownloads.SelectedItem.ToString());            
             UpdateForm();
         }                
 

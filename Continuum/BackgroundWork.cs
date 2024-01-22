@@ -4465,6 +4465,7 @@ namespace ContinuumNS
         {
             Vars_for_MetTS_Import theArgs = (Vars_for_MetTS_Import)e.Argument;
             Continuum thisInst = theArgs.thisInst;
+            thisInst.updateThe.MetTS_CheckList();
 
             DataGridView metTable = new DataGridView();
             
@@ -4505,8 +4506,19 @@ namespace ContinuumNS
                     AddColToList(ref cols, "colTS_ParamSD" + (s + 1).ToString(), selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " SD");
                     AddColToList(ref cols, "colTS_ParamMin" + (s + 1).ToString(), selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " Min");
                     AddColToList(ref cols, "colTS_ParamMax" + (s + 1).ToString(), selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " Max");
+                                        
                     totalNumSens = totalNumSens + 4;
                 }
+
+                if (selMets[m].metData.GetNumSimData() > 0)
+                {
+                    AddColToList(ref cols, "colTS_Alpha", "Alpha");
+
+                    for (int s = 0; s < selMets[m].metData.GetNumSimData(); s++)
+                        AddColToList(ref cols, "colTS_Extrap" + (s + 1).ToString(), "Extrap WS @ " + selMets[m].metData.simData[s].height);
+
+                    totalNumSens = totalNumSens + 1 + selMets[m].metData.GetNumSimData();
+                }                
 
                 for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
                 {
@@ -4563,7 +4575,8 @@ namespace ContinuumNS
                 DataGridViewRow strDataForTableRow = new DataGridViewRow();
                 strDataForTableRow.CreateCells(metTable);
 
-                double[] dataForTableRow = new double[totalNumSens + 1]; // Plus one for timestamp  // reset array
+                double[] dataForTableRow = new double[totalNumSens + 1]; // Plus one for timestamp  // reset array                               
+
                 dataForTableRow[0] = thisTS.ToOADate();
 
                 for (int m = 0; m < numMets; m++)
@@ -4581,9 +4594,23 @@ namespace ContinuumNS
                             dataForTableRow[colInd + 1] = selMets[m].metData.anems[s].windData[tsIndex].SD;
                             dataForTableRow[colInd + 2] = selMets[m].metData.anems[s].windData[tsIndex].min;
                             dataForTableRow[colInd + 3] = selMets[m].metData.anems[s].windData[tsIndex].max;
-                        }
+                        }                        
 
                         colInd = colInd + 4;
+                    }
+
+                    if (selMets[m].metData.GetNumSimData() > 0)
+                    {
+                        int tsIndex = selMets[m].metData.simData[0].GetTS_Index(thisTS);
+                        if (tsIndex != -999)
+                        {
+                            dataForTableRow[colInd + 4] = Math.Round(selMets[m].metData.simData[0].WS_WD_data[tsIndex].alpha, 3);
+
+                            for (int h = 0; h < selMets[m].metData.GetNumSimData(); h++)
+                                dataForTableRow[colInd + 5 + h] = Math.Round(selMets[m].metData.simData[h].WS_WD_data[tsIndex].WS, 3);
+                        }
+
+                        colInd = colInd + 1 + selMets[m].metData.GetNumSimData();
                     }
 
                     for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)

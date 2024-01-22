@@ -31,6 +31,8 @@ namespace ContinuumNS
         public bool filteringDone = false;
         /// <summary>   Wind speed units, mph (miles/hour) or mps (meters/sec). </summary>
         public string WS_units;
+        /// <summary> Shear calculation type and min/max height (if using best-fit calc) </summary>
+        public ShearSettings shearSettings = new ShearSettings();
         /// <summary>   All calculated shear alpha exponents and wind direction data from vane closest to hub height. Used to generate alpha table and plot, not used for extrapolating </summary>
         public Est_Alpha[] alpha = new Est_Alpha[0];                
         /// <summary> Shear Power law alpha datasets with WS and WD. One is created for each anem height. Used to extrapolate data. </summary>
@@ -462,7 +464,7 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary> Holds anemometer height and time series of shear alpha, wind speed and wind direction data </summary>        
+        /// <summary> Holds anemometer height and time series of shear alpha, wind speed and wind direction data </summary>   
         [Serializable()]
         public struct Shear_Data
         {            
@@ -480,6 +482,82 @@ namespace ContinuumNS
             public double height;
             /// <summary>   Estimated wind speed and wind direction time series data. </summary>
             public Est_Data[] WS_WD_data;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime targetDate)
+            {
+                int indMid = WS_WD_data.Length / 2;
+                DateTime dateTime1 = WS_WD_data[indMid].timeStamp;
+                DateTime dateTime2 = WS_WD_data[indMid - 1].timeStamp;
+                double timeSpan = dateTime1.Subtract(dateTime2).TotalMinutes;
+
+                int dataIntMins = Convert.ToInt32(Math.Round(WS_WD_data[indMid].timeStamp.Subtract(WS_WD_data[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                if (dataIntMins == 0)
+                    dataIntMins = dataIntMins;
+
+                if (dataIntMins == 0)
+                    return -999;
+
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(WS_WD_data[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= WS_WD_data.Length)
+                    tsInd = WS_WD_data.Length - 1;
+
+                DateTime thisDate = WS_WD_data[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)
+                        tsInd = tsInd - stepSize;
+                    else
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= WS_WD_data.Length)
+                    {
+                        tsInd = WS_WD_data.Length - 1;
+                        break;
+                    }
+
+                    thisDate = WS_WD_data[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }
+
+                while (WS_WD_data[tsInd].timeStamp < targetDate && tsInd < WS_WD_data.Length - 1)
+                    tsInd++;
+
+                while (WS_WD_data[tsInd].timeStamp > targetDate && tsInd > 0)
+                    tsInd--;
+
+                if (WS_WD_data[tsInd].timeStamp != targetDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }              
                 
         /// <summary> Holds the concurrent wind speed data collected by two anemomters. </summary>        
@@ -523,6 +601,14 @@ namespace ContinuumNS
             /// <summary>   Max 3-sec gust. </summary>
             public double maxGust;
         }
+
+        /// <summary> Settings to specify how to calculate shear exponent, alpha </summary>
+        public struct ShearSettings
+        {
+            public ShearCalculationTypes shearCalcType;
+            public double minHeight; // If using best-fit calc
+            public double maxHeight; // If using best-fit
+        }
                 
         /// <summary> Filter_Flags Used to define the different QC filtering flags. </summary>
         
@@ -550,6 +636,15 @@ namespace ContinuumNS
             minWS = 7
             
         }   
+
+        /// <summary> Method used to estimate shear exponent, alpha </summary>
+        public enum ShearCalculationTypes
+        {
+            /// <summary> Average of all alphas calculated between each wind speed measurement height </summary>
+            avgAllPairs,
+            /// <summary> Best-fit alpha using wind speeds between specified min and max measurement heights </summary>
+            bestFit
+        }
 
         /// <summary> Returns Color for Background of Met data tab </summary>        
         public System.Drawing.Color GetColorForBackground(System.Windows.Media.Color thisColor)
@@ -2150,10 +2245,11 @@ namespace ContinuumNS
             SortSimDataByH();
         }
         
-        /// <summary> Estimates time series of alpha (power law shear exponent). Using average of filtered wind speeds at each height, 
-        /// calculates shear between each pair of heights and finds overall average shear exponent. </summary>
+        /// <summary> Estimates time series of alpha (power law shear exponent). Using either 1) Calc shear between each pair of heights and find overall average shear exponent 
+        /// or 2) Calc best-fit shear between specified min/max heights. </summary>
         public void EstimateAlpha()
         {
+            
             // find heights of anemometers
             double[] anemHeights = GetHeightsOfAnems();
             int numHeights = anemHeights.Length;
@@ -2184,16 +2280,21 @@ namespace ContinuumNS
             {
                 alphaByAnem[m].WS_WD_Alpha = new Est_Data[endInd - startInd + 1];
                 alphaByAnem[m].anemHeight = anemHeights[m];
-            }                
+            }
+
+            double thisAlpha = 0;
 
             while (thisInd < GetDataLength() && anems[0].windData[thisInd].timeStamp <= endDate)
             {
                 // get average WS by height
                 double[] avgWS_ByH = GetAvgValidByHeight(thisInd, "avg");
-                double[] avgSD_ByH = GetAvgValidByHeight(thisInd, "SD");                               
+                double[] avgSD_ByH = GetAvgValidByHeight(thisInd, "SD");
 
                 // get average alpha
-                double thisAlpha = GetAvgAlphaFromValidWS(avgWS_ByH, anemHeights);                               
+                if (shearSettings.shearCalcType == ShearCalculationTypes.avgAllPairs)
+                    thisAlpha = GetAvgAlphaFromValidWS(avgWS_ByH, anemHeights);
+                else
+                    thisAlpha = CalcBestFitAlpha(avgWS_ByH, anemHeights);
 
                 alpha[thisInd - startInd].timeStamp = anems[0].windData[thisInd].timeStamp;
                 alpha[thisInd - startInd].alpha = thisAlpha;                              
@@ -2250,6 +2351,41 @@ namespace ContinuumNS
                 avgAlpha = -999;
 
             return avgAlpha;
+        }
+
+        /// <summary> Calculates and returns best-fit shear alpha measured between min/max height  </summary>
+        
+        public double CalcBestFitAlpha(double[] avgWS_ByH, double[] wsHeights)
+        {
+            double bestAlpha = 0;
+
+            // Get log of WS between specified heights
+            int numHeights = wsHeights.Length;
+            int minInd = 0;
+            int maxInd = 0;
+
+            for (int h = 0; h < numHeights; h++)
+            {
+                if (wsHeights[h] == shearSettings.minHeight)
+                    minInd = h;
+                if (wsHeights[h] == shearSettings.maxHeight)
+                    maxInd = h;
+            }
+
+            int numH_ToIncl = maxInd - minInd + 1;
+            double[] logH = new double[numH_ToIncl];
+            double[] logWS = new double[numH_ToIncl];
+
+            for (int h = minInd; h <= maxInd; h++)
+            {
+                logH[h] = Math.Log10(wsHeights[h]);
+                logWS[h] = Math.Log10(avgWS_ByH[h]);
+            }
+
+            Tuple<double,double> bestAlphaTuple = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(logWS, logH);
+            bestAlpha = bestAlphaTuple.Item2;
+
+            return bestAlpha;
         }
        
         /// <summary> Calculates and returns average valid wind speed or standard deviation at each wind speed measurement height at specified time series index. </summary>       
@@ -2917,6 +3053,31 @@ namespace ContinuumNS
                 boomOrient = "nnw";
             
             return boomOrient;
+        }
+
+        /// <summary> Returns string to display for specified shear calculation type </summary>        
+        public string GetShearCalcNameFromEnum(ShearCalculationTypes shearType)
+        {
+            string shearCalcName = "";
+
+            if (shearType == ShearCalculationTypes.avgAllPairs)
+                shearCalcName = "Avg Alpha over all pairs";
+            else if (shearType == ShearCalculationTypes.bestFit)
+                shearCalcName = "Best-Fit Alpha";
+
+            return shearCalcName;
+        }
+
+        public ShearCalculationTypes GetShearCalcTypeFromName(string shearCalcName)
+        {
+            ShearCalculationTypes thisShearType = new ShearCalculationTypes();
+
+            if (shearCalcName == GetShearCalcNameFromEnum(ShearCalculationTypes.avgAllPairs))
+                thisShearType = ShearCalculationTypes.avgAllPairs;
+            else if (shearCalcName == GetShearCalcNameFromEnum(ShearCalculationTypes.bestFit))
+                thisShearType = ShearCalculationTypes.bestFit;
+
+            return thisShearType;
         }
     }
          

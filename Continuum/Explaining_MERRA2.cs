@@ -26,5 +26,20 @@ namespace ContinuumNS
         {
 
         }
+
+        private void Explaining_MERRA2_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

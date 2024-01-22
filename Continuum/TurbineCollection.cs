@@ -721,6 +721,7 @@ namespace ContinuumNS
             else {
                 turbineEsts = null;
                 turbineCalcsDone = false;
+                expoCalcsDone = false;
             }
 
         }

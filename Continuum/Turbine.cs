@@ -1768,9 +1768,10 @@ namespace ContinuumNS
 
             for (int i = 0; i < thisInst.metList.numWS; i++)
             {
+                double thisWS = thisInst.metList.WS_FirstInt - thisInst.metList.WS_IntSize / 2 + i * thisInst.metList.WS_IntSize;
                 if (WD_Ind != thisInst.metList.numWD) // get TI for specfic WD
                 {
-                    if (i >= powerCurve.cutInWS && i <= powerCurve.cutOutWS)
+                    if (thisWS >= powerCurve.cutInWS && thisWS <= powerCurve.cutOutWS)
                     {
                         double sumWeightedWakeProb = 0;
                         double sumWakeProb = 0;
@@ -1806,7 +1807,7 @@ namespace ContinuumNS
                 {                    
                     int sumCount = 0;
 
-                    if (i > powerCurve.cutInWS && i < powerCurve.cutOutWS)
+                    if (thisWS >= powerCurve.cutInWS && thisWS <= powerCurve.cutOutWS)
                     { 
                         for (int WD = 0; WD < thisInst.metList.numWD; WD++)
                         {

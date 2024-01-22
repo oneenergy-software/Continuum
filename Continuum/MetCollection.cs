@@ -560,6 +560,10 @@ namespace ContinuumNS
                 for (int i = 0; i < ThisCount; i++)
                 {
                     Met.WSWD_Dist thisDist = metItem[i].GetWS_WD_Dist(thisHeight, thisTOD, thisSeason);
+
+                    if (thisDist.energyRose == null)
+                        break;
+
                     for (int j = 0; j < thisNumWD; j++)
                         avgWindRose[j] = avgWindRose[j] + thisDist.energyRose[j];
                 }
@@ -1029,7 +1033,7 @@ namespace ContinuumNS
         {            
             Met thisMet = new Met();
             
-            if (metName == "" || metName == "User-defined" || metName == "User-defined lat/long") return thisMet;
+            if (metName == "" || metName == "User-defined" || metName == "User-defined lat/long" || metItem == null) return thisMet;
                         
             for (int i = 0; i < metItem.Length; i++)
             {

@@ -399,5 +399,54 @@ namespace Continuum_Tests
             thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, false);
             Assert.AreEqual(thisSlope, 2.024868297, 0.0001);
         }
+
+        [TestMethod]
+        public void CalcElevVariationInFittedPlane()
+        {
+            string terrComplFolder = testingFolder + "\\Terrain Complexity";
+
+            int numDataPoints = 104;
+            double[][] utmXandYs = new double[numDataPoints][];
+            double[] elevData = new double[numDataPoints];
+
+            StreamReader sr = new StreamReader(terrComplFolder + "\\UTM X and Y vals.csv");
+            int valInd = 0;
+
+            while (sr.EndOfStream == false)
+            {
+                string[] utmData = sr.ReadLine().Split(',');
+                utmXandYs[valInd] = new double[2];
+                utmXandYs[valInd][0] = Convert.ToDouble(utmData[0]);
+                utmXandYs[valInd][1] = Convert.ToDouble(utmData[1]);
+                valInd++;
+            }
+
+            sr.Close();
+
+            sr = new StreamReader(terrComplFolder + "\\Elev vals.csv");
+            valInd = 0;
+
+            while (sr.EndOfStream == false)
+            {
+                string elevDataStr = sr.ReadLine();
+                elevData[valInd] = Convert.ToDouble(elevDataStr);
+                
+                valInd++;
+            }
+
+            sr.Close();
+
+            double[] regression = new double[2];
+            regression[0] = 0.001943942;
+            regression[1] = -0.057339727;
+            double poiElev = 802.151;
+
+            TopoInfo topo = new TopoInfo();
+            double elevVar = topo.CalcElevVariationInFittedPlane(regression, utmXandYs, elevData, poiElev, true);
+
+            Assert.AreEqual(elevVar, 1.37338277, 0.0001);
+
+        }
+
     }
 }
