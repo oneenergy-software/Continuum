@@ -13,6 +13,7 @@ using System.Net;
 using Microsoft.VisualBasic;
 using System.Windows.Media.Media3D;
 using System.Runtime.CompilerServices;
+using static ContinuumNS.MetPairCollection;
 
 namespace ContinuumNS
 {
@@ -1610,20 +1611,22 @@ namespace ContinuumNS
         /// <summary> Finds and returns maximum hourly wind speed for each year of long-term data (used in extreme WS calcs). </summary>        
         public Met.MaxYearlyWind[] GetMaxHourlyWindSpeeds()
         {
-            int refLength = interpData.TS_Data.Length;
-            int firstYear = interpData.TS_Data[0].thisDate.Year;
-            int lastYear = interpData.TS_Data[refLength - 1].thisDate.Year;
+            int startInd = 0; 
+            int endInd = interpData.TS_Data.Length - 1;
+                                    
+            int firstYear = interpData.TS_Data[startInd].thisDate.Year;
+            int lastYear = interpData.TS_Data[endInd].thisDate.Year;
             int numYears = lastYear - firstYear + 1;
             Met.MaxYearlyWind[] maxHourlyRef = new Met.MaxYearlyWind[numYears];
 
             double thisMax = 0;
             lastYear = firstYear;
             int yearInd = 0;
-            int thisYear = 0;
-
-            for (int i = 0; i < refLength; i++)
+            
+            for (int i = startInd; i <= endInd; i++)
             {
-                thisYear = interpData.TS_Data[i].thisDate.Year;
+                int thisYear = interpData.TS_Data[i].thisDate.Year;
+
                 if (thisYear == lastYear)
                 {
                     if (interpData.TS_Data[i].WS > thisMax)
@@ -1639,12 +1642,38 @@ namespace ContinuumNS
                 }
             }
 
-            if (yearInd < numYears && interpData.TS_Data[refLength - 1].thisDate.Month == 12 && interpData.TS_Data[refLength - 1].thisDate.Day == 31)
+            if (yearInd < numYears)
             {
                 maxHourlyRef[yearInd].maxWS = thisMax;
                 maxHourlyRef[yearInd].thisYear = lastYear;
             }
 
+            return maxHourlyRef;
+        }
+
+        /// <summary> Finds and returns maximum wind speed between specified start and end timestamps </summary>        
+        public Met.MaxYearlyWind GetMaxHourlyWSBetweenStartAndEnd(DateTime startTime, DateTime endTime)
+        {
+            Met.MaxYearlyWind maxHourlyRef = new Met.MaxYearlyWind();
+            maxHourlyRef.thisYear = startTime.Year;
+            maxHourlyRef.startTime = startTime;
+            maxHourlyRef.endTime = endTime;
+
+            double maxHourlyWS = 0;
+
+            int startInd = 0;
+            while (interpData.TS_Data[startInd].thisDate < startTime && startInd < interpData.TS_Data.Length - 1)
+                startInd++;
+
+            int endInd = interpData.TS_Data.Length - 1;
+            while (interpData.TS_Data[endInd].thisDate > endTime && endInd > 0)
+                endInd--;
+
+            for (int t = startInd; t <= endInd; t++)
+                if (interpData.TS_Data[t].WS > maxHourlyWS)
+                    maxHourlyWS = interpData.TS_Data[t].WS;
+
+            maxHourlyRef.maxWS = maxHourlyWS;
 
             return maxHourlyRef;
         }

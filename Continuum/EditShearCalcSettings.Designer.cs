@@ -69,8 +69,8 @@
             this.cboShearCalcTypes.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboShearCalcTypes.FormattingEnabled = true;
             this.cboShearCalcTypes.Items.AddRange(new object[] {
-            "Calculate average alpha using each pair of WS measurements",
-            "Calculate best-fit alpha using all WS measurements between min/max heights"});
+            "Avg Alpha over all pairs",
+            "Best-Fit Alpha"});
             this.cboShearCalcTypes.Location = new System.Drawing.Point(28, 123);
             this.cboShearCalcTypes.Name = "cboShearCalcTypes";
             this.cboShearCalcTypes.Size = new System.Drawing.Size(445, 26);

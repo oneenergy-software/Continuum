@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Media;
 using Python.Runtime;
+using System.Security.Permissions;
 
 namespace ContinuumNS
 {    
@@ -29,6 +30,10 @@ namespace ContinuumNS
         public Press_Data[] baros = new Press_Data[0];
         /// <summary>   If filtering has been conducted, this is true. </summary>
         public bool filteringDone = false;
+
+        /// <summary> True if met data QC filters are applied to time series data.  </summary>
+        public bool filteringEnabled;
+
         /// <summary>   Wind speed units, mph (miles/hour) or mps (meters/sec). </summary>
         public string WS_units;
         /// <summary> Shear calculation type and min/max height (if using best-fit calc) </summary>
@@ -483,6 +488,11 @@ namespace ContinuumNS
             /// <summary>   Estimated wind speed and wind direction time series data. </summary>
             public Est_Data[] WS_WD_data;
 
+            public string GetName()
+            {
+                return "LT Extrap. " + height.ToString() + "m WS";
+            }
+
             /// <summary> Returns index with specified timestamp </summary>            
             public int GetTS_Index(DateTime targetDate)
             {
@@ -603,6 +613,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Settings to specify how to calculate shear exponent, alpha </summary>
+        [Serializable()]
         public struct ShearSettings
         {
             public ShearCalculationTypes shearCalcType;
@@ -794,7 +805,9 @@ namespace ContinuumNS
 
                 int WD_Ind = GetWD_Ind(alpha[thisInd].WD, numWD);                
                 int thisHour = alpha[thisInd].timeStamp.Hour;
-                               
+
+                if (alpha[thisInd].timeStamp.Month == 3 && alpha[thisInd].timeStamp.Day == 3 && alpha[thisInd].timeStamp.Hour == 23)
+                    thisInd = thisInd;
                 
                 if (((alpha[thisInd].alpha != -999) && (WD_Ind != -999)) && (((maxHour >= minHour) && (thisHour >= minHour) && (thisHour <= maxHour)) 
                     || ((minHour > maxHour) && ((thisHour >= minHour) || (thisHour <= maxHour)))))
@@ -860,9 +873,12 @@ namespace ContinuumNS
                     (anem.windData[timeInd].filterFlag == Filter_Flags.Valid && vane.dirData[timeInd].filterFlag == Filter_Flags.Valid))
                 {
                     int WD_Ind = GetWD_Ind(vane.dirData[timeInd].avg, 72);
-                    theseWS_byWD[WD_Ind] = theseWS_byWD[WD_Ind] + anem.windData[timeInd].avg;
-                    WD_count[WD_Ind]++;
-                    
+
+                    if (WD_Ind != -999)
+                    {
+                        theseWS_byWD[WD_Ind] = theseWS_byWD[WD_Ind] + anem.windData[timeInd].avg;
+                        WD_count[WD_Ind]++;
+                    } 
                 }
 
                 timeInd++;
@@ -2128,119 +2144,48 @@ namespace ContinuumNS
 
             for (int i = 0; i < GetNumAnems(); i++)
                 if (anems[i].height == thisHeight)                
-                    haveExtrapHeight = true;                   
-                    
-            if (haveExtrapHeight == true)
+                    haveExtrapHeight = true;
+
+            if (alphaByAnem.Length == 0)
+                EstimateAlpha();
+
+            if (alphaByAnem.Length == 0)
+                return;
+
+            if (alphaByAnem[heightInd].WS_WD_Alpha == null)
+                return;
+
+            Array.Resize(ref simData[simData.Length - 1].WS_WD_data, alphaByAnem[heightInd].WS_WD_Alpha.Length);                                       
+
+            for (int i = 0; i < alphaByAnem[heightInd].WS_WD_Alpha.Length; i++)
             {
-                // Count number of data points with both Valid anem and vane
-                int validCount = 0;
-                int vaneInd = GetVaneClosestToHH(thisHeight);
-                int[] anemInds = GetAnemsClosestToHH(thisHeight);
-                int numAnems = anemInds.Length;
+                simData[simData.Length - 1].WS_WD_data[i].timeStamp = alphaByAnem[heightInd].WS_WD_Alpha[i].timeStamp;
+                simData[simData.Length - 1].WS_WD_data[i].WD = alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
 
-                for (int i = 0; i < anems[anemInds[0]].windData.Length; i++)
+                if (alphaByAnem[heightInd].WS_WD_Alpha[i].alpha != -999 && alphaByAnem[heightInd].WS_WD_Alpha[i].WS != -999)
                 {
-                    bool gotOne = false;
-
-                    for (int a = 0; a < numAnems; a++)
-                        if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
-                            gotOne = true;
-
-                    if (gotOne && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
-                        validCount++;
-                }
-                    
-
-                Array.Resize(ref simData[simData.Length - 1].WS_WD_data, validCount);
-
-                try
-                {
-                    validCount = 0;
-                    for (int i = 0; i < anems[anemInds[0]].windData.Length; i++)
-                    {
-                        bool gotOne = false;                                                
-
-                        for (int a = 0; a < numAnems; a++)
-                            if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
-                                gotOne = true;
-
-                        if (gotOne && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
-                        {
-                            double avgWS = 0;
-                            double avgSD = 0;
-                            int avgWSCount = 0;
-
-                            for (int a = 0; a < numAnems; a++)
-                                if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
-                                {
-                                    avgWS = avgWS + anems[anemInds[a]].windData[i].avg;
-                                    avgSD = avgSD + anems[anemInds[a]].windData[i].SD;
-                                    avgWSCount++;
-                                }
-
-                            if (avgWSCount > 0)
-                            {
-                                avgWS = avgWS / avgWSCount;
-                                avgSD = avgSD / avgWSCount;
-
-                                simData[simData.Length - 1].WS_WD_data[validCount].timeStamp = anems[anemInds[0]].windData[i].timeStamp;
-                                simData[simData.Length - 1].WS_WD_data[validCount].WS = avgWS;
-                                simData[simData.Length - 1].WS_WD_data[validCount].SD = avgSD;
-                                simData[simData.Length - 1].WS_WD_data[validCount].WD = vanes[vaneInd].dirData[i].avg;
-
-                                validCount++;
-                            }
-                        }
-                    }
-                }
-                catch 
-                {
-                    MessageBox.Show("Error extrapolating data.", "Continuum 3");
-                }
-                                
-            }
-            else
-            { 
-                if (alphaByAnem.Length == 0)
-                    EstimateAlpha();
-
-                if (alphaByAnem.Length == 0)
-                    return;
-
-                if (alphaByAnem[heightInd].WS_WD_Alpha == null)
-                    return;
-
-                Array.Resize(ref simData[simData.Length - 1].WS_WD_data, alphaByAnem[heightInd].WS_WD_Alpha.Length);
-
-                for (int i = 0; i < alphaByAnem[heightInd].WS_WD_Alpha.Length; i++)
-                {
-                    simData[simData.Length - 1].WS_WD_data[i].timeStamp = alphaByAnem[heightInd].WS_WD_Alpha[i].timeStamp;
-                    simData[simData.Length - 1].WS_WD_data[i].WD = alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
-
-                    if (alphaByAnem[heightInd].WS_WD_Alpha[i].alpha != -999 && alphaByAnem[heightInd].WS_WD_Alpha[i].WS != -999)
-                    {                        
+                    if (haveExtrapHeight)
+                        simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS;
+                    else
                         simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS *
                             Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha);                                              
 
-                        // SD filter: SD must be less than WS / 3
-                        if (alphaByAnem[heightInd].WS_WD_Alpha[i].SD < alphaByAnem[heightInd].WS_WD_Alpha[i].WS / 3 &&
-                            alphaByAnem[heightInd].WS_WD_Alpha[i].SD != 0)
-                            simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD;
-                        else
-                            simData[simData.Length - 1].WS_WD_data[i].SD = -999;
-
-                        simData[simData.Length - 1].WS_WD_data[i].alpha = alphaByAnem[heightInd].WS_WD_Alpha[i].alpha;
-
-                    }
+                    // SD filter: SD must be less than WS / 3
+                    if (alphaByAnem[heightInd].WS_WD_Alpha[i].SD < alphaByAnem[heightInd].WS_WD_Alpha[i].WS / 3 &&
+                        alphaByAnem[heightInd].WS_WD_Alpha[i].SD != 0)
+                        simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD;
                     else
-                    { 
-                        simData[simData.Length - 1].WS_WD_data[i].WS = -999;
-                        simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD; // Should this just be -999?
-                        simData[simData.Length - 1].WS_WD_data[i].alpha = -999;
-                    }
+                        simData[simData.Length - 1].WS_WD_data[i].SD = -999;
 
+                    simData[simData.Length - 1].WS_WD_data[i].alpha = alphaByAnem[heightInd].WS_WD_Alpha[i].alpha;
                 }
-            }
+                else
+                { 
+                    simData[simData.Length - 1].WS_WD_data[i].WS = -999;
+                    simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD; // Should this just be -999?
+                    simData[simData.Length - 1].WS_WD_data[i].alpha = -999;
+                }
+            }            
 
             SortSimDataByH();
         }
@@ -2264,27 +2209,27 @@ namespace ContinuumNS
             if (GetNumAnems() == 0)
                 return;
             
-            while (anems[0].windData[thisInd].timeStamp < startDate)
-                thisInd++;
+      //      while (anems[0].windData[thisInd].timeStamp < startDate) // 2/12/2024 taking out so alpha is calculated over the entire duration
+      //          thisInd++;
 
             int startInd = thisInd;
             int endInd = anems[0].windData.Length - 1;
 
-            while (anems[0].windData[endInd].timeStamp > endDate)
-                endInd--;
+       //     while (anems[0].windData[endInd].timeStamp > endDate)
+       //         endInd--;
 
             Array.Resize(ref alpha, (endInd - startInd + 1));
             Array.Resize(ref alphaByAnem, numHeights);
 
             for (int m = 0; m < numHeights; m++)
             {
-                alphaByAnem[m].WS_WD_Alpha = new Est_Data[endInd - startInd + 1];
+                alphaByAnem[m].WS_WD_Alpha = new Est_Data[anems[0].windData.Length];
                 alphaByAnem[m].anemHeight = anemHeights[m];
             }
 
             double thisAlpha = 0;
 
-            while (thisInd < GetDataLength() && anems[0].windData[thisInd].timeStamp <= endDate)
+            while (thisInd < GetDataLength()) // && anems[0].windData[thisInd].timeStamp <= endDate)
             {
                 // get average WS by height
                 double[] avgWS_ByH = GetAvgValidByHeight(thisInd, "avg");
@@ -2297,7 +2242,7 @@ namespace ContinuumNS
                     thisAlpha = CalcBestFitAlpha(avgWS_ByH, anemHeights);
 
                 alpha[thisInd - startInd].timeStamp = anems[0].windData[thisInd].timeStamp;
-                alpha[thisInd - startInd].alpha = thisAlpha;                              
+                alpha[thisInd - startInd].alpha = thisAlpha;                                
 
                 if (vanes[vaneInd80].dirData[thisInd].filterFlag == Filter_Flags.Valid)
                     alpha[thisInd - startInd].WD = vanes[vaneInd80].dirData[thisInd].avg;
@@ -2378,11 +2323,14 @@ namespace ContinuumNS
 
             for (int h = minInd; h <= maxInd; h++)
             {
-                logH[h] = Math.Log10(wsHeights[h]);
-                logWS[h] = Math.Log10(avgWS_ByH[h]);
+                if (avgWS_ByH[h] == 0 || avgWS_ByH[h] == -999)
+                    return -999;
+
+                logH[h - minInd] = Math.Log10(wsHeights[h]);
+                logWS[h - minInd] = Math.Log10(avgWS_ByH[h]);
             }
 
-            Tuple<double,double> bestAlphaTuple = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(logWS, logH);
+            Tuple<double,double> bestAlphaTuple = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(logH, logWS);
             bestAlpha = bestAlphaTuple.Item2;
 
             return bestAlpha;
@@ -3079,6 +3027,8 @@ namespace ContinuumNS
 
             return thisShearType;
         }
+
+        
     }
          
 }

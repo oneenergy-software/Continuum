@@ -2518,12 +2518,11 @@ namespace ContinuumNS
                     for (int j = 0; j < thisInst.metList.ThisCount; j++)
                         if (metsUsed[i] == thisInst.metList.metItem[j].name)
                         {
-                            if (thisInst.metList.metItem[j].mcp.LT_WS_Ests.Length == 0)
-                                thisInst.metList.metItem[j].mcp.LT_WS_Ests = thisInst.metList.metItem[j].mcp.GenerateLT_WS_TS(thisInst, thisInst.metList.metItem[j], MCP_Method);
+                            if (thisInst.metList.metItem[j].mcpList[0].LT_WS_Ests.Length == 0) // mcpList[0] is MCP at modeled height
+                                thisInst.metList.metItem[j].mcpList[0].LT_WS_Ests = thisInst.metList.metItem[j].mcpList[0].GenerateLT_WS_TS(thisInst, thisInst.metList.metItem[j], MCP_Method);
 
-                            metLT_Ests[i].estWS = thisInst.metList.metItem[j].mcp.LT_WS_Ests;
+                            metLT_Ests[i].estWS = thisInst.metList.metItem[j].mcpList[0].LT_WS_Ests;
                         }
-
                 }
             }
             else
@@ -2544,10 +2543,8 @@ namespace ContinuumNS
                 {
                     for (int j = 0; j < thisInst.metList.ThisCount; j++)
                         if (metsUsed[i] == thisInst.metList.metItem[j].name) 
-                            metLT_Ests[i].estWS = thisInst.metList.GetConcurrentMetDataTS(metsUsed[i], thisInst.modeledHeight);                        
-
+                            metLT_Ests[i].estWS = thisInst.metList.GetConcurrentMetDataTS(metsUsed[i], thisInst.modeledHeight); 
                 }
-
             }
 
             // Get all models used. 

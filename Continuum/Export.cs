@@ -2407,14 +2407,14 @@ namespace ContinuumNS
         public void ExportMCP_TimeSeries(Continuum thisInst)
         {            
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
             string MCP_method = thisInst.Get_MCP_Method();
             DateTime exportStart = thisInst.dateMCPExportStart.Value;
             DateTime exportEnd = thisInst.dateMCPExportEnd.Value;            
             DateTime refEnd = thisMCP.GetStartOrEndDate("Reference", "End");
 
-            if (thisMet.mcp.LT_WS_Ests.Length == 0)
-                thisMet.mcp.LT_WS_Ests = thisMet.mcp.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
+            if (thisMCP.LT_WS_Ests.Length == 0)
+                thisMCP.LT_WS_Ests = thisMCP.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
 
             // Check that the export start/end are within interval of estimated data
             if (exportStart > refEnd)
@@ -2463,9 +2463,8 @@ namespace ContinuumNS
 
         /// <summary> Exports MCP Method of Bins wind speed ratios. </summary>  
         public void ExportMCP_BinRatios(Continuum thisInst)
-        {
-            Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;           
+        {            
+            MCP thisMCP = thisInst.GetSelectedMCP();           
 
             string filename = "";
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
@@ -2587,13 +2586,13 @@ namespace ContinuumNS
         public void ExportMCP_TAB(Continuum thisInst)
         {
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
             string MCP_method = thisInst.Get_MCP_Method();
             DateTime exportStart = thisInst.dateMCPExportStart.Value;
             DateTime exportEnd = thisInst.dateMCPExportEnd.Value;
 
-            if (thisMet.mcp.LT_WS_Ests.Length == 0)
-                thisMet.mcp.LT_WS_Ests = thisMet.mcp.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
+            if (thisMCP.LT_WS_Ests.Length == 0)
+                thisMCP.LT_WS_Ests = thisMCP.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
 
             string filename = "";
             if (thisInst.sfdSaveTAB.ShowDialog() == DialogResult.OK)
@@ -2637,17 +2636,17 @@ namespace ContinuumNS
                     // searches through MCP LT WS Est timeseries to find Est_data_ind corresponding
                     // to first data point to use in TAB file
 
-                    for (int i = 0; i < thisMet.mcp.LT_WS_Ests.Length; i++)
+                    for (int i = 0; i < thisMCP.LT_WS_Ests.Length; i++)
                     {
-                        if (thisMet.mcp.LT_WS_Ests[i].thisDate < exportStart)
+                        if (thisMCP.LT_WS_Ests[i].thisDate < exportStart)
                             Est_data_ind++;
                         else
                             break;
                     }
 
-                    thisTS = thisMet.mcp.LT_WS_Ests[Est_data_ind].thisDate;
-                    thisWS = thisMet.mcp.LT_WS_Ests[Est_data_ind].thisWS;
-                    thisWD = thisMet.mcp.LT_WS_Ests[Est_data_ind].thisWD;
+                    thisTS = thisMCP.LT_WS_Ests[Est_data_ind].thisDate;
+                    thisWS = thisMCP.LT_WS_Ests[Est_data_ind].thisWS;
+                    thisWD = thisMCP.LT_WS_Ests[Est_data_ind].thisWD;
                     Est_data_ind++;
 
                     // starting at This_Start, goes through LT WS Est data, until it reaches This_End,
@@ -2669,9 +2668,9 @@ namespace ContinuumNS
                         if (thisTS == exportEnd)
                             break;
 
-                        thisTS = thisMet.mcp.LT_WS_Ests[Est_data_ind].thisDate;
-                        thisWS = thisMet.mcp.LT_WS_Ests[Est_data_ind].thisWS;
-                        thisWD = thisMet.mcp.LT_WS_Ests[Est_data_ind].thisWD;
+                        thisTS = thisMCP.LT_WS_Ests[Est_data_ind].thisDate;
+                        thisWS = thisMCP.LT_WS_Ests[Est_data_ind].thisWS;
+                        thisWD = thisMCP.LT_WS_Ests[Est_data_ind].thisWD;
                         Est_data_ind++;
 
                     }
@@ -2723,7 +2722,7 @@ namespace ContinuumNS
                 filename = thisInst.sfd60mWS.FileName;
 
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
             string currentMethod = thisInst.Get_MCP_Method();
 
             if (filename != "")
@@ -3726,31 +3725,83 @@ namespace ContinuumNS
         }
 
         /// <summary>  Exports extreme wind speed estimated at selected met site. </summary>
-        public void ExportExtremeWS(Continuum thisInst)
+        public void ExportExtremeWS_Table(Continuum thisInst)
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
-            Reference thisRef = thisInst.GetSelectedReference("Site Conditions Extreme WS");
-            Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst, thisRef);
+            
+            Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst);
 
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
             {
                 StreamWriter file = new StreamWriter(thisInst.sfd60mWS.FileName);
 
                 file.WriteLine("Estimated Extreme Wind Speeds at Met: " + thisMet.name);
+                file.WriteLine("Met Start date:," + thisInst.dateExtremeWS_Start.Value.ToString("yyyy-MM-dd HH:mm"));
+                file.WriteLine("Met End date:," + thisInst.dateExtremeWS_End.Value.ToString("yyyy-MM-dd HH:mm"));
+                file.WriteLine("Height [m]," + thisInst.cboExtremeWS_Height.SelectedItem.ToString());
                 file.WriteLine();
                 file.WriteLine(thisInst.savedParams.savedFileName);
                 file.WriteLine();
 
-                file.WriteLine("Extreme WS Type, WS [m/s]");
-                file.WriteLine("1 yr 10-min Max WS, " + Math.Round(extremeWS.tenMin1yr, 2));
-                file.WriteLine("1 yr Max Gust, " + Math.Round(extremeWS.gust1yr, 2));
-                file.WriteLine("50 yr 10-min Max WS, " + Math.Round(extremeWS.tenMin50yr, 2));
-                file.WriteLine("50 yr Max Gust, " + Math.Round(extremeWS.gust50yr, 2));
+                if (thisInst.chkUseWMO_TenMin.Checked || thisInst.chkUseWMO_Gust.Checked)
+                {
+                    file.WriteLine("WMO Gust Factor Used:");
+                    file.WriteLine("WMO Class: " + thisInst.cboWMO_Class.SelectedItem.ToString());
+                    file.WriteLine("Description: " + thisInst.txtWMO_Desc.Text);
+                    if (thisInst.chkUseWMO_TenMin.Checked)
+                        file.WriteLine("Hourly to Ten-Minute Gust Factor: " + thisInst.txtWMO_HourTenMin.Text);
+                    if (thisInst.chkUseWMO_Gust.Checked)
+                        file.WriteLine("Hourly to 3-Sec Gust Factor: " + thisInst.txtWMO_HourGust.Text);
+                    file.WriteLine();
+                }
+
+                // Print headers
+                file.WriteLine("Year, Max. Yearly Ref. WS Hourly [m/s], Max. Yearly Ref. WS Hourly Concurrent with Met [m/s], Max. Yearly Actual WS 10-min [m/s]," +
+                    "Max. Yearly Est. WS 10-min [m/s], Max. Yearly Actual WS Gust [m/s], Max. Yearly Est. Gust [m/s]");
+
+                for (int y = 0; y < extremeWS.maxEstTenMin.Length; y++)
+                {
+                    file.Write(extremeWS.maxEstTenMin[y].thisYear + "," + extremeWS.maxHourlyRefWS[y].maxWS + ",");
+                                        
+                    int actWSInd = -999;
+
+                    for (int a = 0; a < extremeWS.maxMetTenMin.Length; a++)
+                        if (extremeWS.maxMetTenMin[a].thisYear == extremeWS.maxEstTenMin[y].thisYear)
+                        {                            
+                            actWSInd = a;
+                            break;
+                        }
+
+                    if (actWSInd != -999)
+                        file.Write(extremeWS.maxHourlyRefConcWS[actWSInd].maxWS + "," + extremeWS.maxMetTenMin[actWSInd].maxWS + ",");
+                    else
+                        file.Write(",,");
+
+                    file.Write(extremeWS.maxEstTenMin[y].maxWS + ",");
+
+                    actWSInd = -999;
+                    if (extremeWS.maxMetGust != null)
+                        for (int a = 0; a < extremeWS.maxMetGust.Length; a++)
+                            if (extremeWS.maxMetGust[a].thisYear == extremeWS.maxEstTenMin[y].thisYear)
+                            {
+                                actWSInd = a;
+                                break;
+                            }
+
+                    if (actWSInd != -999)
+                        file.Write(extremeWS.maxMetGust[actWSInd].maxWS + ",");
+                    else
+                        file.Write(",");
+
+                    file.WriteLine(extremeWS.maxEstGust[y].maxWS);
+                }
 
                 file.Close();
             }
 
         }
+
+         
 
         /// <summary>  Exports extreme wind shear stats (P1, P10, P50 alpha at WS ranges: 5 - 10, 10 - 15, 15+, All WS > cut-in. </summary>
         public void ExportExtremeShear(Continuum thisInst)
@@ -4046,7 +4097,7 @@ namespace ContinuumNS
                 sw.WriteLine("Alpha, Count");
 
                 for (int h = 0; h < thisHisto.Length; h++)
-                    sw.WriteLine(thisHisto[0] + "," + thisHisto[1]);
+                    sw.WriteLine(-0.5 + h * 0.02 + "," + thisHisto[h]);
 
                 sw.Close();
 

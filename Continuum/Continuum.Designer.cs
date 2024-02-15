@@ -325,6 +325,8 @@ namespace ContinuumNS
             this.label154 = new System.Windows.Forms.Label();
             this.label151 = new System.Windows.Forms.Label();
             this.pgeMCP = new System.Windows.Forms.TabPage();
+            this.label237 = new System.Windows.Forms.Label();
+            this.cboMCP_Height = new System.Windows.Forms.ComboBox();
             this.label206 = new System.Windows.Forms.Label();
             this.cboMCP_Ref = new System.Windows.Forms.ComboBox();
             this.btnExportTarget = new System.Windows.Forms.Button();
@@ -704,7 +706,7 @@ namespace ContinuumNS
             this.label93 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnEditShearFromSiteConds = new System.Windows.Forms.Button();
-            this.txtShearCalcTypes = new System.Windows.Forms.TextBox();
+            this.txtShearCalcMethodExtremeTab = new System.Windows.Forms.TextBox();
             this.txtMaxHeight = new System.Windows.Forms.TextBox();
             this.txtMinHeight = new System.Windows.Forms.TextBox();
             this.label228 = new System.Windows.Forms.Label();
@@ -730,7 +732,37 @@ namespace ContinuumNS
             this.columnHeader184 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label95 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.lblNoExtremeWS = new System.Windows.Forms.Label();
+            this.btnExportExtremeWSTable = new System.Windows.Forms.Button();
+            this.txtWMO_Desc = new System.Windows.Forms.TextBox();
+            this.label242 = new System.Windows.Forms.Label();
+            this.txtWMO_HourGust = new System.Windows.Forms.TextBox();
+            this.label243 = new System.Windows.Forms.Label();
+            this.txtWMO_HourTenMin = new System.Windows.Forms.TextBox();
+            this.label241 = new System.Windows.Forms.Label();
+            this.chkUseWMO_TenMin = new System.Windows.Forms.CheckBox();
+            this.label240 = new System.Windows.Forms.Label();
+            this.cboWMO_Class = new System.Windows.Forms.ComboBox();
+            this.chkUseWMO_Gust = new System.Windows.Forms.CheckBox();
+            this.chkExtremeWS_ShowLegend = new System.Windows.Forms.CheckBox();
+            this.label239 = new System.Windows.Forms.Label();
+            this.dateExtremeWS_End = new System.Windows.Forms.DateTimePicker();
+            this.dateExtremeWS_Start = new System.Windows.Forms.DateTimePicker();
+            this.lblGustExtremeWSUnavailable = new System.Windows.Forms.Label();
+            this.label238 = new System.Windows.Forms.Label();
+            this.cboExtremeWS_Height = new System.Windows.Forms.ComboBox();
+            this.label235 = new System.Windows.Forms.Label();
+            this.txtGumbelGustMu = new System.Windows.Forms.TextBox();
+            this.label236 = new System.Windows.Forms.Label();
+            this.txtGumbelGustBeta = new System.Windows.Forms.TextBox();
+            this.label234 = new System.Windows.Forms.Label();
+            this.label233 = new System.Windows.Forms.Label();
+            this.txtGumbelTenMinMu = new System.Windows.Forms.TextBox();
+            this.label232 = new System.Windows.Forms.Label();
+            this.label231 = new System.Windows.Forms.Label();
+            this.txtGumbelTenMinBeta = new System.Windows.Forms.TextBox();
+            this.chkUseSimData = new System.Windows.Forms.CheckBox();
+            this.plotExtremeWS_TS = new OxyPlot.WindowsForms.PlotView();
+            this.dataExtremeWS = new System.Windows.Forms.DataGridView();
             this.label195 = new System.Windows.Forms.Label();
             this.label103 = new System.Windows.Forms.Label();
             this.cboExtremeWSRef = new System.Windows.Forms.ComboBox();
@@ -1069,6 +1101,13 @@ namespace ContinuumNS
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
+            this.Column17 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column18 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column19 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pgeMetDataTS.SuspendLayout();
@@ -1091,6 +1130,7 @@ namespace ContinuumNS
             this.tabPage1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataExtremeWS)).BeginInit();
             this.pgeMonthlyAnalysis.SuspendLayout();
             this.pgeMaps.SuspendLayout();
             this.pgeRound.SuspendLayout();
@@ -1971,7 +2011,7 @@ namespace ContinuumNS
             this.dataMetTS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataMetTS.Location = new System.Drawing.Point(10, 242);
             this.dataMetTS.Name = "dataMetTS";
-            this.dataMetTS.Size = new System.Drawing.Size(597, 595);
+            this.dataMetTS.Size = new System.Drawing.Size(563, 595);
             this.dataMetTS.TabIndex = 34;
             // 
             // chkTS_Params
@@ -1983,9 +2023,10 @@ namespace ContinuumNS
             this.chkTS_Params.HorizontalScrollbar = true;
             this.chkTS_Params.Location = new System.Drawing.Point(306, 72);
             this.chkTS_Params.Name = "chkTS_Params";
-            this.chkTS_Params.Size = new System.Drawing.Size(301, 164);
+            this.chkTS_Params.Size = new System.Drawing.Size(267, 164);
             this.chkTS_Params.TabIndex = 33;
             this.chkTS_Params.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkTS_Params_ItemCheck);
+            this.chkTS_Params.SelectedIndexChanged += new System.EventHandler(this.chkTS_Params_SelectedIndexChanged);
             // 
             // treeDataParams
             // 
@@ -2061,7 +2102,7 @@ namespace ContinuumNS
             // btnShowFilterFlags
             // 
             this.btnShowFilterFlags.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.btnShowFilterFlags.Location = new System.Drawing.Point(518, 12);
+            this.btnShowFilterFlags.Location = new System.Drawing.Point(505, 12);
             this.btnShowFilterFlags.Name = "btnShowFilterFlags";
             this.btnShowFilterFlags.Size = new System.Drawing.Size(66, 43);
             this.btnShowFilterFlags.TabIndex = 8;
@@ -2111,7 +2152,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 652);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(742, 185);
+            this.plotTS_Baros.Size = new System.Drawing.Size(887, 185);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2335,7 +2376,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 458);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(742, 185);
+            this.plotTS_Temp.Size = new System.Drawing.Size(887, 185);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2350,7 +2391,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 264);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(742, 185);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(887, 185);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2366,7 +2407,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(742, 185);
+            this.plotTS_Anems.Size = new System.Drawing.Size(887, 185);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -2449,17 +2490,17 @@ namespace ContinuumNS
             // txtShearCalcMethod
             // 
             this.txtShearCalcMethod.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.txtShearCalcMethod.Location = new System.Drawing.Point(941, 12);
+            this.txtShearCalcMethod.Location = new System.Drawing.Point(827, 39);
             this.txtShearCalcMethod.Name = "txtShearCalcMethod";
             this.txtShearCalcMethod.ReadOnly = true;
-            this.txtShearCalcMethod.Size = new System.Drawing.Size(94, 24);
+            this.txtShearCalcMethod.Size = new System.Drawing.Size(161, 24);
             this.txtShearCalcMethod.TabIndex = 245;
             // 
             // label227
             // 
             this.label227.AutoSize = true;
             this.label227.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label227.Location = new System.Drawing.Point(825, 51);
+            this.label227.Location = new System.Drawing.Point(825, 76);
             this.label227.Name = "label227";
             this.label227.Size = new System.Drawing.Size(38, 17);
             this.label227.TabIndex = 244;
@@ -2468,7 +2509,7 @@ namespace ContinuumNS
             // btnEditShearMethod
             // 
             this.btnEditShearMethod.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.btnEditShearMethod.Location = new System.Drawing.Point(996, 48);
+            this.btnEditShearMethod.Location = new System.Drawing.Point(998, 39);
             this.btnEditShearMethod.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnEditShearMethod.Name = "btnEditShearMethod";
             this.btnEditShearMethod.Size = new System.Drawing.Size(46, 25);
@@ -2481,7 +2522,7 @@ namespace ContinuumNS
             // 
             this.label226.AutoSize = true;
             this.label226.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label226.Location = new System.Drawing.Point(920, 51);
+            this.label226.Location = new System.Drawing.Point(920, 76);
             this.label226.Name = "label226";
             this.label226.Size = new System.Drawing.Size(19, 17);
             this.label226.TabIndex = 242;
@@ -2490,7 +2531,7 @@ namespace ContinuumNS
             // txtShearBestFitMaxHeight
             // 
             this.txtShearBestFitMaxHeight.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.txtShearBestFitMaxHeight.Location = new System.Drawing.Point(941, 48);
+            this.txtShearBestFitMaxHeight.Location = new System.Drawing.Point(941, 73);
             this.txtShearBestFitMaxHeight.Name = "txtShearBestFitMaxHeight";
             this.txtShearBestFitMaxHeight.ReadOnly = true;
             this.txtShearBestFitMaxHeight.Size = new System.Drawing.Size(47, 24);
@@ -2499,7 +2540,7 @@ namespace ContinuumNS
             // txtShearBestFitMinHeight
             // 
             this.txtShearBestFitMinHeight.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.txtShearBestFitMinHeight.Location = new System.Drawing.Point(868, 48);
+            this.txtShearBestFitMinHeight.Location = new System.Drawing.Point(868, 73);
             this.txtShearBestFitMinHeight.Name = "txtShearBestFitMinHeight";
             this.txtShearBestFitMinHeight.ReadOnly = true;
             this.txtShearBestFitMinHeight.Size = new System.Drawing.Size(50, 24);
@@ -2508,12 +2549,12 @@ namespace ContinuumNS
             // label225
             // 
             this.label225.AutoSize = true;
-            this.label225.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label225.Location = new System.Drawing.Point(822, 19);
+            this.label225.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label225.Location = new System.Drawing.Point(825, 15);
             this.label225.Name = "label225";
-            this.label225.Size = new System.Drawing.Size(118, 17);
+            this.label225.Size = new System.Drawing.Size(151, 17);
             this.label225.TabIndex = 238;
-            this.label225.Text = "Shear Calc. Method";
+            this.label225.Text = "Shear Calculation Method:";
             // 
             // btnResetMaxRecovDates
             // 
@@ -3088,10 +3129,10 @@ namespace ContinuumNS
             this.columnHeader87,
             this.columnHeader114});
             this.lstAlphas.HideSelection = false;
-            this.lstAlphas.Location = new System.Drawing.Point(825, 119);
+            this.lstAlphas.Location = new System.Drawing.Point(825, 142);
             this.lstAlphas.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstAlphas.Name = "lstAlphas";
-            this.lstAlphas.Size = new System.Drawing.Size(210, 368);
+            this.lstAlphas.Size = new System.Drawing.Size(210, 345);
             this.lstAlphas.TabIndex = 12;
             this.lstAlphas.UseCompatibleStateImageBehavior = false;
             this.lstAlphas.View = System.Windows.Forms.View.Details;
@@ -3117,11 +3158,12 @@ namespace ContinuumNS
             // 
             this.label61.AutoSize = true;
             this.label61.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label61.Location = new System.Drawing.Point(821, 84);
+            this.label61.Location = new System.Drawing.Point(821, 113);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(130, 23);
             this.label61.TabIndex = 11;
             this.label61.Text = "Alpha vs. WD";
+            this.label61.Click += new System.EventHandler(this.label61_Click);
             // 
             // label60
             // 
@@ -4119,6 +4161,8 @@ namespace ContinuumNS
             // 
             // pgeMCP
             // 
+            this.pgeMCP.Controls.Add(this.label237);
+            this.pgeMCP.Controls.Add(this.cboMCP_Height);
             this.pgeMCP.Controls.Add(this.label206);
             this.pgeMCP.Controls.Add(this.cboMCP_Ref);
             this.pgeMCP.Controls.Add(this.btnExportTarget);
@@ -4210,6 +4254,27 @@ namespace ContinuumNS
             this.pgeMCP.TabIndex = 15;
             this.pgeMCP.Text = "MCP";
             this.pgeMCP.UseVisualStyleBackColor = true;
+            // 
+            // label237
+            // 
+            this.label237.AutoSize = true;
+            this.label237.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label237.Location = new System.Drawing.Point(870, 214);
+            this.label237.Name = "label237";
+            this.label237.Size = new System.Drawing.Size(54, 18);
+            this.label237.TabIndex = 302;
+            this.label237.Text = "Height :";
+            // 
+            // cboMCP_Height
+            // 
+            this.cboMCP_Height.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboMCP_Height.FormattingEnabled = true;
+            this.cboMCP_Height.Location = new System.Drawing.Point(870, 240);
+            this.cboMCP_Height.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboMCP_Height.Name = "cboMCP_Height";
+            this.cboMCP_Height.Size = new System.Drawing.Size(110, 26);
+            this.cboMCP_Height.TabIndex = 301;
+            this.cboMCP_Height.SelectedIndexChanged += new System.EventHandler(this.cboMCP_Height_SelectedIndexChanged);
             // 
             // label206
             // 
@@ -4932,7 +4997,7 @@ namespace ContinuumNS
             // 
             this.label108.AutoSize = true;
             this.label108.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label108.Location = new System.Drawing.Point(743, 214);
+            this.label108.Location = new System.Drawing.Point(734, 214);
             this.label108.Name = "label108";
             this.label108.Size = new System.Drawing.Size(78, 18);
             this.label108.TabIndex = 232;
@@ -4944,7 +5009,7 @@ namespace ContinuumNS
             this.cboMCP_Season.FormattingEnabled = true;
             this.cboMCP_Season.Items.AddRange(new object[] {
             "All"});
-            this.cboMCP_Season.Location = new System.Drawing.Point(743, 240);
+            this.cboMCP_Season.Location = new System.Drawing.Point(734, 240);
             this.cboMCP_Season.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCP_Season.Name = "cboMCP_Season";
             this.cboMCP_Season.Size = new System.Drawing.Size(110, 26);
@@ -5070,7 +5135,7 @@ namespace ContinuumNS
             // 
             this.label114.AutoSize = true;
             this.label114.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label114.Location = new System.Drawing.Point(597, 214);
+            this.label114.Location = new System.Drawing.Point(588, 214);
             this.label114.Name = "label114";
             this.label114.Size = new System.Drawing.Size(77, 18);
             this.label114.TabIndex = 217;
@@ -5082,7 +5147,7 @@ namespace ContinuumNS
             this.cboMCP_WD.FormattingEnabled = true;
             this.cboMCP_WD.Items.AddRange(new object[] {
             "All"});
-            this.cboMCP_WD.Location = new System.Drawing.Point(601, 240);
+            this.cboMCP_WD.Location = new System.Drawing.Point(592, 240);
             this.cboMCP_WD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCP_WD.Name = "cboMCP_WD";
             this.cboMCP_WD.Size = new System.Drawing.Size(118, 26);
@@ -7349,6 +7414,9 @@ namespace ContinuumNS
             // 
             // tabSiteConditions
             // 
+            this.tabSiteConditions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabSiteConditions.Controls.Add(this.tabPage2);
             this.tabSiteConditions.Controls.Add(this.tabPage1);
             this.tabSiteConditions.Controls.Add(this.tabPage3);
@@ -7356,7 +7424,7 @@ namespace ContinuumNS
             this.tabSiteConditions.Location = new System.Drawing.Point(22, 48);
             this.tabSiteConditions.Name = "tabSiteConditions";
             this.tabSiteConditions.SelectedIndex = 0;
-            this.tabSiteConditions.Size = new System.Drawing.Size(1599, 760);
+            this.tabSiteConditions.Size = new System.Drawing.Size(1599, 801);
             this.tabSiteConditions.TabIndex = 7;
             // 
             // tabPage2
@@ -7389,7 +7457,7 @@ namespace ContinuumNS
             this.tabPage2.Location = new System.Drawing.Point(4, 27);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1591, 729);
+            this.tabPage2.Size = new System.Drawing.Size(1591, 770);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Terrain Complexity";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -7832,7 +7900,7 @@ namespace ContinuumNS
             this.tabPage1.Controls.Add(this.label93);
             this.tabPage1.Location = new System.Drawing.Point(4, 27);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(1591, 729);
+            this.tabPage1.Size = new System.Drawing.Size(1591, 770);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Turbulence Intensity";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -8126,7 +8194,7 @@ namespace ContinuumNS
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.btnEditShearFromSiteConds);
-            this.tabPage3.Controls.Add(this.txtShearCalcTypes);
+            this.tabPage3.Controls.Add(this.txtShearCalcMethodExtremeTab);
             this.tabPage3.Controls.Add(this.txtMaxHeight);
             this.tabPage3.Controls.Add(this.txtMinHeight);
             this.tabPage3.Controls.Add(this.label228);
@@ -8148,7 +8216,7 @@ namespace ContinuumNS
             this.tabPage3.Controls.Add(this.label95);
             this.tabPage3.Location = new System.Drawing.Point(4, 27);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1591, 729);
+            this.tabPage3.Size = new System.Drawing.Size(1591, 770);
             this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Extreme Shear";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -8165,13 +8233,13 @@ namespace ContinuumNS
             this.btnEditShearFromSiteConds.UseVisualStyleBackColor = true;
             this.btnEditShearFromSiteConds.Click += new System.EventHandler(this.btnEditShearFromSiteConds_Click);
             // 
-            // txtShearCalcTypes
+            // txtShearCalcMethodExtremeTab
             // 
-            this.txtShearCalcTypes.Location = new System.Drawing.Point(63, 178);
-            this.txtShearCalcTypes.Name = "txtShearCalcTypes";
-            this.txtShearCalcTypes.ReadOnly = true;
-            this.txtShearCalcTypes.Size = new System.Drawing.Size(327, 25);
-            this.txtShearCalcTypes.TabIndex = 300;
+            this.txtShearCalcMethodExtremeTab.Location = new System.Drawing.Point(63, 178);
+            this.txtShearCalcMethodExtremeTab.Name = "txtShearCalcMethodExtremeTab";
+            this.txtShearCalcMethodExtremeTab.ReadOnly = true;
+            this.txtShearCalcMethodExtremeTab.Size = new System.Drawing.Size(327, 25);
+            this.txtShearCalcMethodExtremeTab.TabIndex = 300;
             // 
             // txtMaxHeight
             // 
@@ -8409,7 +8477,37 @@ namespace ContinuumNS
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.lblNoExtremeWS);
+            this.tabPage4.Controls.Add(this.btnExportExtremeWSTable);
+            this.tabPage4.Controls.Add(this.txtWMO_Desc);
+            this.tabPage4.Controls.Add(this.label242);
+            this.tabPage4.Controls.Add(this.txtWMO_HourGust);
+            this.tabPage4.Controls.Add(this.label243);
+            this.tabPage4.Controls.Add(this.txtWMO_HourTenMin);
+            this.tabPage4.Controls.Add(this.label241);
+            this.tabPage4.Controls.Add(this.chkUseWMO_TenMin);
+            this.tabPage4.Controls.Add(this.label240);
+            this.tabPage4.Controls.Add(this.cboWMO_Class);
+            this.tabPage4.Controls.Add(this.chkUseWMO_Gust);
+            this.tabPage4.Controls.Add(this.chkExtremeWS_ShowLegend);
+            this.tabPage4.Controls.Add(this.label239);
+            this.tabPage4.Controls.Add(this.dateExtremeWS_End);
+            this.tabPage4.Controls.Add(this.dateExtremeWS_Start);
+            this.tabPage4.Controls.Add(this.lblGustExtremeWSUnavailable);
+            this.tabPage4.Controls.Add(this.label238);
+            this.tabPage4.Controls.Add(this.cboExtremeWS_Height);
+            this.tabPage4.Controls.Add(this.label235);
+            this.tabPage4.Controls.Add(this.txtGumbelGustMu);
+            this.tabPage4.Controls.Add(this.label236);
+            this.tabPage4.Controls.Add(this.txtGumbelGustBeta);
+            this.tabPage4.Controls.Add(this.label234);
+            this.tabPage4.Controls.Add(this.label233);
+            this.tabPage4.Controls.Add(this.txtGumbelTenMinMu);
+            this.tabPage4.Controls.Add(this.label232);
+            this.tabPage4.Controls.Add(this.label231);
+            this.tabPage4.Controls.Add(this.txtGumbelTenMinBeta);
+            this.tabPage4.Controls.Add(this.chkUseSimData);
+            this.tabPage4.Controls.Add(this.plotExtremeWS_TS);
+            this.tabPage4.Controls.Add(this.dataExtremeWS);
             this.tabPage4.Controls.Add(this.label195);
             this.tabPage4.Controls.Add(this.label103);
             this.tabPage4.Controls.Add(this.cboExtremeWSRef);
@@ -8428,24 +8526,339 @@ namespace ContinuumNS
             this.tabPage4.Controls.Add(this.label170);
             this.tabPage4.Location = new System.Drawing.Point(4, 27);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1591, 729);
+            this.tabPage4.Size = new System.Drawing.Size(1591, 770);
             this.tabPage4.TabIndex = 4;
             this.tabPage4.Text = "Extreme WS";
             this.tabPage4.UseVisualStyleBackColor = true;
             this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
             // 
-            // lblNoExtremeWS
+            // btnExportExtremeWSTable
             // 
-            this.lblNoExtremeWS.AutoSize = true;
-            this.lblNoExtremeWS.Location = new System.Drawing.Point(354, 362);
-            this.lblNoExtremeWS.Name = "lblNoExtremeWS";
-            this.lblNoExtremeWS.Size = new System.Drawing.Size(0, 19);
-            this.lblNoExtremeWS.TabIndex = 291;
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(822, 688);
+            this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
+            this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
+            this.btnExportExtremeWSTable.TabIndex = 324;
+            this.btnExportExtremeWSTable.Text = "Export Extreme WS Table";
+            this.btnExportExtremeWSTable.UseVisualStyleBackColor = true;
+            this.btnExportExtremeWSTable.Click += new System.EventHandler(this.btnExportExtremeWSTable_Click);
+            // 
+            // txtWMO_Desc
+            // 
+            this.txtWMO_Desc.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.txtWMO_Desc.Location = new System.Drawing.Point(179, 276);
+            this.txtWMO_Desc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtWMO_Desc.Name = "txtWMO_Desc";
+            this.txtWMO_Desc.ReadOnly = true;
+            this.txtWMO_Desc.Size = new System.Drawing.Size(156, 22);
+            this.txtWMO_Desc.TabIndex = 323;
+            // 
+            // label242
+            // 
+            this.label242.AutoSize = true;
+            this.label242.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.label242.Location = new System.Drawing.Point(193, 309);
+            this.label242.Name = "label242";
+            this.label242.Size = new System.Drawing.Size(75, 16);
+            this.label242.TabIndex = 322;
+            this.label242.Text = "Hour-to-Gust:";
+            // 
+            // txtWMO_HourGust
+            // 
+            this.txtWMO_HourGust.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.txtWMO_HourGust.Location = new System.Drawing.Point(270, 306);
+            this.txtWMO_HourGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtWMO_HourGust.Name = "txtWMO_HourGust";
+            this.txtWMO_HourGust.ReadOnly = true;
+            this.txtWMO_HourGust.Size = new System.Drawing.Size(65, 22);
+            this.txtWMO_HourGust.TabIndex = 321;
+            // 
+            // label243
+            // 
+            this.label243.AutoSize = true;
+            this.label243.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.label243.Location = new System.Drawing.Point(29, 309);
+            this.label243.Name = "label243";
+            this.label243.Size = new System.Drawing.Size(82, 16);
+            this.label243.TabIndex = 320;
+            this.label243.Text = "Hour-to-10min:";
+            this.label243.Click += new System.EventHandler(this.label243_Click);
+            // 
+            // txtWMO_HourTenMin
+            // 
+            this.txtWMO_HourTenMin.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.txtWMO_HourTenMin.Location = new System.Drawing.Point(114, 306);
+            this.txtWMO_HourTenMin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtWMO_HourTenMin.Name = "txtWMO_HourTenMin";
+            this.txtWMO_HourTenMin.ReadOnly = true;
+            this.txtWMO_HourTenMin.Size = new System.Drawing.Size(65, 22);
+            this.txtWMO_HourTenMin.TabIndex = 319;
+            this.txtWMO_HourTenMin.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // label241
+            // 
+            this.label241.AutoSize = true;
+            this.label241.Font = new System.Drawing.Font("Palatino Linotype", 8F, System.Drawing.FontStyle.Underline);
+            this.label241.Location = new System.Drawing.Point(50, 257);
+            this.label241.Name = "label241";
+            this.label241.Size = new System.Drawing.Size(147, 16);
+            this.label241.TabIndex = 317;
+            this.label241.Text = "WMO Gust Factor Estimates";
+            // 
+            // chkUseWMO_TenMin
+            // 
+            this.chkUseWMO_TenMin.AutoSize = true;
+            this.chkUseWMO_TenMin.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.chkUseWMO_TenMin.Location = new System.Drawing.Point(43, 547);
+            this.chkUseWMO_TenMin.Name = "chkUseWMO_TenMin";
+            this.chkUseWMO_TenMin.Size = new System.Drawing.Size(189, 20);
+            this.chkUseWMO_TenMin.TabIndex = 316;
+            this.chkUseWMO_TenMin.Text = "Use WMO Estimated Gust Factor";
+            this.chkUseWMO_TenMin.UseVisualStyleBackColor = true;
+            this.chkUseWMO_TenMin.CheckedChanged += new System.EventHandler(this.chkUseWMO_TenMin_CheckedChanged);
+            // 
+            // label240
+            // 
+            this.label240.AutoSize = true;
+            this.label240.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.label240.Location = new System.Drawing.Point(21, 280);
+            this.label240.Name = "label240";
+            this.label240.Size = new System.Drawing.Size(39, 16);
+            this.label240.TabIndex = 315;
+            this.label240.Text = "Class :";
+            // 
+            // cboWMO_Class
+            // 
+            this.cboWMO_Class.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.cboWMO_Class.FormattingEnabled = true;
+            this.cboWMO_Class.Location = new System.Drawing.Point(64, 277);
+            this.cboWMO_Class.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboWMO_Class.Name = "cboWMO_Class";
+            this.cboWMO_Class.Size = new System.Drawing.Size(101, 24);
+            this.cboWMO_Class.TabIndex = 314;
+            this.cboWMO_Class.SelectedIndexChanged += new System.EventHandler(this.cboWMO_Class_SelectedIndexChanged);
+            // 
+            // chkUseWMO_Gust
+            // 
+            this.chkUseWMO_Gust.AutoSize = true;
+            this.chkUseWMO_Gust.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.chkUseWMO_Gust.Location = new System.Drawing.Point(43, 375);
+            this.chkUseWMO_Gust.Name = "chkUseWMO_Gust";
+            this.chkUseWMO_Gust.Size = new System.Drawing.Size(189, 20);
+            this.chkUseWMO_Gust.TabIndex = 313;
+            this.chkUseWMO_Gust.Text = "Use WMO Estimated Gust Factor";
+            this.chkUseWMO_Gust.UseVisualStyleBackColor = true;
+            this.chkUseWMO_Gust.CheckedChanged += new System.EventHandler(this.chkUseWMO_Gust_CheckedChanged);
+            // 
+            // chkExtremeWS_ShowLegend
+            // 
+            this.chkExtremeWS_ShowLegend.AutoSize = true;
+            this.chkExtremeWS_ShowLegend.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.chkExtremeWS_ShowLegend.Location = new System.Drawing.Point(1472, 8);
+            this.chkExtremeWS_ShowLegend.Name = "chkExtremeWS_ShowLegend";
+            this.chkExtremeWS_ShowLegend.Size = new System.Drawing.Size(96, 20);
+            this.chkExtremeWS_ShowLegend.TabIndex = 312;
+            this.chkExtremeWS_ShowLegend.Text = "Show Legend";
+            this.chkExtremeWS_ShowLegend.UseVisualStyleBackColor = true;
+            this.chkExtremeWS_ShowLegend.CheckedChanged += new System.EventHandler(this.chkExtremeWS_ShowLegend_CheckedChanged);
+            // 
+            // label239
+            // 
+            this.label239.AutoSize = true;
+            this.label239.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label239.Location = new System.Drawing.Point(176, 113);
+            this.label239.Name = "label239";
+            this.label239.Size = new System.Drawing.Size(20, 18);
+            this.label239.TabIndex = 311;
+            this.label239.Text = "to";
+            this.label239.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // dateExtremeWS_End
+            // 
+            this.dateExtremeWS_End.CustomFormat = "MM/dd/yy HH:mm";
+            this.dateExtremeWS_End.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateExtremeWS_End.Location = new System.Drawing.Point(199, 110);
+            this.dateExtremeWS_End.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.dateExtremeWS_End.Name = "dateExtremeWS_End";
+            this.dateExtremeWS_End.Size = new System.Drawing.Size(129, 25);
+            this.dateExtremeWS_End.TabIndex = 310;
+            this.dateExtremeWS_End.ValueChanged += new System.EventHandler(this.dateExtremeWS_End_ValueChanged);
+            // 
+            // dateExtremeWS_Start
+            // 
+            this.dateExtremeWS_Start.CustomFormat = "MM/dd/yy HH:mm";
+            this.dateExtremeWS_Start.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateExtremeWS_Start.Location = new System.Drawing.Point(43, 110);
+            this.dateExtremeWS_Start.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.dateExtremeWS_Start.Name = "dateExtremeWS_Start";
+            this.dateExtremeWS_Start.Size = new System.Drawing.Size(129, 25);
+            this.dateExtremeWS_Start.TabIndex = 308;
+            this.dateExtremeWS_Start.ValueChanged += new System.EventHandler(this.dateExtremeWS_Start_ValueChanged);
+            // 
+            // lblGustExtremeWSUnavailable
+            // 
+            this.lblGustExtremeWSUnavailable.AutoSize = true;
+            this.lblGustExtremeWSUnavailable.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.lblGustExtremeWSUnavailable.ForeColor = System.Drawing.Color.Red;
+            this.lblGustExtremeWSUnavailable.Location = new System.Drawing.Point(29, 504);
+            this.lblGustExtremeWSUnavailable.Name = "lblGustExtremeWSUnavailable";
+            this.lblGustExtremeWSUnavailable.Size = new System.Drawing.Size(314, 17);
+            this.lblGustExtremeWSUnavailable.TabIndex = 307;
+            this.lblGustExtremeWSUnavailable.Text = "Cannot Estimate Extreme Gust at Extrapolated Heights";
+            // 
+            // label238
+            // 
+            this.label238.AutoSize = true;
+            this.label238.Location = new System.Drawing.Point(50, 228);
+            this.label238.Name = "label238";
+            this.label238.Size = new System.Drawing.Size(169, 19);
+            this.label238.TabIndex = 306;
+            this.label238.Text = "Extreme WS Height [m] :";
+            // 
+            // cboExtremeWS_Height
+            // 
+            this.cboExtremeWS_Height.FormattingEnabled = true;
+            this.cboExtremeWS_Height.Location = new System.Drawing.Point(225, 225);
+            this.cboExtremeWS_Height.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboExtremeWS_Height.Name = "cboExtremeWS_Height";
+            this.cboExtremeWS_Height.Size = new System.Drawing.Size(92, 26);
+            this.cboExtremeWS_Height.TabIndex = 305;
+            this.cboExtremeWS_Height.SelectedIndexChanged += new System.EventHandler(this.cboExtremeWS_Height_SelectedIndexChanged);
+            // 
+            // label235
+            // 
+            this.label235.AutoSize = true;
+            this.label235.Location = new System.Drawing.Point(181, 405);
+            this.label235.Name = "label235";
+            this.label235.Size = new System.Drawing.Size(26, 19);
+            this.label235.TabIndex = 304;
+            this.label235.Text = "μ :";
+            // 
+            // txtGumbelGustMu
+            // 
+            this.txtGumbelGustMu.Location = new System.Drawing.Point(219, 402);
+            this.txtGumbelGustMu.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtGumbelGustMu.Name = "txtGumbelGustMu";
+            this.txtGumbelGustMu.Size = new System.Drawing.Size(83, 25);
+            this.txtGumbelGustMu.TabIndex = 303;
+            this.txtGumbelGustMu.TextChanged += new System.EventHandler(this.txtGumbelGustMu_TextChanged);
+            // 
+            // label236
+            // 
+            this.label236.AutoSize = true;
+            this.label236.Location = new System.Drawing.Point(50, 405);
+            this.label236.Name = "label236";
+            this.label236.Size = new System.Drawing.Size(26, 19);
+            this.label236.TabIndex = 302;
+            this.label236.Text = "β :";
+            // 
+            // txtGumbelGustBeta
+            // 
+            this.txtGumbelGustBeta.Location = new System.Drawing.Point(82, 402);
+            this.txtGumbelGustBeta.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtGumbelGustBeta.Name = "txtGumbelGustBeta";
+            this.txtGumbelGustBeta.Size = new System.Drawing.Size(83, 25);
+            this.txtGumbelGustBeta.TabIndex = 301;
+            // 
+            // label234
+            // 
+            this.label234.AutoSize = true;
+            this.label234.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Underline);
+            this.label234.Location = new System.Drawing.Point(51, 523);
+            this.label234.Name = "label234";
+            this.label234.Size = new System.Drawing.Size(221, 19);
+            this.label234.TabIndex = 300;
+            this.label234.Text = "10-Min. WS Gumbel Distribution";
+            // 
+            // label233
+            // 
+            this.label233.AutoSize = true;
+            this.label233.Location = new System.Drawing.Point(178, 578);
+            this.label233.Name = "label233";
+            this.label233.Size = new System.Drawing.Size(26, 19);
+            this.label233.TabIndex = 299;
+            this.label233.Text = "μ :";
+            // 
+            // txtGumbelTenMinMu
+            // 
+            this.txtGumbelTenMinMu.Location = new System.Drawing.Point(219, 578);
+            this.txtGumbelTenMinMu.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtGumbelTenMinMu.Name = "txtGumbelTenMinMu";
+            this.txtGumbelTenMinMu.Size = new System.Drawing.Size(83, 25);
+            this.txtGumbelTenMinMu.TabIndex = 298;
+            // 
+            // label232
+            // 
+            this.label232.AutoSize = true;
+            this.label232.Location = new System.Drawing.Point(47, 578);
+            this.label232.Name = "label232";
+            this.label232.Size = new System.Drawing.Size(26, 19);
+            this.label232.TabIndex = 297;
+            this.label232.Text = "β :";
+            // 
+            // label231
+            // 
+            this.label231.AutoSize = true;
+            this.label231.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Underline);
+            this.label231.Location = new System.Drawing.Point(47, 348);
+            this.label231.Name = "label231";
+            this.label231.Size = new System.Drawing.Size(203, 19);
+            this.label231.TabIndex = 296;
+            this.label231.Text = "Gust WS Gumbel Distribution";
+            // 
+            // txtGumbelTenMinBeta
+            // 
+            this.txtGumbelTenMinBeta.Location = new System.Drawing.Point(82, 578);
+            this.txtGumbelTenMinBeta.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtGumbelTenMinBeta.Name = "txtGumbelTenMinBeta";
+            this.txtGumbelTenMinBeta.Size = new System.Drawing.Size(83, 25);
+            this.txtGumbelTenMinBeta.TabIndex = 295;
+            this.txtGumbelTenMinBeta.TextChanged += new System.EventHandler(this.txtGumbelTenMinAlpha_TextChanged);
+            // 
+            // chkUseSimData
+            // 
+            this.chkUseSimData.AutoSize = true;
+            this.chkUseSimData.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.chkUseSimData.Location = new System.Drawing.Point(55, 147);
+            this.chkUseSimData.Name = "chkUseSimData";
+            this.chkUseSimData.Size = new System.Drawing.Size(288, 20);
+            this.chkUseSimData.TabIndex = 294;
+            this.chkUseSimData.Text = "Use Long-Term Simulated (MCP\'d) data as Reference";
+            this.chkUseSimData.UseVisualStyleBackColor = true;
+            this.chkUseSimData.CheckedChanged += new System.EventHandler(this.chkUseSimData_CheckedChanged);
+            // 
+            // plotExtremeWS_TS
+            // 
+            this.plotExtremeWS_TS.Location = new System.Drawing.Point(957, 34);
+            this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
+            this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(611, 311);
+            this.plotExtremeWS_TS.TabIndex = 293;
+            this.plotExtremeWS_TS.Text = "plotView1";
+            this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotExtremeWS_TS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotExtremeWS_TS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // dataExtremeWS
+            // 
+            this.dataExtremeWS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataExtremeWS.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column17,
+            this.Column1,
+            this.Column20,
+            this.Column18,
+            this.Column2,
+            this.Column19,
+            this.Column16});
+            this.dataExtremeWS.Location = new System.Drawing.Point(358, 34);
+            this.dataExtremeWS.Name = "dataExtremeWS";
+            this.dataExtremeWS.Size = new System.Drawing.Size(584, 636);
+            this.dataExtremeWS.TabIndex = 292;
             // 
             // label195
             // 
             this.label195.AutoSize = true;
-            this.label195.Location = new System.Drawing.Point(49, 98);
+            this.label195.Location = new System.Drawing.Point(47, 48);
             this.label195.Name = "label195";
             this.label195.Size = new System.Drawing.Size(41, 19);
             this.label195.TabIndex = 290;
@@ -8454,7 +8867,7 @@ namespace ContinuumNS
             // label103
             // 
             this.label103.AutoSize = true;
-            this.label103.Location = new System.Drawing.Point(51, 175);
+            this.label103.Location = new System.Drawing.Point(49, 167);
             this.label103.Name = "label103";
             this.label103.Size = new System.Drawing.Size(75, 19);
             this.label103.TabIndex = 289;
@@ -8463,7 +8876,7 @@ namespace ContinuumNS
             // cboExtremeWSRef
             // 
             this.cboExtremeWSRef.FormattingEnabled = true;
-            this.cboExtremeWSRef.Location = new System.Drawing.Point(53, 198);
+            this.cboExtremeWSRef.Location = new System.Drawing.Point(51, 190);
             this.cboExtremeWSRef.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeWSRef.Name = "cboExtremeWSRef";
             this.cboExtremeWSRef.Size = new System.Drawing.Size(266, 26);
@@ -8472,10 +8885,10 @@ namespace ContinuumNS
             // 
             // plotExtremeWS
             // 
-            this.plotExtremeWS.Location = new System.Drawing.Point(505, 70);
+            this.plotExtremeWS.Location = new System.Drawing.Point(957, 359);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(1029, 626);
+            this.plotExtremeWS.Size = new System.Drawing.Size(611, 311);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8486,26 +8899,26 @@ namespace ContinuumNS
             // lblExtremeWS
             // 
             this.lblExtremeWS.AutoSize = true;
-            this.lblExtremeWS.Location = new System.Drawing.Point(176, 407);
+            this.lblExtremeWS.Location = new System.Drawing.Point(176, 484);
             this.lblExtremeWS.Name = "lblExtremeWS";
             this.lblExtremeWS.Size = new System.Drawing.Size(0, 19);
             this.lblExtremeWS.TabIndex = 286;
             // 
             // btnExtremeWS
             // 
-            this.btnExtremeWS.Location = new System.Drawing.Point(219, 615);
+            this.btnExtremeWS.Location = new System.Drawing.Point(202, 690);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
-            this.btnExtremeWS.Size = new System.Drawing.Size(100, 63);
+            this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);
             this.btnExtremeWS.TabIndex = 285;
-            this.btnExtremeWS.Text = "Export Extreme WS";
+            this.btnExtremeWS.Text = "Export Extreme WS Ests.";
             this.btnExtremeWS.UseVisualStyleBackColor = true;
             this.btnExtremeWS.Click += new System.EventHandler(this.btnExtremeWS_Click);
             // 
             // cboExtremeWSMet
             // 
             this.cboExtremeWSMet.FormattingEnabled = true;
-            this.cboExtremeWSMet.Location = new System.Drawing.Point(53, 124);
+            this.cboExtremeWSMet.Location = new System.Drawing.Point(51, 74);
             this.cboExtremeWSMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeWSMet.Name = "cboExtremeWSMet";
             this.cboExtremeWSMet.Size = new System.Drawing.Size(266, 26);
@@ -8514,40 +8927,40 @@ namespace ContinuumNS
             // 
             // txt1yrExtremeGust
             // 
-            this.txt1yrExtremeGust.Location = new System.Drawing.Point(219, 359);
+            this.txt1yrExtremeGust.Location = new System.Drawing.Point(219, 436);
             this.txt1yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt1yrExtremeGust.Name = "txt1yrExtremeGust";
-            this.txt1yrExtremeGust.Size = new System.Drawing.Size(96, 25);
+            this.txt1yrExtremeGust.Size = new System.Drawing.Size(83, 25);
             this.txt1yrExtremeGust.TabIndex = 283;
             // 
             // txt1yrExtreme10min
             // 
-            this.txt1yrExtreme10min.Location = new System.Drawing.Point(219, 324);
+            this.txt1yrExtreme10min.Location = new System.Drawing.Point(219, 611);
             this.txt1yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt1yrExtreme10min.Name = "txt1yrExtreme10min";
-            this.txt1yrExtreme10min.Size = new System.Drawing.Size(96, 25);
+            this.txt1yrExtreme10min.Size = new System.Drawing.Size(83, 25);
             this.txt1yrExtreme10min.TabIndex = 282;
             // 
             // txt50yrExtremeGust
             // 
-            this.txt50yrExtremeGust.Location = new System.Drawing.Point(220, 290);
+            this.txt50yrExtremeGust.Location = new System.Drawing.Point(219, 469);
             this.txt50yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt50yrExtremeGust.Name = "txt50yrExtremeGust";
-            this.txt50yrExtremeGust.Size = new System.Drawing.Size(96, 25);
+            this.txt50yrExtremeGust.Size = new System.Drawing.Size(83, 25);
             this.txt50yrExtremeGust.TabIndex = 281;
             // 
             // txt50yrExtreme10min
             // 
-            this.txt50yrExtreme10min.Location = new System.Drawing.Point(221, 256);
+            this.txt50yrExtreme10min.Location = new System.Drawing.Point(219, 643);
             this.txt50yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt50yrExtreme10min.Name = "txt50yrExtreme10min";
-            this.txt50yrExtreme10min.Size = new System.Drawing.Size(96, 25);
+            this.txt50yrExtreme10min.Size = new System.Drawing.Size(83, 25);
             this.txt50yrExtreme10min.TabIndex = 280;
             // 
             // label193
             // 
             this.label193.AutoSize = true;
-            this.label193.Location = new System.Drawing.Point(47, 359);
+            this.label193.Location = new System.Drawing.Point(47, 436);
             this.label193.Name = "label193";
             this.label193.Size = new System.Drawing.Size(166, 19);
             this.label193.TabIndex = 279;
@@ -8557,16 +8970,16 @@ namespace ContinuumNS
             // label194
             // 
             this.label194.AutoSize = true;
-            this.label194.Location = new System.Drawing.Point(47, 326);
+            this.label194.Location = new System.Drawing.Point(34, 613);
             this.label194.Name = "label194";
-            this.label194.Size = new System.Drawing.Size(147, 19);
+            this.label194.Size = new System.Drawing.Size(173, 19);
             this.label194.TabIndex = 278;
-            this.label194.Text = "1 yr Extreme (10 min)";
+            this.label194.Text = "1 yr Extreme WS (10 min)";
             // 
             // label192
             // 
             this.label192.AutoSize = true;
-            this.label192.Location = new System.Drawing.Point(48, 294);
+            this.label192.Location = new System.Drawing.Point(47, 473);
             this.label192.Name = "label192";
             this.label192.Size = new System.Drawing.Size(173, 19);
             this.label192.TabIndex = 277;
@@ -8575,17 +8988,17 @@ namespace ContinuumNS
             // label191
             // 
             this.label191.AutoSize = true;
-            this.label191.Location = new System.Drawing.Point(48, 260);
+            this.label191.Location = new System.Drawing.Point(33, 647);
             this.label191.Name = "label191";
-            this.label191.Size = new System.Drawing.Size(154, 19);
+            this.label191.Size = new System.Drawing.Size(180, 19);
             this.label191.TabIndex = 276;
-            this.label191.Text = "50 yr Extreme (10 min)";
+            this.label191.Text = "50 yr Extreme WS (10 min)";
             // 
             // label170
             // 
             this.label170.AutoSize = true;
             this.label170.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label170.Location = new System.Drawing.Point(38, 48);
+            this.label170.Location = new System.Drawing.Point(28, 20);
             this.label170.Name = "label170";
             this.label170.Size = new System.Drawing.Size(201, 23);
             this.label170.TabIndex = 275;
@@ -11730,6 +12143,52 @@ namespace ContinuumNS
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
+            // Column17
+            // 
+            this.Column17.HeaderText = "Year";
+            this.Column17.Name = "Column17";
+            this.Column17.ReadOnly = true;
+            this.Column17.Width = 50;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Max. Yearly Ref. Hourly WS [m/s]";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 80;
+            // 
+            // Column20
+            // 
+            this.Column20.HeaderText = "Max. Yearly Ref. Hourly WS Conc. With Met [m/s]";
+            this.Column20.Name = "Column20";
+            this.Column20.Width = 95;
+            // 
+            // Column18
+            // 
+            this.Column18.HeaderText = "Max. Yearly Actual 10-min WS [m/s]";
+            this.Column18.Name = "Column18";
+            this.Column18.Width = 80;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Max. Yearly Est. 10-min WS [m/s]";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.Width = 80;
+            // 
+            // Column19
+            // 
+            this.Column19.HeaderText = "Max. Yearly Actual Gust WS [m/s]";
+            this.Column19.Name = "Column19";
+            this.Column19.Width = 80;
+            // 
+            // Column16
+            // 
+            this.Column16.HeaderText = "Max Yearly Est. Gust WS [m/s]";
+            this.Column16.Name = "Column16";
+            this.Column16.ReadOnly = true;
+            this.Column16.Width = 80;
+            // 
             // Continuum
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -11783,6 +12242,7 @@ namespace ContinuumNS
             this.tabPage3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataExtremeWS)).EndInit();
             this.pgeMonthlyAnalysis.ResumeLayout(false);
             this.pgeMonthlyAnalysis.PerformLayout();
             this.pgeMaps.ResumeLayout(false);
@@ -12701,7 +13161,6 @@ namespace ContinuumNS
         private System.Windows.Forms.Label label161;
         public System.Windows.Forms.DataGridView dataTerrainComplex;
         public System.Windows.Forms.ComboBox cboTSIorTVIorP90;
-        public System.Windows.Forms.Label lblNoExtremeWS;
         public System.Windows.Forms.Label lblIEC_Complexity;
         internal System.Windows.Forms.Button btnCalcTerrainComplexity;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
@@ -12783,19 +13242,59 @@ namespace ContinuumNS
         private Label label224;
         private Button btnExportShearHisto;
         private Label label225;
-        private TextBox txtShearBestFitMinHeight;
-        private TextBox txtShearBestFitMaxHeight;
         private Label label226;
         private Label label227;
         private Button btnEditShearMethod;
-        private TextBox txtShearCalcMethod;
         private Button btnEditShearFromSiteConds;
-        private TextBox txtShearCalcTypes;
-        private TextBox txtMaxHeight;
-        private TextBox txtMinHeight;
         private Label label228;
         private Label label229;
         private Label label230;
+        public TextBox txtShearCalcMethod;
+        public TextBox txtShearBestFitMinHeight;
+        public TextBox txtShearBestFitMaxHeight;
+        public TextBox txtShearCalcMethodExtremeTab;
+        public TextBox txtMaxHeight;
+        public TextBox txtMinHeight;
+        public OxyPlot.WindowsForms.PlotView plotExtremeWS_TS;
+        public DataGridView dataExtremeWS;
+        public CheckBox chkUseSimData;
+        public TextBox txtGumbelTenMinBeta;
+        private Label label232;
+        private Label label231;
+        private Label label235;
+        public TextBox txtGumbelGustMu;
+        private Label label236;
+        public TextBox txtGumbelGustBeta;
+        private Label label234;
+        private Label label233;
+        public TextBox txtGumbelTenMinMu;
+        private Label label237;
+        public ComboBox cboMCP_Height;
+        internal Label label238;
+        public ComboBox cboExtremeWS_Height;
+        public Label lblGustExtremeWSUnavailable;
+        private Label label239;
+        public DateTimePicker dateExtremeWS_End;
+        public DateTimePicker dateExtremeWS_Start;
+        public CheckBox chkExtremeWS_ShowLegend;
+        public CheckBox chkUseWMO_Gust;
+        internal Label label240;
+        public ComboBox cboWMO_Class;
+        internal Label label241;
+        public CheckBox chkUseWMO_TenMin;
+        private Label label243;
+        public TextBox txtWMO_HourTenMin;
+        private Label label242;
+        public TextBox txtWMO_HourGust;
+        public TextBox txtWMO_Desc;
+        private Button btnExportExtremeWSTable;
+        private DataGridViewTextBoxColumn Column17;
+        private DataGridViewTextBoxColumn Column1;
+        private DataGridViewTextBoxColumn Column20;
+        private DataGridViewTextBoxColumn Column18;
+        private DataGridViewTextBoxColumn Column2;
+        private DataGridViewTextBoxColumn Column19;
+        private DataGridViewTextBoxColumn Column16;
     }
 }
 

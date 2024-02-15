@@ -20,8 +20,8 @@ namespace ContinuumNS
         public bool SRDH_IsCalc;
         /// <summary> True if met data is time series data </summary>
         public bool isTimeSeries;
-        /// <summary> True if met data QC filters are applied to time series data.  </summary>
-        public bool filteringEnabled;
+   //     /// <summary> True if met data QC filters are applied to time series data.  </summary>
+  //      public bool filteringEnabled; // MOVED TO MET CLASS
         /// <summary> True if MERRA2 data is uploaded and MCP is conducted  </summary>
         public bool isMCPd;
         /// <summary> True if MCP has been conducted at all met sites (time series only). Models and estimates are not created unless this is true.  </summary>
@@ -104,7 +104,7 @@ namespace ContinuumNS
             WS_FirstInt = 0.5; // represents upper bound of first wind speed bin (to be consistent with TAB file format)
             WS_IntSize = 1;
 
-            filteringEnabled = true;
+      //      filteringEnabled = true;
 
         }
 
@@ -226,7 +226,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Filters time series data, extrapolates to modeled height, and adds met site to collection. </summary>
-        public void FilterExtrapolateAddMetTimeSeries(string metName, double UTMX, double UTMY, Met_Data_Filter metData, Continuum thisInst)
+        public void FilterExtrapolateAddMetTimeSeries(string metName, double UTMX, double UTMY, Met_Data_Filter metData, Continuum thisInst, bool applyFilters)
         {
             int newCount = ThisCount;
             Array.Resize(ref metItem, newCount + 1);
@@ -236,8 +236,9 @@ namespace ContinuumNS
             metItem[newCount].UTMX = UTMX;
             metItem[newCount].UTMY = UTMY;
             metItem[newCount].metData = metData;
-            if (filteringEnabled)
-                metItem[newCount].metData.FilterData(thisInst.GetFiltersToApply());
+            metItem[newCount].metData.filteringEnabled = applyFilters;
+            if (applyFilters)                
+                metItem[newCount].metData.FilterData(thisInst.GetFiltersToApply(metItem[newCount]));            
             metItem[newCount].metData.EstimateAlpha();
             metItem[newCount].metData.ExtrapolateData(thisInst.modeledHeight);
                         
@@ -289,6 +290,11 @@ namespace ContinuumNS
 
                     foreach (var N in temp_db)
                         context.Temp_table.Remove(N);
+
+                    var baro_db = from N in context.Baro_table where N.metName == metname select N;
+
+                    foreach (var N in baro_db)
+                        context.Baro_table.Remove(N);
 
                     context.SaveChanges();                    
                 }                
@@ -348,14 +354,12 @@ namespace ContinuumNS
         {                        
             for (int i = 0; i < ThisCount; i++)
             {
-                if (metItem[i].mcp != null)
-                {
-                    metItem[i].mcp.New_MCP(true, false, thisInst);
-                    metItem[i].WSWD_Dists = new Met.WSWD_Dist[0];
-                }
+                for (int m = 0; m < metItem[i].GetNumMCP(); m++)                
+                    if (metItem[i].mcpList[m] != null)                    
+                        metItem[i].mcpList[m].New_MCP(true, false, thisInst);                  
 
-                metItem[i].metData.ClearAlphaAndSimulatedEstimates();
-                metItem[i].WSWD_Dists = null;
+                metItem[i].WSWD_Dists = new Met.WSWD_Dist[0];
+                metItem[i].metData.ClearAlphaAndSimulatedEstimates();                
             }               
                            
         }
@@ -1399,7 +1403,7 @@ namespace ContinuumNS
 
         /// <summary> Reads in formatted .csv file with anem, vane, and temp data. Adds the new met to metList. Filters (using all filters) and 
         /// extrapolates to modeled height (specified on Input tab) Returns true if met data successfully read in. </summary>
-        public bool ImportFilterExtrapMetData(string filename, Continuum thisInst)
+        public bool ImportFilterExtrapMetData(string filename, Continuum thisInst, bool applyFilters)
         {           
             Met_Data_Filter thisMetData = new Met_Data_Filter();
             string[] header;
@@ -1834,7 +1838,7 @@ namespace ContinuumNS
                         return false;
                     }
 
-                    FilterExtrapolateAddMetTimeSeries(thisName, thisUTMX, thisUTMY, thisMetData, thisInst);
+                    FilterExtrapolateAddMetTimeSeries(thisName, thisUTMX, thisUTMY, thisMetData, thisInst, applyFilters);
                 }
                 catch
                 {
@@ -1859,7 +1863,7 @@ namespace ContinuumNS
               
 
         /// <summary> Runs MCP at selected met site using selected MCP method. </summary>       
-        public void RunMCP(ref Met thisMet, Reference thisRef, Continuum thisInst, string MCP_method)
+ /*       public void RunMCP_OLD(ref Met thisMet, Reference thisRef, Continuum thisInst, string MCP_method)
         {            
             thisMet.mcp = new MCP();
             thisMet.mcp.New_MCP(true, true, thisInst); // reads the MCP settings from MCP tab
@@ -1875,6 +1879,38 @@ namespace ContinuumNS
             if (thisMet.mcp.concData.Length > 0)
                 thisMet.mcp.DoMCP(thisMet.mcp.GetStartOrEndDate("Concurrent", "Start"), thisMet.mcp.GetStartOrEndDate("Concurrent", "End"), true, MCP_method, thisInst, thisMet);                                   
             
+        }
+ */
+
+        /// <summary> Runs MCP at selected met site using selected MCP method at each measured height. </summary>       
+        public void RunMCP(ref Met thisMet, Reference thisRef, Continuum thisInst, string MCP_method)
+        {
+            double[] measHeights = thisMet.metData.GetHeightsOfAnems();
+            thisMet.mcpList = new MCP[1 + measHeights.Length]; // Generate MCP estimates at all measured heights
+
+            for (int m = 0; m < 1 + measHeights.Length; m++)
+            {
+                double thisHeight = thisInst.modeledHeight;
+
+                if (m > 0) // one of measured heights
+                    thisHeight = measHeights[m - 1];
+
+                thisMet.mcpList[m] = new MCP();
+                thisMet.mcpList[m].New_MCP(true, true, thisInst); // reads the MCP settings from MCP tab
+                thisMet.mcpList[m].height = thisHeight;
+
+                // Get reference data as the reference data
+                thisMet.mcpList[m].reference = thisRef;
+                thisMet.mcpList[m].refData = thisMet.mcpList[m].GetRefData(thisRef, ref thisMet, thisInst);
+
+                // Get extrapolated met dat as the target data
+                thisMet.mcpList[m].targetData = thisMet.mcpList[m].GetTargetData(thisHeight, thisMet);
+
+                thisMet.mcpList[m].FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate);
+
+                if (thisMet.mcpList[m].concData.Length > 0)
+                    thisMet.mcpList[m].DoMCP(thisMet.mcpList[m].GetStartOrEndDate("Concurrent", "Start"), thisMet.mcpList[m].GetStartOrEndDate("Concurrent", "End"), true, MCP_method, thisInst, thisMet);
+            }
         }
 
         /// <summary> Adds met time series data to database and clears data from object. </summary>       
@@ -1893,15 +1929,19 @@ namespace ContinuumNS
 
         /// <summary> Clears all MCP reference, target, concurrent and LT estimate data. Not saved in file. It's regenerated as needed. </summary>
         public void ClearMCPRefTargetConcLTEstData()
-        {           
+        {
+            
             for (int i = 0; i < ThisCount; i++)
             {
-                if (metItem[i].mcp != null)
+                for (int m = 0; m < ThisCount; m++)
                 {
-                    metItem[i].mcp.refData = new MCP.Site_data[0];
-                    metItem[i].mcp.targetData = new MCP.Site_data[0];
-                    metItem[i].mcp.concData = new MCP.Concurrent_data[0];
-                    metItem[i].mcp.LT_WS_Ests = new MCP.Site_data[0];                   
+                    if (metItem[i].mcpList[m] != null)
+                    {
+                        metItem[i].mcpList[m].refData = new MCP.Site_data[0];
+                        metItem[i].mcpList[m].targetData = new MCP.Site_data[0];
+                        metItem[i].mcpList[m].concData = new MCP.Concurrent_data[0];
+                        metItem[i].mcpList[m].LT_WS_Ests = new MCP.Site_data[0];
+                    }
                 }
             }
         }
@@ -1950,9 +1990,9 @@ namespace ContinuumNS
 
             for (int i = 0; i < ThisCount; i++)
             {
-                if (metItem[i].mcp == null)
+                if (metItem[i].mcpList == null)
                     allMCPd = false;
-                else if (metItem[i].mcp.HaveMCP_Estimate("Any") == false)
+                else if (metItem[i].mcpList[0].HaveMCP_Estimate("Any") == false)
                     allMCPd = false;
             }
 
@@ -2001,8 +2041,15 @@ namespace ContinuumNS
                 {
                     if (metsUsed[u] == metItem[m].name)
                     {
-                        thisRef = metItem[m].mcp.reference;
-                        break;
+                        if (metItem[m].GetNumMCP() > 0)
+                        {
+                            thisRef = metItem[m].mcpList[0].reference;
+                            break;
+                        }
+                        else
+                        {                            
+                            break;
+                        }                        
                     }
                 }
             }

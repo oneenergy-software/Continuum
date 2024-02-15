@@ -31,6 +31,8 @@ namespace ContinuumNS
         public Met_Data_Filter metData;
         /// <summary> MCP (Measure-Correlate-Predict) long-term estimate </summary>
         public MCP mcp;
+   //     /// <summary> List of MCP (Measure-Correlate-Predict) long-term estimates </summary>
+        public MCP[] mcpList;
         /// <summary> Measured turbulence intensity (from time series data) </summary>
         public Turbulence turbulence;
                 
@@ -99,6 +101,8 @@ namespace ContinuumNS
         /// <summary> Holds array of measured maximum wind speeds and 1-year/50-year estimated long-term extreme wind speed. </summary>
         public struct Extreme_WindSpeed
         {
+            // LT Extreme WS Estimates (10-min and Gust 1yr and 5 yr maximum WS)
+
             /// <summary> 50-year extreme 10-minute wind speed estimate </summary>
             public double tenMin50yr;
             /// <summary> 1-year extreme 10-minute wind speed estimate </summary>
@@ -107,12 +111,38 @@ namespace ContinuumNS
             public double gust50yr;
             /// <summary> 1-year extreme gust estimate </summary>
             public double gust1yr;
-            /// <summary> Full years of met data </summary>
-            public double[] yearsOfOcc;
-            /// <summary> Maximum ten-minute WS by year </summary>
-            public double[] maxTenMin;
-            /// <summary> Maximum WS gusts by year </summary>
-            public double[] maxGust;
+
+            /// <summary> Gumbel distributions: Max WS (10-min or Gust) </summary>
+            public ExtremeWS_Curves[] extremeCurve;
+
+            /// <summary> Maximum Actual 10-min WS by year </summary>
+            public MaxYearlyWind[] maxMetTenMin;
+            /// <summary> Maximum Actual Gust by year </summary>
+            public MaxYearlyWind[] maxMetGust;
+
+            /// <summary> Maximum Hourly WS concurrent with met years (i.e. if full year at met then same as maxHourlyRefWS) </summary>
+            public MaxYearlyWind[] maxHourlyRefConcWS;
+
+            /// <summary> Maximum Hourly WS by year (LT Reference or MCP'd data) </summary>
+            public MaxYearlyWind[] maxHourlyRefWS;
+            /// <summary> Maximum Estimated 10-min WS by year </summary>
+            public MaxYearlyWind[] maxEstTenMin;
+            /// <summary> Maximum Estimated Gust WS by year </summary>
+            public MaxYearlyWind[] maxEstGust;
+
+            /// <summary> 10-min Gumbel distribution </summary>
+            public GumbelDistCoeffs tenMinDist;
+            /// <summary> Gust Gumbel distribution </summary>
+            public GumbelDistCoeffs gustDist;
+            
+            
+        }
+
+        /// <summary> Extreme WS Gumbel distribution coefficients </summary>
+        public struct GumbelDistCoeffs
+        {
+            public double mu;
+            public double beta;            
         }
 
         /// <summary> Holds maximum wind speed and year of measurement. </summary>
@@ -121,9 +151,23 @@ namespace ContinuumNS
             /// <summary> Maximum measured wind speed. </summary>
             public double maxWS;
             /// <summary> Year of measurement. </summary>
-            public int thisYear; 
+            public int thisYear;
+
+            public DateTime startTime;
+            public DateTime endTime;
         }
 
+        public struct ExtremeWS_Curves
+        {
+            /// <summary> Years of occurrence </summary>
+            public double yearsOfOcc;
+            /// <summary> Maximum ten-minute WS by year of occurrence </summary>
+            public double maxTenMin;
+            /// <summary> Maximum WS gusts by year of occurrence </summary>
+            public double maxGust;
+        }               
+
+        
         
         /// <summary> Season enumeration: Winter, Spring, Summer, Fall, All </summary>
         public enum Season
@@ -164,6 +208,14 @@ namespace ContinuumNS
                 else
                     return WSWD_Dists.Length;
             }
+        }
+
+        public int GetNumMCP()
+        {
+            if (mcpList == null)
+                return 0;
+            else
+                return mcpList.Length;
         }
 
         /// <summary> Adds an exposure with specified radius of investigation and inverse distance weight exponent to list of exposures </summary>
@@ -401,7 +453,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates and returns the wind speed and wind direction distribution based on a long-term time series estimate  </summary>        
-        public WSWD_Dist CalcLT_WSWD_Dists(double thisHeight, TOD thisTOD, Season thisSeason, Continuum thisInst, MCP.Site_data[] LT_WS_Ests)
+        public WSWD_Dist CalcLT_WSWD_Dists(double thisHeight, TOD thisTOD, Season thisSeason, Continuum thisInst, MCP thisMCP)
         {            
             WSWD_Dist thisDist = new WSWD_Dist();
             thisDist.height = thisHeight;
@@ -417,16 +469,16 @@ namespace ContinuumNS
             double sumPower = 0; // Sum of estimated power used for energy rose
             int[] secCount = new int[thisInst.metList.numWD]; // Sectorwise count used for sectorwise wind speed ratios and sectorwise wind speed distributions             
             
-            for (int i = 0; i < LT_WS_Ests.Length; i++)            
+            for (int i = 0; i < thisMCP.LT_WS_Ests.Length; i++)            
             {
-                TOD siteDataTOD = thisInst.metList.GetTOD(LT_WS_Ests[i].thisDate); 
-                Season siteDataSeason = thisInst.metList.GetSeason(LT_WS_Ests[i].thisDate);
+                TOD siteDataTOD = thisInst.metList.GetTOD(thisMCP.LT_WS_Ests[i].thisDate); 
+                Season siteDataSeason = thisInst.metList.GetSeason(thisMCP.LT_WS_Ests[i].thisDate);
                 
                 if ((thisTOD == TOD.All || thisTOD == siteDataTOD) && (thisSeason == Season.All || thisSeason == siteDataSeason))
                 {
-                    double thisPower = 0.5 * thisInst.modelList.airDens * Math.PI * Math.Pow(thisInst.modelList.rotorDiam / 2, 2) * Math.Pow(LT_WS_Ests[i].thisWS, 3) / 1000; // Power in wind
-                    int WS_ind = mcp.Get_WS_ind(LT_WS_Ests[i].thisWS, 1);
-                    int WD_ind = mcp.Get_WD_ind(LT_WS_Ests[i].thisWD);
+                    double thisPower = 0.5 * thisInst.modelList.airDens * Math.PI * Math.Pow(thisInst.modelList.rotorDiam / 2, 2) * Math.Pow(thisMCP.LT_WS_Ests[i].thisWS, 3) / 1000; // Power in wind
+                    int WS_ind = thisMCP.Get_WS_ind(thisMCP.LT_WS_Ests[i].thisWS, 1);
+                    int WD_ind = thisMCP.Get_WD_ind(thisMCP.LT_WS_Ests[i].thisWD);
 
                     if (WS_ind >= thisInst.metList.numWS) WS_ind = thisInst.metList.numWS - 1;
 
@@ -440,8 +492,8 @@ namespace ContinuumNS
                     allCount++;
                     secCount[WD_ind]++;
 
-                    thisDist.WS = thisDist.WS + LT_WS_Ests[i].thisWS; // Overall wind speed
-                    thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] + LT_WS_Ests[i].thisWS; // Sectorwise wind speed 
+                    thisDist.WS = thisDist.WS + thisMCP.LT_WS_Ests[i].thisWS; // Overall wind speed
+                    thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] + thisMCP.LT_WS_Ests[i].thisWS; // Sectorwise wind speed 
                 }                
             }
 
@@ -562,63 +614,68 @@ namespace ContinuumNS
             return thisDist;
         }
 
-        /// <summary> Calculates all long-term (i.e. based on MCP'd data) wind speed / wind direction distributions and saves to list  </summary>   
-        public void CalcAllLT_WSWD_Dists(Continuum thisInst, MCP.Site_data[] LT_WS_Ests)
-        {            
-            if (mcp.HaveMCP_Estimate("Any") == false)
-                return;
+        /// <summary> Calculates all long-term (i.e. based on MCP'd data) wind speed / wind direction distributions (at all measured heights and modeled height) and saves to list  </summary>   
+        public void CalcAllLT_WSWD_Dists(Continuum thisInst)
+        {
+            for (int m = 0; m < mcpList.Length; m++)
+            {
+                MCP thisMCP = mcpList[m];
 
-            WSWD_Dist thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.All, Season.All, thisInst, LT_WS_Ests);
-            AddWSWD_Dist(thisDist);
-            
-            if (mcp.numTODs > 1 && mcp.numSeasons == 1) // Using diurnal models but not seasonal
-            {
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Day, Season.All, thisInst, LT_WS_Ests);
+                if (thisMCP.HaveMCP_Estimate("Any") == false)
+                    return;
+
+                WSWD_Dist thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.All, Season.All, thisInst, thisMCP);
                 AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Night, Season.All, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);                
+
+                if (thisMCP.numTODs > 1 && thisMCP.numSeasons == 1) // Using diurnal models but not seasonal
+                {
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Day, Season.All, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Night, Season.All, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+                }
+                else if (thisMCP.numTODs == 1 && thisMCP.numSeasons > 1) // Using seasonal models but not diurnal
+                {
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.All, Season.Winter, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.All, Season.Spring, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.All, Season.Summer, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.All, Season.Fall, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+                }
+                else if (thisMCP.numTODs > 1 && thisMCP.numSeasons > 1) // Using seasonal and diurnal models
+                {
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Day, Season.Winter, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Day, Season.Spring, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Day, Season.Summer, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Day, Season.Fall, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Night, Season.Winter, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Night, Season.Spring, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Night, Season.Summer, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+
+                    thisDist = CalcLT_WSWD_Dists(thisMCP.height, TOD.Night, Season.Fall, thisInst, thisMCP);
+                    AddWSWD_Dist(thisDist);
+                }
             }
-            else if (mcp.numTODs == 1 && mcp.numSeasons > 1) // Using seasonal models but not diurnal
-            {
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.All, Season.Winter, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.All, Season.Spring, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.All, Season.Summer, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.All, Season.Fall, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);                
-            }
-            else if (mcp.numTODs > 1 && mcp.numSeasons > 1) // Using seasonal and diurnal models
-            {
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Day, Season.Winter, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Day, Season.Spring, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Day, Season.Summer, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Day, Season.Fall, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Night, Season.Winter, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Night, Season.Spring, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Night, Season.Summer, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);
-                
-                thisDist = CalcLT_WSWD_Dists(thisInst.modeledHeight, TOD.Night, Season.Fall, thisInst, LT_WS_Ests);
-                AddWSWD_Dist(thisDist);                
-            }            
             
         }
 
@@ -942,14 +999,100 @@ namespace ContinuumNS
             return alphaPValAndCount;
         }
 
-        /// <summary> Finds and returns maximum 10-minute or gust for each full year of data.  </summary>
-        public MaxYearlyWind[] GetMaxYearlyWinds(string tenMinOrGust, Continuum thisInst)
+        /// <summary> Finds and returns maximum 10-minute WS for each year of data extrapolated to specified height.  Minimum of 30 days needed per year </summary>        
+        public MaxYearlyWind[] GetMaxYearlyExtrapWinds(double height)
+        {
+            MaxYearlyWind[] maxYearlyWinds = new MaxYearlyWind[0];
+            int dataInd = 0;
+
+            Met_Data_Filter.Sim_TS thisSimTS = metData.GetSimulatedTimeSeries(height);
+
+            int lastYear = thisSimTS.WS_WD_data[dataInd].timeStamp.Year;
+            int firstTS_IndexThisYear = 0;
+            DateTime firstTSInThisYear = new DateTime();
+            int lastTS_IndexThisYear = thisSimTS.WS_WD_data.Length - 1;
+            DateTime lastTSInThisYear = new DateTime();
+
+            double maxWS = 0;
+            int yearInd = 0;
+
+            for (int i = dataInd; i < thisSimTS.WS_WD_data.Length; i++)
+            {
+                int thisYear = thisSimTS.WS_WD_data[i].timeStamp.Year;
+
+                if (thisYear == lastYear)
+                {                    
+                    if (thisSimTS.WS_WD_data[i].WS > maxWS)
+                        maxWS = thisSimTS.WS_WD_data[i].WS; 
+                }
+                else
+                {
+                    // Only add max yearly winds if have at least 30 days of data for this year                    
+                    firstTS_IndexThisYear = 0;
+
+                    while (thisSimTS.WS_WD_data[firstTS_IndexThisYear].timeStamp.Year < lastYear && firstTS_IndexThisYear < thisSimTS.WS_WD_data.Length - 1)
+                        firstTS_IndexThisYear++;
+
+                    firstTSInThisYear = thisSimTS.WS_WD_data[firstTS_IndexThisYear].timeStamp;
+
+                    lastTS_IndexThisYear = thisSimTS.WS_WD_data.Length - 1;
+
+                    while (thisSimTS.WS_WD_data[lastTS_IndexThisYear].timeStamp.Year > lastYear && lastTS_IndexThisYear > 0)
+                        lastTS_IndexThisYear--;
+
+                    lastTSInThisYear = thisSimTS.WS_WD_data[lastTS_IndexThisYear].timeStamp;
+
+                    if (lastTSInThisYear.Subtract(firstTSInThisYear).TotalDays > 30)
+                    {
+                        Array.Resize(ref maxYearlyWinds, yearInd + 1);
+                        maxYearlyWinds[yearInd].maxWS = maxWS;
+                        maxYearlyWinds[yearInd].thisYear = lastYear;
+                        maxYearlyWinds[yearInd].startTime = firstTSInThisYear;
+                        maxYearlyWinds[yearInd].endTime = lastTSInThisYear;
+                    }
+                                        
+                    maxWS = thisSimTS.WS_WD_data[i].WS;
+                    lastYear = thisYear;
+                    yearInd++;
+                }
+            }
+
+            // Only add max yearly winds if have at least 30 days of data for this year                    
+            firstTS_IndexThisYear = 0;
+
+            while (thisSimTS.WS_WD_data[firstTS_IndexThisYear].timeStamp.Year < lastYear && firstTS_IndexThisYear < thisSimTS.WS_WD_data.Length - 1)
+                firstTS_IndexThisYear++;
+
+            firstTSInThisYear = thisSimTS.WS_WD_data[firstTS_IndexThisYear].timeStamp;
+
+            lastTS_IndexThisYear = thisSimTS.WS_WD_data.Length - 1;
+
+            while (thisSimTS.WS_WD_data[lastTS_IndexThisYear].timeStamp.Year > lastYear && lastTS_IndexThisYear > 0)
+                lastTS_IndexThisYear--;
+
+            lastTSInThisYear = thisSimTS.WS_WD_data[lastTS_IndexThisYear].timeStamp;
+
+            if (lastTSInThisYear.Subtract(firstTSInThisYear).TotalDays > 30)
+            {
+                Array.Resize(ref maxYearlyWinds, yearInd + 1);
+                maxYearlyWinds[yearInd].maxWS = maxWS;
+                maxYearlyWinds[yearInd].thisYear = lastYear;
+                maxYearlyWinds[yearInd].startTime = firstTSInThisYear;
+                maxYearlyWinds[yearInd].endTime = lastTSInThisYear;
+            }
+
+            return maxYearlyWinds;
+
+        }
+
+        /// <summary> Finds and returns maximum 10-minute or gust for each year of data at measured height closest to specified height.  Minimum of 30 days needed per year. </summary>
+        public MaxYearlyWind[] GetMaxYearlyWinds(string tenMinOrGust, double height)
         {
             MaxYearlyWind[] maxYearlyWinds = new MaxYearlyWind[0];
             int dataInd = 0;
 
             // Get anems closest to hub height
-            int[] anemInds = metData.GetAnemsClosestToHH(thisInst.modeledHeight);
+            int[] anemInds = metData.GetAnemsClosestToHH(height);
             Met_Data_Filter.Anem_Data anem1 = metData.anems[anemInds[0]];
             Met_Data_Filter.Anem_Data anem2 = new Met_Data_Filter.Anem_Data();
             bool gotAnem2 = false;
@@ -957,21 +1100,14 @@ namespace ContinuumNS
             {
                 anem2 = metData.anems[anemInds[1]];
                 gotAnem2 = true;
-            }                
-
-            // Go to first Jan 1            
-            while (dataInd < anem1.windData.Length && (anem1.windData[dataInd].timeStamp.Month != 1 || anem1.windData[dataInd].timeStamp.Day != 1))
-                dataInd++;
-
-            if (dataInd >= anem1.windData.Length) // no Jan. 1 in dataset
-                return maxYearlyWinds;
+            }           
 
             int lastYear = anem1.windData[dataInd].timeStamp.Year;
+            int firstTS_IndexThisYear = 0;
+            DateTime firstTSInThisYear = new DateTime();
+            int lastTS_IndexThisYear = anem1.windData.Length - 1;
+            DateTime lastTSInThisYear = new DateTime();
 
-            // Check to see that end data is after 12/31 of year
-            if (anem1.windData[anem1.windData.Length - 1].timeStamp.Year == lastYear)
-                return maxYearlyWinds;
-                            
             double maxWS = 0;            
             int yearInd = 0;
 
@@ -1000,9 +1136,29 @@ namespace ContinuumNS
                 }
                 else
                 {
-                    Array.Resize(ref maxYearlyWinds, yearInd + 1);
-                    maxYearlyWinds[yearInd].maxWS = maxWS;
-                    maxYearlyWinds[yearInd].thisYear = lastYear;
+                    // Only add max yearly winds if have at least 30 days of data for this year                    
+                    firstTS_IndexThisYear = 0;
+
+                    while (anem1.windData[firstTS_IndexThisYear].timeStamp.Year < lastYear && firstTS_IndexThisYear < anem1.windData.Length - 1)
+                        firstTS_IndexThisYear++;
+
+                    firstTSInThisYear = anem1.windData[firstTS_IndexThisYear].timeStamp;
+                    
+                    lastTS_IndexThisYear = anem1.windData.Length - 1;
+
+                    while (anem1.windData[lastTS_IndexThisYear].timeStamp.Year > lastYear && lastTS_IndexThisYear > 0)
+                        lastTS_IndexThisYear--;
+
+                    lastTSInThisYear = anem1.windData[lastTS_IndexThisYear].timeStamp;
+
+                    if (lastTSInThisYear.Subtract(firstTSInThisYear).TotalDays > 30)
+                    {
+                        Array.Resize(ref maxYearlyWinds, yearInd + 1);
+                        maxYearlyWinds[yearInd].maxWS = maxWS;
+                        maxYearlyWinds[yearInd].thisYear = lastYear;
+                        maxYearlyWinds[yearInd].startTime = firstTSInThisYear;
+                        maxYearlyWinds[yearInd].endTime = lastTSInThisYear;
+                    }
 
                     if (tenMinOrGust == "10-min")
                     {
@@ -1023,183 +1179,254 @@ namespace ContinuumNS
                     yearInd++;
                 }
             }
+            
+            // Only add max yearly winds if have at least 30 days of data for this year                    
+            firstTS_IndexThisYear = 0;
 
-            // If dataset ends on 12/31, use max wind speed in list (otherwise don't since it's not a full year)
-            if (anem1.windData[anem1.windData.Length - 1].timeStamp.Month == 12 && anem1.windData[anem1.windData.Length - 1].timeStamp.Day == 31)
+            while (anem1.windData[firstTS_IndexThisYear].timeStamp.Year < lastYear && firstTS_IndexThisYear < anem1.windData.Length - 1)
+                firstTS_IndexThisYear++;
+
+            firstTSInThisYear = anem1.windData[firstTS_IndexThisYear].timeStamp;
+
+            lastTS_IndexThisYear = anem1.windData.Length - 1;
+
+            while (anem1.windData[lastTS_IndexThisYear].timeStamp.Year > lastYear && lastTS_IndexThisYear > 0)
+                lastTS_IndexThisYear--;
+
+            lastTSInThisYear = anem1.windData[lastTS_IndexThisYear].timeStamp;
+
+            if (lastTSInThisYear.Subtract(firstTSInThisYear).TotalDays > 30)
             {
                 Array.Resize(ref maxYearlyWinds, yearInd + 1);
                 maxYearlyWinds[yearInd].maxWS = maxWS;
                 maxYearlyWinds[yearInd].thisYear = lastYear;
-            }
+                maxYearlyWinds[yearInd].startTime = firstTSInThisYear;
+                maxYearlyWinds[yearInd].endTime = lastTSInThisYear;
+            }      
 
             return maxYearlyWinds;
         }
 
         /// <summary> Calculates and returns extreme wind speeds estimates (1 yr and 50 yr, 10-min and Gust).  </summary>
-        public Extreme_WindSpeed CalcExtremeWindSpeeds(Continuum thisInst, Reference thisRef)
+        public Extreme_WindSpeed CalcExtremeWindSpeeds(Continuum thisInst)
         {            
             Extreme_WindSpeed extremeWinds = new Extreme_WindSpeed();
 
-            // Get MERRA2 data used for this met
-            //     UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(UTMX, UTMY);
-            //     int UTC_offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-
-            //     if (thisInst.refList.GotReference(theseLL.latitude, theseLL.longitude) == false)
-            //         return extremeWinds;
-
-            //     Reference thisMERRA = thisInst.refList.GetReference("MERRA2", theseLL.latitude, theseLL.longitude, 0);   // TO DO: Read selected reference          
-            //     int refLength = thisRef.interpData.TS_Data.Length;
-
-            //     if (thisRef.interpData.TS_Data.Length == 0)
-            //     {
-            //         thisRef.GetReferenceDataFromDB(thisInst);
-            //         thisRef.GetInterpData(thisInst.UTM_conversions);
-            //     }
-
-            if (thisRef.interpData.TS_Data == null || metData == null)
+            if (thisInst.cboExtremeWS_Height.SelectedItem == null)
                 return extremeWinds;
 
-            if (thisRef.interpData.TS_Data.Length == 0)
-                return extremeWinds;
+            double selHeight = Convert.ToDouble(thisInst.cboExtremeWS_Height.SelectedItem.ToString());
+                        
+            bool extrapHeightChosen = false;
+            if (selHeight == thisInst.modeledHeight)
+                extrapHeightChosen = true;
 
-            if (metData.GetNumAnems() > 0)
-            {
-                if (metData.anems[0].windData == null)
-                    metData.GetSensorDataFromDB(thisInst, name);
+            DateTime thisStart = thisInst.dateExtremeWS_Start.Value;
+            DateTime thisEnd = thisInst.dateExtremeWS_End.Value;
 
-                if (metData.anems[0].windData == null)
-                    return extremeWinds;
+            bool useWMO_HourTenMin = thisInst.chkUseWMO_TenMin.Checked;
+            bool useWMO_HourGust = thisInst.chkUseWMO_Gust.Checked;
+
+            if (thisInst.chkUseSimData.Checked)
+            {                
+                MCP thisMCP = GetMCP_ByHeight(selHeight);
+                extremeWinds.maxHourlyRefWS = thisMCP.GetMaxHourlyWindSpeeds();                              
             }
             else
-                return extremeWinds;
+            {
+                Reference thisRef = thisInst.GetSelectedReference("Extreme WS");
 
-            // Create array of max hourly wind speed every year (MERRA2 data)
-            MaxYearlyWind[] maxHourlyRefWS = thisRef.GetMaxHourlyWindSpeeds();
+                if (thisRef.interpData.TS_Data == null || metData == null)
+                    return extremeWinds;
 
-            // Find max 10-min and max gust for every full year of data (Jan - Dec)            
-            MaxYearlyWind[] maxMetTenMin = GetMaxYearlyWinds("10-min", thisInst);
-            MaxYearlyWind[] maxMetGust = GetMaxYearlyWinds("Gust", thisInst);
+                if (thisRef.interpData.TS_Data.Length == 0)
+                    return extremeWinds;
 
-            if (maxMetTenMin.Length == 0)
+                if (metData.GetNumAnems() > 0)
+                {
+                    if (metData.anems[0].windData == null)
+                        metData.GetSensorDataFromDB(thisInst, name);
+
+                    if (metData.anems[0].windData == null)
+                        return extremeWinds;
+                }
+                else
+                    return extremeWinds;
+
+                // Create array of max hourly wind speed every year (Reference data)
+                extremeWinds.maxHourlyRefWS = thisRef.GetMaxHourlyWindSpeeds();
+            }
+
+            // Find max 10-min and max gust for every year of data (Min 30 days for a year)
+            if (extrapHeightChosen)
+            {
+                extremeWinds.maxMetTenMin = GetMaxYearlyExtrapWinds(selHeight);
+            }
+            else
+            {
+                extremeWinds.maxMetTenMin = GetMaxYearlyWinds("10-min", selHeight);
+                extremeWinds.maxMetGust = GetMaxYearlyWinds("Gust", selHeight);
+            }
+
+            if (extremeWinds.maxMetTenMin.Length == 0 && useWMO_HourTenMin == false)
             {
               //  MessageBox.Show("There are no full years of data (i.e. Jan. 1 to Dec. 31) to use in extreme WS calculations.", "Continum 3");
                 return extremeWinds;
             }
 
+            // Get hourly max WS at reference site using concurrent met year start/end
+            int numActWS_Periods = extremeWinds.maxMetTenMin.Length;
+            extremeWinds.maxHourlyRefConcWS = new Met.MaxYearlyWind[numActWS_Periods];
+
+            for (int t = 0; t < numActWS_Periods; t++)
+            {
+                if (thisInst.chkUseSimData.Checked)
+                {
+                    extremeWinds.maxHourlyRefConcWS[t] = GetMCP_ByHeight(selHeight).GetMaxHourlyWSBetweenStartAndEnd(extremeWinds.maxMetTenMin[t].startTime, extremeWinds.maxMetTenMin[t].endTime);
+                }
+                else
+                {
+                    Reference thisRef = thisInst.GetSelectedReference("Extreme WS");
+                    extremeWinds.maxHourlyRefConcWS[t] = thisRef.GetMaxHourlyWSBetweenStartAndEnd(extremeWinds.maxMetTenMin[t].startTime, extremeWinds.maxMetTenMin[t].endTime);
+                }
+            }
+                
             // Calculate the average of max 10-mins
             double avgTenMin = 0;
-            for (int i = 0; i < maxMetTenMin.Length; i++)
-                avgTenMin = avgTenMin + maxMetTenMin[i].maxWS;
+            for (int i = 0; i < extremeWinds.maxMetTenMin.Length; i++)
+                avgTenMin = avgTenMin + extremeWinds.maxMetTenMin[i].maxWS;
 
-            avgTenMin = avgTenMin / maxMetTenMin.Length;
+            if (extremeWinds.maxMetTenMin.Length > 0)
+                avgTenMin = avgTenMin / extremeWinds.maxMetTenMin.Length;
 
-            if (maxMetGust.Length == 0)
-            {
+      //      if (extremeWinds.maxMetGust.Length == 0)
+      //      {
               //  MessageBox.Show("There are no full years of data (i.e. Jan. 1 to Dec. 31) to use in extreme WS calculations.", "Continum 3");
-                return extremeWinds;
-            }
+      //          return extremeWinds;
+      //      }
 
             // Calculate the average of max 10-mins
             double avgGust = 0;
-            for (int i = 0; i < maxMetGust.Length; i++)
-                avgGust = avgGust + maxMetGust[i].maxWS;
+            if (extrapHeightChosen == false)
+            {                
+                for (int i = 0; i < extremeWinds.maxMetGust.Length; i++)
+                    avgGust = avgGust + extremeWinds.maxMetGust[i].maxWS;
 
-            avgGust = avgGust / maxMetGust.Length;
+                if (extremeWinds.maxMetGust.Length > 0)
+                    avgGust = avgGust / extremeWinds.maxMetGust.Length;
+            }
 
             // Calculate the average of max hourly values for same years as met data
             double avgHourly = 0;
             int numYears = 0;
 
-            for (int i = 0; i < maxHourlyRefWS.Length; i++)
+            for (int i = 0; i < extremeWinds.maxHourlyRefConcWS.Length; i++)
             {
                 bool haveThisYear = false;
-                for (int j = 0; j < maxMetTenMin.Length; j++)
-                    if (maxHourlyRefWS[i].thisYear == maxMetTenMin[j].thisYear)
+                for (int j = 0; j < extremeWinds.maxMetTenMin.Length; j++)
+                    if (extremeWinds.maxHourlyRefConcWS[i].thisYear == extremeWinds.maxMetTenMin[j].thisYear)
                         haveThisYear = true;
 
                 if (haveThisYear == true)
                 {
-                    avgHourly = avgHourly + maxHourlyRefWS[i].maxWS;
+                    avgHourly = avgHourly + extremeWinds.maxHourlyRefConcWS[i].maxWS;
                     numYears++;
                 }                    
             }
 
-            if (numYears == 0)
+            if (numYears == 0 && useWMO_HourTenMin == false)
             {
                 MessageBox.Show("The reference data years don't coincide with the met data. Cannot calculate extreme wind speeds.", "Continuum 3.0");
                 return extremeWinds;
             }
 
-            avgHourly = avgHourly / numYears;
+            if (numYears > 0)
+                avgHourly = avgHourly / numYears;
 
-            if (avgHourly == 0)
+            if (avgHourly == 0 && useWMO_HourTenMin == false)
             {
                 MessageBox.Show("Reference wind speeds are zero.", "Continuum 3.0");
                 return extremeWinds;
             }
 
             // Calculate ratio of avg hourly and avg 10-mins
-            double hourlyToTenMin = avgTenMin / avgHourly;
+            double hourlyToTenMin = 0;
+            if (useWMO_HourTenMin)
+                hourlyToTenMin = Convert.ToDouble(thisInst.txtWMO_HourTenMin.Text);
+            else
+                hourlyToTenMin = avgTenMin / avgHourly;
 
             // Convert hourly max WS to 10-min estimated max WS
-            MaxYearlyWind[] maxTenMinWS = new MaxYearlyWind[maxHourlyRefWS.Length];
+            extremeWinds.maxEstTenMin = new MaxYearlyWind[extremeWinds.maxHourlyRefWS.Length];
 
-            for (int i = 0; i < maxHourlyRefWS.Length; i++)
+            for (int i = 0; i < extremeWinds.maxHourlyRefWS.Length; i++)
             {
-                maxTenMinWS[i].maxWS = maxHourlyRefWS[i].maxWS * hourlyToTenMin;
-                maxTenMinWS[i].thisYear = maxHourlyRefWS[i].thisYear;
+                extremeWinds.maxEstTenMin[i].maxWS = extremeWinds.maxHourlyRefWS[i].maxWS * hourlyToTenMin;
+                extremeWinds.maxEstTenMin[i].thisYear = extremeWinds.maxHourlyRefWS[i].thisYear;
             }
 
-            // Calculate ratio of avg 10-min and avg gust
-            double tenMinToGust = avgGust / avgTenMin;
-
-            // Convert hourly max WS to 10-min estimated max WS
-            MaxYearlyWind[] maxGustWS = new MaxYearlyWind[maxHourlyRefWS.Length];
-
-            for (int i = 0; i < maxHourlyRefWS.Length; i++)
+            if (extrapHeightChosen == false || useWMO_HourGust)
             {
-                maxGustWS[i].maxWS = maxTenMinWS[i].maxWS * tenMinToGust;
-                maxGustWS[i].thisYear = maxTenMinWS[i].thisYear;
+                // Calculate ratio of avg hourly and avg gust
+                double hourlyToGust = 0;
+                
+                if (useWMO_HourGust)
+                    hourlyToGust = Convert.ToDouble(thisInst.txtWMO_HourGust.Text);
+                else
+                    hourlyToGust = avgGust / avgHourly;
+
+                // Convert hourly max WS to 10-min estimated max WS
+                extremeWinds.maxEstGust = new MaxYearlyWind[extremeWinds.maxHourlyRefWS.Length];
+
+                for (int i = 0; i < extremeWinds.maxHourlyRefWS.Length; i++)
+                {
+                    extremeWinds.maxEstGust[i].maxWS = extremeWinds.maxHourlyRefWS[i].maxWS * hourlyToGust;
+                    extremeWinds.maxEstGust[i].thisYear = extremeWinds.maxHourlyRefWS[i].thisYear;
+                }
             }
 
             // Calculate average and standard deviation of 10-min max WS and average gusts
-            double[] tenMin = new double[maxHourlyRefWS.Length];
-            for (int i = 0; i < maxHourlyRefWS.Length; i++)
-                tenMin[i] = maxTenMinWS[i].maxWS;
+            double[] tenMin = new double[extremeWinds.maxHourlyRefWS.Length];
+            for (int i = 0; i < extremeWinds.maxHourlyRefWS.Length; i++)
+                tenMin[i] = extremeWinds.maxEstTenMin[i].maxWS;
 
             double avgMaxTenMin = thisInst.topo.FindAvg(tenMin);
-            double stDevMaxTenMin = thisInst.topo.FindSD(tenMin);                      
+            double stDevMaxTenMin = thisInst.topo.FindSD(tenMin);
 
-            double[] gust = new double[maxHourlyRefWS.Length];
-            for (int i = 0; i < maxHourlyRefWS.Length; i++)
-                gust[i] = maxGustWS[i].maxWS;
+            if (extrapHeightChosen == false || useWMO_HourGust)
+            {
+                double[] gust = new double[extremeWinds.maxHourlyRefWS.Length];
+                for (int i = 0; i < extremeWinds.maxHourlyRefWS.Length; i++)
+                    gust[i] = extremeWinds.maxEstGust[i].maxWS;
 
-            double avgMaxGust = thisInst.topo.FindAvg(gust);
-            double stDevMaxGust = thisInst.topo.FindSD(gust);
+                double avgMaxGust = thisInst.topo.FindAvg(gust);
+                double stDevMaxGust = thisInst.topo.FindSD(gust);
+
+                extremeWinds.gustDist.beta = stDevMaxGust * Math.Pow(6, 0.5) / Math.PI;
+                extremeWinds.gustDist.mu = avgMaxGust - 0.577 * extremeWinds.gustDist.beta;
+
+                extremeWinds.gust1yr = avgMaxGust;
+                extremeWinds.gust50yr = extremeWinds.gustDist.mu - extremeWinds.gustDist.beta * Math.Log(-Math.Log(1 - 1 / 50.0));
+            }
 
             // Calculate beta and mu for extreme WS model
-            double alphaTenMin = stDevMaxTenMin * Math.Pow(6, 0.5) / Math.PI;
-            double alphaGust = stDevMaxGust * Math.Pow(6, 0.5) / Math.PI;
-
-            double betaTenMin = avgMaxTenMin - 0.577 * alphaTenMin;
-            double betaGust = avgMaxGust - 0.577 * alphaGust;
-
+            extremeWinds.tenMinDist.beta = stDevMaxTenMin * Math.Pow(6, 0.5) / Math.PI;    
+            extremeWinds.tenMinDist.mu = avgMaxTenMin - 0.577 * extremeWinds.tenMinDist.beta;
+            
             // Calculate 1yr/50yr max ten-min and max gust WS
-            extremeWinds.tenMin1yr = avgMaxTenMin;
-            extremeWinds.gust1yr = avgMaxGust;
-            extremeWinds.tenMin50yr = betaTenMin - alphaTenMin * Math.Log(-Math.Log(1 - 1 / 50.0));            
-            extremeWinds.gust50yr = betaGust - alphaGust * Math.Log(-Math.Log(1 - 1 / 50.0));
-
+            extremeWinds.tenMin1yr = avgMaxTenMin;            
+            extremeWinds.tenMin50yr = extremeWinds.tenMinDist.mu - extremeWinds.tenMinDist.beta * Math.Log(-Math.Log(1 - 1 / 50.0));            
+            
             // Calculate max WS vs years of Recurrence arrays
-            extremeWinds.yearsOfOcc = new double[98];
-            extremeWinds.maxTenMin = new double[98];
-            extremeWinds.maxGust = new double[98];
-
+            extremeWinds.extremeCurve = new ExtremeWS_Curves[98];
+            
             for (int i = 0; i < 98; i++)
-            {                
-                extremeWinds.yearsOfOcc[i] = 1.5 + 0.5 * i;
-                extremeWinds.maxTenMin[i] = betaTenMin - alphaTenMin * Math.Log(-Math.Log(1 - 1/ extremeWinds.yearsOfOcc[i]));
-                extremeWinds.maxGust[i] = betaGust - alphaGust * Math.Log(-Math.Log(1 - 1 / extremeWinds.yearsOfOcc[i]));
+            {
+                extremeWinds.extremeCurve[i].yearsOfOcc = 1.5 + 0.5 * i;
+                extremeWinds.extremeCurve[i].maxTenMin = extremeWinds.tenMinDist.mu - extremeWinds.tenMinDist.beta * Math.Log(-Math.Log(1 - 1/ extremeWinds.extremeCurve[i].yearsOfOcc));
+                
+                if (extrapHeightChosen == false)
+                    extremeWinds.extremeCurve[i].maxGust = extremeWinds.gustDist.mu - extremeWinds.gustDist.beta * Math.Log(-Math.Log(1 - 1 / extremeWinds.extremeCurve[i].yearsOfOcc));
             }                       
 
             return extremeWinds;
@@ -1210,17 +1437,63 @@ namespace ContinuumNS
         {
             string MCP_Method = "";
 
-            if (mcp.MCP_Ortho.allR_Sq != 0)
-                MCP_Method = "Orth. Regression"; // Orthogonal                    
-            else if (mcp.MCP_Bins.binAvgSD_Cnt != null)
-                MCP_Method = "Method of Bins"; // Method of Bins
-            else if (mcp.MCP_Varrat.allR_Sq != 0)
-                MCP_Method = "Variance Ratio"; // Variance
-            else if (mcp.MCP_Matrix.WS_CDFs != null)
-                MCP_Method = "Matrix"; // Matrix
+            if (GetNumMCP() > 0)
+            {
+                if (mcpList[0].MCP_Ortho.allR_Sq != 0)
+                    MCP_Method = "Orth. Regression"; // Orthogonal                    
+                else if (mcpList[0].MCP_Bins.binAvgSD_Cnt != null)
+                    MCP_Method = "Method of Bins"; // Method of Bins
+                else if (mcpList[0].MCP_Varrat.allR_Sq != 0)
+                    MCP_Method = "Variance Ratio"; // Variance
+                else if (mcpList[0].MCP_Matrix.WS_CDFs != null)
+                    MCP_Method = "Matrix"; // Matrix
+            }
+
+            if (MCP_Method == "" && mcp != null)
+            {
+                if (mcp.MCP_Ortho.allR_Sq != 0)
+                    MCP_Method = "Orth. Regression"; // Orthogonal                    
+                else if (mcp.MCP_Bins.binAvgSD_Cnt != null)
+                    MCP_Method = "Method of Bins"; // Method of Bins
+                else if (mcp.MCP_Varrat.allR_Sq != 0)
+                    MCP_Method = "Variance Ratio"; // Variance
+                else if (mcp.MCP_Matrix.WS_CDFs != null)
+                    MCP_Method = "Matrix"; // Matrix
+            }
 
             return MCP_Method;
         }
+
+        /// <summary> Finds and returns MCP object by specified height (currently only holds MCP for one reference, will update this in future release) </summary>       
+        public MCP GetMCP_ByHeight(double height)
+        {
+            MCP thisMCP = new MCP();
+
+            for (int m = 0; m < GetNumMCP(); m++)
+                if (mcpList[m].height == height)
+                {
+                    thisMCP = mcpList[m];
+                    break;
+                }
+
+            return thisMCP;
+        }
+
+        /// <summary> Finds and returns MCP object by specified height and specified reference </summary>       
+        public MCP GetMCP_ByRefAndHeight(double height, Reference thisRef, Continuum thisInst)
+        {
+            MCP thisMCP = new MCP();
+
+            for (int m = 0; m < GetNumMCP(); m++)
+                if (mcpList[m].height == height && mcpList[m].reference.GetName(thisInst.metList, thisInst.UTM_conversions) == thisRef.GetName(thisInst.metList, thisInst.UTM_conversions))
+                {
+                    thisMCP = mcpList[m];
+                    break;
+                }
+
+            return thisMCP;
+        }
+
         
     }
 }

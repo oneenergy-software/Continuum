@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Security.Policy;
 using System.Threading;
 using System.IO.Packaging;
+using static ContinuumNS.Met;
 
 namespace ContinuumNS
 {
@@ -60,6 +61,19 @@ namespace ContinuumNS
             public bool showEquivWS;
             /// <summary> Show actual wind speed if true. </summary>
             public bool showActualWS;
+        }
+
+        /// <summary> WMO Gust Factor table entry (just hour to 10-min and hour to gust) </summary>
+        public struct WMO_GustFactor
+        {
+            /// <summary> Terrain class </summary>
+            public string thisClass;
+            /// <summary> Terrain class description </summary>
+            public string thisDesc;
+            /// <summary> Hourly to 10-min Gust factor value where Target WS = Reference WS * Gust Factor </summary>
+            public double hourToTenMin;
+            /// <summary> Hourly to Gust factor value where Target WS = Reference WS * Gust Factor </summary>
+            public double hourToGust;
         }
 
         /// <summary> Class Constructor </summary>
@@ -170,17 +184,13 @@ namespace ContinuumNS
             }
 
             // LT Reference tab
-            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
-           
-            // Met data QC tab
-            if (thisInst.metList.ThisCount == 0)
-                thisInst.chkDisableFilter.Enabled = true;
-            else if (thisInst.metList.ThisCount > 0 && thisInst.metList.isTimeSeries == false)
-                thisInst.chkDisableFilter.Enabled = false;
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");                     
 
             // MCP tab
             Met thisMet = thisInst.GetSelectedMet("MCP");
             thisRef = thisInst.GetSelectedReference("MCP");
+            MCP thisMCP = thisInst.GetSelectedMCP();
+
           //  bool gotRef = false;
 
             // Check to see if have MERRA data
@@ -197,22 +207,22 @@ namespace ContinuumNS
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && thisRef.numNodes == 0)
+            else if (thisMCP == null && thisRef.numNodes == 0)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && thisRef.numNodes != 0)
+            else if (thisMCP == null && thisRef.numNodes != 0)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = true;
             }
-            else if (thisMet.mcp.HaveMCP_Estimate("Any") == false && thisRef.numNodes != 0)
+            else if (thisMCP.HaveMCP_Estimate("Any") == false && thisRef.numNodes != 0)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = true;
             }
-            else if (thisMet.mcp.HaveMCP_Estimate("Any") == true)
+            else if (thisMCP.HaveMCP_Estimate("Any") == true)
             {
                 thisInst.btnDoMCP.BackColor = Color.MediumSeaGreen;
                 thisInst.btnDoMCP.Enabled = false;
@@ -1018,11 +1028,10 @@ namespace ContinuumNS
                 thisInst.cboTurbMet.SelectedIndex = 0;
                 thisInst.cboExtremeShearMet.SelectedIndex = 0;
                 thisInst.cboExtremeWSMet.SelectedIndex = 0;
-                SiteConditionsMetDates();
-
-                if (thisMet.mcp == null && thisInst.cboMCP_Type.SelectedItem == null)
+               
+                if (thisMet.mcpList == null && thisInst.cboMCP_Type.SelectedItem == null)
                     thisInst.cboMCP_Type.SelectedIndex = 0;
-                else if (thisMet.mcp != null)
+                else if (thisMet.mcpList != null)
                 {
                     string mcpMethod = thisMet.GetMCP_Method_Used();
                     thisInst.cboMCP_Type.SelectedItem = mcpMethod;
@@ -6977,8 +6986,7 @@ namespace ContinuumNS
             thisInst.txtAirDensity.Text = "1.225";
             thisInst.modelList.rotorDiam = 100;
             thisInst.txtRotorDiam.Text = "100";
-            thisInst.metList.isTimeSeries = false;
-            thisInst.metList.filteringEnabled = true;
+            thisInst.metList.isTimeSeries = false;            
             thisInst.chkDisableFilter.CheckState = CheckState.Checked;
 
             thisInst.dataMetTS.Rows.Clear();
@@ -7642,7 +7650,10 @@ namespace ContinuumNS
                         thisMet.metData.ExtrapolateData(thisInst.modeledHeight);
                 }
             }
+            else
+                return;
 
+            thisInst.chkDisableFilter.Checked = thisMet.metData.filteringEnabled;
        //     MetQC_AnemDropdown(thisInst, thisMet);
             MetQCAnemVaneDropdown();
             MetQCDates(thisMet);
@@ -7658,10 +7669,18 @@ namespace ContinuumNS
             MetWindRoseOrWS_byWDPlot(thisMet);
         }
 
-        /// <summary> Updates the Shear alpha vs Wind Direction Plot and Table.  Plots overall, day, and night shear exponents as function of WD. </summary> 
+        /// <summary> Updates the Shear Calc Method textboxes, Shear alpha vs Wind Direction Plot and Table.  Plots overall, day, and night shear exponents as function of WD. </summary> 
         public void AlphaVsWD_PlotAndTable(Met thisMet)
-        {
+        {            
             Met_Data_Filter thisData = thisMet.metData;
+
+            if (thisData == null) return;
+
+            thisInst.txtShearCalcMethod.Text = thisData.GetShearCalcNameFromEnum(thisData.shearSettings.shearCalcType);
+                        
+            thisInst.txtShearBestFitMinHeight.Text = thisData.shearSettings.minHeight.ToString();
+            thisInst.txtShearBestFitMaxHeight.Text = thisData.shearSettings.maxHeight.ToString();
+            
             thisInst.plotAlphaByWD.Model = new PlotModel();
             var model = thisInst.plotAlphaByWD.Model;
             model.IsLegendVisible = false;
@@ -8394,7 +8413,7 @@ namespace ContinuumNS
             int WD_Ind = thisInst.GetWD_ind("MCP");
             Met thisMet = thisInst.GetSelectedMet("MCP");
             Reference thisRef = thisInst.GetSelectedReference("MCP");
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
 
             if (thisMCP == null)
             {
@@ -8432,20 +8451,20 @@ namespace ContinuumNS
                 return;
             }
 
-            if (thisMet.mcp.refData == null)
+            if (thisMCP.refData == null)
             {
                 UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
            //     MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-                thisMet.mcp.refData = thisMet.mcp.GetRefData(thisRef, ref thisMet, thisInst);
+                thisMCP.refData = thisMCP.GetRefData(thisRef, ref thisMet, thisInst);
             }
 
-            if (thisMet.mcp.targetData == null)
-                thisMet.mcp.targetData = thisMet.mcp.GetTargetData(thisInst.modeledHeight, thisMet);
+            if (thisMCP.targetData == null)
+                thisMCP.targetData = thisMCP.GetTargetData(thisInst.modeledHeight, thisMet);
 
             string MCP_method = thisInst.Get_MCP_Method();
 
-            if (thisMet.mcp.concData.Length == 0)
-                thisMet.mcp.FindConcurrentData(thisMet.mcp.GetStartOrEndDate("Concurrent", "Start"), thisMet.mcp.GetStartOrEndDate("Concurrent", "End"));
+            if (thisMCP.concData.Length == 0)
+                thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"));
 
             int Num_WD = thisInst.metList.numWD;
             Met.TOD thisTOD = thisInst.GetSelectedTOD("MCP");
@@ -8457,7 +8476,7 @@ namespace ContinuumNS
             // Update Num. Yrs text boxes 
             if (thisMCP.refData.Length > 0)
             {
-                double num_yrs = thisMet.mcp.refData.Length / 365.0 / 24.0;
+                double num_yrs = thisMCP.refData.Length / 365.0 / 24.0;
                 thisInst.txtNumYrsRef.Text = Convert.ToString(Math.Round(num_yrs, 2));
             }
             else
@@ -8465,7 +8484,7 @@ namespace ContinuumNS
 
             if (thisMCP.targetData.Length > 0)
             {
-                int This_length = thisMet.mcp.targetData.Length;
+                int This_length = thisMCP.targetData.Length;
                 double num_yrs = This_length / 8760.0;
                 thisInst.txtNumYrsTarg.Text = Convert.ToString(Math.Round(num_yrs, 2));
             }
@@ -8503,7 +8522,7 @@ namespace ContinuumNS
             Stats stat = new Stats();
             if (thisMCP.refData.Length > 0)
             {
-                avgRef = stat.CalcAvgWS(thisMet.mcp.refData, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
+                avgRef = stat.CalcAvgWS(thisMCP.refData, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
                 thisInst.txtRef_LT_WS.Text = Convert.ToString(Math.Round(avgRef, 2));
             }
             else
@@ -8596,13 +8615,13 @@ namespace ContinuumNS
                 thisInst.txtRsq.Text = "";
             }
 
-            if (thisMet.mcp.LT_WS_Ests.Length == 0)
-                thisMet.mcp.LT_WS_Ests = thisMet.mcp.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
+            if (thisMCP.LT_WS_Ests.Length == 0)
+                thisMCP.LT_WS_Ests = thisMCP.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
 
-            if (thisMet.mcp.LT_WS_Ests.Length != 0)
+            if (thisMCP.LT_WS_Ests.Length != 0)
             {
-                avgRef = stat.CalcAvgWS(thisMet.mcp.refData, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
-                double Avg_Target_LT = stat.CalcAvgWS(thisMet.mcp.LT_WS_Ests, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
+                avgRef = stat.CalcAvgWS(thisMCP.refData, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
+                double Avg_Target_LT = stat.CalcAvgWS(thisMCP.LT_WS_Ests, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
                 double Avg_Ratio = Avg_Target_LT / avgRef;
                 thisInst.txtTarg_LT_WS.Text = Convert.ToString(Math.Round(Avg_Target_LT, 2));
                 thisInst.txtLTratio.Text = Convert.ToString(Math.Round(Avg_Ratio, 2));
@@ -8622,9 +8641,9 @@ namespace ContinuumNS
             thisInst.okToUpdate = false;
 
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
 
-            if (thisMCP == null)
+            if (thisMCP == null || thisMet.metData == null)
             {
                 thisInst.okToUpdate = true;
                 return;
@@ -8722,7 +8741,7 @@ namespace ContinuumNS
         {
             Met thisMet = thisInst.GetSelectedMet("MCP");
             Reference thisRef = thisInst.GetSelectedReference("MCP");
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
             string selectedMethod = thisInst.Get_MCP_Method();
 
             if (thisMCP == null)
@@ -8791,17 +8810,17 @@ namespace ContinuumNS
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && gotMERRA == false)
+            else if (thisMCP == null && gotMERRA == false)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && gotMERRA == true)
+            else if (thisMCP == null && gotMERRA == true)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = true;
             }
-            else if (thisMet.mcp.HaveMCP_Estimate(selectedMethod) == true)
+            else if (thisMCP.HaveMCP_Estimate(selectedMethod) == true)
             {
                 thisInst.btnDoMCP.BackColor = Color.MediumSeaGreen;
                 thisInst.btnDoMCP.Enabled = false;
@@ -8825,7 +8844,7 @@ namespace ContinuumNS
             if (thisMet.metData.anems[0].windData == null)
                 thisMet.metData.GetSensorDataFromDB(thisInst, thisMet.name);
 
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
 
             int WD_Ind = thisInst.GetWD_ind("MCP");
             Met.TOD thisTOD = thisInst.GetSelectedTOD("MCP");
@@ -8990,9 +9009,8 @@ namespace ContinuumNS
         /// <summary> Update list with mean and standard deviation of WS ratios on MCP tab. </summary>        
         public void MCP_BinList()
         {
-            thisInst.lstMCP_Bins.Items.Clear();
-            Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            thisInst.lstMCP_Bins.Items.Clear();            
+            MCP thisMCP = thisInst.GetSelectedMCP(); ;
 
             if (thisMCP == null)
                 return;
@@ -9023,9 +9041,8 @@ namespace ContinuumNS
         public void MCP_UncertList()
         {
             thisInst.lstMCP_Uncert.Items.Clear();
-
-            Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+                        
+            MCP thisMCP = thisInst.GetSelectedMCP(); 
 
             if (thisMCP == null)
                 return;
@@ -9122,7 +9139,7 @@ namespace ContinuumNS
             // Get Active MCP type
             string selectedMethod = thisInst.Get_MCP_Method();
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
 
             if (thisMCP == null)
             {
@@ -11794,8 +11811,8 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Updates start/end dates on Site Conditions tab. </summary>
-        public void SiteConditionsMetDates()
+        /// <summary> Updates start/end dates on Site Conditions tab's TI or Extreme Shear tab. </summary>
+        public void SiteConditionsMetDates(string subTabName)
         {
             // It's called in All_Tabs with okToUpdate sent to false so need to check if it's already false before setting/resetting it.
 
@@ -11810,13 +11827,18 @@ namespace ContinuumNS
             if (alreadyOff == false)
                 thisInst.okToUpdate = false;
 
-            Met thisMet = thisInst.GetSelectedMet("Site Conditions TI");
-
-            thisInst.dateTIStart.Value = thisMet.metData.startDate;
-            thisInst.dateTIEnd.Value = thisMet.metData.endDate;
-            thisMet = thisInst.GetSelectedMet("Site Conditions Shear");
-            thisInst.dateTimeExtremeShearStart.Value = thisMet.metData.startDate;
-            thisInst.dateTimeExtremeShearEnd.Value = thisMet.metData.endDate;
+            if (subTabName == "TI")
+            {
+                Met thisMet = thisInst.GetSelectedMet("Site Conditions TI");
+                thisInst.dateTIStart.Value = thisMet.metData.startDate;
+                thisInst.dateTIEnd.Value = thisMet.metData.endDate;
+            }
+            else if (subTabName == "Extreme Shear")
+            {
+                Met thisMet = thisInst.GetSelectedMet("Site Conditions Shear");
+                thisInst.dateTimeExtremeShearStart.Value = thisMet.metData.startDate;
+                thisInst.dateTimeExtremeShearEnd.Value = thisMet.metData.endDate;
+            }
 
             if (alreadyOff == false)
                 thisInst.okToUpdate = true;
@@ -11892,7 +11914,7 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Updates extreme shear P table (P1, P10, and P50) for wind speed ranges: 5 - 10, 10 - 15, 15+, All WS on Site Conditions tab. </summary>
+        /// <summary> Updates shear calc method and extreme shear P table (P1, P10, and P50) for wind speed ranges: 5 - 10, 10 - 15, 15+, All WS on Site Conditions tab. </summary>
         public void ExtremeShearTable()
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Shear");
@@ -11901,6 +11923,11 @@ namespace ContinuumNS
             if (thisMet.metData == null)
                 return;
 
+            thisInst.txtShearCalcMethodExtremeTab.Text = thisMet.metData.GetShearCalcNameFromEnum(thisMet.metData.shearSettings.shearCalcType);
+                      
+            thisInst.txtMinHeight.Text = thisMet.metData.shearSettings.minHeight.ToString();
+            thisInst.txtMaxHeight.Text = thisMet.metData.shearSettings.maxHeight.ToString();           
+            
             double[] anemHeights = thisMet.metData.GetHeightsOfAnems();
             if (anemHeights.Length == 1)
                 return;
@@ -11954,45 +11981,205 @@ namespace ContinuumNS
             thisInst.lstExtremeShear.Items.Add(objListItem);
         }
 
+        /// <summary> Populate WMO dropdowns with terrain class, description, and hour-to-10 min and hour-to-gust factors </summary>
+        public void WMO_GustFactors()
+        {
+            thisInst.cboWMO_Class.Items.Clear();
+            
+            WMO_GustFactor[] gustFactors = GetWMO_GustFactors();
+
+            for (int g = 0; g < gustFactors.Length; g++)            
+                thisInst.cboWMO_Class.Items.Add(gustFactors[g].thisClass);
+
+            thisInst.cboWMO_Class.SelectedIndex = 0;
+
+        }
+
+        /// <summary> Update description and gust factors associated with selected terrain class </summary>
+        public void WMO_GustFactorSelected()
+        {
+            WMO_GustFactor[] gustFactors = GetWMO_GustFactors();
+
+            for (int g = 0; g < gustFactors.Length; g++)
+                if (gustFactors[g].thisClass == thisInst.cboWMO_Class.SelectedItem.ToString())
+                {
+                    thisInst.txtWMO_Desc.Text = gustFactors[g].thisDesc;
+                    thisInst.txtWMO_HourTenMin.Text = gustFactors[g].hourToTenMin.ToString();
+                    thisInst.txtWMO_HourGust.Text = gustFactors[g].hourToGust.ToString();
+                    break;
+                }
+        }
+
+        /// <summary> Returns WMO Gust Factor based on specified terrain type and wind speed type </summary>
+
+        public WMO_GustFactor[] GetWMO_GustFactors()
+        {
+            WMO_GustFactor[] wmoGustFactors = new WMO_GustFactor[4];
+
+            wmoGustFactors[0].thisClass = "In-Land";
+            wmoGustFactors[0].thisDesc = "Roughly open terrain";
+            wmoGustFactors[0].hourToTenMin = 1.08;
+            wmoGustFactors[0].hourToGust = 1.75;
+
+            wmoGustFactors[1].thisClass = "Off-Land";
+            wmoGustFactors[1].thisDesc = "Offshore winds at a coastline";
+            wmoGustFactors[1].hourToTenMin = 1.06;
+            wmoGustFactors[1].hourToGust = 1.60;
+
+            wmoGustFactors[2].thisClass = "Off-Sea";
+            wmoGustFactors[2].thisDesc = "Onshore winds at a coastline";
+            wmoGustFactors[2].hourToTenMin = 1.05;
+            wmoGustFactors[2].hourToGust = 1.45;
+
+            wmoGustFactors[3].thisClass = "At-Sea";
+            wmoGustFactors[3].thisDesc = ">20 km offshore";
+            wmoGustFactors[3].hourToTenMin = 1.03;
+            wmoGustFactors[3].hourToGust = 1.30;
+
+            return wmoGustFactors;
+        }
+
         /// <summary> Updates extreme wind speed textboxes and plots on Site Conditions tab. </summary>        
         public void ExtremeWindSpeed()
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
-            Reference thisRef = thisInst.GetSelectedReference("Site Conditions Extreme WS");
+            Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst);
 
-            if (thisRef.numNodes == 0)
-            {
-                thisInst.lblNoExtremeWS.Text = "MERRA2 data not loaded. MERRA2 required for extreme WS calculations.";
-                return;
-            }
-
-            Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst, thisRef);
-
+            // Reset Gumbel distribution plot
             thisInst.plotExtremeWS.Model = new PlotModel();
             var model = thisInst.plotExtremeWS.Model;
             model.IsLegendVisible = false;
-            thisInst.lblNoExtremeWS.Text = "";
+            
+            // Reset Extreme WS time series plot
+            thisInst.plotExtremeWS_TS.Model = new PlotModel();
+            var tsModel = thisInst.plotExtremeWS_TS.Model;
+            tsModel.IsLegendVisible = thisInst.chkExtremeWS_ShowLegend.Checked;
+            tsModel.LegendPlacement = LegendPlacement.Outside;
+            tsModel.LegendPosition = LegendPosition.RightMiddle;
+
+            // Reset Gumbel dist.  textboxes
+            thisInst.txtGumbelGustBeta.Text = "";
+            thisInst.txtGumbelGustMu.Text = "";
+            thisInst.txt1yrExtremeGust.Text = "";
+            thisInst.txt50yrExtremeGust.Text = "";
+
+            thisInst.txtGumbelTenMinBeta.Text = "";
+            thisInst.txtGumbelTenMinMu.Text = "";
+            thisInst.txt1yrExtreme10min.Text = "";
+            thisInst.txt50yrExtreme10min.Text = "";                       
 
             if (extremeWS.tenMin1yr == 0)
-            {               
-                thisInst.lblNoExtremeWS.Text = "Met data does not cover a full year (Jan. - Dec.) required for extreme WS calculations.";
-
-                thisInst.txt50yrExtreme10min.Text = "";
-                thisInst.txt50yrExtremeGust.Text = "";
-                thisInst.txt1yrExtreme10min.Text = "";
-                thisInst.txt1yrExtremeGust.Text = "";
-
+            {   
+                thisInst.plotExtremeWS_TS.Refresh();
+                thisInst.plotExtremeWS.Refresh();
                 return;
             }
 
-            if (extremeWS.gust1yr != 0)
+            // Clear data table
+            thisInst.dataExtremeWS.Rows.Clear();
+
+            // Update extreme WS textboxes
+            if (extremeWS.gust1yr != 0) // Extreme Gust WS not calculated when extrapolated WS used
             {
-                thisInst.txt50yrExtreme10min.Text = Math.Round(extremeWS.tenMin50yr, 2).ToString();
-                thisInst.txt50yrExtremeGust.Text = Math.Round(extremeWS.gust50yr, 2).ToString();
-                thisInst.txt1yrExtreme10min.Text = Math.Round(extremeWS.tenMin1yr, 2).ToString();
+                thisInst.txtGumbelGustBeta.Text = Math.Round(extremeWS.gustDist.beta, 5).ToString();
+                thisInst.txtGumbelGustMu.Text = Math.Round(extremeWS.gustDist.mu, 5).ToString();
                 thisInst.txt1yrExtremeGust.Text = Math.Round(extremeWS.gust1yr, 2).ToString();
+                thisInst.txt50yrExtremeGust.Text = Math.Round(extremeWS.gust50yr, 2).ToString();
             }
 
+            thisInst.txtGumbelTenMinBeta.Text = Math.Round(extremeWS.tenMinDist.beta, 5).ToString();
+            thisInst.txtGumbelTenMinMu.Text = Math.Round(extremeWS.tenMinDist.mu, 5).ToString();
+            thisInst.txt1yrExtreme10min.Text = Math.Round(extremeWS.tenMin1yr, 2).ToString();
+            thisInst.txt50yrExtreme10min.Text = Math.Round(extremeWS.tenMin50yr, 2).ToString();
+            
+           
+            // Update Extreme WS time series plot and data table
+            tsModel.Title = "Extreme Wind Speed Time Series";
+
+            // Specify axes
+            LinearAxis xAxisTS = new LinearAxis();
+            xAxisTS.Position = AxisPosition.Bottom;
+            xAxisTS.Title = "Year";
+            LinearAxis yAxisTS = new LinearAxis();
+            yAxisTS.Position = AxisPosition.Left;
+            yAxisTS.Title = "Max. Wind Speed, m/s";
+
+            tsModel.Axes.Add(xAxisTS);
+            tsModel.Axes.Add(yAxisTS);
+
+            LineSeries maxHourlySeries = new LineSeries();
+            maxHourlySeries.Title = "Max. Reference Hourly WS";
+            tsModel.Series.Add(maxHourlySeries);
+            maxHourlySeries.MarkerStroke = OxyColors.Red;
+
+            ScatterSeries maxHourlyConcSeries = new ScatterSeries();
+            maxHourlyConcSeries.Title = "Max. Reference Hourly WS [Conc. w. Met.]";
+            tsModel.Series.Add(maxHourlyConcSeries);
+
+            ScatterSeries maxTenMinActSeries = new ScatterSeries();
+            maxTenMinActSeries.Title = "Max Actual Ten-Min WS";
+            tsModel.Series.Add(maxTenMinActSeries);
+            //     maxTenMinActSeries.MarkerStroke = OxyColors.Red;
+
+            LineSeries maxTenMinEstSeries = new LineSeries();
+            maxTenMinEstSeries.Title = "Max Estimated Ten-Min WS";
+            tsModel.Series.Add(maxTenMinEstSeries);
+
+            ScatterSeries maxGustActSeries = new ScatterSeries();
+            maxGustActSeries.Title = "Max Actual Gust WS";
+            tsModel.Series.Add(maxGustActSeries);
+
+            LineSeries maxGustEstSeries = new LineSeries();
+            maxGustEstSeries.Title = "Max Estimated Gust WS";
+            if (extremeWS.maxEstGust != null)
+                tsModel.Series.Add(maxGustEstSeries);
+     //       maxGustEstSeries.MarkerStroke = OxyColors.Blue;
+
+            for (int i = 0; i < extremeWS.maxHourlyRefWS.Length; i++)
+            {
+                maxHourlySeries.Points.Add(new DataPoint(extremeWS.maxHourlyRefWS[i].thisYear, extremeWS.maxHourlyRefWS[i].maxWS));
+                int rowInd = thisInst.dataExtremeWS.Rows.Add();
+                thisInst.dataExtremeWS.Rows[rowInd].Cells[0].Value = extremeWS.maxHourlyRefWS[i].thisYear;
+                thisInst.dataExtremeWS.Rows[rowInd].Cells[1].Value = Math.Round(extremeWS.maxHourlyRefWS[i].maxWS, 3);
+
+                maxTenMinEstSeries.Points.Add(new DataPoint(extremeWS.maxEstTenMin[i].thisYear, extremeWS.maxEstTenMin[i].maxWS));
+                thisInst.dataExtremeWS.Rows[rowInd].Cells[4].Value = Math.Round(extremeWS.maxEstTenMin[i].maxWS, 3);
+
+                if (extremeWS.maxEstGust != null)
+                {
+                    maxGustEstSeries.Points.Add(new DataPoint(extremeWS.maxEstGust[i].thisYear, extremeWS.maxEstGust[i].maxWS));
+                    thisInst.dataExtremeWS.Rows[rowInd].Cells[6].Value = Math.Round(extremeWS.maxEstGust[i].maxWS, 3);
+                }
+            }
+
+            for (int i = 0; i < extremeWS.maxMetTenMin.Length; i++)
+            {
+                maxHourlyConcSeries.Points.Add(new ScatterPoint(extremeWS.maxHourlyRefConcWS[i].thisYear, extremeWS.maxHourlyRefConcWS[i].maxWS));
+                maxTenMinActSeries.Points.Add(new ScatterPoint(extremeWS.maxMetTenMin[i].thisYear, extremeWS.maxMetTenMin[i].maxWS));
+
+                if (extremeWS.maxMetGust != null)
+                    maxGustActSeries.Points.Add(new ScatterPoint(extremeWS.maxMetGust[i].thisYear, extremeWS.maxMetGust[i].maxWS));
+
+                // Find row index with this year
+                int rowIndYear = 0;
+
+                for (int r = 0; r < thisInst.dataExtremeWS.RowCount; r++)
+                    if (thisInst.dataExtremeWS.Rows[r].Cells[0].Value.ToString() == extremeWS.maxMetTenMin[i].thisYear.ToString())
+                    {
+                        rowIndYear = r;
+                        break;
+                    }
+
+                thisInst.dataExtremeWS.Rows[rowIndYear].Cells[2].Value = Math.Round(extremeWS.maxHourlyRefConcWS[i].maxWS, 3);
+                thisInst.dataExtremeWS.Rows[rowIndYear].Cells[3].Value = Math.Round(extremeWS.maxMetTenMin[i].maxWS, 3);
+
+                if (extremeWS.maxMetGust != null)
+                    thisInst.dataExtremeWS.Rows[rowIndYear].Cells[5].Value = Math.Round(extremeWS.maxMetGust[i].maxWS, 3);
+            }
+
+            thisInst.plotExtremeWS_TS.Refresh();
+
+            // Update Gumbel distribution curves
             model.Title = "Extreme Wind Speeds by Years of Recurrence";
 
             // Specify axes
@@ -12016,13 +12203,19 @@ namespace ContinuumNS
             model.Series.Add(maxGustSeries);
             maxGustSeries.MarkerStroke = OxyColors.Blue;
 
-            for (int i = 0; i < extremeWS.yearsOfOcc.Length; i++)
+            for (int i = 0; i < extremeWS.extremeCurve.Length; i++)
             {
-                maxTenMinSeries.Points.Add(new DataPoint(1.5 + i * 0.5, extremeWS.maxTenMin[i]));
-                maxGustSeries.Points.Add(new DataPoint(1.5 + i * 0.5, extremeWS.maxGust[i]));
+                maxTenMinSeries.Points.Add(new DataPoint(extremeWS.extremeCurve[i].yearsOfOcc, extremeWS.extremeCurve[i].maxTenMin));
+                if (extremeWS.maxEstGust != null)
+                    maxGustSeries.Points.Add(new DataPoint(extremeWS.extremeCurve[i].yearsOfOcc, extremeWS.extremeCurve[i].maxGust));
             }
 
             thisInst.plotExtremeWS.Refresh();
+
+            if (extremeWS.maxEstGust != null)
+                thisInst.lblGustExtremeWSUnavailable.Visible = true;
+            else
+                thisInst.lblGustExtremeWSUnavailable.Visible = false;
         }
 
         /// <summary> Updates the inflow angle plot and textboxes on Site Conditions tab. </summary>
@@ -12535,11 +12728,16 @@ namespace ContinuumNS
             int dataInt = 10;
             string dataIntStr = thisInst.metList.GetMetDataInterval();
             if (dataIntStr == "60-min")
-                dataInt = 60;
+                dataInt = 60;                       
 
             for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(dataInt))
             {
                 int colInd = 1;
+
+                // Clear all previous flag colors
+                for (int c = 0; c < thisInst.dataMetTS.ColumnCount; c++)
+                    if (thisInst.dataMetTS.Rows[rowInd].Cells[c].Style.BackColor.Name != "0")
+                        thisInst.dataMetTS.Rows[rowInd].Cells[c].Style.BackColor = Color.White;
 
                 for (int m = 0; m < numMets; m++)
                 {
@@ -12553,9 +12751,29 @@ namespace ContinuumNS
                             if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
                                 for (int i = 0; i < 4; i++)
                                     thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(thisFlag);
-
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 4; i++)
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
                         }
                         colInd = colInd + 4;
+                    }
+
+                    // Skip shear and extrap WS columns
+                    if (selMets[m].metData.GetNumSimData() > 0)
+                    {
+                        int tsIndex = selMets[m].metData.simData[0].GetTS_Index(thisTS);
+
+                        if (tsIndex == -999)
+                        {
+                            thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = selMets[m].metData.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+
+                            for (int s = 0; s < selMets[m].metData.GetNumSimData(); s++)
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + 1 + s].Style.BackColor = selMets[m].metData.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                        }
+
+                        colInd = colInd + 1 + selMets[m].metData.GetNumSimData();
                     }
 
                     for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
@@ -12568,6 +12786,11 @@ namespace ContinuumNS
                             if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
                                 for (int i = 0; i < 4; i++)
                                     thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(thisFlag);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 4; i++)
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
                         }
                         colInd = colInd + 4;
                     }
@@ -12656,23 +12879,28 @@ namespace ContinuumNS
                     colInd = colInd + 4;
                 }
 
-                for (int s = 0; s < thisMet.metData.GetNumSimData(); s++)
+                if (thisMet.metData.GetNumSimData() > 0)
                 {
-                    if (s == 0 && thisInst.IsMetSensorSelected(thisMet.name + "Shear"))
+                    string sensName = thisMet.name + " Shear";
+                    if (thisInst.IsMetSensorSelected(sensName))
                         thisInst.dataMetTS.Columns[colInd].Visible = true;
-                    else if (thisInst.IsMetSensorSelected("Alpha") == false)
+                    else
                         thisInst.dataMetTS.Columns[colInd].Visible = false;
 
-                    string sensName = thisMet.name + " Extrap WS " + thisMet.metData.simData[s].height;
+                    colInd++;
 
-                    if (thisInst.IsMetSensorSelected(sensName))
-                        thisInst.dataMetTS.Columns[colInd + 1 + s].Visible = true;
-                    else
-                        thisInst.dataMetTS.Columns[colInd + 1 + s].Visible = false;
-                }
+                    for (int s = 0; s < thisMet.metData.GetNumSimData(); s++)
+                    { 
+                        sensName = thisMet.name + " Extrap WS " + thisMet.metData.simData[s].height;
 
-                if (thisMet.metData.GetNumSimData() > 0)
-                    colInd = colInd + 1 + thisMet.metData.GetNumSimData();
+                        if (thisInst.IsMetSensorSelected(sensName))
+                            thisInst.dataMetTS.Columns[colInd].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd].Visible = false;
+
+                        colInd++;
+                    }
+                }                
 
                 for (int s = 0; s < thisMet.metData.GetNumVanes(); s++)
                 {
@@ -12790,302 +13018,7 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary> Updates met data time series data table based on met stations and sensors selected.  Shows all met data </summary>
-        public void MetDataTS_DataTable()
-        {            
-            thisInst.dataMetTS.Rows.Clear();
-            thisInst.dataMetTS.Columns.Clear();
-
-            // Get selected met sites
-            int numMets = thisInst.chkMetsTS.CheckedItems.Count;
-            Met[] selMets = new Met[numMets];
-
-            if (numMets == 0)
-                return;
-
-            for (int m = 0; m < numMets; m++)
-                selMets[m] = thisInst.metList.GetMet(thisInst.chkMetsTS.CheckedItems[m].ToString());
-
-            // Figure out first and last timestamp
-            DateTime startTime = DateTime.Now;
-            DateTime endTime = new DateTime(); // Initializes to year 1
-
-            for (int m = 0; m < numMets; m++)
-            {
-                if (selMets[m].metData.startDate < startTime)
-                    startTime = selMets[m].metData.allStartDate;
-
-                if (selMets[m].metData.endDate > endTime)
-                    endTime = selMets[m].metData.allEndDate;
-            }
-
-            thisInst.dataMetTS.Columns.Add("colTS", "Timestamp");
-
-            int numSens = thisInst.chkTS_Params.CheckedItems.Count;
-            int numAnems = 0;
-            int numVanes = 0;
-            int numTemp = 0;
-            int numBaro = 0;
-
-            // Now create columns for each selected sensor
-            for (int s = 0; s < numSens; s++)
-            {
-                string sensorType = GetSensorTypeFromChkTS_Params(thisInst.chkTS_Params.CheckedItems[s].ToString());
-
-                if (sensorType == "ANEM")
-                {
-                    if (thisInst.treeDataParams.Nodes[0].Nodes[0].Checked) // Anemometer average
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Avg");
-
-                    if (thisInst.treeDataParams.Nodes[0].Nodes[1].Checked) // Anemometer st. dev.
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "SD");
-
-                    if (thisInst.treeDataParams.Nodes[0].Nodes[2].Checked) // Anemometer minimum
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Min");
-
-                    if (thisInst.treeDataParams.Nodes[0].Nodes[3].Checked) // Anemometer maximum
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Max");
-                }
-                else if (sensorType == "VANE")
-                {
-                    if (thisInst.treeDataParams.Nodes[1].Nodes[0].Checked) // Vane average
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Avg");
-
-                    if (thisInst.treeDataParams.Nodes[1].Nodes[1].Checked) // Vane st. dev.
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "SD");
-
-                    if (thisInst.treeDataParams.Nodes[1].Nodes[2].Checked) // Vane minimum
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Min");
-
-                    if (thisInst.treeDataParams.Nodes[1].Nodes[3].Checked) // Vane maximum
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Max");
-                }
-                else if (sensorType == "TEMP")
-                {
-                    if (thisInst.treeDataParams.Nodes[2].Nodes[0].Checked) // Temperature average
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Avg");
-
-                    if (thisInst.treeDataParams.Nodes[2].Nodes[1].Checked) // Temperature st. dev.
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "SD");
-
-                    if (thisInst.treeDataParams.Nodes[2].Nodes[2].Checked) // Temperature minimum
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Min");
-
-                    if (thisInst.treeDataParams.Nodes[2].Nodes[3].Checked) // Temperature maximum
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Max");
-                }
-                else if (sensorType == "BARO")
-                {
-                    if (thisInst.treeDataParams.Nodes[3].Nodes[0].Checked) // Pressure average
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Avg");
-
-                    if (thisInst.treeDataParams.Nodes[3].Nodes[1].Checked) // Pressure st. dev.
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "SD");
-
-                    if (thisInst.treeDataParams.Nodes[3].Nodes[2].Checked) // Pressure minimum
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Min");
-
-                    if (thisInst.treeDataParams.Nodes[3].Nodes[3].Checked) // Pressure maximum
-                        thisInst.dataMetTS.Columns.Add("colTS_PAram" + (s + 1).ToString(), thisInst.chkTS_Params.CheckedItems[s].ToString() + "Max");
-                }  
-            }
-
-            // Get all anems, vanes, temps, and press sensors selected in list
-            Met_Data_Filter.Anem_Data[] anems = new Met_Data_Filter.Anem_Data[0];
-            Met_Data_Filter.Vane_Data[] vanes = new Met_Data_Filter.Vane_Data[0];
-            Met_Data_Filter.Temp_Data[] temps = new Met_Data_Filter.Temp_Data[0];
-            Met_Data_Filter.Press_Data[] baros = new Met_Data_Filter.Press_Data[0];
-
-            for (int m = 0; m < numMets; m++)
-            {
-                for (int a = 0; a < selMets[m].metData.GetNumAnems(); a++)
-                    if (thisInst.IsMetSensorSelected(selMets[m].name + " " + selMets[m].metData.GetAnemName(selMets[m].metData.anems[a], true)))
-                    {
-                        numAnems++;
-                        Array.Resize(ref anems, numAnems);
-                        anems[numAnems - 1] = selMets[m].metData.anems[a];
-                    }
-
-                for (int v = 0; v < selMets[m].metData.GetNumVanes(); v++)
-                    if (thisInst.IsMetSensorSelected(selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[v], true)))
-                    {
-                        numVanes++;
-                        Array.Resize(ref vanes, numVanes);
-                        vanes[numVanes - 1] = selMets[m].metData.vanes[v];
-                    }
-
-                for (int t = 0; t < selMets[m].metData.GetNumTemps(); t++)
-                    if (thisInst.IsMetSensorSelected(selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[t], true)))
-                    {
-                        numTemp++;
-                        Array.Resize(ref temps, numTemp);
-                        temps[numTemp - 1] = selMets[m].metData.temps[t];
-                    }
-
-                for (int b = 0; b < selMets[m].metData.GetNumBaros(); b++)
-                    if (thisInst.IsMetSensorSelected(selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[b], true)))
-                    {
-                        numBaro++;
-                        Array.Resize(ref baros, numBaro);
-                        baros[numBaro - 1] = selMets[m].metData.baros[b];
-                    }
-            }
-
-            // Create array for all data in one row then populate and add to table 
-            int totalNumSens = numAnems * GetNumMetrics("ANEM") + numVanes * GetNumMetrics("VANE") + numBaro * GetNumMetrics("BARO") 
-                + numTemp * GetNumMetrics("TEMP");
-
-       //     int numTS = Convert.ToInt32(Math.Round(endTime.Subtract(startTime).TotalMinutes / 10 + 1, 0));
-            double[] dataForTableRow = new double[totalNumSens + 1]; // Plus one for timestamp                      
-            string[] strDataForTableRow = new string[totalNumSens + 1];
-       //   DateTime thisTS = startTime;
-
-            // Now populate table and color code data that is flagged
-      //      for (int t = 0; t < numTS; t++)
-      //      { 
-            for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(10))
-            {
-          //      int rowInd = thisInst.dataMetTS.Rows.Add(thisTS.ToString());
-                int colInd = 1;
-                dataForTableRow = new double[totalNumSens + 1]; // reset array
-                dataForTableRow[0] = thisTS.ToOADate();
-
-                for (int a = 0; a < numAnems; a++)
-                {
-                    int tsIndex = anems[a].GetTS_Index(thisTS);
-                                        
-                    if (thisInst.treeDataParams.Nodes[0].Nodes[0].Checked) // Anemometer average
-                    {
-                        dataForTableRow[colInd] = anems[a].windData[tsIndex].avg;                      
-                        colInd++;                        
-                    }
-
-                    if (thisInst.treeDataParams.Nodes[0].Nodes[1].Checked) // Anemometer st. dev.
-                    {
-                        dataForTableRow[colInd] = anems[a].windData[tsIndex].SD;                 
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[0].Nodes[2].Checked) // Anemometer minimum
-                    {
-                        dataForTableRow[colInd] = anems[a].windData[tsIndex].min;                  
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[0].Nodes[3].Checked) // Anemometer maximum
-                    {
-                        dataForTableRow[colInd] = anems[a].windData[tsIndex].max;                 
-                        colInd++;
-                    }  
-                }
-
-                for (int v = 0; v < numVanes; v++)
-                {
-                    int tsIndex = vanes[v].GetTS_Index(thisTS);                   
-
-                    if (thisInst.treeDataParams.Nodes[1].Nodes[0].Checked) // Vane average
-                    {
-                        dataForTableRow[colInd] = vanes[v].dirData[tsIndex].avg;                        
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[1].Nodes[1].Checked) // Vane st. dev.
-                    {
-                        dataForTableRow[colInd] = vanes[v].dirData[tsIndex].SD;
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[1].Nodes[2].Checked) // Vane minimum
-                    {
-                        dataForTableRow[colInd] = vanes[v].dirData[tsIndex].min;
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[1].Nodes[3].Checked) // Vane maximum
-                    {
-                        dataForTableRow[colInd] = vanes[v].dirData[tsIndex].max;
-                        colInd++;
-                    }                        
-                }
-
-                for (int c = 0; c < numTemp; c++)
-                {
-                    int tsIndex = temps[c].GetTS_Index(thisTS);                                      
-
-                    if (thisInst.treeDataParams.Nodes[2].Nodes[0].Checked) // Temperature average
-                    {
-                        dataForTableRow[colInd] = temps[c].temp[tsIndex].avg;                       
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[2].Nodes[1].Checked) // Temperature st. dev.
-                    {
-                        dataForTableRow[colInd] = temps[c].temp[tsIndex].SD;
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[2].Nodes[2].Checked) // Temperature minimum
-                    {
-                        dataForTableRow[colInd] = temps[c].temp[tsIndex].min;
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[2].Nodes[3].Checked) // Temperature maximum
-                    {
-                        dataForTableRow[colInd] = temps[c].temp[tsIndex].max;
-                        colInd++;
-                    }                        
-                }
-
-                for (int p = 0; p < numBaro; p++)
-                {
-                    int tsIndex = baros[p].GetTS_Index(thisTS);                   
-
-                    if (thisInst.treeDataParams.Nodes[3].Nodes[0].Checked) // Pressure average
-                    {
-                        dataForTableRow[colInd] = baros[p].pressure[tsIndex].avg;
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[3].Nodes[1].Checked) // Pressure st. dev.
-                    {
-                        dataForTableRow[colInd] = baros[p].pressure[tsIndex].SD;
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[3].Nodes[2].Checked) // Pressure minimum
-                    {
-                        dataForTableRow[colInd] = baros[p].pressure[tsIndex].min;
-                        colInd++;
-                    }                        
-
-                    if (thisInst.treeDataParams.Nodes[3].Nodes[3].Checked) // Pressure maximum
-                    {
-                        dataForTableRow[colInd] = baros[p].pressure[tsIndex].max;
-                        colInd++;
-                    }                       
-                }                                  
-                              
-                for (int d = 0; d < totalNumSens + 1; d++)
-                {
-                    if (d == 0)
-                        strDataForTableRow[0] = DateTime.FromOADate(dataForTableRow[d]).ToString("yyyy-MM-dd HH:mm");
-                    else
-                        strDataForTableRow[d] = Math.Round(dataForTableRow[d], 2).ToString();
-                }
-                //     thisTS = thisTS.AddMinutes(10);
-
-                thisInst.dataMetTS.Rows.Add(strDataForTableRow);
-            }
-
-         //   for (int t = 0; t < numTS; t++)
-                       
-
-            // To do: set flag color
-            //thisInst.dataMetTS.DataSource = strDataForTableRow;
-
-            thisInst.dataMetTS.Refresh();
-        }
+        
 
         /// <summary> Returns number of selected metrics (i.e. avg, SD, min, or max) for specified parameter (i.e. ANEM, VANE, TEMP, or BARO) </summary>        
         public int GetNumMetrics(string paramType)
@@ -13273,7 +13206,7 @@ namespace ContinuumNS
             int localInd = 0;
 
             DateTime startTime = thisInst.dateMetTS_Start.Value;
-            DateTime endTime = thisInst.dateMetTS_End.Value;
+            DateTime endTime = thisInst.dateMetTS_End.Value; 
 
             bool showLegend = thisInst.chkShowLegenMetDataTS.Checked;
 
@@ -13425,13 +13358,12 @@ namespace ContinuumNS
         {           
 
             if (thisInst.okToUpdate)
-            {
-                thisInst.okToUpdate = false;
-
-                // Limit zooms to met start/end date
+            { 
+                // Get new x-axis range on Anem plot
                 DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Anems.Model.Axes[0].ActualMinimum);
                 DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Anems.Model.Axes[0].ActualMaximum);
 
+                // Limit zooms to met start/end date
                 DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates();
 
                 if (startDate < metStartEnd[0])
@@ -13440,11 +13372,15 @@ namespace ContinuumNS
                 if (endDate > metStartEnd[1])
                     endDate = metStartEnd[1];
 
+                // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
+                // Set okToUpdate to false so that change to axes' zoom won't trigger an 'AxisChanged' event
+                thisInst.okToUpdate = false;
+
                 // Make sure start time is at a 10-min value otherwise set to closest one
                 if (startDate.Minute % 10 != 0 || startDate.Second != 0)                
                     startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);                                  
 
-                // Make sure start time is at a 10-min value otherwise set to closest one
+                // Make sure end time is at a 10-min value otherwise set to closest one
                 if (endDate.Minute % 10 != 0 || endDate.Second != 0)                
                     endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);                               
                 
@@ -13465,17 +13401,26 @@ namespace ContinuumNS
                 {
                     thisInst.plotTS_Baros.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
                     thisInst.plotTS_Baros.InvalidatePlot(false);                    
-                }
-
-                // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
+                }  
                 
+                // If user zoomed out, need to replot.  Check new startDate compared to start date on GUI.  If it's earlier, call MetDataPlots()
+                if (startDate < thisInst.dateMetTS_Start.Value)
+                {
+                    thisInst.okToUpdate = true; 
+                    MetDataPlots();
+                    ScrollToSelectedMetDataStart();
+                    return;
+                }
+                
+                // Update dates on Met Data TS form
                 thisInst.dateMetTS_Start.Value = startDate;
                 thisInst.dateMetTS_End.Value = endDate;
 
+                // Update number of days shown on Met Data TS plots
                 double numDays = endDate.Subtract(startDate).TotalDays;
                 thisInst.txtNumDaysTS.Text = Math.Round(numDays, 1).ToString();
 
-                thisInst.okToUpdate = true;
+                thisInst.okToUpdate = true;                            
 
                 // Update table to same start row
                 ScrollToSelectedMetDataStart();                                
@@ -13861,7 +13806,8 @@ namespace ContinuumNS
                     thisExtrapAvg.LineStyle = LineStyle.Dash;
 
                     for (int t = startInd; t <= endInd; t++)
-                        thisExtrapAvg.Points.Add(new DataPoint(thisExtrapTS.WS_WD_data[t].timeStamp.ToOADate(), thisExtrapTS.WS_WD_data[t].WS));
+                        if (thisExtrapTS.WS_WD_data[t].WS > 0)
+                            thisExtrapAvg.Points.Add(new DataPoint(thisExtrapTS.WS_WD_data[t].timeStamp.ToOADate(), thisExtrapTS.WS_WD_data[t].WS));
 
                     thisInst.plotTS_Anems.Model.Series.Add(thisExtrapAvg);                                       
                 }
@@ -14027,6 +13973,46 @@ namespace ContinuumNS
                 }
             }
         }
+
+        /// <summary> Updates calculated shear exponent (alpha) and extrapolated wind speeds in table on Met Data TS tab </summary>
+        
+        public void ShearAndExtrapWSInTable(Met thisMet)
+        {
+
+            // Loop through and find columns with thisMet's shear alpha and extrapolated wind speed 
+            int shearInd = 0;
+            int numExtrap = thisMet.metData.GetNumSimData();
+            int[] extrapInd = new int[numExtrap];                       
+
+            for (int c = 0; c < thisInst.dataMetTS.ColumnCount; c++)
+            {
+                string colName = thisInst.dataMetTS.Columns[c].HeaderText;
+                if (colName == thisMet.name + " Shear")
+                    shearInd = c;
+
+                for  (int h = 0; h < numExtrap; h++)
+                    if (colName == thisMet.name + " Extrap WS " + thisMet.metData.simData[h].height)
+                            extrapInd[h] = c;
+            }
+
+            // Loop through each row and update values
+            for (int r = 0; r < thisInst.dataMetTS.RowCount; r++)
+            {
+                DateTime thisTS = Convert.ToDateTime(thisInst.dataMetTS.Rows[r].Cells[0].Value);
+                int tsInd = thisMet.metData.simData[0].GetTS_Index(thisTS);
+
+                if (tsInd != -999)
+                {
+                    thisInst.dataMetTS.Rows[r].Cells[shearInd].Value = Math.Round(thisMet.metData.simData[0].WS_WD_data[tsInd].alpha, 3);
+
+                    for (int h = 0; h < numExtrap; h++)
+                        thisInst.dataMetTS.Rows[r].Cells[extrapInd[h]].Value = Math.Round(thisMet.metData.simData[h].WS_WD_data[tsInd].WS, 3);
+                    
+                }                
+            }
+
+
+        }       
 
     }
 

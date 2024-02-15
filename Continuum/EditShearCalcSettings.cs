@@ -20,6 +20,7 @@ namespace ContinuumNS
         {
             InitializeComponent();
             thisMet = thisMetToEdit;
+            UpdateForm();
         }
 
         private void btnApply_Click(object sender, EventArgs e)
@@ -40,6 +41,7 @@ namespace ContinuumNS
             }
 
             goodToGo = true;
+            Close();
         }
 
         public void UpdateForm()
@@ -48,30 +50,28 @@ namespace ContinuumNS
 
             cboShearCalcTypes.SelectedItem = thisMet.metData.GetShearCalcNameFromEnum(thisMet.metData.shearSettings.shearCalcType);
 
-            if (thisMet.metData.shearSettings.shearCalcType == Met_Data_Filter.ShearCalculationTypes.bestFit)
+            // Populate min/max height dropdowns
+            cboMinHeight.Items.Clear();
+            cboMaxHeight.Items.Clear();
+
+            double[] wsHeights = thisMet.metData.GetHeightsOfAnems();
+
+            for (int h = 0; h < wsHeights.Length; h++)
             {
-                // Populate min/max height dropdowns
-                cboMinHeight.Items.Clear();
-                cboMaxHeight.Items.Clear();
+                cboMinHeight.Items.Add(wsHeights[h]);
+                cboMaxHeight.Items.Add(wsHeights[h]);
+            }
 
-                double[] wsHeights = thisMet.metData.GetHeightsOfAnems();
+            cboMinHeight.SelectedItem = thisMet.metData.shearSettings.minHeight;
+            cboMaxHeight.SelectedItem = thisMet.metData.shearSettings.maxHeight;
 
-                for (int h = 0; h < wsHeights.Length; h++)
-                {
-                    cboMinHeight.Items.Add(wsHeights[h]);
-                    cboMaxHeight.Items.Add(wsHeights[h]);
-                }
-
-                cboMinHeight.SelectedItem = thisMet.metData.shearSettings.minHeight;
-                cboMaxHeight.SelectedItem = thisMet.metData.shearSettings.maxHeight;
-
+            if (thisMet.metData.shearSettings.shearCalcType == Met_Data_Filter.ShearCalculationTypes.bestFit)
+            {   
                 cboMinHeight.Enabled = true;
                 cboMaxHeight.Enabled = true;
             }
             else if (thisMet.metData.shearSettings.shearCalcType == Met_Data_Filter.ShearCalculationTypes.avgAllPairs)
-            {
-                cboMinHeight.Items.Clear();
-                cboMaxHeight.Items.Clear();
+            {              
 
                 cboMinHeight.Enabled = false;
                 cboMaxHeight.Enabled = false;

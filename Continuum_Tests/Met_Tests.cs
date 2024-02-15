@@ -84,7 +84,7 @@ namespace Continuum_Tests
             thisInst.metList.isMCPd = true;
 
             // Test 1
-            Met.WSWD_Dist thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.All, thisInst, thisMet.mcp.LT_WS_Ests);
+            Met.WSWD_Dist thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.All, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 6.566949, 0.01, "Wrong overall WS Test 1");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 4.993328, 0.01, "Wrong WS in WD 0 Test 1");
@@ -98,7 +98,7 @@ namespace Continuum_Tests
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
             thisInst.metList.isMCPd = true;
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Day, Met.Season.All, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Day, Met.Season.All, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 6.296237, 0.01, "Wrong overall WS Test 2");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 4.80529, 0.01, "Wrong WS in WD 0 Test 2");
@@ -106,7 +106,7 @@ namespace Continuum_Tests
             Assert.AreEqual(thisDist.sectorWS_Ratio[8] * thisDist.WS, 6.918986, 0.01, "Wrong WS in WD 8 Test 2");
             Assert.AreEqual(thisDist.sectorWS_Ratio[15] * thisDist.WS, 5.327543, 0.01, "Wrong WS in WD 15 Test 2");
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.All, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.All, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 6.83764, 0.01, "Wrong overall WS Test 3");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 5.182166, 0.01, "Wrong WS in WD 0 Test 3");
@@ -121,7 +121,7 @@ namespace Continuum_Tests
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
             thisInst.metList.isMCPd = true;
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Winter, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Winter, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 7.413855, 0.01, "Wrong overall WS Test 4");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 5.1053, 0.01, "Wrong WS in WD 0 Test 4");
@@ -129,21 +129,21 @@ namespace Continuum_Tests
             Assert.AreEqual(thisDist.sectorWS_Ratio[8] * thisDist.WS, 8.429297, 0.01, "Wrong WS in WD 8 Test 4");
             Assert.AreEqual(thisDist.sectorWS_Ratio[15] * thisDist.WS, 6.318312, 0.01, "Wrong WS in WD 15 Test 4");
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Spring, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Spring, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 7.015339, 0.01, "Wrong overall WS Test 5");
             Assert.AreEqual(thisDist.sectorWS_Ratio[2] * thisDist.WS, 6.313987, 0.01, "Wrong WS in WD 2 Test 5");
             Assert.AreEqual(thisDist.sectorWS_Ratio[6] * thisDist.WS, 6.10201, 0.01, "Wrong WS in WD 6 Test 5");
             Assert.AreEqual(thisDist.sectorWS_Ratio[12] * thisDist.WS, 8.21204, 0.01, "Wrong WS in WD 12 Test 5");
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Summer, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Summer, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 5.344627, 0.01, "Wrong overall WS Test 6");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 4.7078, 0.01, "Wrong WS in WD 2 Test 6");
             Assert.AreEqual(thisDist.sectorWS_Ratio[4] * thisDist.WS, 4.88008, 0.01, "Wrong WS in WD 6 Test 6");
             Assert.AreEqual(thisDist.sectorWS_Ratio[14] * thisDist.WS, 4.95684, 0.01, "Wrong WS in WD 12 Test 6");
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Fall, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Fall, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 6.50441, 0.01, "Wrong overall WS Test 7");
             Assert.AreEqual(thisDist.sectorWS_Ratio[1] * thisDist.WS, 4.96994, 0.01, "Wrong WS in WD 1 Test 7");
@@ -158,7 +158,7 @@ namespace Continuum_Tests
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
             thisInst.metList.isMCPd = true;
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.Summer, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.Summer, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 5.76306, 0.01, "Wrong overall WS Test 9");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 4.90395, 0.01, "Wrong WS in WD 0 Test 4");
@@ -401,12 +401,12 @@ namespace Continuum_Tests
             thisInst.Open(fileName);
             Met thisMet = thisInst.metList.metItem[0];
 
-            Met.MaxYearlyWind[] maxWS = thisMet.GetMaxYearlyWinds("10-min", thisInst);
+            Met.MaxYearlyWind[] maxWS = thisMet.GetMaxYearlyWinds("10-min", 49);
 
             Assert.AreEqual(maxWS[0].maxWS, 16.0934, 0.001, "Wrong max 10-min WS 2007");
             Assert.AreEqual(maxWS[1].maxWS, 18.28394, 0.001, "Wrong max 10-min WS 2008");
 
-            maxWS = thisMet.GetMaxYearlyWinds("Gust", thisInst);
+            maxWS = thisMet.GetMaxYearlyWinds("Gust", 49);
 
             Assert.AreEqual(maxWS[0].maxWS, 25.973, 0.001, "Wrong max gust WS 2007");
             Assert.AreEqual(maxWS[1].maxWS, 29.0576, 0.001, "Wrong max gust WS 2008");
@@ -423,7 +423,7 @@ namespace Continuum_Tests
             thisInst.Open(fileName);
             Met thisMet = thisInst.metList.metItem[0];
 
-            Met.Extreme_WindSpeed maxWS = thisMet.CalcExtremeWindSpeeds(thisInst, thisInst.refList.reference[0]);
+            Met.Extreme_WindSpeed maxWS = thisMet.CalcExtremeWindSpeeds(thisInst);
 
             Assert.AreEqual(maxWS.gust1yr, 27.0, 0.1, "Wrong Gust 1-year WS");
             Assert.AreEqual(maxWS.tenMin1yr, 16.87, 0.1, "Wrong Ten-Min 1yrear WS");

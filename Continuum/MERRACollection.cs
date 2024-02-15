@@ -331,7 +331,7 @@ namespace ContinuumNS
                 {
                     thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
           //          thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, thisInst.Get_MCP_Method());
-                    thisMet.CalcAllLT_WSWD_Dists(thisInst, thisMet.mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
+                    thisMet.CalcAllLT_WSWD_Dists(thisInst); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
                     thisInst.updateThe.AllTABs();
                 }
                 else

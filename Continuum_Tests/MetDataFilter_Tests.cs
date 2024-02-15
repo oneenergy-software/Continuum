@@ -1104,5 +1104,37 @@ namespace Continuum_Tests
             thisInst.Close();
 
         }
+
+        [TestMethod]
+        public void CalcBestFitAlpha_Test()
+        {
+            double[] avg_WS = new double[] { 4.2, 5.1, 5.5, 5.7, 5.9 };
+            double[] heights = new double[] { 30, 45, 60, 80, 100 };
+
+            Met_Data_Filter thisMetData = new Met_Data_Filter();
+            thisMetData.shearSettings.shearCalcType = Met_Data_Filter.ShearCalculationTypes.bestFit;
+
+            // Test 1: Height range = 30 - 100
+            thisMetData.shearSettings.minHeight = 30;
+            thisMetData.shearSettings.maxHeight = 100;
+            double avg_Alpha = thisMetData.CalcBestFitAlpha(avg_WS, heights);
+
+            Assert.AreEqual(avg_Alpha, 0.2733, 0.001, "Wrong avg Alpha Test 1");
+
+            // Test 2: Height range = 30 - 60
+            thisMetData.shearSettings.minHeight = 30;
+            thisMetData.shearSettings.maxHeight = 60;
+            avg_Alpha = thisMetData.CalcBestFitAlpha(avg_WS, heights);
+
+            Assert.AreEqual(avg_Alpha, 0.3949, 0.001, "Wrong avg Alpha Test 2");
+
+            // Test 2: Height range = 45 - 80
+            thisMetData.shearSettings.minHeight = 45;
+            thisMetData.shearSettings.maxHeight = 80;
+            avg_Alpha = thisMetData.CalcBestFitAlpha(avg_WS, heights);
+
+            Assert.AreEqual(avg_Alpha, 0.1933, 0.001, "Wrong avg Alpha Test 3");
+
+        }
     }
 }
