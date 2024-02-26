@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Security.Cryptography.Xml;
 using System.Security.RightsManagement;
+using System.ComponentModel;
 
 namespace ContinuumNS
 {
@@ -557,7 +558,7 @@ namespace ContinuumNS
         {
             double[] avgWindRose = null;
 
-            if (ThisCount > 0)
+            if (ThisCount > 0 && isTimeSeries)
             {
                 avgWindRose = new double[thisNumWD];
 
@@ -1929,19 +1930,15 @@ namespace ContinuumNS
 
         /// <summary> Clears all MCP reference, target, concurrent and LT estimate data. Not saved in file. It's regenerated as needed. </summary>
         public void ClearMCPRefTargetConcLTEstData()
-        {
-            
+        {            
             for (int i = 0; i < ThisCount; i++)
             {
-                for (int m = 0; m < ThisCount; m++)
-                {
-                    if (metItem[i].mcpList[m] != null)
-                    {
-                        metItem[i].mcpList[m].refData = new MCP.Site_data[0];
-                        metItem[i].mcpList[m].targetData = new MCP.Site_data[0];
-                        metItem[i].mcpList[m].concData = new MCP.Concurrent_data[0];
-                        metItem[i].mcpList[m].LT_WS_Ests = new MCP.Site_data[0];
-                    }
+                for (int m = 0; m < metItem[i].GetNumMCP(); m++)
+                {                    
+                    metItem[i].mcpList[m].refData = new MCP.Site_data[0];
+                    metItem[i].mcpList[m].targetData = new MCP.Site_data[0];
+                    metItem[i].mcpList[m].concData = new MCP.Concurrent_data[0];
+                    metItem[i].mcpList[m].LT_WS_Ests = new MCP.Site_data[0];                    
                 }
             }
         }
@@ -2122,38 +2119,86 @@ namespace ContinuumNS
             MCP.Site_data[] concData = new MCP.Site_data[numData];
 
             Met thisMet = GetMet(metName);
-            Met_Data_Filter.Sim_TS extrapData = thisMet.metData.GetSimulatedTimeSeries(height);
-            int startInd = 0;
-            int endInd = extrapData.WS_WD_data.Length - 1;
 
-            while (extrapData.WS_WD_data[startInd].timeStamp < startEnd[0])
-                startInd++;
+            // See if this is a measured height
+            double[] anemHeights = thisMet.metData.GetHeightsOfAnems();
+            int closestAnemInd = thisMet.metData.GetHeightClosestToHH(height);
 
-            while (extrapData.WS_WD_data[endInd].timeStamp > startEnd[1])
-                endInd--;
-
-            DateTime thisTS = startEnd[0];
-            int extrapInd = startInd;
-
-            for (int d = 0; d < numData; d++)
+            if (anemHeights[closestAnemInd] == height)
             {
-                concData[d].thisDate = thisTS;
+                // Have measured height so use that as concurrent data
+                int heightInd = thisMet.metData.GetHeightClosestToHH(height);
+                
+                int startInd = 0;
+                int endInd = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha.Length - 1;
 
-                if (extrapData.WS_WD_data[extrapInd].timeStamp == thisTS)
+                while (thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[startInd].timeStamp < startEnd[0])
+                    startInd++;
+
+                while (thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[endInd].timeStamp > startEnd[1])
+                    endInd--;
+
+                DateTime thisTS = startEnd[0];
+                int anemInd = startInd;
+
+                for (int d = 0; d < numData; d++)
                 {
-                    concData[d].thisWS = extrapData.WS_WD_data[extrapInd].WS;
-                    concData[d].thisWD = extrapData.WS_WD_data[extrapInd].WD;
-                    extrapInd++;
+                    concData[d].thisDate = thisTS;
 
-                    if (extrapInd >= extrapData.WS_WD_data.Length)
-                        break;
+                    if (thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].timeStamp == thisTS)
+                    {
+                        concData[d].thisWS = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WS;
+                        concData[d].thisWD = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WD;
+                        anemInd++;
+
+                        if (anemInd >= thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha.Length)
+                            break;
+                    }
+
+                    if (dataInt == "10-min")
+                        thisTS = thisTS.AddMinutes(10);
+                    else if (dataInt == "60-min")
+                        thisTS = thisTS.AddMinutes(60);
                 }
-
-                if (dataInt == "10-min")
-                    thisTS = thisTS.AddMinutes(10);
-                else if (dataInt == "60-min")
-                    thisTS = thisTS.AddMinutes(60);
             }
+            else
+            {
+                // Use extrapolated data
+                Met_Data_Filter.Sim_TS extrapData = thisMet.metData.GetSimulatedTimeSeries(height);
+                int startInd = 0;
+                int endInd = extrapData.WS_WD_data.Length - 1;
+
+                while (extrapData.WS_WD_data[startInd].timeStamp < startEnd[0])
+                    startInd++;
+
+                while (extrapData.WS_WD_data[endInd].timeStamp > startEnd[1])
+                    endInd--;
+
+                DateTime thisTS = startEnd[0];
+                int extrapInd = startInd;
+
+                for (int d = 0; d < numData; d++)
+                {
+                    concData[d].thisDate = thisTS;
+
+                    if (extrapData.WS_WD_data[extrapInd].timeStamp == thisTS)
+                    {
+                        concData[d].thisWS = extrapData.WS_WD_data[extrapInd].WS;
+                        concData[d].thisWD = extrapData.WS_WD_data[extrapInd].WD;
+                        extrapInd++;
+
+                        if (extrapInd >= extrapData.WS_WD_data.Length)
+                            break;
+                    }
+
+                    if (dataInt == "10-min")
+                        thisTS = thisTS.AddMinutes(10);
+                    else if (dataInt == "60-min")
+                        thisTS = thisTS.AddMinutes(60);
+                }
+            }
+
+            
 
             return concData;
         }

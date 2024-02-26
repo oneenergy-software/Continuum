@@ -7559,6 +7559,7 @@ namespace ContinuumNS
             SeasonDropdown();
             TOD_Dropdown();
             MCP_Settings();
+            LT_ReferenceDropdowns();
             LT_ReferenceSettings();
             SetDefaultCheckAdvanced();
 
@@ -7650,10 +7651,10 @@ namespace ContinuumNS
                         thisMet.metData.ExtrapolateData(thisInst.modeledHeight);
                 }
             }
-            else
-                return;
+            
 
-            thisInst.chkDisableFilter.Checked = thisMet.metData.filteringEnabled;
+            if (thisMet.metData != null)
+                thisInst.chkDisableFilter.Checked = thisMet.metData.filteringEnabled;
        //     MetQC_AnemDropdown(thisInst, thisMet);
             MetQCAnemVaneDropdown();
             MetQCDates(thisMet);
@@ -7674,7 +7675,13 @@ namespace ContinuumNS
         {            
             Met_Data_Filter thisData = thisMet.metData;
 
-            if (thisData == null) return;
+            if (thisData == null)
+            {
+                thisInst.lstAlphas.Items.Clear();
+                thisInst.plotAlphaByWD.Model = new PlotModel();
+                thisInst.plotAlphaByWD.Refresh();
+                return;
+            }
 
             thisInst.txtShearCalcMethod.Text = thisData.GetShearCalcNameFromEnum(thisData.shearSettings.shearCalcType);
                         
@@ -8744,7 +8751,7 @@ namespace ContinuumNS
             MCP thisMCP = thisInst.GetSelectedMCP();
             string selectedMethod = thisInst.Get_MCP_Method();
 
-            if (thisMCP == null)
+            if (thisMCP.height == 0)
             {
                 thisInst.btnExportMCP_TS.Enabled = false;
                 thisInst.btnExportMCP_TAB.Enabled = false;
@@ -8836,10 +8843,20 @@ namespace ContinuumNS
             Reference thisRef = thisInst.GetSelectedReference("MCP");
 
             if (thisMet.metData == null)
+            {
+                thisInst.plotMCP.Model = new PlotModel();
+                MCP_TextBoxes();
+                thisInst.plotMCP.Refresh();
                 return;
+            }
 
             if (thisMet.metData.GetNumAnems() == 0)
+            {
+                thisInst.plotMCP.Model = new PlotModel();
+                MCP_TextBoxes();
+                thisInst.plotMCP.Refresh();
                 return;
+            }
 
             if (thisMet.metData.anems[0].windData == null)
                 thisMet.metData.GetSensorDataFromDB(thisInst, thisMet.name);
@@ -9730,8 +9747,23 @@ namespace ContinuumNS
             for (int r = 0; r < thisInst.refList.numReferences; r++)
                 thisInst.cboMCP_Ref.Items.Add(thisInst.refList.reference[r].GetName(thisInst.metList, thisInst.UTM_conversions));
 
-            if (thisInst.refList.numReferences > 0)
-                thisInst.cboMCP_Ref.SelectedIndex = thisInst.refList.numReferences - 1;
+            // If MCP has been calcuated, set reference dropdown to reference used in MCP
+            Met selMet = thisInst.GetSelectedMet("MCP");
+            if (thisInst.metList.isMCPd && selMet.mcpList != null)
+            {
+                Reference refUsed = selMet.mcpList[0].reference;
+                for (int r = 0; r < thisInst.cboMCP_Ref.Items.Count; r++)
+                    if (thisInst.cboMCP_Ref.Items[r].ToString() == refUsed.GetName(thisInst.metList, thisInst.UTM_conversions))
+                    {
+                        thisInst.cboMCP_Ref.SelectedIndex = r;
+                        break;
+                    }
+            }
+            else
+            {
+                if (thisInst.refList.numReferences > 0)
+                    thisInst.cboMCP_Ref.SelectedIndex = thisInst.refList.numReferences - 1;
+            }
 
         }
 
@@ -12043,6 +12075,10 @@ namespace ContinuumNS
         public void ExtremeWindSpeed()
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
+
+            if (thisMet.name == null)
+                return;
+
             Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst);
 
             // Reset Gumbel distribution plot
@@ -12066,17 +12102,17 @@ namespace ContinuumNS
             thisInst.txtGumbelTenMinBeta.Text = "";
             thisInst.txtGumbelTenMinMu.Text = "";
             thisInst.txt1yrExtreme10min.Text = "";
-            thisInst.txt50yrExtreme10min.Text = "";                       
+            thisInst.txt50yrExtreme10min.Text = "";
+
+            // Clear data table
+            thisInst.dataExtremeWS.Rows.Clear();
 
             if (extremeWS.tenMin1yr == 0)
             {   
                 thisInst.plotExtremeWS_TS.Refresh();
                 thisInst.plotExtremeWS.Refresh();
                 return;
-            }
-
-            // Clear data table
-            thisInst.dataExtremeWS.Rows.Clear();
+            }                        
 
             // Update extreme WS textboxes
             if (extremeWS.gust1yr != 0) // Extreme Gust WS not calculated when extrapolated WS used
@@ -12113,7 +12149,7 @@ namespace ContinuumNS
             maxHourlySeries.MarkerStroke = OxyColors.Red;
 
             ScatterSeries maxHourlyConcSeries = new ScatterSeries();
-            maxHourlyConcSeries.Title = "Max. Reference Hourly WS [Conc. w. Met.]";
+            maxHourlyConcSeries.Title = "Max. Reference Hourly WS [Conc. w. Met.]";            
             tsModel.Series.Add(maxHourlyConcSeries);
 
             ScatterSeries maxTenMinActSeries = new ScatterSeries();
@@ -12161,20 +12197,23 @@ namespace ContinuumNS
                     maxGustActSeries.Points.Add(new ScatterPoint(extremeWS.maxMetGust[i].thisYear, extremeWS.maxMetGust[i].maxWS));
 
                 // Find row index with this year
-                int rowIndYear = 0;
+                int rowIndYear = -999;
 
-                for (int r = 0; r < thisInst.dataExtremeWS.RowCount; r++)
+                for (int r = 0; r < thisInst.dataExtremeWS.RowCount - 1; r++)
                     if (thisInst.dataExtremeWS.Rows[r].Cells[0].Value.ToString() == extremeWS.maxMetTenMin[i].thisYear.ToString())
                     {
                         rowIndYear = r;
                         break;
                     }
 
-                thisInst.dataExtremeWS.Rows[rowIndYear].Cells[2].Value = Math.Round(extremeWS.maxHourlyRefConcWS[i].maxWS, 3);
-                thisInst.dataExtremeWS.Rows[rowIndYear].Cells[3].Value = Math.Round(extremeWS.maxMetTenMin[i].maxWS, 3);
+                if (rowIndYear != -999)
+                {
+                    thisInst.dataExtremeWS.Rows[rowIndYear].Cells[2].Value = Math.Round(extremeWS.maxHourlyRefConcWS[i].maxWS, 3);
+                    thisInst.dataExtremeWS.Rows[rowIndYear].Cells[3].Value = Math.Round(extremeWS.maxMetTenMin[i].maxWS, 3);
 
-                if (extremeWS.maxMetGust != null)
-                    thisInst.dataExtremeWS.Rows[rowIndYear].Cells[5].Value = Math.Round(extremeWS.maxMetGust[i].maxWS, 3);
+                    if (extremeWS.maxMetGust != null)
+                        thisInst.dataExtremeWS.Rows[rowIndYear].Cells[5].Value = Math.Round(extremeWS.maxMetGust[i].maxWS, 3);
+                }
             }
 
             thisInst.plotExtremeWS_TS.Refresh();
@@ -12213,9 +12252,9 @@ namespace ContinuumNS
             thisInst.plotExtremeWS.Refresh();
 
             if (extremeWS.maxEstGust != null)
-                thisInst.lblGustExtremeWSUnavailable.Visible = true;
-            else
                 thisInst.lblGustExtremeWSUnavailable.Visible = false;
+            else
+                thisInst.lblGustExtremeWSUnavailable.Visible = true;
         }
 
         /// <summary> Updates the inflow angle plot and textboxes on Site Conditions tab. </summary>
@@ -12323,7 +12362,8 @@ namespace ContinuumNS
             double[] refEnergyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, thisInst.metList.numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);            
 
             if (energyRose == null)
-                energyRose = refEnergyRose;                        
+                energyRose = refEnergyRose;  
+            
 
             for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
             {
@@ -13406,6 +13446,13 @@ namespace ContinuumNS
                 // If user zoomed out, need to replot.  Check new startDate compared to start date on GUI.  If it's earlier, call MetDataPlots()
                 if (startDate < thisInst.dateMetTS_Start.Value)
                 {
+                    // Update dates on Met Data TS form
+                    thisInst.dateMetTS_Start.Value = startDate;
+                    thisInst.dateMetTS_End.Value = endDate;
+
+                    double numdays = endDate.Subtract(startDate).TotalDays;
+                    thisInst.txtNumDaysTS.Text = Math.Round(numdays, 1).ToString();
+
                     thisInst.okToUpdate = true; 
                     MetDataPlots();
                     ScrollToSelectedMetDataStart();
@@ -13473,8 +13520,24 @@ namespace ContinuumNS
                     thisInst.plotTS_Baros.InvalidatePlot(false);
                 }
 
+                // If user zoomed out, need to replot.  Check new startDate compared to start date on GUI.  If it's earlier, call MetDataPlots()
+                if (startDate < thisInst.dateMetTS_Start.Value)
+                {
+                    // Update dates on Met Data TS form
+                    thisInst.dateMetTS_Start.Value = startDate;
+                    thisInst.dateMetTS_End.Value = endDate;
+
+                    double numdays = endDate.Subtract(startDate).TotalDays;
+                    thisInst.txtNumDaysTS.Text = Math.Round(numdays, 1).ToString();
+
+                    thisInst.okToUpdate = true;
+                    MetDataPlots();
+                    ScrollToSelectedMetDataStart();
+                    return;
+                }
+
                 // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
-                
+
                 thisInst.dateMetTS_Start.Value = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMinimum);
                 thisInst.dateMetTS_End.Value = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMaximum);
 
@@ -13533,8 +13596,24 @@ namespace ContinuumNS
                     thisInst.plotTS_Baros.InvalidatePlot(false);
                 }
 
+                // If user zoomed out, need to replot.  Check new startDate compared to start date on GUI.  If it's earlier, call MetDataPlots()
+                if (startDate < thisInst.dateMetTS_Start.Value)
+                {
+                    // Update dates on Met Data TS form
+                    thisInst.dateMetTS_Start.Value = startDate;
+                    thisInst.dateMetTS_End.Value = endDate;
+
+                    double numdays = endDate.Subtract(startDate).TotalDays;
+                    thisInst.txtNumDaysTS.Text = Math.Round(numdays, 1).ToString();
+
+                    thisInst.okToUpdate = true;
+                    MetDataPlots();
+                    ScrollToSelectedMetDataStart();
+                    return;
+                }
+
                 // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
-                
+
                 thisInst.dateMetTS_Start.Value = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMinimum);
                 thisInst.dateMetTS_End.Value = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMaximum);
 
@@ -13593,8 +13672,24 @@ namespace ContinuumNS
                     thisInst.plotTS_Temp.InvalidatePlot(false);
                 }
 
+                // If user zoomed out, need to replot.  Check new startDate compared to start date on GUI.  If it's earlier, call MetDataPlots()
+                if (startDate < thisInst.dateMetTS_Start.Value)
+                {
+                    // Update dates on Met Data TS form
+                    thisInst.dateMetTS_Start.Value = startDate;
+                    thisInst.dateMetTS_End.Value = endDate;
+
+                    double numdays = endDate.Subtract(startDate).TotalDays;
+                    thisInst.txtNumDaysTS.Text = Math.Round(numdays, 1).ToString();
+
+                    thisInst.okToUpdate = true;
+                    MetDataPlots();
+                    ScrollToSelectedMetDataStart();
+                    return;
+                }
+
                 // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
-                
+
                 thisInst.dateMetTS_Start.Value = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMinimum);
                 thisInst.dateMetTS_End.Value = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMaximum);
 

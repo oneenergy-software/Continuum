@@ -3725,10 +3725,9 @@ namespace ContinuumNS
         }
 
         /// <summary>  Exports extreme wind speed estimated at selected met site. </summary>
-        public void ExportExtremeWS_Table(Continuum thisInst)
+        public void ExportExtremeWS(Continuum thisInst)
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
-            
             Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst);
 
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
@@ -3739,6 +3738,55 @@ namespace ContinuumNS
                 file.WriteLine("Met Start date:," + thisInst.dateExtremeWS_Start.Value.ToString("yyyy-MM-dd HH:mm"));
                 file.WriteLine("Met End date:," + thisInst.dateExtremeWS_End.Value.ToString("yyyy-MM-dd HH:mm"));
                 file.WriteLine("Height [m]," + thisInst.cboExtremeWS_Height.SelectedItem.ToString());
+                file.WriteLine();
+                file.WriteLine(thisInst.savedParams.savedFileName);
+                file.WriteLine();
+
+                if (thisInst.chkUseWMO_TenMin.Checked || thisInst.chkUseWMO_Gust.Checked)
+                {
+                    file.WriteLine("WMO Gust Factor Used:");
+                    file.WriteLine("WMO Class: " + thisInst.cboWMO_Class.SelectedItem.ToString());
+                    file.WriteLine("Description: " + thisInst.txtWMO_Desc.Text);
+                    if (thisInst.chkUseWMO_TenMin.Checked)
+                        file.WriteLine("Hourly to Ten-Minute Gust Factor: " + thisInst.txtWMO_HourTenMin.Text);
+                    if (thisInst.chkUseWMO_Gust.Checked)
+                        file.WriteLine("Hourly to 3-Sec Gust Factor: " + thisInst.txtWMO_HourGust.Text);
+                    file.WriteLine();
+                }
+
+                file.WriteLine("Gumbel Coefficients:");
+                file.WriteLine("10-min Beta:," + thisInst.txtGumbelTenMinBeta.Text + ", 10-min Mu:," + thisInst.txtGumbelTenMinMu.Text);
+                file.WriteLine("Gust Beta:," + thisInst.txtGumbelGustBeta.Text + ", Gust Mu:," + thisInst.txtGumbelGustMu.Text);
+
+                file.WriteLine("Extreme WS Type, WS [m/s]");
+                file.WriteLine("1 yr 10-min Max WS, " + Math.Round(extremeWS.tenMin1yr, 2));
+                file.WriteLine("1 yr Max Gust, " + Math.Round(extremeWS.gust1yr, 2));
+                file.WriteLine("50 yr 10-min Max WS, " + Math.Round(extremeWS.tenMin50yr, 2));
+                file.WriteLine("50 yr Max Gust, " + Math.Round(extremeWS.gust50yr, 2));
+
+                file.Close();
+            }
+
+        }
+
+        /// <summary>  Exports extreme wind speed estimated at selected met site. </summary>
+        public void ExportExtremeWS_Table(Continuum thisInst)
+        {
+            Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
+            
+            Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst);
+
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter file = new StreamWriter(thisInst.sfd60mWS.FileName);
+                double height = Convert.ToDouble(thisInst.cboExtremeWS_Height.SelectedItem.ToString());
+
+                file.WriteLine("Estimated Extreme Wind Speeds at Met: " + thisMet.name);
+                file.WriteLine("Met Start date:," + thisInst.dateExtremeWS_Start.Value.ToString("yyyy-MM-dd HH:mm"));
+                file.WriteLine("Met End date:," + thisInst.dateExtremeWS_End.Value.ToString("yyyy-MM-dd HH:mm"));
+                file.WriteLine("Height [m]," + height.ToString());                
+                file.WriteLine("Reference used: " + thisInst.cboExtremeWSRef.SelectedItem.ToString());
+
                 file.WriteLine();
                 file.WriteLine(thisInst.savedParams.savedFileName);
                 file.WriteLine();
@@ -3793,7 +3841,10 @@ namespace ContinuumNS
                     else
                         file.Write(",");
 
-                    file.WriteLine(extremeWS.maxEstGust[y].maxWS);
+                    if (extremeWS.maxEstGust != null)
+                        file.WriteLine(extremeWS.maxEstGust[y].maxWS);
+                    else
+                        file.WriteLine();
                 }
 
                 file.Close();

@@ -1,4 +1,5 @@
-﻿using Microsoft.Research.Science.Data;
+﻿using MathNet.Numerics.Statistics;
+using Microsoft.Research.Science.Data;
 using System;
 using System.Windows.Forms;
 
@@ -31,7 +32,7 @@ namespace ContinuumNS
         public Met_Data_Filter metData;
         /// <summary> MCP (Measure-Correlate-Predict) long-term estimate </summary>
         public MCP mcp;
-   //     /// <summary> List of MCP (Measure-Correlate-Predict) long-term estimates </summary>
+        /// <summary> List of MCP (Measure-Correlate-Predict) long-term estimates </summary>
         public MCP[] mcpList;
         /// <summary> Measured turbulence intensity (from time series data) </summary>
         public Turbulence turbulence;
@@ -1000,23 +1001,29 @@ namespace ContinuumNS
         }
 
         /// <summary> Finds and returns maximum 10-minute WS for each year of data extrapolated to specified height.  Minimum of 30 days needed per year </summary>        
-        public MaxYearlyWind[] GetMaxYearlyExtrapWinds(double height)
+        public MaxYearlyWind[] GetMaxYearlyExtrapWinds(double height, DateTime startTime, DateTime endTime)
         {
-            MaxYearlyWind[] maxYearlyWinds = new MaxYearlyWind[0];
-            int dataInd = 0;
+            MaxYearlyWind[] maxYearlyWinds = new MaxYearlyWind[0];            
+            Met_Data_Filter.Sim_TS thisSimTS = metData.GetSimulatedTimeSeries(height);                       
+            
+            int startInd = 0;
+            while (thisSimTS.WS_WD_data[startInd].timeStamp < startTime && startInd < thisSimTS.WS_WD_data.Length - 1)
+                startInd++;
 
-            Met_Data_Filter.Sim_TS thisSimTS = metData.GetSimulatedTimeSeries(height);
+            int endInd = thisSimTS.WS_WD_data.Length - 1;
+            while (thisSimTS.WS_WD_data[endInd].timeStamp > endTime && endInd > 0)
+                endInd--;
 
-            int lastYear = thisSimTS.WS_WD_data[dataInd].timeStamp.Year;
-            int firstTS_IndexThisYear = 0;
-            DateTime firstTSInThisYear = new DateTime();
-            int lastTS_IndexThisYear = thisSimTS.WS_WD_data.Length - 1;
-            DateTime lastTSInThisYear = new DateTime();
+            int lastYear = thisSimTS.WS_WD_data[startInd].timeStamp.Year;
+            int firstTS_IndexThisYear = startInd;  
+            DateTime firstTSInThisYear;
+            int lastTS_IndexThisYear;
+            DateTime lastTSInThisYear;
 
             double maxWS = 0;
             int yearInd = 0;
 
-            for (int i = dataInd; i < thisSimTS.WS_WD_data.Length; i++)
+            for (int i = startInd; i <= endInd; i++)
             {
                 int thisYear = thisSimTS.WS_WD_data[i].timeStamp.Year;
 
@@ -1028,18 +1035,9 @@ namespace ContinuumNS
                 else
                 {
                     // Only add max yearly winds if have at least 30 days of data for this year                    
-                    firstTS_IndexThisYear = 0;
-
-                    while (thisSimTS.WS_WD_data[firstTS_IndexThisYear].timeStamp.Year < lastYear && firstTS_IndexThisYear < thisSimTS.WS_WD_data.Length - 1)
-                        firstTS_IndexThisYear++;
-
+                                       
                     firstTSInThisYear = thisSimTS.WS_WD_data[firstTS_IndexThisYear].timeStamp;
-
-                    lastTS_IndexThisYear = thisSimTS.WS_WD_data.Length - 1;
-
-                    while (thisSimTS.WS_WD_data[lastTS_IndexThisYear].timeStamp.Year > lastYear && lastTS_IndexThisYear > 0)
-                        lastTS_IndexThisYear--;
-
+                    lastTS_IndexThisYear = i - 1;                   
                     lastTSInThisYear = thisSimTS.WS_WD_data[lastTS_IndexThisYear].timeStamp;
 
                     if (lastTSInThisYear.Subtract(firstTSInThisYear).TotalDays > 30)
@@ -1053,23 +1051,14 @@ namespace ContinuumNS
                                         
                     maxWS = thisSimTS.WS_WD_data[i].WS;
                     lastYear = thisYear;
+                    firstTS_IndexThisYear = i;
                     yearInd++;
                 }
             }
 
             // Only add max yearly winds if have at least 30 days of data for this year                    
-            firstTS_IndexThisYear = 0;
-
-            while (thisSimTS.WS_WD_data[firstTS_IndexThisYear].timeStamp.Year < lastYear && firstTS_IndexThisYear < thisSimTS.WS_WD_data.Length - 1)
-                firstTS_IndexThisYear++;
-
             firstTSInThisYear = thisSimTS.WS_WD_data[firstTS_IndexThisYear].timeStamp;
-
-            lastTS_IndexThisYear = thisSimTS.WS_WD_data.Length - 1;
-
-            while (thisSimTS.WS_WD_data[lastTS_IndexThisYear].timeStamp.Year > lastYear && lastTS_IndexThisYear > 0)
-                lastTS_IndexThisYear--;
-
+            lastTS_IndexThisYear = endInd;
             lastTSInThisYear = thisSimTS.WS_WD_data[lastTS_IndexThisYear].timeStamp;
 
             if (lastTSInThisYear.Subtract(firstTSInThisYear).TotalDays > 30)
@@ -1086,13 +1075,16 @@ namespace ContinuumNS
         }
 
         /// <summary> Finds and returns maximum 10-minute or gust for each year of data at measured height closest to specified height.  Minimum of 30 days needed per year. </summary>
-        public MaxYearlyWind[] GetMaxYearlyWinds(string tenMinOrGust, double height)
+        public MaxYearlyWind[] GetMaxYearlyWinds(string tenMinOrGust, double height, DateTime thisStart, DateTime thisEnd)
         {
             MaxYearlyWind[] maxYearlyWinds = new MaxYearlyWind[0];
-            int dataInd = 0;
-
+            
             // Get anems closest to hub height
             int[] anemInds = metData.GetAnemsClosestToHH(height);
+
+            if (anemInds.Length == 0)
+                return maxYearlyWinds;
+
             Met_Data_Filter.Anem_Data anem1 = metData.anems[anemInds[0]];
             Met_Data_Filter.Anem_Data anem2 = new Met_Data_Filter.Anem_Data();
             bool gotAnem2 = false;
@@ -1100,18 +1092,26 @@ namespace ContinuumNS
             {
                 anem2 = metData.anems[anemInds[1]];
                 gotAnem2 = true;
-            }           
+            }
 
-            int lastYear = anem1.windData[dataInd].timeStamp.Year;
-            int firstTS_IndexThisYear = 0;
-            DateTime firstTSInThisYear = new DateTime();
-            int lastTS_IndexThisYear = anem1.windData.Length - 1;
-            DateTime lastTSInThisYear = new DateTime();
+            int startInd = 0;
+            while (anem1.windData[startInd].timeStamp < thisStart && startInd < anem1.windData.Length - 1)
+                startInd++;
+
+            int endInd = anem1.windData.Length - 1;
+            while (anem1.windData[endInd].timeStamp > thisEnd && endInd > 0)
+                endInd--;
+
+            int lastYear = anem1.windData[startInd].timeStamp.Year;
+            int firstTS_IndexThisYear = startInd;
+            DateTime firstTSInThisYear;
+            int lastTS_IndexThisYear;
+            DateTime lastTSInThisYear;
 
             double maxWS = 0;            
             int yearInd = 0;
 
-            for (int i = dataInd; i < anem1.windData.Length; i++)
+            for (int i = startInd; i < endInd; i++)
             {
                 int thisYear = anem1.windData[i].timeStamp.Year;
 
@@ -1137,18 +1137,9 @@ namespace ContinuumNS
                 else
                 {
                     // Only add max yearly winds if have at least 30 days of data for this year                    
-                    firstTS_IndexThisYear = 0;
-
-                    while (anem1.windData[firstTS_IndexThisYear].timeStamp.Year < lastYear && firstTS_IndexThisYear < anem1.windData.Length - 1)
-                        firstTS_IndexThisYear++;
 
                     firstTSInThisYear = anem1.windData[firstTS_IndexThisYear].timeStamp;
-                    
-                    lastTS_IndexThisYear = anem1.windData.Length - 1;
-
-                    while (anem1.windData[lastTS_IndexThisYear].timeStamp.Year > lastYear && lastTS_IndexThisYear > 0)
-                        lastTS_IndexThisYear--;
-
+                    lastTS_IndexThisYear = i - 1;                    
                     lastTSInThisYear = anem1.windData[lastTS_IndexThisYear].timeStamp;
 
                     if (lastTSInThisYear.Subtract(firstTSInThisYear).TotalDays > 30)
@@ -1176,23 +1167,14 @@ namespace ContinuumNS
                     }
 
                     lastYear = thisYear;
+                    firstTS_IndexThisYear = i;
                     yearInd++;
                 }
             }
-            
-            // Only add max yearly winds if have at least 30 days of data for this year                    
-            firstTS_IndexThisYear = 0;
 
-            while (anem1.windData[firstTS_IndexThisYear].timeStamp.Year < lastYear && firstTS_IndexThisYear < anem1.windData.Length - 1)
-                firstTS_IndexThisYear++;
-
+            // Only add max yearly winds if have at least 30 days of data for this year
             firstTSInThisYear = anem1.windData[firstTS_IndexThisYear].timeStamp;
-
-            lastTS_IndexThisYear = anem1.windData.Length - 1;
-
-            while (anem1.windData[lastTS_IndexThisYear].timeStamp.Year > lastYear && lastTS_IndexThisYear > 0)
-                lastTS_IndexThisYear--;
-
+            lastTS_IndexThisYear = endInd;            
             lastTSInThisYear = anem1.windData[lastTS_IndexThisYear].timeStamp;
 
             if (lastTSInThisYear.Subtract(firstTSInThisYear).TotalDays > 30)
@@ -1219,13 +1201,30 @@ namespace ContinuumNS
                         
             bool extrapHeightChosen = false;
             if (selHeight == thisInst.modeledHeight)
-                extrapHeightChosen = true;
+            {
+                // Check to see if have measurement at modeled height 
+                double[] measHeights = metData.GetHeightsOfAnems();
+                bool haveThisHeight = false;
+
+                for (int h = 0; h < measHeights.Length; h++)
+                    if (measHeights[h] == selHeight)
+                    {
+                        haveThisHeight = true;
+                        break;
+                    }
+
+                if (haveThisHeight == false)
+                    extrapHeightChosen = true;
+            }
 
             DateTime thisStart = thisInst.dateExtremeWS_Start.Value;
             DateTime thisEnd = thisInst.dateExtremeWS_End.Value;
 
             bool useWMO_HourTenMin = thisInst.chkUseWMO_TenMin.Checked;
             bool useWMO_HourGust = thisInst.chkUseWMO_Gust.Checked;
+
+            if (thisInst.chkUseSimData.Checked && mcpList == null)
+                return extremeWinds;
 
             if (thisInst.chkUseSimData.Checked)
             {                
@@ -1260,12 +1259,12 @@ namespace ContinuumNS
             // Find max 10-min and max gust for every year of data (Min 30 days for a year)
             if (extrapHeightChosen)
             {
-                extremeWinds.maxMetTenMin = GetMaxYearlyExtrapWinds(selHeight);
+                extremeWinds.maxMetTenMin = GetMaxYearlyExtrapWinds(selHeight, thisStart, thisEnd);
             }
             else
             {
-                extremeWinds.maxMetTenMin = GetMaxYearlyWinds("10-min", selHeight);
-                extremeWinds.maxMetGust = GetMaxYearlyWinds("Gust", selHeight);
+                extremeWinds.maxMetTenMin = GetMaxYearlyWinds("10-min", selHeight, thisStart, thisEnd);
+                extremeWinds.maxMetGust = GetMaxYearlyWinds("Gust", selHeight, thisStart, thisEnd);
             }
 
             if (extremeWinds.maxMetTenMin.Length == 0 && useWMO_HourTenMin == false)
@@ -1389,9 +1388,9 @@ namespace ContinuumNS
             double[] tenMin = new double[extremeWinds.maxHourlyRefWS.Length];
             for (int i = 0; i < extremeWinds.maxHourlyRefWS.Length; i++)
                 tenMin[i] = extremeWinds.maxEstTenMin[i].maxWS;
-
-            double avgMaxTenMin = thisInst.topo.FindAvg(tenMin);
-            double stDevMaxTenMin = thisInst.topo.FindSD(tenMin);
+            
+            double avgMaxTenMin = Statistics.Mean(tenMin);
+            double stDevMaxTenMin = Statistics.StandardDeviation(tenMin);
 
             if (extrapHeightChosen == false || useWMO_HourGust)
             {
@@ -1399,8 +1398,8 @@ namespace ContinuumNS
                 for (int i = 0; i < extremeWinds.maxHourlyRefWS.Length; i++)
                     gust[i] = extremeWinds.maxEstGust[i].maxWS;
 
-                double avgMaxGust = thisInst.topo.FindAvg(gust);
-                double stDevMaxGust = thisInst.topo.FindSD(gust);
+                double avgMaxGust = Statistics.Mean(gust);
+                double stDevMaxGust = Statistics.StandardDeviation(gust);
 
                 extremeWinds.gustDist.beta = stDevMaxGust * Math.Pow(6, 0.5) / Math.PI;
                 extremeWinds.gustDist.mu = avgMaxGust - 0.577 * extremeWinds.gustDist.beta;
@@ -1425,7 +1424,7 @@ namespace ContinuumNS
                 extremeWinds.extremeCurve[i].yearsOfOcc = 1.5 + 0.5 * i;
                 extremeWinds.extremeCurve[i].maxTenMin = extremeWinds.tenMinDist.mu - extremeWinds.tenMinDist.beta * Math.Log(-Math.Log(1 - 1/ extremeWinds.extremeCurve[i].yearsOfOcc));
                 
-                if (extrapHeightChosen == false)
+                if (extrapHeightChosen == false || useWMO_HourGust)
                     extremeWinds.extremeCurve[i].maxGust = extremeWinds.gustDist.mu - extremeWinds.gustDist.beta * Math.Log(-Math.Log(1 - 1 / extremeWinds.extremeCurve[i].yearsOfOcc));
             }                       
 

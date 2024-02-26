@@ -184,7 +184,7 @@ namespace ContinuumNS
         {
             // Gets index of selected text and removes the data at that index
             if (listVanesHeight.SelectedIndex != -1)
-                listVanesHeight.Items.RemoveAt(listAnemsHO.SelectedIndex);
+                listVanesHeight.Items.RemoveAt(listVanesHeight.SelectedIndex);
             else
                 MessageBox.Show("Please selected data to be deleted.");
 
@@ -194,7 +194,7 @@ namespace ContinuumNS
         {
             // Gets index of selected text and removes the data at that index
             if (listTempsHeight.SelectedIndex != -1)
-                listTempsHeight.Items.RemoveAt(listAnemsHO.SelectedIndex);
+                listTempsHeight.Items.RemoveAt(listTempsHeight.SelectedIndex);
             else
                 MessageBox.Show("Please selected data to be deleted.");
 
@@ -259,6 +259,7 @@ namespace ContinuumNS
                     string[] AnemString = CreateArrayAnem();
                     string[] VaneString = CreateArrayVane();
                     string[] TempString = CreateArrayTemp();
+                    string[] baroString = CreateArrayTemp();
 
                     // For loop that loops through the anemometor data and adds the correct suffixes based on what data the user is including in the .csv file
                     for (int i = 0; i < AnemString.Length; i++)
@@ -299,6 +300,18 @@ namespace ContinuumNS
                             sm.Write(TempString[i] + "_Max_" + cboTempUnits.Text + ",");
                         if (chkMinTemp.Checked == true)
                             sm.Write(TempString[i] + "_Min_" + cboTempUnits.Text + ",");
+                    }
+
+                    for (int i = 0; i < baroString.Length; i++)
+                    {
+                        if (chkAvgBaro.Checked == true)
+                            sm.Write(baroString[i] + "_Avg,");
+                        if (chkSDBaro.Checked == true)
+                            sm.Write(baroString[i] + "_SD,");
+                        if (chkMaxBaro.Checked == true)
+                            sm.Write(baroString[i] + "_Max,");
+                        if (chkMinBaro.Checked == true)
+                            sm.Write(baroString[i] + "_Min,");
                     }
 
                     sm.Close(); // Closes StreamWriter for file to be completley saved
@@ -489,6 +502,44 @@ namespace ContinuumNS
             else
                 checkCountAnem--;
 
+        }
+
+        private void btnAddBaroHeight_Click(object sender, EventArgs e)
+        {
+            bool successful = false;
+
+            // Adds a height to the pressure (barometer) box when "Add" button is clicked as long as it has text in the height box
+            if (!string.IsNullOrWhiteSpace(txtNewBaroHeight.Text))
+            {
+                // Trys to turn the text into an integer and catches invalid input
+                try
+                {
+                    double.Parse(txtNewBaroHeight.Text);
+                    successful = true;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(this, "Invalid input.");
+                    txtNewBaroHeight.Clear();
+                }
+            }
+
+            // If valid input, adds text to text box
+            if (successful == true)
+            {
+                // Makes a new line right before the text to help with readability and helps ensure remove button works
+                listBaroHeight.Items.Add(txtNewBaroHeight.Text);
+                txtNewBaroHeight.Clear(); // Resets text box to empty for ease of use for user
+            }
+        }
+
+        private void btnRemoveBaroHeight_Click(object sender, EventArgs e)
+        {
+            // Gets index of selected text and removes the data at that index
+            if (listBaroHeight.SelectedIndex != -1)
+                listBaroHeight.Items.RemoveAt(listBaroHeight.SelectedIndex);
+            else
+                MessageBox.Show("Please selected data to be deleted.");
         }
     }
 }

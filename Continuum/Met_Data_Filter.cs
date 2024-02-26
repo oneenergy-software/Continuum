@@ -2134,6 +2134,10 @@ namespace ContinuumNS
         /// <summary> Creates simulated time series of extrapolated data at specified height. </summary>
         public void ExtrapolateData(double thisHeight)
         {
+                        
+            if (GetHeightsOfAnems().Length <= 1)
+                return;
+
             Array.Resize(ref simData, simData.Length + 1);
             simData[simData.Length - 1].height = thisHeight; 
                         

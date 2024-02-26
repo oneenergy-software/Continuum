@@ -73,14 +73,14 @@
             this.txtMaxLong.Location = new System.Drawing.Point(232, 365);
             this.txtMaxLong.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxLong.Name = "txtMaxLong";
-            this.txtMaxLong.Size = new System.Drawing.Size(44, 25);
+            this.txtMaxLong.Size = new System.Drawing.Size(57, 25);
             this.txtMaxLong.TabIndex = 248;
             // 
             // label146
             // 
             this.label146.AutoSize = true;
             this.label146.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label146.Location = new System.Drawing.Point(52, 368);
+            this.label146.Location = new System.Drawing.Point(37, 368);
             this.label146.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label146.Name = "label146";
             this.label146.Size = new System.Drawing.Size(109, 18);
@@ -90,10 +90,10 @@
             // txtMinLong
             // 
             this.txtMinLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinLong.Location = new System.Drawing.Point(164, 365);
+            this.txtMinLong.Location = new System.Drawing.Point(151, 365);
             this.txtMinLong.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinLong.Name = "txtMinLong";
-            this.txtMinLong.Size = new System.Drawing.Size(44, 25);
+            this.txtMinLong.Size = new System.Drawing.Size(57, 25);
             this.txtMinLong.TabIndex = 246;
             // 
             // label52
@@ -113,14 +113,14 @@
             this.txtMaxLat.Location = new System.Drawing.Point(232, 332);
             this.txtMaxLat.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxLat.Name = "txtMaxLat";
-            this.txtMaxLat.Size = new System.Drawing.Size(44, 25);
+            this.txtMaxLat.Size = new System.Drawing.Size(57, 25);
             this.txtMaxLat.TabIndex = 244;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(60, 335);
+            this.label5.Location = new System.Drawing.Point(48, 335);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(99, 18);
@@ -130,10 +130,10 @@
             // txtMinLat
             // 
             this.txtMinLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinLat.Location = new System.Drawing.Point(164, 332);
+            this.txtMinLat.Location = new System.Drawing.Point(151, 332);
             this.txtMinLat.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinLat.Name = "txtMinLat";
-            this.txtMinLat.Size = new System.Drawing.Size(44, 25);
+            this.txtMinLat.Size = new System.Drawing.Size(57, 25);
             this.txtMinLat.TabIndex = 242;
             // 
             // btnDownloadMERRA2

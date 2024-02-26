@@ -78,6 +78,17 @@
             this.listAnemsHO = new System.Windows.Forms.ListBox();
             this.listVanesHeight = new System.Windows.Forms.ListBox();
             this.listTempsHeight = new System.Windows.Forms.ListBox();
+            this.listBaroHeight = new System.Windows.Forms.ListBox();
+            this.btnRemoveBaroHeight = new System.Windows.Forms.Button();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txtNewBaroHeight = new System.Windows.Forms.TextBox();
+            this.btnAddBaroHeight = new System.Windows.Forms.Button();
+            this.label17 = new System.Windows.Forms.Label();
+            this.chkMaxBaro = new System.Windows.Forms.CheckBox();
+            this.chkMinBaro = new System.Windows.Forms.CheckBox();
+            this.chkSDBaro = new System.Windows.Forms.CheckBox();
+            this.chkAvgBaro = new System.Windows.Forms.CheckBox();
+            this.label18 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtMETname
@@ -86,7 +97,7 @@
             this.txtMETname.Location = new System.Drawing.Point(145, 24);
             this.txtMETname.Name = "txtMETname";
             this.txtMETname.Size = new System.Drawing.Size(126, 25);
-            this.txtMETname.TabIndex = 0;            
+            this.txtMETname.TabIndex = 0;
             // 
             // label1
             // 
@@ -96,7 +107,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(119, 18);
             this.label1.TabIndex = 1;
-            this.label1.Text = "MET Tower Name:";            
+            this.label1.Text = "MET Tower Name:";
             // 
             // label2
             // 
@@ -154,7 +165,7 @@
             this.cboWindSpeedUnits.Location = new System.Drawing.Point(183, 167);
             this.cboWindSpeedUnits.Name = "cboWindSpeedUnits";
             this.cboWindSpeedUnits.Size = new System.Drawing.Size(57, 26);
-            this.cboWindSpeedUnits.TabIndex = 7;            
+            this.cboWindSpeedUnits.TabIndex = 7;
             // 
             // label5
             // 
@@ -164,7 +175,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(111, 18);
             this.label5.TabIndex = 8;
-            this.label5.Text = "Anemometers";            
+            this.label5.Text = "Anemometers";
             // 
             // label6
             // 
@@ -174,7 +185,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(54, 18);
             this.label6.TabIndex = 10;
-            this.label6.Text = "Vanes";            
+            this.label6.Text = "Vanes";
             // 
             // label7
             // 
@@ -184,7 +195,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(101, 18);
             this.label7.TabIndex = 12;
-            this.label7.Text = "Temperature";            
+            this.label7.Text = "Temperature";
             // 
             // label8
             // 
@@ -194,12 +205,12 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(72, 18);
             this.label8.TabIndex = 15;
-            this.label8.Text = "Temp Data";            
+            this.label8.Text = "Temp Data";
             // 
             // btnFormat
             // 
             this.btnFormat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFormat.Location = new System.Drawing.Point(718, 281);
+            this.btnFormat.Location = new System.Drawing.Point(899, 67);
             this.btnFormat.Name = "btnFormat";
             this.btnFormat.Size = new System.Drawing.Size(120, 54);
             this.btnFormat.TabIndex = 16;
@@ -298,7 +309,7 @@
             this.txtNewAnemHeight.Location = new System.Drawing.Point(34, 109);
             this.txtNewAnemHeight.Name = "txtNewAnemHeight";
             this.txtNewAnemHeight.Size = new System.Drawing.Size(75, 25);
-            this.txtNewAnemHeight.TabIndex = 27;            
+            this.txtNewAnemHeight.TabIndex = 27;
             // 
             // txtNewVaneHeight
             // 
@@ -306,7 +317,7 @@
             this.txtNewVaneHeight.Location = new System.Drawing.Point(283, 109);
             this.txtNewVaneHeight.Name = "txtNewVaneHeight";
             this.txtNewVaneHeight.Size = new System.Drawing.Size(75, 25);
-            this.txtNewVaneHeight.TabIndex = 28;            
+            this.txtNewVaneHeight.TabIndex = 28;
             // 
             // txtNewAnemOrient
             // 
@@ -314,7 +325,7 @@
             this.txtNewAnemOrient.Location = new System.Drawing.Point(131, 109);
             this.txtNewAnemOrient.Name = "txtNewAnemOrient";
             this.txtNewAnemOrient.Size = new System.Drawing.Size(75, 25);
-            this.txtNewAnemOrient.TabIndex = 32;            
+            this.txtNewAnemOrient.TabIndex = 32;
             // 
             // txtNewTempHeight
             // 
@@ -322,7 +333,7 @@
             this.txtNewTempHeight.Location = new System.Drawing.Point(503, 109);
             this.txtNewTempHeight.Name = "txtNewTempHeight";
             this.txtNewTempHeight.Size = new System.Drawing.Size(75, 25);
-            this.txtNewTempHeight.TabIndex = 35;            
+            this.txtNewTempHeight.TabIndex = 35;
             // 
             // cboTempUnits
             // 
@@ -332,7 +343,7 @@
             this.cboTempUnits.Location = new System.Drawing.Point(597, 108);
             this.cboTempUnits.Name = "cboTempUnits";
             this.cboTempUnits.Size = new System.Drawing.Size(49, 26);
-            this.cboTempUnits.TabIndex = 39;            
+            this.cboTempUnits.TabIndex = 39;
             // 
             // label9
             // 
@@ -342,7 +353,7 @@
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(71, 18);
             this.label9.TabIndex = 40;
-            this.label9.Text = "Height (m)";            
+            this.label9.Text = "Height (m)";
             // 
             // label10
             // 
@@ -410,7 +421,7 @@
             // btnClear
             // 
             this.btnClear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.Location = new System.Drawing.Point(718, 357);
+            this.btnClear.Location = new System.Drawing.Point(899, 368);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(120, 34);
             this.btnClear.TabIndex = 50;
@@ -421,21 +432,20 @@
             // txtFileName
             // 
             this.txtFileName.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFileName.Location = new System.Drawing.Point(718, 244);
+            this.txtFileName.Location = new System.Drawing.Point(753, 21);
             this.txtFileName.Name = "txtFileName";
-            this.txtFileName.Size = new System.Drawing.Size(120, 25);
+            this.txtFileName.Size = new System.Drawing.Size(313, 25);
             this.txtFileName.TabIndex = 51;
             // 
             // label13
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(745, 221);
+            this.label13.Location = new System.Drawing.Point(679, 24);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(68, 18);
             this.label13.TabIndex = 52;
             this.label13.Text = "File Name";
-            //             
             // 
             // chkMaxVane
             // 
@@ -599,12 +609,145 @@
             this.listTempsHeight.Size = new System.Drawing.Size(98, 184);
             this.listTempsHeight.TabIndex = 65;
             // 
+            // listBaroHeight
+            // 
+            this.listBaroHeight.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBaroHeight.FormattingEnabled = true;
+            this.listBaroHeight.ItemHeight = 18;
+            this.listBaroHeight.Location = new System.Drawing.Point(712, 179);
+            this.listBaroHeight.Name = "listBaroHeight";
+            this.listBaroHeight.Size = new System.Drawing.Size(98, 184);
+            this.listBaroHeight.TabIndex = 71;
+            // 
+            // btnRemoveBaroHeight
+            // 
+            this.btnRemoveBaroHeight.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRemoveBaroHeight.Location = new System.Drawing.Point(716, 369);
+            this.btnRemoveBaroHeight.Name = "btnRemoveBaroHeight";
+            this.btnRemoveBaroHeight.Size = new System.Drawing.Size(89, 33);
+            this.btnRemoveBaroHeight.TabIndex = 70;
+            this.btnRemoveBaroHeight.Text = "Remove";
+            this.btnRemoveBaroHeight.UseVisualStyleBackColor = true;
+            this.btnRemoveBaroHeight.Click += new System.EventHandler(this.btnRemoveBaroHeight_Click);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(723, 90);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(71, 18);
+            this.label16.TabIndex = 69;
+            this.label16.Text = "Height (m)";
+            // 
+            // txtNewBaroHeight
+            // 
+            this.txtNewBaroHeight.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewBaroHeight.Location = new System.Drawing.Point(723, 109);
+            this.txtNewBaroHeight.Name = "txtNewBaroHeight";
+            this.txtNewBaroHeight.Size = new System.Drawing.Size(75, 25);
+            this.txtNewBaroHeight.TabIndex = 68;
+            // 
+            // btnAddBaroHeight
+            // 
+            this.btnAddBaroHeight.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAddBaroHeight.Location = new System.Drawing.Point(723, 145);
+            this.btnAddBaroHeight.Name = "btnAddBaroHeight";
+            this.btnAddBaroHeight.Size = new System.Drawing.Size(75, 28);
+            this.btnAddBaroHeight.TabIndex = 67;
+            this.btnAddBaroHeight.Text = "Add";
+            this.btnAddBaroHeight.UseVisualStyleBackColor = true;
+            this.btnAddBaroHeight.Click += new System.EventHandler(this.btnAddBaroHeight_Click);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(727, 68);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(67, 18);
+            this.label17.TabIndex = 66;
+            this.label17.Text = "Pressure";
+            // 
+            // chkMaxBaro
+            // 
+            this.chkMaxBaro.AutoSize = true;
+            this.chkMaxBaro.Checked = true;
+            this.chkMaxBaro.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkMaxBaro.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkMaxBaro.Location = new System.Drawing.Point(843, 315);
+            this.chkMaxBaro.Name = "chkMaxBaro";
+            this.chkMaxBaro.Size = new System.Drawing.Size(53, 22);
+            this.chkMaxBaro.TabIndex = 76;
+            this.chkMaxBaro.Text = "Max";
+            this.chkMaxBaro.UseVisualStyleBackColor = true;
+            // 
+            // chkMinBaro
+            // 
+            this.chkMinBaro.AutoSize = true;
+            this.chkMinBaro.Checked = true;
+            this.chkMinBaro.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkMinBaro.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkMinBaro.Location = new System.Drawing.Point(843, 291);
+            this.chkMinBaro.Name = "chkMinBaro";
+            this.chkMinBaro.Size = new System.Drawing.Size(51, 22);
+            this.chkMinBaro.TabIndex = 75;
+            this.chkMinBaro.Text = "Min";
+            this.chkMinBaro.UseVisualStyleBackColor = true;
+            // 
+            // chkSDBaro
+            // 
+            this.chkSDBaro.AutoSize = true;
+            this.chkSDBaro.Checked = true;
+            this.chkSDBaro.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSDBaro.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkSDBaro.Location = new System.Drawing.Point(843, 267);
+            this.chkSDBaro.Name = "chkSDBaro";
+            this.chkSDBaro.Size = new System.Drawing.Size(43, 22);
+            this.chkSDBaro.TabIndex = 74;
+            this.chkSDBaro.Text = "SD";
+            this.chkSDBaro.UseVisualStyleBackColor = true;
+            // 
+            // chkAvgBaro
+            // 
+            this.chkAvgBaro.AutoSize = true;
+            this.chkAvgBaro.Checked = true;
+            this.chkAvgBaro.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAvgBaro.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkAvgBaro.Location = new System.Drawing.Point(843, 243);
+            this.chkAvgBaro.Name = "chkAvgBaro";
+            this.chkAvgBaro.Size = new System.Drawing.Size(51, 22);
+            this.chkAvgBaro.TabIndex = 73;
+            this.chkAvgBaro.Text = "Avg";
+            this.chkAvgBaro.UseVisualStyleBackColor = true;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Location = new System.Drawing.Point(817, 216);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(91, 18);
+            this.label18.TabIndex = 72;
+            this.label18.Text = "Pressure Data";
+            // 
             // GenHeaders
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(854, 414);
+            this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.ClientSize = new System.Drawing.Size(1090, 414);
+            this.Controls.Add(this.chkMaxBaro);
+            this.Controls.Add(this.chkMinBaro);
+            this.Controls.Add(this.chkSDBaro);
+            this.Controls.Add(this.chkAvgBaro);
+            this.Controls.Add(this.label18);
+            this.Controls.Add(this.listBaroHeight);
+            this.Controls.Add(this.btnRemoveBaroHeight);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.txtNewBaroHeight);
+            this.Controls.Add(this.btnAddBaroHeight);
+            this.Controls.Add(this.label17);
             this.Controls.Add(this.listTempsHeight);
             this.Controls.Add(this.listVanesHeight);
             this.Controls.Add(this.listAnemsHO);
@@ -654,7 +797,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtMETname);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "GenHeaders";            
+            this.Name = "GenHeaders";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -711,6 +854,17 @@
         private System.Windows.Forms.ListBox listAnemsHO;
         private System.Windows.Forms.ListBox listVanesHeight;
         private System.Windows.Forms.ListBox listTempsHeight;
+        private System.Windows.Forms.ListBox listBaroHeight;
+        private System.Windows.Forms.Button btnRemoveBaroHeight;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox txtNewBaroHeight;
+        private System.Windows.Forms.Button btnAddBaroHeight;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.CheckBox chkMaxBaro;
+        private System.Windows.Forms.CheckBox chkMinBaro;
+        private System.Windows.Forms.CheckBox chkSDBaro;
+        private System.Windows.Forms.CheckBox chkAvgBaro;
+        private System.Windows.Forms.Label label18;
     }
 }
 

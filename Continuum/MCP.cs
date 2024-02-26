@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog.LayoutRenderers.Wrappers;
+using System;
 using System.Windows.Forms;
 
 namespace ContinuumNS
@@ -1812,17 +1813,74 @@ namespace ContinuumNS
         /// <summary> Extracts 10-minute data from specified met site at specified height and defines hourly data </summary>        
         /// <returns> Hourly time series data </returns>
         public Site_data[] GetTargetData(double height, Met thisMet)
-        {          
-            Met_Data_Filter.Sim_TS targetDataTenMin = thisMet.metData.GetSimulatedTimeSeries(height);
-            int tenMinCount = targetDataTenMin.WS_WD_data.Length;            
-            Site_data[] tenMinData = new MCP.Site_data[tenMinCount];
+        {
+            Site_data[] tenMinData = new Site_data[0];
 
-            for (int i = 0; i < tenMinCount; i++)
+            // See if this is a measured height
+            double[] anemHeights = thisMet.metData.GetHeightsOfAnems();
+            int closestAnemInd = thisMet.metData.GetHeightClosestToHH(height);
+
+            if (anemHeights[closestAnemInd] == height)
             {
-                tenMinData[i].thisDate = targetDataTenMin.WS_WD_data[i].timeStamp;
-                tenMinData[i].thisWS = targetDataTenMin.WS_WD_data[i].WS;
-                tenMinData[i].thisWD = targetDataTenMin.WS_WD_data[i].WD;
+                if (thisMet.metData.alphaByAnem.Length > 0)
+                {
+                    int heightInd = thisMet.metData.GetHeightClosestToHH(height);
+                    int tenMinCount = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha.Length;
+                    tenMinData = new MCP.Site_data[tenMinCount];
+
+                    for (int i = 0; i < tenMinCount; i++)
+                    {
+                        tenMinData[i].thisDate = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[i].timeStamp;
+                        tenMinData[i].thisWS = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[i].WS;
+                        tenMinData[i].thisWD = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
+                    }
+                }
+                else
+                {
+                    int[] anemInds = thisMet.metData.GetAnemsClosestToHH(height);
+                    int vaneInd = thisMet.metData.GetVaneClosestToHH(height);
+                    int tenMinCount = thisMet.metData.anems[anemInds[0]].windData.Length;
+                    tenMinData = new MCP.Site_data[tenMinCount];
+
+                    for (int i = 0; i < tenMinCount; i++)
+                    {
+                        tenMinData[i].thisDate = thisMet.metData.anems[anemInds[0]].windData[i].timeStamp;
+
+                        int numValidWS = 0;
+                        double avgWS = 0;
+
+                        for (int a = 0; a < anemInds.Length; a++)                        
+                            if (thisMet.metData.anems[a].windData[i].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                            {
+                                avgWS = avgWS + thisMet.metData.anems[a].windData[i].avg;
+                                numValidWS++;
+                            }
+
+                        if (numValidWS > 0)
+                            tenMinData[i].thisWS = avgWS / numValidWS;
+                        else
+                            tenMinData[i].thisWS = -999;
+
+                        if (thisMet.metData.vanes[vaneInd].dirData[i].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                            tenMinData[i].thisWD = thisMet.metData.vanes[vaneInd].dirData[i].avg;
+                        else
+                            tenMinData[i].thisWD = -999;
+                    }
+                }
             }
+            else
+            { // Get Extrapolated data
+                Met_Data_Filter.Sim_TS targetDataTenMin = thisMet.metData.GetSimulatedTimeSeries(height);
+                int tenMinCount = targetDataTenMin.WS_WD_data.Length;
+                tenMinData = new MCP.Site_data[tenMinCount];
+
+                for (int i = 0; i < tenMinCount; i++)
+                {
+                    tenMinData[i].thisDate = targetDataTenMin.WS_WD_data[i].timeStamp;
+                    tenMinData[i].thisWS = targetDataTenMin.WS_WD_data[i].WS;
+                    tenMinData[i].thisWD = targetDataTenMin.WS_WD_data[i].WD;
+                }
+            }            
 
             Site_data[] targetData = ConvertToHourly(tenMinData);                       
 

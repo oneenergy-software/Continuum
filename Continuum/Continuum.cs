@@ -66,23 +66,26 @@ namespace ContinuumNS
             Splash.ShowDialog();
 
             // Get display settings
-       //     Rectangle workingWidth = Screen.GetWorkingArea(this);
-
-            //if (Width > workingWidth.Width)
-        //    Width = workingWidth.Width;
-
-          //  if (Height > workingWidth.Height)
-        //    Height = workingWidth.Height;
-
+            System.Drawing.Rectangle workingWidth = Screen.GetWorkingArea(this);
+            System.Drawing.Rectangle workingScreen = Screen.PrimaryScreen.WorkingArea; 
+                        
             InitializeComponent();
 
-/*            Rectangle screen = Screen.FromPoint(Cursor.Position).WorkingArea;
-            
-            int w = Width >= screen.Width ? screen.Width : (screen.Width + Width) / 2;
-            int h = Height >= screen.Height ? screen.Height : (screen.Height + Height) / 2;
-            Location = new Point(screen.Left + (screen.Width - w) / 2, screen.Top + (screen.Height - h) / 2);
-            Size = new Size(w, h);
-*/
+    //        MessageBox.Show("" workingWidth.Width.ToString() + " x " + workingWidth.Height.ToString());
+     //       MessageBox.Show(workingScreen.Width.ToString() + " x " + workingScreen.Height.ToString());
+     //       MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
+
+            if (workingScreen.Width < Size.Width || workingScreen.Height < Size.Height)
+            {
+                double widthScaling = workingScreen.Width / Size.Width;
+                double heightScaling = workingScreen.Height / Size.Height;
+                Size = new System.Drawing.Size(workingScreen.Width, workingScreen.Height);
+                tabContinuum.Width = Convert.ToInt16(tabContinuum.Width * widthScaling);
+                tabContinuum.Height = Convert.ToInt16(tabContinuum.Height * heightScaling);
+            }
+
+            MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
+            MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
 
             updateThe = new Update(this);
             radiiList.New(); // populates with R = 4000, 6000, 8000, 10000 and invserse distance exponent = 1
@@ -1246,6 +1249,12 @@ namespace ContinuumNS
             }
 
             // Prompt user to find cfm file
+            if (savedParams.savedFileName != null)
+            {     
+                string thisDir = Directory.GetParent(savedParams.savedFileName).FullName;
+                ofdCFMfile.InitialDirectory = thisDir;
+            }
+
             if (ofdCFMfile.ShowDialog() == DialogResult.OK)
             {
                 updateThe.NewProject();
@@ -1536,18 +1545,20 @@ namespace ContinuumNS
                 {
                     string MCP_MethodUsed = metList.GetMCP_MethodUsed();
 
-                    if (metList.metItem[m].mcpList == null)
+                    
+                    if (metList.metItem[m].metData.GetNumAnems() > 0)
                     {
-                        if (metList.metItem[m].metData.GetNumAnems() > 0)
-                        {
-                            if (metList.metItem[m].metData.anems[0].windData == null)
-                                metList.metItem[m].metData.GetSensorDataFromDB(this, metList.metItem[m].name);
-                        }
-
-                        metList.RunMCP(ref metList.metItem[m], metList.metItem[m].mcp.reference, this, MCP_MethodUsed);
-                        metList.metItem[m].CalcAllLT_WSWD_Dists(this); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
-
+                        if (metList.metItem[m].metData.anems[0].windData == null)
+                            metList.metItem[m].metData.GetSensorDataFromDB(this, metList.metItem[m].name);
                     }
+
+                    if (metList.metItem[m].mcpList == null && refList.numReferences > 0)
+                        metList.RunMCP(ref metList.metItem[m], refList.reference[0], this, MCP_MethodUsed);
+                    else
+                        metList.RunMCP(ref metList.metItem[m], metList.metItem[m].mcpList[0].reference, this, MCP_MethodUsed);
+
+                    metList.metItem[m].CalcAllLT_WSWD_Dists(this); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
+                                        
                 }
             }
 
@@ -1870,10 +1881,24 @@ namespace ContinuumNS
                 }
                 else if (Directory.Exists(merraList.MERRAfolder) == false && merraList.numMERRA_Data > 0)
                 {
-                    MessageBox.Show("The saved folder location of the MERRA2 raw data files cannot be found on this PC: " + merraList.MERRAfolder.ToString() + ". Please select folder with MERRA2 data for this project.");
+                    // See if folder exists under a different user name
+                    int usersFirstInd = merraList.MERRAfolder.IndexOf("Users");
 
-                    if (fbd_MERRAData.ShowDialog() == DialogResult.OK)
-                        merraList.MERRAfolder = fbd_MERRAData.SelectedPath;
+                    int usersInd = merraList.MERRAfolder.IndexOf('\\', merraList.MERRAfolder.IndexOf("Users") + 7);
+                    string refFolderNoUser = merraList.MERRAfolder.Substring(usersInd + 1, merraList.MERRAfolder.Length - usersInd - 1);
+
+                    string thisUserName = Environment.GetEnvironmentVariable("USERPROFILE");
+                    string newRefFolderName = thisUserName + "\\" + refFolderNoUser;
+
+                    if (Directory.Exists(newRefFolderName) == false)
+                    {
+                        MessageBox.Show("The saved folder location of the MERRA2 raw data files cannot be found on this PC: " + merraList.MERRAfolder.ToString() + ". Please select folder with MERRA2 data for this project.");
+
+                        if (fbd_MERRAData.ShowDialog() == DialogResult.OK)
+                            merraList.MERRAfolder = fbd_MERRAData.SelectedPath;
+                    }
+                    else
+                        merraList.MERRAfolder = newRefFolderName;
                 }
                 
                 for (int m = 0; m < merraList.numMERRA_Data; m++)
@@ -5318,6 +5343,13 @@ namespace ContinuumNS
             
             // Update list of measured heights at selected met plus modeled height
             Met selMet = GetSelectedMet("MCP");
+
+            if (selMet.metData == null)
+            {
+                cboMCP_Height.Items.Clear();
+                return;
+            }
+
             double[] anemHeights = selMet.metData.GetHeightsOfAnems();
             int numHeights = anemHeights.Length;
 
@@ -6667,6 +6699,9 @@ namespace ContinuumNS
             Met selMet = GetSelectedMet("Met Data QC");
             CheckState checkState = chkDisableFilter.CheckState;
 
+            if (selMet.metData == null)
+                return;
+
             if (selMet.metData.filteringEnabled != Convert.ToBoolean(checkState) && metList.isTimeSeries)            
                 FilterChangeConfirmWithUser("Enable");            
             
@@ -7170,7 +7205,7 @@ namespace ContinuumNS
                 return;
             }
 
-            AddEditReference newReference = new AddEditReference(metList, refList);
+            AddEditReference newReference = new AddEditReference(metList, refList, UTM_conversions);
 
             newReference.ShowDialog();
 
@@ -7230,7 +7265,7 @@ namespace ContinuumNS
                 return;
             }
 
-            AddEditReference editRef = new AddEditReference(metList, refList, selRef);
+            AddEditReference editRef = new AddEditReference(metList, refList, UTM_conversions, selRef);
             editRef.ShowDialog();
 
             if (editRef.goodToGo)
@@ -7769,6 +7804,9 @@ namespace ContinuumNS
             // Updates extreme wind speed plot on Site Conditions tab based on selected met site
             Met selMet = GetSelectedMet("Site Conditions Extreme WS");
 
+            if (selMet.metData == null)
+                return;
+
             // Update start/end dates. Default to analysis start/end dates
             okToUpdate = false;
             dateExtremeWS_Start.Value = selMet.metData.startDate;
@@ -8306,6 +8344,32 @@ namespace ContinuumNS
         private void btnExportExtremeWSTable_Click(object sender, EventArgs e)
         {
             export.ExportExtremeWS_Table(this);
+        }
+
+        private void cboMCP_Ref_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Reset MCP calculations if already calculated with a different reference
+
+            Met selMet = GetSelectedMet("MCP");
+            Reference selRef = GetSelectedReference("MCP");
+
+            if (selMet.mcpList != null)
+            {
+                if (selRef.GetName(metList, UTM_conversions) != selMet.mcpList[0].reference.GetName(metList, UTM_conversions))
+                {
+                    DialogResult clearMCP = MessageBox.Show("Changing the MCP Reference site will reset the MCP calculations.  Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+
+                    if (clearMCP == DialogResult.No)
+                        return;
+                    else
+                        selMet.mcpList = null;
+
+                    metList.isMCPd = false;
+                    metList.allMCPd = false;
+                    updateThe.MCP_TAB();               
+                    updateThe.ColoredButtons();
+                }
+            }
         }
     }
 }

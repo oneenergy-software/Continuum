@@ -374,7 +374,7 @@ namespace ContinuumNS
         {
             bool areSameRef = false;
 
-            if (ref1.interpData.Coords.latitude == ref2.interpData.Coords.latitude && ref1.interpData.Coords.longitude == ref2.interpData.Coords.longitude
+            if (ref1.isUserDefined == ref2.isUserDefined && ref1.interpData.Coords.latitude == ref2.interpData.Coords.latitude && ref1.interpData.Coords.longitude == ref2.interpData.Coords.longitude
                 && ref1.numNodes == ref2.numNodes && IsSameRefDataDownload(ref1.refDataDownload, ref2.refDataDownload))
                 areSameRef = true;
 

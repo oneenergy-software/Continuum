@@ -401,12 +401,12 @@ namespace Continuum_Tests
             thisInst.Open(fileName);
             Met thisMet = thisInst.metList.metItem[0];
 
-            Met.MaxYearlyWind[] maxWS = thisMet.GetMaxYearlyWinds("10-min", 49);
+            Met.MaxYearlyWind[] maxWS = thisMet.GetMaxYearlyWinds("10-min", 49, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
 
             Assert.AreEqual(maxWS[0].maxWS, 16.0934, 0.001, "Wrong max 10-min WS 2007");
             Assert.AreEqual(maxWS[1].maxWS, 18.28394, 0.001, "Wrong max 10-min WS 2008");
 
-            maxWS = thisMet.GetMaxYearlyWinds("Gust", 49);
+            maxWS = thisMet.GetMaxYearlyWinds("Gust", 49, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
 
             Assert.AreEqual(maxWS[0].maxWS, 25.973, 0.001, "Wrong max gust WS 2007");
             Assert.AreEqual(maxWS[1].maxWS, 29.0576, 0.001, "Wrong max gust WS 2008");

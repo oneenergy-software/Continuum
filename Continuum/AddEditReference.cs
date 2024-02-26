@@ -18,11 +18,12 @@ namespace ContinuumNS
         
 
         /// <summary> Constructor.  Selects MERRA2 by default </summary>
-        public AddEditReference(MetCollection metCollection, ReferenceCollection referenceList, Reference newOrEditRef = null)
+        public AddEditReference(MetCollection metCollection, ReferenceCollection referenceList, UTM_conversion utmConversion, Reference newOrEditRef = null)
         {
             InitializeComponent();
             metList = metCollection;
-            refList = referenceList;                        
+            refList = referenceList;
+            utmConv = utmConversion;
 
             if (newOrEditRef == null) // If null then we're adding new reference.  
             {
@@ -96,8 +97,8 @@ namespace ContinuumNS
             if (thisRef.isUserDefined)
                 cboTargetMet.SelectedIndex = cboTargetMet.Items.Count - 1;
 
-            txtReferenceLat.Text = thisRef.interpData.Coords.latitude.ToString();
-            txtReferenceLong.Text = thisRef.interpData.Coords.longitude.ToString();
+     //       txtReferenceLat.Text = thisRef.interpData.Coords.latitude.ToString();
+     //       txtReferenceLong.Text = thisRef.interpData.Coords.longitude.ToString();
 
             dateRefStart.Value = thisRef.startDate;
             dateRefEnd.Value = thisRef.endDate;
@@ -162,15 +163,17 @@ namespace ContinuumNS
             {
                 txtReferenceLat.Enabled = true;
                 txtReferenceLong.Enabled = true;
+                thisRef.isUserDefined = true;
             }
             else
             {
                 Met thisMet = metList.GetMet(cboTargetMet.SelectedItem.ToString());
                 UTM_conversion.Lat_Long thisLL = utmConv.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                txtReferenceLat.Text = thisLL.latitude.ToString();
-                txtReferenceLong.Text = thisLL.longitude.ToString();
+                txtReferenceLat.Text = Math.Round(thisLL.latitude, 3).ToString();
+                txtReferenceLong.Text = Math.Round(thisLL.longitude, 3).ToString();
                 txtReferenceLat.Enabled = false;
                 txtReferenceLong.Enabled = false;
+                thisRef.isUserDefined = false;                
             }
         }
 
