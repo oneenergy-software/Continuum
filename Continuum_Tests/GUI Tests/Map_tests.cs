@@ -41,7 +41,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.UTM_conversions.hemisphere = "Northern";
 
             thisInst.modeledHeight = 80;
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Load topo data
@@ -60,8 +60,8 @@ namespace Continuum_Tests.GUI_Tests
                 Assert.Fail();
 
             // Called in BackgroundWorker RunWorkerCompleted
-            thisInst.SaveFile(true);
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.SaveFile();
+            thisInst.updateThe.AllTABs();
             thisInst.BW_worker.Close();
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ namespace Continuum_Tests.GUI_Tests
 
             // The following are all called in btnMetTAB_Click
             thisInst.turbineList.ClearAllWSEsts();
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
 
             if (thisInst.topo.gotTopo == true)
             {
@@ -101,8 +101,8 @@ namespace Continuum_Tests.GUI_Tests
                 if (thisInst.BW_worker.WasReturned)
                     Assert.Fail();
 
-                thisInst.SaveFile(true);
-                thisInst.updateThe.AllTABs(thisInst);
+                thisInst.SaveFile();
+                thisInst.updateThe.AllTABs();
                 thisInst.BW_worker.Close();
             }
 
@@ -114,7 +114,7 @@ namespace Continuum_Tests.GUI_Tests
 
             // The following are all called in btnMetTAB_Click
             thisInst.turbineList.ClearAllWSEsts();
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
 
             if (thisInst.topo.gotTopo == true)
             {
@@ -143,8 +143,8 @@ namespace Continuum_Tests.GUI_Tests
                 if (thisInst.BW_worker.WasReturned)
                     Assert.Fail();
 
-                thisInst.SaveFile(true);
-                thisInst.updateThe.AllTABs(thisInst);
+                thisInst.SaveFile();
+                thisInst.updateThe.AllTABs();
                 thisInst.BW_worker.Close();
             }
 
@@ -300,7 +300,7 @@ namespace Continuum_Tests.GUI_Tests
 
             Assert.AreEqual(thisInst.mapList.ThisCount, numMaps + 1, "Didn't create map");
 
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.Close();
         }
 
@@ -327,7 +327,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.UTM_conversions.hemisphere = "Northern";
 
             thisInst.modeledHeight = 80;
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Load topo data
@@ -346,8 +346,8 @@ namespace Continuum_Tests.GUI_Tests
                 Assert.Fail();
 
             // Called in BackgroundWorker RunWorkerCompleted
-            thisInst.SaveFile(true);
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.SaveFile();
+            thisInst.updateThe.AllTABs();
             thisInst.BW_worker.Close();
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,7 +358,7 @@ namespace Continuum_Tests.GUI_Tests
 
             // The following are all called in btnMetTAB_Click
             thisInst.turbineList.ClearAllWSEsts();
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
 
             if (thisInst.topo.gotTopo == true)
             {
@@ -387,8 +387,8 @@ namespace Continuum_Tests.GUI_Tests
                 if (thisInst.BW_worker.WasReturned)
                     Assert.Fail();
 
-                thisInst.SaveFile(true);
-                thisInst.updateThe.AllTABs(thisInst);
+                thisInst.SaveFile();
+                thisInst.updateThe.AllTABs();
                 thisInst.BW_worker.Close();
             }
 
@@ -449,7 +449,7 @@ namespace Continuum_Tests.GUI_Tests
 
             Assert.AreNotEqual(thisInst.turbineList.turbineEsts[0].avgWS_Est[0].freeStream.WS, 0, "Didn't calculate average WS");
 
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
             thisInst.BW_worker.Close();
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -481,7 +481,7 @@ namespace Continuum_Tests.GUI_Tests
 
             Assert.AreEqual(thisInst.turbineList.exceed.compositeLoss.isComplete, true, "Didn't do Monte Carlo model");
 
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
             thisInst.BW_worker.Close();
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -503,7 +503,7 @@ namespace Continuum_Tests.GUI_Tests
 
             Assert.AreEqual(thisInst.wakeModelList.NumWakeModels, 1, "Didn't create a wake model");
 
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
             thisInst.BW_worker.Close();
 
 
@@ -529,12 +529,12 @@ namespace Continuum_Tests.GUI_Tests
             while (thisInst.BW_worker.DoWorkDone == false)
                 Thread.Sleep(100);
 
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
             thisInst.BW_worker.Close();
 
             Assert.AreEqual(thisInst.wakeModelList.NumCompleteWakeGridMaps, numMaps + 1, "Didn't create waked map");
 
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.Close();
         }
 

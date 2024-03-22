@@ -98,7 +98,7 @@ namespace ContinuumNS
         /// <summary> Creates default performance factor curves </summary>
         public void CreateDefaultCurve()
         {
-            Array.Resize(ref exceedCurves, 17);
+            Array.Resize(ref exceedCurves, 18);
 
             exceedCurves[0].exceedStr = "Turbine Availability - Owner/Operator";
             Array.Resize(ref exceedCurves[0].modes, 1);
@@ -239,8 +239,16 @@ namespace ContinuumNS
             exceedCurves[16].lowerBound = 0.9f;
             exceedCurves[16].upperBound = 1.1f;
 
+            exceedCurves[17].exceedStr = "Parasitic";
+            Array.Resize(ref exceedCurves[17].modes, 1);
+            exceedCurves[17].modes[0].mean = 0.997f;
+            exceedCurves[17].modes[0].SD = 0.003f;
+            exceedCurves[17].modes[0].weight = 1.0f;
+            exceedCurves[17].lowerBound = 0.9f;
+            exceedCurves[17].upperBound = 1.0f;
+
             SizeExceedCurveArrays();
-            for (int i = 0; i <= 16; i++)
+            for (int i = 0; i <= 17; i++)
             {
                 CalculateProbDist(ref exceedCurves[i]);
                 Normalize_Dists(ref exceedCurves[i]);

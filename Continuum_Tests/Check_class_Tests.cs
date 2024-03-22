@@ -11,8 +11,14 @@ namespace Continuum_Tests
     [TestClass]
     public class Check_class_Tests
     {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Check_class";
+        Globals globals = new Globals();
+        string testingFolder;
        
+        public Check_class_Tests()
+        {
+            testingFolder = globals.testingFolder + "Check_class";
+        }
+
         [TestMethod]
         public void TopoCheck_Test()
         {

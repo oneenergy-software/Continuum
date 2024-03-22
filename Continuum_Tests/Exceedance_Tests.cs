@@ -7,9 +7,15 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class Exceedance_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Exceedance";
-        
+    {     
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public Exceedance_Tests()
+        {
+            testingFolder = globals.testingFolder + "Exceedance";
+        }
+
         [TestMethod]
         public void Get_PF_Value_Test()
         {

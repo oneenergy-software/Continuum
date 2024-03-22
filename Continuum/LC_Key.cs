@@ -194,8 +194,7 @@ namespace ContinuumNS
 
             // if the LC key was changed and calcs have been done already then clears UWDW + Round Robin models, turbine WS/AEP ests gross/net, and all 
             // maps and recalculates SR/DH at Mets, Turbines, Nodes in DB             
-            Update updateThe = new Update();
-
+            
             if (Orig_and_New_LC_Same() == false ) {
                 DialogResult Good_to_go = DialogResult.Yes;
 
@@ -227,15 +226,13 @@ namespace ContinuumNS
                         // Call Background worker to recalculate node SR/DH
                         thisInst.BW_worker = new BackgroundWork();
                         thisInst.BW_worker.Call_BW_Node_Recalc(thisInst);
-                    }
-                    
-                }                
-                
+                    }                    
+                } 
                 else
                     thisInst.topo.LC_Key = LC_Key_Orig;
             }
 
-            updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
             
             Close();
         }

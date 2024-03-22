@@ -7,14 +7,20 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class SiteSuitability_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\SiteSuitability";
-        
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public SiteSuitability_Tests()
+        {
+            testingFolder = globals.testingFolder + "SiteSuitability";
+        }
+
         [TestMethod]
         public void GetFlickerAngles_Test()
         {
             Continuum thisInst = new Continuum("");
-            
+
             string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);
 
@@ -209,7 +215,7 @@ namespace Continuum_Tests
         public void CalcNoiseLevel_Test()
         {
             Continuum thisInst = new Continuum("");
-            
+
             string fileName = testingFolder + "\\Sound\\Sound testing.cfm";
             thisInst.Open(fileName);
 
@@ -309,19 +315,19 @@ namespace Continuum_Tests
         {
             SiteSuitability siteSuitability = new SiteSuitability();
             double thisDegs = siteSuitability.GetDegrees(0);
-            Assert.AreEqual(180, thisDegs, 1, "Wrong blade throw angle Test 1");
+            Assert.AreEqual(0, thisDegs, 1, "Wrong blade throw angle Test 1");
 
             thisDegs = siteSuitability.GetDegrees(0.2);
-            Assert.AreEqual(233, thisDegs, 1, "Wrong blade throw angle Test 2");
+            Assert.AreEqual(73, thisDegs, 1, "Wrong blade throw angle Test 2");
 
             thisDegs = siteSuitability.GetDegrees(0.4);
-            Assert.AreEqual(258, thisDegs, 1, "Wrong blade throw angle Test 3");
+            Assert.AreEqual(147, thisDegs, 1, "Wrong blade throw angle Test 3");
 
             thisDegs = siteSuitability.GetDegrees(0.6);
-            Assert.AreEqual(282, thisDegs, 1, "Wrong blade throw angle Test 4");
+            Assert.AreEqual(220, thisDegs, 1, "Wrong blade throw angle Test 4");
 
             thisDegs = siteSuitability.GetDegrees(0.8);
-            Assert.AreEqual(307, thisDegs, 1, "Wrong blade throw angle Test 5");
+            Assert.AreEqual(294, thisDegs, 1, "Wrong blade throw angle Test 5");
 
             thisDegs = siteSuitability.GetDegrees(1);
             Assert.AreEqual(360, thisDegs, 1, "Wrong blade throw angle Test 6");
@@ -358,7 +364,7 @@ namespace Continuum_Tests
         public void GetTipSpeed_Test()
         {
             Continuum thisInst = new Continuum("");
-            
+
             string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
 
@@ -435,10 +441,10 @@ namespace Continuum_Tests
             SiteSuitability.FinalPosition[] iceHits = thisInst.siteSuitability.yearlyIceHits[0].iceHits; // ice hits in first year of simulation
 
             for (int i = 0; i < iceHits.Length; i++)
-            {              
+            {
 
                 if (iceHits[i].turbineName == "W1")
-                    {
+                {
                     double thisDirection = thisInst.topo.GetDirection((iceHits[i].thisX - turbUTMX), (iceHits[i].thisZ - turbUTMY));
                     int thisWD_Ind = thisInst.metList.GetWD_Ind(thisDirection);
 
@@ -448,20 +454,20 @@ namespace Continuum_Tests
                         sw2.WriteLine(iceHits[i].thisX + "," + iceHits[i].thisZ + ",");
                     else if (thisWD_Ind == test3WD_Ind)
                         sw3.WriteLine(iceHits[i].thisX + "," + iceHits[i].thisZ + ",");
-                }                
+                }
             }
 
             sw1.Close();
             sw2.Close();
             sw3.Close();
-                                 
+
         }
 
         [TestMethod]
         public void CalcIceHitVersusDistance_Test()
         {
             Continuum thisInst = new Continuum("");
-            
+
             string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
 
@@ -493,7 +499,7 @@ namespace Continuum_Tests
         public void CalcProbabilityOfHits()
         {
             Continuum thisInst = new Continuum("");
-            
+
             string fileName = testingFolder + "\\Ice Throw\\Ice Throw testing.cfm";
             thisInst.Open(fileName);
 
@@ -588,7 +594,7 @@ namespace Continuum_Tests
         public void GetTotalFlickerHoursByMonthAndH_Test()
         {
             Continuum thisInst = new Continuum("");
-            
+
             string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);
 
@@ -602,7 +608,7 @@ namespace Continuum_Tests
 
             // Test 3 July 6:00
             flickerHours = thisInst.siteSuitability.GetTotalFlickerHoursByMonthAndHour(6, 6);
-            Assert.AreEqual(flickerHours[19].flickerStats.totalShadowMinsPerYear, 3, 0.1, "Wrong number of flicker mins Test 3");         
+            Assert.AreEqual(flickerHours[19].flickerStats.totalShadowMinsPerYear, 3, 0.1, "Wrong number of flicker mins Test 3");
 
             thisInst.Close();
         }
@@ -611,7 +617,7 @@ namespace Continuum_Tests
         public void GetTotalFlickerHours_Test()
         {
             Continuum thisInst = new Continuum("");
-            
+
             string fileName = testingFolder + "\\Shadow Flicker\\Flicker testing.cfm";
             thisInst.Open(fileName);
 
@@ -630,7 +636,7 @@ namespace Continuum_Tests
         public void GenerateWS_CDFs_Test()
         {
             Continuum thisInst = new Continuum("");
-            
+
             string fileName = testingFolder + "\\Ice throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
 
@@ -649,7 +655,7 @@ namespace Continuum_Tests
         public void FindCDF_WS_Test()
         {
             Continuum thisInst = new Continuum("");
-            
+
             string fileName = testingFolder + "\\Ice Throw\\Ice throw testing.cfm";
             thisInst.Open(fileName);
 
@@ -711,7 +717,8 @@ namespace Continuum_Tests
 
             sw.Close();
             thisInst.Close();
-               
+
         }
     }
 }
+

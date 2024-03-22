@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using static ContinuumNS.TurbineCollection;
 
 namespace ContinuumNS
 {
@@ -1360,28 +1361,38 @@ namespace ContinuumNS
 
             // Figure out time interval (in hours)
             TimeSpan timeSpan = thisTS[1].dateTime - thisTS[0].dateTime;
-            int timeInt = timeSpan.Hours;
+            double timeInt = timeSpan.TotalMinutes / 60.0;
 
             // Start on first hour on first of month
             int TS_Ind = 0;
             int thisDay = thisTS[TS_Ind].dateTime.Day;
             int thisHour = thisTS[TS_Ind].dateTime.Hour;
-            MERRA merra = new MERRA(); // Using some functions from this class (i.e. Get_Num_Days_in_Month)
+            bool atFirstDay = false;
+            if (thisDay == 1 && thisHour == 0)
+                atFirstDay = true;
 
-            while (thisDay != 1 && thisHour != 0)
+            while (atFirstDay == false && TS_Ind < thisTS.Length - 1)
             {
                 TS_Ind++;
                 thisDay = thisTS[TS_Ind].dateTime.Day;
                 thisHour = thisTS[TS_Ind].dateTime.Hour;
+
+                if (thisDay == 1 && thisHour == 0)
+                    atFirstDay = true;
             }
+
+            if (atFirstDay == false)
+                return monthlyWS_Vals;
 
             int lastMonth = thisTS[TS_Ind].dateTime.Month;
             int lastYear = thisTS[TS_Ind].dateTime.Year;
 
             double avgWS = 0;
             int WS_count = 0;
+
+            MERRA merra = new MERRA(); // Using some functions from this class (i.e. Get_Num_Days_in_Month)
             int numDaysInMonth = merra.Get_Num_Days_in_Month(lastMonth, lastYear);
-            int numMonthlyInts = numDaysInMonth * timeInt * 24;
+            int numMonthlyInts = Convert.ToInt32(Math.Round(numDaysInMonth / timeInt * 24, 0));
             ModelCollection.TimeSeries[] monthlyTS = new ModelCollection.TimeSeries[numMonthlyInts];
             int monthlyInd = 0;
             int Ind = 0;
@@ -1390,7 +1401,7 @@ namespace ContinuumNS
             {
                 int month = thisTS[t].dateTime.Month;
                 int year = thisTS[t].dateTime.Year;
-
+                
                 if (month == lastMonth && year == lastYear)
                 {
                     double thisWS = 0;
@@ -1404,15 +1415,25 @@ namespace ContinuumNS
                         MessageBox.Show("Invalid flag in CalcMonthlyWS_Values");
                         return monthlyWS_Vals;
                     }
-                    
-                    avgWS = avgWS + thisWS;
-                    WS_count++;
+
+                    if (thisWS != -999)
+                    {
+                        avgWS = avgWS + thisWS;
+                        WS_count++;
+                    }
+                    else
+                        avgWS = avgWS;
+                   
+
                     monthlyTS[Ind].dateTime = thisTS[t].dateTime;
 
-                    if (wakedOrFreestream == "Waked")
-                        monthlyTS[Ind].wakedWS = thisWS;
-                    else
-                        monthlyTS[Ind].freeStreamWS = thisWS;
+                    if (thisWS != -999)
+                    {
+                        if (wakedOrFreestream == "Waked")
+                            monthlyTS[Ind].wakedWS = thisWS;
+                        else
+                            monthlyTS[Ind].freeStreamWS = thisWS;
+                    }
 
                     monthlyTS[Ind].WD = thisTS[t].WD;
                     Ind++;
@@ -1434,39 +1455,69 @@ namespace ContinuumNS
                     monthlyInd++;
 
                     numDaysInMonth = merra.Get_Num_Days_in_Month(month, year);
-                    numMonthlyInts = numDaysInMonth * timeInt * 24;
+                    numMonthlyInts = Convert.ToInt32(Math.Round(numDaysInMonth / timeInt * 24, 0));
                     Array.Clear(monthlyTS, 0, monthlyTS.Length);
                     Array.Resize(ref monthlyTS, numMonthlyInts);
+
+                    /////
                     Ind = 0;
                     avgWS = 0;
                     WS_count = 0;
-                    monthlyTS[Ind].dateTime = thisTS[t].dateTime;
+
+                    double thisWS = 0;
 
                     if (wakedOrFreestream == "Waked")
-                        monthlyTS[Ind].wakedWS = thisTS[t].wakedWS;
+                        thisWS = thisTS[t].wakedWS;
+                    else if (wakedOrFreestream == "Freestream")
+                        thisWS = thisTS[t].freeStreamWS;
                     else
-                        monthlyTS[Ind].freeStreamWS = thisTS[t].freeStreamWS;
+                    {
+                        MessageBox.Show("Invalid flag in CalcMonthlyWS_Values");
+                        return monthlyWS_Vals;
+                    }
+
+                    if (thisWS != -999)
+                    {
+                        avgWS = avgWS + thisWS;
+                        WS_count++;
+                    }
+                   
+                    monthlyTS[Ind].dateTime = thisTS[t].dateTime;
+
+                    if (thisWS != -999)
+                    {
+                        if (wakedOrFreestream == "Waked")
+                            monthlyTS[Ind].wakedWS = thisWS;
+                        else
+                            monthlyTS[Ind].freeStreamWS = thisWS;
+                    }
 
                     monthlyTS[Ind].WD = thisTS[t].WD;
+                    Ind++;                                      
+
                     lastMonth = month;
-                    lastYear = year;
-                    Ind++;
+                    lastYear = year;                    
                 }
 
             }
 
             // Resize Monthly time series in case have some empty  entries
             Array.Resize(ref monthlyTS, Ind);
-            // Calculate WSWD distribution for month
-            Array.Resize(ref monthlyWS_Vals, monthlyInd + 1);
 
-            if (WS_count > 0)
-                avgWS = avgWS / WS_count;
+            // If last month of data is complete (i.e. if next time step is first of month) then resize array and calculate WSWD distribution for month
+            DateTime nextTS = thisTS[thisTS.Length - 1].dateTime.AddHours(timeInt);
+            if (nextTS.Day == 1 && nextTS.Hour == 0)
+            {
+                Array.Resize(ref monthlyWS_Vals, monthlyInd + 1);
 
-            monthlyWS_Vals[monthlyInd].year = lastYear;
-            monthlyWS_Vals[monthlyInd].month = lastMonth;
-            monthlyWS_Vals[monthlyInd].avgWS = avgWS;
-            monthlyWS_Vals[monthlyInd].WS_Dist = thisInst.modelList.CalcWSWD_Dist(monthlyTS, thisInst, wakedOrFreestream);
+                if (WS_count > 0)
+                    avgWS = avgWS / WS_count;
+
+                monthlyWS_Vals[monthlyInd].year = lastYear;
+                monthlyWS_Vals[monthlyInd].month = lastMonth;
+                monthlyWS_Vals[monthlyInd].avgWS = avgWS;
+                monthlyWS_Vals[monthlyInd].WS_Dist = thisInst.modelList.CalcWSWD_Dist(monthlyTS, thisInst, wakedOrFreestream);
+            }
             
             return monthlyWS_Vals;
 
@@ -1755,16 +1806,22 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates and returns effective TI at turbine site for a specified wind direction sector using ambient TI measured at met site. </summary>        
-        public double[] CalcEffectiveTI(Met thisMet, double wohler, Continuum thisInst, TurbineCollection.PowerCurve powerCurve, int WD_Ind)
+        public double[] CalcEffectiveTI(Met thisMet, double wohler, Continuum thisInst, TurbineCollection.PowerCurve powerCurve, int WD_Ind, double terrComplCorr)
         {            
             double[] effectiveTI = new double[thisInst.metList.numWS];
             double[,] probWake = thisInst.turbineList.CalcProbOfWakeForEffectiveTI(thisInst, UTMX, UTMY, powerCurve);
-                      
+            double[,] p90SD = new double[thisMet.turbulence.p90SD.GetUpperBound(0) + 1, thisMet.turbulence.p90SD.GetUpperBound(1) + 1];
+                        
+            for (int i = 0; i < thisInst.metList.numWS; i++)
+                for (int j = 0; j < thisInst.metList.numWD; j++)
+                    p90SD[i, j] = thisMet.turbulence.p90SD[i, j] * terrComplCorr;
+
             for (int i = 0; i < thisInst.metList.numWS; i++)
             {
+                double thisWS = thisInst.metList.WS_FirstInt - thisInst.metList.WS_IntSize / 2 + i * thisInst.metList.WS_IntSize;
                 if (WD_Ind != thisInst.metList.numWD) // get TI for specfic WD
                 {
-                    if (i >= powerCurve.cutInWS && i <= powerCurve.cutOutWS)
+                    if (thisWS >= powerCurve.cutInWS && thisWS <= powerCurve.cutOutWS)
                     {
                         double sumWeightedWakeProb = 0;
                         double sumWakeProb = 0;
@@ -1775,15 +1832,15 @@ namespace ContinuumNS
                             if (thisInst.turbineList.turbineEsts[j].name != name)
                             {
                                 double wakedSD = CalcWakedStDev(thisInst.turbineList.turbineEsts[j].UTMX, thisInst.turbineList.turbineEsts[j].UTMY, powerCurve,
-                                    thisMet.turbulence.p90SD[i, WD_Ind], thisMet.turbulence.avgWS[i, WD_Ind], thisInst);
+                                    p90SD[i, WD_Ind], thisMet.turbulence.avgWS[i, WD_Ind], thisInst);
                                 sumWeightedWakeProb = sumWeightedWakeProb + probWake[j, WD_Ind] * Math.Pow(wakedSD, wohler);
                                 sumWakeProb = sumWakeProb + probWake[j, WD_Ind];
                             }
                         }
 
-                        effectiveTI[i] = Math.Pow((1 - sumWakeProb) * Math.Pow(thisMet.turbulence.p90SD[i, WD_Ind], wohler) + sumWeightedWakeProb, (1 / wohler));
+                        effectiveTI[i] = Math.Pow((1 - sumWakeProb) * Math.Pow(p90SD[i, WD_Ind], wohler) + sumWeightedWakeProb, (1 / wohler));
 
-                        if (thisMet.turbulence.avgWS[i, WD_Ind] > 0 && thisMet.turbulence.p90SD[i, WD_Ind] > 0)
+                        if (thisMet.turbulence.avgWS[i, WD_Ind] > 0 && p90SD[i, WD_Ind] > 0)
                             effectiveTI[i] = effectiveTI[i] / thisMet.turbulence.avgWS[i, WD_Ind];
                         else
                             effectiveTI[i] = 0;
@@ -1791,7 +1848,7 @@ namespace ContinuumNS
                     else
                     {
                         if (thisMet.turbulence.avgWS[i, WD_Ind] > 0)
-                            effectiveTI[i] = thisMet.turbulence.p90SD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind];
+                            effectiveTI[i] = p90SD[i, WD_Ind] / thisMet.turbulence.avgWS[i, WD_Ind];
                         else
                             effectiveTI[i] = 0;
                     }
@@ -1800,7 +1857,7 @@ namespace ContinuumNS
                 {                    
                     int sumCount = 0;
 
-                    if (i > powerCurve.cutInWS && i < powerCurve.cutOutWS)
+                    if (thisWS >= powerCurve.cutInWS && thisWS <= powerCurve.cutOutWS)
                     { 
                         for (int WD = 0; WD < thisInst.metList.numWD; WD++)
                         {
@@ -1814,7 +1871,7 @@ namespace ContinuumNS
                                     if (thisInst.turbineList.turbineEsts[j].name != name)
                                     {
                                         double wakedSD = CalcWakedStDev(thisInst.turbineList.turbineEsts[j].UTMX, thisInst.turbineList.turbineEsts[j].UTMY, powerCurve,
-                                            thisMet.turbulence.p90SD[i, WD], thisMet.turbulence.avgWS[i, WD], thisInst);
+                                            p90SD[i, WD], thisMet.turbulence.avgWS[i, WD], thisInst);
                                         sumWeightedWakeProb = sumWeightedWakeProb + probWake[j, WD] * Math.Pow(wakedSD, wohler);
                                         sumWakeProb = sumWakeProb + probWake[j, WD];
                                     }
@@ -1823,8 +1880,8 @@ namespace ContinuumNS
                                 if (thisMet.turbulence.count[i, WD] > 2)
                                 {
                                     sumCount = sumCount + thisMet.turbulence.count[i, WD];
-                                    double sectorEffTI = Math.Pow((1 - sumWakeProb) * Math.Pow(thisMet.turbulence.p90SD[i, WD], wohler) + sumWeightedWakeProb, (1 / wohler));
-
+                                    double sectorEffTI = Math.Pow((1 - sumWakeProb) * Math.Pow(p90SD[i, WD], wohler) + sumWeightedWakeProb, (1 / wohler));
+                                                                        
                                     if (thisMet.turbulence.avgWS[i, WD] > 0)
                                         sectorEffTI = sectorEffTI / thisMet.turbulence.avgWS[i, WD];
 
@@ -1839,7 +1896,7 @@ namespace ContinuumNS
                         {
                             if (thisMet.turbulence.avgWS[i, WD] > 0 && thisMet.turbulence.p90SD[i, WD] > 0)
                             {
-                                effectiveTI[i] = effectiveTI[i] + thisMet.turbulence.p90SD[i, WD] / thisMet.turbulence.avgWS[i, WD] * thisMet.turbulence.count[i, WD];
+                                effectiveTI[i] = effectiveTI[i] + p90SD[i, WD] / thisMet.turbulence.avgWS[i, WD] * thisMet.turbulence.count[i, WD];
                                 sumCount = sumCount + thisMet.turbulence.count[i, WD];
                             }                            
                         }                        
@@ -1848,9 +1905,7 @@ namespace ContinuumNS
                     if (sumCount > 0)
                         effectiveTI[i] = effectiveTI[i] / sumCount;
                 }
-
             }
-
 
             return effectiveTI;
         }
@@ -1881,6 +1936,21 @@ namespace ContinuumNS
             }
             
             return haveEst;
+        }
+
+        /// <summary> Updates AvgWS_Est object with calculated time series </summary>        
+        public void UpdateAvgWS_EstWithTS(Avg_Est avgEstToUpdate)
+        {
+            WakeCollection wakeList = new WakeCollection();
+
+            for (int i = 0; i < AvgWSEst_Count; i++)
+            {
+                if (wakeList.IsSameWakeModel(avgEstToUpdate.wakeModel, avgWS_Est[i].wakeModel))
+                {
+                    avgWS_Est[i] = avgEstToUpdate;
+                    break;
+                }                
+            }
         }
     }
 }

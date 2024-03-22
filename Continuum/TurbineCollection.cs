@@ -13,6 +13,8 @@ namespace ContinuumNS
         public Turbine[] turbineEsts;
         /// <summary> True if calculations at turbine sites have been done. </summary>
         public bool turbineCalcsDone;
+        /// <summary> True if exposure and terrain complexity calculations at turbine sites have been done. </summary>
+        public bool expoCalcsDone;
         /// <summary> List of turbine power and thrust curves. </summary>
         public PowerCurve[] powerCurves;
         /// <summary> Exceedance (uncertainty) model. </summary>
@@ -106,6 +108,8 @@ namespace ContinuumNS
         /// <summary> Clears all turbine objects in list. </summary>
         public void ClearAllTurbines() {            
             turbineEsts = null;
+            expoCalcsDone = false;
+            turbineCalcsDone = false;
         }
 
         /// <summary> Clears all power curves in list. </summary>
@@ -332,8 +336,8 @@ namespace ContinuumNS
         /// <summary> Calculates exposure and SRDH (if gotSR is true) for all radii at all turbine sites. </summary>        
         public void CalcTurbineExposures(Continuum thisInst, int radius, double exponent, int numSectors)
         {             
-            if (thisInst.metList.ThisCount == 0)
-                return; // can't do exposure calculations until TAB files have been imported and the numWD is set
+       //     if (thisInst.metList.ThisCount == 0)
+       //         return; // can't do exposure calculations until TAB files have been imported and the numWD is set -> It is set to 16 by default 
             int numWD = thisInst.metList.numWD;
 
             for (int i = 0; i < TurbineCount; i++)
@@ -717,6 +721,7 @@ namespace ContinuumNS
             else {
                 turbineEsts = null;
                 turbineCalcsDone = false;
+                expoCalcsDone = false;
             }
 
         }
@@ -1399,7 +1404,7 @@ namespace ContinuumNS
    
             thisInst.ChangesMade();
             thisInst.turbineList.AreTurbCalcsDone(thisInst);
-            thisInst.updateThe.AllTABs(thisInst);
+            thisInst.updateThe.AllTABs();
         }
 
         /// <summary> Deletes any duplicate or unneeded AvgWSEsts. </summary>
@@ -1496,6 +1501,8 @@ namespace ContinuumNS
                         turbineCalcsDone = false;                    
                     else if (turbineEsts[0].avgWS_Est[0].timeSeries == null)
                         turbineCalcsDone = false;
+                    else if (turbineEsts[0].avgWS_Est[0].timeSeries.Length == 0)
+                        turbineCalcsDone = false;
                     else if (turbineEsts[0].avgWS_Est[0].timeSeries[0].freeStreamWS == 0)
                         turbineCalcsDone = false;
                     else
@@ -1535,6 +1542,36 @@ namespace ContinuumNS
 
                 }
             }
+        }
+
+        /// <summary> Sets expoCalcsDone to true if exposure and terrain complexity calculations have been completed </summary>
+        public void AreExpoCalcsDone()
+        {
+            // Check the exposure at each turbine (in case calculations were interupted) and set to false and exit function if exposure or grid stats are null.
+            if (TurbineCount == 0)
+            {
+                expoCalcsDone = false;
+                return;
+            }    
+            
+            expoCalcsDone = true;
+
+            for (int t = 0; t < TurbineCount; t++)
+            {
+                Turbine thisTurb = turbineEsts[t];
+
+                if (thisTurb.gridStats.StatCount == 0)
+                {
+                    expoCalcsDone = false;
+                    return;
+                }
+
+                if (thisTurb.ExposureCount == 0)
+                {
+                    expoCalcsDone = false;
+                    return;
+                }
+            }    
         }
 
         /// <summary> Returns true if calculations have been completed with specified power curve and wake model. estType = "Expo", "WS", "Gross", "Net". </summary>

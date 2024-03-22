@@ -2,6 +2,9 @@
 using System.Linq;
 using System.IO;
 using System.Windows.Forms;
+using System.Security.Cryptography.Xml;
+using System.Security.RightsManagement;
+using System.ComponentModel;
 
 namespace ContinuumNS
 {
@@ -18,10 +21,10 @@ namespace ContinuumNS
         public bool SRDH_IsCalc;
         /// <summary> True if met data is time series data </summary>
         public bool isTimeSeries;
-        /// <summary> True if met data QC filters are applied to time series data.  </summary>
-        public bool filteringEnabled;
-        /// <summary> True if MERRA2 data is uploaded and MCP is conducted  </summary>
-        public bool isMCPd;
+   //     /// <summary> True if met data QC filters are applied to time series data.  </summary>
+  //      public bool filteringEnabled; // MOVED TO MET CLASS
+  //      /// <summary> True if MERRA2 data is uploaded and MCP is conducted  </summary>
+  //      public bool isMCPd; // MOVED TO MET CLASS
         /// <summary> True if MCP has been conducted at all met sites (time series only). Models and estimates are not created unless this is true.  </summary>
         public bool allMCPd;
         /// <summary> Upper bound of first wind speed bin (to be consistent with TAB file format)  </summary>
@@ -102,7 +105,7 @@ namespace ContinuumNS
             WS_FirstInt = 0.5; // represents upper bound of first wind speed bin (to be consistent with TAB file format)
             WS_IntSize = 1;
 
-            filteringEnabled = true;
+      //      filteringEnabled = true;
 
         }
 
@@ -224,7 +227,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Filters time series data, extrapolates to modeled height, and adds met site to collection. </summary>
-        public void FilterExtrapolateAddMetTimeSeries(string metName, double UTMX, double UTMY, Met_Data_Filter metData, Continuum thisInst)
+        public void FilterExtrapolateAddMetTimeSeries(string metName, double UTMX, double UTMY, Met_Data_Filter metData, Continuum thisInst, bool applyFilters)
         {
             int newCount = ThisCount;
             Array.Resize(ref metItem, newCount + 1);
@@ -234,8 +237,9 @@ namespace ContinuumNS
             metItem[newCount].UTMX = UTMX;
             metItem[newCount].UTMY = UTMY;
             metItem[newCount].metData = metData;
-            if (filteringEnabled)
-                metItem[newCount].metData.FilterData(thisInst.GetFiltersToApply());
+            metItem[newCount].metData.filteringEnabled = applyFilters;
+            if (applyFilters)                
+                metItem[newCount].metData.FilterData(thisInst.GetFiltersToApply(metItem[newCount]));            
             metItem[newCount].metData.EstimateAlpha();
             metItem[newCount].metData.ExtrapolateData(thisInst.modeledHeight);
                         
@@ -288,6 +292,11 @@ namespace ContinuumNS
                     foreach (var N in temp_db)
                         context.Temp_table.Remove(N);
 
+                    var baro_db = from N in context.Baro_table where N.metName == metname select N;
+
+                    foreach (var N in baro_db)
+                        context.Baro_table.Remove(N);
+
                     context.SaveChanges();                    
                 }                
             }
@@ -297,38 +306,48 @@ namespace ContinuumNS
                 return;
             }
 
-            // Delete unused MERRA data from DB
-            // First check to see if there is MERRA data for this met
-            MERRA thisMERRA = thisInst.merraList.GetMERRA(metLat, metLong);
-            thisMERRA.GetMERRADataFromDB(thisInst);
+            // Delete unused reference data from DB
+            // First check to see if there is reference data for this met
+            Reference[] theRefs = thisInst.refList.GetAllRefsAtLatLong(metLat, metLong);
 
-            if (thisMERRA.MERRA_Nodes != null)
-            {              
-                // Go through each MERRA node and check to see if it is used by another met
-                for (int i = 0; i < thisMERRA.numMERRA_Nodes; i++)
+            for (int r = 0; r < theRefs.Length; r++)
+            {
+                theRefs[r].GetReferenceDataFromDB(thisInst);
+
+                if (theRefs[r].nodes != null)
                 {
-                    bool usedByOtherMets = false;
-
-                    for (int m = 0; m < ThisCount; m++)
+                    // Go through each MERRA node and check to see if it is used by another met
+                    for (int i = 0; i < theRefs[r].numNodes; i++)
                     {
-                        UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(metItem[m].UTMX, metItem[m].UTMY);
-                        MERRA otherMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                        bool usedByOtherMets = false;
 
-                        for (int j = 0; j < otherMERRA.numMERRA_Nodes; j++)
-                            if (thisMERRA.MERRA_Nodes[i].XY_ind.Lat == otherMERRA.MERRA_Nodes[j].XY_ind.Lat
-                                && thisMERRA.MERRA_Nodes[i].XY_ind.Lon == otherMERRA.MERRA_Nodes[j].XY_ind.Lon)
-                                usedByOtherMets = true;
+                        for (int m = 0; m < ThisCount; m++)
+                        {
+                            UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(metItem[m].UTMX, metItem[m].UTMY);
+                            Reference[] otherRefs = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude);
+
+                            for (int a = 0; a < otherRefs.Length; a++)
+                                for (int j = 0; j < otherRefs[a].numNodes; j++)
+                                    if (theRefs[r].nodes[i].XY_ind.Lat == otherRefs[a].nodes[j].XY_ind.Lat
+                                    && theRefs[r].nodes[i].XY_ind.Lon == otherRefs[a].nodes[j].XY_ind.Lon
+                                    && theRefs[r].refDataDownload.refType == otherRefs[a].refDataDownload.refType)
+                                        usedByOtherMets = true;
+                        }
+
+                        if (usedByOtherMets == false && theRefs[r].refDataDownload.refType == "MERRA2")
+                            thisInst.refList.DeleteMERRANodeDataFromDB(theRefs[r].nodes[i].XY_ind.Lat, theRefs[r].nodes[i].XY_ind.Lon, thisInst);
+                        else if (usedByOtherMets == false && theRefs[r].refDataDownload.refType == "ERA5")
+                            thisInst.refList.DeleteERANodeDataFromDB(theRefs[r].nodes[i].XY_ind.Lat, theRefs[r].nodes[i].XY_ind.Lon, thisInst);
+
                     }
-
-                    if (usedByOtherMets == false)
-                        thisInst.merraList.DeleteMERRANodeDataFromDB(thisMERRA.MERRA_Nodes[i].XY_ind.Lat, thisMERRA.MERRA_Nodes[i].XY_ind.Lon, thisInst);
-
                 }
+
+                // Delete reference data from refList
+                Reference[] refsDefForThisMet = thisInst.refList.GetAllRefsAtLatLong(metLat, metLong);
+
+                for (int d = 0; d < refsDefForThisMet.Length; d++)
+                    thisInst.refList.DeleteReference(refsDefForThisMet[d]);
             }
-
-            // Delete MERRA data from MERRAList
-            thisInst.merraList.deleteMERRA(metLat, metLong);
-
         }
 
         /// <summary> Deletes all met site time series estimates. Called after a change is made to MCP or MERRA2 settings. </summary>
@@ -336,14 +355,12 @@ namespace ContinuumNS
         {                        
             for (int i = 0; i < ThisCount; i++)
             {
-                if (metItem[i].mcp != null)
-                {
-                    metItem[i].mcp.New_MCP(true, false, thisInst);
-                    metItem[i].WSWD_Dists = new Met.WSWD_Dist[0];
-                }
+                for (int m = 0; m < metItem[i].GetNumMCP(); m++)                
+                    if (metItem[i].mcpList[m] != null)                    
+                        metItem[i].mcpList[m].New_MCP(true, false, thisInst);                  
 
-                metItem[i].metData.ClearAlphaAndSimulatedEstimates();
-                metItem[i].WSWD_Dists = null;
+                metItem[i].WSWD_Dists = new Met.WSWD_Dist[0];
+                metItem[i].metData.ClearAlphaAndSimulatedEstimates();                
             }               
                            
         }
@@ -529,6 +546,34 @@ namespace ContinuumNS
                 }
 
                 for (int i = 0; i < numWD; i++)
+                    avgWindRose[i] = avgWindRose[i] / ThisCount;
+            }
+
+            return avgWindRose;
+
+        }
+
+        /// <summary>  Forms and returns average wind rose using all mets in list. </summary>
+        public double[] GetAvgEnergyRose(double thisHeight, Met.TOD thisTOD, Met.Season thisSeason, int thisNumWD)
+        {
+            double[] avgWindRose = null;
+
+            if (ThisCount > 0 && isTimeSeries)
+            {
+                avgWindRose = new double[thisNumWD];
+
+                for (int i = 0; i < ThisCount; i++)
+                {
+                    Met.WSWD_Dist thisDist = metItem[i].GetWS_WD_Dist(thisHeight, thisTOD, thisSeason);
+
+                    if (thisDist.energyRose == null)
+                        break;
+
+                    for (int j = 0; j < thisNumWD; j++)
+                        avgWindRose[j] = avgWindRose[j] + thisDist.energyRose[j];
+                }
+
+                for (int i = 0; i < thisNumWD; i++)
                     avgWindRose[i] = avgWindRose[i] / ThisCount;
             }
 
@@ -969,12 +1014,64 @@ namespace ContinuumNS
             return theseMets;
         }
 
+        /// <summary>  Finds and returns start and end date of all met datasets (based on either entire date range (All) or using the analysis start/end  </summary>
+        public DateTime[] GetMetStartEndDates(string allOrAnalysis)
+        {
+            DateTime[] startEnd = new DateTime[2];
+            startEnd[0] = new DateTime();
+            startEnd[1] = new DateTime(2050, 1, 1);
+
+            for (int m = 0; m < ThisCount; m++)
+            {
+                if (allOrAnalysis == "All")
+                {
+                    if (metItem[m].metData.startDate > startEnd[0])
+                        startEnd[0] = metItem[m].metData.startDate;
+
+                    if (metItem[m].metData.endDate < startEnd[1])
+                        startEnd[1] = metItem[m].metData.endDate;
+                }
+                else
+                {
+                    if (metItem[m].metData.startDate > startEnd[0])
+                        startEnd[0] = metItem[m].metData.allStartDate;
+
+                    if (metItem[m].metData.endDate < startEnd[1])
+                        startEnd[1] = metItem[m].metData.allEndDate;
+                }
+            }
+
+            return startEnd;
+        }
+
+        /// <summary>  Finds and returns min. start and max. end date of all met datasets. Used when generating time series estimates using met data that has
+        ///  not been estimated over long-term range. </summary>
+        public DateTime[] GetMetMinStartMaxEndDates()
+        {
+            DateTime[] startEnd = new DateTime[2];
+            startEnd[0] = new DateTime(2050, 1, 1);
+            startEnd[1] = new DateTime();
+
+            for (int m = 0; m < ThisCount; m++)
+            {   
+                if (metItem[m].metData.startDate < startEnd[0])
+                    startEnd[0] = metItem[m].metData.allStartDate;
+
+                if (metItem[m].metData.endDate > startEnd[1])
+                    startEnd[1] = metItem[m].metData.allEndDate;                
+            }
+
+            return startEnd;
+        }
+
+
+
         /// <summary> Returns Met object with specified name. </summary>  
         public Met GetMet(string metName)
         {            
             Met thisMet = new Met();
             
-            if (metName == "") return thisMet;
+            if (metName == "" || metName == "User-defined" || metName == "User-defined lat/long" || metItem == null) return thisMet;
                         
             for (int i = 0; i < metItem.Length; i++)
             {
@@ -997,7 +1094,7 @@ namespace ContinuumNS
                 metsUsed[i] = metItem[i].name;
             
             return metsUsed;
-        }
+        }                
 
         /// <summary> Calculates and returns Weibull parameters fit to the specified WS distribution. In this function, the RMS difference in Weibull Freq dist and WS dist then sweeps k value 
         /// until the min is found. Returns weibull estimates for overall and sector. </summary>  
@@ -1041,6 +1138,8 @@ namespace ContinuumNS
             }
 
             // Sweep k from Last Min k - 0.5 to Last Min k + 0.5 and find k with min freq diff
+            double newK_Min_RMS = K_Min_RMS;
+
             for (double k = K_Min_RMS - 0.5f; k <= K_Min_RMS + 0.5f; k = k + 0.1f)
             {
                 double freqDiffSqr = 0;
@@ -1057,13 +1156,14 @@ namespace ContinuumNS
                 }
 
                 freqDiffSqr = Convert.ToSingle(Math.Pow((freqDiffSqr / numWS), 0.5));
-                if ( freqDiffSqr<freqDiffMin )
+                if (freqDiffSqr < freqDiffMin )
                 {
                     freqDiffMin = freqDiffSqr;
-                    K_Min_RMS = k;
+                    newK_Min_RMS = k;
                 }
             }
 
+            K_Min_RMS = newK_Min_RMS;
             // Sweep k from Last Min k - 0.1 to Last Min k + 0.1 and find k with min freq diff
             for (double k = K_Min_RMS - 0.1f; k <= K_Min_RMS + 0.1f; k = k + 0.02f)
             {
@@ -1084,10 +1184,11 @@ namespace ContinuumNS
                 if (freqDiffSqr<freqDiffMin)
                 {
                     freqDiffMin = freqDiffSqr;
-                    K_Min_RMS = k;
+                    newK_Min_RMS = k;
                 }
             }
 
+            K_Min_RMS = newK_Min_RMS;
             weibull.overall_k = K_Min_RMS;            
             weibull.overall_A = CalcWeibullA(avgWS, 1 + 1 / weibull.overall_k);
 
@@ -1108,6 +1209,7 @@ namespace ContinuumNS
                     sectSum = sectSum + sectDist[i, j];
                 }
                 avgSectWS = avgSectWS / sectSum;
+                K_Min_RMS = 0;
 
                 // Sweep k from 1.5 to 3.5 and find k with min freq diff
                 for (double k = 1.5f; k <= 3.5f; k = k + 0.5f)
@@ -1140,6 +1242,8 @@ namespace ContinuumNS
                 }
 
                 // Sweep k from Last Min k - 0.5 to Last Min k + 0.5 and find k with min freq diff
+                newK_Min_RMS = K_Min_RMS;
+
                 for (double k = K_Min_RMS - 0.5f; k <= K_Min_RMS + 0.5f; k = k + 0.1f)
                 {
                     freqDiffSqr = 0;
@@ -1160,11 +1264,13 @@ namespace ContinuumNS
                     if (freqDiffSqr < freqDiffMin)
                     {
                         freqDiffMin = freqDiffSqr;
-                        K_Min_RMS = k;
+                        newK_Min_RMS = k;
                     }
                 }
 
                 // Sweep k from Last Min k - 0.1 to Last Min k + 0.1 and find k with min freq diff
+                K_Min_RMS = newK_Min_RMS;
+
                 for (double k = K_Min_RMS - 0.1f; k <= K_Min_RMS + 0.1f; k = k + 0.02f)
                 {
                     freqDiffSqr = 0;
@@ -1184,9 +1290,10 @@ namespace ContinuumNS
                     if (freqDiffSqr < freqDiffMin)
                     {
                         freqDiffMin = freqDiffSqr;
-                        K_Min_RMS = k;
+                        newK_Min_RMS = k;
                     }
                 }
+                K_Min_RMS = newK_Min_RMS;
 
                 weibull.sector_k[i] = K_Min_RMS;
                 double This_m = 1 + 1 / weibull.sector_k[i];
@@ -1330,7 +1437,7 @@ namespace ContinuumNS
 
         /// <summary> Reads in formatted .csv file with anem, vane, and temp data. Adds the new met to metList. Filters (using all filters) and 
         /// extrapolates to modeled height (specified on Input tab) Returns true if met data successfully read in. </summary>
-        public bool ImportFilterExtrapMetData(string filename, Continuum thisInst)
+        public bool ImportFilterExtrapMetData(string filename, Continuum thisInst, bool applyFilters)
         {           
             Met_Data_Filter thisMetData = new Met_Data_Filter();
             string[] header;
@@ -1411,17 +1518,22 @@ namespace ContinuumNS
                         return false;
                     }
 
+                    inputMet = check.NewTurbOrMet(thisInst.topo, thisName, thisUTMX, thisUTMY, true); // checks the distance between met and topo grid edges to make sure that there//s enough distance for expo calcs
+
+                    if (inputMet == false)
+                        return false;
+
                     line = file.ReadLine();                    
                     line = line.Trim(',');
                     header = line.Split(delims);
                     Array.Resize(ref headerDeets, header.Length - 1); // minus one since not keeping time stamp header
 
                     for (int headInd = 1; headInd < header.Length; headInd++)
-                    {
+                    {                        
                         String thisHeader = header[headInd];
                         string sensorType = thisHeader.Substring(0, 4);
                         // check to see if Anem, Vane or temp
-                        if ((sensorType == "Anem") || (sensorType == "Vane") || (sensorType == "Temp"))
+                        if ((sensorType == "Anem") || (sensorType == "Vane") || (sensorType == "Temp") || (sensorType == "Baro"))
                         {
                             headerDeets[headInd - 1].sensorType = sensorType;
 
@@ -1533,6 +1645,29 @@ namespace ContinuumNS
 
                                 headerDeets[headInd - 1].measType = thisHeader.Substring(secInd + 1, lastInd - secInd - 1);
                             }
+                            else if (thisHeader.Substring(0, 4) == "Baro")
+                            {
+                                // check to see if baro has been created already
+                                bool alreadyGotIt = false;
+
+                                foreach (Met_Data_Filter.Press_Data thisBaro in thisMetData.baros)
+                                {
+                                    if (thisBaro.height == thisHeight)
+                                    {
+                                        alreadyGotIt = true;
+                                        break;
+                                    }
+                                }
+
+                                if (alreadyGotIt == false)
+                                {
+                                    Array.Resize(ref thisMetData.baros, thisMetData.GetNumBaros() + 1);
+                                    thisMetData.baros[thisMetData.GetNumBaros() - 1].height = thisHeight;
+                                    thisMetData.baros[thisMetData.GetNumBaros() - 1].units = "mB";
+                                }
+
+                                headerDeets[headInd - 1].measType = thisHeader.Substring(lastInd + 1, thisHeader.Length - lastInd - 1);
+                            }
 
                         }
                     }
@@ -1570,6 +1705,8 @@ namespace ContinuumNS
                     for (int i = 0; i < thisMetData.GetNumTemps(); i++)
                         Array.Resize(ref thisMetData.temps[i].temp, dataCount);
 
+                    for (int i = 0; i < thisMetData.GetNumBaros(); i++)
+                        Array.Resize(ref thisMetData.baros[i].pressure, dataCount);
 
                     file.Close();
                     file = new StreamReader(filename);
@@ -1600,6 +1737,9 @@ namespace ContinuumNS
 
                         for (int i = 0; i < thisMetData.GetNumTemps(); i++)
                             thisMetData.temps[i].temp[dataCount - 1].timeStamp = thisTimeStamp;
+
+                        for (int i = 0; i < thisMetData.GetNumBaros(); i++)
+                            thisMetData.baros[i].pressure[dataCount - 1].timeStamp = thisTimeStamp;
 
                         for (int i = 1; i < data.Length; i++)
                         {
@@ -1678,6 +1818,26 @@ namespace ContinuumNS
                                         break;
                                     }
                             }
+                            else if (sensorType == "Baro")
+                            {
+                                for (int j = 0; j < thisMetData.GetNumBaros(); j++)
+                                    if (thisMetData.baros[j].height == headerDeets[i - 1].height)
+                                    {
+                                        if (headerDeets[i - 1].measType == "Avg")
+                                            thisMetData.baros[j].pressure[dataCount - 1].avg = thisData;
+                                        else if (headerDeets[i - 1].measType == "SD")
+                                            thisMetData.baros[j].pressure[dataCount - 1].SD = thisData;
+                                        else if (headerDeets[i - 1].measType == "Min")
+                                            thisMetData.baros[j].pressure[dataCount - 1].min = thisData;
+                                        else if (headerDeets[i - 1].measType == "Max")
+                                            thisMetData.baros[j].pressure[dataCount - 1].max = thisData;
+
+                                        if ((thisData == -999) && (headerDeets[i - 1].measType == "Avg"))
+                                            thisMetData.baros[j].pressure[dataCount - 1].filterFlag = Met_Data_Filter.Filter_Flags.missing;                                                                               
+
+                                        break;
+                                    }
+                            }
 
                         }
 
@@ -1712,7 +1872,7 @@ namespace ContinuumNS
                         return false;
                     }
 
-                    FilterExtrapolateAddMetTimeSeries(thisName, thisUTMX, thisUTMY, thisMetData, thisInst);
+                    FilterExtrapolateAddMetTimeSeries(thisName, thisUTMX, thisUTMY, thisMetData, thisInst, applyFilters);
                 }
                 catch
                 {
@@ -1721,6 +1881,7 @@ namespace ContinuumNS
                     thisMetData.anems = new Met_Data_Filter.Anem_Data[0];
                     thisMetData.vanes = new Met_Data_Filter.Vane_Data[0];
                     thisMetData.temps = new Met_Data_Filter.Temp_Data[0];
+                    thisMetData.baros = new Met_Data_Filter.Press_Data[0];
                     file.Close();
                     return false;
                 }                
@@ -1736,13 +1897,13 @@ namespace ContinuumNS
               
 
         /// <summary> Runs MCP at selected met site using selected MCP method. </summary>       
-        public void RunMCP(ref Met thisMet, MERRA thisMERRA, Continuum thisInst, string MCP_method)
+ /*       public void RunMCP_OLD(ref Met thisMet, Reference thisRef, Continuum thisInst, string MCP_method)
         {            
             thisMet.mcp = new MCP();
             thisMet.mcp.New_MCP(true, true, thisInst); // reads the MCP settings from MCP tab
 
             // Get MERRA data as the reference data
-            thisMet.mcp.refData = thisMet.mcp.GetRefData(thisMERRA, ref thisMet, thisInst);
+            thisMet.mcp.refData = thisMet.mcp.GetRefData(thisRef, ref thisMet, thisInst);
 
             // Get extrapolated met dat as the target data
             thisMet.mcp.targetData = thisMet.mcp.GetTargetData(thisInst.modeledHeight, thisMet);
@@ -1752,6 +1913,43 @@ namespace ContinuumNS
             if (thisMet.mcp.concData.Length > 0)
                 thisMet.mcp.DoMCP(thisMet.mcp.GetStartOrEndDate("Concurrent", "Start"), thisMet.mcp.GetStartOrEndDate("Concurrent", "End"), true, MCP_method, thisInst, thisMet);                                   
             
+        }
+ */
+
+        /// <summary> Runs MCP at selected met site using selected MCP method at each measured height. </summary>       
+        public void RunMCP(ref Met thisMet, Reference thisRef, Continuum thisInst, string MCP_method)
+        {
+            double[] measHeights = thisMet.metData.GetHeightsOfAnems();
+            thisMet.mcpList = new MCP[1 + measHeights.Length]; // Generate MCP estimates at all measured heights
+            bool showMsg = true;
+
+            for (int m = 0; m < 1 + measHeights.Length; m++)
+            {
+                double thisHeight = thisInst.modeledHeight;
+
+                if (m > 0) // one of measured heights
+                    thisHeight = measHeights[m - 1];
+
+                thisMet.isMCPd = true;
+                thisMet.mcpList[m] = new MCP();
+                thisMet.mcpList[m].New_MCP(true, true, thisInst); // reads the MCP settings from MCP tab
+                thisMet.mcpList[m].height = thisHeight;
+
+                // Get reference data as the reference data
+                thisMet.mcpList[m].reference = thisRef;
+                thisMet.mcpList[m].refData = thisMet.mcpList[m].GetRefData(thisRef, ref thisMet, thisInst);
+
+                // Get extrapolated met dat as the target data
+                thisMet.mcpList[m].targetData = thisMet.mcpList[m].GetTargetData(thisHeight, thisMet);
+
+                thisMet.mcpList[m].FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate, showMsg);
+
+                if (thisMet.mcpList[m].concData.Length == 0)
+                    showMsg = false;
+
+                if (thisMet.mcpList[m].concData.Length > 0)
+                    thisMet.mcpList[m].DoMCP(thisMet.mcpList[m].GetStartOrEndDate("Concurrent", "Start"), thisMet.mcpList[m].GetStartOrEndDate("Concurrent", "End"), true, MCP_method, thisInst, thisMet);
+            }
         }
 
         /// <summary> Adds met time series data to database and clears data from object. </summary>       
@@ -1770,15 +1968,15 @@ namespace ContinuumNS
 
         /// <summary> Clears all MCP reference, target, concurrent and LT estimate data. Not saved in file. It's regenerated as needed. </summary>
         public void ClearMCPRefTargetConcLTEstData()
-        {           
+        {            
             for (int i = 0; i < ThisCount; i++)
             {
-                if (metItem[i].mcp != null)
-                {
-                    metItem[i].mcp.refData = new MCP.Site_data[0];
-                    metItem[i].mcp.targetData = new MCP.Site_data[0];
-                    metItem[i].mcp.concData = new MCP.Concurrent_data[0];
-                    metItem[i].mcp.LT_WS_Ests = new MCP.Site_data[0];                   
+                for (int m = 0; m < metItem[i].GetNumMCP(); m++)
+                {                    
+                    metItem[i].mcpList[m].refData = new MCP.Site_data[0];
+                    metItem[i].mcpList[m].targetData = new MCP.Site_data[0];
+                    metItem[i].mcpList[m].concData = new MCP.Concurrent_data[0];
+                    metItem[i].mcpList[m].LT_WS_Ests = new MCP.Site_data[0];                    
                 }
             }
         }
@@ -1827,9 +2025,9 @@ namespace ContinuumNS
 
             for (int i = 0; i < ThisCount; i++)
             {
-                if (metItem[i].mcp == null)
+                if (metItem[i].mcpList == null)
                     allMCPd = false;
-                else if (metItem[i].mcp.HaveMCP_Estimate("Any") == false)
+                else if (metItem[i].mcpList[0].HaveMCP_Estimate("Any") == false)
                     allMCPd = false;
             }
 
@@ -1847,6 +2045,212 @@ namespace ContinuumNS
             }
 
             expoIsCalc = false;
+        }
+
+        /// <summary> Get met tower with specified latitude and longitude </summary>
+        public Met GetMetAtLatLon(double thisLat, double thisLong, UTM_conversion utmConv)
+        {
+            Met thisMet = new Met();
+
+            for (int m = 0; m < ThisCount; m++)
+            {
+                UTM_conversion.Lat_Long thisLL = utmConv.UTMtoLL(metItem[m].UTMX, metItem[m].UTMY);
+                if (Math.Abs(thisLL.latitude - thisLat) < 0.1 && Math.Abs(thisLL.longitude - thisLong) < 0.1)
+                {
+                    thisMet = metItem[m];
+                    break;
+                }
+            }                
+
+            return thisMet;
+        }
+
+        /// <summary> Get Reference used to generate MCP estimates at met sites </summary>
+        public Reference GetReferenceUsedInMCP(string[] metsUsed)
+        {
+            Reference thisRef = new Reference();
+
+            for (int m = 0; m < ThisCount; m++)
+            {
+                for (int u = 0; u < metsUsed.Length; u++)
+                {
+                    if (metsUsed[u] == metItem[m].name)
+                    {
+                        if (metItem[m].GetNumMCP() > 0)
+                        {
+                            thisRef = metItem[m].mcpList[0].reference;
+                            break;
+                        }
+                        else
+                        {                            
+                            break;
+                        }                        
+                    }
+                }
+            }
+
+            return thisRef;
+
+        }
+
+        /// <summary> Returns true if met data time series data is imported </summary>
+        public bool HaveTimeSeriesData()
+        {
+            bool haveTS = false;
+
+            for (int m = 0; m < ThisCount; m++)
+                for (int a = 0; a < metItem[m].metData.GetNumAnems(); a++)
+                {
+                    if (metItem[m].metData.anems[a].windData != null)
+                    {
+                        haveTS = true;                        
+                    }
+                    else
+                    {
+                        haveTS = false;
+                        return haveTS;
+                    }
+                }
+
+            return haveTS;
+        }
+
+        /// <summary> Retrieves all sensor time series data from database </summary>
+        public void GetTimeSeriesData(Continuum thisInst)
+        {
+            for (int m = 0; m < ThisCount; m++)
+                metItem[m].metData.GetSensorDataFromDB(thisInst, metItem[m].name);
+            
+        }
+
+        /// <summary> Returns time interval of met data  </summary>        
+        public string GetMetDataInterval()
+        {
+            string dataInt = "10-min";
+            TimeSpan timeInt = new TimeSpan();
+
+            for (int m = 0; m < ThisCount; m++)
+                if (metItem[m].metData.GetNumAnems() > 0)
+                {
+                    Met_Data_Filter.Anem_Data thisAnem = metItem[m].metData.anems[0];
+
+                    int midData = Convert.ToInt32(thisAnem.windData.Length / 2);
+                    timeInt = thisAnem.windData[midData].timeStamp.Subtract(thisAnem.windData[midData - 1].timeStamp);
+                    break;
+                }
+
+            if (Math.Round(timeInt.TotalMinutes, 0) == 10)
+                dataInt = "10-min";
+            else if (Math.Round(timeInt.TotalMinutes, 0) == 60)
+                dataInt = "60-min";
+
+            return dataInt;
+        }
+
+        /// <summary> Returns array of MCP.Site_data (which contains timestamp, WS, and WD) for specified met site for time period covering all met sites
+        ///  (i.e. minimum allStart and maximum allEnd date)  If thisMet has no data for specified timestamp, leave as a zero and then is ignored when 
+        ///  generating estimated time series at target node </summary>
+        
+        public MCP.Site_data[] GetMetDataTSOverEntireRange(string metName, double height)
+        {           
+            DateTime[] startEnd = GetMetMinStartMaxEndDates();
+            string dataInt = GetMetDataInterval();
+            int numData = Convert.ToInt32(Math.Round(startEnd[1].Subtract(startEnd[0]).TotalMinutes, 0));
+
+            if (dataInt == "10-min")
+                numData = numData / 10;
+            else if (dataInt == "60-min")
+                numData = numData / 60;
+
+            numData++; // Add one for last timestamp
+
+            MCP.Site_data[] concData = new MCP.Site_data[numData];
+
+            Met thisMet = GetMet(metName);
+
+            // See if this is a measured height
+            double[] anemHeights = thisMet.metData.GetHeightsOfAnems();
+            int closestAnemInd = thisMet.metData.GetHeightClosestToHH(height);
+
+            if (anemHeights[closestAnemInd] == height)
+            {
+                // Have measured height so use that as concurrent data
+                int heightInd = thisMet.metData.GetHeightClosestToHH(height);                       
+
+                DateTime thisTS = startEnd[0];
+          
+                for (int d = 0; d < numData; d++)
+                {
+                    concData[d].thisDate = thisTS;
+                    int anemInd = thisMet.metData.anems[0].GetTS_Index(thisTS);
+
+                    if (anemInd == -999)
+                    {
+                        if (dataInt == "10-min")
+                            thisTS = thisTS.AddMinutes(10);
+                        else if (dataInt == "60-min")
+                            thisTS = thisTS.AddMinutes(60);
+
+                        continue;
+                    }
+
+                    if (thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].timeStamp == thisTS)
+                    {
+                        concData[d].thisWS = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WS;
+                        concData[d].thisWD = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WD;                        
+                    }
+
+                    if (dataInt == "10-min")
+                        thisTS = thisTS.AddMinutes(10);
+                    else if (dataInt == "60-min")
+                        thisTS = thisTS.AddMinutes(60);
+                }
+            }
+            else
+            {
+                // Use extrapolated data
+                Met_Data_Filter.Sim_TS extrapData = thisMet.metData.GetSimulatedTimeSeries(height);
+                DateTime thisTS = startEnd[0];               
+
+                for (int d = 0; d < numData; d++)
+                {
+                    concData[d].thisDate = thisTS;
+                    int extrapInd = extrapData.GetTS_Index(thisTS);
+
+                    if (extrapInd == -999)
+                    {
+                        if (dataInt == "10-min")
+                            thisTS = thisTS.AddMinutes(10);
+                        else if (dataInt == "60-min")
+                            thisTS = thisTS.AddMinutes(60);
+
+                        continue;
+                    }
+
+                    if (extrapData.WS_WD_data[extrapInd].timeStamp == thisTS)
+                    {
+                        concData[d].thisWS = extrapData.WS_WD_data[extrapInd].WS;
+                        concData[d].thisWD = extrapData.WS_WD_data[extrapInd].WD;                        
+                    }
+
+                    if (dataInt == "10-min")
+                        thisTS = thisTS.AddMinutes(10);
+                    else if (dataInt == "60-min")
+                        thisTS = thisTS.AddMinutes(60);
+                }
+            }                       
+
+            return concData;
+        }
+
+        public string GetMCP_MethodUsed()
+        {
+            string mcpMethod = "";
+
+            for (int m = 0; m < ThisCount; m++)
+                mcpMethod = metItem[m].GetMCP_Method_Used();
+
+            return mcpMethod;
         }
                 
     }

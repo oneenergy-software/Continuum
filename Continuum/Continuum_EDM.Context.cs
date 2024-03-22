@@ -22,5 +22,9 @@ namespace ContinuumNS
         public DbSet<Vane_table> Vane_table { get; set; }
         public DbSet<Temp_table> Temp_table { get; set; }
         public DbSet<MERRA_Node_table> MERRA_Node_table { get; set; }
+        
+        public DbSet<ERA_Node_table> ERA_Node_table { get; set; }
+
+        public DbSet<Baro_table> Baro_table { get; set; }
     }
 }

@@ -4,6 +4,9 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows.Media;
+using Python.Runtime;
+using System.Security.Permissions;
 
 namespace ContinuumNS
 {    
@@ -23,16 +26,25 @@ namespace ContinuumNS
         public Vane_Data[] vanes = new Vane_Data[0];
         /// <summary>   List of temperature sensor datasets. </summary>
         public Temp_Data[] temps = new Temp_Data[0];
+        /// <summary>   List of temperature sensor datasets. </summary>
+        public Press_Data[] baros = new Press_Data[0];
         /// <summary>   If filtering has been conducted, this is true. </summary>
         public bool filteringDone = false;
+
+        /// <summary> True if met data QC filters are applied to time series data.  </summary>
+        public bool filteringEnabled;
+
         /// <summary>   Wind speed units, mph (miles/hour) or mps (meters/sec). </summary>
         public string WS_units;
+        /// <summary> Shear calculation type and min/max height (if using best-fit calc) </summary>
+        public ShearSettings shearSettings = new ShearSettings();
         /// <summary>   All calculated shear alpha exponents and wind direction data from vane closest to hub height. Used to generate alpha table and plot, not used for extrapolating </summary>
         public Est_Alpha[] alpha = new Est_Alpha[0];                
         /// <summary> Shear Power law alpha datasets with WS and WD. One is created for each anem height. Used to extrapolate data. </summary>
         public Shear_Data[] alphaByAnem = new Shear_Data[0];
         /// <summary>   Simulated (estimated) wind speed, wind direction, and WS SD data. </summary>
         public Sim_TS[] simData = new Sim_TS[0];
+        public bool simDataCalcComplete = false;
         /// <summary>   First date of dataset. </summary>
         public DateTime allStartDate;
         /// <summary>   Last date of dataset. </summary>
@@ -143,6 +155,73 @@ namespace ContinuumNS
             public bool isOnlyMet;
             /// <summary>   Wind speed time series data. </summary>
             public data[] windData;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime targetDate)
+            {   
+                int indMid = windData.Length / 2;
+                int dataIntMins = Convert.ToInt32(Math.Round(windData[indMid].timeStamp.Subtract(windData[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(windData[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= windData.Length)
+                    tsInd = windData.Length - 1;
+
+                DateTime thisDate = windData[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;                                
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {                    
+                    if (timeDiffMins < 0)                    
+                        tsInd = tsInd - stepSize;                    
+                    else                    
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= windData.Length)
+                    {
+                        tsInd = windData.Length - 1;
+                        break;
+                    }
+
+                    thisDate = windData[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }               
+
+                while (windData[tsInd].timeStamp < targetDate && tsInd < windData.Length - 1)
+                    tsInd++;
+
+                while (windData[tsInd].timeStamp > targetDate && tsInd > 0)
+                    tsInd--;
+
+                if (windData[tsInd].timeStamp != targetDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }
        
         /// <summary>   Contains defined tower shadow sector (min/max/center WD). </summary>        
@@ -163,23 +242,236 @@ namespace ContinuumNS
         {
             /// <summary>  Vane height. </summary>
             public double height;
+            /// <summary> Vane boom orientation </summary>
+            public double orientation;
             /// <summary>  Wind direction time series data. </summary>
             public data[] dirData;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime targetDate)
+            {
+                int indMid = dirData.Length / 2;
+                int dataIntMins = Convert.ToInt32(Math.Round(dirData[indMid].timeStamp.Subtract(dirData[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(dirData[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= dirData.Length)
+                    tsInd = dirData.Length - 1;
+
+                DateTime thisDate = dirData[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)
+                        tsInd = tsInd - stepSize;
+                    else
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= dirData.Length)
+                    {
+                        tsInd = dirData.Length - 1;
+                        break;
+                    }
+
+                    thisDate = dirData[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }
+
+                while (dirData[tsInd].timeStamp < targetDate && tsInd < dirData.Length - 1)
+                    tsInd++;
+
+                while (dirData[tsInd].timeStamp > targetDate && tsInd > 0)
+                    tsInd--;
+
+                if (dirData[tsInd].timeStamp != targetDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }
                 
         /// <summary> Holds temperature sensor time series data plus the height of the sensor and temperature units. </summary>
         [Serializable()]
         public struct Temp_Data
         {
-            /// <summary>   Senso height. </summary>
+            /// <summary>   Sensor height. </summary>
             public double height;
             /// <summary>   Celsius 'C' or Fahrenheit 'F'. </summary>
             public char C_or_F;
             /// <summary>   Array of type data holding time series of temperature sensor data. </summary>
             public data[] temp;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime targetDate)
+            {
+                int indMid = temp.Length / 2;
+                int dataIntMins = Convert.ToInt32(Math.Round(temp[indMid].timeStamp.Subtract(temp[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(temp[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= temp.Length)
+                    tsInd = temp.Length - 1;
+
+                DateTime thisDate = temp[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)
+                        tsInd = tsInd - stepSize;
+                    else
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= temp.Length)
+                    {
+                        tsInd = temp.Length - 1;
+                        break;
+                    }
+
+                    thisDate = temp[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }
+
+                while (temp[tsInd].timeStamp < targetDate && tsInd < temp.Length - 1)
+                    tsInd++;
+
+                while (temp[tsInd].timeStamp > targetDate && tsInd > 0)
+                    tsInd--;
+
+                if (temp[tsInd].timeStamp != targetDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }
-                
-        /// <summary> Holds anemometer height and time series of shear alpha, wind speed and wind direction data </summary>        
+
+
+        /// <summary> Holds pressure sensor time series data plus the height of the sensor and pressure units. </summary>
+        [Serializable()]
+        public struct Press_Data
+        {
+            /// <summary>   Sensor height. </summary>
+            public double height;
+            /// <summary>   Pressure units. </summary>
+            public string units;
+            /// <summary>   Array of type data holding time series of pressure sensor data. </summary>
+            public data[] pressure;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime targetDate)
+            {
+                int indMid = pressure.Length / 2;
+                int dataIntMins = Convert.ToInt32(Math.Round(pressure[indMid].timeStamp.Subtract(pressure[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(pressure[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= pressure.Length)
+                    tsInd = pressure.Length - 1;
+
+                DateTime thisDate = pressure[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)
+                        tsInd = tsInd - stepSize;
+                    else
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= pressure.Length)
+                    {
+                        tsInd = pressure.Length - 1;
+                        break;
+                    }
+
+                    thisDate = pressure[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }
+
+                while (pressure[tsInd].timeStamp < targetDate && tsInd < pressure.Length - 1)
+                    tsInd++;
+
+                while (pressure[tsInd].timeStamp > targetDate && tsInd > 0)
+                    tsInd--;
+
+                if (pressure[tsInd].timeStamp != targetDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
+        }
+
+        /// <summary> Holds anemometer height and time series of shear alpha, wind speed and wind direction data </summary>   
         [Serializable()]
         public struct Shear_Data
         {            
@@ -197,6 +489,87 @@ namespace ContinuumNS
             public double height;
             /// <summary>   Estimated wind speed and wind direction time series data. </summary>
             public Est_Data[] WS_WD_data;
+
+            public string GetName()
+            {
+                return "LT Extrap. " + height.ToString() + "m WS";
+            }
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime targetDate)
+            {
+                int indMid = WS_WD_data.Length / 2;
+                DateTime dateTime1 = WS_WD_data[indMid].timeStamp;
+                DateTime dateTime2 = WS_WD_data[indMid - 1].timeStamp;
+                double timeSpan = dateTime1.Subtract(dateTime2).TotalMinutes;
+
+                int dataIntMins = Convert.ToInt32(Math.Round(WS_WD_data[indMid].timeStamp.Subtract(WS_WD_data[indMid - 1].timeStamp).TotalMinutes, 0));
+
+                if (dataIntMins == 0)
+                    dataIntMins = dataIntMins;
+
+                if (dataIntMins == 0)
+                    return -999;
+
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(WS_WD_data[0].timeStamp).TotalMinutes / dataIntMins, 0));
+
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= WS_WD_data.Length)
+                    tsInd = WS_WD_data.Length - 1;
+
+                DateTime thisDate = WS_WD_data[tsInd].timeStamp;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)
+                        tsInd = tsInd - stepSize;
+                    else
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= WS_WD_data.Length)
+                    {
+                        tsInd = WS_WD_data.Length - 1;
+                        break;
+                    }
+
+                    thisDate = WS_WD_data[tsInd].timeStamp;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }
+
+                while (WS_WD_data[tsInd].timeStamp < targetDate && tsInd < WS_WD_data.Length - 1)
+                    tsInd++;
+
+                while (WS_WD_data[tsInd].timeStamp > targetDate && tsInd > 0)
+                    tsInd--;
+
+                if (WS_WD_data[tsInd].timeStamp != targetDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }              
                 
         /// <summary> Holds the concurrent wind speed data collected by two anemomters. </summary>        
@@ -240,6 +613,15 @@ namespace ContinuumNS
             /// <summary>   Max 3-sec gust. </summary>
             public double maxGust;
         }
+
+        /// <summary> Settings to specify how to calculate shear exponent, alpha </summary>
+        [Serializable()]
+        public struct ShearSettings
+        {
+            public ShearCalculationTypes shearCalcType;
+            public double minHeight; // If using best-fit calc
+            public double maxHeight; // If using best-fit
+        }
                 
         /// <summary> Filter_Flags Used to define the different QC filtering flags. </summary>
         
@@ -268,6 +650,17 @@ namespace ContinuumNS
             
         }   
 
+        /// <summary> Method used to estimate shear exponent, alpha </summary>
+        public enum ShearCalculationTypes
+        {
+            /// <summary> Average of all alphas calculated between each wind speed measurement height </summary>
+            avgAllPairs,
+            /// <summary> Best-fit alpha using wind speeds between specified min and max measurement heights </summary>
+            bestFit
+        }
+
+       
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         /// <summary>  Gets the number of anemometers loaded. </summary>
@@ -289,7 +682,16 @@ namespace ContinuumNS
             return temps.Length;
         }
 
-        
+        /// <summary>   Gets the number of pressure sensors. </summary>
+        public int GetNumBaros()
+        {
+            if (baros == null)
+                return 0;
+
+            return baros.Length;
+        }
+
+
         /// <summary> Gets the number of simulated (estimated) datasets. </summary>
         public int GetNumSimData()
         {
@@ -371,7 +773,9 @@ namespace ContinuumNS
 
                 int WD_Ind = GetWD_Ind(alpha[thisInd].WD, numWD);                
                 int thisHour = alpha[thisInd].timeStamp.Hour;
-                               
+
+                if (alpha[thisInd].timeStamp.Month == 3 && alpha[thisInd].timeStamp.Day == 3 && alpha[thisInd].timeStamp.Hour == 23)
+                    thisInd = thisInd;
                 
                 if (((alpha[thisInd].alpha != -999) && (WD_Ind != -999)) && (((maxHour >= minHour) && (thisHour >= minHour) && (thisHour <= maxHour)) 
                     || ((minHour > maxHour) && ((thisHour >= minHour) || (thisHour <= maxHour)))))
@@ -437,9 +841,12 @@ namespace ContinuumNS
                     (anem.windData[timeInd].filterFlag == Filter_Flags.Valid && vane.dirData[timeInd].filterFlag == Filter_Flags.Valid))
                 {
                     int WD_Ind = GetWD_Ind(vane.dirData[timeInd].avg, 72);
-                    theseWS_byWD[WD_Ind] = theseWS_byWD[WD_Ind] + anem.windData[timeInd].avg;
-                    WD_count[WD_Ind]++;
-                    
+
+                    if (WD_Ind != -999)
+                    {
+                        theseWS_byWD[WD_Ind] = theseWS_byWD[WD_Ind] + anem.windData[timeInd].avg;
+                        WD_count[WD_Ind]++;
+                    } 
                 }
 
                 timeInd++;
@@ -937,6 +1344,10 @@ namespace ContinuumNS
                         avgWS = avgWS + thisAnem.windData[thisInd].avg;
                         dataCount++;
                     }
+                    else
+                    {
+                        avgWS = avgWS;
+                    }
                 }
 
                 thisInd++;
@@ -1048,20 +1459,19 @@ namespace ContinuumNS
                 firstHour = thisVane.dirData[firstHourInd].timeStamp.Hour;
             }
 
-            int numPointsPerHour = 0;
+            int midData = Convert.ToInt32(thisVane.dirData.Length / 2);
+            int timeInt = Convert.ToInt32(thisVane.dirData[midData].timeStamp.Subtract(thisVane.dirData[midData - 1].timeStamp).TotalMinutes);
 
-            while (thisVane.dirData[firstHourInd].timeStamp.Hour == firstHour)
-            {
-                numPointsPerHour++;
-                firstHourInd++;
-            }
+            double totesDays = 0;
+
+            if (timeInt == 10)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 * 6 + 1;
+            else if (timeInt == 60)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 + 1;                  
             
-            if (thisVane.dirData.Length > 0)
-            {
-                double totesDays = endDate.Subtract(startDate).TotalDays * 24 * numPointsPerHour + 1;
+            if (totesDays > 0)  
                 dataRec = dataCount / totesDays; // data recovery over whole period (Start to End)
-            }
-
+            
             return dataRec;
         }
                 
@@ -1082,9 +1492,18 @@ namespace ContinuumNS
                 if (thisTemp.temp[thisInd].filterFlag == 0)
                     dataCount++;
                 thisInd++;
-            }                
+            }              
+            
+            int midData = Convert.ToInt32(thisTemp.temp.Length / 2);
+            int timeInt = Convert.ToInt32(thisTemp.temp[midData].timeStamp.Subtract(thisTemp.temp[midData - 1].timeStamp).TotalMinutes);
 
-            double totesDays = endDate.Subtract(startDate).TotalDays * 24 * 6 + 1;
+            double totesDays = 0;
+            
+            if (timeInt == 10)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 * 6 + 1;
+            else if (timeInt == 60)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 + 1;
+
             double dataRec = 1.0;
             
             if (totesDays > 0)
@@ -1177,12 +1596,15 @@ namespace ContinuumNS
 
             if (filterList != null)
             {
-                for (int i = 0; i < filterList.Length; i++)
-                    if (filterList[i] == thisFilter)
-                        isInList = true;
+                if (filterList.Length > 0)
+                {
+                    for (int i = 0; i < filterList.Length; i++)
+                        if (filterList[i] == thisFilter)
+                            isInList = true;
 
-                if (filterList[0] == "All")
-                    isInList = true;
+                    if (filterList[0] == "All")
+                        isInList = true;
+                }
             }
              
             return isInList;
@@ -1673,116 +2095,71 @@ namespace ContinuumNS
             alpha = new Est_Alpha[0];
             alphaByAnem = new Shear_Data[0];
             simData = new Sim_TS[0];
-
+            simDataCalcComplete = false;
             filteringDone = false;            
         }                
         
         /// <summary> Creates simulated time series of extrapolated data at specified height. </summary>
         public void ExtrapolateData(double thisHeight)
         {
+                        
+            if (GetHeightsOfAnems().Length == 0)
+                return;
+
             Array.Resize(ref simData, simData.Length + 1);
             simData[simData.Length - 1].height = thisHeight; 
                         
-            int heightInd = GetHeightClosestToHH(thisHeight); 
+            int heightInd = GetHeightClosestToHH(thisHeight);
+            int vaneInd = GetVaneClosestToHH(thisHeight);
 
             // Check to see if thisHeight is same as the closest anemometer.
             bool haveExtrapHeight = false;
 
             for (int i = 0; i < GetNumAnems(); i++)
                 if (anems[i].height == thisHeight)                
-                    haveExtrapHeight = true;                   
-                    
-            if (haveExtrapHeight == true)
-            {
-                // Count number of data points with both Valid anem and vane
-                int validCount = 0;
-                int vaneInd = GetVaneClosestToHH(thisHeight);
-                int[] anemInds = GetAnemsClosestToHH(thisHeight);
-                int numAnems = anemInds.Length;
+                    haveExtrapHeight = true;
 
-                for (int i = 0; i < anems[anemInds[0]].windData.Length; i++)
-                {
-                    bool gotOne = false;
+            if (alphaByAnem.Length == 0)
+                EstimateAlpha();
 
-                    for (int a = 0; a < numAnems; a++)
-                        if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
-                            gotOne = true;
+            if (alphaByAnem.Length == 0 && haveExtrapHeight == false)
+                return;
 
-                    if (gotOne && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
-                        validCount++;
-                }
-                    
+            //      if (alphaByAnem[heightInd].WS_WD_Alpha == null)
+            //          return;                        
 
-                Array.Resize(ref simData[simData.Length - 1].WS_WD_data, validCount);
-
-                try
-                {
-                    validCount = 0;
-                    for (int i = 0; i < anems[anemInds[0]].windData.Length; i++)
-                    {
-                        bool gotOne = false;
-
-                        for (int a = 0; a < numAnems; a++)
-                            if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
-                                gotOne = true;
-
-                        if (gotOne && vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
-                        {
-                            double avgWS = 0;
-                            double avgSD = 0;
-                            int avgWSCount = 0;
-
-                            for (int a = 0; a < numAnems; a++)
-                                if (anems[anemInds[a]].windData[i].filterFlag == Filter_Flags.Valid)
-                                {
-                                    avgWS = avgWS + anems[anemInds[a]].windData[i].avg;
-                                    avgSD = avgSD + anems[anemInds[a]].windData[i].SD;
-                                    avgWSCount++;
-                                }
-
-                            if (avgWSCount > 0)
-                            {
-                                avgWS = avgWS / avgWSCount;
-                                avgSD = avgSD / avgWSCount;
-
-                                simData[simData.Length - 1].WS_WD_data[validCount].timeStamp = anems[anemInds[0]].windData[i].timeStamp;
-                                simData[simData.Length - 1].WS_WD_data[validCount].WS = avgWS;
-                                simData[simData.Length - 1].WS_WD_data[validCount].SD = avgSD;
-                                simData[simData.Length - 1].WS_WD_data[validCount].WD = vanes[vaneInd].dirData[i].avg;
-
-                                validCount++;
-                            }
-                        }
-                    }
-                }
-                catch 
-                {
-                    MessageBox.Show("Error extrapolating data.", "Continuum 3");
-                }
-                                
-            }
-            else
-            { 
-                if (alphaByAnem.Length == 0)
-                    EstimateAlpha();
-
-                if (alphaByAnem.Length == 0)
-                    return;
-
-                if (alphaByAnem[heightInd].WS_WD_Alpha == null)
-                    return;
-
+            if (alphaByAnem.Length > 0)
                 Array.Resize(ref simData[simData.Length - 1].WS_WD_data, alphaByAnem[heightInd].WS_WD_Alpha.Length);
+            else // haveExtrapHeight
+                Array.Resize(ref simData[simData.Length - 1].WS_WD_data, anems[0].windData.Length);
 
-                for (int i = 0; i < alphaByAnem[heightInd].WS_WD_Alpha.Length; i++)
+            for (int i = 0; i < simData[simData.Length - 1].WS_WD_data.Length; i++)
+            {
+                if (alphaByAnem.Length == 0)
+                {
+                    // Met data has just one anemometer height so use closest vane and WS at modeled height
+                    simData[simData.Length - 1].WS_WD_data[i].timeStamp = anems[0].windData[i].timeStamp;
+
+                    if (vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
+                        simData[simData.Length - 1].WS_WD_data[i].WD = vanes[vaneInd].dirData[i].avg;
+                    else
+                        simData[simData.Length - 1].WS_WD_data[i].WD = -999;
+
+                    double[] avgWS = GetAvgValidByHeight(i, "Avg");
+                    simData[simData.Length - 1].WS_WD_data[i].WS = avgWS[0];
+                }
+                else
                 {
                     simData[simData.Length - 1].WS_WD_data[i].timeStamp = alphaByAnem[heightInd].WS_WD_Alpha[i].timeStamp;
                     simData[simData.Length - 1].WS_WD_data[i].WD = alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
 
                     if (alphaByAnem[heightInd].WS_WD_Alpha[i].alpha != -999 && alphaByAnem[heightInd].WS_WD_Alpha[i].WS != -999)
-                    {                        
-                        simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS *
-                            Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha);
+                    {
+                        if (haveExtrapHeight)
+                            simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS;
+                        else
+                            simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS *
+                                Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha);
 
                         // SD filter: SD must be less than WS / 3
                         if (alphaByAnem[heightInd].WS_WD_Alpha[i].SD < alphaByAnem[heightInd].WS_WD_Alpha[i].WS / 3 &&
@@ -1792,25 +2169,25 @@ namespace ContinuumNS
                             simData[simData.Length - 1].WS_WD_data[i].SD = -999;
 
                         simData[simData.Length - 1].WS_WD_data[i].alpha = alphaByAnem[heightInd].WS_WD_Alpha[i].alpha;
-
                     }
                     else
-                    { 
+                    {
                         simData[simData.Length - 1].WS_WD_data[i].WS = -999;
                         simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD; // Should this just be -999?
                         simData[simData.Length - 1].WS_WD_data[i].alpha = -999;
                     }
-
                 }
-            }
+            }            
 
             SortSimDataByH();
+            simDataCalcComplete = true;
         }
         
-        /// <summary> Estimates time series of alpha (power law shear exponent). Using average of filtered wind speeds at each height, 
-        /// calculates shear between each pair of heights and finds overall average shear exponent. </summary>
+        /// <summary> Estimates time series of alpha (power law shear exponent). Using either 1) Calc shear between each pair of heights and find overall average shear exponent 
+        /// or 2) Calc best-fit shear between specified min/max heights. </summary>
         public void EstimateAlpha()
         {
+            
             // find heights of anemometers
             double[] anemHeights = GetHeightsOfAnems();
             int numHeights = anemHeights.Length;
@@ -1825,35 +2202,46 @@ namespace ContinuumNS
             if (GetNumAnems() == 0)
                 return;
             
-            while (anems[0].windData[thisInd].timeStamp < startDate)
-                thisInd++;
+      //      while (anems[0].windData[thisInd].timeStamp < startDate) // 2/12/2024 taking out so alpha is calculated over the entire duration
+      //          thisInd++;
 
             int startInd = thisInd;
             int endInd = anems[0].windData.Length - 1;
 
-            while (anems[0].windData[endInd].timeStamp > endDate)
-                endInd--;
+       //     while (anems[0].windData[endInd].timeStamp > endDate)
+       //         endInd--;
 
             Array.Resize(ref alpha, (endInd - startInd + 1));
             Array.Resize(ref alphaByAnem, numHeights);
 
             for (int m = 0; m < numHeights; m++)
             {
-                alphaByAnem[m].WS_WD_Alpha = new Est_Data[endInd - startInd + 1];
+                alphaByAnem[m].WS_WD_Alpha = new Est_Data[anems[0].windData.Length];
                 alphaByAnem[m].anemHeight = anemHeights[m];
-            }                
+            }
 
-            while (thisInd < GetDataLength() && anems[0].windData[thisInd].timeStamp <= endDate)
+            double thisAlpha = 0;
+
+            if (shearSettings.minHeight == 0 && numHeights > 0)
+            {
+                shearSettings.minHeight = anemHeights[0];
+                shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];
+            }
+
+            while (thisInd < GetDataLength()) // && anems[0].windData[thisInd].timeStamp <= endDate)
             {
                 // get average WS by height
                 double[] avgWS_ByH = GetAvgValidByHeight(thisInd, "avg");
-                double[] avgSD_ByH = GetAvgValidByHeight(thisInd, "SD");                               
+                double[] avgSD_ByH = GetAvgValidByHeight(thisInd, "SD");
 
                 // get average alpha
-                double thisAlpha = GetAvgAlphaFromValidWS(avgWS_ByH, anemHeights);                               
+                if (shearSettings.shearCalcType == ShearCalculationTypes.avgAllPairs)
+                    thisAlpha = GetAvgAlphaFromValidWS(avgWS_ByH, anemHeights);
+                else
+                    thisAlpha = CalcBestFitAlpha(avgWS_ByH, anemHeights);
 
                 alpha[thisInd - startInd].timeStamp = anems[0].windData[thisInd].timeStamp;
-                alpha[thisInd - startInd].alpha = thisAlpha;                              
+                alpha[thisInd - startInd].alpha = thisAlpha;                                
 
                 if (vanes[vaneInd80].dirData[thisInd].filterFlag == Filter_Flags.Valid)
                     alpha[thisInd - startInd].WD = vanes[vaneInd80].dirData[thisInd].avg;
@@ -1878,7 +2266,8 @@ namespace ContinuumNS
 
                 thisInd++;
             }
-                        
+
+            
         }
         
         /// <summary> Gets average shear exponent alpha calculated between each pair of valid wind speed measurement heights. </summary>
@@ -1908,6 +2297,44 @@ namespace ContinuumNS
 
             return avgAlpha;
         }
+
+        /// <summary> Calculates and returns best-fit shear alpha measured between min/max height  </summary>
+        
+        public double CalcBestFitAlpha(double[] avgWS_ByH, double[] wsHeights)
+        {
+            double bestAlpha = 0;
+
+            // Get log of WS between specified heights
+            int numHeights = wsHeights.Length;
+            int minInd = 0;
+            int maxInd = 0;
+
+            for (int h = 0; h < numHeights; h++)
+            {
+                if (wsHeights[h] == shearSettings.minHeight)
+                    minInd = h;
+                if (wsHeights[h] == shearSettings.maxHeight)
+                    maxInd = h;
+            }
+
+            int numH_ToIncl = maxInd - minInd + 1;
+            double[] logH = new double[numH_ToIncl];
+            double[] logWS = new double[numH_ToIncl];
+
+            for (int h = minInd; h <= maxInd; h++)
+            {
+                if (avgWS_ByH[h] == 0 || avgWS_ByH[h] == -999)
+                    return -999;
+
+                logH[h - minInd] = Math.Log10(wsHeights[h]);
+                logWS[h - minInd] = Math.Log10(avgWS_ByH[h]);
+            }
+
+            Tuple<double,double> bestAlphaTuple = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(logH, logWS);
+            bestAlpha = bestAlphaTuple.Item2;
+
+            return bestAlpha;
+        }
        
         /// <summary> Calculates and returns average valid wind speed or standard deviation at each wind speed measurement height at specified time series index. </summary>       
         public double[] GetAvgValidByHeight(int dataInd, string avgOrSD)
@@ -1922,7 +2349,7 @@ namespace ContinuumNS
                 {
                     if ((Math.Abs(anemHeights[i] - thisAnem.height) <= 2) && thisAnem.windData[dataInd].filterFlag == Filter_Flags.Valid)
                     {
-                        if (avgOrSD == "avg")
+                        if (avgOrSD == "avg" || avgOrSD == "Avg" || avgOrSD == "AVG")
                             avgVal[i] = avgVal[i] + thisAnem.windData[dataInd].avg;
                         else
                             avgVal[i] = avgVal[i] + thisAnem.windData[dataInd].SD;
@@ -2012,8 +2439,21 @@ namespace ContinuumNS
 
                 thisInd++;
             }
+
+            int midData = Convert.ToInt32(thisSim.WS_WD_data.Length / 2);
+            int timeInt = Convert.ToInt32(thisSim.WS_WD_data[midData].timeStamp.Subtract(thisSim.WS_WD_data[midData - 1].timeStamp).TotalMinutes);
+
+            double totesDays = 0;
+
+            if (timeInt == 10)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 * 6 + 1;
+            else if (timeInt == 60)
+                totesDays = endDate.Subtract(startDate).TotalDays * 24 + 1;
+
+            double extrapRec = 0;
             
-            double extrapRec = numValid / (endDate.Subtract(startDate).TotalDays * 24 * 6 + 1);                       
+            if (totesDays > 0)
+                extrapRec = numValid / totesDays;                       
 
             return extrapRec;
         }
@@ -2198,28 +2638,30 @@ namespace ContinuumNS
                 using (var context = new Continuum_EDMContainer(connString))
                 {
                     var sensorData = from N in context.Anem_table where N.metName == metName && N.height == thisHeight && N.sensorChar == thisSensorChar select N;
-                    if (sensorData.Count() == 0)
+
+                    if (sensorData.Count() > 0)
+                        foreach (var anemData in sensorData)
+                            context.Anem_table.Remove(anemData);                                        
+                        
+                    Anem_table anemTable = new Anem_table();
+                    anemTable.metName = metName;
+                    anemTable.height = anems[i].height;
+                    anemTable.sensorChar = anems[i].ID.ToString();
+
+                    MemoryStream MS1 = new MemoryStream();
+                    bin.Serialize(MS1, anems[i].windData);
+                    anemTable.windData = MS1.ToArray();
+
+                    try
                     {
-                        Anem_table anemTable = new Anem_table();
-                        anemTable.metName = metName;
-                        anemTable.height = anems[i].height;
-                        anemTable.sensorChar = anems[i].ID.ToString();
-
-                        MemoryStream MS1 = new MemoryStream();
-                        bin.Serialize(MS1, anems[i].windData);
-                        anemTable.windData = MS1.ToArray();
-
-                        try
-                        {
-                            context.Anem_table.Add(anemTable);
-                            context.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.InnerException.ToString());                            
-                            return;
-                        }
+                        context.Anem_table.Add(anemTable);
+                        context.SaveChanges();
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());                            
+                        return;
+                    }                   
                     
                 }
                 // Clear anem data
@@ -2236,27 +2678,29 @@ namespace ContinuumNS
                 using (var context = new Continuum_EDMContainer(connString))
                 {
                     var sensorData = from N in context.Vane_table where N.metName == metName && N.height == thisHeight select N;
-                    if (sensorData.Count() == 0)
-                    {
-                        Vane_table vaneTable = new Vane_table();
-                        vaneTable.metName = metName;
-                        vaneTable.height = vanes[i].height;
-                        
-                        MemoryStream MS1 = new MemoryStream();
-                        bin.Serialize(MS1, vanes[i].dirData);
-                        vaneTable.dirData = MS1.ToArray();
 
-                        try
-                        {
-                            context.Vane_table.Add(vaneTable);
-                            context.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.InnerException.ToString());                            
-                            return;
-                        }
+                    if (sensorData.Count() > 0)
+                        foreach (var vaneData in sensorData)
+                            context.Vane_table.Remove(vaneData);
+
+                    Vane_table vaneTable = new Vane_table();
+                    vaneTable.metName = metName;
+                    vaneTable.height = vanes[i].height;
+                        
+                    MemoryStream MS1 = new MemoryStream();
+                    bin.Serialize(MS1, vanes[i].dirData);
+                    vaneTable.dirData = MS1.ToArray();
+
+                    try
+                    {
+                        context.Vane_table.Add(vaneTable);
+                        context.SaveChanges();
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());                            
+                        return;
+                    }                    
                     
                 }
                 // Clear vane data
@@ -2273,31 +2717,72 @@ namespace ContinuumNS
                 using (var context = new Continuum_EDMContainer(connString))
                 {
                     var sensorData = from N in context.Temp_table where N.metName == metName && N.height == thisHeight select N;
-                    if (sensorData.Count() == 0)
+
+                    if (sensorData.Count() > 0)
+                        foreach (var tempData in sensorData)
+                            context.Temp_table.Remove(tempData);
+
+                    Temp_table tempTable = new Temp_table();
+                    tempTable.metName = metName;
+                    tempTable.height = temps[i].height;
+
+                    MemoryStream MS1 = new MemoryStream();
+                    bin.Serialize(MS1, temps[i].temp);
+                    tempTable.temp = MS1.ToArray();
+
+                    try
                     {
-                        Temp_table tempTable = new Temp_table();
-                        tempTable.metName = metName;
-                        tempTable.height = temps[i].height;
-
-                        MemoryStream MS1 = new MemoryStream();
-                        bin.Serialize(MS1, temps[i].temp);
-                        tempTable.temp = MS1.ToArray();
-
-                        try
-                        {
-                            context.Temp_table.Add(tempTable);
-                            context.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.InnerException.ToString());                            
-                            return;
-                        }
+                        context.Temp_table.Add(tempTable);
+                        context.SaveChanges();
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());                            
+                        return;
+                    }                    
                     
                 }
                 // Clear temperature data
                 temps[i].temp = null;
+
+            }
+
+            // Save pressure data
+            for (int i = 0; i < GetNumBaros(); i++)
+            {
+                double thisHeight = baros[i].height;
+
+                // Check to see if it's already in database
+                using (var context = new Continuum_EDMContainer(connString))
+                {
+                    var sensorData = from N in context.Baro_table where N.metName == metName && N.height == thisHeight select N;
+
+                    if (sensorData.Count() > 0)
+                        foreach (var baroData in sensorData)
+                            context.Baro_table.Remove(baroData);
+
+                    Baro_table baroTable = new Baro_table();
+                    baroTable.metName = metName;
+                    baroTable.height = baros[i].height;
+
+                    MemoryStream MS1 = new MemoryStream();
+                    bin.Serialize(MS1, baros[i].pressure);
+                    baroTable.baro = MS1.ToArray();
+
+                    try
+                    {
+                        context.Baro_table.Add(baroTable);
+                        context.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.InnerException.ToString());
+                        return;
+                    }
+
+                }
+                // Clear pressure data
+                baros[i].pressure = null;
 
             }
 
@@ -2325,6 +2810,11 @@ namespace ContinuumNS
                         MemoryStream MS = new MemoryStream(N.windData);
                         anems[i].windData = (data[])bin.Deserialize(MS);
                         MS.Close();
+
+                        for (int a = 0; a < anems[i].windData.Length; a++)
+                            if (anems[i].windData[a].filterFlag != Filter_Flags.Valid)
+                                a = a;
+
                     }
                 }               
             }
@@ -2360,6 +2850,24 @@ namespace ContinuumNS
                     {
                         MemoryStream MS = new MemoryStream(N.temp);
                         temps[i].temp = (data[])bin.Deserialize(MS);
+                        MS.Close();
+                    }
+                }
+            }
+
+            // Get pressure data
+            for (int i = 0; i < GetNumBaros(); i++)
+            {
+                using (var context = new Continuum_EDMContainer(connString))
+                {
+                    double thisHeight = baros[i].height;
+
+                    var sensorData = from N in context.Baro_table where N.metName == metName && N.height == thisHeight select N;
+
+                    foreach (var N in sensorData)
+                    {
+                        MemoryStream MS = new MemoryStream(N.baro);
+                        baros[i].pressure = (data[])bin.Deserialize(MS);
                         MS.Close();
                     }
                 }
@@ -2402,6 +2910,125 @@ namespace ContinuumNS
 
             return fliterFlag;
         }
+
+        /// <summary> Gets name of anemometer </summary>
+        public string GetAnemName(Anem_Data thisAnem, bool inclSensType)
+        {
+            string anemName = "";
+
+            if (inclSensType)
+                anemName = "ANEM ";
+
+            anemName = anemName + thisAnem.height.ToString() + "-" + GetBoomOrientChars(thisAnem.orientation);
+
+            return anemName;
+        }
+
+        /// <summary> Gets name of wind vane </summary>
+        public string GetVaneName(Vane_Data thisVane, bool inclSensType)
+        {
+            string vaneName = "";
+
+            if (inclSensType)
+                vaneName = "VANE ";
+
+            vaneName = vaneName + thisVane.height.ToString() + "-" + GetBoomOrientChars(thisVane.orientation);
+
+            return vaneName;
+        }
+
+        /// <summary> Gets name of temperature sensor </summary>
+        public string GetTempName(Temp_Data thisTemp, bool inclSensType)
+        {
+            string tempName = "";
+
+            if (inclSensType)
+                tempName = "TEMP ";
+
+            tempName = tempName + thisTemp.height.ToString();
+
+            return tempName;
+        }
+
+        /// <summary> Gets name of pressure sensor </summary>
+        public string GetPressName(Press_Data thisVane, bool inclSensType)
+        {
+            string pressName = "";
+
+            if (inclSensType)
+                pressName = "BARO ";
+
+            pressName = pressName + thisVane.height.ToString();
+
+            return pressName;
+        }
+
+        /// <summary> Returns boom orientation in N-S </summary>
+        public string GetBoomOrientChars(double thisOrient)
+        {
+            string boomOrient = "n";
+            int wdInd = Convert.ToInt32(Math.Round(thisOrient / 22.5, 0));
+
+            if (wdInd == 1)
+                boomOrient = "nne";
+            else if (wdInd == 2)
+                boomOrient = "ne";
+            else if (wdInd == 3)
+                boomOrient = "ene";
+            else if (wdInd == 4)
+                boomOrient = "e";
+            else if (wdInd == 5)
+                boomOrient = "ese";
+            else if (wdInd == 6)
+                boomOrient = "se";
+            else if (wdInd == 7)
+                boomOrient = "sse";
+            else if (wdInd == 8)
+                boomOrient = "s";
+            else if (wdInd == 9)
+                boomOrient = "ssw";
+            else if (wdInd == 10)
+                boomOrient = "sw";
+            else if (wdInd == 11)
+                boomOrient = "wsw";
+            else if (wdInd == 12)
+                boomOrient = "w";
+            else if (wdInd == 13)
+                boomOrient = "wnw";
+            else if (wdInd == 14)
+                boomOrient = "nw";
+            else if (wdInd == 15)
+                boomOrient = "nnw";
+            
+            return boomOrient;
+        }
+
+        /// <summary> Returns string to display for specified shear calculation type </summary>        
+        public string GetShearCalcNameFromEnum(ShearCalculationTypes shearType)
+        {
+            string shearCalcName = "";
+
+            if (shearType == ShearCalculationTypes.avgAllPairs)
+                shearCalcName = "Avg Alpha over all pairs";
+            else if (shearType == ShearCalculationTypes.bestFit)
+                shearCalcName = "Best-Fit Alpha";
+
+            return shearCalcName;
+        }
+
+        public ShearCalculationTypes GetShearCalcTypeFromName(string shearCalcName)
+        {
+            ShearCalculationTypes thisShearType = new ShearCalculationTypes();
+
+            if (shearCalcName == GetShearCalcNameFromEnum(ShearCalculationTypes.avgAllPairs))
+                thisShearType = ShearCalculationTypes.avgAllPairs;
+            else if (shearCalcName == GetShearCalcNameFromEnum(ShearCalculationTypes.bestFit))
+                thisShearType = ShearCalculationTypes.bestFit;
+
+            return thisShearType;
+        }
+
+        
     }
          
 }

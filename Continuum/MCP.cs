@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog.LayoutRenderers.Wrappers;
+using System;
 using System.Windows.Forms;
 
 namespace ContinuumNS
@@ -12,10 +13,13 @@ namespace ContinuumNS
     /// </summary>
     [Serializable()]
     public partial class MCP
-    {       
-
+    {
+        /// <summary> Long-term Reference used to create the MCP estimate </summary>
+        public Reference reference;
         /// <summary> Reference site time series data. </summary>
-        public Site_data[] refData = new Site_data[0];  // Not saved with file. Regenerated as needed.        
+        public Site_data[] refData = new Site_data[0];  // Not saved with file. Regenerated as needed.
+        /// <summary> Modeled height (i.e. height of target data) </summary>
+        public double height;
         /// <summary> Target site time series data. </summary>
         public Site_data[] targetData = new Site_data[0]; // Not saved with file. Regenerated as needed.        
         /// <summary> Concurrent time series data for a specified window (i.e. not necessarily all concurrent data) </summary>
@@ -55,6 +59,8 @@ namespace ContinuumNS
         public MCP_Uncert[] uncertVarrat = new MCP_Uncert[0];
         /// <summary> Results of uncertainty analysis using Matrix-LastWS. </summary>   
         public MCP_Uncert[] uncertMatrix = new MCP_Uncert[0];
+
+        
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -608,7 +614,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Defines concDataAll array which contains all concurrent WS and WD at reference and target sites. Also creates concData (are both needed?) </summary>       
-        public void FindConcurrentData(DateTime start, DateTime end)
+        public void FindConcurrentData(DateTime start, DateTime end, bool showMsg)
         {            
             int concCount = 0;
             int refStartInd = 0;
@@ -660,7 +666,7 @@ namespace ContinuumNS
 
             concData = concDataAll;
 
-            if (concCount == 0)
+            if (concCount == 0 && showMsg)
                 MessageBox.Show("There is no concurrent data between the reference and target site for the selected start and end dates.");
                         
         }
@@ -961,20 +967,20 @@ namespace ContinuumNS
             return LT_WS_Est;
         }
 
-        /// <summary> Estimates time series at met site using MERRA2 data and selected MCP type. </summary>        
+        /// <summary> Estimates time series at met site using long-term reference data and selected MCP type. </summary>        
         /// <returns> Estimated long-term wind speed time series </returns>
         public Site_data[] GenerateLT_WS_TS(Continuum thisInst, Met thisMet, string MCP_Method)
-        {            
+        {         
+            
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-            MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-
+           
             if (HaveMCP_Estimate(MCP_Method) == false && MCP_Method != "Matrix")
-                thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method); // Reads in MERRA data and extrapolated filtered data and runs MCP using settings on form                    
+                thisInst.metList.RunMCP(ref thisMet, reference, thisInst, MCP_Method); // Reads in long-term reference data and extrapolated filtered data and runs MCP using settings on form                    
 
-            if (thisMet.mcp.refData.Length == 0)
-                thisMet.mcp.GetRefData(thisMERRA, ref thisMet, thisInst);                       
+            if (refData.Length == 0)
+                GetRefData(reference, ref thisMet, thisInst);                       
 
-            Site_data[] LT_WS_Est_TS = new Site_data[thisMet.mcp.refData.Length];
+            Site_data[] LT_WS_Est_TS = new Site_data[refData.Length];
 
             Random thisRandom = GetRandomNumber();
             double lastWS = 0;
@@ -982,24 +988,24 @@ namespace ContinuumNS
             double WS_bin = Get_WS_width_for_MCP();
             int numWS = (int)(thisInst.metList.numWS / WS_bin);
 
-            for (int i = 0; i < thisMet.mcp.refData.Length; i++)
+            for (int i = 0; i < refData.Length; i++)
             {
-                int thisWD_Ind = thisMet.mcp.Get_WD_ind(thisMet.mcp.refData[i].thisWD);
-                int WS_Ind = thisMet.mcp.Get_WS_ind(thisMet.mcp.refData[i].thisWS, WS_bin);
+                int thisWD_Ind = Get_WD_ind(refData[i].thisWD);
+                int WS_Ind = Get_WS_ind(refData[i].thisWS, WS_bin);
 
-                Met.TOD thisTOD = thisInst.metList.GetTOD(thisMet.mcp.refData[i].thisDate);
-                Met.Season thisSeason = thisInst.metList.GetSeason(thisMet.mcp.refData[i].thisDate);
+                Met.TOD thisTOD = thisInst.metList.GetTOD(refData[i].thisDate);
+                Met.Season thisSeason = thisInst.metList.GetSeason(refData[i].thisDate);
 
                 int timeInd = thisMet.GetTOD_Ind(numTODs, thisTOD); 
                 int seasonInd = thisMet.GetSeasonInd(numSeasons, thisSeason);
 
-                LT_WS_Est_TS[i].thisDate = thisMet.mcp.refData[i].thisDate;
-                LT_WS_Est_TS[i].thisWD = thisMet.mcp.refData[i].thisWD;
+                LT_WS_Est_TS[i].thisDate = refData[i].thisDate;
+                LT_WS_Est_TS[i].thisWD = refData[i].thisWD;
 
                 if (MCP_Method == "Orth. Regression")
                 {
-                    double thisWS = thisMet.mcp.refData[i].thisWS * thisMet.mcp.MCP_Ortho.slope[thisWD_Ind, timeInd, seasonInd] +
-                        thisMet.mcp.MCP_Ortho.intercept[thisWD_Ind, timeInd, seasonInd];
+                    double thisWS = refData[i].thisWS * MCP_Ortho.slope[thisWD_Ind, timeInd, seasonInd] +
+                        MCP_Ortho.intercept[thisWD_Ind, timeInd, seasonInd];
 
                     if (thisWS < 0)
                         thisWS = 0;
@@ -1007,10 +1013,9 @@ namespace ContinuumNS
                     LT_WS_Est_TS[i].thisWS = thisWS;
                 }
                 else if (MCP_Method == "Variance Ratio")
-                {                   
-
-                    double thisWS = thisMet.mcp.refData[i].thisWS * thisMet.mcp.MCP_Varrat.slope[thisWD_Ind, timeInd, seasonInd] +
-                        thisMet.mcp.MCP_Varrat.intercept[thisWD_Ind, timeInd, seasonInd];
+                {
+                    double thisWS = refData[i].thisWS * MCP_Varrat.slope[thisWD_Ind, timeInd, seasonInd] +
+                        MCP_Varrat.intercept[thisWD_Ind, timeInd, seasonInd];
 
                     if (thisWS < 0)
                         thisWS = 0;
@@ -1020,8 +1025,8 @@ namespace ContinuumNS
                 }
                 else if (MCP_Method == "Method of Bins")
                 {                    
-                    if (thisMet.mcp.MCP_Bins.binAvgSD_Cnt[WS_Ind, thisWD_Ind].avgWS_Ratio > 0)
-                        LT_WS_Est_TS[i].thisWS = thisMet.mcp.refData[i].thisWS * thisMet.mcp.MCP_Bins.binAvgSD_Cnt[WS_Ind, thisWD_Ind].avgWS_Ratio;
+                    if (MCP_Bins.binAvgSD_Cnt[WS_Ind, thisWD_Ind].avgWS_Ratio > 0)
+                        LT_WS_Est_TS[i].thisWS = refData[i].thisWS * MCP_Bins.binAvgSD_Cnt[WS_Ind, thisWD_Ind].avgWS_Ratio;
                     else
                     {
                         // there was no data for this bin so find the two closest ratios and use average of two
@@ -1036,15 +1041,15 @@ namespace ContinuumNS
                             if (minusInd > 0) minusInd--;
                             if (plusInd < (numWS - 1)) plusInd++;
 
-                            if (thisMet.mcp.MCP_Bins.binAvgSD_Cnt[minusInd, thisWD_Ind].avgWS_Ratio > 0)
+                            if (MCP_Bins.binAvgSD_Cnt[minusInd, thisWD_Ind].avgWS_Ratio > 0)
                             {
-                                avgRatio = avgRatio + thisMet.mcp.MCP_Bins.binAvgSD_Cnt[minusInd, thisWD_Ind].avgWS_Ratio;
+                                avgRatio = avgRatio + MCP_Bins.binAvgSD_Cnt[minusInd, thisWD_Ind].avgWS_Ratio;
                                 avgRatioCount++;
                             }
 
-                            if (thisMet.mcp.MCP_Bins.binAvgSD_Cnt[plusInd, thisWD_Ind].avgWS_Ratio > 0)
+                            if (MCP_Bins.binAvgSD_Cnt[plusInd, thisWD_Ind].avgWS_Ratio > 0)
                             {
-                                avgRatio = avgRatio + thisMet.mcp.MCP_Bins.binAvgSD_Cnt[plusInd, thisWD_Ind].avgWS_Ratio;
+                                avgRatio = avgRatio + MCP_Bins.binAvgSD_Cnt[plusInd, thisWD_Ind].avgWS_Ratio;
                                 avgRatioCount++;
                             }
                             countWhile++;
@@ -1055,9 +1060,9 @@ namespace ContinuumNS
                         }
 
                         if (avgRatioCount > 0) avgRatio = avgRatio / avgRatioCount;
-                        LT_WS_Est_TS[i].thisWS = thisMet.mcp.refData[i].thisWS * avgRatio;
+                        LT_WS_Est_TS[i].thisWS = refData[i].thisWS * avgRatio;
                     }
-                    LT_WS_Est_TS[i].thisWD = thisMet.mcp.refData[i].thisWD;
+                    LT_WS_Est_TS[i].thisWD = refData[i].thisWD;
 
                 }
                 else if (MCP_Method == "Matrix" && MCP_Matrix.WS_CDFs != null)
@@ -1109,10 +1114,9 @@ namespace ContinuumNS
                         
                     }
 
-                    LT_WS_Est_TS[i].thisWD = thisMet.mcp.refData[i].thisWD;                                    
+                    LT_WS_Est_TS[i].thisWD = refData[i].thisWD;                                    
                     lastWS = LT_WS_Est_TS[i].thisWS;                                        
-                }
-                
+                }                
             }
             
             return LT_WS_Est_TS;
@@ -1545,7 +1549,7 @@ namespace ContinuumNS
        
        
         /// <summary>   Runs the MCP uncertainty analysis. </summary>        
-        public void Do_MCP_Uncertainty(Continuum thisInst, MERRA thisMERRA, Met thisMet)
+        public void Do_MCP_Uncertainty(Continuum thisInst, Reference thisRef, Met thisMet)
         {
             int uncertStepSize = Get_Uncert_Step_Size(); // Step size (in months) that defines the next start date. 
                                                          // Default is 1 month but for large datasets, increasing this 
@@ -1561,10 +1565,9 @@ namespace ContinuumNS
             DateTime testStart = concStart;            
             DateTime testEnd = concEnd;
             DateTime origStart = concStart;
-
-            // Copy MERRA data as the reference data
+                        
             if (refData == null)
-                refData = GetRefData(thisMERRA, ref thisMet, thisInst);
+                refData = GetRefData(thisRef, ref thisMet, thisInst);
 
             // Get sector count to be used within loops
             Find_Sector_Counts(thisInst.metList);
@@ -1573,7 +1576,7 @@ namespace ContinuumNS
             if (targetData == null)
                 targetData = GetTargetData(thisInst.modeledHeight, thisMet); 
                       
-            thisMet.mcp.FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate);
+            FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate, false);
             // Find concurrent data to be referenced in DoMCP function            
             
             // For every MCP_Uncert, for every possible conc window, construct Uncert structures
@@ -1810,52 +1813,178 @@ namespace ContinuumNS
         /// <summary> Extracts 10-minute data from specified met site at specified height and defines hourly data </summary>        
         /// <returns> Hourly time series data </returns>
         public Site_data[] GetTargetData(double height, Met thisMet)
-        {          
-            Met_Data_Filter.Sim_TS targetDataTenMin = thisMet.metData.GetSimulatedTimeSeries(height);
-            int tenMinCount = targetDataTenMin.WS_WD_data.Length;            
-            Site_data[] tenMinData = new MCP.Site_data[tenMinCount];
+        {
+            Site_data[] tenMinData = new Site_data[0];
 
-            for (int i = 0; i < tenMinCount; i++)
+            // See if this is a measured height
+            double[] anemHeights = thisMet.metData.GetHeightsOfAnems();
+            int closestAnemInd = thisMet.metData.GetHeightClosestToHH(height);
+
+            if (anemHeights[closestAnemInd] == height)
             {
-                tenMinData[i].thisDate = targetDataTenMin.WS_WD_data[i].timeStamp;
-                tenMinData[i].thisWS = targetDataTenMin.WS_WD_data[i].WS;
-                tenMinData[i].thisWD = targetDataTenMin.WS_WD_data[i].WD;
-            }
+                if (thisMet.metData.alphaByAnem.Length > 0)
+                {
+                    int heightInd = thisMet.metData.GetHeightClosestToHH(height);
+                    int tenMinCount = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha.Length;
+                    tenMinData = new MCP.Site_data[tenMinCount];
 
-            Site_data[] targetData = thisMet.mcp.ConvertToHourly(tenMinData);                       
+                    for (int i = 0; i < tenMinCount; i++)
+                    {
+                        tenMinData[i].thisDate = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[i].timeStamp;
+                        tenMinData[i].thisWS = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[i].WS;
+                        tenMinData[i].thisWD = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
+                    }
+                }
+                else
+                {
+                    int[] anemInds = thisMet.metData.GetAnemsClosestToHH(height);
+                    int vaneInd = thisMet.metData.GetVaneClosestToHH(height);
+                    int tenMinCount = thisMet.metData.anems[anemInds[0]].windData.Length;
+                    tenMinData = new MCP.Site_data[tenMinCount];
+
+                    for (int i = 0; i < tenMinCount; i++)
+                    {
+                        tenMinData[i].thisDate = thisMet.metData.anems[anemInds[0]].windData[i].timeStamp;
+
+                        int numValidWS = 0;
+                        double avgWS = 0;
+
+                        for (int a = 0; a < anemInds.Length; a++)                        
+                            if (thisMet.metData.anems[a].windData[i].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                            {
+                                avgWS = avgWS + thisMet.metData.anems[a].windData[i].avg;
+                                numValidWS++;
+                            }
+
+                        if (numValidWS > 0)
+                            tenMinData[i].thisWS = avgWS / numValidWS;
+                        else
+                            tenMinData[i].thisWS = -999;
+
+                        if (thisMet.metData.vanes[vaneInd].dirData[i].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                            tenMinData[i].thisWD = thisMet.metData.vanes[vaneInd].dirData[i].avg;
+                        else
+                            tenMinData[i].thisWD = -999;
+                    }
+                }
+            }
+            else
+            { // Get Extrapolated data
+                Met_Data_Filter.Sim_TS targetDataTenMin = thisMet.metData.GetSimulatedTimeSeries(height);
+                int tenMinCount = targetDataTenMin.WS_WD_data.Length;
+                tenMinData = new MCP.Site_data[tenMinCount];
+
+                for (int i = 0; i < tenMinCount; i++)
+                {
+                    tenMinData[i].thisDate = targetDataTenMin.WS_WD_data[i].timeStamp;
+                    tenMinData[i].thisWS = targetDataTenMin.WS_WD_data[i].WS;
+                    tenMinData[i].thisWD = targetDataTenMin.WS_WD_data[i].WD;
+                }
+            }            
+
+            Site_data[] targetData = ConvertToHourly(tenMinData);                       
 
             return targetData;
         }      
               
         /// <summary> Extracts reference data for specified met site. </summary>        
-        /// <returns> MERRA2 reference time series data </returns>
-        public Site_data[] GetRefData(MERRA thisMERRA, ref Met thisMet, Continuum thisInst)
+        /// <returns> Long-term reference time series data </returns>
+        public Site_data[] GetRefData(Reference thisRef, ref Met thisMet, Continuum thisInst)
         {
-            if (thisMERRA.interpData.TS_Data == null)
+            if (thisRef.interpData.TS_Data == null)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            if (thisMERRA.interpData.TS_Data.Length == 0)
+            if (thisRef.interpData.TS_Data.Length == 0)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            int refDataLen = thisMERRA.interpData.TS_Data.Length;
+            int refDataLen = thisRef.interpData.TS_Data.Length;
             refData = new Site_data[refDataLen];            
            
             for (int i = 0; i < refDataLen; i++)
             {
-                refData[i].thisDate = thisMERRA.interpData.TS_Data[i].ThisDate;
-                refData[i].thisWS = thisMERRA.interpData.TS_Data[i].WS50m;
-                refData[i].thisWD = thisMERRA.interpData.TS_Data[i].WD50m;
+                refData[i].thisDate = thisRef.interpData.TS_Data[i].thisDate;
+                refData[i].thisWS = thisRef.interpData.TS_Data[i].WS;
+                refData[i].thisWD = thisRef.interpData.TS_Data[i].WD;
             }
 
             return refData;
-        }     
-                
+        }
+
+        /// <summary> Finds and returns maximum hourly wind speed for each year of simulated long-term data (used in extreme WS calcs). </summary>        
+        public Met.MaxYearlyWind[] GetMaxHourlyWindSpeeds()
+        {
+            int startInd = 0;
+            int endInd = LT_WS_Ests.Length - 1;          
+                        
+            int firstYear = LT_WS_Ests[startInd].thisDate.Year;
+            int lastYear = LT_WS_Ests[endInd].thisDate.Year;
+            int numYears = lastYear - firstYear + 1;
+            Met.MaxYearlyWind[] maxHourlyRef = new Met.MaxYearlyWind[numYears];
+
+            double thisMax = 0;
+            lastYear = firstYear;
+            int yearInd = 0;                      
+
+            for (int i = startInd; i <= endInd; i++)
+            {
+                int thisYear = LT_WS_Ests[i].thisDate.Year;
+                if (thisYear == lastYear)
+                {
+                    if (LT_WS_Ests[i].thisWS > thisMax)
+                        thisMax = LT_WS_Ests[i].thisWS;
+                }
+                else
+                {
+                    maxHourlyRef[yearInd].maxWS = thisMax;
+                    maxHourlyRef[yearInd].thisYear = lastYear;
+                    thisMax = LT_WS_Ests[i].thisWS;
+                    yearInd++;
+                    lastYear = thisYear;
+                }
+            }
+
+            if (yearInd < numYears)
+            {
+                maxHourlyRef[yearInd].maxWS = thisMax;
+                maxHourlyRef[yearInd].thisYear = lastYear;
+            }
+
+
+            return maxHourlyRef;
+        }
+
+        /// <summary> Finds and returns maximum wind speed between specified start and end timestamps </summary>        
+        public Met.MaxYearlyWind GetMaxHourlyWSBetweenStartAndEnd(DateTime startTime, DateTime endTime)
+        {
+            Met.MaxYearlyWind maxHourlyRef = new Met.MaxYearlyWind();
+            maxHourlyRef.thisYear = startTime.Year;
+            maxHourlyRef.startTime = startTime;
+            maxHourlyRef.endTime = endTime;
+
+            double maxHourlyWS = 0;
+
+            int startInd = 0;
+            while (LT_WS_Ests[startInd].thisDate < startTime && startInd < LT_WS_Ests.Length - 1)
+                startInd++;
+
+            int endInd = LT_WS_Ests.Length - 1;
+            while (LT_WS_Ests[endInd].thisDate > endTime && endInd > 0)
+                endInd--;
+
+            for (int t = startInd; t <= endInd; t++)
+                if (LT_WS_Ests[t].thisWS > maxHourlyWS)
+                    maxHourlyWS = LT_WS_Ests[t].thisWS;
+
+            maxHourlyRef.maxWS = maxHourlyWS;
+
+            return maxHourlyRef;
+        }
     }
 }
 

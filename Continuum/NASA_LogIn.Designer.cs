@@ -66,7 +66,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(479, 18);
             this.label1.TabIndex = 115;
-            this.label1.Text = "If you don\'t have one, go to https://urs.earthdata.nasa.gov/ to create an account" +
+            this.label1.Text = "If you don\'t have an account, go to https://urs.earthdata.nasa.gov/ to create one" +
     ".";
             // 
             // label2

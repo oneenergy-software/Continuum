@@ -10,20 +10,29 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class WakeModel_Tests
     {
-        string testingFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
+        string testFolder;
+        string saveFolder;
+
+        Globals globals = new Globals();
+        
+        public WakeModel_Tests()
+        {
+            testFolder = globals.testFolder;
+            saveFolder = globals.saveFolder;
+        }
 
         [TestMethod]
         public void WakeModelTypeAndSettings_Test()
         {
             Continuum thisInst = new Continuum("");
-            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
+            string fileName = saveFolder + "OneMetTABAndGrossNet_217";
             thisInst.Open(fileName + ".cfm");
             thisInst.isTest = true;
             Wake_Model wakeModel = thisInst.wakeModelList.wakeModels[0];
             thisInst.wakeModelList.RemoveWakeModel(thisInst.turbineList, thisInst.mapList, wakeModel);
             thisInst.turbineList.ClearAllTurbines();
 
-            string turbineFile = testingFolder + "\\Turbine sites\\Findlay\\Three rows.csv"; // 12 turbine sites, 3 rows
+            string turbineFile = testFolder + "\\Turbine sites\\Findlay\\Three rows.csv"; // 12 turbine sites, 3 rows
             thisInst.LoadTurbines(turbineFile);
 
             // Test wake model type and settings
@@ -40,7 +49,7 @@ namespace Continuum_Tests.GUI_Tests
 
             Turbine.Avg_Est thisEst = new Turbine.Avg_Est();
 
-            string outputFile = testingFolder + "\\Calc WS.csv";
+            string outputFile = testFolder + "\\Calc WS.csv";
                         
             double[] wakedEsts = new double[0];
             int wakeModelInd = 0;
@@ -92,7 +101,7 @@ namespace Continuum_Tests.GUI_Tests
                         Array.Resize(ref wakedEsts, wakeModelInd);
                         wakedEsts[wakeModelInd - 1] = thisEst.waked.WS;
 
-                        thisInst.updateThe.AllTABs(thisInst);
+                        thisInst.updateThe.AllTABs();
                         thisInst.BW_worker.Close();
                         
                     }

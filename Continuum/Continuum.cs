@@ -8,6 +8,8 @@ using Microsoft.VisualBasic;
 using System.Threading;
 using System.Net;
 using System.Text;
+using static ContinuumNS.TurbineCollection;
+
 
 namespace ContinuumNS
 {
@@ -39,11 +41,11 @@ namespace ContinuumNS
         /// <summary> Background worker where longer calculations are run on a separate thread </summary>
         public BackgroundWork BW_worker = new BackgroundWork();
         /// <summary> Functions to update the GUI plots and tables </summary>
-        public Update updateThe = new Update();
+        public Update updateThe;
         /// <summary> Extrapolation height and modeled height. Default 80 m </summary>
-        public double modeledHeight = 80;
-        /// <summary> List of MERRA data for long-term reference calcs </summary>
-        public MERRACollection merraList = new MERRACollection();
+        public double modeledHeight = 80;                
+        /// <summary> List of Long-term Reference data for long-term reference calcs </summary>
+        public ReferenceCollection refList = new ReferenceCollection();
         /// <summary> Site suitability models (ice throw, shadow flicker, and sound models) </summary>
         public SiteSuitability siteSuitability = new SiteSuitability(); // Results of site suitability models (ice throw, shadow flicker, and sound models)
         /// <summary> Functions to export results to CSV files </summary>
@@ -62,14 +64,42 @@ namespace ContinuumNS
         public Continuum(string fileName)
         {
             SplashScreen Splash = new SplashScreen();
-            Splash.ShowDialog();                        
+            Splash.ShowDialog();
 
-            InitializeComponent();            
+            // Get display settings
+            //      System.Drawing.Rectangle workingWidth = Screen.GetWorkingArea(this);
+            //      System.Drawing.Rectangle workingScreen = Screen.PrimaryScreen.WorkingArea; 
+                      
+                 
+            
+            InitializeComponent();
+            
 
+    //        MessageBox.Show("" workingWidth.Width.ToString() + " x " + workingWidth.Height.ToString());
+     //       MessageBox.Show(workingScreen.Width.ToString() + " x " + workingScreen.Height.ToString());
+     //       MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
+
+     //       if (workingScreen.Width < Size.Width || workingScreen.Height < Size.Height)
+     //       {
+     //           double widthScaling = workingScreen.Width / Size.Width;
+      //          double heightScaling = workingScreen.Height / Size.Height;
+      //          Size = new System.Drawing.Size(workingScreen.Width, workingScreen.Height);
+      //          tabContinuum.Width = Convert.ToInt16(tabContinuum.Width * widthScaling);
+      //          tabContinuum.Height = Convert.ToInt16(tabContinuum.Height * heightScaling);
+      //      }
+
+      //      MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
+      //      MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
+
+            updateThe = new Update(this);
             radiiList.New(); // populates with R = 4000, 6000, 8000, 10000 and invserse distance exponent = 1
             metList.NewList(); // sets MCP settings and day/night hours
             turbineList.SetExceedCurves(); // initializes Exceedance curves
-            updateThe.Exceedance_TAB(this);
+            updateThe.Exceedance_TAB();
+
+            cboNumPlots.SelectedIndex = 0; // default show one plot on met data TS tab
+
+            updateThe.WMO_GustFactors(); // Populates WMO gust factor dropdown on Site Conditions - Extreme WS tab
 
             chkSelectedTurbineParam.Items.Add("Avg WS", true);
             chkSelectedTurbineParam.Items.Add("Gross AEP", false);
@@ -82,9 +112,9 @@ namespace ContinuumNS
 
             cboTI_Type.SelectedIndex = 0;
             cboEffectiveTI_m.SelectedIndex = 0;
-            cboMERRASelectedMet.SelectedIndex = 0;
+            
             cboMCP_Type.SelectedIndex = 0;
-            updateThe.MCP_Settings(this);
+            updateThe.MCP_Settings();
 
             if (fileName != "")
                 Open(fileName);
@@ -107,8 +137,10 @@ namespace ContinuumNS
             if (savedParams.savedFileName == null)
             {
                 MessageBox.Show("Please specify the file location.", "Continuum 3");
-                bool wasSaved = SaveAs();
-                if (wasSaved == false)
+
+                if (sfdCFMfile.ShowDialog() == DialogResult.OK)                
+                    SaveFile(sfdCFMfile.FileName);  
+                else
                 {
                     MessageBox.Show("A file location is needed in order to create local database. Cancelling topography import.", "Continuum 3");
                     return;
@@ -117,7 +149,7 @@ namespace ContinuumNS
 
             int goodToGo = topo.OkToReload();
             if (goodToGo == 6) {                
-                updateThe.NewModel(this);
+                updateThe.NewModel();
                 LoadTopo();
             }
             else if (goodToGo == 1) 
@@ -225,10 +257,12 @@ namespace ContinuumNS
                 saveChanges = MessageBox.Show("Do you want to save changes?", "Closing Continuum", MessageBoxButtons.YesNo);
                 if (saveChanges == DialogResult.Yes) {
                     if (savedParams.savedFileName != "")
-                        SaveFile(false);
+                        SaveFile();
                     else
-                        SaveAs();
-
+                    {
+                        if (sfdCFMfile.ShowDialog() == DialogResult.OK)
+                            SaveFile(sfdCFMfile.FileName);
+                    }      
                 }
             }
             else
@@ -267,14 +301,8 @@ namespace ContinuumNS
                 confirm = MessageBox.Show("Are you sure that you want to delete these " + numToDelete + " met towers?", "Continuum 3", MessageBoxButtons.YesNo);
             
             if (confirm == DialogResult.Yes)
-            {
-                // check if models and turbine parameters have already been calculated
-                
-                DeleteMet(false);
-
-                SaveFile(false);                
-                updateThe.AllTABs(this);
-            }
+                DeleteMet(false);               
+            
         }
 
         /// <summary> Deletes all selected mets, clears all calculations that used mets, calls background worker to update site-calibrated model. </summary>        
@@ -297,8 +325,10 @@ namespace ContinuumNS
                         break;
                     }
                 }
-            }                       
-                        
+            }
+
+            dataMetTS.Columns.Clear();
+            updateThe.MetTS_CheckList();
             modelList.ClearAllExceptImported();            
             mapList.DeleteMapsUsingDeletedMets(metNames);                      
 
@@ -314,9 +344,9 @@ namespace ContinuumNS
             if (metList.isTimeSeries == false)
                 ChangesMade();
             else
-                SaveFile(isTest);
+                SaveFile();
 
-            updateThe.AllTABs(this);
+            updateThe.AllTABs();
 
         }
 
@@ -331,9 +361,9 @@ namespace ContinuumNS
             turbineList.ClearAllGrossEsts();
             turbineList.ClearAllNetEsts();                
             mapList.ClearAllWakedMaps();                                            
-            updateThe.ClearStats(this);
+            updateThe.ClearStats();
             metList.isTimeSeries = false;
-            metList.isMCPd = false;
+            metList.allMCPd = false;
             metList.numSeason = 1;
             metList.numTOD = 1;
 
@@ -737,7 +767,7 @@ namespace ContinuumNS
                 turbineList.exceed.CreateDefaultCurve();
             }       
              
-            updateThe.AllTABs(this);
+            updateThe.AllTABs();
                                         
         }
 
@@ -863,8 +893,8 @@ namespace ContinuumNS
                         inputTurbine = check.CheckTurbName(turbineName, metList);
                     else
                     {
-                        if (showMsg == true)
-                            MessageBox.Show("Turbine CSV file not read successfully. CSV required format: Name, Latitude, Longitude");
+                 //       if (showMsg == true) // Message appears in check.NewTurbOrMet if it returns a false
+                 //           MessageBox.Show("Turbine CSV file not read successfully. CSV required format: Name, Latitude, Longitude");
                         showMsg = false;
                     }
                         
@@ -884,7 +914,7 @@ namespace ContinuumNS
             }
             sr.Close();
                                     
-        updateThe.ColoredButtons(this);
+        updateThe.ColoredButtons();
         }
 
         private void btnAddTurb_Click(object sender, EventArgs e)
@@ -980,6 +1010,8 @@ namespace ContinuumNS
             thisEdit.txtUTMY.Text = turbineList.turbineEsts[turbInd].UTMY.ToString();
 
             thisEdit.ShowDialog();
+
+            updateThe.AllTABs();
         }
 
         private void btnDelTurb_Click(object sender, EventArgs e)
@@ -1041,17 +1073,18 @@ namespace ContinuumNS
             }
 
             siteSuitability.ClearAll();
-            updateThe.AllTABs(this);
+            updateThe.AllTABs();
         }
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Calls SaveAs()
-            SaveAs();
+            if (sfdCFMfile.ShowDialog() == DialogResult.OK)            
+                SaveFile(sfdCFMfile.FileName);            
         }
 
         /// <summary> Prompts user for file location and saves .CFM file and local SQL database. Returns true if saved successfully. </summary>        
-        public bool SaveAs()
+ /*       public bool SaveAs()
         {
             DialogResult goodToGo = DialogResult.Yes;
             if (metList.isTimeSeries && turbineList.TurbineCount > 0)
@@ -1096,8 +1129,8 @@ namespace ContinuumNS
                 // Clear all MCP reference, target, and concurrent data
                 metList.ClearMCPRefTargetConcLTEstData();
 
-                // Clear all MERRA interp data and node data
-                merraList.ClearMERRA_Data();
+                // Clear all reference interp data and node data
+                refList.ClearReferenceData();
 
                 // Clear turbine time series data
                 turbineList.ClearTimeSeries();
@@ -1113,7 +1146,7 @@ namespace ContinuumNS
                 bin.Serialize(fStream, UTM_conversions);
                 bin.Serialize(fStream, wakeModelList);                
                 bin.Serialize(fStream, modeledHeight);
-                bin.Serialize(fStream, merraList);
+                bin.Serialize(fStream, refList);
                 bin.Serialize(fStream, siteSuitability);
 
                 fStream.Close();
@@ -1135,43 +1168,69 @@ namespace ContinuumNS
 
             return wasSaved;
         }
+ */
 
-        /// <summary> Saves file using stored filename and path </summary>        
-        public void SaveFile(bool isTest)
-        {                     
+        /// <summary> Saves file using stored filename and path. Several parameters are cleared prior to saving the .cfm file in order to minimize the 
+        /// saved file size.  The parameters cleared prior to the save are either stored in dummy variables and are repopulated or they are retrieved 
+        /// from the database. </summary>        
+        public void SaveFile(string fileName = "")
+        {
+            if (fileName == "")
+                fileName = savedParams.savedFileName;
             
-            if (savedParams.savedFileName == "" || savedParams.savedFileName == null) 
-                return;
+            if (fileName == "")
+                return;     
 
-            DialogResult goodToGo = DialogResult.Yes; 
-            if (metList.isTimeSeries && turbineList.TurbineCount > 0 && isTest == false)
-            {
-                if (turbineList.turbineEsts[0].AvgWSEst_Count > 0)
-                {
-                    if (turbineList.turbineEsts[0].avgWS_Est[0].timeSeries != null)
-                        if (turbineList.turbineEsts[0].avgWS_Est[0].timeSeries.Length != 0)
-                            goodToGo = MessageBox.Show("Hourly turbine estimates will be cleared when saving the CFM file. Do you want to continue with save?", "Continuum 3", MessageBoxButtons.YesNo);
-                }
-            }
-
-            if (goodToGo == DialogResult.No)
-                return;
-
-            FileStream fStream = new FileStream(savedParams.savedFileName, FileMode.Create, FileAccess.Write);
+            FileStream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             BinaryFormatter bin = new BinaryFormatter();
 
+            // Clears array of elevation, surface roughness, and displacement height data  
             topo.elevsForCalcs = null;
             topo.DH_ForCalcs = null;
             topo.SR_ForCalcs = null;
 
-            // Save all anem, vane, and temperature data to database and clear from metItem            
+            // Save all anem, vane, and temperature data to database and clears sensor data, extrapolated data and alpha from metItem            
             metList.AddAllMetDataToDBAndClear(this);
+
+            // Copy all MCP estimated data to dummy metList
+            MetCollection dummyMetList = new MetCollection();
+            dummyMetList.metItem = new Met[metList.ThisCount];
+            for (int m = 0; m < metList.ThisCount; m++)
+            {
+                dummyMetList.metItem[m] = new Met();
+                dummyMetList.metItem[m].mcpList = new MCP[metList.metItem[m].GetNumMCP()];
+
+                for (int n = 0; n < metList.metItem[m].GetNumMCP(); n++)
+                {
+                    dummyMetList.metItem[m].mcpList[n] = new MCP();
+                    dummyMetList.metItem[m].mcpList[n].refData = metList.metItem[m].mcpList[n].refData;
+                    dummyMetList.metItem[m].mcpList[n].targetData = metList.metItem[m].mcpList[n].targetData;
+                    dummyMetList.metItem[m].mcpList[n].concData = metList.metItem[m].mcpList[n].concData;
+                    dummyMetList.metItem[m].mcpList[n].LT_WS_Ests = metList.metItem[m].mcpList[n].LT_WS_Ests;
+                }
+            }
 
             // Clear all MCP reference, target, concurrent, and LT estimate data
             metList.ClearMCPRefTargetConcLTEstData();
-            
-            // Clear all MERRA interp data and MERRA node data
-            merraList.ClearMERRA_Data();
+
+            // Clear all reference interp data and node data
+            refList.ClearReferenceData();
+
+            // Copy all turbine time series data into dummy holder
+            Turbine[] dummyTurbs = new Turbine[turbineList.TurbineCount];
+            for (int t = 0; t < turbineList.TurbineCount; t++)
+            {
+                Turbine thisTurb = turbineList.turbineEsts[t];
+                dummyTurbs[t] = new Turbine();
+
+                if (thisTurb.AvgWSEst_Count > 0)
+                {
+                    dummyTurbs[t].avgWS_Est = new Turbine.Avg_Est[thisTurb.AvgWSEst_Count];
+
+                    for (int a = 0; a < thisTurb.AvgWSEst_Count; a++)
+                        dummyTurbs[t].avgWS_Est[a] = thisTurb.avgWS_Est[a];
+                }
+            }
 
             // Clear turbine time series data
             turbineList.ClearTimeSeries();
@@ -1187,17 +1246,51 @@ namespace ContinuumNS
             bin.Serialize(fStream, UTM_conversions);
             bin.Serialize(fStream, wakeModelList);           
             bin.Serialize(fStream, modeledHeight);
-            bin.Serialize(fStream, merraList);
+            bin.Serialize(fStream, refList);
             bin.Serialize(fStream, siteSuitability);
 
             fStream.Close();
             fileChanged = false;
             Text = savedParams.savedFileName;
 
-            // Get met sensor data from DB
+            // Now repopoulate the parameters that were cleared (except topo data, that is retrieved the next time that it is needed for any calc)                                
+
+            // Get met sensor data from DB and generated shear and extrapolated data
             if (metList.isTimeSeries)
                 for (int i = 0; i < metList.ThisCount; i++)
+                {
                     metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
+                    metList.metItem[i].metData.EstimateAlpha();
+                    metList.metItem[i].metData.ExtrapolateData(modeledHeight);
+                }
+
+
+            // Populate MCP estimates with LT estimates 
+            for (int m = 0; m < metList.ThisCount; m++)
+            {
+                for (int n = 0; n < metList.metItem[m].GetNumMCP(); n++)
+                {
+                    metList.metItem[m].mcpList[n].refData = dummyMetList.metItem[m].mcpList[n].refData;
+                    metList.metItem[m].mcpList[n].targetData = dummyMetList.metItem[m].mcpList[n].targetData;
+                    metList.metItem[m].mcpList[n].concData = dummyMetList.metItem[m].mcpList[n].concData;
+                    metList.metItem[m].mcpList[n].LT_WS_Ests = dummyMetList.metItem[m].mcpList[n].LT_WS_Ests;
+                }
+            }
+
+            // Get reference data at nodes from DB and calculated interpolated data
+            for (int r = 0; r < refList.numReferences; r++)
+            {
+                Reference thisRef = refList.reference[r];                
+                thisRef.GetReferenceDataFromDB(this);
+                thisRef.GetInterpData(UTM_conversions);                
+            }                       
+
+            // Populate turbine time series estimates 
+            for (int t = 0; t < turbineList.TurbineCount; t++)
+            {
+                for (int a = 0; a < turbineList.turbineEsts[t].AvgWSEst_Count; a++)
+                    turbineList.turbineEsts[t].avgWS_Est[a].timeSeries = dummyTurbs[t].avgWS_Est[a].timeSeries;
+            }
 
         }
 
@@ -1208,17 +1301,31 @@ namespace ContinuumNS
 
                 DialogResult Save_file_int = MessageBox.Show("Do you want to save changes?", "", MessageBoxButtons.YesNo);
 
-                if (Save_file_int == DialogResult.Yes) {
+                if (Save_file_int == DialogResult.Yes)
+                {
                     if (savedParams.savedFileName == "")
-                        SaveAs();
-                    else
-                        SaveFile(false);                    
+                    {
+                        if (sfdCFMfile.ShowDialog() == DialogResult.OK)
+                            SaveFile(sfdCFMfile.FileName);
+                    }                    
                 }
+                else
+                    SaveFile();                    
+                
             }
 
             // Prompt user to find cfm file
+            if (savedParams.savedFileName != null)
+            {     
+                string thisDir = Directory.GetParent(savedParams.savedFileName).FullName;
+                ofdCFMfile.InitialDirectory = thisDir;
+            }
+
             if (ofdCFMfile.ShowDialog() == DialogResult.OK)
-                Open(ofdCFMfile.FileName);           
+            {
+                updateThe.NewProject();
+                Open(ofdCFMfile.FileName);
+            }
 
         }
 
@@ -1233,6 +1340,10 @@ namespace ContinuumNS
             }                                 
             
             savedParams.savedFileName = Filename;
+
+            // Clear met data TS table
+            dataMetTS.Rows.Clear();
+            dataMetTS.Columns.Clear();
 
             FileStream fstream = new FileStream(Filename, FileMode.Open, FileAccess.Read);
             BinaryFormatter bin = new BinaryFormatter();
@@ -1250,11 +1361,11 @@ namespace ContinuumNS
                 {
                     MessageBox.Show("Error loading. Files created in previous versions of Continuum (prior to v2.2) cannot be opened and will need to be recreated.", "Continuum 3");
                     fstream.Close();
-                    updateThe.NewProject(this);
+                    updateThe.NewProject();
                     return;
                 }
-            }            
-
+            }
+            
             try {
                 radiiList = (InvestCollection)bin.Deserialize(fstream);
             }
@@ -1271,19 +1382,37 @@ namespace ContinuumNS
             catch (Exception ex)  {
                 MessageBox.Show(ex.InnerException.ToString() + "Error reading the list of met sites.", "");
                 fstream.Close();
-                updateThe.NewProject(this);
+                updateThe.NewProject();
                 return;
             }
 
         //    if (metList.ThisCount > 0) 
         //        updateThe.WindRose(this);
 
-            okToUpdate = false;
-            if (metList.filteringEnabled)
-                chkDisableFilter.CheckState = CheckState.Checked;
-            else
-                chkDisableFilter.CheckState = CheckState.Unchecked;
-            okToUpdate = true;
+            // Set shear settings min/max height (if not set)
+            for (int m = 0; m < metList.ThisCount; m++)
+            {
+                if (metList.metItem[m].metData == null)
+                    continue;
+                
+                double[] anemHeights = metList.metItem[m].metData.GetHeightsOfAnems();
+                Array.Sort(anemHeights);
+
+                if (metList.metItem[m].metData.shearSettings.minHeight == 0)
+                    metList.metItem[m].metData.shearSettings.minHeight =  anemHeights[0];
+
+                if (metList.metItem[m].metData.shearSettings.maxHeight == 0)
+                    metList.metItem[m].metData.shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];                    
+            }
+
+           
+
+     //       okToUpdate = false;
+     //       if (metList.filteringEnabled)
+     //           chkDisableFilter.CheckState = CheckState.Checked;
+     //       else
+     //           chkDisableFilter.CheckState = CheckState.Unchecked;
+     //       okToUpdate = true;
 
             try {
                 turbineList = (TurbineCollection)bin.Deserialize(fstream);
@@ -1291,9 +1420,9 @@ namespace ContinuumNS
             catch  {
                 MessageBox.Show("Error reading the list of turbines.", "");
                 fstream.Close();
-                updateThe.NewProject(this);
+                updateThe.NewProject();
                 return;
-            }
+            }                        
 
             try {
                 savedParams = (Saved_Parameters)bin.Deserialize(fstream);
@@ -1301,11 +1430,11 @@ namespace ContinuumNS
             catch  {
                 MessageBox.Show("Error reading the file.", "");
                 fstream.Close();
-                updateThe.NewProject(this);
+                updateThe.NewProject();
                 return;
             }
 
-            savedParams.savedFileName = Filename;
+            savedParams.savedFileName = Filename;                        
 
             try {
                 mapList = (MapCollection)bin.Deserialize(fstream);
@@ -1313,7 +1442,7 @@ namespace ContinuumNS
             catch  {
                 MessageBox.Show("Error reading the maps.", "");
                 fstream.Close();
-                updateThe.NewProject(this);
+                updateThe.NewProject();
                 return;
             }
 
@@ -1323,24 +1452,55 @@ namespace ContinuumNS
             catch  {
                 MessageBox.Show("Error reading the met pairs.", "");
                 fstream.Close();
-                updateThe.NewProject(this);
+                updateThe.NewProject();
                 return;
             }
 
             try {
-                modelList = (ModelCollection)bin.Deserialize(fstream);
+                modelList = (ModelCollection)bin.Deserialize(fstream);               
             }
             catch  {
                 MessageBox.Show("Error reading the models.", "");
                 fstream.Close();
-                updateThe.NewProject(this);
+                updateThe.NewProject();
                 return;
-            }           
+            }
 
-            // check for database
+            // Set default parameters in ModelList if not previously set (i.e. in older versions)
+            if (modelList.airDens == 0)
+                modelList.airDens = 1.225;
+            if (modelList.rotorDiam == 0)
+                modelList.rotorDiam = 100;
+
+            // check database to see if need to update to new context
+
+            bool dbNeedsUpdate = CheckForDB_Update();
+
+            if (dbNeedsUpdate)
+            {
+                DialogResult okToCreateNew = MessageBox.Show("This file was created in a previous version of Continuum with a different database structure.  Do you want " +
+                    "to update the database structure and continue?  If you do, this file will no longer be compatible with the previous version of Continuum.", "Continuum 3",
+                    MessageBoxButtons.YesNo);
+
+                if (okToCreateNew == DialogResult.No)
+                {
+                    fstream.Close();
+                    return;
+                }
+
+                BackgroundWork.Vars_for_Save_As argsForBW = new BackgroundWork.Vars_for_Save_As();
+                argsForBW.oldFilename = savedParams.savedFileName;                                
+                
+                BW_worker = new BackgroundWork();
+                BW_worker.Call_BW_UpdateDB(argsForBW);
+
+                while (BW_worker.DoWorkDone == false)
+                    Thread.Sleep(10);
+            }
+
             NodeCollection nodeList = new NodeCollection();
             string connString = nodeList.GetDB_ConnectionString(savedParams.savedFileName);
-
+            
             using (var ctx = new Continuum_EDMContainer(connString))
             {               
                 try {
@@ -1372,6 +1532,7 @@ namespace ContinuumNS
             }
             catch  {
                 MessageBox.Show("Error reading in wake models in Continuum file.", "Continuum 3");
+                fstream.Close();
                 return;
             }                        
 
@@ -1383,18 +1544,33 @@ namespace ContinuumNS
             catch
             {
                 MessageBox.Show("Error reading in modeled height in Continuum file.", "Continuum 3");
+                fstream.Close();
                 return;
             }
 
+            // Check that models have a modeled height and if not set it to met data height, if available, otherwise set it to 80
+            for (int m = 0; m < modelList.ModelCount; m++)
+                for (int r = 0; r < modelList.RadiiCount; r++)
+                    if (modelList.models[m, r].height == 0)
+                        modelList.models[m, r].height = modeledHeight;
+
             try
             {
-                merraList = (MERRACollection)bin.Deserialize(fstream);
+                refList = (ReferenceCollection)bin.Deserialize(fstream);
+
+                for (int r = 0; r < refList.numReferences; r++)
+                {
+                    refList.reference[r].GetReferenceDataFromDB(this);
+                    refList.reference[r].GetInterpData(this.UTM_conversions);
+                }
             }
             catch
             {
-                MessageBox.Show("Error reading in MERRA2 data in Continuum file.", "Continuum 3");
+                // MessageBox.Show("Error reading in MERRA2 data in Continuum file.", "Continuum 3");
+                fstream.Close();
+                OpenFileWithOldMERRA(Filename);
                 return;
-            }
+            }                        
 
             try
             {
@@ -1407,7 +1583,8 @@ namespace ContinuumNS
             }
 
             fstream.Close();
-                       
+
+            okToUpdate = false; // Changing the checkboxes triggers an update.AllTABs which is done at the end of this function 
             if (topo.useSR == true || (topo.gotSR == true && metList.ThisCount == 0)) {
                 chkUseSR.Checked = true;
                 topo.useSR = true;
@@ -1420,10 +1597,35 @@ namespace ContinuumNS
             else
                 chk_Use_Sep.Checked = false;
 
-            if (turbineList.genTimeSeries && metList.allMCPd)
+            if (turbineList.genTimeSeries)
                 chkCreateTurbTS.Checked = true;
             else
                 chkCreateTurbTS.Checked = false;
+
+            okToUpdate = true; // Changing the checkboxes triggers an update.AllTABs which is done at the end of this function 
+
+            // Run MCP is isMCPd set to true but mcpList is null (i.e. if file was saved in older version that didn't use mcpList)
+            if (metList.allMCPd)
+            {
+                for (int m = 0; m < metList.ThisCount; m++)
+                {
+                    string MCP_MethodUsed = metList.GetMCP_MethodUsed();
+                                        
+                    if (metList.metItem[m].metData.GetNumAnems() > 0)
+                    {
+                        if (metList.metItem[m].metData.anems[0].windData == null)
+                            metList.metItem[m].metData.GetSensorDataFromDB(this, metList.metItem[m].name);
+                    }
+
+                    if (metList.metItem[m].mcpList == null && refList.numReferences > 0)
+                        metList.RunMCP(ref metList.metItem[m], refList.reference[0], this, MCP_MethodUsed);
+                    else
+                        metList.RunMCP(ref metList.metItem[m], metList.metItem[m].mcpList[0].reference, this, MCP_MethodUsed);
+
+                    metList.metItem[m].CalcAllLT_WSWD_Dists(this); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
+                                        
+                }
+            }
 
             // Taking out, just get sensor data if toggling Met Data QC dropdown
             // Get sensor data from database
@@ -1449,13 +1651,499 @@ namespace ContinuumNS
                       }
                   }
                 */
-            merraList.SetMERRA2LatLong(this);
-            updateThe.AllTABs(this);
+            //   merraList.SetMERRA2LatLong(this);
+
+            if (turbineList.genTimeSeries)
+            {
+                
+
+                for (int t = 0; t < turbineList.TurbineCount; t++)
+                {
+                    Turbine thisTurb = turbineList.turbineEsts[t];
+                    Nodes targetNode = nodeList.GetTurbNode(thisTurb);
+
+                    for (int a = 0; a < thisTurb.AvgWSEst_Count; a++)
+                    {
+                        Wake_Model thisWakeModel = thisTurb.avgWS_Est[a].wakeModel;
+
+                        if (thisWakeModel != null)
+                        {
+                            // Find wake loss coeffs                    
+                            int minDistance = 10000000;
+                            int maxDistance = 0;
+
+                            int[] Min_Max_Dist = turbineList.CalcMinMaxDistanceToTurbines(thisTurb.UTMX, thisTurb.UTMY);
+                            if (Min_Max_Dist[0] < minDistance) minDistance = Min_Max_Dist[0]; // this is min distance to turbine but when WD is at a different angle (not in line with turbines) the X dist is less than this value so making this always equal to 2*RD
+                            if (Min_Max_Dist[1] > maxDistance) maxDistance = Min_Max_Dist[1];
+
+                            minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
+                            if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
+                            WakeCollection.WakeLossCoeffs[] wakeCoeffs = wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, metList);
+
+                            thisTurb.avgWS_Est[a].timeSeries = modelList.GenerateTimeSeries(this, metList.GetMetsUsed(), targetNode, thisTurb.avgWS_Est[a].powerCurve, thisWakeModel, wakeCoeffs, 
+                                metList.GetMCP_MethodUsed());
+                        }
+                        else
+                            thisTurb.avgWS_Est[a].timeSeries = modelList.GenerateTimeSeries(this, metList.GetMetsUsed(), targetNode, thisTurb.avgWS_Est[a].powerCurve, null, null, 
+                                metList.GetMCP_MethodUsed());
+                    }
+                }
+            }
+
+            turbineList.AreExpoCalcsDone();
+            turbineList.AreTurbCalcsDone(this);
+
+            updateThe.AllTABs();
                        
             Text = savedParams.savedFileName;
             fileChanged = false;
             saveToolStripMenuItem.Enabled = true;
             tabContinuum.SelectedIndex = 0;                      
+
+        }
+
+        /// <summary> Returns true if database needs updating </summary>        
+        public bool CheckForDB_Update()
+        {
+            bool dbNeedsUpdating = false;
+            // Updates database if different from latest context
+            NodeCollection nodeList = new NodeCollection();
+            string connString = nodeList.GetDB_ConnectionString(savedParams.savedFileName);
+
+            try
+            {
+                using (var context = new Continuum_EDMContainer(connString))
+                {
+                    if (context.Database.CompatibleWithModel(true) == false)
+                        dbNeedsUpdating = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+     /*       try
+            {
+                if (metList.isTimeSeries)
+                {                    
+                    using (var context = new Continuum_EDMContainer(connString))
+                    {
+                        var sensorData = from N in context.Anem_table where N.Id == 1 select N;
+                    }
+                }
+                else if (topo.gotTopo)
+                    using (var context = new Continuum_EDMContainer(connString))
+                    {
+                        if (context.Database.CompatibleWithModel(true) == false)
+                            dbNeedsUpdating = true;
+
+                        var elevData = from N in context.Topo_table where N.Id == 1 select N;
+                    }
+                else
+                {
+                    using (var context = new Continuum_EDMContainer(connString))
+                    {
+                        var merraData = from N in context.MERRA_Node_table where N.Id == 1 select N;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Check to see if database file locked up
+                try
+                {
+                    string filePath = savedParams.pathName;
+                    filePath.Replace(".cfm", ".mdf");
+
+                    using (FileStream fileStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                    {
+                        dbNeedsUpdating = true;
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("The database file is locked by another process. Check Task Manager and end SQL Server instance");
+                }
+                
+            }
+     */
+
+            return dbNeedsUpdating;
+        }
+
+        /// <summary>  Opens v3.0 CFM file (which uses one MERRA2 reference node), converts to list of reference nodes and updates GUI </summary>        
+        public void OpenFileWithOldMERRA(string Filename)
+        {
+            string wholePath = "";
+
+            if (savedParams.pathName == null)
+            {
+                wholePath = Filename;
+                SetDefaultFolderLocations(wholePath);
+            }
+
+            savedParams.savedFileName = Filename;
+
+            FileStream fstream = new FileStream(Filename, FileMode.Open, FileAccess.Read);
+            BinaryFormatter bin = new BinaryFormatter();
+            bin.AssemblyFormat = FormatterAssemblyStyle.Simple;
+
+            try
+            {
+                topo = (TopoInfo)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                try
+                {
+                    // try to cast old TopoInfo object to new one
+                }
+                catch
+                {
+                    MessageBox.Show("Error loading. Files created in previous versions of Continuum (prior to v2.2) cannot be opened and will need to be recreated.", "Continuum 3");
+                    fstream.Close();
+                    updateThe.NewProject();
+                    return;
+                }
+            }
+
+            try
+            {
+                radiiList = (InvestCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                //  MessageBox.Show("Error reading the list of radii and exponents.", "");
+                //  fstream.Close();
+                //  updateThe.NewProject(this);
+                //  return;
+            }
+
+            try
+            {
+                metList = (MetCollection)bin.Deserialize(fstream);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString() + "Error reading the list of met sites.", "");
+                fstream.Close();
+                updateThe.NewProject();
+                return;
+            }
+
+            //    if (metList.ThisCount > 0) 
+            //        updateThe.WindRose(this);
+
+   //         okToUpdate = false;
+   //         if (metList.filteringEnabled)
+   //             chkDisableFilter.CheckState = CheckState.Checked;
+   //         else
+   //             chkDisableFilter.CheckState = CheckState.Unchecked;
+   //         okToUpdate = true;
+
+            try
+            {
+                turbineList = (TurbineCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the list of turbines.", "");
+                fstream.Close();
+                updateThe.NewProject();
+                return;
+            }
+
+            try
+            {
+                savedParams = (Saved_Parameters)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the file.", "");
+                fstream.Close();
+                updateThe.NewProject();
+                return;
+            }
+
+            savedParams.savedFileName = Filename;
+
+            try
+            {
+                mapList = (MapCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the maps.", "");
+                fstream.Close();
+                updateThe.NewProject();
+                return;
+            }
+
+            try
+            {
+                metPairList = (MetPairCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the met pairs.", "");
+                fstream.Close();
+                updateThe.NewProject();
+                return;
+            }
+
+            try
+            {
+                modelList = (ModelCollection)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading the models.", "");
+                fstream.Close();
+                updateThe.NewProject();
+                return;
+            }
+
+            // check for database
+            NodeCollection nodeList = new NodeCollection();
+            string connString = nodeList.GetDB_ConnectionString(savedParams.savedFileName);
+
+            using (var ctx = new Continuum_EDMContainer(connString))
+            {
+                try
+                {
+                    ctx.Database.Exists();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    int slashInd = savedParams.savedFileName.LastIndexOf("\\");
+                    string DB_name = savedParams.savedFileName.Substring(slashInd + 2, savedParams.savedFileName.Length - slashInd);
+                    fstream.Close();
+                    return;
+                }
+            }
+
+            try
+            {
+                UTM_conversions = (UTM_conversion)bin.Deserialize(fstream);
+                if (UTM_conversions.savedDatumIndex != 100 && UTM_conversions.UTMZoneNumber != -999)
+                {
+                    txtUTMDatum.Text = UTM_conversions.GetDatumString(UTM_conversions.savedDatumIndex);
+                    txtUTMZone.Text = UTM_conversions.UTMZoneNumber.ToString() + UTM_conversions.hemisphere.Substring(0, 1);
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in UTM zone settings in Continuum file.", "Continuum 3");
+                fstream.Close();
+                return;
+            }
+
+            try
+            {
+                wakeModelList = (WakeCollection)bin.Deserialize(fstream);
+                wakeModelList.CleanUpWakeModelsAndGrid();
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in wake models in Continuum file.", "Continuum 3");
+                fstream.Close();
+                return;
+            }
+
+            try
+            {
+                modeledHeight = (double)bin.Deserialize(fstream);
+                txtModeledHeight.Text = Math.Round(modeledHeight, 0).ToString();
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in modeled height in Continuum file.", "Continuum 3");
+                fstream.Close();
+                return;
+            }
+
+            // Check that models have a modeled height and if not set it to met data height, if available, otherwise set it to 80
+            for (int m = 0; m < modelList.ModelCount; m++)
+                for (int r = 0; r < modelList.RadiiCount; r++)
+                    if (modelList.models[m, r].height == 0)
+                        modelList.models[m, r].height = modeledHeight;
+
+            try
+            {
+                MERRACollection merraList = (MERRACollection)bin.Deserialize(fstream);
+
+                if (merraList.MERRAfolder == "" && merraList.numMERRA_Data > 0)
+                {
+                    MessageBox.Show("The folder location of the MERRA2 raw data files was not saved in the file. Please select folder with MERRA2 data for this project.");
+
+                    if (fbd_MERRAData.ShowDialog() == DialogResult.OK)                    
+                        merraList.MERRAfolder = fbd_MERRAData.SelectedPath;                   
+                    
+                }
+                else if (Directory.Exists(merraList.MERRAfolder) == false && merraList.numMERRA_Data > 0)
+                {
+                    // See if folder exists under a different user name
+                    int usersFirstInd = merraList.MERRAfolder.IndexOf("Users");
+
+                    int usersInd = merraList.MERRAfolder.IndexOf('\\', merraList.MERRAfolder.IndexOf("Users") + 7);
+                    string refFolderNoUser = merraList.MERRAfolder.Substring(usersInd + 1, merraList.MERRAfolder.Length - usersInd - 1);
+
+                    string thisUserName = Environment.GetEnvironmentVariable("USERPROFILE");
+                    string newRefFolderName = thisUserName + "\\" + refFolderNoUser;
+
+                    if (Directory.Exists(newRefFolderName) == false)
+                    {
+                        MessageBox.Show("The saved folder location of the MERRA2 raw data files cannot be found on this PC: " + merraList.MERRAfolder.ToString() + ". Please select folder with MERRA2 data for this project.");
+
+                        if (fbd_MERRAData.ShowDialog() == DialogResult.OK)
+                            merraList.MERRAfolder = fbd_MERRAData.SelectedPath;
+                    }
+                    else
+                        merraList.MERRAfolder = newRefFolderName;
+                }
+                
+                for (int m = 0; m < merraList.numMERRA_Data; m++)
+                {
+                    Reference newRef = new Reference();
+                    MERRA oldRef = merraList.merraData[m];
+                    
+                    newRef.startDate = merraList.startDate;
+                    newRef.endDate = merraList.endDate;
+
+                    // Convert MERRA2 nodes to generic nodes
+                    newRef.numNodes = oldRef.numMERRA_Nodes;                    
+                    newRef.nodes = new Reference.Node_Data[newRef.numNodes];
+                    // To do: update Node_Data structs with conversion operators (ie how interData assignment works below for loop)
+
+                    for (int n = 0; n < newRef.numNodes; n++)
+                    {                        
+                        newRef.nodes[n].XY_ind.X_ind = oldRef.MERRA_Nodes[n].XY_ind.X_ind;
+                        newRef.nodes[n].XY_ind.Y_ind = oldRef.MERRA_Nodes[n].XY_ind.Y_ind;
+                        newRef.nodes[n].XY_ind.Lat = oldRef.MERRA_Nodes[n].XY_ind.Lat;
+                        newRef.nodes[n].XY_ind.Lon = oldRef.MERRA_Nodes[n].XY_ind.Lon;
+
+                        newRef.nodes[n].TS_Data = new Reference.Wind_TS_with_Prod[oldRef.MERRA_Nodes[n].TS_Data.Length];
+
+                        for (int t = 0; t < oldRef.MERRA_Nodes[n].TS_Data.Length; t++)
+                        {
+                            newRef.nodes[n].TS_Data[t].thisDate = oldRef.MERRA_Nodes[n].TS_Data[t].ThisDate;                            
+                            newRef.nodes[n].TS_Data[t].seaPress = oldRef.MERRA_Nodes[n].TS_Data[t].SeaPress;
+                            newRef.nodes[n].TS_Data[t].surfPress = oldRef.MERRA_Nodes[n].TS_Data[t].SurfPress;
+                            newRef.nodes[n].TS_Data[t].temperature = oldRef.MERRA_Nodes[n].TS_Data[t].Temp10m;
+                            newRef.nodes[n].TS_Data[t].WD = oldRef.MERRA_Nodes[n].TS_Data[t].WD50m;
+                            newRef.nodes[n].TS_Data[t].WS = oldRef.MERRA_Nodes[n].TS_Data[t].WS50m;
+                        }
+                    }
+
+                    // Convert MERRA2 interpolated data to generic reference
+                    newRef.interpData = (Reference.Wind_Data_and_Prod_Stats)oldRef.interpData;
+                    newRef.isUserDefined = oldRef.isUserDefined;
+                    newRef.powerCurve = oldRef.powerCurve;
+                    newRef.temperatureH = 10;
+                    newRef.wswdH = 50;
+                    newRef.WS_ScaleFactor = oldRef.WS_ScaleFactor;
+
+                    ReferenceCollection.RefDataDownload newRefDataDown = refList.ReadFileAndDefineRefDataDownload(merraList.MERRAfolder);
+                    newRefDataDown = refList.ReadFileAndDefineRefDataDownload(merraList.MERRAfolder);
+
+                    ReferenceCollection.DateRangeAndCompletion dateRangeAndComplete = refList.GetDataFileStartEndDateAndCompletion(newRefDataDown.folderLocation, newRefDataDown.refType);
+                    newRefDataDown.startDate = dateRangeAndComplete.startEnd[0];
+                    newRefDataDown.endDate = dateRangeAndComplete.startEnd[1];
+                    newRefDataDown.completion = dateRangeAndComplete.completion;
+                    newRefDataDown.userName = merraList.earthdataUser;
+                    newRefDataDown.userPassword = merraList.earthdataPwd;
+                    newRef.refDataDownload = newRefDataDown;
+
+                    refList.AddRefDataDownload(newRefDataDown);
+                    refList.AddReference(newRef);                    
+                }
+
+                // Now see if any met sites have MCP defined and assign this reference site (in older versions, only could hold one reference
+                if (metList.allMCPd)
+                {
+                    for (int m = 0; m < metList.ThisCount; m++)
+                        for (int r = 0; r < metList.metItem[m].GetNumMCP(); r++)
+                            metList.metItem[m].mcpList[r].reference = refList.GetReferenceByUTM(metList.metItem[m].UTMX, metList.metItem[m].UTMY, "MERRA2");
+                }
+                            
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in MERRA2 data in Continuum file.", "Continuum 3");
+         //       fstream.Close();
+          //      return;
+            }
+
+            try
+            {
+                siteSuitability = (SiteSuitability)bin.Deserialize(fstream);
+            }
+            catch
+            {
+                MessageBox.Show("Error reading in Site Suitability data in Continuum file.", "Continuum 3");
+                fstream.Close();
+         //       return;
+            }
+
+            fstream.Close();
+
+            okToUpdate = false; // Changing the checkboxes triggers an update.AllTABs which is done at the end of this function
+            if (topo.useSR == true || (topo.gotSR == true && metList.ThisCount == 0))
+            {
+                chkUseSR.Checked = true;
+                topo.useSR = true;
+            }
+            else
+                chkUseSR.Checked = false;
+
+            if (topo.useSepMod == true)
+                chk_Use_Sep.Checked = true;
+            else
+                chk_Use_Sep.Checked = false;
+
+            if (turbineList.genTimeSeries && metList.allMCPd)
+                chkCreateTurbTS.Checked = true;
+            else
+                chkCreateTurbTS.Checked = false;
+
+            okToUpdate = true; // Changing the checkboxes triggers an update.AllTABs which is done at the end of this function 
+
+            // Taking out, just get sensor data if toggling Met Data QC dropdown
+            // Get sensor data from database
+            //   if (metList.isTimeSeries)
+            //   for (int i = 0; i < metList.ThisCount; i++)
+            //       metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
+
+            // Get MCP reference and target data, if MCP done
+            /*      for (int i = 0; i < metList.ThisCount; i++)
+                  {
+                      Met thisMet = metList.metItem[i];
+
+                      if (thisMet.mcp != null)
+                      {
+                          UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+
+                          if (thisMet.mcp.gotMCP_Est == true)
+                          {
+                              MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                              thisMet.mcp.GetRefData(thisMERRA, ref thisMet, this);
+                              thisMet.mcp.GetTargetData(modeledHeight, thisMet);
+                          }
+                      }
+                  }
+                */
+            //   merraList.SetMERRA2LatLong(this);
+
+            turbineList.AreExpoCalcsDone();
+            turbineList.AreTurbCalcsDone(this);
+
+            updateThe.AllTABs();
+
+            Text = savedParams.savedFileName;
+            fileChanged = false;
+            saveToolStripMenuItem.Enabled = true;
+            tabContinuum.SelectedIndex = 0;
 
         }
 
@@ -1471,18 +2159,24 @@ namespace ContinuumNS
                 DialogResult Want_to_save_file = MessageBox.Show("Do you want to save changes?", "", MessageBoxButtons.YesNo);
                 if (Want_to_save_file == DialogResult.Yes) {
                     if (savedParams.savedFileName != "")
-                        SaveFile(false);
+                        SaveFile();
                     else
-                        SaveAs();                    
+                    {
+                        if (sfdCFMfile.ShowDialog() == DialogResult.OK)                        
+                            SaveFile(sfdCFMfile.FileName);
+                    }                                           
                 }
             }
                                     
             fileChanged = false;
             Text = "Continuum Model.cfm";            
-            updateThe.NewProject(this);
+            updateThe.NewProject();
             savedParams.savedFileName = null;
             MessageBox.Show("Please specify where to save file.", "Continuum 3");
-            SaveAs();
+
+            if (sfdCFMfile.ShowDialog() == DialogResult.OK)
+                SaveFile(sfdCFMfile.FileName);
+
             tabContinuum.SelectedIndex = 0;
 
         }
@@ -1500,7 +2194,7 @@ namespace ContinuumNS
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Calls SaveFile
-            SaveFile(false);
+            SaveFile();
         }
 
         /// <summary> Lists all mets and turbines on Expo_Export form and opens form. Overall and sectorwise upwind and downwind exposure, surface roughness,
@@ -1630,7 +2324,7 @@ namespace ContinuumNS
 
                 metList.AreAllMetsMCPd();
 
-                if (metList.isTimeSeries == false || metList.allMCPd == false)
+                if (metList.isTimeSeries == false)
                 {
                     thisMap.cboUseTimeSeries.SelectedIndex = 0; // Use Avg Dist.
                     thisMap.cboUseTimeSeries.Enabled = false; // User has no choice if not time series model
@@ -1653,8 +2347,8 @@ namespace ContinuumNS
         private void lstMaps_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates displayed map and map stats            
-            updateThe.Generated2DMap(this);
-            updateThe.MapStats(this);
+            updateThe.Generated2DMap();
+            updateThe.MapStats();
         }
 
         private void btnDelMaps_Click(object sender, EventArgs e)
@@ -1681,8 +2375,8 @@ namespace ContinuumNS
                     ChangesMade();
                 }
 
-                updateThe.MapsTAB(this);
-                updateThe.NetTurbineEstsTAB(this);
+                updateThe.MapsTAB();
+                updateThe.NetTurbineEstsTAB();
                 
             }
             else {
@@ -1765,7 +2459,7 @@ namespace ContinuumNS
         private void btnRefreshMap_Click(object sender, EventArgs e)
         {
             // Updates the displayed map            
-            updateThe.Generated2DMap(this);
+            updateThe.Generated2DMap();
         }
 
         /// <summary> Shows the "About Continuum" form </summary>        
@@ -1778,7 +2472,7 @@ namespace ContinuumNS
         private void btnRefreshMain_Click(object sender, EventArgs e)
         {
             // Refreshes topo/LC/SR/DH map            
-            updateThe.TopoMap(this);
+            updateThe.TopoMap();
             ChangesMade();
         }
 
@@ -1786,14 +2480,14 @@ namespace ContinuumNS
         { 
             // Updates labels on map and series shown on wind rose and directional WS ratio plots based on selected met sites
             if (okToUpdate == true) 
-                updateThe.InputTAB(this);                
+                updateThe.InputTAB();                
         }        
 
         private void chkTurbLabels_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates labels on map based on selected turbine sites
             if (okToUpdate == true)                           
-                updateThe.TopoMap(this);
+                updateThe.TopoMap();
             
         }
         private void chkAllMetLabels_CheckedChanged(object sender, EventArgs e)
@@ -1815,7 +2509,7 @@ namespace ContinuumNS
                     }
                 }                          
                 
-                updateThe.InputTAB(this);
+                updateThe.InputTAB();
             }
         }
 
@@ -1838,7 +2532,7 @@ namespace ContinuumNS
                     }
                 }
 
-                updateThe.InputTAB(this);
+                updateThe.InputTAB();
             }
         }
 
@@ -1846,7 +2540,7 @@ namespace ContinuumNS
         {
             // Updates the met labels on the map (Map tab)
             if (okToUpdate == true)                         
-                updateThe.Generated2DMap(this);                
+                updateThe.Generated2DMap();                
             
         }
         private void chkAllTurbs_Maps_CheckedChanged(object sender, EventArgs e)
@@ -1863,7 +2557,7 @@ namespace ContinuumNS
                 }
             }
             
-            updateThe.Generated2DMap(this);            
+            updateThe.Generated2DMap();            
         }
         private void chkAllMets_Maps_CheckedChanged(object sender, EventArgs e)
         { 
@@ -1879,14 +2573,14 @@ namespace ContinuumNS
                 }
             }
                             
-            updateThe.Generated2DMap(this);            
+            updateThe.Generated2DMap();            
         }
 
         private void chkTurbLabels_Maps_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the turbine labels on the map (Map tab)
             if (okToUpdate == true)                           
-                updateThe.MapTAB(this);                            
+                updateThe.MapTAB();                            
         }
 
         private void HelpMenuToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1911,8 +2605,8 @@ namespace ContinuumNS
             // Updates the mets/turbines listed in //To Met or Turbine// dropdown on Advanced tab (which then updates the plots and tables)
             if (okToUpdate == true)
             {
-                updateThe.EndMet_Dropdown(this);
-                updateThe.AdvancedTAB(this);
+                updateThe.EndMet_Dropdown();
+                updateThe.AdvancedTAB();
             }
         }
 
@@ -1920,14 +2614,14 @@ namespace ContinuumNS
         {
             // Updates the node path plot and table and map (Advanced tab)
             if (okToUpdate == true) 
-                updateThe.AdvancedTAB(this);            
+                updateThe.AdvancedTAB();            
         }
 
         private void cboOrig_or_Mod_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the Advanced tab plots and tables based on selected Continuum model
             if (okToUpdate == true) 
-                updateThe.AdvancedTAB(this);
+                updateThe.AdvancedTAB();
         }
 
         private void chkAllMetLabelsStep_CheckedChanged(object sender, EventArgs e)
@@ -1944,7 +2638,7 @@ namespace ContinuumNS
                 }
             }            
             
-            updateThe.StepTopoMap(this);            
+            updateThe.StepTopoMap();            
         }
 
         private void chkAllTurbsStep_CheckedChanged(object sender, EventArgs e)
@@ -1961,18 +2655,18 @@ namespace ContinuumNS
                 }
             }
                
-            updateThe.StepTopoMap(this);            
+            updateThe.StepTopoMap();            
         }
 
         private void chkMetlabelsStep_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Updates labels on map (Advanced tab) based on selected met sites            
-            updateThe.StepTopoMap(this);
+            updateThe.StepTopoMap();
         }
         private void chkTurbLabelStep_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Updates labels on map (Advanced tab) based on selected turbine sites            
-            updateThe.StepTopoMap(this);
+            updateThe.StepTopoMap();
         }
 
         private void cboPowerCrvs_SelectedIndexChanged(object sender, EventArgs e)
@@ -1985,10 +2679,10 @@ namespace ContinuumNS
                     return;
                 else 
                 {
-                    updateThe.GrossTurbEstList(this);
-                    updateThe.GrossHistogram(this);
-                    updateThe.TurbStats(this);
-                    updateThe.WS_or_WR_Plot(this);
+                    updateThe.GrossTurbEstList();
+                    updateThe.GrossHistogram();
+                    updateThe.TurbStats();
+                    updateThe.WS_or_WR_Plot();
                 }
             }
         }
@@ -2057,8 +2751,8 @@ namespace ContinuumNS
             // Updates the Round Robin plots and tables based on selected Round Robin from dropdown
             if (okToUpdate == true)
             {
-                updateThe.RoundRobinIndivResults(this);
-                updateThe.RoundRobinHistogram(this);
+                updateThe.RoundRobinIndivResults();
+                updateThe.RoundRobinHistogram();
             }
         }
 
@@ -2072,39 +2766,48 @@ namespace ContinuumNS
         { 
             // Updates plots and tables on Advanced tab based on selected radius of investigation
             if (okToUpdate == true)                 
-                updateThe.AdvancedTAB(this);            
+                updateThe.AdvancedTAB();            
         }
         private void btnGenTurbEsts_Click(object sender, EventArgs e)
         {
-            // Checks that turbine calculations can take place, creates the struct needed for turbine calcs and calls background worker
+            GenerateTurbineEstimates();
+            
+        }
+
+        /// <summary> Checks that turbine calculations can take place, creates the struct needed for turbine calcs and calls background worker </summary>
+        public void GenerateTurbineEstimates()
+        {           
             if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
                 BW_worker = new BackgroundWork();
 
-            if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot generate turbine estimates while other calculations are under way.", "Continuum 3");
-                return;
-            }   
-            
-            if (metList.ThisCount == 0)
+            if (BW_worker.IsBusy())
             {
-                MessageBox.Show("You need to import met sites fist.", "Continuum 3");
+                MessageBox.Show("Cannot generate turbine estimates while other calculations are under way.", "Continuum 3");
                 return;
             }
 
-            if (turbineList.TurbineCount == 0) {
+            if (metList.ThisCount == 0 && refList.reference.Length == 0)
+            {
+                MessageBox.Show("You need to import a met site or add long-term reference site first.", "Continuum 3");
+                return;
+            }
+
+            if (turbineList.TurbineCount == 0)
+            {
                 MessageBox.Show("You need to import turbines fist.", "Continuum 3");
                 return;
             }
 
-            if (modelList.HaveRequiredModels(metList) == false) {
-                MessageBox.Show("Create a site-calibrated model first clickng Analyze Mets.", "Continuum 3");
-                return;
-            }
+            /*      if (modelList.HaveRequiredModels(metList) == false) {
+                      MessageBox.Show("Create a site-calibrated model first clickng Analyze Mets.", "Continuum 3");
+                      return;
+                  }
 
-            if (modelList.ModelCount == 0) {
-                MessageBox.Show("Create a Continuum model first clickng Analyze Mets.", "Continuum 3");
-                return;
-            }
+                  if (modelList.ModelCount == 0) {
+                      MessageBox.Show("Create a Continuum model first clickng Analyze Mets.", "Continuum 3");
+                      return;
+                  }
+            */
 
             if (chkCreateTurbTS.CheckState == CheckState.Checked)
                 turbineList.genTimeSeries = true;
@@ -2116,18 +2819,22 @@ namespace ContinuumNS
             turbineList.ClearAllNetEsts();
 
             BackgroundWork.Vars_for_TurbCalcs argsForBW = new BackgroundWork.Vars_for_TurbCalcs();
-                        
+
             argsForBW.thisInst = this;
             argsForBW.thisWakeModel = null;
-            
+
             // Call background worker to run calculations
             BW_worker = new BackgroundWork();
-            string MCP_Method = Get_MCP_Method();
-            argsForBW.MCP_Method = MCP_Method;
+
+            if (metList.allMCPd)
+            {
+                string MCP_Method = metList.GetMCP_MethodUsed();
+                argsForBW.MCP_Method = MCP_Method;
+            }
+
             if (topo.gotTopo)
                 BW_worker.Call_BW_TurbCalcs(argsForBW);
             ChangesMade();
-            
         }
         
         private void btnImportTAB_Click(object sender, EventArgs e)
@@ -2167,7 +2874,7 @@ namespace ContinuumNS
 
                 metList.isTimeSeries = false;
                 turbineList.ClearAllWSEsts();                
-                updateThe.AllTABs(this);
+                updateThe.AllTABs();
 
                 if (topo.gotTopo == false)                     
                     return;                
@@ -2185,7 +2892,7 @@ namespace ContinuumNS
                 if (topo.gotSR == false) {
                     DialogResult yes_or_no = MessageBox.Show("Do you have land cover data to import? Click No and Continuum will start the site-calibration using only the topography data.", "Continuum 3", MessageBoxButtons.YesNo);
                     if (yes_or_no == DialogResult.Yes) {                        
-                        updateThe.AllTABs(this);
+                        updateThe.AllTABs();
                         return;
                     }
                 }
@@ -2200,7 +2907,7 @@ namespace ContinuumNS
             }
             else
             {
-                updateThe.AllTABs(this);
+                updateThe.AllTABs();
             }
 
         }
@@ -2243,14 +2950,14 @@ namespace ContinuumNS
                 }
 
                 turbineList.ClearDuplicateAvgWS(metList.isTimeSeries);
-                merraList.ClearMERRA_ProdStats();                    
-                updateThe.AllTABs(this);
+                refList.ClearReferenceProdStats();                    
+                updateThe.AllTABs();
                     
             }            
             else 
                 MessageBox.Show("No power curves to delete", "Continuum 3");            
 
-            updateThe.ColoredButtons(this);
+            updateThe.ColoredButtons();
 
         }
 
@@ -2258,7 +2965,7 @@ namespace ContinuumNS
             { 
             // Updates the plots and tables on Gross Turb Est tab based on selected turbines
             if (okToUpdate == true)                 
-                updateThe.GrossTurbineEstsTAB(this); 
+                updateThe.GrossTurbineEstsTAB(); 
         }
 
         private void chkMetSummAll_CheckedChanged(object sender, EventArgs e)
@@ -2276,7 +2983,7 @@ namespace ContinuumNS
                     }
                 }
                                 
-                updateThe.Met_Turbine_Summary_TAB(this);
+                updateThe.Met_Turbine_Summary_TAB();
             }
         }
 
@@ -2295,7 +3002,7 @@ namespace ContinuumNS
                     }
                 }
                 
-                updateThe.GrossTurbineEstsTAB(this);                                
+                updateThe.GrossTurbineEstsTAB();                                
             }
         }
 
@@ -2322,35 +3029,35 @@ namespace ContinuumNS
         { 
             // Calls updateThe.TurbineUncertPlot based on whether WS or AEP is chosen from dropdown
             if (okToUpdate == true)                 
-                updateThe.Uncertainty_TAB_Turbine_Ests(this);            
+                updateThe.Uncertainty_TAB_Turbine_Ests();            
         }
 
         private void cboUncertPowerCrv_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Calls functions to update turbine uncertainty estimates based on selected power curve
             if (okToUpdate == true)                 
-                updateThe.Uncertainty_TAB_Turbine_Ests(this);
+                updateThe.Uncertainty_TAB_Turbine_Ests();
         }
 
         private void chkP99_CheckedChanged(object sender, EventArgs e)
         { 
             // Calls updateThe.TurbineUncertPlot to display P99 estimates or not
             if (okToUpdate == true)
-                updateThe.Uncertainty_TAB_Turbine_Ests(this);            
+                updateThe.Uncertainty_TAB_Turbine_Ests();            
         }
 
         private void chkP50_CheckedChanged(object sender, EventArgs e)
         { 
             // Calls updateThe.TurbineUncertPlot to display P50 estimates or not
             if (okToUpdate == true)
-                updateThe.Uncertainty_TAB_Turbine_Ests(this);            
+                updateThe.Uncertainty_TAB_Turbine_Ests();            
         }
 
         private void chkP90_CheckedChanged(object sender, EventArgs e)
         { 
             // Calls updateThe.TurbineUncertPlot to display P90 estimates or not
             if (okToUpdate == true)
-                updateThe.Uncertainty_TAB_Turbine_Ests(this);            
+                updateThe.Uncertainty_TAB_Turbine_Ests();            
         }
 
         private void btnExportWSDists_Click(object sender, EventArgs e)
@@ -2400,14 +3107,14 @@ namespace ContinuumNS
         { 
             // Updates the gross turbine estimates based on selected Continuum model
             if (okToUpdate == true)                 
-                updateThe.GrossTurbineEstsTAB(this); 
+                updateThe.GrossTurbineEstsTAB(); 
         }
 
         private void cbo_Uncert_ModType_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Updates the turbine uncertainty estimates based on selected Continuum model
             if (okToUpdate == true)
-                updateThe.Uncertainty_TAB_Turbine_Ests(this); 
+                updateThe.Uncertainty_TAB_Turbine_Ests(); 
         }
 
         private void btnAnalyzeMets_Click(object sender, EventArgs e)
@@ -2455,13 +3162,13 @@ namespace ContinuumNS
         { 
             // Calls Update class functions to update advanced tab based on selected WD sector
             if (okToUpdate == true)                 
-                updateThe.AdvancedTAB(this);            
+                updateThe.AdvancedTAB();            
         }
 
         private void cboUphill_to_show_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Calls updateThe.ModelPlots to show either uphill or induced speed-up            
-            updateThe.ModelPlots(this);
+            updateThe.ModelPlots();
         }
 
         private void btnExportModel_Click(object sender, EventArgs e)
@@ -2490,7 +3197,7 @@ namespace ContinuumNS
         { 
             // Calls Update functions to update Gross Turb Est tab based on selected WD sector
             if (okToUpdate == true)                
-                updateThe.GrossTurbineEstsTAB(this);            
+                updateThe.GrossTurbineEstsTAB();            
         }
 
         private void cboMapWD_SelectedIndexChanged(object sender, EventArgs e)
@@ -2498,8 +3205,8 @@ namespace ContinuumNS
             // Calls updateThe.Generated2DMap to show map selected from list
             if (okToUpdate == true)
             {
-                updateThe.Generated2DMap(this);
-                updateThe.MapStats(this);
+                updateThe.Generated2DMap();
+                updateThe.MapStats();
             }
         }
 
@@ -2510,19 +3217,7 @@ namespace ContinuumNS
             thisExport.ExportDirectionalWS_Dists(this);
         }
 
-        private void cboTopo_Or_Roughness_SelectedIndexChanged(object sender, EventArgs e)
-        { 
-            // Calls updateThe.TopoMap to show the selected map (Input tab)
-            if (Created) {
-                if (cboTopo_Or_Roughness.SelectedIndex == 0 && topo.gotTopo == false)
-                    return;
-                else if (cboTopo_Or_Roughness.SelectedIndex > 0 && topo.gotSR == false)
-                    cboTopo_Or_Roughness.SelectedIndex = 0;
-                                
-                updateThe.TopoMap(this);
-            }
-        }
-
+       
         /// <summary> Configures settings on LC_Key_Form and opens form </summary>        
         public void Populate_LC_Key_Form(LC_Key thisKey)
         {                         
@@ -2581,7 +3276,7 @@ namespace ContinuumNS
                 thisKey.Read_Orig_and_New(topo.LC_Key);
             
             Populate_LC_Key_Form(thisKey);            
-            updateThe.LC_KeySelected(this);
+            updateThe.LC_KeySelected();
 
             thisKey.ShowDialog();
         }
@@ -2607,20 +3302,20 @@ namespace ContinuumNS
                     }
                 }
                 
-                updateThe.GrossTurbineEstsTAB(this);
+                updateThe.GrossTurbineEstsTAB();
             }
         }
 
         private void chkMetSumm_SelectedIndexChanged(object sender, EventArgs e)
         { 
             if (okToUpdate == true)                 
-                updateThe.Met_Turbine_Summary_TAB(this);            
+                updateThe.Met_Turbine_Summary_TAB();            
         }
 
         private void chkTurbSumm_SelectedIndexChanged(object sender, EventArgs e)
         { 
             if (okToUpdate == true)                 
-                updateThe.Met_Turbine_Summary_TAB(this);            
+                updateThe.Met_Turbine_Summary_TAB();            
         }
 
         private void chkTurbSummAll_CheckedChanged(object sender, EventArgs e)
@@ -2638,7 +3333,7 @@ namespace ContinuumNS
                     }
                 }
                                 
-                updateThe.Met_Turbine_Summary_TAB(this);
+                updateThe.Met_Turbine_Summary_TAB();
             }
         }         
 
@@ -2646,35 +3341,35 @@ namespace ContinuumNS
         { 
             // Updates the plots and tables on the 'Met and Turbine Summary' tab based on selected radius from drop-down
             if (okToUpdate == true)                 
-                updateThe.Met_Turbine_Summary_TAB(this);            
+                updateThe.Met_Turbine_Summary_TAB();            
         }
 
         private void cboMetSum_WD_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Updates the plots and tables on the //Met and Turbine Summary// tab based on selected wind direction sector from drop-down
             if (okToUpdate == true)                 
-                updateThe.Met_Turbine_Summary_TAB(this);            
+                updateThe.Met_Turbine_Summary_TAB();            
         }
 
         private void chkMetGross_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Updates the plots and tables on the //Gross Energy Ests.// tab based on selected mets from list
             if (okToUpdate == true)                
-                updateThe.GrossTurbineEstsTAB(this);
+                updateThe.GrossTurbineEstsTAB();
         }
 
         private void chkPowerCurveList_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Updates the power curve plot on //Gross Energy Ests.// tab based on power curve selected in list
             if (okToUpdate == true)                 
-                updateThe.PowerCrvPlot(this);            
+                updateThe.PowerCrvPlot();            
         }
 
         private void cboGrossParam_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Updates the histogram on //Gross Energy Ests// tab based on parameter chosen from dropdown menu
             if (okToUpdate == true)                 
-                updateThe.GrossHistogram(this);            
+                updateThe.GrossHistogram();            
         }
 
         private void chkUseSR_CheckedChanged(object sender, EventArgs e)
@@ -2723,13 +3418,13 @@ namespace ContinuumNS
         private void cboExpo_or_Stab_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the log-log plots on //Advanced// tab based on whether Exposure or Stability is chosen from dropdown                
-            updateThe.ModelPlots(this);
+            updateThe.ModelPlots();
         }        
         private void chkAdvToShow_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Updates the table and plot on Advanced tab showing values along path of nodes
              if (okToUpdate == true)             
-                updateThe.AdvancedTAB(this);
+                updateThe.AdvancedTAB();
         }        
         private void btnWakeLossCalc_Click(object sender, EventArgs e)
         {
@@ -2781,14 +3476,14 @@ namespace ContinuumNS
         { 
             // Updates the plots and tables on Net Turbine Ests. tab based on WD sector selected from dropdown
             if (okToUpdate == true)                 
-                updateThe.NetTurbineEstsTAB(this);            
+                updateThe.NetTurbineEstsTAB();            
         }
 
         private void cboWakePlot_SelectedIndexChanged(object sender, EventArgs e)
         { 
             // Updates the wake loss map and Turb by string plot on Net Turbine Ests. tab based on whether Wind Speed, Wake loss % or Net Energy is selected from dropdown
             if (okToUpdate == true)                 
-                updateThe.NetTurbineEstsTAB(this); 
+                updateThe.NetTurbineEstsTAB(); 
         }
                 
         private void lstWakeModels_SelectedIndexChanged(object sender, EventArgs e)
@@ -2796,10 +3491,10 @@ namespace ContinuumNS
             // Updates plots and tables on Net Turbine Ests tab based on selected wake loss model
             if (okToUpdate == true)
             {
-                updateThe.WakedTurbList(this);
-                updateThe.WakedWSDistPlot(this);
-                updateThe.TurbsByString(this);
-                updateThe.WakeLossMap(this);
+                updateThe.WakedTurbList();
+                updateThe.WakedWSDistPlot();
+                updateThe.TurbsByString();
+                updateThe.WakeLossMap();
             }                           
         }
 
@@ -2834,10 +3529,10 @@ namespace ContinuumNS
                     ChangesMade();
                 }
                 
-                updateThe.NetTurbineEstsTAB(this);
-                updateThe.MapsTAB(this);
-                updateThe.Monthly_TAB(this);
-                updateThe.ColoredButtons(this);
+                updateThe.NetTurbineEstsTAB();
+                updateThe.MapsTAB();
+                updateThe.Monthly_TAB();
+                updateThe.ColoredButtons();
             }
             else {
                 MessageBox.Show("Cannot delete a map while one is being generated.", "Continuum 3");
@@ -2978,9 +3673,9 @@ namespace ContinuumNS
                 mapList.RemoveMapByWakeGridMap(thisWakeGrid, wakeModelList);
                 wakeModelList.RemoveWakeGridMap(thisWakeGrid);
 
-                updateThe.NetTurbineEstsTAB(this);
-                updateThe.MapsTAB(this);                
-                updateThe.ColoredButtons(this);
+                updateThe.NetTurbineEstsTAB();
+                updateThe.MapsTAB();                
+                updateThe.ColoredButtons();
             }
         }
 
@@ -3006,7 +3701,7 @@ namespace ContinuumNS
                     }
                 }
                                 
-                updateThe.NetTurbineEstsTAB(this);
+                updateThe.NetTurbineEstsTAB();
             }
         }
 
@@ -3025,7 +3720,7 @@ namespace ContinuumNS
                     }
                 }
                 
-                updateThe.TurbsByString(this);
+                updateThe.TurbsByString();
             }
         }
         
@@ -3033,21 +3728,21 @@ namespace ContinuumNS
         {
             // Updates Turb by string plot based on strings selected in list
             if (okToUpdate == true) 
-                updateThe.TurbsByString(this);            
+                updateThe.TurbsByString();            
         }
 
         private void chkTurbNet_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates Net Turbine Ests tab based on selected turbines in list
             if (okToUpdate == true)  
-                updateThe.NetTurbineEstsTAB(this);            
+                updateThe.NetTurbineEstsTAB();            
         }
 
         private void cboModel_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates Net Turbine Ests tab based on selected model
             if (okToUpdate == true)
-                updateThe.NetTurbineEstsTAB(this);            
+                updateThe.NetTurbineEstsTAB();            
         }
 
         private void btnCreateWakeMap_Click(object sender, EventArgs e)
@@ -3134,10 +3829,10 @@ namespace ContinuumNS
         private void btnRefreshWakeMap_Click(object sender, EventArgs e)
         {
             // Updates the wake loss map to show specified min/max and contour interval            
-            updateThe.WakeLossMap(this);
+            updateThe.WakeLossMap();
         }
 
-        private void btnImportModel_Click(object sender, EventArgs e)
+        private void btnImportModel_Click_1(object sender, EventArgs e)
         {
             // Calls modelList.ImportModelsCSV to read in Continuum model coefficients
             DialogResult okToClear = DialogResult.Yes;
@@ -3163,7 +3858,7 @@ namespace ContinuumNS
             }
 
             modelList.ImportModelsCSV(this);            
-            updateThe.AllTABs(this);
+            updateThe.AllTABs();
         }
 
         private void chk_Use_Sep_CheckedChanged(object sender, EventArgs e)
@@ -3205,14 +3900,14 @@ namespace ContinuumNS
         private void cboDHplot_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the log-log plots on the Advanced tab based on whether Attached flow or Separated flow is selected from dropdown            
-            updateThe.ModelPlots(this);
+            updateThe.ModelPlots();
         }
 
         private void chkWeight_RMS_CheckedChanged(object sender, EventArgs e)
         { 
             // Recalculates Sectorwise RMS error to either be weighted by the wind rose or not
             if (okToUpdate == true)                 
-                updateThe.ModelParams(this);            
+                updateThe.ModelParams();            
         }
 
         private void btnImportRoughness_Click(object sender, EventArgs e)
@@ -3228,13 +3923,15 @@ namespace ContinuumNS
                                     
             if (savedParams.savedFileName == null)
             {
-                MessageBox.Show("Please specify the file location.", "Continuum 3");                
-                bool wasSaved = SaveAs();
-                if (wasSaved == false)
+                MessageBox.Show("Please specify the file location.", "Continuum 3");
+
+                if (sfdCFMfile.ShowDialog() == DialogResult.OK)
+                    SaveFile(sfdCFMfile.FileName);
+                else
                 {
                     MessageBox.Show("A file location is needed in order to create local database. Cancelling land cover import.", "Continuum 3");
                     return;
-                }
+                }                            
             }
 
             if (UTM_conversions.savedDatumIndex == 100) {
@@ -3306,7 +4003,7 @@ namespace ContinuumNS
                     LC_Key thisKey = new LC_Key(this);                                        
 
                     Populate_LC_Key_Form(thisKey);
-                    updateThe.LC_KeySelected(this);
+                    updateThe.LC_KeySelected();
 
                     thisKey.ShowDialog();
                 }
@@ -3376,6 +4073,8 @@ namespace ContinuumNS
                     thisMetList = chkMetLabels;
                 else if (tabName == "Summary")
                     thisMetList = chkMetSumm;
+                else if (tabName == "Met Data TS")
+                    thisMetList = chkMetsTS;
                 else if (tabName == "Gross")
                     thisMetList = chkMetGross;
                 else if (tabName == "Map")
@@ -3550,7 +4249,7 @@ namespace ContinuumNS
 
         private void btnMetData_Click(object sender, EventArgs e)
         {
-            // Imports met time series data. Asks user for met file format. Calls Do MCP if have MERRA data then calls Do Met Calcs.
+            // Imports met time series data. Asks user for met file format. Calls Do MCP if have reference data then calls Do Met Calcs.
             if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
                 BW_worker = new BackgroundWork();
 
@@ -3559,17 +4258,18 @@ namespace ContinuumNS
                 MessageBox.Show("Cannot import met data while other calculations underway.", "Continuum 3");
                 return;
             }
-
-            bool wasSaved = false;
+            
             if (savedParams.savedFileName == null)
             {
                 MessageBox.Show("Please specify the file location.", "Continuum 3");
-                wasSaved = SaveAs();
-                if (wasSaved == false)
+
+                if (sfdCFMfile.ShowDialog() == DialogResult.OK)
+                    SaveFile(sfdCFMfile.FileName);
+                else
                 {
                     MessageBox.Show("A file location is needed in order to create local database. Cancelling met data import.", "Continuum 3");
                     return;
-                }
+                }                
             }
 
             string filename = "";
@@ -3584,18 +4284,18 @@ namespace ContinuumNS
             if (Good_to_go == DialogResult.No)
                 return;
 
-            DialogResult doFiltering = new DialogResult();            
+            DialogResult doFiltering = MessageBox.Show("Do you want to apply met data QC filters?", "Continuum 3", MessageBoxButtons.YesNo);
+
             // On first import, ask user if the modeled height is the one that they want
             if (metList.ThisCount == 0)
-            {
-                doFiltering = MessageBox.Show("Do you want to apply met data QC filters?", "Continuum 3", MessageBoxButtons.YesNo);
+            {                
                 Good_to_go = MessageBox.Show("The modeled height is set at " + modeledHeight.ToString() + " m. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
 
                 if (Good_to_go == DialogResult.No)
                     return;
 
-                Good_to_go = MessageBox.Show("The number of MERRA2 nodes is set to " + merraList.numMERRA_Nodes.ToString() + ". Options are 1, 4, or 16 nodes. " +
-                    "Do you want to continue?", "Continuum 3.0", MessageBoxButtons.YesNo);
+          //      Good_to_go = MessageBox.Show("The number of MERRA2 nodes is set to " + merraList.numMERRA_Nodes.ToString() + ". Options are 1, 4, or 16 nodes. " +
+          //          "Do you want to continue?", "Continuum 3.0", MessageBoxButtons.YesNo);
 
                 if (Good_to_go == DialogResult.No)
                 {
@@ -3612,14 +4312,7 @@ namespace ContinuumNS
                     return;
                 }                
             }
-            else
-            {
-                if (metList.filteringEnabled == true)
-                    doFiltering = DialogResult.Yes;
-                else
-                    doFiltering = DialogResult.No;
-            }
-
+            
             if (Good_to_go == DialogResult.Yes)
             {               
 
@@ -3639,24 +4332,27 @@ namespace ContinuumNS
                     turbineList.ClearAllNetEsts();
                     modelList.ClearAllExceptImported();
                     metPairList.ClearAll();
-                    mapList.ClearAllWakedMaps();                                       
+                    mapList.ClearAllWakedMaps();
+                    dataMetTS.Rows.Clear();
+                    dataMetTS.Columns.Clear();
+
+                    bool applyFilters = false;
 
                     if (doFiltering == DialogResult.Yes)
                     {
                         okToUpdate = false;
                         chkDisableFilter.CheckState = CheckState.Checked;
-                        metList.filteringEnabled = true;
+                        applyFilters = true;
                         okToUpdate = true;
                     }
                     else
                     {
                         okToUpdate = false;
-                        chkDisableFilter.CheckState = CheckState.Unchecked;
-                        metList.filteringEnabled = false;
+                        chkDisableFilter.CheckState = CheckState.Unchecked;                        
                         okToUpdate = true;
                     }
                                         
-                    bool gotIt = metList.ImportFilterExtrapMetData(filename, this); // Reads in formatted .csv file, filters and extrapolates to modeled height
+                    bool gotIt = metList.ImportFilterExtrapMetData(filename, this, applyFilters); // Reads in formatted .csv file, filters and extrapolates to modeled height
                     
                     if (gotIt == true)
                     {
@@ -3669,8 +4365,9 @@ namespace ContinuumNS
                         thisMet.metData.FindStartEndDatesWithMaxRecovery();
                         // Check that WS_First and WS_int_size were initialized                                            
 
+                        // Taking out this since users can now specify multiple reference sites.  Simpler than having it automated
                         // Check to see if user wants to load MERRA2 data
-
+                        /*
                         DialogResult getMERRA = DialogResult.No;
 
                         if (metList.ThisCount == 1)
@@ -3680,14 +4377,19 @@ namespace ContinuumNS
 
                         if (getMERRA == DialogResult.Yes)
                         {
+                            // To do: Specify which reference is used in MCP (ERA5 vs MERRA2)
+
                             metList.isMCPd = true;
                             // check to see if MERRA2 data has been loaded for this met
                             UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(metList.metItem[metList.ThisCount - 1].UTMX, metList.metItem[metList.ThisCount - 1].UTMY);
                             int UTC_offset = UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
 
                             // Adds new MERRA object to list, figures out if new MERRA nodes are needed, runs MCP
-                            merraList.AddMERRA_GetDataFromTextFiles(theseLL.latitude, theseLL.longitude, UTC_offset, this, metList.metItem[metList.ThisCount - 1], false);
-                            MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                            int numNodes = Convert.ToInt32(cboNumMERRA_Nodes.SelectedItem.ToString());
+                            refList.AddReference_GetDataFromTextFiles(cboLTRefType.SelectedItem.ToString(), theseLL.latitude, theseLL.longitude, numNodes, dateMERRAStart.Value,
+                                dateMERRAEnd.Value, UTC_offset, this, metList.metItem[metList.ThisCount - 1], false);
+
+                            Reference thisMERRA = refList.GetReference(cboLTRefType.SelectedItem.ToString(), theseLL.latitude, theseLL.longitude, numNodes);
 
                             if (BW_worker.IsBusy() == false && thisMERRA.interpData.TS_Data != null) // found existing MERRA2 data so let's MCP!
                             {                                
@@ -3712,10 +4414,11 @@ namespace ContinuumNS
                                     topo.useSepMod = true;
                                 else
                                     topo.useSepMod = false;                                                            
-                                                          
+
                                 ChangesMade();
                                 updateThe.AllTABs(this);
                             }
+
                         }
                         else
                         {
@@ -3725,12 +4428,22 @@ namespace ContinuumNS
                             updateThe.AllTABs(this);
                             ChangesMade();
                         }
-                    }                    
 
+                        thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));
+
+                            updateThe.AllTABs(this);
+                            ChangesMade();
+                        */
+                        
+                        thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));
+                        
+                        updateThe.AllTABs();
+                        ChangesMade();
+                    } 
                 }
                 else
                 {
-                    updateThe.AllTABs(this);
+                    updateThe.AllTABs();
                 }
             }           
         
@@ -3783,7 +4496,7 @@ namespace ContinuumNS
             theseFilts.ShowDialog();
         }
 
-        /// <summary> Returns met object based on met selected on specified tab ("Met Data QC", "MCP", "MERRA", "Site Conditions TI", "Site Conditions Shear", "Site Conditions Extreme WS)" </summary>               
+        /// <summary> Returns met object based on met selected on specified tab ("Met Data QC", "MCP", "Site Conditions TI", "Site Conditions Shear", "Site Conditions Extreme WS)" </summary>               
         public Met GetSelectedMet(string TAB_Name)
         {            
             Met thisMet = new Met();
@@ -3793,9 +4506,7 @@ namespace ContinuumNS
                 if (TAB_Name == "Met Data QC") 
                     thisMet = metList.GetMet(cboMetQC_SelectedMet.SelectedItem.ToString()); 
                 else if (TAB_Name == "MCP")
-                    thisMet = metList.GetMet(cboMCP_Met.SelectedItem.ToString()); 
-                else if (TAB_Name == "MERRA")               
-                    thisMet = metList.GetMet(cboMERRASelectedMet.SelectedItem.ToString());                    
+                    thisMet = metList.GetMet(cboMCP_Met.SelectedItem.ToString());                                    
                 else if (TAB_Name == "Site Conditions TI")                
                     thisMet = metList.GetMet(cboTurbMet.SelectedItem.ToString());                   
                 else if (TAB_Name == "Site Conditions Shear")                
@@ -3830,7 +4541,7 @@ namespace ContinuumNS
         private void cboMetWindRose_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates wind rose plot on Met Data QC tab showing either wind rose or wind speed by WD
-            updateThe.MetWindRoseOrWS_byWDPlot(this, GetSelectedMet("Met Data QC"));
+            updateThe.MetWindRoseOrWS_byWDPlot(GetSelectedMet("Met Data QC"));
         }
 
         /// <summary> Returns time of day (TOD) selected on specified tab ("Advanced", "Summary", "MCP") </summary>   
@@ -3922,8 +4633,9 @@ namespace ContinuumNS
         private void btnResetDates_Click(object sender, EventArgs e)
         {
             // Resets MCP export dates on MCP tab
-            Met thisMet = GetSelectedMet("MCP");
-            thisMet.mcp.ResetExportDates(this);
+            
+            MCP thisMCP = GetSelectedMCP();
+            thisMCP.ResetExportDates(this);
         }
         
         /// <summary> Gets selected MCP method on MCP tab. </summary>        
@@ -3946,6 +4658,13 @@ namespace ContinuumNS
             if (okToUpdate == false)
                 return;
 
+            ChangingNumWD_BinsOk("MCP");
+
+        }
+
+        /// <summary> Gets called when the number of wind direction bins is changed.  Returns true if user is ok with clearing estimates. </summary>        
+        public void ChangingNumWD_BinsOk(string tabName)
+        {            
             if (metList.isTimeSeries && metList.ThisCount > 0)
             {
                 DialogResult result = DialogResult.Yes;
@@ -3955,43 +4674,61 @@ namespace ContinuumNS
                     string message = "Changing the number of WD bins will reset the MCP and all estimated values. Do you want to continue?";
                     result = MessageBox.Show(message, "", MessageBoxButtons.YesNo);
                 }
-                
+
                 if (result == DialogResult.Yes)
                 {
-                    metList.numWD = Convert.ToInt16(cboMCPNumWD.SelectedItem.ToString());
+                    if (tabName == "MCP")
+                        metList.numWD = Convert.ToInt16(cboMCPNumWD.SelectedItem.ToString());
+                    else if (tabName == "LT Ref")
+                        metList.numWD = Convert.ToInt16(cboNumWDRefTab.SelectedItem.ToString());
+                    else if (tabName == "Terrain Complexity")
+                        metList.numWD = Convert.ToInt16(cboNumWDComplxTab.SelectedItem.ToString());
 
-                    updateThe.WindDirectionToDisplay(this);
+                    updateThe.WindDirectionToDisplay();
 
                     metList.ResetMetParams();
                     ResetTimeSeries();
                     turbineList.ClearAllCalcs();
                     NodeCollection nodeList = new NodeCollection();
                     nodeList.ClearExposGridStatsFromDB(this);
-                    updateThe.AllTABs(this);
+                    updateThe.AllTABs();
                 }
                 else
-                    cboMCPNumWD.Text = metList.numWD.ToString();
+                {
+                    if (tabName == "MCP")
+                        cboMCPNumWD.Text = metList.numWD.ToString();
+                    else if (tabName == "LT Ref")
+                        cboNumWDRefTab.Text = metList.numWD.ToString();
+                    else if (tabName == "Terrain Complexity")
+                        cboNumWDComplxTab.Text = metList.numWD.ToString();
+                }
             }
             else
             {
-                metList.numWD = Convert.ToInt16(cboMCPNumWD.SelectedItem.ToString());
-            }
+                if (tabName == "MCP")
+                    metList.numWD = Convert.ToInt16(cboMCPNumWD.SelectedItem.ToString());
+                else if (tabName == "LT Ref")
+                    metList.numWD = Convert.ToInt16(cboNumWDRefTab.SelectedItem.ToString());
+                else if (tabName == "Terrain Complexity")
+                    metList.numWD = Convert.ToInt16(cboNumWDComplxTab.SelectedItem.ToString());
 
+                updateThe.AllTABs();
+            }            
         }
 
         private void cboMCP_WD_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the MCP tab after the selected wind direction is changed by user
             if (okToUpdate)
-                updateThe.MCP_TAB(this);
+                updateThe.MCP_TAB();
         }
 
         private void dateMCPExportStart_ValueChanged(object sender, EventArgs e)
         {
-            // Changes MCP export start date based on user-selected date
-            Met thisMet = GetSelectedMet("MCP");
-            DateTime refEnd = thisMet.mcp.GetStartOrEndDate("Reference", "End");
-            DateTime refStart = thisMet.mcp.GetStartOrEndDate("Reference", "Start");
+            // Changes MCP export start date based on user-selected date            
+            MCP thisMCP = GetSelectedMCP();
+            DateTime refEnd = thisMCP.GetStartOrEndDate("Reference", "End");
+            DateTime refStart = thisMCP.GetStartOrEndDate("Reference", "Start");
 
             if (dateMCPExportStart.Value > refEnd)
             {
@@ -4002,8 +4739,11 @@ namespace ContinuumNS
 
         private void cboMCP_Type_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Resets MCP and time series calculations after user changes the selected MCP method                       
-            if (okToUpdate && metList.isTimeSeries && metList.isMCPd && metList.ThisCount > 0)
+            // Resets MCP and time series calculations after user changes the selected MCP method
+
+            Met selMet = GetSelectedMet("MCP");
+
+            if (okToUpdate && metList.isTimeSeries && selMet.isMCPd && metList.ThisCount > 0)
             {
                 DialogResult result = DialogResult.Yes;
 
@@ -4016,37 +4756,42 @@ namespace ContinuumNS
                 if (result == DialogResult.Yes)
                 {
                     ResetTimeSeries();
-                    updateThe.AllTABs(this);
+                    updateThe.AllTABs();
                 }
                 else
                 {
                     // Figure out what MCP method was used before user changed it
                     for (int i = 0; i < metList.ThisCount; i++)
-                        if (metList.metItem[i].mcp.HaveMCP_Estimate("Orth. Regression") == true)
+                    {
+                        for (int m = 0; m < metList.metItem[i].GetNumMCP(); m++)
                         {
-                            cboMCP_Type.SelectedIndex = 0;
-                            break;
+                            if (metList.metItem[i].mcpList[m].HaveMCP_Estimate("Orth. Regression") == true)
+                            {
+                                cboMCP_Type.SelectedIndex = 0;
+                                break;
+                            }
+                            else if (metList.metItem[i].mcpList[m].HaveMCP_Estimate("Method of Bins") == true)
+                            {
+                                cboMCP_Type.SelectedIndex = 1;
+                                break;
+                            }
+                            else if (metList.metItem[i].mcpList[m].HaveMCP_Estimate("Variance Ratio") == true)
+                            {
+                                cboMCP_Type.SelectedIndex = 2;
+                                break;
+                            }
+                            else if (metList.metItem[i].mcpList[m].HaveMCP_Estimate("Matrix") == true)
+                            {
+                                cboMCP_Type.SelectedIndex = 3;
+                                break;
+                            }
                         }
-                        else if (metList.metItem[i].mcp.HaveMCP_Estimate("Method of Bins") == true)
-                        {
-                            cboMCP_Type.SelectedIndex = 1;
-                            break;
-                        }
-                        else if (metList.metItem[i].mcp.HaveMCP_Estimate("Variance Ratio") == true)
-                        {
-                            cboMCP_Type.SelectedIndex = 2;
-                            break;
-                        }
-                        else if (metList.metItem[i].mcp.HaveMCP_Estimate("Matrix") == true)
-                        { 
-                            cboMCP_Type.SelectedIndex = 3;
-                            break;
-                        }                
+                    }
                 }
                 
             }
 
-            updateThe.MCP_Settings(this);
+            updateThe.MCP_Settings();
         }
 
         private void btnExportMCP_TS_Click(object sender, EventArgs e)
@@ -4070,9 +4815,8 @@ namespace ContinuumNS
         private void txtWS_bin_width_TextChanged(object sender, EventArgs e)
         {
             // Resets MCP and time series estimates if user changes wind speed bin width
-            DialogResult result = DialogResult.Yes;
-            Met thisMet = GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            DialogResult result = DialogResult.Yes;            
+            MCP thisMCP = GetSelectedMCP(); 
 
             if (thisMCP != null && isTest == false)
             {
@@ -4086,8 +4830,12 @@ namespace ContinuumNS
 
             if (result == DialogResult.Yes)
             {
-                if (metList.isMCPd)                
-                    ResetTimeSeries();                   
+                for (int m = 0; m < metList.ThisCount; m++)
+                    if (metList.metItem[m].isMCPd)
+                    {
+                        ResetTimeSeries();
+                        break;
+                    }
                 
                 try
                 {
@@ -4099,7 +4847,7 @@ namespace ContinuumNS
                     txtWS_bin_width.Text = metList.mcpWS_BinWidth.ToString();
                 }
 
-                updateThe.AllTABs(this);
+                updateThe.AllTABs();
             }
             else
                 txtWS_bin_width.Text = thisMCP.WS_BinWidth.ToString();
@@ -4107,28 +4855,26 @@ namespace ContinuumNS
 
         private void dateMCPExportEnd_ValueChanged(object sender, EventArgs e)
         {
-            // Updates MCP export end date based on user-selected date
-            Met thisMet = GetSelectedMet("MCP");
+            // Updates MCP export end date based on user-selected date            
+            MCP thisMCP = GetSelectedMCP();
 
-            if (thisMet.mcp.refData.Length > 0)
-                if (dateMCPExportEnd.Value < thisMet.mcp.GetStartOrEndDate("Reference", "Start"))
+            if (thisMCP.refData.Length > 0)
+                if (dateMCPExportEnd.Value < thisMCP.GetStartOrEndDate("Reference", "Start"))
                 {
                     MessageBox.Show("Export end date cannot be before the start of the reference site data.");
-                    dateMCPExportEnd.Value = thisMet.mcp.GetStartOrEndDate("Reference", "End");
-            }
-            
+                    dateMCPExportEnd.Value = thisMCP.GetStartOrEndDate("Reference", "End");
+            }            
         }
 
         private void btnMCP_Uncert_Click(object sender, EventArgs e)
         {
             // Runs MCP uncertainty analysis
             Met thisMet = GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
-            UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-            MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-
-            thisMCP.Do_MCP_Uncertainty(this, thisMERRA, thisMet);
-            updateThe.MCP_TAB(this);
+            MCP thisMCP = GetSelectedMCP();
+                        
+            Reference thisRef = GetSelectedReference("MCP");
+            thisMCP.Do_MCP_Uncertainty(this, thisRef, thisMet);
+            updateThe.MCP_TAB();
         }
 
         private void btnExportMCPUncert_Click(object sender, EventArgs e)
@@ -4142,7 +4888,9 @@ namespace ContinuumNS
             // Resets time series and MCP if user changes the number of time of day bins to use
             // If user changes numWD here then metList numWD should be updated, all calcs and estiamtes should be deleted and all WSWD_dists need to be recalculated with new numWD
 
-            if (okToUpdate && metList.isTimeSeries && metList.isMCPd && metList.ThisCount > 0)
+            Met selMet = GetSelectedMet("MCP");
+
+            if (okToUpdate && metList.isTimeSeries && selMet.isMCPd && metList.ThisCount > 0)
             {
                 DialogResult result = DialogResult.Yes;
 
@@ -4156,12 +4904,12 @@ namespace ContinuumNS
                 {
                     metList.numTOD = Convert.ToInt16(cboMCPNumHours.SelectedItem.ToString());
                     ResetTimeSeries();                    
-                    updateThe.AllTABs(this);
+                    updateThe.AllTABs();
                 }
                 else
                     cboMCPNumHours.Text = metList.numTOD.ToString();
             }
-            else if (okToUpdate && metList.isTimeSeries && metList.isMCPd == false)
+            else if (okToUpdate && metList.isTimeSeries && selMet.isMCPd == false)
                 metList.numTOD = Convert.ToInt16(cboMCPNumHours.SelectedItem.ToString());
             else if (metList.ThisCount == 0)
                 metList.numTOD = Convert.ToInt16(cboMCPNumHours.SelectedItem.ToString());
@@ -4171,20 +4919,23 @@ namespace ContinuumNS
         {
             // Updates MCP tab (scatterplot and MCP textboxes) when user changes the TOD dropdown
             if (okToUpdate)
-                updateThe.MCP_TAB(this);
+                updateThe.MCP_TAB();
         }
 
         private void cboMCP_Season_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates MCP tab (scatterplot and MCP textboxes) when user changes the season dropdown
             if (okToUpdate)
-                updateThe.MCP_TAB(this);
+                updateThe.MCP_TAB();
         }
 
         private void cboMCPNumSeasons_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Resets time series and MCP if user changes the number of season bins to use
-            if (okToUpdate && metList.isTimeSeries && metList.isMCPd && metList.ThisCount > 0)
+
+            Met selMet = GetSelectedMet("MCP");
+
+            if (okToUpdate && metList.isTimeSeries && selMet.isMCPd && metList.ThisCount > 0)
             {
                 DialogResult result = DialogResult.Yes;
 
@@ -4199,12 +4950,12 @@ namespace ContinuumNS
                     metList.numSeason = Convert.ToInt16(cboMCPNumSeasons.SelectedItem.ToString());
 
                     ResetTimeSeries();
-                    updateThe.AllTABs(this);
+                    updateThe.AllTABs();
                 }
                 else
                     cboMCPNumSeasons.Text = metList.numSeason.ToString();
             }
-            else if (okToUpdate && metList.isTimeSeries && metList.isMCPd == false)
+            else if (okToUpdate && metList.isTimeSeries && selMet.isMCPd == false)
                 metList.numSeason = Convert.ToInt16(cboMCPNumSeasons.SelectedItem.ToString());
             else if (metList.ThisCount == 0)
                 metList.numSeason = Convert.ToInt16(cboMCPNumSeasons.SelectedItem.ToString());
@@ -4212,9 +4963,8 @@ namespace ContinuumNS
 
         private void cboUncertStep_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Updates MCP uncertaint step size (i.e. number of months that window is moved on each step). Resets if uncertainty analysis has already been run
-            Met thisMet = GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            // Updates MCP uncertaint step size (i.e. number of months that window is moved on each step). Resets if uncertainty analysis has already been run            
+            MCP thisMCP = GetSelectedMCP();
 
             if ((thisMCP.uncertOrtho.Length > 0) || (thisMCP.uncertVarrat.Length > 0) || (thisMCP.uncertBins.Length > 0) || (thisMCP.uncertMatrix.Length > 0))
             {
@@ -4230,21 +4980,24 @@ namespace ContinuumNS
                         thisMCP.uncertStepSize = Convert.ToInt16(cboUncertStep.SelectedItem.ToString());
                         for (int i = 0; i < metList.ThisCount; i++)
                         {
-                            if (metList.metItem[i].mcp.uncertOrtho != null)
-                                for (int j = 0; j < metList.metItem[i].mcp.uncertOrtho.Length; j++)
-                                    metList.metItem[i].mcp.uncertOrtho[0].Clear();
+                            for (int m = 0; m < metList.metItem[i].GetNumMCP(); m++)
+                            {
+                                if (metList.metItem[i].mcpList[m].uncertOrtho != null)
+                                    for (int j = 0; j < metList.metItem[i].mcpList[m].uncertOrtho.Length; j++)
+                                        metList.metItem[i].mcpList[m].uncertOrtho[0].Clear();
 
-                            if (metList.metItem[i].mcp.uncertVarrat != null)
-                                for (int j = 0; j < metList.metItem[i].mcp.uncertVarrat.Length; j++)
-                                    metList.metItem[i].mcp.uncertVarrat[0].Clear();
+                                if (metList.metItem[i].mcpList[m].uncertVarrat != null)
+                                    for (int j = 0; j < metList.metItem[i].mcpList[m].uncertVarrat.Length; j++)
+                                        metList.metItem[i].mcpList[m].uncertVarrat[0].Clear();
 
-                            if (metList.metItem[i].mcp.uncertMatrix != null)
-                                for (int j = 0; j < metList.metItem[i].mcp.uncertMatrix.Length; j++)
-                                    metList.metItem[i].mcp.uncertMatrix[0].Clear();
+                                if (metList.metItem[i].mcpList[m].uncertMatrix != null)
+                                    for (int j = 0; j < metList.metItem[i].mcpList[m].uncertMatrix.Length; j++)
+                                        metList.metItem[i].mcpList[m].uncertMatrix[0].Clear();
 
-                            if (metList.metItem[i].mcp.uncertBins != null)
-                                for (int j = 0; j < metList.metItem[i].mcp.uncertBins.Length; j++)
-                                    metList.metItem[i].mcp.uncertBins[0].Clear();
+                                if (metList.metItem[i].mcpList[m].uncertBins != null)
+                                    for (int j = 0; j < metList.metItem[i].mcpList[m].uncertBins.Length; j++)
+                                        metList.metItem[i].mcpList[m].uncertBins[0].Clear();
+                            }
                         }
                     }
                     else
@@ -4254,15 +5007,14 @@ namespace ContinuumNS
             else
                 thisMCP.uncertStepSize = Convert.ToInt16(cboUncertStep.SelectedItem.ToString());
 
-            updateThe.ColoredButtons(this);
-            updateThe.MCP_TAB(this);
+            updateThe.ColoredButtons();
+            updateThe.MCP_TAB();
         }
 
         private void txtWS_PDF_Wgt_TextChanged(object sender, EventArgs e)
         {
             // Called when user changes the WS PDF weight used in Matrix MCP. If Matrix MCP was created, asks user if they want to continue and then resets Matrix MCP (if created) 
-            Met thisMet = GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;                      
+            MCP thisMCP = GetSelectedMCP();                      
 
             if (thisMCP != null)
             {
@@ -4284,7 +5036,7 @@ namespace ContinuumNS
                         return;
                     }
 
-                    updateThe.AllTABs(this);
+                    updateThe.AllTABs();
                 }
 
                 try
@@ -4315,8 +5067,10 @@ namespace ContinuumNS
         private void txtLast_WS_Wgt_TextChanged(object sender, EventArgs e)
         {
             // Called when user changes the Last WS (lag) PDF weight used in Matrix MCP. If Matrix MCP was created, asks user if they want to continue and then resets Matrix MCP (if created)
-            Met thisMet = GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            if (okToUpdate == false)
+                return;
+
+            MCP thisMCP = GetSelectedMCP();
 
             if (thisMCP != null)
             {
@@ -4338,7 +5092,7 @@ namespace ContinuumNS
                         return;
                     }
 
-                    updateThe.AllTABs(this);
+                    updateThe.AllTABs();
                 }
 
                 try
@@ -4365,56 +5119,35 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary> Returns MERRA object based on what is selected on MERRA tab </summary>       
-        public MERRA GetSelectedMERRA()
-        {             
-            Met thisMet = GetSelectedMet("MERRA");                   
-            MERRA thisMERRA = new MERRA();
+        /// <summary> Returns Reference object based on what is selected on tabs: "LT Ref", "MCP", or "Extreme WS" </summary>       
+        public Reference GetSelectedReference(string tabName)
+        {
+            Reference thisRef = new Reference();
 
-            if (thisMet.name != null) // it is associated with a met
-            {
-                UTM_conversion.Lat_Long thisLL = UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                thisMERRA = merraList.GetMERRA(thisLL.latitude, thisLL.longitude);
-            }
-            else // not associated with a met
-            {
-                if (txtMERRA_SelectedLat.Text != "" && txtMERRA_SelectedLong.Text != "")
-                {
-                    try
-                    {
-                        double thisLat = Convert.ToDouble(txtMERRA_SelectedLat.Text.ToString());
-                        double thisLong = Convert.ToDouble(txtMERRA_SelectedLong.Text.ToString());
+            if (tabName == "LT Ref" && cboLTReferences.SelectedItem != null)            
+                thisRef = refList.GetReferenceByName(cboLTReferences.SelectedItem.ToString(), metList, UTM_conversions); 
+            else if (tabName == "MCP" && cboMCP_Ref.SelectedItem != null)            
+                thisRef = refList.GetReferenceByName(cboMCP_Ref.SelectedItem.ToString(), metList, UTM_conversions);
+            else if (tabName == "Extreme WS" && cboExtremeWSRef.SelectedItem != null)
+                thisRef = refList.GetReferenceByName(cboExtremeWSRef.SelectedItem.ToString(), metList, UTM_conversions);
 
-                        thisMERRA = merraList.GetMERRA(thisLat, thisLong);
-                    }
-                    catch
-                    {
-                        return thisMERRA;
-                    }
-                }
-                
-            }
-
-            TurbineCollection.PowerCurve powerCurve = GetSelectedPowerCurve("MERRA");
-            thisMERRA.powerCurve = powerCurve;
-            thisMERRA.ApplyPC(ref thisMERRA.interpData.TS_Data);
-            thisMERRA.Calc_MonthProdStats(UTM_conversions);
-            thisMERRA.CalcAnnualProd(ref thisMERRA.interpData.Annual_Prod, thisMERRA.interpData.Monthly_Prod, UTM_conversions);
-            
-            return thisMERRA;
+            return thisRef;
         }
 
         /// <summary> Returns selected parameter to plot on MERRA tab </summary> 
-        public string GetMERRA_SelectedPlotParameter()
+        public string GetLT_RefSelectedPlotParameter()
         {
+            if (cboMERRA_PlotParam.SelectedItem == null)
+                cboMERRA_PlotParam.SelectedIndex = 0;
+
             string plotParam = cboMERRA_PlotParam.SelectedItem.ToString(); 
             return plotParam;
         }         
              
         private void btn_ExportWR_Click(object sender, EventArgs e)
         {
-            // Exports MERRA2 wind rose selected on MERRA tab            
-            export.ExportMERRA_WindRose(this);
+            // Exports reference wind rose selected on LT Reference tab            
+            export.ExportReferenceWindRose(this);
         }
         
         
@@ -4422,50 +5155,20 @@ namespace ContinuumNS
         {
             // Update MERRA2 tab based on selected plot parameter
             if (okToUpdate)                            
-                updateThe.MERRA_TAB(this);                            
+                updateThe.LT_ReferenceTAB();                            
         }
 
         private void btn_Export_All_Months_All_Years_Click(object sender, EventArgs e)
         {
-            // Exports all months and all years of MERRA2 interpolated data            
-            export.ExportMERRAAllMonthsAllYears(this);
+            // Exports all months and all years of selected reference interpolated data            
+            export.ExportReferenceAllMonthsAllYears(this);
         }
         private void btn_Export_Interp_Click(object sender, EventArgs e)
         {
-            // Exports interpolated hourly MERRA2 data            
-            export.ExportMERRA_Interp_Data(this);
+            // Exports interpolated hourly reference data            
+            export.ExportReferenceInterpData(this);
         }
-        private void cboNumMERRA_Nodes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates number of MERRA2 nodes to interpolate between (1, 4, or 16). Resets merraList if have already imported MERRA2 data
-            if (merraList.numMERRA_Data > 0 && okToUpdate)
-            {
-                DialogResult goodToGo = DialogResult.Yes;
-
-                if (isTest == false)
-                    goodToGo = MessageBox.Show("Changing the number of MERRA2 nodes to use will reset all time series estimates. Do you want to continue?",
-                        "Continuum 3.0", MessageBoxButtons.YesNo);
-
-                if (goodToGo == DialogResult.Yes)
-                {
-                    merraList.Set_Num_MERRA_Nodes(this); // Clears all MERRA2 data. TO DO: Update extract button or automatically reload 
-                    ResetTimeSeries();
-                    updateThe.AllTABs(this);
-                }
-                else
-                {
-                    okToUpdate = false;
-                    if (merraList.numMERRA_Nodes == 1) cboNumMERRA_Nodes.SelectedIndex = 0;
-                    if (merraList.numMERRA_Nodes == 4) cboNumMERRA_Nodes.SelectedIndex = 1;
-                    if (merraList.numMERRA_Nodes == 16) cboNumMERRA_Nodes.SelectedIndex = 2;
-                    okToUpdate = true;
-                }
-                    
-            }
-            else
-                merraList.Set_Num_MERRA_Nodes(this);
-        }
-
+        
         /// <summary> Returns Power Curve object selected on specified tab ("MERRA", "Gross", "Uncertainty", "Site Suitability", "Monthly", "Turbulence") </summary>        
         public TurbineCollection.PowerCurve GetSelectedPowerCurve(string TAB_name)
         {             
@@ -4473,7 +5176,7 @@ namespace ContinuumNS
             string powerCurveString = "";
             try
             {
-                if (TAB_name == "MERRA" && cboMERRA_PowerCurves.SelectedItem != null)
+                if (TAB_name == "LT Ref" && cboMERRA_PowerCurves.SelectedItem != null)
                     powerCurveString = cboMERRA_PowerCurves.SelectedItem.ToString();
                 else if (TAB_name == "Gross" && cboPowerCrvs.SelectedItem != null)
                     powerCurveString = cboPowerCrvs.SelectedItem.ToString();
@@ -4626,10 +5329,10 @@ namespace ContinuumNS
                 }
             }
 
-            updateThe.ZoneList(this);
-            updateThe.SiteSuitabilityDropdown(this, null);
-            updateThe.ColoredButtons(this);
-            updateThe.SiteSuitabilityTAB(this);
+            updateThe.ZoneList();
+            updateThe.SiteSuitabilityDropdown(null);
+            updateThe.ColoredButtons();
+            updateThe.SiteSuitabilityTAB();
             ChangesMade();
                         
         }
@@ -4735,7 +5438,7 @@ namespace ContinuumNS
         {
             // Get selected MERRA data based on selected met and update plots and tables
             if (okToUpdate == true)                            
-                updateThe.MERRA_TAB(this);
+                updateThe.LT_ReferenceTAB();
             
         }
 
@@ -4743,14 +5446,44 @@ namespace ContinuumNS
         {
             // Updates Met Data QC tab with newly selected met
             if (okToUpdate == true)
-                updateThe.MetDataQC_TAB(this);
+                updateThe.MetDataQC_TAB();
         }
 
         private void cboMCP_Met_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates MCP tab with newly selected met
-            if (okToUpdate == true)
-                updateThe.MCP_TAB(this);
+            
+            // Update list of measured heights at selected met plus modeled height
+            Met selMet = GetSelectedMet("MCP");
+
+            if (selMet.metData == null)
+            {
+                cboMCP_Height.Items.Clear();
+                return;
+            }
+
+            if (selMet.isMCPd)
+            {
+                // Select LT reference used in MCP
+                for (int r = 0; r < cboMCP_Ref.Items.Count; r++)
+                    if (cboMCP_Ref.Items[r].ToString() == selMet.mcpList[0].reference.GetName(metList, UTM_conversions))
+                    {
+                        cboMCP_Ref.SelectedIndex = r;
+                        break;
+                    }
+            }
+
+            double[] anemHeights = selMet.metData.GetHeightsOfAnems();
+            int numHeights = anemHeights.Length;
+
+            cboMCP_Height.Items.Clear();
+
+            cboMCP_Height.Items.Add(modeledHeight);
+
+            for (int h = 0; h < numHeights; h++)
+                cboMCP_Height.Items.Add(anemHeights[h]);
+                        
+            cboMCP_Height.SelectedIndex = 0;            
         }
 
         private void cboSensorHeight_SelectedIndexChanged(object sender, EventArgs e)
@@ -4759,10 +5492,10 @@ namespace ContinuumNS
             if (okToUpdate == true)
             {
                 Met thisMet = GetSelectedMet("Met Data QC");                
-                updateThe.MetAnemScatterplot(this, thisMet);
-                updateThe.MetWS_DiffvsWD(this, thisMet);
-                updateThe.MetWS_DiffvsWindSpeed(this, thisMet);
-                updateThe.MetWindRoseOrWS_byWDPlot(this, thisMet);
+                updateThe.MetAnemScatterplot(thisMet);
+                updateThe.MetWS_DiffvsWD(thisMet);
+                updateThe.MetWS_DiffvsWindSpeed(thisMet);
+                updateThe.MetWindRoseOrWS_byWDPlot(thisMet);
             }
         }
 
@@ -4772,50 +5505,24 @@ namespace ContinuumNS
             if (okToUpdate == true)
             {
                 Met thisMet = GetSelectedMet("Met Data QC");
-                updateThe.MetAnemScatterplot(this, thisMet);
-                updateThe.MetWS_DiffvsWD(this, thisMet);
-                updateThe.MetWS_DiffvsWindSpeed(this, thisMet);
+                updateThe.MetAnemScatterplot(thisMet);
+                updateThe.MetWS_DiffvsWD(thisMet);
+                updateThe.MetWS_DiffvsWindSpeed(thisMet);
             }
         }
 
-        private void dateMERRAStart_ValueChanged(object sender, EventArgs e)
-        {
-            // Changes the start date of the MERRA2 data. If MERRA2 data has already been imported, asks the user if they want to continue and clears MERRA2 data if they do
-            if (merraList.numMERRA_Data > 1 && metList.isTimeSeries == true && metList.isMCPd == true && okToUpdate)
-            {
-                DialogResult goodToGo = MessageBox.Show("Resetting the MERRA2 start date will delete all imported MERRA2 data and will reset time series model calculations. Do " +
-                    "you want to continue?", "Continuum 3.0", MessageBoxButtons.YesNo);
-
-                if (goodToGo == DialogResult.Yes)
-                {
-                    merraList.ClearMERRA();
-                    merraList.ClearMERRA_Data();
-                    merraList.DeleteAllMERRADataFromDB(this);
-                    ResetTimeSeries();
-
-                    merraList.startDate = dateMERRAStart.Value;
-                    ChangesMade();
-                }
-                else
-                {
-                    okToUpdate = false;
-                    dateMERRAStart.Value = merraList.startDate;
-                    okToUpdate = true;
-                }
-            }
-            else
-                merraList.startDate = dateMERRAStart.Value;
-        }
+        
 
         /// <summary> Resets all time series estimates </summary>
         public void ResetTimeSeries()
         {             
             metList.DeleteAllTimeSeriesEsts(this);
-            metList.isMCPd = false;
+            metList.allMCPd = false;
 
             for (int i = 0; i < metList.ThisCount; i++)
             {
-                metList.metItem[i].mcp = null;
+                metList.metItem[i].mcpList = null;
+                metList.metItem[i].isMCPd = false;
 
                 if (metList.metItem[i].metData.GetNumAnems() > 0)
                     if (metList.metItem[i].metData.anems[0].windData == null)
@@ -4833,43 +5540,23 @@ namespace ContinuumNS
 
             metPairList.ClearAll();
             modelList.ClearAll();
-        }
-
-        private void dateMERRAEnd_ValueChanged(object sender, EventArgs e)
-        {
-            // Changes the end date of the MERRA2 data. If MERRA2 data has already been imported, asks the user if they want to continue and clears MERRA2 data if they do
-            if (merraList.numMERRA_Data > 1 && metList.isTimeSeries == true && okToUpdate)
-            {
-                DialogResult goodToGo = MessageBox.Show("Resetting the MERRA2 end date will delete all imported MERRA2 data and will reset time series model calculations. Do " +
-                    "you want to continue?", "Continuum 3.0", MessageBoxButtons.YesNo);
-
-                if (goodToGo == DialogResult.Yes)
-                {
-                    merraList.ClearMERRA();
-                    ResetTimeSeries();
-                    merraList.DeleteAllMERRADataFromDB(this);
-                    merraList.endDate = dateMERRAEnd.Value;
-                }
-                else
-                {
-                    okToUpdate = false;
-                    dateMERRAEnd.Value = merraList.endDate;
-                    okToUpdate = true;
-                }
-            }
-            else
-                merraList.endDate = dateMERRAEnd.Value;
-
-        }               
+        }                               
 
         private void cboMERRA_PowerCurves_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Updates MERRA2 tab based on selected power curve
+            // Updates LT Reference tab based on selected power curve
             if (okToUpdate)
             {
-                updateThe.MERRA_AnnualTableAndPlot(this);
-                updateThe.MERRA_MonthlyTableAndPlot(this);
-                updateThe.MERRA_Textboxes(this);
+                Reference thisRef = GetSelectedReference("LT Ref");
+                TurbineCollection.PowerCurve powerCurve = GetSelectedPowerCurve("LT Ref");
+                thisRef.powerCurve = powerCurve;
+                thisRef.ApplyPC(ref thisRef.interpData.TS_Data);
+                thisRef.Calc_MonthProdStats(UTM_conversions);
+                thisRef.CalcAnnualProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, UTM_conversions);
+
+                updateThe.LT_ReferenceAnnualTableAndPlot();
+                updateThe.LT_ReferenceMonthlyTableAndPlot();
+                updateThe.LT_ReferenceTextboxes();
             }            
         }
 
@@ -4877,21 +5564,21 @@ namespace ContinuumNS
         {
             // Updates wind rose plot on MERRA2 tab based on selected year
             if (okToUpdate)
-                updateThe.MERRA_WindRosePlot(this);
+                updateThe.LT_ReferenceWindRosePlot();
         }
 
         private void cboMERRA_Month_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates wind rose plot on MERRA2 tab based on selected month
             if (okToUpdate)
-                updateThe.MERRA_WindRosePlot(this);
+                updateThe.LT_ReferenceWindRosePlot();
         }
 
         private void chkYearsToDisplay_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates MERRA2 tab based on which years are selected from checked list
             if (okToUpdate)
-                updateThe.MERRA_TAB(this);
+                updateThe.LT_ReferenceTAB();
         }
         private void chkYearsToDisplayAll_CheckedChanged(object sender, EventArgs e)
         {
@@ -4912,7 +5599,7 @@ namespace ContinuumNS
                     }
                 }
 
-                updateThe.MERRA_TAB(this);
+                updateThe.LT_ReferenceTAB();
             }
         }
 
@@ -4941,7 +5628,7 @@ namespace ContinuumNS
         {
             // Updates "Time Series Analysis" tab based on selected turbine
             if (okToUpdate)
-                updateThe.Monthly_TAB(this);
+                updateThe.Monthly_TAB();
         }
 
         private void chkSelectAllTurbineYears_CheckedChanged(object sender, EventArgs e)
@@ -4963,7 +5650,7 @@ namespace ContinuumNS
                     }
                 }
 
-                updateThe.Monthly_TAB(this);
+                updateThe.Monthly_TAB();
             }
         }
 
@@ -4982,29 +5669,31 @@ namespace ContinuumNS
         private void cboMonthlyPowerCurve_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the wake model dropdown list (on "Time Series Analysis" tab) so only wake models that use selected power curve are shown and updates Time Series tab
-            updateThe.WakeModelList(this);
-            updateThe.Monthly_TAB(this);
+            if (okToUpdate)
+            {
+                updateThe.WakeModelList();
+                updateThe.Monthly_TAB();
+            }
         }
-
         private void chkYears_Monthly_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates monthly plot and table on "Time Series Analysis" tab based on years selected in checked list
             if (okToUpdate)
-                updateThe.TurbineMonthlyPlot(this);
+                updateThe.TurbineMonthlyPlot();
         }
 
         private void chkSelectedTurbineParam_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates plots and tables on "Time Series Analysis" tab based on plot parameters chosen from checked list
             if (okToUpdate)
-                updateThe.Monthly_TAB(this);
+                updateThe.Monthly_TAB();
         }
 
         private void cboSiteSuitabilitySelectPlot_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates "Site Suitability" tab based on which model is selected from dropdown menu
             if (okToUpdate)
-                updateThe.SiteSuitabilityTAB(this);
+                updateThe.SiteSuitabilityTAB();
         }
 
         private void btnDelZones_Click(object sender, EventArgs e)
@@ -5038,8 +5727,8 @@ namespace ContinuumNS
             if (siteSuitability.soundMap != null)
                 siteSuitability.CreateSoundMap(this);
             
-            updateThe.ZoneList(this);            
-            updateThe.SiteSuitabilityTAB(this);            
+            updateThe.ZoneList();            
+            updateThe.SiteSuitabilityTAB();            
         }               
 
         private void btnSiteSuitImportCRV_Click(object sender, EventArgs e)
@@ -5066,13 +5755,13 @@ namespace ContinuumNS
         private void cboSiteSuitMonth_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates Shadow Flicker surface plot based on selected month on "Site Suitability" tab
-            updateThe.ShadowFlickerSurfacePlot(this);
+            updateThe.ShadowFlickerSurfacePlot();
         }
 
         private void cboSiteSuitHour_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates Shadow Flicker surface plot based on selected hour on "Site Suitability" tab
-            updateThe.ShadowFlickerSurfacePlot(this);
+            updateThe.ShadowFlickerSurfacePlot();
         }              
 
         private void cboZoneList_SelectedIndexChanged(object sender, EventArgs e)
@@ -5084,18 +5773,18 @@ namespace ContinuumNS
 
                 if (selectedModel == "Shadow Flicker")
                 {
-                    updateThe.ShadowFlicker12x24(this);
-                    updateThe.ShadowFlickerMaxDay(this);
+                    updateThe.ShadowFlicker12x24();
+                    updateThe.ShadowFlickerMaxDay();
                 }                    
                 else if (selectedModel == "Ice Throw")
                 {
                     if (cboIceDistORIceHisto.SelectedItem.ToString() == "Ice Hit vs. Distance")
                     {
-                        updateThe.IceHitsVsDistancePlot(this);
-                        updateThe.IceHitVsDistTable(this);
+                        updateThe.IceHitsVsDistancePlot();
+                        updateThe.IceHitVsDistTable();
                     }                        
                     else
-                        updateThe.IceHitHistogram(this);                                       
+                        updateThe.IceHitHistogram();                                       
                     
                 }                
             }                
@@ -5106,16 +5795,15 @@ namespace ContinuumNS
             // Updates ice throw plots and tables on Site Suitability tab based on selected year of icing
             if (okToUpdate)
             {
-                updateThe.IceThrowSurfacePlot(this);
-                updateThe.IceHitsByZone(this);
+                updateThe.IceThrowSurfacePlot();
+                updateThe.IceHitsByZone();
                 
                 if (cboIceDistORIceHisto.SelectedItem.ToString() == "Ice Hit vs. Distance")
                 {
-                    updateThe.IceHitsVsDistancePlot(this);
-                    updateThe.IceHitVsDistTable(this);
+                    updateThe.IceHitsVsDistancePlot();
+                    updateThe.IceHitVsDistTable();
                 }
-            }
-                   
+            }                   
         }               
 
         private void btnRunSoundModel_Click(object sender, EventArgs e)
@@ -5142,11 +5830,11 @@ namespace ContinuumNS
             {
                 siteSuitability.turbineSound = turbineSound;
                 siteSuitability.CreateSoundMap(this);
-                updateThe.SoundMap(this);
-                updateThe.SoundAtZones(this);
-                updateThe.SiteSuitabilityDropdown(this, "Sound");
-                updateThe.ColoredButtons(this);
-                updateThe.SiteSuitabilityVisibility(this);
+                updateThe.SoundMap();
+                updateThe.SoundAtZones();
+                updateThe.SiteSuitabilityDropdown("Sound");
+                updateThe.ColoredButtons();
+                updateThe.SiteSuitabilityVisibility();
             }
             
         }
@@ -5213,7 +5901,7 @@ namespace ContinuumNS
             }
 
             // Update list of exceedance curves
-            updateThe.Exceedance_TAB(this);
+            updateThe.Exceedance_TAB();
             ChangesMade();
         }
 
@@ -5304,7 +5992,7 @@ namespace ContinuumNS
 
                 turbineList.ClearAllExceedance();
                 
-                updateThe.Exceedance_TAB(this);
+                updateThe.Exceedance_TAB();
                 ChangesMade();
             }
         }               
@@ -5389,7 +6077,7 @@ namespace ContinuumNS
                         turbineList.exceed.exceedCurves[i] = newCurve.thisExceed;                    
             
             // Update list of exceedance curves
-            updateThe.Exceedance_TAB(this);
+            updateThe.Exceedance_TAB();
             ChangesMade();
         }
 
@@ -5402,34 +6090,34 @@ namespace ContinuumNS
         private void chkShowPDF_CheckedChanged(object sender, EventArgs e)
         {
             // Updates Exceedance plot to show PDFs (probability density functions) of selected exceedance curves
-            updateThe.PerformanceFactorsPlot(this);
+            updateThe.PerformanceFactorsPlot();
         }
 
         private void chkShowCDFs_CheckedChanged(object sender, EventArgs e)
         {
             // Updates Exceedance plot to show CDFs (cumulative distribution functions) of selected exceedance curves
-            updateThe.PerformanceFactorsPlot(this);
+            updateThe.PerformanceFactorsPlot();
         }
 
         private void cboExceedTurbine_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the Exceedance tab plots and tables based on selected turbine
             if (okToUpdate)
-                updateThe.Exceedance_TAB(this);
+                updateThe.Exceedance_TAB();
         }
 
         private void cboExceedPowerCurve_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the Exceedance tab plots and tables based on selected power curve
             if (okToUpdate)
-                updateThe.Exceedance_TAB(this);
+                updateThe.Exceedance_TAB();
         }
 
         private void cboExceedWake_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the Exceedance tab plots and tables based on selected wake model
             if (okToUpdate)
-                updateThe.Exceedance_TAB(this);
+                updateThe.Exceedance_TAB();
         }               
 
         private void btnExportIceSummary_Click(object sender, EventArgs e)
@@ -5476,8 +6164,8 @@ namespace ContinuumNS
                 if (goAhead == DialogResult.Yes)
                 {
                     siteSuitability.ClearIceThrow();
-                    updateThe.IceThrowPlotsAndTables(this);
-                    updateThe.ColoredButtons(this);
+                    updateThe.IceThrowPlotsAndTables();
+                    updateThe.ColoredButtons();
                 }
                 else
                 {
@@ -5576,14 +6264,14 @@ namespace ContinuumNS
                 {
                     okToUpdate = false;
                     cboZoneList.Items.Clear();
-                    for (int i = 0; i < 16; i++)
+                    for (int i = 0; i < metList.numWD; i++)
                         cboZoneList.Items.Add(Math.Round((double)i * 360 / metList.numWD, 1));
 
                     cboZoneList.Items.Add("All");
-                    cboZoneList.SelectedIndex = 16;
+                    cboZoneList.SelectedIndex = metList.numWD;
                     okToUpdate = true;
 
-                    updateThe.IceHitsVsDistancePlot(this);
+                    updateThe.IceHitsVsDistancePlot();
                 }                    
                 else
                 {
@@ -5595,178 +6283,17 @@ namespace ContinuumNS
                     cboZoneList.SelectedIndex = 0;
                     okToUpdate = true;
 
-                    updateThe.IceHitHistogram(this);
+                    updateThe.IceHitHistogram();
                 }
                     
             }
-        }
+        }                                    
 
-        private void cboTurbWD_SelectedIndexChanged(object sender, EventArgs e)
+  /*      private void btn_Import_MERRA_Click(object sender, EventArgs e)
         {
-            // Updates turbulence intensity plot and table on Site Conditions tab based on selected wind direction
-            if (okToUpdate)
-                updateThe.TurbulenceIntensityPlotAndTable(this);
-        }
+            // Extracts reference data closest to specified lat/long and updates MERRA2 tab
 
-        private void cboTurbMet_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates met start/end date boxes and turbulence intensity plots and tables based on met selected under "Turbulence Intensity" on Site Conditions tab
-            if (okToUpdate)
-            {
-                updateThe.SiteConditionsMetDates(this);
-                updateThe.TurbulenceIntensityPlotAndTable(this);
-            }
-                
-        }
-
-        private void cboTI_Type_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates turbulence intensity plots and tables on Site Conditions tab based on selected type of TI (average, representative, or effective)
-            if (okToUpdate)
-            {
-                if (cboTI_Type.SelectedItem.ToString() == "Effective" && (turbineList.TurbineCount == 0 || turbineList.PowerCurveCount == 0))
-                {
-                    MessageBox.Show("Turbine sites and a power curve are required to conduct effective TI calculations.", "Continuum 3.0");
-                    cboTI_Type.SelectedIndex = 0;
-                    return;
-                }
-
-                if (cboTI_Type.SelectedItem.ToString() != "Effective")
-                    cboEffectiveTI_m.Enabled = false;
-                else
-                    cboEffectiveTI_m.Enabled = true;
-
-                updateThe.TurbulenceIntensityPlotAndTable(this);
-            }
-                
-        }
-
-        private void dateTIEnd_ValueChanged(object sender, EventArgs e)
-        {
-            // Updates turbulence intensity plots and tables based on newly selected end date in TI section of Site Conditions tab
-            if (okToUpdate)
-                updateThe.TurbulenceIntensityPlotAndTable(this);
-        }
-
-        private void dateTIStart_ValueChanged(object sender, EventArgs e)
-        {
-            // Updates turbulence intensity plots and tables based on newly selected start date in TI section of Site Conditions tab
-            if (okToUpdate)
-                updateThe.TurbulenceIntensityPlotAndTable(this);
-        }
-
-        private void cboExtremeShearMet_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Update extreme shear section of Site Conditions tab based on selected met site
-            if (okToUpdate)
-            {
-                updateThe.SiteConditionsMetDates(this);
-                updateThe.SiteConditionsAlpha(this);
-            }
-        }
-
-        private void cboExtremeShearRange_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Update extreme shear section of Site Conditions tab based on selected alpha range
-            if (okToUpdate)
-                updateThe.SiteConditionsAlpha(this);
-        }
-
-        private void btnExportTI_Click(object sender, EventArgs e)
-        {
-            // Exports selected turbulence intensity (on Site Conditions tab)            
-            export.ExportTurbulenceIntensity(this);
-        }
-
-        private void cboEffectiveTI_m_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //  Updates turbulence intensity plots and tables using selected Wohler exponent (m) on Site Conditions tab
-            if (okToUpdate)
-                updateThe.TurbulenceIntensityPlotAndTable(this);
-        }
-
-        private void cboTurbineTI_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates turbulence intensity plots and tables based on selected turbine site on Site Conditions tab
-            if (okToUpdate)
-                updateThe.TurbulenceIntensityPlotAndTable(this);
-        }
-
-        private void cboExtremeWSMet_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates extreme wind speed plot on Site Conditions tab based on selected met site
-            if (okToUpdate)
-                updateThe.ExtremeWindSpeed(this);
-        }
-
-        private void btnExtremeWS_Click(object sender, EventArgs e)
-        {
-            // Exports estimate of extreme wind speed at selected met on Site Conditions tab            
-            export.ExportExtremeWS(this);
-        }
-
-        private void btnExportShearStats_Click(object sender, EventArgs e)
-        {
-            // Exports extreme wind shear statistics (alpha P values for various ranges of WS)            
-            export.ExportExtremeShear(this);
-        }
-        private void cboInflowTurbine_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates inflow angle plot and table on Site Conditions tab based on selected turbine
-            if (okToUpdate)
-                updateThe.InflowAnglePlotAndTable(this);
-        }
-
-        private void cboInflowWD_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates inflow angle plot and table on Site Conditions tab based on selected wind direction
-            if (okToUpdate)
-                updateThe.InflowAnglePlotAndTable(this);
-        }
-
-        private void cboInflowRadius_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates inflow angle plot and table on Site Conditions tab based on selected radius of investigation
-            if (okToUpdate)
-                updateThe.InflowAnglePlotAndTable(this);
-        }
-
-        private void cboInflowReso_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates inflow angle plot and table on Site Conditions tab based on selected grid resolution
-            if (okToUpdate)
-                updateThe.InflowAnglePlotAndTable(this);
-        }
-
-        private void btn_Import_MERRA_Click(object sender, EventArgs e)
-        {
-            // Extracts MERRA2 data closest to specified lat/long and updates MERRA2 tab
-
-            // Read user-defined lat/long
-            double thisLat = 0;
-            double thisLong = 0;
-                        
-            try
-            {
-                thisLat = Convert.ToDouble(txtMERRA_SelectedLat.Text);
-            }
-            catch
-            {
-                MessageBox.Show("Invalid latitude entered.", "Continuum 3");
-                return;
-            }
-
-            try
-            {
-                thisLong = Convert.ToDouble(txtMERRA_SelectedLong.Text);
-            }
-            catch
-            {
-                MessageBox.Show("Invalid longitude entered.", "Continuum 3");
-                return;
-            }
-
-            bool wasSaved = false;
+           bool wasSaved = false;
             if (savedParams.savedFileName == null)
             {
                 MessageBox.Show("Please specify the file location.", "Continuum 3");
@@ -5776,23 +6303,14 @@ namespace ContinuumNS
                     MessageBox.Show("A file location is needed in order to create local database. Cancelling MERRA2 import.", "Continuum 3");
                     return;
                 }
-            }
-
-            int offset = UTM_conversions.GetUTC_Offset(thisLat, thisLong);
-            Met thisMet = GetSelectedMet("MERRA");
-
-            merraList.startDate = dateMERRAStart.Value;
-            merraList.endDate = dateMERRAEnd.Value;
-
-            if (merraList.endDate < merraList.startDate)
-            {
-                MessageBox.Show("MERRA2 end date cannot be earlier than start date");
-                return;
-            }
-
-            merraList.AddMERRA_GetDataFromTextFiles(thisLat, thisLong, offset, this, thisMet, false);                       
-          //  updateThe.MERRA_TAB(this);
+            }                       
+           
+            Reference thisRef = GetSelectedReference("LT Ref");
+            refList.GetDataFromTextFiles(thisRef, this);
+            
+            updateThe.LT_ReferenceTAB();
         }
+  */
 
         private void btnDoMCP_Click(object sender, EventArgs e) 
         {
@@ -5812,17 +6330,16 @@ namespace ContinuumNS
             if (goodToGo == false)
                 return;
 
-            UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-            int offset = UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+            Reference thisRef = GetSelectedReference("MCP");
+            
             thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
-            metList.RunMCP(ref thisMet, thisMERRA, this, MCP_Method);
-            thisMet.CalcAllLT_WSWD_Dists(this, thisMet.mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
+            metList.RunMCP(ref thisMet, thisRef, this, MCP_Method);
+            thisMet.CalcAllLT_WSWD_Dists(this); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
 
-            metList.isMCPd = true;
+            thisMet.isMCPd = true;
             metList.AreAllMetsMCPd();
 
-            updateThe.AllTABs(this);
+            updateThe.AllTABs();
         }
 
         private void Start_Time_ValueChanged(object sender, EventArgs e)
@@ -5846,7 +6363,7 @@ namespace ContinuumNS
                 return;
             }
 
-            if (metList.isTimeSeries && metList.isMCPd)
+            if (metList.isTimeSeries && thisMet.isMCPd)
             {
                 DialogResult goodToGo = MessageBox.Show("Changing the start time of the met data analysis will reset the MCP estimates and all " +
                     "modeled results. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
@@ -5855,7 +6372,7 @@ namespace ContinuumNS
                 {
                     thisMet.metData.startDate = Start_Time.Value;
                     ResetTimeSeries();
-                    updateThe.TimeSeries_TAB(this);
+                    updateThe.TimeSeries_TAB();
                 }
                 else
                 {
@@ -5867,16 +6384,17 @@ namespace ContinuumNS
             {
                 thisMet.metData.startDate = Start_Time.Value;
                 ResetTimeSeries();                
-                updateThe.TimeSeries_TAB(this);
+                updateThe.TimeSeries_TAB();
             }
             else
             {
                 thisMet.metData.startDate = Start_Time.Value;
                 thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(this.modeledHeight));
-                updateThe.MetTurbSummaryAndStatsTable(this);
-                updateThe.MetDataQC_TAB(this);
-                updateThe.MCP_TAB(this);
-                updateThe.SiteConditionsMetDates(this);
+                updateThe.MetTurbSummaryAndStatsTable();
+                updateThe.MetDataQC_TAB();
+                updateThe.MCP_TAB();
+                updateThe.SiteConditionsMetDates("TI");
+                updateThe.SiteConditionsMetDates("Extreme Shear");
             }
         }
 
@@ -5901,7 +6419,7 @@ namespace ContinuumNS
                 return;
             }
 
-            if (metList.isTimeSeries && metList.isMCPd)
+            if (metList.isTimeSeries && thisMet.isMCPd)
             {
                 DialogResult goodToGo = MessageBox.Show("Changing the end time of the met data analysis will reset the MCP estimates and all " +
                     "modeled results. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
@@ -5910,7 +6428,7 @@ namespace ContinuumNS
                 {
                     thisMet.metData.endDate = End_Time.Value;
                     ResetTimeSeries();
-                    updateThe.TimeSeries_TAB(this);
+                    updateThe.TimeSeries_TAB();
                 }
                 else
                 {
@@ -5922,33 +6440,20 @@ namespace ContinuumNS
             {
                 thisMet.metData.endDate = End_Time.Value;
                 ResetTimeSeries();
-                updateThe.TimeSeries_TAB(this);
+                updateThe.TimeSeries_TAB();
             }
             else
             {
                 thisMet.metData.endDate = End_Time.Value;
                 thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(this.modeledHeight));
-                updateThe.MetTurbSummaryAndStatsTable(this);
-                updateThe.MetDataQC_TAB(this);
-                updateThe.MCP_TAB(this);
-                updateThe.SiteConditionsMetDates(this);
+                updateThe.MetTurbSummaryAndStatsTable();
+                updateThe.MetDataQC_TAB();
+                updateThe.MCP_TAB();
+                updateThe.SiteConditionsMetDates("TI");
+                updateThe.SiteConditionsMetDates("Extreme Shear");
             }
-        }
-
-        private void dateTimeExtremeShearStart_ValueChanged(object sender, EventArgs e)
-        {
-            // Updates extreme shear plot and table based on selected start date
-            if (okToUpdate)
-                updateThe.SiteConditionsAlpha(this);
-        }
-
-        private void dateTimeExtremeShearEnd_ValueChanged(object sender, EventArgs e)
-        {
-            // Updates extreme shear plot and table based on selected end date
-            if (okToUpdate)
-                updateThe.SiteConditionsAlpha(this);
-        }
-
+        }    
+        
         private void cboSummTOD_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates the plots and tables on the 'Met and Turbine Summary' tab based on selected radius from drop-down
@@ -5962,7 +6467,7 @@ namespace ContinuumNS
                 else if (selectedTOD == Met.TOD.All && selectedSeason != Met.Season.All)
                     cboSummSeason.SelectedIndex = metList.numSeason;
 
-                updateThe.Met_Turbine_Summary_TAB(this);
+                updateThe.Met_Turbine_Summary_TAB();
             }
         }
 
@@ -5980,7 +6485,7 @@ namespace ContinuumNS
                 else if (selectedSeason == Met.Season.All && selectedTOD != Met.TOD.All)
                     cboSummTOD.SelectedIndex = metList.numTOD;
 
-                updateThe.Met_Turbine_Summary_TAB(this);
+                updateThe.Met_Turbine_Summary_TAB();
             }
         }
 
@@ -6007,31 +6512,7 @@ namespace ContinuumNS
                 thisMet.metData.EstimateAlpha();
 
             export.ExportShearData(this, thisMet.metData, thisMet.name);
-        }
-
-        private void txtMERRA_WS_ScaleFact_TextChanged(object sender, EventArgs e)
-        {
-            if (okToUpdate)
-            {
-                // Wind speed scale factor adjusts MERRA2 wind speed when calculating energy production
-
-                double newScaleFactor = 1;
-
-                try
-                {
-                    newScaleFactor = Convert.ToDouble(txtMERRA_WS_ScaleFact.Text);
-                }
-                catch
-                {
-                    MessageBox.Show("Invalid wind speed scale factor.", "Continuum 3");
-                    return;
-                }
-
-                MERRA thisMERRA = GetSelectedMERRA();
-                thisMERRA.WS_ScaleFactor = newScaleFactor;
-                thisMERRA.ApplyPC(ref thisMERRA.interpData.TS_Data);
-            }
-        }
+        }                
 
         private void btnDoMCPAllMets_Click(object sender, EventArgs e)
         {
@@ -6054,31 +6535,27 @@ namespace ContinuumNS
                 }
                 else
                     break;
-                
-                UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                               
+                Reference thisRef = GetSelectedReference("MCP");
 
-                if (thisMERRA.interpData.TS_Data.Length == 0)
+                if (thisRef.interpData.TS_Data.Length == 0)
                 {
-                    thisMERRA.GetMERRADataFromDB(this);
-                    thisMERRA.GetInterpData(UTM_conversions);
+                    thisRef.GetReferenceDataFromDB(this);
+                    thisRef.GetInterpData(UTM_conversions);
                 }
 
-                if (thisMERRA.interpData.TS_Data.Length == 0)
+                if (thisRef.interpData.TS_Data.Length == 0)
                     break;
 
                 thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
-                metList.RunMCP(ref metList.metItem[i], thisMERRA, this, MCP_method);
-                thisMet.CalcAllLT_WSWD_Dists(this, thisMet.mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
-                
-            }
-
-            if (metList.ThisCount > 0)
-                metList.isMCPd = true;
+                metList.RunMCP(ref metList.metItem[i], thisRef, this, MCP_method);
+                thisMet.CalcAllLT_WSWD_Dists(this); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
+                metList.metItem[i].isMCPd = true;
+            }                        
 
             metList.AreAllMetsMCPd();                      
 
-            updateThe.AllTABs(this);
+            updateThe.AllTABs();
         }
 
         private void btnGetDefaultExceed_Click(object sender, EventArgs e)
@@ -6101,27 +6578,27 @@ namespace ContinuumNS
 
             turbineList.ClearAllExceedance();
             turbineList.exceed.CreateDefaultCurve();
-            updateThe.Exceedance_TAB(this);
+            updateThe.Exceedance_TAB();
         }
 
         private void btnImportCurves_Click(object sender, EventArgs e)
         {
             // Import exceedance curves
             turbineList.exceed.ImportExceedCurves(this);
-            updateThe.Exceedance_TAB(this);
+            updateThe.Exceedance_TAB();
         }
 
         private void lstDefinedLosses_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (okToUpdate)
-                updateThe.PerformanceFactorsPlot(this);
+                updateThe.PerformanceFactorsPlot();
         }
                 
 
         private void cboWS_or_WD_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             if (okToUpdate)
-                updateThe.WS_or_WR_Plot(this);
+                updateThe.WS_or_WR_Plot();
         }
 
         private void btnModHeight_Click(object sender, EventArgs e)
@@ -6181,7 +6658,7 @@ namespace ContinuumNS
             txtModeledHeight.Text = newHeight.ToString();
             modeledHeight = newHeight;
 
-            // Extrapolate all met data to new height and run MCP if isMCPd and have MERRA data
+            // Extrapolate all met data to new height and run MCP if isMCPd and have reference data
             for (int i = 0; i < metList.ThisCount; i++)
             {
                 Met thisMet = metList.metItem[i];                
@@ -6190,20 +6667,21 @@ namespace ContinuumNS
             }
 
             metList.AreAllMetsMCPd(); // sets allMCPd flag
-            updateThe.AllTABs(this);
+            updateThe.AllTABs();
         }
 
         private void cboMonthlyWakeModel_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates Time Series tab when user changes the selected wake model
             if (okToUpdate)
-                updateThe.Monthly_TAB(this);
+                updateThe.Monthly_TAB();
         }
 
         /// <summary> chkChanged = "Enable", "Tower Shadow", "Min WS", Icing", "Min WS SD", "Max WS SD", "Max WS Range" </summary>
         public void FilterChangeConfirmWithUser(string chkChanged) // 
         {
             // Called after filter checkboxes changed by user
+            Met selMet = GetSelectedMet("Met Data QC");
             CheckState checkState = new CheckState();
 
             if (chkChanged == "Enable")
@@ -6226,8 +6704,8 @@ namespace ContinuumNS
                 goodToGo = MessageBox.Show("Disabling met data filters will reset the model and all calculations. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
             else if (metList.metItem[0].metData.filteringDone == false && checkState == CheckState.Checked)
                 goodToGo = MessageBox.Show("Enabling met data filters will reset the model and all calculations. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
-            else // Changed one of the filters applied
-                goodToGo = MessageBox.Show("Changing met data filters will reset the model and all calculations. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+       //     else // Changed one of the filters applied
+       //         goodToGo = MessageBox.Show("Changing met data filters will reset the model and all calculations. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
 
             if (goodToGo == DialogResult.No)
             {
@@ -6258,70 +6736,100 @@ namespace ContinuumNS
                 ResetTimeSeries();
 
                 if (checkState == CheckState.Checked && chkChanged == "Enable")
-                    metList.filteringEnabled = true;
+                    selMet.metData.filteringEnabled = true;
                 else if (chkChanged == "Enable")
-                    metList.filteringEnabled = false;
+                    selMet.metData.filteringEnabled = false;
+                                
+                selMet.metData.ClearAlphaAndSimulatedEstimates();
+                selMet.metData.ClearFilterFlagsAndEstimatedData();
 
-                for (int i = 0; i < metList.ThisCount; i++)
+                if (selMet.metData.filteringEnabled)
+                    selMet.metData.FilterData(GetFiltersToApply(selMet));
+
+                selMet.metData.EstimateAlpha();
+                selMet.metData.ExtrapolateData(modeledHeight);
+                selMet.WSWD_Dists = null;
+
+                selMet.isMCPd = false; // Clear MCP if user changes filter settings
+
+          /*      if (selMet.isMCPd)
                 {
-                    metList.metItem[i].metData.ClearAlphaAndSimulatedEstimates();
-                    metList.metItem[i].metData.ClearFilterFlagsAndEstimatedData();
-                    metList.metItem[i].ClearTurbulenceCalc();
+                    UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(selMet.UTMX, selMet.UTMY);
+                    string MCP_Method = Get_MCP_Method();
+                    Reference[] theRefs = refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude);
 
-                    if (metList.filteringEnabled)
-                        metList.metItem[i].metData.FilterData(GetFiltersToApply());
-                    metList.metItem[i].metData.EstimateAlpha();
-                    metList.metItem[i].metData.ExtrapolateData(modeledHeight);
-                    metList.metItem[i].WSWD_Dists = null;
+                    for (int r = 0; r < theRefs.Length; r++)
+                        metList.RunMCP(ref selMet, theRefs[r], this, MCP_Method); // Runs MCP and generates LT WS estimates                                                                        
 
-                    if (metList.isMCPd)
-                    {
-                        UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(metList.metItem[i].UTMX, metList.metItem[i].UTMY);
-                        string MCP_Method = Get_MCP_Method();
-                        MERRA thisMERRA = merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-                        metList.RunMCP(ref metList.metItem[i], thisMERRA, this, MCP_Method); // Runs MCP and generates LT WS estimates                                                                        
-
-                        metList.metItem[i].CalcAllLT_WSWD_Dists(this, metList.metItem[i].mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
-
-                    }
-                    else
-                        metList.metItem[i].CalcAllMeas_WSWD_Dists(this, metList.metItem[i].metData.GetSimulatedTimeSeries(modeledHeight));
-                    
+                    selMet.CalcAllLT_WSWD_Dists(this); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
                 }
+                else
+          */
+                    selMet.CalcAllMeas_WSWD_Dists(this, selMet.metData.GetSimulatedTimeSeries(modeledHeight));                  
+                
+                updateThe.InputTAB();
+                updateThe.MetList();
+                updateThe.MetDataQC_TAB();
+                updateThe.Met_Turbine_Summary_TAB();
+                updateThe.GrossTurbineEstsTAB();
+                updateThe.NetTurbineEstsTAB();
+                updateThe.MapsTAB();
+                updateThe.Uncertainty_TAB_Round_Robin();
+                updateThe.Uncertainty_TAB_Turbine_Ests();
+                updateThe.AdvancedTAB();
 
-                updateThe.InputTAB(this);
-                updateThe.MetList(this);
-                updateThe.MetDataQC_TAB(this);
-                updateThe.Met_Turbine_Summary_TAB(this);
-                updateThe.GrossTurbineEstsTAB(this);
-                updateThe.NetTurbineEstsTAB(this);
-                updateThe.MapsTAB(this);
-                updateThe.Uncertainty_TAB_Round_Robin(this);
-                updateThe.Uncertainty_TAB_Turbine_Ests(this);
-                updateThe.AdvancedTAB(this);
+                updateThe.ShearAndExtrapWSInTable(selMet);
+                updateThe.SetMetDataFlagColors();
             }
+        }
+
+        public void MetDataTS_ScrollEvent(object sender, ScrollEventArgs e)
+        {
+            // User just scrolled through data time series so update plots to show same first date (with same time span)
+            int firstRow = dataMetTS.FirstDisplayedScrollingRowIndex;
+
+            if (firstRow < 0)
+                return;
+
+            DateTime firstPlotDate = Convert.ToDateTime(dataMetTS.Rows[firstRow].Cells[0].Value);
+
+            if (firstPlotDate.Year == dateMetTS_Start.Value.Year && firstPlotDate.Month == dateMetTS_Start.Value.Month
+                && firstPlotDate.Day == dateMetTS_Start.Value.Day && firstPlotDate.Hour == dateMetTS_Start.Value.Hour)
+                return;
+            
+
+            double numDays = Convert.ToDouble(txtNumDaysTS.Text);
+            DateTime lastPlotDate = firstPlotDate.AddDays(numDays);
+
+            if (okToUpdate == true)
+                okToUpdate = false;
+            dateMetTS_Start.Value = firstPlotDate; 
+
+            okToUpdate = true;
+            dateMetTS_End.Value = lastPlotDate; // this will trigger plot updates. 
+
+            dataMetTS.Refresh();
+            dataMetTS.Update();
+            
         }
 
         private void chkDisableFilter_CheckedChanged(object sender, EventArgs e)
         {
-            // Enables or disables met data filtering. 
+            // Enables or disables met data filtering for selected met
 
             if (okToUpdate == false)
                 return;
 
+            Met selMet = GetSelectedMet("Met Data QC");
             CheckState checkState = chkDisableFilter.CheckState;
 
-            if (metList.ThisCount > 0 && metList.isTimeSeries)            
-                FilterChangeConfirmWithUser("Enable");            
-      //      else
-      //      {
-                if (checkState == CheckState.Checked)
-                    metList.filteringEnabled = true;
-                else
-                    metList.filteringEnabled = false;
-      //      }
+            if (selMet.metData == null)
+                return;
 
-            if (metList.filteringEnabled)
+            if (selMet.metData.filteringEnabled != Convert.ToBoolean(checkState) && metList.isTimeSeries)            
+                FilterChangeConfirmWithUser("Enable");            
+            
+            if (selMet.metData.filteringEnabled)
             {
                 chkMinWS.Enabled = true;
                 chkIcing.Enabled = true;
@@ -6339,21 +6847,23 @@ namespace ContinuumNS
                 chkMaxWS_Range.Enabled = false;
                 chkTowerShadow.Enabled = false;
             }
+
+            
                         
         }
 
         private void lstPowerCurveList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (okToUpdate)
-                updateThe.PowerCrvPlot(this);
+                updateThe.PowerCrvPlot();
         }
 
-        public string[] GetFiltersToApply()
+        public string[] GetFiltersToApply(Met thisMet)
         {
             string[] filtsToApply = new string[0];
             int numFiltsToApply = 0;
 
-            if (metList.filteringEnabled)
+            if (thisMet.metData.filteringEnabled)
             {
                 if (chkMinWS.Checked)
                 {
@@ -6413,7 +6923,7 @@ namespace ContinuumNS
                 else if (selectedTOD == Met.TOD.All && selectedSeason != Met.Season.All)
                     cboSeasonAdvanced.SelectedIndex = metList.numSeason;
 
-                updateThe.AdvancedTAB(this);
+                updateThe.AdvancedTAB();
             }
         }
 
@@ -6430,7 +6940,7 @@ namespace ContinuumNS
                 else if (selectedSeason == Met.Season.All && selectedTOD != Met.TOD.All)
                     cboTODAdvanced.SelectedIndex = metList.numTOD;
 
-                updateThe.AdvancedTAB(this);
+                updateThe.AdvancedTAB();
             }
         }
 
@@ -6456,6 +6966,7 @@ namespace ContinuumNS
                         turbineList.ClearAllGrossEsts();
                         turbineList.ClearAllNetEsts();
                         wakeModelList.ClearAll();
+                        updateThe.AllTABs();
                     }
                     
                 }
@@ -6475,6 +6986,7 @@ namespace ContinuumNS
                         turbineList.ClearAllGrossEsts();
                         turbineList.ClearAllNetEsts();
                         wakeModelList.ClearAll();
+                        updateThe.AllTABs();
                     }
                 }
 
@@ -6483,7 +6995,7 @@ namespace ContinuumNS
                 else
                     turbineList.genTimeSeries = false;
 
-                updateThe.AllTABs(this);
+                
             }
         }             
 
@@ -6550,7 +7062,7 @@ namespace ContinuumNS
                 return;
             }
 
-            if (modelList.ModelCount <= 1 && metList.ThisCount > 1)
+            if (modelList.ModelCount < 1 && metList.ThisCount > 1)
             {
                 MessageBox.Show("Create a site-calibrated model first clickng Analyze Mets.", "Continuum 3");
                 return;
@@ -6578,8 +7090,13 @@ namespace ContinuumNS
 
             // Call background worker to run calculations
             BW_worker = new BackgroundWork();
-            string MCP_Method = Get_MCP_Method();
-            argsForBW.MCP_Method = MCP_Method;
+
+            if (metList.allMCPd)
+            {
+                string MCP_Method = Get_MCP_Method();
+                argsForBW.MCP_Method = MCP_Method;
+            }
+            
             if (topo.gotTopo)
                 BW_worker.Call_BW_TurbCalcs(argsForBW);
             ChangesMade();
@@ -6588,15 +7105,10 @@ namespace ContinuumNS
         /// <summary> Updates site suitability surface plot labels after selected zones change </summary>        
         public void lstZones_ItemCheckChanged(object sender, EventArgs e)
         {
-            if (okToUpdate)
-            {                
-                var theArgs = (ItemCheckEventArgs)e;
-                int thisInd =  theArgs.Index;
-                bool isChecked = false;
-                if (theArgs.NewValue == CheckState.Checked)
-                    isChecked = true;   
-
-                updateThe.SiteSuitabilitySurfacePlotLabels(this, thisInd, isChecked);
+            if (this.IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.SiteSuitabilityTAB()));
             }
         }
 
@@ -6605,106 +7117,13 @@ namespace ContinuumNS
             // Displays form 
             MCP_ValidSettings theseSettings = new MCP_ValidSettings();
             theseSettings.ShowDialog();
-        }      
-
-        private void btnDownloadMERRA2_Click(object sender, EventArgs e)
-        {
-            // Make sure that a folder has been selected
-            if (merraList.MERRAfolder == "")
-            {
-                MessageBox.Show("You have to choose a folder to save the daily MERRA2 datafiles.  Click 'Change Folder' button to select folder");
-                return;
-            }
-
-            if (dateMERRAEnd.Value > DateTime.Now)
-            {
-                MessageBox.Show("End date cannot be in the future.");
-                return;
-            }
-
-            // Make sure that the lat/long range includes at least one node, min < max, and show message displaying number of nodes and time range selected to download (give chance to cancel)
-            if (txtMinLat.Text == "" || txtMaxLat.Text == "" || txtMinLong.Text == "" || txtMaxLong.Text == "")
-            {
-                MessageBox.Show("Enter a latitude and longitude range to download MERRA2 data.");
-                return;
-            }
-
-            double minLat = Convert.ToDouble(txtMinLat.Text);
-            double maxLat = Convert.ToDouble(txtMaxLat.Text);
-            double minLong = Convert.ToDouble(txtMinLong.Text);
-            double maxLong = Convert.ToDouble(txtMaxLong.Text);
-
-            minLat = Math.Round(minLat / 0.5, 0) * 0.5;
-            maxLat = Math.Round(maxLat / 0.5, 0) * 0.5;
-            minLong = Math.Round(minLong / 0.625) * 0.625;
-            maxLong = Math.Round(maxLong / 0.625) * 0.625;
-
-            int numLat = merraList.GetNumNodesInRange(minLat, maxLat, "Lat");
-            int numLong = merraList.GetNumNodesInRange(minLong, maxLong, "Long");
-            int numNodes = numLat * numLong;
-
-            if (minLat > maxLat)
-            {
-                MessageBox.Show("Minimum latitude must be smaller than maximum latitude in range");
-                return;
-            }
-
-            if (minLong > maxLong)
-            {
-                MessageBox.Show("Minimum longitude must be smaller than maximum longitude in range");
-                return;
-            }
-
-            if (numLat == 0)
-            {
-                MessageBox.Show("There are no MERRA2 nodes that fall within specified latitude range: " + minLat.ToString() + " to " + maxLat.ToString());
-                return;
-            }
-            if (numLong == 0)
-            {
-                MessageBox.Show("There are no MERRA2 nodes that fall within specified longitude range: " + minLong.ToString() + " to " + maxLong.ToString());
-                return;
-            }
-
-            DialogResult goodToGo = MessageBox.Show("With a latitude range of " + minLat.ToString() + " to " + maxLat.ToString() + " and a longitude range of " + minLong.ToString()
-                + " to " + maxLong.ToString() + ", a total of " + numNodes.ToString() + " nodes will be downloaded (" + numLat.ToString() + " along latitude and " + numLong
-                + " along longitude. Do you want to continue?", "Continuum" ,MessageBoxButtons.YesNo);
-
-            if (goodToGo == DialogResult.No)
-                return;
-
-            if (merraList.earthdataUser == "" || merraList.earthdataPwd == "")
-            {
-                NASA_LogIn nasaCreds = new NASA_LogIn();
-                nasaCreds.ShowDialog();                
-
-                if (nasaCreds.goodToGo == false)
-                    return;
-
-                try
-                {
-                    merraList.earthdataUser = nasaCreds.txtNASAUsername.Text;
-                    merraList.earthdataPwd = nasaCreds.txtNASAPassword.Text;
-                }
-                catch
-                {
-                    MessageBox.Show("Invalid Earthdata credentials");
-                    return;
-                }                
-            }
-
-            merraList.NASA_LogInAsync(this);
-        }
-
-        private void btnChangeFolder_Click(object sender, EventArgs e)
-        {
-            merraList.ChangeMERRA2Folder(this);
-        }
-
+        }  
+        
         private void btnExportTarget_Click(object sender, EventArgs e)
         {
-            // Exports hourly target data from MCP tab            
-            export.ExportMCP_TargetData(this, metList.metItem[0].mcp.targetData);
+            // Exports hourly target data from MCP tab
+            MCP thisMCP = GetSelectedMCP();
+            export.ExportMCP_TargetData(this, thisMCP.targetData);
         }
 
         public Met_Data_Filter.Anem_Data GetAnemAorB(string a_or_b)
@@ -6764,9 +7183,9 @@ namespace ContinuumNS
             if (okToUpdate == true)
             {
                 Met thisMet = GetSelectedMet("Met Data QC");
-                updateThe.MetAnemScatterplot(this, thisMet);
-                updateThe.MetWS_DiffvsWD(this, thisMet);
-                updateThe.MetWS_DiffvsWindSpeed(this, thisMet);
+                updateThe.MetAnemScatterplot(thisMet);
+                updateThe.MetWS_DiffvsWD(thisMet);
+                updateThe.MetWS_DiffvsWindSpeed(thisMet);
             }
         }
 
@@ -6775,9 +7194,9 @@ namespace ContinuumNS
             if (okToUpdate == true)
             {
                 Met thisMet = GetSelectedMet("Met Data QC");
-                updateThe.MetAnemScatterplot(this, thisMet);
-                updateThe.MetWS_DiffvsWD(this, thisMet);
-                updateThe.MetWS_DiffvsWindSpeed(this, thisMet);
+                updateThe.MetAnemScatterplot(thisMet);
+                updateThe.MetWS_DiffvsWD(thisMet);
+                updateThe.MetWS_DiffvsWindSpeed(thisMet);
             }
         }
 
@@ -6786,10 +7205,10 @@ namespace ContinuumNS
             if (okToUpdate == true)
             {
                 Met thisMet = GetSelectedMet("Met Data QC");
-                updateThe.MetAnemScatterplot(this, thisMet);
-                updateThe.MetWS_DiffvsWD(this, thisMet);
-                updateThe.MetWS_DiffvsWindSpeed(this, thisMet);
-                updateThe.MetWindRoseOrWS_byWDPlot(this, thisMet);
+                updateThe.MetAnemScatterplot(thisMet);
+                updateThe.MetWS_DiffvsWD(thisMet);
+                updateThe.MetWS_DiffvsWindSpeed(thisMet);
+                updateThe.MetWindRoseOrWS_byWDPlot(thisMet);
             }
         }
 
@@ -6858,7 +7277,7 @@ namespace ContinuumNS
             // Resets dates on Met Data QC filter to max recovery yearly period for selected met
             Met selectedMet = GetSelectedMet("Met Data QC");
             selectedMet.metData.FindStartEndDatesWithMaxRecovery();
-            updateThe.MetDataQC_TAB(this);
+            updateThe.MetDataQC_TAB();
         }
 
         private void btnDownloadTopoLC_Click(object sender, EventArgs e)
@@ -6888,6 +7307,1247 @@ namespace ContinuumNS
         {
             Explaining_MERRA2 explainIt = new Explaining_MERRA2();
             explainIt.Show();
+        }
+
+        private void downloadMERRA2DataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Reanalysis_Download dataDownload = new Reanalysis_Download(this);
+            dataDownload.cboReanalysisType.SelectedIndex = 0;
+            dataDownload.ShowDialog();
+        }
+
+        private void cboLTReferences_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            updateThe.LT_ReferenceDropdowns();
+            updateThe.LT_ReferenceTAB();
+        }
+
+        private void btnAddNew_Click(object sender, EventArgs e)
+        {
+            // Opens form for user to define new reference site, only if user has already downloaded data
+            if (refList.numRefDataDownloads == 0)
+            {
+                MessageBox.Show("Reference data files are needed. Click 'Tools -> Download Reanalysis Data' to download data or to link to folders " +
+                    "with previously-downloaded data.");
+                return;
+            }
+
+            AddEditReference newReference = new AddEditReference(metList, refList, UTM_conversions);
+
+            newReference.ShowDialog();
+
+            if (newReference.goodToGo)
+            {
+                if (refList.GotReference(newReference.thisRef))
+                {
+                    MessageBox.Show(newReference.thisRef.GetName(metList, UTM_conversions) + " has already been added.");
+                    return;
+                }
+                else
+                {
+                    // Check to see if the data in the database covers to requested start/end date
+                    bool dBhasTheData = newReference.thisRef.DoesDB_HaveRequestedDataRange(this);
+
+                    if (dBhasTheData == false)
+                    {
+                        // The data stored in the database does not cover the requested range so clear it out
+                        for (int n = 0; n < newReference.thisRef.numNodes; n++)
+                        {
+                            if (newReference.thisRef.refDataDownload.refType == "MERRA2")                            
+                                refList.DeleteMERRANodeDataFromDB(newReference.thisRef.nodes[n].XY_ind.Lat, newReference.thisRef.nodes[n].XY_ind.Lon, this);                            
+                            else if (newReference.thisRef.refDataDownload.refType == "ERA5")                            
+                                refList.DeleteERANodeDataFromDB(newReference.thisRef.nodes[n].XY_ind.Lat, newReference.thisRef.nodes[n].XY_ind.Lon, this);                            
+                        }
+                    }
+                    else
+                    {
+                        newReference.thisRef.GetReferenceDataFromDB(this);
+                        newReference.thisRef.GetInterpData(UTM_conversions);
+                    }                    
+
+                    refList.AddReference(newReference.thisRef);
+
+                    if (dBhasTheData == false)
+                        refList.GetDataFromTextFiles(refList.reference[refList.numReferences - 1], this);
+                    else
+                    {
+                        updateThe.LongTermReference();
+                        ChangesMade();
+                    }
+                }
+                
+            }
+        }
+
+        private void plotMERRA_WindRose_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnEditReference_Click(object sender, EventArgs e)
+        {
+            // Allows user to edit reference data settings (i.e. num nodes, WS scale factor, start/end dates)
+            // TO DO: Delete any MCP estimates or turbine estimates based on this reference site (if goodToGo)
+            Reference selRef = GetSelectedReference("LT Ref");
+
+            if (selRef.numNodes == 0)
+            {
+                MessageBox.Show("No long-term references have been added yet.  Click 'New' to add a long-term reference");
+                return;
+            }
+
+            AddEditReference editRef = new AddEditReference(metList, refList, UTM_conversions, selRef);
+            editRef.ShowDialog();
+
+            if (editRef.goodToGo)
+            {
+                // Update reference data in list, if settings changed, clear all data and call again
+                int thisRefInd = refList.GetReferenceIndexByName(selRef.GetName(metList, UTM_conversions), metList, UTM_conversions);
+
+                if (refList.GotReference(editRef.thisRef, thisRefInd))
+                {
+                    MessageBox.Show(editRef.thisRef.GetName(metList, UTM_conversions) + " has already been added.");
+                    return;
+                }
+                else
+                {
+                    // Clear database reference node data from DB (if no other reference using them)
+                    for (int n = 0; n < editRef.thisRef.numNodes; n++)
+                    {
+                        bool delDBdata = refList.IsThisReferenceNodeBeingUsed(selRef.refDataDownload.refType, selRef.nodes[n].XY_ind.Lat, selRef.nodes[n].XY_ind.Lon, thisRefInd);
+
+                        if (delDBdata == false && selRef.refDataDownload.refType == "MERRA2")
+                            refList.DeleteMERRANodeDataFromDB(selRef.nodes[n].XY_ind.Lat, selRef.nodes[n].XY_ind.Lon, this);
+                        else if (delDBdata == false && selRef.refDataDownload.refType == "ERA5")
+                            refList.DeleteERANodeDataFromDB(selRef.nodes[n].XY_ind.Lat, selRef.nodes[n].XY_ind.Lon, this);
+                    }
+
+                    // Clear thisRef's interpData and node data. 
+                    refList.reference[thisRefInd].interpData.TS_Data = new Reference.Wind_TS_with_Prod[0]; 
+                    refList.reference[thisRefInd].Clear_Node_Data();
+                    
+                    refList.GetDataFromTextFiles(refList.reference[thisRefInd], this);
+                }                
+            }
+
+        }
+        private void btnDelRef_Click(object sender, EventArgs e)
+        {
+            Reference refToDelete = GetSelectedReference("LT Ref");
+
+            DialogResult goodToGo = MessageBox.Show("Are you sure that you want to delete this reference and all associated met and turbine estimates " +
+                "that use it? Selected reference: " + refToDelete.GetName(metList, UTM_conversions), "", MessageBoxButtons.YesNo);
+
+            if (goodToGo == DialogResult.No) // i.e. user cancelled or no reference site was selected 
+                return;
+
+            if (refToDelete.refDataDownload.refType == "ERA5")
+                refList.DeleteERANodeDataFromDB(refToDelete.interpData.Coords.latitude, refToDelete.interpData.Coords.longitude, this);
+            else if (refToDelete.refDataDownload.refType == "MERRA2")
+                refList.DeleteMERRANodeDataFromDB(refToDelete.interpData.Coords.latitude, refToDelete.interpData.Coords.longitude, this);                      
+
+            refList.DeleteReference(refToDelete);
+
+            updateThe.LongTermReference();
+            updateThe.LT_ReferenceTAB();
+            ChangesMade();
+
+            // To Do: Delete all met and turbine LT ests that used this reference
+        }
+
+        private void btnInflowAngles_Click_1(object sender, EventArgs e)
+        {
+            Export export = new Export();
+            export.ExportTerrainComplexityAtTurbines(this);
+        }
+
+        private void btnShowIECThresh_Click(object sender, EventArgs e)
+        {
+            ShowIEC_TerrainComplexity showThreshs = new ShowIEC_TerrainComplexity();
+            showThreshs.Show();
+        }
+
+        private void cboTSIorTVIorP90_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.TerrainComplexityHistogram();
+        }
+                
+        private void btnCalcTerrainComplexity_Click(object sender, EventArgs e)
+        {
+            GenerateTurbineEstimates();
+        }
+
+        private void cboInflowTurbine_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Updates inflow angle plot and table on Site Conditions tab based on selected turbine
+            if (okToUpdate)
+                updateThe.InflowAnglePlotAndTable();
+        }
+
+        private void cboInflowWD_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Updates inflow angle plot and table on Site Conditions tab based on selected wind direction
+            if (okToUpdate)
+                updateThe.InflowAnglePlotAndTable();
+        }
+
+        private void cboInflowRadius_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Updates inflow angle plot and table on Site Conditions tab based on selected radius of investigation
+            if (okToUpdate)
+                updateThe.InflowAnglePlotAndTable();
+        }
+
+        private void cboInflowReso_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Updates inflow angle plot and table on Site Conditions tab based on selected grid resolution
+            if (okToUpdate)
+                updateThe.InflowAnglePlotAndTable();
+        }
+
+        public bool IsMetSiteSelected(string thisMetName)
+        {
+            bool isSelected = false;
+
+            for (int m = 0; m < chkMetsTS.CheckedItems.Count; m++)
+                if (chkMetsTS.CheckedItems[m].ToString() == thisMetName)
+                    isSelected = true;
+
+            return isSelected;
+        }
+
+        /// <summary> Returns true if specified sensor is selected on Met Data TS tab </summary>       
+        public bool IsMetSensorSelected(string thisSensorName)
+        {
+            bool isSelected = false;
+
+            for (int m = 0; m < chkTS_Params.CheckedItems.Count; m++)
+                if (chkTS_Params.CheckedItems[m].ToString() == thisSensorName)
+                    isSelected = true;
+
+            return isSelected;
+        }        
+
+        private void chkMetsTS_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (okToUpdate)
+            {
+                this.BeginInvoke((MethodInvoker) (
+                    () => updateThe.MetDataTS_Tab()));                
+            }
+        }
+
+        private void chkTS_Params_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (okToUpdate)
+            {
+                this.BeginInvoke((MethodInvoker)(
+                    () => updateThe.MetDataTS_Tab()));
+            }
+        }                
+
+        private void treeDataParams_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            if (okToUpdate)
+            {
+                // Checks to see if sensor type is selected but no metric and auto-selects average
+                if (treeDataParams.Nodes[0].Checked)
+                {
+                    if (treeDataParams.Nodes[0].Nodes[0].Checked == false && treeDataParams.Nodes[0].Nodes[1].Checked == false &&
+                        treeDataParams.Nodes[0].Nodes[2].Checked == false && treeDataParams.Nodes[0].Nodes[3].Checked == false)
+                    {
+                        treeDataParams.Nodes[0].Nodes[0].Checked = true;
+                        return;
+                    }
+                }
+
+                if (treeDataParams.Nodes[1].Checked)
+                {
+                    if (treeDataParams.Nodes[1].Nodes[0].Checked == false && treeDataParams.Nodes[1].Nodes[1].Checked == false &&
+                        treeDataParams.Nodes[1].Nodes[2].Checked == false && treeDataParams.Nodes[1].Nodes[3].Checked == false)
+                    {
+                        treeDataParams.Nodes[1].Nodes[0].Checked = true;
+                        return;
+                    }
+                }
+
+                if (treeDataParams.Nodes[2].Checked)
+                {
+                    if (treeDataParams.Nodes[2].Nodes[0].Checked == false && treeDataParams.Nodes[2].Nodes[1].Checked == false &&
+                        treeDataParams.Nodes[2].Nodes[2].Checked == false && treeDataParams.Nodes[2].Nodes[3].Checked == false)
+                    {
+                        treeDataParams.Nodes[2].Nodes[0].Checked = true;
+                        return;
+                    }
+                }
+
+                if (treeDataParams.Nodes[3].Checked)
+                {
+                    if (treeDataParams.Nodes[3].Nodes[0].Checked == false && treeDataParams.Nodes[3].Nodes[1].Checked == false &&
+                        treeDataParams.Nodes[3].Nodes[2].Checked == false && treeDataParams.Nodes[3].Nodes[3].Checked == false)
+                    {
+                        treeDataParams.Nodes[3].Nodes[0].Checked = true;
+                        return;
+                    }
+                }
+
+                updateThe.MetDataTS_Tab();
+            }
+        }
+       
+        private void dateMetTS_Start_ValueChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+            {
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (dateMetTS_Start.Value.Minute % 10 != 0 || dateMetTS_Start.Value.Second != 0)
+                {
+                    dateMetTS_Start.Value = new DateTime(dateMetTS_Start.Value.Year, dateMetTS_Start.Value.Month, dateMetTS_Start.Value.Day,
+                        dateMetTS_Start.Value.Hour, 0, 0);
+                    return;
+                }
+
+                double newNumDays = dateMetTS_End.Value.Subtract(dateMetTS_Start.Value).TotalDays;
+                if (newNumDays < 0)
+                    txtNumDaysTS.Text = "0";
+                else
+                    txtNumDaysTS.Text = Math.Round(newNumDays, 1).ToString();
+
+                updateThe.MetDataPlots();
+                updateThe.ScrollToSelectedMetDataStart();
+            }
+        }
+
+        private void dateMetTS_End_ValueChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+            {
+                // Make sure end time is at a 10-min value otherwise set to closest one
+                if (dateMetTS_End.Value.Minute % 10 != 0 || dateMetTS_End.Value.Second != 0)
+                {
+                    dateMetTS_End.Value = new DateTime(dateMetTS_End.Value.Year, dateMetTS_End.Value.Month, dateMetTS_End.Value.Day,
+                        dateMetTS_End.Value.Hour, 0, 0);
+                    return;
+                }
+
+                double newNumDays = dateMetTS_End.Value.Subtract(dateMetTS_Start.Value).TotalDays;
+                if (newNumDays < 0)
+                    txtNumDaysTS.Text = "0";
+                else
+                    txtNumDaysTS.Text = Math.Round(newNumDays, 1).ToString();
+
+                updateThe.MetDataPlots();
+                updateThe.ScrollToSelectedMetDataStart();
+            }
+        }
+
+        private void btnMetTS_Left_Click(object sender, EventArgs e)
+        {
+            double numDays = 1;
+            try
+            {
+                numDays = Convert.ToDouble(txtNumDaysTS.Text);
+            }
+            catch
+            {
+                numDays = 1;
+            }
+
+            DateTime startDate = dateMetTS_Start.Value.AddDays(-numDays);
+            DateTime endDate = dateMetTS_End.Value.AddDays(-numDays);
+
+            DateTime[] metStartEnd = metList.GetMetStartEndDates("All");
+
+            if (startDate < metStartEnd[0])
+                startDate = metStartEnd[0];
+
+            if (endDate > metStartEnd[1])
+                endDate = metStartEnd[1];
+
+            // Make sure start time is at a 10-min value otherwise set to closest one
+            if (startDate.Minute % 10 != 0 || startDate.Second != 0)
+                startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);
+
+            // Make sure start time is at a 10-min value otherwise set to closest one
+            if (endDate.Minute % 10 != 0 || endDate.Second != 0)
+                endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
+
+            // Find num days between start/end and update txtNumDaysTS if different
+            double newNumDays = endDate.Subtract(startDate).TotalDays;
+
+            if (newNumDays != 0 && Math.Abs(newNumDays - numDays) > 1)
+                txtNumDaysTS.Text = Math.Round(newNumDays, 1).ToString();
+            else if (newNumDays == 0)
+                return;
+
+            okToUpdate = false;
+            dateMetTS_Start.Value = startDate;
+            okToUpdate = true;
+            dateMetTS_End.Value = endDate;
+
+        }
+
+        private void btnMetTS_Right_Click(object sender, EventArgs e)
+        {
+            double numDays = 1;
+            try
+            {
+                numDays = Convert.ToDouble(txtNumDaysTS.Text);
+            }
+            catch
+            {
+                numDays = 1;
+            }
+
+            DateTime startDate = dateMetTS_Start.Value.AddDays(numDays);
+            DateTime endDate = dateMetTS_End.Value.AddDays(numDays);
+
+            DateTime[] metStartEnd = metList.GetMetStartEndDates("All");
+
+            if (startDate < metStartEnd[0])
+                startDate = metStartEnd[0];
+
+            if (endDate > metStartEnd[1])
+                endDate = metStartEnd[1];
+
+            // Make sure start time is at a 10-min value otherwise set to closest one
+            if (startDate.Minute % 10 != 0 || startDate.Second != 0)
+                startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);
+
+            // Make sure start time is at a 10-min value otherwise set to closest one
+            if (endDate.Minute % 10 != 0 || endDate.Second != 0)
+                endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
+
+            // Find num days between start/end and update txtNumDaysTS if different
+            double newNumDays = endDate.Subtract(startDate).TotalDays;
+
+            if (newNumDays != 0 && Math.Abs(newNumDays - numDays) > 1)
+                txtNumDaysTS.Text = Math.Round(newNumDays, 1).ToString();
+            else if (newNumDays == 0)
+                return;
+
+            okToUpdate = false;
+            dateMetTS_Start.Value = startDate;
+            okToUpdate = true;
+            dateMetTS_End.Value = endDate;
+        }
+
+        /// <summary> Updates visibility of plot type dropdowns depending on number of plots selected </summary>        
+        private void cboNumPlots_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int numPlots = Convert.ToInt32(cboNumPlots.SelectedItem.ToString());
+
+            if (numPlots == 1)
+            {
+                cboPlot1Type.Enabled = true;
+                cboPlot2Type.Enabled = false;
+                cboPlot3Type.Enabled = false;
+                cboPlot4Type.Enabled = false;
+            }
+            else if (numPlots == 2)
+            {
+                cboPlot1Type.Enabled = true;
+                cboPlot2Type.Enabled = true;
+                cboPlot3Type.Enabled = false;
+                cboPlot4Type.Enabled = false;
+            }
+            else if (numPlots == 3)
+            {
+                cboPlot1Type.Enabled = true;
+                cboPlot2Type.Enabled = true;
+                cboPlot3Type.Enabled = true;
+                cboPlot4Type.Enabled = false;
+            }
+            else if (numPlots == 4)
+            {
+                cboPlot1Type.Enabled = true;
+                cboPlot2Type.Enabled = true;
+                cboPlot3Type.Enabled = true;
+                cboPlot4Type.Enabled = true;
+            }
+
+            updateThe.MetDataPlots();
+        }
+
+        private void cboPlot1Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MetDataPlots();
+        }
+
+        private void cboEffectiveTI_m_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //  Updates turbulence intensity plots and tables using selected Wohler exponent (m) on Site Conditions tab
+            if (okToUpdate)
+                updateThe.TurbulenceIntensityPlotAndTable();
+        }                
+        private void dateTIStart_ValueChanged(object sender, EventArgs e)
+        {
+            // Updates turbulence intensity plots and tables based on newly selected start date in TI section of Site Conditions tab
+            if (okToUpdate)
+                updateThe.TurbulenceIntensityPlotAndTable();
+        }                
+
+        private void cboTI_Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Updates turbulence intensity plots and tables on Site Conditions tab based on selected type of TI (average, representative, or effective)
+            if (okToUpdate)
+            {
+                if (cboTI_Type.SelectedItem.ToString() == "Effective" && (turbineList.TurbineCount == 0 || turbineList.PowerCurveCount == 0))
+                {
+                    MessageBox.Show("Turbine sites and a power curve are required to conduct effective TI calculations.", "Continuum 3.0");
+                    cboTI_Type.SelectedIndex = 0;
+                    return;
+                }
+
+                if (cboTI_Type.SelectedItem.ToString() != "Effective")
+                {
+                    cboEffectiveTI_m.Enabled = false;
+                    cboTurbPowerCurve.Enabled = false;
+                    cboTurbineTI.Enabled = false;
+                    cboTI_TerrainComplexCorr.Enabled = false;
+                }
+                else
+                {
+                    cboEffectiveTI_m.Enabled = true;
+                    cboTurbPowerCurve.Enabled = true;
+                    cboTurbineTI.Enabled = true;
+
+                    if (chkApplyTCCtoEffTI.Checked)
+                        cboTI_TerrainComplexCorr.Enabled = true;
+                }
+
+                updateThe.TurbulenceIntensityPlotAndTable();
+            }
+        }
+
+        private void cboTurbineTI_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Updates turbulence intensity plots and tables based on selected turbine site on Site Conditions tab
+            if (okToUpdate)
+                updateThe.TurbulenceIntensityPlotAndTable();
+        }
+
+        private void cboTurbMet_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Updates met start/end date boxes and turbulence intensity plots and tables based on met selected under "Turbulence Intensity" on Site Conditions tab
+            updateThe.SiteConditionsMetDates("TI");
+
+            if (okToUpdate)                     
+                updateThe.TurbulenceIntensityPlotAndTable();            
+        }
+
+        private void cboTurbWD_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Updates turbulence intensity plot and table on Site Conditions tab based on selected wind direction
+            if (okToUpdate)
+                updateThe.TurbulenceIntensityPlotAndTable();
+        }
+
+        private void btnExportTI_Click(object sender, EventArgs e)
+        {
+            // Exports selected turbulence intensity (on Site Conditions tab)            
+            export.ExportTurbulenceIntensity(this);
+        }
+
+        private void cboTurbPowerCurve_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.TurbulenceIntensityPlotAndTable();
+        }                
+
+        private void cboExtremeShearRange_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Update extreme shear section of Site Conditions tab based on selected alpha range
+            if (okToUpdate)
+                updateThe.SiteConditionsAlpha();
+        }                
+
+        private void cboExtremeShearMet_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Update extreme shear section of Site Conditions tab based on selected met site
+            if (okToUpdate)
+            {
+                updateThe.SiteConditionsMetDates("Extreme Shear");
+                updateThe.SiteConditionsAlpha();
+            }
+        }
+
+        private void dateTimeExtremeShearStart_ValueChanged(object sender, EventArgs e)
+        {
+            // Updates extreme shear plot and table based on selected start date
+            if (okToUpdate)
+                updateThe.SiteConditionsAlpha();
+        }
+
+        private void dateTimeExtremeShearEnd_ValueChanged(object sender, EventArgs e)
+        {
+            // Updates extreme shear plot and table based on selected end date
+            if (okToUpdate)
+                updateThe.SiteConditionsAlpha();
+        }
+
+        private void btnExportShearStats_Click(object sender, EventArgs e)
+        {
+            // Exports extreme wind shear statistics (alpha P values for various ranges of WS)            
+            export.ExportExtremeShear(this);
+        }
+
+        private void plotExtremeWS_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnExtremeWS_Click(object sender, EventArgs e)
+        {
+            // Exports estimate of extreme wind speed at selected met on Site Conditions tab            
+            export.ExportExtremeWS(this);
+        }               
+
+        private void cboExtremeWSMet_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            // Updates extreme wind speed plot on Site Conditions tab based on selected met site
+            Met selMet = GetSelectedMet("Site Conditions Extreme WS");
+
+            if (selMet.metData == null)
+                return;
+
+            // Update start/end dates. Default to analysis start/end dates
+            okToUpdate = false;
+            dateExtremeWS_Start.Value = selMet.metData.startDate;
+            dateExtremeWS_End.Value = selMet.metData.endDate;
+            okToUpdate = true;
+
+            // Update selected height dropdown with all measured heights and extrapolated (modeled) height
+            cboExtremeWS_Height.Items.Clear();            
+            double[] measH = selMet.metData.GetHeightsOfAnems();
+            int heightInd = 0;
+            double heightDiff = 1000;
+
+            for (int h = 0; h < measH.Length; h++)
+            {
+                cboExtremeWS_Height.Items.Add(measH[h]);
+
+                double thisDiff = Math.Abs(measH[h] - modeledHeight);
+                if (thisDiff < heightDiff)  // Default to measured height closest to modeled height
+                {
+                    heightDiff = thisDiff;
+                    heightInd = h;
+                }
+            }
+
+            cboExtremeWS_Height.Items.Add(modeledHeight);
+            cboExtremeWS_Height.SelectedIndex = heightInd; // Default to measured height closest to modeled height. This triggers update to Extreme WS tab 
+            cboExtremeWS_Height.Enabled = true;
+                        
+        }
+
+        private void cboExtremeWSRef_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Updates extreme wind speed plot on Site Conditions tab based on selected reference
+            if (okToUpdate)
+                updateThe.ExtremeWindSpeed();
+        }
+
+        private void dateTIEnd_ValueChanged_1(object sender, EventArgs e)
+        {
+            // Updates turbulence intensity plots and tables based on newly selected end date in TI section of Site Conditions tab
+            if (okToUpdate)
+                updateThe.TurbulenceIntensityPlotAndTable();
+        }                
+
+        private void cboPlot2Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MetDataPlots();
+        }
+
+        private void cboPlot3Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MetDataPlots();
+        }
+
+        private void cboPlot4Type_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MetDataPlots();
+        }
+
+        private void chkShowLegenMetDataTS_CheckedChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MetDataPlots();
+        }
+
+        private void chkShowFilteredData_CheckedChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MetDataPlots();
+        }                
+
+        private void btnRefDataDownloads_Click(object sender, EventArgs e)
+        {
+            Reanalysis_Download dataDownload = new Reanalysis_Download(this);  
+            dataDownload.ShowDialog();            
+        }
+
+        public bool IsPythonInstalled()
+        {
+            // Returns true if Python is installed on PC
+            string pythonPath = Environment.GetEnvironmentVariable("python") + "\\python.exe";
+            bool gotPython = false;
+
+            if (File.Exists(pythonPath))
+                gotPython = true;
+
+            return gotPython;
+        }
+
+        public bool IsCDSAPI_Installed()
+        {
+            // Returns true if CDS API is not installed
+            bool gotCDSAPI = false;
+
+            string pythonPath = Environment.GetEnvironmentVariable("python") + "\\python.exe";
+
+            string pythonScript = "ERA5_CredsCheck.py";
+
+            try
+            {
+                ProcessStartInfo start = new ProcessStartInfo();
+                start.WorkingDirectory = Directory.GetCurrentDirectory();
+                start.FileName = pythonPath;
+                start.Arguments = pythonScript;
+                start.UseShellExecute = false;
+                start.RedirectStandardOutput = true;
+                start.ErrorDialog = true;
+                start.CreateNoWindow = true;
+
+                Process process = Process.Start(start);
+
+                process.WaitForExit();
+                int exitCode = process.ExitCode;
+
+                if (exitCode == 0)
+                    gotCDSAPI = true;
+                else
+                    gotCDSAPI = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                gotCDSAPI = false;
+            }
+            
+            return gotCDSAPI;
+        }                
+
+        private void chkApplyTCCtoEffTI_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkApplyTCCtoEffTI.Checked)
+            {
+                cboTI_TerrainComplexCorr.Enabled = true;
+
+                if (cboTI_TerrainComplexCorr.SelectedItem == null)
+                    cboTI_TerrainComplexCorr.SelectedIndex = 0;
+            }
+            else
+                cboTI_TerrainComplexCorr.Enabled = false;
+
+            //  Updates turbulence intensity plots and tables using terain complexity correction on Site Conditions tab
+            if (okToUpdate)
+                updateThe.TurbulenceIntensityPlotAndTable();
+        }
+
+        private void cboTI_TerrainComplexCorr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //  Updates turbulence intensity plots and tables using terain complexity correction on Site Conditions tab
+            if (okToUpdate)
+                updateThe.TurbulenceIntensityPlotAndTable(true);
+        }
+
+        private void btnShowFilterFlags_Click(object sender, EventArgs e)
+        {
+            FilterFlagLegend flagLegend = new FilterFlagLegend(this);
+            flagLegend.Show();
+        }        
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Zone Location files must be in .csv with format: Zone name, Latitude, Longitude, X Size [m], Y Size [m] with no header.");
+        }
+
+        private void txtTopoNullValue_TextChanged(object sender, EventArgs e)
+        {
+            int newNullValue = 0;
+
+            int.TryParse(txtTopoNullValue.Text, out newNullValue);
+
+            if (newNullValue != topo.topoNull)
+                topo.topoNull = newNullValue;
+
+        }
+
+        private void chkForceThruBase_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.IsHandleCreated)
+            {
+                if (chkForceThruBase.Checked != siteSuitability.forceThruTurbBase)
+                {
+                    siteSuitability.forceThruTurbBase = chkForceThruBase.Checked;
+                    updateThe.TerrainComplexityTab();
+                }
+            }
+        }        
+
+        private void btnRotorDiam_Click(object sender, EventArgs e)
+        {
+            if (okToUpdate == false)
+                return;
+
+            double newRotorDiam = modelList.rotorDiam;
+
+            try
+            {
+                newRotorDiam = Convert.ToSingle(Interaction.InputBox("What rotor diameter [m] to you want to model?", "Continuum 3"));
+            }
+            catch
+            {
+                MessageBox.Show("Invalid entry for modeled rotor diameter.", "Continuum 3");
+                return;
+            }
+
+            if (newRotorDiam == modelList.rotorDiam)
+            {
+                MessageBox.Show("Modeled rotor diameter unchanged.", "Continuum 3");
+                return;
+            }
+
+            modelList.rotorDiam = newRotorDiam;
+            txtRotorDiam.Text = newRotorDiam.ToString();
+
+            // TO DO Check to see if any energy roses need to be updated
+            for (int m = 0; m < metList.ThisCount; m++)
+            {
+                Met thisMet = metList.metItem[m]; 
+                
+            }                
+
+        }                
+
+        private void btnEditAirDensity_Click(object sender, EventArgs e)
+        {
+            if (okToUpdate == false)
+                return;
+
+            double newDensity = modelList.airDens;
+
+            try
+            {
+                newDensity = Convert.ToSingle(Interaction.InputBox("What air density [kg/m^3] to you want to model?", "Continuum 3"));
+            }
+            catch
+            {
+                MessageBox.Show("Invalid entry for modeled air density.", "Continuum 3");
+                return;
+            }
+
+            if (newDensity == modelList.airDens)
+            {
+                MessageBox.Show("Modeled air density unchanged.", "Continuum 3");
+                return;
+            }
+
+            modelList.airDens = newDensity;
+
+            // TO DO: Recalculate energy rose at each met
+        }
+
+        private void cboWindOrEnergy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            updateThe.WindOrEnergyRose();
+        }
+
+        private void cboRefWindOrEnergy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            updateThe.LT_ReferenceWindRosePlot();
+        }
+
+        private void cboNumWDRefTab_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // If user changes numWD here, metList numWD is updated, all calcs and estimates should be deleted and all WSWD_dists need to be recalculated with new numWD
+            if (okToUpdate == false)
+                return;
+
+            ChangingNumWD_BinsOk("LT Ref");
+        }
+
+        private void cboNumWDComplxTab_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // If user changes numWD here, metList numWD is updated, all calcs and estimates should be deleted and all WSWD_dists need to be recalculated with new numWD
+            if (okToUpdate == false)
+                return;
+
+            ChangingNumWD_BinsOk("Terrain Complexity");
+        }
+
+        private void btnExportShearHisto_Click(object sender, EventArgs e)
+        {
+            // Exports histogram of shear exponents
+            export.ExportShearHistogram(this);
+        }
+
+        public void EditShearOfSelMet(string tabName)
+        {
+            if (turbineList.genTimeSeries)
+            {
+                DialogResult goodToGo = MessageBox.Show("Changing the shear settings will reset the turbine estimates.  Do you want to continue?", "", MessageBoxButtons.YesNo);
+
+                if (goodToGo == DialogResult.No)
+                    return;
+                else
+                {
+                    turbineList.ClearAllWSEsts();
+                    turbineList.ClearAllGrossEsts();
+                    turbineList.ClearAllNetEsts();
+                }
+            }
+
+            Met selMet = GetSelectedMet(tabName);
+
+            if (metList.isTimeSeries && selMet.isMCPd)
+            {
+                DialogResult goodToGo = MessageBox.Show("Changing the shear settings will reset the met MCP estimates.  Do you want to continue?", "", MessageBoxButtons.YesNo);
+
+                if (goodToGo == DialogResult.No)
+                    return;
+                else
+                    metList.DeleteAllTimeSeriesEsts(this);
+            }
+            
+            EditShearCalcSettings editShear = new EditShearCalcSettings(selMet);
+
+            editShear.ShowDialog();
+
+            if (editShear.goodToGo)
+            {
+                selMet.metData.ClearAlphaAndSimulatedEstimates();
+                modelList.ClearAllExceptImported();
+                metPairList.ClearAll();
+                mapList.ClearAllWakedMaps();
+                                
+                selMet.metData.shearSettings.shearCalcType = selMet.metData.GetShearCalcTypeFromName(editShear.cboShearCalcTypes.SelectedItem.ToString());
+                
+                selMet.metData.shearSettings.minHeight = Convert.ToDouble(editShear.cboMinHeight.SelectedItem.ToString());
+                selMet.metData.shearSettings.maxHeight = Convert.ToDouble(editShear.cboMaxHeight.SelectedItem.ToString());
+                
+                selMet.CalcAllMeas_WSWD_Dists(this, selMet.metData.GetSimulatedTimeSeries(modeledHeight));
+                updateThe.ShearAndExtrapWSInTable(selMet);
+                updateThe.AllTABs();
+            }
+        }
+
+        private void btnEditShearMethod_Click(object sender, EventArgs e)
+        {
+            EditShearOfSelMet("Met Data QC");
+        }
+
+        private void btnEditShearFromSiteConds_Click(object sender, EventArgs e)
+        {
+            EditShearOfSelMet("Site Conditions Shear");
+        }                
+
+        private void chkUseSimData_CheckedChanged(object sender, EventArgs e)
+        {
+            cboExtremeWSRef.Items.Clear();
+
+            if (chkUseSimData.Checked)
+            { // If set to true, repopulate Reference dropdown with one entry for LT estimate (i.e. MCP'd) at selected met site. Also populate height dropdown
+                Met selMet = GetSelectedMet("Site Conditions Extreme WS");
+                cboExtremeWSRef.Items.Add("Long-term Est. at Met Site");
+                
+                cboExtremeWSRef.Enabled = false;
+                
+                cboExtremeWSRef.SelectedIndex = 0;
+            }
+            else
+            { // If set to false, repopulate Reference dropdown with list of LT references (ERA5 or MERRA2)
+
+                for (int r = 0; r < refList.numReferences; r++)
+                    cboExtremeWSRef.Items.Add(refList.reference[r].GetName(metList, UTM_conversions));
+
+                cboExtremeWSRef.SelectedIndex = cboExtremeWSRef.Items.Count - 1;
+                cboExtremeWSRef.Enabled = true;
+
+                
+            }
+        }               
+
+        /// <summary> Finds and returns MCP shown on MCP tab based on selected met site and selected hegihts </summary>        
+        public MCP GetSelectedMCP()
+        {            
+            Met selMet = GetSelectedMet("MCP");
+            double selHeight = 0;
+            
+            if (cboMCP_Height.SelectedItem != null)
+                selHeight = Convert.ToDouble(cboMCP_Height.SelectedItem.ToString());
+
+            Reference selRef = GetSelectedReference("MCP");
+
+            MCP selMCP = selMet.GetMCP_ByRefAndHeight(selHeight, selRef, this);
+            return selMCP;
+        }
+
+        private void cboMCP_Height_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.MCP_TAB();
+        }
+
+        private void cboExtremeWS_Height_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.ExtremeWindSpeed();
+        }
+               
+
+        private void chkExtremeWS_ShowLegend_CheckedChanged(object sender, EventArgs e)
+        {
+            updateThe.ExtremeWindSpeed();
+        }
+
+        private void dateExtremeWS_Start_ValueChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.ExtremeWindSpeed();
+        }
+
+        private void dateExtremeWS_End_ValueChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.ExtremeWindSpeed();
+        }
+        
+        private void cboWMO_Class_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Update description and gust factors associated with selected terrain class
+            updateThe.WMO_GustFactorSelected();
+        }
+
+        private void chkUseWMO_Gust_CheckedChanged(object sender, EventArgs e)
+        {
+            updateThe.ExtremeWindSpeed();
+        }
+
+        private void chkUseWMO_TenMin_CheckedChanged(object sender, EventArgs e)
+        {
+            updateThe.ExtremeWindSpeed();
+        }
+
+        private void btnExportExtremeWSTable_Click(object sender, EventArgs e)
+        {
+            export.ExportExtremeWS_Table(this);
+        }
+
+        private void cboMCP_Ref_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Reset MCP calculations if already calculated with a different reference
+
+            Met selMet = GetSelectedMet("MCP");
+            Reference selRef = GetSelectedReference("MCP");
+
+            if (selMet.mcpList != null)
+            {
+                if (selRef.GetName(metList, UTM_conversions) != selMet.mcpList[0].reference.GetName(metList, UTM_conversions))
+                {
+                    DialogResult clearMCP = MessageBox.Show("Changing the MCP Reference site will reset the MCP calculations.  Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+
+                    if (clearMCP == DialogResult.No)
+                        return;
+                    else
+                        selMet.mcpList = null;
+
+                    selMet.isMCPd = false;
+                    metList.allMCPd = false;
+                    updateThe.MCP_TAB();               
+                    updateThe.ColoredButtons();
+                }
+            }
+        }
+
+        private void plotIceShadowSound_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lstZones_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void plotIceVsDist_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblIceDistOrHisto_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtMaxFlickerHours_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateMaxFlicker_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblMaxFlickerHours_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblMaxFlickerDay_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblShadowByMonthOrIceByDist_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtTotalShadow_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblTotalHoursPerYear_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblZoneOrDirection_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lstShadow12x24_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void plotWSDiffByWS_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void plotAlphaByWD_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void plotAnemScatter_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label20_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void plotAnemScatter_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pnlMetDatQC_WSDiff_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void plotMERRA_Monthly_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Continuum_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void tabPage2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnExportTerrainComplexSector_Click(object sender, EventArgs e)
+        {
+            // Ask user if they want to export slope or SD of terrain variation
+            Export_Degs_or_UTM slopeOrDTV = new Export_Degs_or_UTM();
+            slopeOrDTV.lblQuestion.Text = "Do you want to export the terrain slope or the standard deviation of the terrain variation?";
+            slopeOrDTV.cbo_Lats_UTMs.Items.Clear();
+            slopeOrDTV.cbo_Lats_UTMs.Items.Add("Terrain Slope [degs]");
+            slopeOrDTV.cbo_Lats_UTMs.Items.Add("Standard Deviation of Terrain Variation [m]");
+            slopeOrDTV.cbo_Lats_UTMs.SelectedIndex = 0;
+            slopeOrDTV.ShowDialog();
+            string dataType = slopeOrDTV.cbo_Lats_UTMs.SelectedItem.ToString();
+
+            if (dataType == "Terrain Slope [degs]")
+                dataType = "Slope";
+            else
+                dataType = "DTV";
+
+            // Now ask user what radius of investigation they want (5z, 10z, or 20z)
+            slopeOrDTV.lblQuestion.Text = "For what radius of investigation do you want to export? (In terms of hub height, z)";
+            slopeOrDTV.cbo_Lats_UTMs.Items.Clear();
+            slopeOrDTV.cbo_Lats_UTMs.Items.Add("5z");
+            slopeOrDTV.cbo_Lats_UTMs.Items.Add("10z");
+            slopeOrDTV.cbo_Lats_UTMs.Items.Add("20z");
+            slopeOrDTV.cbo_Lats_UTMs.SelectedIndex = 0;
+            slopeOrDTV.ShowDialog();
+            string roiToUse = slopeOrDTV.cbo_Lats_UTMs.SelectedItem.ToString();
+
+            export.ExportTerrainSlopeOrVariationBySector(this, dataType, roiToUse, chkForceThruBase.Checked);
+        }
+
+        private void cboTopo_Or_Roughness_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            // Calls updateThe.TopoMap to show the selected map (Input tab)
+            if (Created)
+            {
+                if (cboTopo_Or_Roughness.SelectedIndex == 0 && topo.gotTopo == false)
+                    return;
+                else if (cboTopo_Or_Roughness.SelectedIndex > 0 && topo.gotSR == false)
+                    cboTopo_Or_Roughness.SelectedIndex = 0;
+
+                updateThe.TopoMap();
+            }
+        }
+
+        private void cboInputLLorDD_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+            {
+                updateThe.MetList();
+                updateThe.TurbineList();
+            }
         }
     }
 }

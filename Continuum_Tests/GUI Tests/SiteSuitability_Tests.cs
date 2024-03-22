@@ -12,16 +12,23 @@ namespace Continuum_Tests.GUI_Tests
     [TestClass]
     public class SiteSuitability_Tests
     {
-        string testingFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder";
-        string saveFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
+        string testFolder;
+        string saveFolder;
 
+        Globals globals = new Globals();
+        
+        public SiteSuitability_Tests()
+        {
+            testFolder = globals.testFolder;
+            saveFolder = globals.saveFolder;
+        }
 
         [TestMethod]
         public void ShadowFlicker_Test()
         {
             Continuum thisInst = new Continuum("");
 
-            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
+            string fileName = saveFolder + "\\OneMetTABAndGrossNet_123";
 
             thisInst.Open(fileName + ".cfm");
             thisInst.siteSuitability.RunShadowFlickerModel(thisInst);
@@ -35,12 +42,12 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.BW_worker.Close();
             
             // Called in RunWorkerCompleted
-            thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Shadow Flicker");
-            thisInst.updateThe.SiteSuitabilityTAB(thisInst);
-            thisInst.updateThe.ColoredButtons(thisInst);
+            thisInst.updateThe.SiteSuitabilityDropdown("Shadow Flicker");
+            thisInst.updateThe.SiteSuitabilityTAB();
+            thisInst.updateThe.ColoredButtons();
 
             if (thisInst.siteSuitability.numXFlicker != 0)
-                thisInst.SaveFile(false);
+                thisInst.SaveFile();
 
             Assert.AreNotEqual(thisInst.siteSuitability.numXFlicker, 0, "Didn't calculate shadow map");
             Assert.AreNotEqual(thisInst.siteSuitability.zones[0].flickerStats.shadowMins12x24, null, "Didn't calculate shadow at zones");
@@ -55,7 +62,7 @@ namespace Continuum_Tests.GUI_Tests
         {
             Continuum thisInst = new Continuum("");
 
-            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
+            string fileName = saveFolder + "\\OneMetTABAndGrossNet_123";
 
             thisInst.Open(fileName + ".cfm");
 
@@ -79,12 +86,12 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.BW_worker.Close();
 
             // Called in RunCompleted
-            thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Ice Throw");
-            thisInst.updateThe.IcingYearsDropDown(thisInst);
-            thisInst.updateThe.SiteSuitabilityTAB(thisInst);
+            thisInst.updateThe.SiteSuitabilityDropdown("Ice Throw");
+            thisInst.updateThe.IcingYearsDropDown();
+            thisInst.updateThe.SiteSuitabilityTAB();
             thisInst.ChangesMade();
 
-            thisInst.updateThe.ColoredButtons(thisInst);
+            thisInst.updateThe.ColoredButtons();
 
             Assert.AreNotEqual(thisInst.siteSuitability.yearlyIceHits.Length, 0, "Didn't calculate ice throw");
             Assert.AreNotEqual(thisInst.siteSuitability.yearlyIceHits[0].iceHits.Length, 0, "Didn't calculate ice throw");
@@ -96,7 +103,7 @@ namespace Continuum_Tests.GUI_Tests
         {
             Continuum thisInst = new Continuum("");
 
-            string fileName = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder\\OneMetTABAndGrossNet_1";
+            string fileName = saveFolder + "\\OneMetTABAndGrossNet_123";
 
             thisInst.Open(fileName + ".cfm");
             double turbineSound = thisInst.GetTurbineNoise();
@@ -105,11 +112,11 @@ namespace Continuum_Tests.GUI_Tests
             {
                 thisInst.siteSuitability.turbineSound = turbineSound;
                 thisInst.siteSuitability.CreateSoundMap(thisInst);
-                thisInst.updateThe.SoundMap(thisInst);
-                thisInst.updateThe.SoundAtZones(thisInst);
-                thisInst.updateThe.SiteSuitabilityDropdown(thisInst, "Sound");
-                thisInst.updateThe.ColoredButtons(thisInst);
-                thisInst.updateThe.SiteSuitabilityVisibility(thisInst);
+                thisInst.updateThe.SoundMap();
+                thisInst.updateThe.SoundAtZones();
+                thisInst.updateThe.SiteSuitabilityDropdown("Sound");
+                thisInst.updateThe.ColoredButtons();
+                thisInst.updateThe.SiteSuitabilityVisibility();
             }
 
             Assert.AreNotEqual(thisInst.siteSuitability.soundMap, null, "Didn't calculate turbine noise");

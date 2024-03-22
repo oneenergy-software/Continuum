@@ -1951,7 +1951,7 @@ namespace ContinuumNS
             for (int i = 0; i < numMetsToPredict; i++)
             {
                 // Average distribution model
-                if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || thisInst.turbineList.genTimeSeries == false)
+                if (thisInst.metList.isTimeSeries == false || thisInst.metList.allMCPd == false || thisInst.turbineList.genTimeSeries == false)
                 {
                     thisRR_FuncObj.omittedMets[i].DoTurbineCalcs(thisInst, thisRR_FuncObj.models);
                     double[] windRose = thisInst.metList.GetInterpolatedWindRose(theseMetsInModel, thisRR_FuncObj.omittedMets[i].UTMX, thisRR_FuncObj.omittedMets[i].UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);

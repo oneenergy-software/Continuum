@@ -7,15 +7,24 @@ using OxyPlot;
 using OxyPlot.Series;
 using OxyPlot.Axes;
 using System.Linq.Expressions;
+using System.Security.Policy;
+using System.Threading;
+using System.IO.Packaging;
+using static ContinuumNS.Met;
+using static ContinuumNS.Met_Data_Filter;
+using static IronPython.Modules._ast;
+//using System.Windows.Media;
 
 namespace ContinuumNS
 {
     /// <summary> Class with functions to open and save CFM files and update GUI plots and tables on all tabs. </summary>
     public class Update
     {
+        /// <summary> Continuum object instance </summary>
+        Continuum thisInst; 
         /// <summary> List view item used to update tables. </summary>
         ListViewItem objListItem = new ListViewItem();
-
+        
         /// <summary> Holds booleans to determine which parameters to plot on Advanced tab "Path of Nodes" plot and table. </summary>
         public struct Advanced_to_show
         {
@@ -57,20 +66,39 @@ namespace ContinuumNS
             public bool showActualWS;
         }
 
+        /// <summary> WMO Gust Factor table entry (just hour to 10-min and hour to gust) </summary>
+        public struct WMO_GustFactor
+        {
+            /// <summary> Terrain class </summary>
+            public string thisClass;
+            /// <summary> Terrain class description </summary>
+            public string thisDesc;
+            /// <summary> Hourly to 10-min Gust factor value where Target WS = Reference WS * Gust Factor </summary>
+            public double hourToTenMin;
+            /// <summary> Hourly to Gust factor value where Target WS = Reference WS * Gust Factor </summary>
+            public double hourToGust;
+        }
+
+        /// <summary> Class Constructor </summary>
+        public Update(Continuum inst)
+        {
+            thisInst = inst;
+        }
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary> Updates all plots, tables and textboxes on Net Turb Ests tab. </summary>
-        public void NetTurbineEstsTAB(Continuum thisInst)
+        public void NetTurbineEstsTAB()
         {
-            WakeModelList(thisInst);
-            WakedTurbList(thisInst);
-            WakedWSDistPlot(thisInst);
-            TurbsByString(thisInst);
-            WakeLossMap(thisInst);
+            WakeModelList();
+            WakedTurbList();
+            WakedWSDistPlot();
+            TurbsByString();
+            WakeLossMap();
         }
 
         /// <summary> Updates all buttons that are color-coded to be either red or green depending on state of analysis. </summary>
-        public void ColoredButtons(Continuum thisInst) // 
+        public void ColoredButtons() // 
         {
             if (thisInst.IsHandleCreated == false)
                 return;
@@ -87,9 +115,9 @@ namespace ContinuumNS
                 thisInst.btnImportRoughness.BackColor = Color.LightCoral;
 
             if (thisInst.metList.isTimeSeries || thisInst.metList.ThisCount == 0)
-                thisInst.btnModHeight.Enabled = true;
+                thisInst.btnEditModHeight.Enabled = true;
             else
-                thisInst.btnModHeight.Enabled = false;
+                thisInst.btnEditModHeight.Enabled = false;
 
             // btnViewModNLCD is modified in Update.LC_KeySelected sub
 
@@ -132,6 +160,7 @@ namespace ContinuumNS
                 thisInst.btnTurbines.BackColor = Color.LightCoral;
 
             thisInst.turbineList.AreTurbCalcsDone(thisInst);
+
             if (thisInst.turbineList.turbineCalcsDone == true)
             {
                 thisInst.btnGenTurbEsts.BackColor = Color.MediumSeaGreen;
@@ -143,7 +172,7 @@ namespace ContinuumNS
                 thisInst.btnGenTurbGross.BackColor = Color.LightCoral;
             }
 
-            if (thisInst.metList.isTimeSeries == false || thisInst.metList.allMCPd == false)
+            if (thisInst.metList.isTimeSeries == false) // 12/11/2023 Updating to allow time series modeling without MCP 
             {
                 thisInst.chkCreateTurbTS.Enabled = false;
                 thisInst.chkCreateTurbTS.CheckState = CheckState.Unchecked;
@@ -157,54 +186,46 @@ namespace ContinuumNS
                     thisInst.chkCreateTurbTS.CheckState = CheckState.Unchecked;
             }
 
-            // MERRA2 tab
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
-            if (thisMERRA.GotWindTS(thisInst.UTM_conversions))
-                thisInst.btn_Import_MERRA.BackColor = Color.MediumSeaGreen;
-            else if (thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
-                thisInst.btn_Import_MERRA.BackColor = Color.LightCoral;
-            else
-                thisInst.btn_Import_MERRA.BackColor = Color.Gray;
-
-            // Met data QC tab
-            if (thisInst.metList.ThisCount == 0)
-                thisInst.chkDisableFilter.Enabled = true;
-            else if (thisInst.metList.ThisCount > 0 && thisInst.metList.isTimeSeries == false)
-                thisInst.chkDisableFilter.Enabled = false;
+            // LT Reference tab
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");                     
 
             // MCP tab
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            bool gotMERRA = false;
+            thisRef = thisInst.GetSelectedReference("MCP");
+            MCP thisMCP = thisInst.GetSelectedMCP();
+
+          //  bool gotRef = false;
 
             // Check to see if have MERRA data
-            if (thisMet.name != null)
+       /*     if (thisMet.name != null)
             {
                 UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
                 int offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-                gotMERRA = thisInst.merraList.GotMERRA(theseLL.latitude, theseLL.longitude);
+                gotRef = thisInst.refList.GetReference(theseLL.latitude, theseLL.longitude);
             }
+       */
 
             if (thisMet.name == null)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && gotMERRA == false)
+            else if (thisMCP == null && thisRef.numNodes == 0)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && gotMERRA == true)
+            else if (thisMCP == null && thisRef.numNodes != 0)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = true;
             }
-            else if (thisMet.mcp.HaveMCP_Estimate("Any") == false && gotMERRA == true)
+            else if (thisMCP.HaveMCP_Estimate("Any") == false && thisRef.numNodes != 0)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = true;
             }
-            else if (thisMet.mcp.HaveMCP_Estimate("Any") == true)
+            else if (thisMCP.HaveMCP_Estimate("Any") == true)
             {
                 thisInst.btnDoMCP.BackColor = Color.MediumSeaGreen;
                 thisInst.btnDoMCP.Enabled = false;
@@ -212,15 +233,18 @@ namespace ContinuumNS
 
             // Check to see if all mets have MCP
             thisInst.metList.AreAllMetsMCPd();
-            bool haveMERRAForAll = false;
+            bool haveRefsForAll = true;
 
             for (int i = 0; i < thisInst.metList.ThisCount; i++)
             {
                 UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[i].UTMX, thisInst.metList.metItem[i].UTMY);
-                haveMERRAForAll = thisInst.merraList.GotMERRA(theseLL.latitude, theseLL.longitude);
+                Reference[] refsForMet = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude);
 
-                if (haveMERRAForAll == false)
+                if (refsForMet.Length == 0)
+                {
+                    haveRefsForAll = false;
                     break;
+                }
             }
 
             if (thisInst.metList.allMCPd)
@@ -228,7 +252,7 @@ namespace ContinuumNS
                 thisInst.btnDoMCPAllMets.BackColor = Color.MediumSeaGreen;
                 thisInst.btnDoMCPAllMets.Enabled = false;
             }
-            else if (haveMERRAForAll)
+            else if (haveRefsForAll)
             {
                 thisInst.btnDoMCPAllMets.BackColor = Color.LightCoral;
                 thisInst.btnDoMCPAllMets.Enabled = true;
@@ -354,7 +378,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates net turbine  plot that shows estimates for each specified string. </summary>        
-        public void TurbsByString(Continuum thisInst)
+        public void TurbsByString()
         {
             double maxVal = 0;
             double minVal = 10000000;
@@ -528,7 +552,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates waked wind speed map on Net Turbine Ests tab </summary>        
-        public void WakeLossMap(Continuum thisInst)
+        public void WakeLossMap()
         {
 
             int numWakeModels = thisInst.wakeModelList.NumWakeModels;
@@ -740,7 +764,7 @@ namespace ContinuumNS
                     Maximum = thisMax
                 });
 
-                WakeMapLabels(thisInst);
+                WakeMapLabels();
             }
 
             thisInst.plotWakeMap.Refresh();
@@ -748,7 +772,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates list on Net Turbine Ests tab that lists the wake models and wake maps that have been created </summary> 
-        public void WakeModelList(Continuum thisInst)
+        public void WakeModelList()
         {
             thisInst.okToUpdate = false;
             thisInst.lstWakeModels.Items.Clear();
@@ -860,12 +884,12 @@ namespace ContinuumNS
                 }
             }
 
-            ColoredButtons(thisInst);
+            ColoredButtons();
             thisInst.okToUpdate = true;
         }
 
         /// <summary> Updates the table on Net Turbine Ests tab which lists the net turbine estimates </summary> 
-        public void WakedTurbList(Continuum thisInst)
+        public void WakedTurbList()
         {
             thisInst.lstWakedTurbs.Items.Clear();
 
@@ -957,38 +981,84 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates all plots and tables on all tabs that have the mets to reflect new metList. </summary>        
-        public void MetList(Continuum thisInst)
+        public void MetList()
         {
             thisInst.okToUpdate = false;
             thisInst.lstMetTowers.Items.Clear(); // First clear table
             thisInst.chkMetLabels.Items.Clear(); // Clear met label table
             thisInst.chkMetlabelsStep.Items.Clear(); // Clear met label table for stepwise tab
-            thisInst.chkMetLabels_Maps.Items.Clear();
+            thisInst.chkMetLabels_Maps.Items.Clear();            
             thisInst.chkMetSumm.Items.Clear(); // Clear met list in turb est tab
             thisInst.chkMetGross.Items.Clear(); // Clear met list in Met and Turb summary page    
             thisInst.cboMetQC_SelectedMet.Items.Clear(); // Clear met dropdown list on Met Data QC page
-            thisInst.cboMCP_Met.Items.Clear(); // Clear met dropdown list on MCP page
-            thisInst.cboMERRASelectedMet.Items.Clear(); // Clear met dropdown list on MERRA (LT Ref) page
+            thisInst.cboMCP_Met.Items.Clear(); // Clear met dropdown list on MCP page            
             thisInst.cboTurbMet.Items.Clear();
             thisInst.cboExtremeShearMet.Items.Clear();
             thisInst.cboExtremeWSMet.Items.Clear();
+
+            if (thisInst.cboInputLLorDD.SelectedIndex == -1)
+                thisInst.cboInputLLorDD.SelectedIndex = 0;
+            string DDorLL = thisInst.cboInputLLorDD.SelectedItem.ToString();
+
+            if (DDorLL == "DD")
+            {
+                thisInst.lstMetTowers.Columns[1].Text = "Lat. [degs]";
+                thisInst.lstMetTowers.Columns[2].Text = "Long. [degs]";
+            }
+            else
+            {
+                thisInst.lstMetTowers.Columns[1].Text = "Easting [m]";
+                thisInst.lstMetTowers.Columns[2].Text = "Northing [m]";
+            }
 
             int numMets = thisInst.metList.ThisCount;
 
             if (numMets > 0)
             {
                 Met thisMet = thisInst.metList.metItem[0];
-                thisInst.lstMetTowers.Columns[3].Text = thisInst.modeledHeight + " m Wind Speed";
+                thisInst.lstMetTowers.Columns[3].Text = thisInst.modeledHeight + " m WS [m/s]";
+
+                // If long-term WS estimated at 1 or more mets, then add column 'LT Est. Wind Speed'
+                bool oneHasLT = false;
+                for (int m = 0; m < numMets; m++)
+                    if (thisInst.metList.metItem[m].isMCPd)
+                    {
+                        oneHasLT = true;
+                        break;
+                    }
+
+                if (oneHasLT && thisInst.lstMetTowers.Columns.Count < 5)
+                    thisInst.lstMetTowers.Columns.Add("LT Est. WS [m/s]");
+                else if (oneHasLT == false && thisInst.lstMetTowers.Columns.Count == 5)
+                    thisInst.lstMetTowers.Columns.Remove(thisInst.lstMetTowers.Columns[4]);
 
                 for (int j = 0; j < numMets; j++) // Now repopulate it with met towers
                 {
                     thisMet = thisInst.metList.metItem[j];
                     Met.WSWD_Dist thisDist = thisMet.GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+                    Met.WSWD_Dist measDist = new WSWD_Dist();
+                    
+                    if (thisInst.metList.isTimeSeries)
+                        measDist = thisMet.CalcMeas_WSWD_Dists(thisInst.modeledHeight, Met.TOD.All, Met.Season.All, thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
 
                     ListViewItem objListItem = thisInst.lstMetTowers.Items.Add(thisMet.name);
-                    objListItem.SubItems.Add(Math.Round(thisMet.UTMX, 0).ToString());
-                    objListItem.SubItems.Add(Math.Round(thisMet.UTMY, 0).ToString());
-                    if (thisDist.WS != 0)
+
+                    if (DDorLL == "UTM")
+                    {
+                        objListItem.SubItems.Add(Math.Round(thisMet.UTMX, 0).ToString());
+                        objListItem.SubItems.Add(Math.Round(thisMet.UTMY, 0).ToString());
+                    }
+                    else
+                    {
+                        UTM_conversion.Lat_Long thisLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+                        objListItem.SubItems.Add(Math.Round(thisLL.latitude, 4).ToString());
+                        objListItem.SubItems.Add(Math.Round(thisLL.longitude, 4).ToString());
+                    }
+                    
+                    if (measDist.WS != 0)
+                        objListItem.SubItems.Add(Math.Round(measDist.WS, 3).ToString());
+
+                    if ((oneHasLT && thisDist.WS != measDist.WS) || thisInst.metList.isTimeSeries == false)
                         objListItem.SubItems.Add(Math.Round(thisDist.WS, 3).ToString());
 
                     thisInst.chkMetLabels.Items.Add(thisMet.name, true);
@@ -997,26 +1067,26 @@ namespace ContinuumNS
                     if (thisMet.ExposureCount == 4) thisInst.chkMetSumm.Items.Add(thisMet.name, true);
                     if (thisMet.ExposureCount == 4) thisInst.chkMetGross.Items.Add(thisMet.name, true);
                     thisInst.cboMetQC_SelectedMet.Items.Add(thisMet.name);
-                    thisInst.cboMCP_Met.Items.Add(thisMet.name);
-                    thisInst.cboMERRASelectedMet.Items.Add(thisMet.name);
+                    thisInst.cboMCP_Met.Items.Add(thisMet.name);                    
                     thisInst.cboTurbMet.Items.Add(thisMet.name);
                     thisInst.cboExtremeShearMet.Items.Add(thisMet.name);
                     thisInst.cboExtremeWSMet.Items.Add(thisMet.name);
                 }
 
                 thisInst.cboMetQC_SelectedMet.SelectedIndex = 0;
-                thisInst.cboMCP_Met.SelectedIndex = 0;
-                thisInst.cboMERRASelectedMet.SelectedIndex = 0;
+                thisInst.cboMCP_Met.SelectedIndex = 0;                
                 thisInst.cboTurbMet.SelectedIndex = 0;
                 thisInst.cboExtremeShearMet.SelectedIndex = 0;
                 thisInst.cboExtremeWSMet.SelectedIndex = 0;
-                SiteConditionsMetDates(thisInst);
-
-                if (thisMet.mcp == null && thisInst.cboMCP_Type.SelectedItem == null)
+               
+                if (thisMet.mcpList == null && thisInst.cboMCP_Type.SelectedItem == null)
                     thisInst.cboMCP_Type.SelectedIndex = 0;
-                else if (thisMet.mcp != null)
+                else if (thisMet.mcpList != null)
                 {
-                    if (thisMet.mcp.MCP_Ortho.allR_Sq != 0)
+                    string mcpMethod = thisMet.GetMCP_Method_Used();
+                    thisInst.cboMCP_Type.SelectedItem = mcpMethod;
+
+           /*         if (thisMet.mcp.MCP_Ortho.allR_Sq != 0)
                         thisInst.cboMCP_Type.SelectedIndex = 0; // Orthogonal                    
                     else if (thisMet.mcp.MCP_Bins.binAvgSD_Cnt != null)
                         thisInst.cboMCP_Type.SelectedIndex = 1; // Method of Bins
@@ -1026,14 +1096,14 @@ namespace ContinuumNS
                         thisInst.cboMCP_Type.SelectedIndex = 3; // Matrix
                     else
                         thisInst.cboMCP_Type.SelectedIndex = 0;
+           */
 
                 }
             }
             else // Clear all met text
             {
                 thisInst.cboMetQC_SelectedMet.Text = "";
-                thisInst.cboMCP_Met.Text = "";
-                thisInst.cboMERRASelectedMet.Text = "";
+                thisInst.cboMCP_Met.Text = "";               
                 thisInst.cboTurbMet.Text = "";
                 thisInst.cboExtremeShearMet.Text = "";
                 thisInst.cboExtremeWSMet.Text = "";
@@ -1041,19 +1111,7 @@ namespace ContinuumNS
                 thisInst.cboStartMet.Text = "";
                 thisInst.cboEndMet.Text = "";
 
-            }
-
-            // Add 'user defined' on MERRA page so user can enter lat/long for MERRA2 data extraction
-            thisInst.cboMERRASelectedMet.Items.Add("User-Defined Lat/Long");
-
-            // Add all user-defined MERRA data extracted
-            for (int i = 0; i < thisInst.merraList.numMERRA_Data; i++)
-                if (thisInst.merraList.merraData[i].isUserDefined == true)
-                    if (thisInst.merraList.merraData[i].numMERRA_Nodes > 0)
-                        thisInst.cboMERRASelectedMet.Items.Add("Lat: " + Math.Round(thisInst.merraList.merraData[i].MERRA_Nodes[0].XY_ind.Lat, 3)
-                            + " Long: " + Math.Round(thisInst.merraList.merraData[i].MERRA_Nodes[0].XY_ind.Lon, 3));
-
-            thisInst.cboMERRASelectedMet.SelectedIndex = 0;
+            }                        
 
             thisInst.cboRR_MinSize.Items.Clear();
             thisInst.cboRR_MinSize.Text = "";
@@ -1063,14 +1121,16 @@ namespace ContinuumNS
             if (thisInst.cboRR_MinSize.Items.Count > 0)
                 thisInst.cboRR_MinSize.SelectedIndex = 0;
 
-            StartMet_Dropdown(thisInst);
-            EndMet_Dropdown(thisInst);
+            StartMet_Dropdown();
+            EndMet_Dropdown();
 
             thisInst.okToUpdate = true;
+
+            
         }
 
         /// <summary> Updates table on Advanced tab that shows the met cross prediction of site-calibrated model with specified radius and WD sector. </summary>       
-        public void ModCrossPredictions(Continuum thisInst)
+        public void ModCrossPredictions()
         {
             int numPairs = thisInst.metPairList.PairCount;
             int radiusInd = thisInst.GetRadiusInd("Advanced");
@@ -1149,7 +1209,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Specifies the default parameters shown on Path Node plot on Advanced tab. </summary>   
-        public void SetDefaultCheckAdvanced(Continuum thisInst)
+        public void SetDefaultCheckAdvanced()
         {
             thisInst.okToUpdate = false;
             thisInst.chkAdvToShow.SetItemChecked(0, false); // UTMX
@@ -1174,7 +1234,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates path of nodes tables on Advanced tab. </summary>   
-        public void PathNodesList(Continuum thisInst)
+        public void PathNodesList()
         {
             if (thisInst.modelList.ModelCount == 0)
             {
@@ -1536,14 +1596,14 @@ namespace ContinuumNS
                 return;
 
             PathNodeListUpdate(startNode, startMetStr, startWS, endNode, endMetStr, pathOfNodes, nodesSectorWS, nodeWS, WD_Ind,
-                                  radiusIndex, numWD, thisModel, thisInst, paramsToShow, thisInst.modeledHeight, estSectorWS, estWS, actWS);
+                                  radiusIndex, numWD, thisModel, paramsToShow, thisInst.modeledHeight, estSectorWS, estWS, actWS);
 
         }
 
         /// <summary> Updates the three tables on Advanced tab to show selected parameters from selected met to selected met or turbine site for specified radius and wind direction sector. </summary>
         public void PathNodeListUpdate(Nodes startNode, string startMetStr, double[] startWS, Nodes endNode, string endStr, Nodes[] pathOfNodes,
                                          double[,] pathNodeSectWS, double[] pathNodeWS, int WD_Ind, int radiusIndex, int numWD, Model thisModel,
-                                         Continuum thisInst, Advanced_to_show paramsToShow, double HH, double[] estSectorWS, double estWS, double actWS)
+                                         Advanced_to_show paramsToShow, double HH, double[] estSectorWS, double estWS, double actWS)
         {
 
             ListViewItem objList_UW = null;
@@ -2231,7 +2291,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates dropdown menu on Uncertainty tab (Round Robin ) specifying number of mets used in Round Robin. </summary>
-        public void RoundRobinDropdown(Continuum thisInst)
+        public void RoundRobinDropdown()
         {
             thisInst.okToUpdate = false;
             thisInst.cboRoundRobin.Items.Clear();
@@ -2296,7 +2356,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates table on Uncertainty tab showing the results of Round Robin estimates. </summary>       
-        public void RoundRobinIndivResults(Continuum thisInst)
+        public void RoundRobinIndivResults()
         {
             thisInst.lstRR_AllErr.Items.Clear();
 
@@ -2370,7 +2430,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates plot on Uncertainty tab showing turbine uncertainty estimates. </summary>  
-        public void TurbineUncertPlot(Continuum thisInst)
+        public void TurbineUncertPlot()
         {
             thisInst.plotTurbUncert.Model = new PlotModel();
             var model = thisInst.plotTurbUncert.Model;
@@ -2499,7 +2559,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates table on Uncertainty tab showing RMS error of Round Robin analyses. </summary>        
-        public void RoundRobinResults(Continuum thisInst)
+        public void RoundRobinResults()
         {
             int numRR = thisInst.metPairList.RoundRobinCount;
             MetPairCollection.RR_WS_Ests thisRR = new MetPairCollection.RR_WS_Ests();
@@ -2603,7 +2663,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates four textboxes on Advanced tab: Mets used, RMS error (mets used), RMS error (all mets), sect error. </summary>
-        public void ModelParams(Continuum thisInst)
+        public void ModelParams()
         {
             int radiusIndex = thisInst.GetRadiusInd("Advanced");
 
@@ -2662,7 +2722,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates radius of investigation dropdown menu on Met and Turb Summary tab and Advanced tab. </summary>
-        public void RadiusToDisplay(string summ_or_Adv, Continuum thisInst) // 
+        public void RadiusToDisplay(string summ_or_Adv) // 
         {
             thisInst.okToUpdate = false;
 
@@ -2695,33 +2755,53 @@ namespace ContinuumNS
                 thisInst.lstPathNodes.Items.Clear();
                 thisInst.lstPathNodes_DW.Items.Clear();
                 thisInst.lstPathNodes_UW.Items.Clear();
-                ModelPlots(thisInst);
-                ModelParams(thisInst);
-                ModCrossPredictions(thisInst);
-                StepTopoMap(thisInst);
+                ModelPlots();
+                ModelParams();
+                ModCrossPredictions();
+                StepTopoMap();
             }
 
             thisInst.okToUpdate = true;
         }
 
         /// <summary> Updates all wind direction dropdown menus. </summary>
-        public void WindDirectionToDisplay(Continuum thisInst)
+        public void WindDirectionToDisplay()
         {
             thisInst.okToUpdate = false;
 
             int numWD = thisInst.GetNumWD();
 
-            // Update WD dropdown on MCP tab            
-            if (numWD == 4)
+            // Update WD dropdown on MCP tab
+            if (numWD == 1)
+            {
                 thisInst.cboMCPNumWD.SelectedIndex = 0;
-            else if (numWD == 8)
+                thisInst.cboNumWDRefTab.SelectedIndex = 0;
+            }
+            else if (numWD == 4)
+            {
                 thisInst.cboMCPNumWD.SelectedIndex = 1;
-            else if (numWD == 12)
+                thisInst.cboNumWDRefTab.SelectedIndex = 1;
+            }
+            else if (numWD == 8)
+            {
                 thisInst.cboMCPNumWD.SelectedIndex = 2;
-            else if (numWD == 16)
+                thisInst.cboNumWDRefTab.SelectedIndex = 2;
+            }
+            else if (numWD == 12)
+            {
                 thisInst.cboMCPNumWD.SelectedIndex = 3;
-            else if (numWD == 24)
+                thisInst.cboNumWDRefTab.SelectedIndex = 3;
+            }
+            else if (numWD == 16)
+            {
                 thisInst.cboMCPNumWD.SelectedIndex = 4;
+                thisInst.cboNumWDRefTab.SelectedIndex = 4;
+            }
+            else if (numWD == 24)
+            {
+                thisInst.cboMCPNumWD.SelectedIndex = 5;
+                thisInst.cboNumWDRefTab.SelectedIndex = 5;
+            }
 
             thisInst.cboAdvancedWD.Items.Clear();
             thisInst.cboSummaryWD.Items.Clear();
@@ -2770,7 +2850,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates all season dropdown menus. </summary>
-        public void SeasonDropdown(Continuum thisInst)
+        public void SeasonDropdown()
         {
             thisInst.okToUpdate = false;
             thisInst.cboSummSeason.Items.Clear();
@@ -2816,7 +2896,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates all time of day dropdown menus. </summary>
-        public void TOD_Dropdown(Continuum thisInst)
+        public void TOD_Dropdown()
         {
             thisInst.okToUpdate = false;
             thisInst.cboMCP_TOD.Items.Clear();
@@ -2856,7 +2936,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates "Start Met" dropdown menu on Advanced tab. </summary>
-        public void StartMet_Dropdown(Continuum thisInst)
+        public void StartMet_Dropdown()
         {
             thisInst.okToUpdate = false;
             thisInst.cboStartMet.Items.Clear();
@@ -2874,7 +2954,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates "End Met" dropdown menu on Advanced tab. </summary>
-        public void EndMet_Dropdown(Continuum thisInst)
+        public void EndMet_Dropdown()
         {
             thisInst.okToUpdate = false;
             string Start_met_name = thisInst.GetStartMetAdvanced();
@@ -2901,7 +2981,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates Met and Turbine labels on thisInst.topo/SR/DH/LC map on Input tab. </summary>
-        public void Labels(Continuum thisInst)
+        public void Labels()
         {
             Met[] checkedMets = thisInst.GetCheckedMets("Input");
             Turbine[] checkedTurbines = thisInst.GetCheckedTurbs("Input");
@@ -2954,7 +3034,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates Met, turbine and path of nodes labels on map on Advanced tab. </summary>
-        public void StepLabels(Continuum thisInst, double minX, double maxX, double minY, double maxY)
+        public void StepLabels(double minX, double maxX, double minY, double maxY)
         {
             Met[] checkedMets = thisInst.GetCheckedMets("Advanced");
             Turbine[] checkedTurbines = thisInst.GetCheckedTurbs("Advanced");
@@ -3142,7 +3222,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates met and turbine labels on map on Maps tab. </summary>        
-        public void MapLabels(Continuum thisInst)
+        public void MapLabels()
         {
             if (thisInst.lstMaps.SelectedItems.Count > 0)
             {
@@ -3221,7 +3301,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates met and turbine labels on map on Net Turbine Ests. tab. </summary>  
-        public void WakeMapLabels(Continuum thisInst)
+        public void WakeMapLabels()
         {
             if (thisInst.metList.ThisCount == 0) return;
             var model = thisInst.plotWakeMap.Model;
@@ -3255,7 +3335,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates roughness model and Flow Separation model textbox colors and text to indicate whether or not model was used. </summary> 
-        public void ColoredTextBoxes(Continuum thisInst)
+        public void ColoredTextBoxes()
         {
             if (thisInst.topo.useSR == true)
             {
@@ -3348,7 +3428,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates Land Cover textbox to indicate which LC key has been selected. </summary> 
-        public void LC_KeySelected(Continuum thisInst)
+        public void LC_KeySelected()
         {
             bool isNLCD = thisInst.topo.LC_IsDefaultNLCD(thisInst.topo.LC_Key);
             bool isNALC = thisInst.topo.LC_IsDefaultNALC(thisInst.topo.LC_Key);
@@ -3388,7 +3468,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the met and turbine expo, SRDH and statistics shown in tables on Met and Turbine Summary tab </summary>        
-        public void MetTurbSummaryAndStatsTable(Continuum thisInst)
+        public void MetTurbSummaryAndStatsTable()
         {
             thisInst.lstMetSummary.Items.Clear();
             thisInst.lstMetStats.Items.Clear();
@@ -3753,7 +3833,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the table on Gross Turbines Ests tab showing gross turbine estimates. </summary> 
-        public void GrossTurbEstList(Continuum thisInst)
+        public void GrossTurbEstList()
         {
             thisInst.lstGrossTurbEst.Items.Clear();
 
@@ -3920,7 +4000,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the table of turbine uncertainty estimates on Uncertainty tab. </summary>        
-        public void TurbUncertEstList(Continuum thisInst)
+        public void TurbUncertEstList()
         {
             thisInst.lstTurbUncert.Items.Clear();
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Uncertainty");
@@ -3956,7 +4036,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the list of turbines on Gross Est tab and dropdown lists on Time Series tab, Uncertainty tab and Wake Model generator. </summary>
-        public void PowerCurveList(Continuum thisInst)
+        public void PowerCurveList()
         {
             thisInst.okToUpdate = false;
 
@@ -4012,11 +4092,11 @@ namespace ContinuumNS
         }
 
         /// <summary> Reads turbines that are checked on gross tab and then calls function to calculate stats and fill textboxes on gross tab. </summary>
-        public void TurbStats(Continuum thisInst)
+        public void TurbStats()
         {
             if (thisInst.turbineList.GotEst("WS", new TurbineCollection.PowerCurve(), null) == false)
             {
-                ClearStats(thisInst);
+                ClearStats();
                 return;
             }
 
@@ -4027,14 +4107,14 @@ namespace ContinuumNS
             Turbine[] checkedTurbines = thisInst.GetCheckedTurbs("Gross");
             if (checkedTurbines == null)
             {
-                ClearStats(thisInst);
+                ClearStats();
                 return;
             }
             thisInst.turbineList.FindParamStats(thisInst, checkedTurbines, WD_Ind);
         }
 
         /// <summary> Creates a histogram of specified (gross) parameter (elev, WS, AEP, weibull k, weibull A) of selected met and turbines on Gross Turb Ests tab. </summary>
-        public void GrossHistogram(Continuum thisInst)
+        public void GrossHistogram()
         {
             thisInst.lstGrossHisto.Items.Clear();
             thisInst.lstGrossHisto.Columns.Clear();
@@ -4403,7 +4483,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Creates a histogram of Round Robin errors on Uncertainty tab. </summary>        
-        public void RoundRobinHistogram(Continuum thisInst)
+        public void RoundRobinHistogram()
         {
             thisInst.plotRR_Histo.Model = new PlotModel();
             var model = thisInst.plotRR_Histo.Model;
@@ -4525,7 +4605,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates all plots and tables on all tabs that have the turbine sites to reflect new list. </summary>        
-        public void TurbineList(Continuum thisInst)
+        public void TurbineList()
         {
             thisInst.okToUpdate = false;
             int turbCount = thisInst.turbineList.TurbineCount;
@@ -4545,12 +4625,37 @@ namespace ContinuumNS
             string[] stringNames = null;
             int numStrings = 0;
 
+            if (thisInst.cboInputLLorDD.SelectedItem == null)
+                thisInst.cboInputLLorDD.SelectedIndex = 0;
+            string DDorLL = thisInst.cboInputLLorDD.SelectedItem.ToString();
+
+            if (DDorLL == "UTM")
+            {
+                thisInst.lstTurbines.Columns[1].Text = "Easting [m]";
+                thisInst.lstTurbines.Columns[2].Text = "Northing [m]";
+            }
+            else
+            {
+                thisInst.lstTurbines.Columns[1].Text = "Latitude [degs]";
+                thisInst.lstTurbines.Columns[2].Text = "Longitude [degs]";
+            }
+
             for (int i = 0; i < turbCount; i++)
             {
                 Turbine thisTurb = thisInst.turbineList.turbineEsts[i];
                 objListItem = thisInst.lstTurbines.Items.Add(thisTurb.name);
-                objListItem.SubItems.Add(Math.Round(thisTurb.UTMX, 0).ToString());
-                objListItem.SubItems.Add(Math.Round(thisTurb.UTMY, 0).ToString());
+
+                if (DDorLL == "UTM")
+                {
+                    objListItem.SubItems.Add(Math.Round(thisTurb.UTMX, 0).ToString());
+                    objListItem.SubItems.Add(Math.Round(thisTurb.UTMY, 0).ToString());
+                }
+                else
+                {
+                    UTM_conversion.Lat_Long thisLL = thisInst.UTM_conversions.UTMtoLL(thisTurb.UTMX, thisTurb.UTMY);
+                    objListItem.SubItems.Add(Math.Round(thisLL.latitude, 4).ToString());
+                    objListItem.SubItems.Add(Math.Round(thisLL.longitude, 4).ToString());
+                }
 
                 thisInst.chkTurbLabels.Items.Add(thisTurb.name, true);
                 thisInst.chkTurbLabels_Maps.Items.Add(thisTurb.name, true);
@@ -4613,31 +4718,31 @@ namespace ContinuumNS
         }
 
         /// <summary> Update the plots and tables on Met and Turbine Summary tab. </summary>        
-        public void Met_Turbine_Summary_TAB(Continuum thisInst)
+        public void Met_Turbine_Summary_TAB()
         {
-            MetAndTurbExpoPlots(thisInst);
-            MetTurbSummaryAndStatsTable(thisInst);
+            MetAndTurbExpoPlots();
+            MetTurbSummaryAndStatsTable();
         }
 
         /// <summary> Calls thisExpoPlot to update each of the 8 plots on the 'Met and Turbine Summary' tab. </summary> 
-        public void MetAndTurbExpoPlots(Continuum thisInst) // 
+        public void MetAndTurbExpoPlots() // 
         {
             int radiusIndex = thisInst.GetRadiusInd("Summary");
             int WD_Ind = thisInst.GetWD_ind("Summary");
-            thisExpoPlot(thisInst, "UW Expo", radiusIndex, WD_Ind); // UW Expo plot
-            thisExpoPlot(thisInst, "DW Expo", radiusIndex, WD_Ind); // DW Expo plot
-            thisExpoPlot(thisInst, "DW-UW Expo", radiusIndex, WD_Ind); // DW-UW Expo plot
-            thisExpoPlot(thisInst, "Elev", radiusIndex, WD_Ind); // Elevation plot
+            thisExpoPlot("UW Expo", radiusIndex, WD_Ind); // UW Expo plot
+            thisExpoPlot("DW Expo", radiusIndex, WD_Ind); // DW Expo plot
+            thisExpoPlot("DW-UW Expo", radiusIndex, WD_Ind); // DW-UW Expo plot
+            thisExpoPlot("Elev", radiusIndex, WD_Ind); // Elevation plot
 
-            thisExpoPlot(thisInst, "UW SR", radiusIndex, WD_Ind); // UW Surface roughness plot
-            thisExpoPlot(thisInst, "DW SR", radiusIndex, WD_Ind);// DW Surface roughness plot
-            thisExpoPlot(thisInst, "UW DH", radiusIndex, WD_Ind);// UW Displacement height plot
-            thisExpoPlot(thisInst, "DW DH", radiusIndex, WD_Ind);// DW Displacement height plot
+            thisExpoPlot("UW SR", radiusIndex, WD_Ind); // UW Surface roughness plot
+            thisExpoPlot("DW SR", radiusIndex, WD_Ind);// DW Surface roughness plot
+            thisExpoPlot("UW DH", radiusIndex, WD_Ind);// UW Displacement height plot
+            thisExpoPlot("DW DH", radiusIndex, WD_Ind);// DW Displacement height plot
 
         }
 
         /// <summary> Updates plot on 'Met and Turbine Summary' tab based on plotName. </summary>        
-        public void thisExpoPlot(Continuum thisInst, string plotName, int radiusIndex, int WD_Ind)
+        public void thisExpoPlot(string plotName, int radiusIndex, int WD_Ind)
         {
             OxyPlot.WindowsForms.PlotView thisPlot = new OxyPlot.WindowsForms.PlotView();
             var model = new PlotModel(); ;
@@ -5017,7 +5122,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the path of nodes plot on Advanced tab to show selected parameters. </summary> 
-        public void PlotAdvancedTable(Continuum thisInst)
+        public void PlotAdvancedTable()
         {
             thisInst.plotPathAlongNodes.Model = new PlotModel();
             var model = thisInst.plotPathAlongNodes.Model;
@@ -5395,7 +5500,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates either the wind speed distribution or wind rose plot on Gross Turb Est tab (depending on which is selected from dropdown box). </summary>        
-        public void WS_or_WR_Plot(Continuum thisInst)
+        public void WS_or_WR_Plot()
         {
             string WS_or_WR = thisInst.cboWS_or_WD.SelectedItem.ToString();
 
@@ -5403,18 +5508,18 @@ namespace ContinuumNS
             {
                 thisInst.plotGrossWS_Dist.Visible = true;
                 thisInst.plotGrossWindRose.Visible = false;
-                WSDist_Plot(thisInst);
+                WSDist_Plot();
             }
             else
             {
                 thisInst.plotGrossWS_Dist.Visible = false;
                 thisInst.plotGrossWindRose.Visible = true;
-                WR_Plot(thisInst);
+                WR_Plot();
             }
         }
 
         /// <summary> Updates wind rose plot on 'Gross Turbine Ests' tab. </summary>        
-        public void WR_Plot(Continuum thisInst)
+        public void WR_Plot()
         {
             thisInst.plotGrossWindRose.Model = new PlotModel();
             var model = thisInst.plotGrossWindRose.Model;
@@ -5493,7 +5598,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates wind speed distribution plot on Gross Turbine Ests tab. </summary>
-        public void WSDist_Plot(Continuum thisInst)
+        public void WSDist_Plot()
         {
             thisInst.plotGrossWS_Dist.Model = new PlotModel();
             var model = thisInst.plotGrossWS_Dist.Model;
@@ -5622,7 +5727,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates (net/waked) wind speed distribution plot on Net Turb Ests tab. </summary>        
-        public void WakedWSDistPlot(Continuum thisInst)
+        public void WakedWSDistPlot()
         {
             if (thisInst.BW_worker.BackgroundWorker_TurbCalcs.IsBusy || thisInst.BW_worker.BackgroundWorker_Map.IsBusy)
                 return;
@@ -5729,7 +5834,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates plot of power and thrust curves on Gross Turb Ests tab. </summary>        
-        public void PowerCrvPlot(Continuum thisInst)
+        public void PowerCrvPlot()
         {
             int chkPowerCurveCount = thisInst.lstPowerCurveList.CheckedItems.Count;
             int powerCurveCount = thisInst.turbineList.PowerCurveCount;
@@ -5795,7 +5900,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates Log-Log plot : Downhill coeff vs P10 Expo on Advanced tab. </summary>        
-        public void DownhillLogLogPlot(Continuum thisInst, Model thisModel, string DH_plot_to_show)
+        public void DownhillLogLogPlot(Model thisModel, string DH_plot_to_show)
         {
             Model origModel = new Model();
             int numWD = thisInst.GetNumWD();
@@ -6087,7 +6192,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates plot on Advanced tab showing DW Stability factor (used in the surface roughness model) radar plot. </summary>  
-        public void DownhillRoughPlot(Continuum thisInst, Model thisModel)
+        public void DownhillRoughPlot(Model thisModel)
         {
             int numWD = thisInst.GetNumWD();
             double[] DH_Stab = new double[numWD];   // DW Stability factor by WD sector
@@ -6128,7 +6233,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates plot on Advanced tab showing UW Stability factor (used in the surface roughness model) radar plot. </summary>
-        public void UphillRoughPlot(Continuum thisInst, Model thisModel, string UW_to_show)
+        public void UphillRoughPlot(Model thisModel, string UW_to_show)
         {
             int numWD = thisInst.GetNumWD();
             double[] UH_Stab = new double[numWD];  // UW Stability factor by WD sector                      
@@ -6176,7 +6281,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates Log-Log plot : Uphill coeff vs P10 Expo on Advanced tab. </summary>
-        public void UphillLogLogPlot(Continuum thisInst, Model thisModel, string UW_plot_to_show)
+        public void UphillLogLogPlot(Model thisModel, string UW_plot_to_show)
         {
             int numWD = thisInst.GetNumWD();
             int WD_Ind = thisInst.GetWD_ind("Advanced");
@@ -6445,7 +6550,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Reads the selected radius, WD, Expo/SRDH, UW critical and updates the plots on the Advanced tab to show either the log-log P10 exposure or stability factors on a radar plot. </summary>        
-        public void ModelPlots(Continuum thisInst)
+        public void ModelPlots()
         {
             int numModels = thisInst.modelList.ModelCount;
             bool isImported = false;
@@ -6513,13 +6618,13 @@ namespace ContinuumNS
 
             if (Expo_or_Rough == "Exposure")
             {
-                DownhillLogLogPlot(thisInst, thisModel, DH_Plot_to_show); // updates scatter and log-log fit of Uphill plot
-                UphillLogLogPlot(thisInst, thisModel, UH_Plot_to_show);
+                DownhillLogLogPlot(thisModel, DH_Plot_to_show); // updates scatter and log-log fit of Uphill plot
+                UphillLogLogPlot(thisModel, UH_Plot_to_show);
             }
             else
             {
-                DownhillRoughPlot(thisInst, thisModel);
-                UphillRoughPlot(thisInst, thisModel, UH_Plot_to_show);
+                DownhillRoughPlot(thisModel);
+                UphillRoughPlot(thisModel, UH_Plot_to_show);
             }
 
             double UW_critical = 0;
@@ -6550,7 +6655,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Returns either ‘Topography’ or ‘Surface roughness’ depending what is selected on ‘Input’ tab. </summary>        
-        public string GetSelectedTopoMapParam(Continuum thisInst) // 
+        public string GetSelectedTopoMapParam() // 
         {
             string topoOrRough = thisInst.cboTopo_Or_Roughness.SelectedItem.ToString();
 
@@ -6578,9 +6683,10 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates map on Input tab to show either elevation, surface roughness, displacement height, or land cover codes. </summary>   
-        public void TopoMap(Continuum thisInst)
+        public void TopoMap()
         {
-            string topoOrRough = GetSelectedTopoMapParam(thisInst);
+            thisInst.txtTopoNullValue.Text = thisInst.topo.topoNull.ToString();
+            string topoOrRough = GetSelectedTopoMapParam();
             thisInst.plotTopo.Model = new PlotModel();
             var model = thisInst.plotTopo.Model;
 
@@ -6593,7 +6699,7 @@ namespace ContinuumNS
                 double[,] paramToPlot = null;
                 // Plot land cover, surface roughness, or displacement height
                 if (topoOrRough == "Surface Roughness") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Surface Roughness");
-                if (topoOrRough == "Displacement height") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Displacement height");
+                if (topoOrRough == "Displacement height") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Displacement Height");
                 if (topoOrRough == "Land Cover") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Land Cover");
                 if (topoOrRough == "Topography") paramToPlot = thisInst.topo.topoElevs;
 
@@ -6613,11 +6719,27 @@ namespace ContinuumNS
                     thisInst.txtTopoSource.Text = thisInst.savedParams.landCoverFileName;
                 }
 
+                // Make the X and Y axis same length
+                double xMinExtent = theseXYs.X.plot.max - theseXYs.X.plot.min;
+                double yMinExtent = theseXYs.Y.plot.max - theseXYs.Y.plot.min;
+                double extentYoverX = yMinExtent / xMinExtent;
+
+                double appAspectRatio = (double)thisInst.Height / thisInst.Width;
+
+                if (thisInst.WindowState == FormWindowState.Normal)
+                {
+                    if (extentYoverX > 1)
+                        thisInst.plotTopo.Width = Convert.ToInt32(633 / extentYoverX);
+                    else if (extentYoverX < 1)
+                        thisInst.plotTopo.Height = Convert.ToInt32(522 / extentYoverX);
+                }
+
                 // Create heat map series
                 var cs = new HeatMapSeries
                 {
                     X0 = theseXYs.X.plot.min,
                     X1 = theseXYs.X.plot.max,
+
                     Y0 = theseXYs.Y.plot.min,
                     Y1 = theseXYs.Y.plot.max,
 
@@ -6630,14 +6752,14 @@ namespace ContinuumNS
                     Palette = OxyPalettes.Jet(500),
                     HighColor = OxyColors.Red,
                     LowColor = OxyColors.Gray,
-                    Minimum = thisInst.topo.GetMin(paramToPlot, false),
+                    Minimum = thisInst.topo.GetMin(paramToPlot, true),
                     Maximum = thisInst.topo.GetMax(paramToPlot)
-                });
+                });                                         
 
                 thisInst.plotTopo.Model.Series.Add(cs);
 
-                Labels(thisInst);
-
+                Labels();                                
+                
                 // Refresh plot
                 thisInst.plotTopo.Refresh();
 
@@ -6646,7 +6768,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the map on Advanced tab to show the selected start and end met and the nodes in between (if any). </summary> 
-        public void StepTopoMap(Continuum thisInst)
+        public void StepTopoMap()
         {
             thisInst.plotAdvTopo.Model = new PlotModel();
             var model = thisInst.plotAdvTopo.Model;
@@ -6919,7 +7041,7 @@ namespace ContinuumNS
                     Maximum = thisMax
                 });
 
-                StepLabels(thisInst, minX, maxX, minY, maxY);
+                StepLabels(minX, maxX, minY, maxY);
             }
 
             thisInst.plotAdvTopo.Refresh();
@@ -6927,7 +7049,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Clears all parameters and resets model for a new project. </summary>        
-        public void NewProject(Continuum thisInst)
+        public void NewProject()
         {
             thisInst.topo.ClearAll(ref thisInst);
             thisInst.metList.ClearAllMets(thisInst, false);
@@ -6941,7 +7063,7 @@ namespace ContinuumNS
             thisInst.wakeModelList.ClearAll();
             thisInst.savedParams.ClearAll();
             thisInst.UTM_conversions.ResetDefaults();
-            thisInst.merraList.ClearMERRA();
+            thisInst.refList.ClearReferences();
             thisInst.siteSuitability.ClearAll();
             thisInst.siteSuitability.ClearAllZones();
 
@@ -6951,18 +7073,26 @@ namespace ContinuumNS
 
             thisInst.modeledHeight = 80;
             thisInst.txtModeledHeight.Text = "80";
-            thisInst.metList.isTimeSeries = false;
-            thisInst.metList.filteringEnabled = true;
+            thisInst.modelList.airDens = 1.225;
+            thisInst.txtAirDensity.Text = "1.225";
+            thisInst.modelList.rotorDiam = 100;
+            thisInst.txtRotorDiam.Text = "100";
+            thisInst.metList.isTimeSeries = false;            
             thisInst.chkDisableFilter.CheckState = CheckState.Checked;
 
-            AllTABs(thisInst);
+            thisInst.dataMetTS.Rows.Clear();
+            thisInst.dataMetTS.Columns.Clear();
+            MetTS_CheckList();
+            MetDataPlots();
 
-            ClearSavedParameters(thisInst);
+            AllTABs();
+
+            ClearSavedParameters();
 
         }
 
         /// <summary> Clears everything except for Maps and met and turbine sites (clear WS calcs). </summary>
-        public void NewModel(Continuum thisInst)
+        public void NewModel()
         {
             thisInst.topo.ClearAll(ref thisInst);
             thisInst.metList.ClearAllExposuresAndGridStats();
@@ -6972,16 +7102,16 @@ namespace ContinuumNS
             thisInst.savedParams.ClearAll();
 
             // Input tab
-            TopoMap(thisInst);
+            TopoMap();
 
             // Turb Est tab
-            WS_or_WR_Plot(thisInst);
-            PowerCrvPlot(thisInst);
-            TurbStats(thisInst);
-            GrossTurbEstList(thisInst);
+            WS_or_WR_Plot();
+            PowerCrvPlot();
+            TurbStats();
+            GrossTurbEstList();
 
             // Maps tab
-            ClearMapsPlotsAndTables(thisInst);
+            ClearMapsPlotsAndTables();
             thisInst.cboStartMet.Text = "";
             thisInst.cboEndMet.Text = "";
 
@@ -7000,23 +7130,23 @@ namespace ContinuumNS
             thisInst.cboStartMet.Items.Clear();
             thisInst.cboEndMet.Items.Clear();
             thisInst.cboAdvancedWD.Items.Clear();
-            StepTopoMap(thisInst);
-            PlotAdvancedTable(thisInst);
-            ModelPlots(thisInst);
-            ModelParams(thisInst);
+            StepTopoMap();
+            PlotAdvancedTable();
+            ModelPlots();
+            ModelParams();
 
-            ClearSavedParameters(thisInst);
+            ClearSavedParameters();
 
         }
 
         /// <summary> Clears all saved parameters. </summary>        
-        public void ClearSavedParameters(Continuum thisInst)
+        public void ClearSavedParameters()
         {
             thisInst.savedParams.ClearAll();
         }
 
         /// <summary> Clears textboxes on Gross Turbine Ests tab showing the stats of the estimated WS and AEP. </summary>
-        public void ClearStats(Continuum thisInst) // 
+        public void ClearStats() // 
         {
             thisInst.txtAvg.Clear();
             thisInst.txtCount.Clear();
@@ -7030,7 +7160,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Clears all plots and table on Map tab. </summary>
-        public void ClearMapsPlotsAndTables(Continuum thisInst)
+        public void ClearMapsPlotsAndTables()
         {
             thisInst.lstMaps.Items.Clear();
 
@@ -7040,7 +7170,7 @@ namespace ContinuumNS
             thisInst.txtMapMin.Clear();
             thisInst.txtMapStDev.Clear();
 
-            Generated2DMap(thisInst);
+            Generated2DMap();
 
             thisInst.chkMetLabels_Maps.Items.Clear();
             thisInst.chkTurbLabels_Maps.Items.Clear();
@@ -7048,11 +7178,16 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates wind rose plot on Input tab. </summary>        
-        public void WindRose(Continuum thisInst)
+        public void WindOrEnergyRose()
         {
+            if (thisInst.cboWindOrEnergy.SelectedItem == null)
+                thisInst.cboWindOrEnergy.SelectedIndex = 0;
+
+            string windOrEnergy = thisInst.cboWindOrEnergy.SelectedItem.ToString();
+
             thisInst.plotInputWindRose.Model = new PlotModel();
             var model = thisInst.plotInputWindRose.Model;
-            model.Title = "Wind Rose at Met Sites";
+            model.Title = windOrEnergy; 
             model.PlotType = PlotType.Polar;
             model.IsLegendVisible = false;
             model.PlotAreaBorderThickness = new OxyThickness(0);
@@ -7076,11 +7211,19 @@ namespace ContinuumNS
                 {
                     Met.WSWD_Dist thisDist = checkedMets[i].GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
 
+                    if (thisDist.windRose == null)
+                        continue;
+
                     var metSeries = new LineSeries();
                     SortedList<double, double> ii = new SortedList<double, double>();
 
                     for (int WDind = 0; WDind < numWD; WDind++)
-                        ii.Add(WDind * 360 / numWD, Math.Round(thisDist.windRose[WDind], 5));
+                    {
+                        if (windOrEnergy == "Wind Rose")
+                            ii.Add(WDind * 360 / numWD, Math.Round(thisDist.windRose[WDind], 5));
+                        else if (windOrEnergy == "Energy Rose")
+                            ii.Add(WDind * 360 / numWD, Math.Round(thisDist.energyRose[WDind], 5));
+                    }
 
                     ii.Add(360, thisDist.windRose[0]);
 
@@ -7100,11 +7243,11 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates directional WS ratio plot on Input tab. </summary>
-        public void DirectionalWS_Ratios(Continuum thisInst)
+        public void DirectionalWS_Ratios()
         {
             thisInst.plotDirectionalWS_Ratios.Model = new PlotModel();
             var model = thisInst.plotDirectionalWS_Ratios.Model;
-            model.Title = "Directional WS Ratios at Met Sites";
+            model.Title = "Directional WS Ratios";
             model.PlotType = PlotType.Polar;
             model.IsLegendVisible = false;
             model.PlotAreaBorderThickness = new OxyThickness(0);
@@ -7133,6 +7276,9 @@ namespace ContinuumNS
                 {
                     Color lineColor = GetMetOrTurbColor(i);
                     Met.WSWD_Dist thisDist = checkedMets[i].GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+
+                    if (thisDist.sectorWS_Dist == null)
+                        continue;
 
                     var metSeries = new LineSeries();
                     SortedList<double, double> ii = new SortedList<double, double>();
@@ -7171,26 +7317,26 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates tables and plot showing results of Round Robin </summary>        
-        public void Uncertainty_TAB_Round_Robin(Continuum thisInst) //  
+        public void Uncertainty_TAB_Round_Robin() //  
         {
             thisInst.okToUpdate = false;
-            RoundRobinDropdown(thisInst);
+            RoundRobinDropdown();
             thisInst.okToUpdate = true;
-            RoundRobinResults(thisInst);
-            RoundRobinIndivResults(thisInst);
-            RoundRobinHistogram(thisInst);
+            RoundRobinResults();
+            RoundRobinIndivResults();
+            RoundRobinHistogram();
         }
 
         /// <summary>  Updates tables, plots, and textboxes on Map tab. </summary>
-        public void MapTAB(Continuum thisInst)
+        public void MapTAB()
         {
-            MapList(thisInst);
-            Generated2DMap(thisInst);
-            MapStats(thisInst);
+            MapList();
+            Generated2DMap();
+            MapStats();
         }
 
         /// <summary> Updates the list on Map tab. </summary>
-        public void MapList(Continuum thisInst) // 
+        public void MapList() // 
         {
             thisInst.lstMaps.Items.Clear();
 
@@ -7220,7 +7366,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates map on Maps tab </summary>        
-        public void Generated2DMap(Continuum thisInst)
+        public void Generated2DMap()
         {
             if (thisInst.lstMaps.SelectedItems.Count == 1)
             {
@@ -7410,15 +7556,19 @@ namespace ContinuumNS
                 model.Series.Add(cs);
 
 
-                MapLabels(thisInst);
+                MapLabels();
+            }
+            else
+            {
+                thisInst.plotGenMap.Model = new PlotModel();
             }
 
             thisInst.plotGenMap.Refresh();
-
+            
         }
 
         /// <summary> Updates textboxes on Map tab showing statistics of selected map. </summary>
-        public void MapStats(Continuum thisInst)
+        public void MapStats()
         {
             if (thisInst.lstMaps.SelectedItems.Count == 1)
             {
@@ -7428,7 +7578,7 @@ namespace ContinuumNS
                 {
                     if (Selected_Map == thisInst.mapList.mapItem[i].mapName)
                     {
-                        FindMapStats(thisInst, thisInst.mapList.mapItem[i]);
+                        FindMapStats(thisInst.mapList.mapItem[i]);
                         break;
                     }
                 }
@@ -7446,94 +7596,100 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates all plots and tables on Advanced tab. </summary>
-        public void AdvancedTAB(Continuum thisInst)
+        public void AdvancedTAB()
         {
-            PathNodesList(thisInst); // calls PathNodeListUpdate
-            PlotAdvancedTable(thisInst);
-            ModelPlots(thisInst);
-            ModelParams(thisInst);
-            ModCrossPredictions(thisInst);
-            StepTopoMap(thisInst);
+            PathNodesList(); // calls PathNodeListUpdate
+            PlotAdvancedTable();
+            ModelPlots();
+            ModelParams();
+            ModCrossPredictions();
+            StepTopoMap();
         }
 
         /// <summary> Updates everything on Input_tab (except for MetLists and TurbineLists which is done separately). </summary>
-        public void InputTAB(Continuum thisInst)
+        public void InputTAB()
         {
-            WindRose(thisInst);
-            DirectionalWS_Ratios(thisInst);
-            LC_KeySelected(thisInst);
-            TopoMap(thisInst);
+            WindOrEnergyRose();
+            DirectionalWS_Ratios();
+            LC_KeySelected();
+            TopoMap();
         }
 
         /// <summary> Updates everything on Gross Turbine Estimates tab. </summary>
-        public void GrossTurbineEstsTAB(Continuum thisInst)
+        public void GrossTurbineEstsTAB()
         {
-            PowerCurveList(thisInst);
-            PowerCrvPlot(thisInst);
-            GrossTurbEstList(thisInst);
-            GrossHistogram(thisInst);
-            TurbStats(thisInst);
-            WS_or_WR_Plot(thisInst);
+            PowerCurveList();
+            PowerCrvPlot();
+            GrossTurbEstList();
+            GrossHistogram();
+            TurbStats();
+            WS_or_WR_Plot();
         }
 
         /// <summary> Updates turbine estimates on Uncertainty tab. </summary>
-        public void Uncertainty_TAB_Turbine_Ests(Continuum thisInst)
+        public void Uncertainty_TAB_Turbine_Ests()
         {
-            TurbUncertEstList(thisInst);
-            TurbineUncertPlot(thisInst);
+            TurbUncertEstList();
+            TurbineUncertPlot();
         }
 
         /// <summary> Updates Maps tab. </summary>
-        public void MapsTAB(Continuum thisInst)
+        public void MapsTAB()
         {
-            MapList(thisInst);
-            MapStats(thisInst);
-            Generated2DMap(thisInst);
+            MapList();
+            MapStats();
+            Generated2DMap();
         }
 
         /// <summary> Updates all Continuum tabs. </summary>
-        public void AllTABs(Continuum thisInst)
+        public void AllTABs()
         {
             thisInst.okToUpdate = false;
-            MetList(thisInst);
-            TurbineList(thisInst);
-            ZoneList(thisInst);
+            MetList();
+            TurbineList();
+            ZoneList();            
             thisInst.txtTurbineNoise.Text = thisInst.siteSuitability.turbineSound.ToString();
-            WindDirectionToDisplay(thisInst);
-            RadiusToDisplay("Summary", thisInst);
-            RadiusToDisplay("Adv", thisInst);
-            MERRA_Dropdowns(thisInst);
-            SeasonDropdown(thisInst);
-            TOD_Dropdown(thisInst);
-            MCP_Settings(thisInst);
-            MERRA_Settings(thisInst);
-            SetDefaultCheckAdvanced(thisInst);
+            WindDirectionToDisplay();
+            RadiusToDisplay("Summary");
+            RadiusToDisplay("Adv");
+            LongTermReference();
+            SeasonDropdown();
+            TOD_Dropdown();
+            MCP_Settings();
+            LT_ReferenceDropdowns();
+            LT_ReferenceSettings();
+            SetDefaultCheckAdvanced();
 
-            ColoredButtons(thisInst);
-            ColoredTextBoxes(thisInst);
+            ColoredButtons();
+            ColoredTextBoxes();
 
-            thisInst.dateMERRAStart.Value = thisInst.merraList.startDate;
-            thisInst.dateMERRAEnd.Value = thisInst.merraList.endDate;
+      //      thisInst.dateMERRAStart.Value = thisInst.merraList.startDate;
+      //      thisInst.dateMERRAEnd.Value = thisInst.merraList.endDate;
 
             thisInst.okToUpdate = true;
-            InputTAB(thisInst);
-            MetDataQC_TAB(thisInst);
-            MCP_TAB(thisInst);
-            MERRA_TAB(thisInst);
-            Met_Turbine_Summary_TAB(thisInst);
-            GrossTurbineEstsTAB(thisInst);
-            NetTurbineEstsTAB(thisInst);
-            Monthly_TAB(thisInst);
-            MapsTAB(thisInst);
-            Uncertainty_TAB_Round_Robin(thisInst);
-            Uncertainty_TAB_Turbine_Ests(thisInst);
-            AdvancedTAB(thisInst);
-            SiteSuitabilityTAB(thisInst);
-            Exceedance_TAB(thisInst);
-            TurbulenceIntensityPlotAndTable(thisInst);
-            SiteConditionsAlpha(thisInst);
-            ExtremeWindSpeed(thisInst);
-            InflowAnglePlotAndTable(thisInst);
+            InputTAB();            
+            MetDataQC_TAB();
+            
+            MetDataTS_Tab(); // Doing this after the QC tab since it needs the extrapolated data to be generated
+            MCP_TAB();
+            LT_ReferenceTAB();
+            Met_Turbine_Summary_TAB();
+            GrossTurbineEstsTAB();
+            NetTurbineEstsTAB();
+            Monthly_TAB();
+            MapsTAB();
+            Uncertainty_TAB_Round_Robin();
+            Uncertainty_TAB_Turbine_Ests();
+            AdvancedTAB();
+            SiteSuitabilityTAB();
+            Exceedance_TAB();
+            TurbulenceIntensityPlotAndTable();
+            SiteConditionsAlpha();
+            ExtremeWindSpeed();
+            TerrainComplexityTab();
+            InflowAnglePlotAndTable();
+
+            
         }
 
 
@@ -7574,7 +7730,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates Met Data QC tab. </summary> 
-        public void MetDataQC_TAB(Continuum thisInst)
+        public void MetDataQC_TAB()
         {
             Met thisMet = thisInst.GetSelectedMet("Met Data QC");
 
@@ -7592,26 +7748,43 @@ namespace ContinuumNS
                         thisMet.metData.ExtrapolateData(thisInst.modeledHeight);
                 }
             }
+            
 
+            if (thisMet.metData != null)
+                thisInst.chkDisableFilter.Checked = thisMet.metData.filteringEnabled;
        //     MetQC_AnemDropdown(thisInst, thisMet);
-            MetQCAnemVaneDropdown(thisInst);
-            MetQCDates(thisInst, thisMet);
-            AlphaVsWD_PlotAndTable(thisInst, thisMet);
-            WS_vsHeightPlot(thisInst, thisMet);
-            AnemometerSummary(thisInst, thisMet);
-            TempSummary(thisInst, thisMet);
-            VaneSummary(thisInst, thisMet);
-            ExtrapolatedSummary(thisInst, thisMet);
-            MetAnemScatterplot(thisInst, thisMet);
-            MetWS_DiffvsWD(thisInst, thisMet);
-            MetWS_DiffvsWindSpeed(thisInst, thisMet);
-            MetWindRoseOrWS_byWDPlot(thisInst, thisMet);
+            MetQCAnemVaneDropdown();
+            MetQCDates(thisMet);
+            AlphaVsWD_PlotAndTable(thisMet);
+            WS_vsHeightPlot(thisMet);
+            AnemometerSummary(thisMet);
+            TempSummary(thisMet);
+            VaneSummary(thisMet);
+            ExtrapolatedSummary(thisMet);
+            MetAnemScatterplot(thisMet);
+            MetWS_DiffvsWD(thisMet);
+            MetWS_DiffvsWindSpeed(thisMet);
+            MetWindRoseOrWS_byWDPlot(thisMet);
         }
 
-        /// <summary> Updates the Shear alpha vs Wind Direction Plot and Table.  Plots overall, day, and night shear exponents as function of WD. </summary> 
-        public void AlphaVsWD_PlotAndTable(Continuum thisInst, Met thisMet)
-        {
+        /// <summary> Updates the Shear Calc Method textboxes, Shear alpha vs Wind Direction Plot and Table.  Plots overall, day, and night shear exponents as function of WD. </summary> 
+        public void AlphaVsWD_PlotAndTable(Met thisMet)
+        {            
             Met_Data_Filter thisData = thisMet.metData;
+
+            if (thisData == null)
+            {
+                thisInst.lstAlphas.Items.Clear();
+                thisInst.plotAlphaByWD.Model = new PlotModel();
+                thisInst.plotAlphaByWD.Refresh();
+                return;
+            }
+
+            thisInst.txtShearCalcMethod.Text = thisData.GetShearCalcNameFromEnum(thisData.shearSettings.shearCalcType);
+                        
+            thisInst.txtShearBestFitMinHeight.Text = thisData.shearSettings.minHeight.ToString();
+            thisInst.txtShearBestFitMaxHeight.Text = thisData.shearSettings.maxHeight.ToString();
+            
             thisInst.plotAlphaByWD.Model = new PlotModel();
             var model = thisInst.plotAlphaByWD.Model;
             model.IsLegendVisible = false;
@@ -7630,18 +7803,18 @@ namespace ContinuumNS
                 return;
             }
 
-            double[] Avg_Alpha_WD = thisData.GetAvgAlpha(0, 24, 16);
-            double[] Day_Alpha_WD = thisData.GetAvgAlpha(7, 18, 16);
-            double[] Night_Alpha_WD = thisData.GetAvgAlpha(19, 6, 16);
+            double[] Avg_Alpha_WD = thisData.GetAvgAlpha(0, 24, thisInst.metList.numWD);
+            double[] Day_Alpha_WD = thisData.GetAvgAlpha(7, 18, thisInst.metList.numWD);
+            double[] Night_Alpha_WD = thisData.GetAvgAlpha(19, 6, thisInst.metList.numWD);
 
             double[] Avg_Alpha = thisData.GetAvgAlpha(0, 24, 1);
             double[] Day_Alpha = thisData.GetAvgAlpha(7, 18, 1);
             double[] Night_Alpha = thisData.GetAvgAlpha(19, 6, 1);
 
-            double[] WD_vals = new double[16];
+            double[] WD_vals = new double[thisInst.metList.numWD];
 
-            for (int i = 0; i < 16; i++)
-                WD_vals[i] = i * 22.5;
+            for (int i = 0; i < thisInst.metList.numWD; i++)
+                WD_vals[i] = i * 360.0 / thisInst.metList.numWD;
 
             // Specify axes
             LinearAxis xAxis = new LinearAxis();
@@ -7682,7 +7855,7 @@ namespace ContinuumNS
             nightSeries.Title = "Night";
             model.Series.Add(nightSeries);
 
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < thisInst.metList.numWD; i++)
             {
                 allHoursSeries.Points.Add(new DataPoint(WD_vals[i], Math.Round(Avg_Alpha_WD[i], 5)));
                 daySeries.Points.Add(new DataPoint(WD_vals[i], Math.Round(Day_Alpha_WD[i], 5)));
@@ -7697,7 +7870,7 @@ namespace ContinuumNS
             objListItem.SubItems.Add(Convert.ToString(Math.Round(Day_Alpha[0], 3)));
             objListItem.SubItems.Add(Convert.ToString(Math.Round(Night_Alpha[0], 3)));
 
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < thisInst.metList.numWD; i++)
             {
                 objListItem = thisInst.lstAlphas.Items.Add(Convert.ToString(Math.Round(WD_vals[i], 1)));
                 objListItem.SubItems.Add(Convert.ToString(Math.Round(Avg_Alpha_WD[i], 3)));
@@ -7716,7 +7889,7 @@ namespace ContinuumNS
 
 
         /// <summary> Updates the wind speed vs height plot pn Met Data QC tab. </summary>        
-        public void WS_vsHeightPlot(Continuum thisInst, Met thisMet)
+        public void WS_vsHeightPlot(Met thisMet)
         {
             Met_Data_Filter thisData = thisMet.metData;
 
@@ -7841,7 +8014,7 @@ namespace ContinuumNS
 
 
         /// <summary> Updates the temperature sensor height and recovery table on Met Data QC tab. </summary>
-        public void TempSummary(Continuum thisInst, Met thisMet)
+        public void TempSummary(Met thisMet)
         {
             thisInst.lstTempSummary.Items.Clear();
 
@@ -7860,7 +8033,7 @@ namespace ContinuumNS
 
 
         /// <summary> Updates the vane summary table including height, icing, and recovery on Met Data QC tab. </summary>
-        public void VaneSummary(Continuum thisInst, Met thisMet)
+        public void VaneSummary(Met thisMet)
         {
             thisInst.lstVaneSummary.Items.Clear();
 
@@ -7888,7 +8061,7 @@ namespace ContinuumNS
 
 
         /// <summary> Updates the extrapolated wind speed summary on Met Data QC tab. </summary>        
-        public void ExtrapolatedSummary(Continuum thisInst, Met thisMet)
+        public void ExtrapolatedSummary(Met thisMet)
         {
             thisInst.lstExtrapolated.Items.Clear();
 
@@ -7908,7 +8081,7 @@ namespace ContinuumNS
 
 
         /// <summary> Updates Anemometer summary table with mean WS, % recovery, % flagged (if filtering has been done) on Met Data QC tab. </summary>        
-        public void AnemometerSummary(Continuum thisInst, Met thisMet)
+        public void AnemometerSummary(Met thisMet)
         {
             thisInst.lstAnemSummary.Items.Clear();
 
@@ -7968,8 +8141,8 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Updates the start/end dates of imported dataset and export start/end dates on Met Data QC tab. </summary>
-        public void MetQCDates(Continuum thisInst, Met thisMet)
+        /// <summary> Updates the start/end dates of imported dataset and export start/end dates on Met Data QC tab and on Met Data TS tab. </summary>
+        public void MetQCDates(Met thisMet)
         {
             if (thisMet.metData == null)
                 return;
@@ -7989,13 +8162,46 @@ namespace ContinuumNS
 
                 thisInst.Export_Start.Value = thisMet.metData.startDate;
                 thisInst.Export_End.Value = thisMet.metData.endDate;
+                                
             }
 
             thisInst.okToUpdate = true;
         } 
 
+        /// <summary> Updates the start/end dates on Met Data TS tab based on mets selected in checklist </summary>
+        public void MetDataTS_Dates()
+        {
+            if (thisInst.chkMetsTS.CheckedItems.Count == 0)
+                return;
+
+            if (thisInst.metList.isTimeSeries == false)
+                return;
+
+            thisInst.okToUpdate = false;
+
+            DateTime firstDate = DateTime.Now;
+            DateTime lastDate = new DateTime();
+
+            for (int m = 0; m < thisInst.chkMetsTS.CheckedItems.Count; m++)
+            {
+                Met thisMet = thisInst.metList.GetMet(thisInst.chkMetsTS.CheckedItems[m].ToString());
+                if (thisMet.metData.startDate < firstDate)
+                    firstDate = thisMet.metData.startDate;
+
+                if (thisMet.metData.endDate > lastDate)
+                    lastDate = thisMet.metData.endDate;
+            }
+
+            thisInst.dateMetTS_Start.Value = firstDate;
+            thisInst.dateMetTS_End.Value = lastDate;
+            double numDays = Math.Round((double)lastDate.Subtract(firstDate).Days, 1);
+            thisInst.txtNumDaysTS.Text = numDays.ToString();
+
+            thisInst.okToUpdate = true;
+        }
+
         /// <summary> Updates the WS diff vs WD. Plots Anem A - Anem B (filtered or unfiltered depending on dropdown) </summary>
-        public void MetWS_DiffvsWD(Continuum thisInst, Met thisMet)
+        public void MetWS_DiffvsWD(Met thisMet)
         {
             thisInst.plotWSDiffByWD.Model = new PlotModel();
             var model = thisInst.plotWSDiffByWD.Model;
@@ -8067,7 +8273,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the WS diff vs WS. Plots Anem A - Anem B (filtered or unfiltered depending on dropdown) </summary>
-        public void MetWS_DiffvsWindSpeed(Continuum thisInst, Met thisMet)
+        public void MetWS_DiffvsWindSpeed(Met thisMet)
         {
             thisInst.plotWSDiffByWS.Model = new PlotModel();
             var model = thisInst.plotWSDiffByWS.Model;
@@ -8135,7 +8341,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the wind speed scatterplot. Plots Anem A vs. Anem B (filtered or unfiltered depending on dropdown) on Met Data QC tab. </summary>        
-        public void MetAnemScatterplot(Continuum thisInst, Met thisMet)
+        public void MetAnemScatterplot(Met thisMet)
         {
             thisInst.plotAnemScatter.Model = new PlotModel();
             var model = thisInst.plotAnemScatter.Model;
@@ -8211,7 +8417,7 @@ namespace ContinuumNS
 
 
         /// <summary> Updates the wind rose or wind speed by wind direction plot on Met Data QC tab. </summary>        
-        public void MetWindRoseOrWS_byWDPlot(Continuum thisInst, Met thisMet)
+        public void MetWindRoseOrWS_byWDPlot(Met thisMet)
         {
             thisInst.plotMetQC_WindRose.Model = new PlotModel();
             var model = thisInst.plotMetQC_WindRose.Model;
@@ -8306,11 +8512,12 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the text boxes on MCP tab. </summary>        
-        public void MCP_TextBoxes(Continuum thisInst)
+        public void MCP_TextBoxes()
         {
             int WD_Ind = thisInst.GetWD_ind("MCP");
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            Reference thisRef = thisInst.GetSelectedReference("MCP");
+            MCP thisMCP = thisInst.GetSelectedMCP();
 
             if (thisMCP == null)
             {
@@ -8348,20 +8555,20 @@ namespace ContinuumNS
                 return;
             }
 
-            if (thisMet.mcp.refData == null)
+            if (thisMCP.refData == null)
             {
                 UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-                thisMet.mcp.refData = thisMet.mcp.GetRefData(thisMERRA, ref thisMet, thisInst);
+           //     MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                thisMCP.refData = thisMCP.GetRefData(thisRef, ref thisMet, thisInst);
             }
 
-            if (thisMet.mcp.targetData == null)
-                thisMet.mcp.targetData = thisMet.mcp.GetTargetData(thisInst.modeledHeight, thisMet);
+            if (thisMCP.targetData == null)
+                thisMCP.targetData = thisMCP.GetTargetData(thisInst.modeledHeight, thisMet);
 
             string MCP_method = thisInst.Get_MCP_Method();
 
-            if (thisMet.mcp.concData.Length == 0)
-                thisMet.mcp.FindConcurrentData(thisMet.mcp.GetStartOrEndDate("Concurrent", "Start"), thisMet.mcp.GetStartOrEndDate("Concurrent", "End"));
+            if (thisMCP.concData.Length == 0)
+                thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"), false);
 
             int Num_WD = thisInst.metList.numWD;
             Met.TOD thisTOD = thisInst.GetSelectedTOD("MCP");
@@ -8373,7 +8580,7 @@ namespace ContinuumNS
             // Update Num. Yrs text boxes 
             if (thisMCP.refData.Length > 0)
             {
-                double num_yrs = thisMet.mcp.refData.Length / 365.0 / 24.0;
+                double num_yrs = thisMCP.refData.Length / 365.0 / 24.0;
                 thisInst.txtNumYrsRef.Text = Convert.ToString(Math.Round(num_yrs, 2));
             }
             else
@@ -8381,7 +8588,7 @@ namespace ContinuumNS
 
             if (thisMCP.targetData.Length > 0)
             {
-                int This_length = thisMet.mcp.targetData.Length;
+                int This_length = thisMCP.targetData.Length;
                 double num_yrs = This_length / 8760.0;
                 thisInst.txtNumYrsTarg.Text = Convert.ToString(Math.Round(num_yrs, 2));
             }
@@ -8419,7 +8626,7 @@ namespace ContinuumNS
             Stats stat = new Stats();
             if (thisMCP.refData.Length > 0)
             {
-                avgRef = stat.CalcAvgWS(thisMet.mcp.refData, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
+                avgRef = stat.CalcAvgWS(thisMCP.refData, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
                 thisInst.txtRef_LT_WS.Text = Convert.ToString(Math.Round(avgRef, 2));
             }
             else
@@ -8512,13 +8719,13 @@ namespace ContinuumNS
                 thisInst.txtRsq.Text = "";
             }
 
-            if (thisMet.mcp.LT_WS_Ests.Length == 0)
-                thisMet.mcp.LT_WS_Ests = thisMet.mcp.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
+            if (thisMCP.LT_WS_Ests.Length == 0)
+                thisMCP.LT_WS_Ests = thisMCP.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
 
-            if (thisMet.mcp.LT_WS_Ests.Length != 0)
+            if (thisMCP.LT_WS_Ests.Length != 0)
             {
-                avgRef = stat.CalcAvgWS(thisMet.mcp.refData, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
-                double Avg_Target_LT = stat.CalcAvgWS(thisMet.mcp.LT_WS_Ests, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
+                avgRef = stat.CalcAvgWS(thisMCP.refData, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
+                double Avg_Target_LT = stat.CalcAvgWS(thisMCP.LT_WS_Ests, thisMCP.GetStartOrEndDate("Reference", "Start"), thisMCP.GetStartOrEndDate("Reference", "End"), minWD, maxWD, thisTOD, thisSeason, thisInst.metList);
                 double Avg_Ratio = Avg_Target_LT / avgRef;
                 thisInst.txtTarg_LT_WS.Text = Convert.ToString(Math.Round(Avg_Target_LT, 2));
                 thisInst.txtLTratio.Text = Convert.ToString(Math.Round(Avg_Ratio, 2));
@@ -8533,14 +8740,14 @@ namespace ContinuumNS
 
 
         /// <summary> Updates dates for concurrent period used in MCP and dates used in export. </summary>        
-        public void MCPDates(Continuum thisInst)
+        public void MCPDates()
         {
             thisInst.okToUpdate = false;
 
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
 
-            if (thisMCP == null)
+            if (thisMCP == null || thisMet.metData == null)
             {
                 thisInst.okToUpdate = true;
                 return;
@@ -8569,7 +8776,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the MCP settings on MCP tab. </summary>  
-        public void MCP_Settings(Continuum thisInst)
+        public void MCP_Settings()
         {
             thisInst.okToUpdate = false;
 
@@ -8634,13 +8841,14 @@ namespace ContinuumNS
 
 
         /// <summary> Enables or disables MCP buttons based on what analysis has been done. </summary>        
-        public void MCP_Buttons(Continuum thisInst)
+        public void MCP_Buttons()
         {
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            Reference thisRef = thisInst.GetSelectedReference("MCP");
+            MCP thisMCP = thisInst.GetSelectedMCP();
             string selectedMethod = thisInst.Get_MCP_Method();
 
-            if (thisMCP == null)
+            if (thisMCP.height == 0)
             {
                 thisInst.btnExportMCP_TS.Enabled = false;
                 thisInst.btnExportMCP_TAB.Enabled = false;
@@ -8649,13 +8857,10 @@ namespace ContinuumNS
                 thisInst.btnMCP_Uncert.Enabled = false;
 
                 bool gotThisMERRA = false;
-                // Check to see if have MERRA data
-                if (thisMet.name != null)
-                {
-                    UTM_conversion.Lat_Long metLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                    gotThisMERRA = thisInst.merraList.GotMERRA(metLL.latitude, metLL.longitude);
-                }
-
+                // Check to see if have LT Reference data
+                if (thisMet.name != null)  
+                    gotThisMERRA = thisInst.refList.GotReference(thisRef);
+                
                 if (gotThisMERRA == false)
                 {
                     thisInst.btnDoMCP.BackColor = Color.LightCoral;
@@ -8700,29 +8905,26 @@ namespace ContinuumNS
                 thisInst.btnMCP_Uncert.Enabled = true;
 
             bool gotMERRA = false;
-            // Check to see if have MERRA data
-            if (thisMet.name != null)
-            {
-                UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                gotMERRA = thisInst.merraList.GotMERRA(theseLL.latitude, theseLL.longitude);
-            }
-
+            // Check to see if have LT Reference data
+            if (thisMet.name != null) 
+                gotMERRA = thisInst.refList.GotReference(thisRef);
+            
             if (thisMet.name == "")
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && gotMERRA == false)
+            else if (thisMCP == null && gotMERRA == false)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = false;
             }
-            else if (thisMet.mcp == null && gotMERRA == true)
+            else if (thisMCP == null && gotMERRA == true)
             {
                 thisInst.btnDoMCP.BackColor = Color.LightCoral;
                 thisInst.btnDoMCP.Enabled = true;
             }
-            else if (thisMet.mcp.HaveMCP_Estimate(selectedMethod) == true)
+            else if (thisMCP.HaveMCP_Estimate(selectedMethod) == true)
             {
                 thisInst.btnDoMCP.BackColor = Color.MediumSeaGreen;
                 thisInst.btnDoMCP.Enabled = false;
@@ -8732,20 +8934,31 @@ namespace ContinuumNS
 
 
         /// <summary> Updates the scatterplot showing target versus reference wind speed on the MCP tab. </summary>        
-        public void MCP_Scatterplot(Continuum thisInst)
+        public void MCP_Scatterplot()
         {
             Met thisMet = thisInst.GetSelectedMet("MCP");
+            Reference thisRef = thisInst.GetSelectedReference("MCP");
 
             if (thisMet.metData == null)
+            {
+                thisInst.plotMCP.Model = new PlotModel();
+                MCP_TextBoxes();
+                thisInst.plotMCP.Refresh();
                 return;
+            }
 
             if (thisMet.metData.GetNumAnems() == 0)
+            {
+                thisInst.plotMCP.Model = new PlotModel();
+                MCP_TextBoxes();
+                thisInst.plotMCP.Refresh();
                 return;
+            }
 
             if (thisMet.metData.anems[0].windData == null)
                 thisMet.metData.GetSensorDataFromDB(thisInst, thisMet.name);
 
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
 
             int WD_Ind = thisInst.GetWD_ind("MCP");
             Met.TOD thisTOD = thisInst.GetSelectedTOD("MCP");
@@ -8770,7 +8983,7 @@ namespace ContinuumNS
             // Specify axes
             LinearAxis xAxis = new LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
-            xAxis.Title = "MERRA2 50 m Wind Speed, m/s";
+            xAxis.Title = thisRef.refDataDownload.refType + " " + thisRef.wswdH.ToString() + " m Wind Speed, m/s";
             LinearAxis yAxis = new LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.Title = thisMet.name + " " + thisInst.modeledHeight + " Wind Speed, m/s";
@@ -8780,15 +8993,16 @@ namespace ContinuumNS
 
             if (thisMCP.refData.Length == 0)
             {
-                UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
-                thisMCP.refData = thisMCP.GetRefData(thisMERRA, ref thisMet, thisInst);
+           //     UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+           //     MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+                thisMCP.refData = thisMCP.GetRefData(thisRef, ref thisMet, thisInst);
             }
 
             if (thisMCP.targetData.Length == 0)
                 thisMCP.targetData = thisMCP.GetTargetData(thisInst.modeledHeight, thisMet);
 
-            if (thisMCP.concData.Length == 0) thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"));
+            if (thisMCP.concData.Length == 0) 
+                thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"), false);
 
             if (thisMCP.concData.Length > 0)
             {
@@ -8901,18 +9115,17 @@ namespace ContinuumNS
                     }
                 }
 
-                MCP_TextBoxes(thisInst);
+                MCP_TextBoxes();
                 thisInst.plotMCP.Refresh();
             }
 
         }
 
         /// <summary> Update list with mean and standard deviation of WS ratios on MCP tab. </summary>        
-        public void MCP_BinList(Continuum thisInst)
+        public void MCP_BinList()
         {
-            thisInst.lstMCP_Bins.Items.Clear();
-            Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            thisInst.lstMCP_Bins.Items.Clear();            
+            MCP thisMCP = thisInst.GetSelectedMCP(); ;
 
             if (thisMCP == null)
                 return;
@@ -8940,12 +9153,11 @@ namespace ContinuumNS
 
 
         /// <summary> Update table with results of uncertainty analysis showing window size, mean LT estimate and standard deviation of LT estimate on MCP tab. </summary>
-        public void MCP_UncertList(Continuum thisInst)
+        public void MCP_UncertList()
         {
             thisInst.lstMCP_Uncert.Items.Clear();
-
-            Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+                        
+            MCP thisMCP = thisInst.GetSelectedMCP(); 
 
             if (thisMCP == null)
                 return;
@@ -9003,19 +9215,19 @@ namespace ContinuumNS
         }
 
         /// <summary> Update all tables and plots on MCP tab. </summary>
-        public void MCP_TAB(Continuum thisInst)
+        public void MCP_TAB()
         {
-            MCPDates(thisInst);
-            MCP_Buttons(thisInst);
-            MCP_BinList(thisInst);
-            MCP_Scatterplot(thisInst);
-            MCP_TextBoxes(thisInst);
-            MCP_UncertList(thisInst);
-            MCP_UncertPlot(thisInst);
+            MCPDates();
+            MCP_Buttons();
+            MCP_BinList();
+            MCP_Scatterplot();
+            MCP_TextBoxes();
+            MCP_UncertList();
+            MCP_UncertPlot();
         }
 
         /// <summary> Update MCP uncertainty plot on MCP tab. </summary>
-        public void MCP_UncertPlot(Continuum thisInst)
+        public void MCP_UncertPlot()
         {
             thisInst.plotMCP_Uncertainty.Model = new PlotModel();
             var model = thisInst.plotMCP_Uncertainty.Model;
@@ -9042,7 +9254,7 @@ namespace ContinuumNS
             // Get Active MCP type
             string selectedMethod = thisInst.Get_MCP_Method();
             Met thisMet = thisInst.GetSelectedMet("MCP");
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisInst.GetSelectedMCP();
 
             if (thisMCP == null)
             {
@@ -9119,33 +9331,33 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Updates yearly summary table on MERRA2 tab based on selected parameter and creates plot of yearly values. </summary>
-        public void MERRA_AnnualTableAndPlot(Continuum thisInst)
+        /// <summary> Updates yearly summary table on LT Reference tab based on selected parameter and creates plot of yearly values. </summary>
+        public void LT_ReferenceAnnualTableAndPlot()
         {
             thisInst.lstMERRAAnnualProd.Items.Clear();
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
 
             thisInst.plotMERRA_Yearly.Model = new PlotModel();
             var model = thisInst.plotMERRA_Yearly.Model;
             model.IsLegendVisible = false;
 
-            if (thisMERRA.interpData.TS_Data == null)
+            if (thisRef.interpData.TS_Data == null)
             {
                 thisInst.plotMERRA_Yearly.Refresh();
                 return;
             }
 
-            if (thisMERRA.interpData.TS_Data.Length == 0)
+            if (thisRef.interpData.TS_Data.Length == 0)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            string selectedParam = thisInst.GetMERRA_SelectedPlotParameter();
+            string selectedParam = thisInst.GetLT_RefSelectedPlotParameter();
             thisInst.lstMERRAAnnualProd.Columns[1].Text = selectedParam;
             thisInst.lstMERRAAnnualProd.Columns[2].Text = "% Diff. from LT";
 
-            if (thisInst.okToUpdate == false || thisMERRA.GotWindTS(thisInst.UTM_conversions) == false || (thisMERRA.powerCurve.name == null &&
+            if (thisInst.okToUpdate == false || thisRef.GotWindTS(thisInst.UTM_conversions) == false || (thisRef.powerCurve.name == null &&
                 (selectedParam == "CF (%)" || selectedParam == "Energy Prod.")))
             {
                 thisInst.plotMERRA_Yearly.Refresh();
@@ -9154,26 +9366,26 @@ namespace ContinuumNS
 
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("MERRA");
 
-            if (powerCurve.name != thisMERRA.powerCurve.name)
+            if (powerCurve.name != thisRef.powerCurve.name)
             {
-                thisMERRA.Reset_MonthProdStats();
-                thisMERRA.Reset_AnnualProdStats();
-                thisMERRA.powerCurve = powerCurve;
-                thisMERRA.ApplyPC(ref thisMERRA.interpData.TS_Data);
+                thisRef.Reset_MonthProdStats();
+                thisRef.Reset_AnnualProdStats();
+                thisRef.powerCurve = powerCurve;
+                thisRef.ApplyPC(ref thisRef.interpData.TS_Data);
             }
 
-            int firstYear = thisInst.merraList.startDate.Year;
-            int lastYear = thisInst.merraList.endDate.Year;
+            int firstYear = thisRef.startDate.Year;
+            int lastYear = thisRef.endDate.Year;
 
-            if (thisMERRA.interpData.Annual_Prod.LT_Avg == 0)
+            if (thisRef.interpData.annualProd.LT_Avg == 0 || thisRef.interpData.annualProd.Yearly_Prod == null)
             {
-                thisMERRA.Calc_MonthProdStats(thisInst.UTM_conversions);
-                thisMERRA.CalcAnnualProd(ref thisMERRA.interpData.Annual_Prod, thisMERRA.interpData.Monthly_Prod, thisInst.UTM_conversions);
+                thisRef.Calc_MonthProdStats(thisInst.UTM_conversions);
+                thisRef.CalcAnnualProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, thisInst.UTM_conversions);
             }
 
-            MERRA.YearlyProdAndLTAvg thisAnnual = thisMERRA.interpData.Annual_Prod;
-            MERRA.MonthlyProdByYearAndLTAvg[] thisMonthly = thisMERRA.interpData.Monthly_Prod;
-            MERRA.Wind_TS_with_Prod[] thisTS = thisMERRA.interpData.TS_Data;
+            Reference.YearlyProdAndLTAvg thisAnnual = thisRef.interpData.annualProd;
+            Reference.MonthlyProdByYearAndLTAvg[] thisMonthly = thisRef.interpData.monthlyProd;
+            Reference.Wind_TS_with_Prod[] thisTS = thisRef.interpData.TS_Data;
             double diff = 0;
             double LT_Val = 0;
 
@@ -9205,28 +9417,28 @@ namespace ContinuumNS
 
             for (int i = firstYear; i <= lastYear; i++)
             {
-                if (thisMERRA.Have_Full_Year(thisTS, i))
+                if (thisRef.Have_Full_Year(thisTS, i))
                 {
                     ListViewItem objListItem = new ListViewItem(i.ToString()); // Adds year to table
 
-                    int yearInd = thisMERRA.Get_Year_Ind(i, thisAnnual);
+                    int yearInd = thisRef.Get_Year_Ind(i, thisAnnual);
 
                     if (selectedParam == "CF (%)" || selectedParam == "Energy Prod.")
                     {
-                        double prod = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, 100, i);
-                        double thisCF = thisMERRA.Calc_CF(prod, 100, i, powerCurve);
+                        double prod = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, 100, i);
+                        double thisCF = thisRef.Calc_CF(prod, 100, i, powerCurve);
 
                         if (selectedParam == "Energy Prod.")
                         {
-                            LT_Val = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, 100, 100);
-                            diff = thisMERRA.Calc_Dev_from_LT(thisMonthly, thisAnnual, i, 100);
+                            LT_Val = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, 100, 100);
+                            diff = thisRef.Calc_Dev_from_LT(thisMonthly, thisAnnual, i, 100);
                             objListItem.SubItems.Add(Math.Round(prod, 1).ToString());
                             paramSeries.Points.Add(new DataPoint(i, Math.Round(prod, 1)));
                         }
                         else
                         {
-                            double LT_Prod = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, 100, 100);
-                            LT_Val = thisMERRA.Calc_CF(LT_Prod, 100, 100, powerCurve);
+                            double LT_Prod = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, 100, 100);
+                            LT_Val = thisRef.Calc_CF(LT_Prod, 100, 100, powerCurve);
                             diff = (thisCF - LT_Val) / LT_Val;
                             objListItem.SubItems.Add(Math.Round(thisCF, 4).ToString("P"));
                             paramSeries.Points.Add(new DataPoint(i, Math.Round(thisCF * 100, 2)));
@@ -9234,8 +9446,8 @@ namespace ContinuumNS
                     }
                     else
                     {
-                        double avg = thisMERRA.Calc_Avg_or_LT(thisTS, 100, i, selectedParam);
-                        LT_Val = thisMERRA.Calc_Avg_or_LT(thisTS, 100, 100, selectedParam);
+                        double avg = thisRef.Calc_Avg_or_LT(thisTS, 100, i, selectedParam);
+                        LT_Val = thisRef.Calc_Avg_or_LT(thisTS, 100, 100, selectedParam);
                         diff = (avg - LT_Val) / LT_Val;
                         objListItem.SubItems.Add(Math.Round(avg, 2).ToString());
                         paramSeries.Points.Add(new DataPoint(i, Math.Round(avg, 1)));
@@ -9256,17 +9468,17 @@ namespace ContinuumNS
 
 
 
-        /// <summary> Updates MERRA2 monthly table and plot on MERRA2 tab. </summary>        
-        public void MERRA_MonthlyTableAndPlot(Continuum thisInst)
+        /// <summary> Updates LT Reference monthly table and plot on LT Reference tab. </summary>        
+        public void LT_ReferenceMonthlyTableAndPlot()
         {
             thisInst.lstMERRA_MonthlyProd.Items.Clear();
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
 
             thisInst.plotMERRA_Monthly.Model = new PlotModel();
             var model = thisInst.plotMERRA_Monthly.Model;
             model.IsLegendVisible = false;
 
-            if (thisInst.okToUpdate == false || thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
+            if (thisInst.okToUpdate == false || thisRef.GotWindTS(thisInst.UTM_conversions) == false)
             {
                 thisInst.plotMERRA_Monthly.Refresh();
                 return;
@@ -9274,18 +9486,18 @@ namespace ContinuumNS
 
             // Calculate monthly energy production by year and average monthly energy production
 
-            if (thisMERRA.GotMonthlyProd() == false)
-                thisMERRA.Calc_MonthProdStats(thisInst.UTM_conversions);
+            if (thisRef.GotMonthlyProd() == false)
+                thisRef.Calc_MonthProdStats(thisInst.UTM_conversions);
 
-            MERRA.MonthlyProdByYearAndLTAvg[] thisMonthly = thisMERRA.interpData.Monthly_Prod;
-            MERRA.YearlyProdAndLTAvg thisAnnual = thisMERRA.interpData.Annual_Prod;
-            TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("MERRA");
+            Reference.MonthlyProdByYearAndLTAvg[] thisMonthly = thisRef.interpData.monthlyProd;
+            Reference.YearlyProdAndLTAvg thisAnnual = thisRef.interpData.annualProd;
+            TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("LT Ref");
 
-            MERRA.Wind_TS_with_Prod[] thisTS = thisMERRA.interpData.TS_Data;
-            string selectedParam = thisInst.GetMERRA_SelectedPlotParameter();
+            Reference.Wind_TS_with_Prod[] thisTS = thisRef.interpData.TS_Data;
+            string selectedParam = thisInst.GetLT_RefSelectedPlotParameter();
             thisInst.lstMERRA_MonthlyProd.Columns[2].Text = selectedParam;
 
-            if (thisMERRA.powerCurve.name == null && (selectedParam == "CF (%)" || selectedParam == "Energy Prod."))
+            if (thisRef.powerCurve.name == null && (selectedParam == "CF (%)" || selectedParam == "Energy Prod."))
             {
                 thisInst.plotMERRA_Monthly.Refresh();
                 return;
@@ -9341,7 +9553,7 @@ namespace ContinuumNS
                 {
                     string monthStr = new DateTime(1999, i, 1).ToString("MMM", CultureInfo.InvariantCulture);
 
-                    if ((thisYear == 100 || thisMERRA.Have_Full_Month(thisTS, i, thisYear)))
+                    if ((thisYear == 100 || thisRef.Have_Full_Month(thisTS, i, thisYear)))
                     {
                         ListViewItem objListItem = new ListViewItem(monthStr);
                         if (thisYear != 100)
@@ -9351,14 +9563,14 @@ namespace ContinuumNS
 
                         if (selectedParam == "CF (%)" || selectedParam == "Energy Prod.")
                         {
-                            double prod = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, i, thisYear);
-                            double LT_Prod = thisMERRA.Get_Energy_Prod(thisAnnual, thisMonthly, i, 100);
-                            double thisCF = thisMERRA.Calc_CF(prod, i, thisYear, powerCurve);
+                            double prod = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, i, thisYear);
+                            double LT_Prod = thisRef.Get_Energy_Prod(thisAnnual, thisMonthly, i, 100);
+                            double thisCF = thisRef.Calc_CF(prod, i, thisYear, powerCurve);
 
                             if (selectedParam == "CF (%)")
                             {
                                 objListItem.SubItems.Add((Math.Round(thisCF, 4)).ToString("P"));
-                                double LT_CF = thisMERRA.Calc_CF(LT_Prod, i, thisYear, powerCurve);
+                                double LT_CF = thisRef.Calc_CF(LT_Prod, i, thisYear, powerCurve);
                                 diffFromLT = (thisCF - LT_CF) / LT_CF;
                                 monthlySeries.Points.Add(new DataPoint(i, Math.Round(thisCF * 100, 4)));
 
@@ -9372,14 +9584,21 @@ namespace ContinuumNS
                         }
                         else
                         {
-                            double LT_Val = thisMERRA.Calc_Avg_or_LT(thisTS, i, 100, selectedParam);
-                            double monthVal = thisMERRA.Calc_Avg_or_LT(thisTS, i, thisYear, selectedParam);
-                            objListItem.SubItems.Add((Math.Round(monthVal, 2)).ToString()); // adds the monthly average 
-                            monthlySeries.Points.Add(new DataPoint(i, Math.Round(monthVal, 1)));
-                            diffFromLT = (monthVal - LT_Val) / LT_Val;
+                            double LT_Val = thisRef.Calc_Avg_or_LT(thisTS, i, 100, selectedParam);
+                            double monthVal = thisRef.Calc_Avg_or_LT(thisTS, i, thisYear, selectedParam);
+
+                            if (monthVal != 0)
+                            {
+                                objListItem.SubItems.Add((Math.Round(monthVal, 2)).ToString()); // adds the monthly average 
+                                monthlySeries.Points.Add(new DataPoint(i, Math.Round(monthVal, 1)));
+                                diffFromLT = (monthVal - LT_Val) / LT_Val;
+                            }
                         }
 
-                        objListItem.SubItems.Add(diffFromLT.ToString("P"));
+                        if (diffFromLT != 0)
+                            objListItem.SubItems.Add(diffFromLT.ToString("P"));
+
+
                         thisInst.lstMERRA_MonthlyProd.Items.Add(objListItem);
 
                     }
@@ -9396,58 +9615,58 @@ namespace ContinuumNS
             thisInst.plotMERRA_Monthly.Refresh();
         }
 
-        /// <summary> Updates MERRA2 dropdown menu based on what datasets have been imported on MERRA2 tab. </summary> 
-        public void MERRA_Dropdowns(Continuum thisInst)
+        /// <summary> Updates LT Reference dropdown menu based on what datasets have been imported on MERRA2 tab. </summary> 
+        public void LT_ReferenceDropdowns()
         {
             thisInst.okToUpdate = false;
 
-            thisInst.cboMERRAYear.Items.Clear();
+            thisInst.cboReferenceYear.Items.Clear();
             thisInst.chkYearsToDisplay.Items.Clear();
             thisInst.chkYears_Monthly.Items.Clear();
-            thisInst.cboMERRAYear.Text = "";
+            thisInst.cboReferenceYear.Text = "";
 
-            if (thisInst.merraList.numMERRA_Data == 0)
+            if (thisInst.refList.numReferences == 0)
             {
                 thisInst.okToUpdate = true;
                 return;
             }
 
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
 
-            if (thisMERRA.interpData.TS_Data == null)
+            if (thisRef.interpData.TS_Data == null)
             {
                 thisInst.okToUpdate = true;
                 return;
             }
 
-            if (thisMERRA.interpData.TS_Data.Length == 0)
+            if (thisRef.interpData.TS_Data.Length == 0)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            if (thisMERRA.GotWindTS(thisInst.UTM_conversions)) // By default only show LT Avg (to speed up AllTAB update)
+            if (thisRef.GotWindTS(thisInst.UTM_conversions)) // By default only show LT Avg (to speed up AllTAB update)
             {
-                thisInst.cboMERRAYear.Items.Add("LT Avg");
+                thisInst.cboReferenceYear.Items.Add("LT Avg");
                 thisInst.chkYearsToDisplay.Items.Add("LT Avg", true);
                 thisInst.chkYears_Monthly.Items.Add("LT Avg", true);
 
-                for (DateTime thisDate = thisInst.merraList.startDate; thisDate <= thisInst.merraList.endDate; thisDate = thisDate.AddYears(1))
+                for (DateTime thisDate = thisRef.startDate; thisDate <= thisRef.endDate; thisDate = thisDate.AddYears(1))
                 {
-                    thisInst.cboMERRAYear.Items.Add(Convert.ToString(thisDate.Year));
+                    thisInst.cboReferenceYear.Items.Add(Convert.ToString(thisDate.Year));
                     thisInst.chkYearsToDisplay.Items.Add(Convert.ToString(thisDate.Year), false);
                     thisInst.chkYears_Monthly.Items.Add(Convert.ToString(thisDate.Year), false);
                 }
             }
 
-            if (thisInst.cboMERRAYear.Items.Count > 0) thisInst.cboMERRAYear.SelectedIndex = 0;
+            if (thisInst.cboReferenceYear.Items.Count > 0) thisInst.cboReferenceYear.SelectedIndex = 0;
 
             thisInst.cboMERRA_PlotParam.Items.Clear();
 
-            thisInst.cboMERRA_PlotParam.Items.Add("50 m WS");
+            thisInst.cboMERRA_PlotParam.Items.Add(thisRef.wswdH.ToString() + " m WS");
             thisInst.cboMERRA_PlotParam.Items.Add("CF (%)");
             thisInst.cboMERRA_PlotParam.Items.Add("Energy Prod.");
-            thisInst.cboMERRA_PlotParam.Items.Add("10 m Temp");
+            thisInst.cboMERRA_PlotParam.Items.Add(thisRef.temperatureH + " m Temp");
             thisInst.cboMERRA_PlotParam.Items.Add("Surface Pressure");
             thisInst.cboMERRA_PlotParam.Items.Add("Sea Level Pressure");
 
@@ -9457,103 +9676,114 @@ namespace ContinuumNS
             thisInst.okToUpdate = true;
         }
 
-        /// <summary> Updates textboxes on MERRA2 tab. </summary> 
-        public void MERRA_Textboxes(Continuum thisInst)
-        {
-            thisInst.okToUpdate = false;
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
-            Met thisMet = thisInst.GetSelectedMet("MERRA");
+        /// <summary> Updates table with LT reference lat/longs and % download completion on LT Reference tab. </summary> 
+        public void LT_RefNodesAndCompleteness()
+        {           
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
 
-            thisInst.txt_MERRA2_folder.Text = thisInst.merraList.MERRAfolder;
-            string thisLLStr = thisInst.cboMERRASelectedMet.SelectedItem.ToString();
-
-            if (thisMet.name != null) // it is associated with a met
+            if (thisRef.numNodes == 0) // No reference site selected so clear textboxes and return
             {
-                UTM_conversion.Lat_Long thisLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                thisInst.txtMERRA_SelectedLat.Text = Math.Round(thisLL.latitude, 3).ToString();
-                thisInst.txtMERRA_SelectedLong.Text = Math.Round(thisLL.longitude, 3).ToString();
+                thisInst.txtRefDataDownloadName.Text = "";
+                
+                thisInst.txtRefDataDownloadFolder.Text = "";
 
-                thisInst.txtMERRA_SelectedLat.Enabled = false;
-                thisInst.txtMERRA_SelectedLong.Enabled = false;
-            }
-            else if (thisLLStr != "User-Defined Lat/Long" && thisLLStr != "") // not associated with a met
-            {
-                int firstColon = thisLLStr.IndexOf(':');
-                int secColon = thisLLStr.LastIndexOf(':');
+                thisInst.txtMinLat.Text = "";
+                thisInst.txtMinLong.Text = "";
+                thisInst.txtMaxLat.Text = "";
+                thisInst.txtMaxLong.Text = "";
 
-                double thisLat = Convert.ToDouble(thisLLStr.Substring(firstColon + 2, secColon - firstColon - 6));
-                double thisLong = Convert.ToDouble(thisLLStr.Substring(secColon + 2, thisLLStr.Length - secColon - 2));
+                thisInst.txtRefDataAvail.Text = "";
 
-                thisInst.txtMERRA_SelectedLat.Text = Math.Round(thisLat, 3).ToString();
-                thisInst.txtMERRA_SelectedLong.Text = Math.Round(thisLong, 3).ToString();
-
-                thisInst.txtMERRA_SelectedLat.Enabled = false;
-                thisInst.txtMERRA_SelectedLong.Enabled = false;
-            }
-            else
-            {
-                thisInst.txtMERRA_SelectedLat.Enabled = true;
-                thisInst.txtMERRA_SelectedLong.Enabled = true;
+                return;
             }
 
-            thisInst.txtMERRA_WS_ScaleFact.Text = thisMERRA.WS_ScaleFactor.ToString();
-            thisInst.okToUpdate = true;
-        }
+            thisInst.txtRefDataDownloadName.Text = thisRef.refDataDownload.GetName();
+            thisInst.txtRefDataDownloadFolder.Text = thisRef.refDataDownload.folderLocation;
 
-        /// <summary> Updates MERRA2 settings (start/end dates, number of nodes, and scale factor) on MERRA2 tab. </summary> 
-        public void MERRA_Settings(Continuum thisInst)
-        {
-            thisInst.okToUpdate = false;
+            thisInst.txtMinLat.Text = thisRef.refDataDownload.minLat.ToString();
+            thisInst.txtMinLong.Text = thisRef.refDataDownload.minLon.ToString();
+            thisInst.txtMaxLat.Text = thisRef.refDataDownload.maxLat.ToString();
+            thisInst.txtMaxLong.Text = thisRef.refDataDownload.maxLon.ToString();
+                        
+            int offset = thisInst.UTM_conversions.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
 
-            thisInst.dateMERRAStart.Value = thisInst.merraList.startDate;
-            thisInst.dateMERRAEnd.Value = thisInst.merraList.endDate;
+            thisInst.dateLTRefAvailStart.Value = thisRef.refDataDownload.startDate.AddHours(offset);
+            thisInst.dateLTRefAvailEnd.Value = thisRef.refDataDownload.endDate.AddHours(offset);
 
-            if (thisInst.merraList.numMERRA_Nodes == 1)
-                thisInst.cboNumMERRA_Nodes.SelectedIndex = 0;
-            else if (thisInst.merraList.numMERRA_Nodes == 4)
-                thisInst.cboNumMERRA_Nodes.SelectedIndex = 1;
-            else if (thisInst.merraList.numMERRA_Nodes == 16)
-                thisInst.cboNumMERRA_Nodes.SelectedIndex = 2;
-
-            thisInst.okToUpdate = true;
+            ReferenceCollection.DateRangeAndCompletion dateRangeAndComplete = thisInst.refList.GetDataFileStartEndDateAndCompletion(thisRef.refDataDownload.folderLocation, thisRef.refDataDownload.refType);
+            thisRef.refDataDownload.completion = dateRangeAndComplete.completion;
+            thisInst.txtRefDataAvail.Text = Math.Round(thisRef.refDataDownload.completion * 100.0, 1).ToString();
+         
+            // Update ref data download completion in refList
+            for (int i = 0; i < thisInst.refList.numRefDataDownloads; i++)
+                if (thisInst.refList.IsSameRefDataDownload(thisRef.refDataDownload, thisInst.refList.refDataDownloads[i]))
+                {
+                    thisInst.refList.refDataDownloads[i].completion = dateRangeAndComplete.completion;
+                    break;
+                }
 
         }
 
-        /// <summary> Updates MERRA2 wind rose plot on MERRA2 tab. </summary> 
-        public void MERRA_WindRosePlot(Continuum thisInst)
+        /// <summary> Updates textboxes on LT Reference tab. </summary> 
+        public void LT_ReferenceTextboxes()
+        {                       
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");            
+       //     thisInst.txt_MERRA2_folder.Text = thisRef.refDataFolder;
+            thisInst.txtMERRA_WS_ScaleFact.Text = thisRef.WS_ScaleFactor.ToString();           
+        }
+
+        /// <summary> Updates LT Reference settings (start/end dates, number of nodes, and scale factor) on LT Reference tab. </summary> 
+        public void LT_ReferenceSettings()
         {
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
+            thisInst.dateMERRAStart.Value = thisRef.startDate;
+            thisInst.dateMERRAEnd.Value = thisRef.endDate;  
+        }
+
+        /// <summary> Updates LT Reference wind rose plot on LT Reference tab. </summary> 
+        public void LT_ReferenceWindRosePlot()
+        {
+            if (thisInst.cboRefWindOrEnergy.SelectedItem == null)
+                thisInst.cboRefWindOrEnergy.SelectedIndex = 0;
+
+            string windOrEnergy = thisInst.cboRefWindOrEnergy.SelectedItem.ToString();
+
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");
             thisInst.plotMERRA_WindRose.Model = new PlotModel();
             var model = thisInst.plotMERRA_WindRose.Model;
             model.PlotType = PlotType.Polar;
             model.IsLegendVisible = false;
             model.PlotAreaBorderThickness = new OxyThickness(0);
 
-            if (thisMERRA.interpData.TS_Data == null)
+            if (thisRef.interpData.TS_Data == null)
             {
                 thisInst.plotMERRA_WindRose.Refresh();
                 return;
             }
 
-            if (thisMERRA.interpData.TS_Data.Length == 0)
+            if (thisRef.interpData.TS_Data.Length == 0)
             {
-                thisMERRA.GetMERRADataFromDB(thisInst);
-                thisMERRA.GetInterpData(thisInst.UTM_conversions);
+                thisRef.GetReferenceDataFromDB(thisInst);
+                thisRef.GetInterpData(thisInst.UTM_conversions);
             }
 
-            if (thisInst.cboMERRAYear.Items.Count == 0)
+            if (thisInst.cboReferenceYear.Items.Count == 0)
             {
                 thisInst.plotMERRA_WindRose.Refresh();
                 return;
             }
 
             int thisMonth = 100;
-            if (thisInst.cboMERRA_Month.SelectedItem.ToString() != "All Months")
-                thisMonth = thisInst.cboMERRA_Month.SelectedIndex + 1;
+            if (thisInst.cboReferenceMonth.SelectedItem.ToString() != "All Months")
+                thisMonth = thisInst.cboReferenceMonth.SelectedIndex;
 
             int thisYear = 100;
-            if (thisInst.cboMERRAYear.SelectedItem.ToString() != "LT Avg")
-                thisYear = Convert.ToInt16(thisInst.cboMERRAYear.SelectedItem.ToString());
+
+            if (thisInst.cboReferenceYear.SelectedItem == null)
+                thisInst.cboReferenceYear.SelectedIndex = 0;
+
+            if (thisInst.cboReferenceYear.SelectedItem.ToString() != "LT Avg")
+                thisYear = Convert.ToInt16(thisInst.cboReferenceYear.SelectedItem.ToString());
 
             if (thisMonth == -1 || thisYear == -1)
                 return;
@@ -9567,21 +9797,17 @@ namespace ContinuumNS
                 Maximum = 360
             });
 
-            double[] interpWR = thisMERRA.Calc_Wind_Rose(thisMonth, thisYear, thisInst.UTM_conversions);
+            double[] interpWR = thisRef.CalcWindOrEnergyRose(thisMonth, thisYear, thisInst.UTM_conversions, thisInst.metList.numWD, windOrEnergy, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);
 
-
-            if (thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
+            if (thisRef.GotWindTS(thisInst.UTM_conversions) == false)
                 return;
 
             var WR_Series = new LineSeries();
             SortedList<double, double> ii = new SortedList<double, double>();
 
             for (int i = 0; i < interpWR.Length; i++)
-            {
-
                 ii.Add(i * 360 / interpWR.Length, interpWR[i]);
-            }
-
+            
             ii.Add(360, interpWR[0]);
 
             WR_Series.ItemsSource = ii;
@@ -9595,35 +9821,76 @@ namespace ContinuumNS
             thisInst.plotMERRA_WindRose.Refresh();
         }
 
-        /// <summary> Updates all tables and plots on MERRA2 tab. </summary> 
-        public void MERRA_TAB(Continuum thisInst)
-        {
-            MERRA_AnnualTableAndPlot(thisInst);
-            MERRA_MonthlyTableAndPlot(thisInst);
-            MERRA_Textboxes(thisInst);
-            MERRA_WindRosePlot(thisInst);
+        /// <summary> Updates list of long-term references on LT Reference tab and Extreme WS (Site conditions) and selects last in list </summary>
+        public void LongTermReference()
+        {         
+            // List of references on LT Reference tab
+            thisInst.cboLTReferences.Items.Clear();
+            thisInst.cboLTReferences.Text = "";
 
-            // MERRA2 tab
-            MERRA thisMERRA = thisInst.GetSelectedMERRA();
-            if (thisMERRA.GotWindTS(thisInst.UTM_conversions))
-                thisInst.btn_Import_MERRA.BackColor = Color.MediumSeaGreen;
-            else if (thisMERRA.GotWindTS(thisInst.UTM_conversions) == false)
-                thisInst.btn_Import_MERRA.BackColor = Color.LightCoral;
+            for (int r = 0; r < thisInst.refList.numReferences; r++)
+                thisInst.cboLTReferences.Items.Add(thisInst.refList.reference[r].GetName(thisInst.metList, thisInst.UTM_conversions));
+
+            if (thisInst.refList.numReferences > 0)
+                thisInst.cboLTReferences.SelectedIndex = thisInst.refList.numReferences - 1;
+
+            // List of references on Site Conditions: Extreme WS tab
+            thisInst.cboExtremeWSRef.Items.Clear();
+
+            for (int r = 0; r < thisInst.refList.numReferences; r++)
+                thisInst.cboExtremeWSRef.Items.Add(thisInst.refList.reference[r].GetName(thisInst.metList, thisInst.UTM_conversions));
+
+            if (thisInst.refList.numReferences > 0)
+                thisInst.cboExtremeWSRef.SelectedIndex = thisInst.refList.numReferences - 1;
+
+            // List of references on MCP tab
+            thisInst.cboMCP_Ref.Items.Clear();
+
+            for (int r = 0; r < thisInst.refList.numReferences; r++)
+                thisInst.cboMCP_Ref.Items.Add(thisInst.refList.reference[r].GetName(thisInst.metList, thisInst.UTM_conversions));
+
+            // If MCP has been calcuated, set reference dropdown to reference used in MCP
+            Met selMet = thisInst.GetSelectedMet("MCP");
+            if (selMet.isMCPd)
+            {
+                Reference refUsed = selMet.mcpList[0].reference;
+                for (int r = 0; r < thisInst.cboMCP_Ref.Items.Count; r++)
+                    if (thisInst.cboMCP_Ref.Items[r].ToString() == refUsed.GetName(thisInst.metList, thisInst.UTM_conversions))
+                    {
+                        thisInst.cboMCP_Ref.SelectedIndex = r;
+                        break;
+                    }
+            }
             else
-                thisInst.btn_Import_MERRA.BackColor = Color.Gray;
+            {
+                if (thisInst.refList.numReferences > 0)
+                    thisInst.cboMCP_Ref.SelectedIndex = thisInst.refList.numReferences - 1;
+            }
+
+        }
+
+        /// <summary> Updates all tables and plots on MERRA2 tab. </summary> 
+        public void LT_ReferenceTAB()
+        {
+            LT_RefNodesAndCompleteness();
+            LT_ReferenceAnnualTableAndPlot();
+            LT_ReferenceMonthlyTableAndPlot();
+            LT_ReferenceTextboxes();
+            LT_ReferenceSettings();
+            LT_ReferenceWindRosePlot();            
         }
 
         /// <summary> Updates all tables and plots on Site Suitability tab. </summary> 
-        public void SiteSuitabilityTAB(Continuum thisInst)
+        public void SiteSuitabilityTAB()
         {
 
             if (thisInst.cboIcingYear.Items.Count == 0)
-                IcingYearsDropDown(thisInst);
+                IcingYearsDropDown();
 
             if (thisInst.cboSiteSuitabilitySelectPlot.Items.Count == 0)
-                SiteSuitabilityDropdown(thisInst, null);
+                SiteSuitabilityDropdown(null);
 
-            SiteSuitabilityVisibility(thisInst); // updates dropdown menus and plot/table visibility based on selected model
+            SiteSuitabilityVisibility(); // updates dropdown menus and plot/table visibility based on selected model
 
             thisInst.okToUpdate = false;
             thisInst.txtNumIceThrowsPerDay.Text = thisInst.siteSuitability.iceThrowsPerIceDay.ToString();
@@ -9641,39 +9908,39 @@ namespace ContinuumNS
 
                 if (selectedSiteSuitability == "Ice Throw")
                 {
-                    IceThrowPlotsAndTables(thisInst);
+                    IceThrowPlotsAndTables();
                 }
                 else if (selectedSiteSuitability == "Shadow Flicker")
                 {
-                    ShadowFlickerSurfacePlot(thisInst);
-                    ShadowFlicker12x24(thisInst);
-                    ZoneShadowSummary(thisInst);
-                    ShadowFlickerMaxDay(thisInst);
+                    ShadowFlickerSurfacePlot();
+                    ShadowFlicker12x24();
+                    ZoneShadowSummary();
+                    ShadowFlickerMaxDay();
                 }
                 else if (selectedSiteSuitability == "Sound")
                 {
-                    SoundMap(thisInst);
+                    SoundMap();
 
                     if (thisInst.siteSuitability.yearlyIceHits.Length != 0) // Update the ice throw by zone table too in case zone list changed                
-                        IceHitsByZone(thisInst);
+                        IceHitsByZone();
                 }
 
-                SoundAtZones(thisInst);
+                SoundAtZones();
 
             }
 
         }
 
         /// <summary> Updates the plots and tables on Time Series Analysis tab. </summary> 
-        public void Monthly_TAB(Continuum thisInst)
+        public void Monthly_TAB()
         {
-            TurbineYearlyPlotAndTable(thisInst);
-            TurbineMonthlyTable(thisInst);
-            TurbineMonthlyPlot(thisInst);
+            TurbineYearlyPlotAndTable();
+            TurbineMonthlyTable();
+            TurbineMonthlyPlot();
         }
 
         /// <summary> Updates the yearly table and plot on Time Series Analysis tab. </summary> 
-        public void TurbineYearlyPlotAndTable(Continuum thisInst)
+        public void TurbineYearlyPlotAndTable()
         {
             thisInst.lstYearlyTurbine.Items.Clear();
             Turbine thisTurb = thisInst.GetSelectedTurbine("Monthly");
@@ -9777,8 +10044,9 @@ namespace ContinuumNS
             {
                 LinearAxis secYAxis = new LinearAxis();
                 secYAxis.Position = AxisPosition.Right;
-                secYAxis.Title = "Net AEP";
+                secYAxis.Title = "AEP [MWh]";
                 secYAxis.Key = "Secondary";
+                model.Axes.Add(secYAxis);
             }
 
             Wake_Model thisWakeModel = null;
@@ -9789,9 +10057,42 @@ namespace ContinuumNS
             }
 
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
+            Turbine.Avg_Est thisAvgEst = thisTurb.GetAvgWS_Est(thisWakeModel);
 
-            int firstYear = thisInst.merraList.startDate.Year;
-            int lastYear = thisInst.merraList.endDate.Year;
+            if (thisAvgEst.timeSeries.Length == 0 && thisInst.metList.HaveTimeSeriesData())
+            {
+                NodeCollection nodeList = new NodeCollection();
+                Nodes targetNode = nodeList.GetTurbNode(thisTurb);
+
+                if (thisWakeModel != null)
+                {
+                    // Find wake loss coeffs                    
+                    int minDistance = 10000000;
+                    int maxDistance = 0;
+
+                    int[] Min_Max_Dist = thisInst.turbineList.CalcMinMaxDistanceToTurbines(thisTurb.UTMX, thisTurb.UTMY);
+                    if (Min_Max_Dist[0] < minDistance) minDistance = Min_Max_Dist[0]; // this is min distance to turbine but when WD is at a different angle (not in line with turbines) the X dist is less than this value so making this always equal to 2*RD
+                    if (Min_Max_Dist[1] > maxDistance) maxDistance = Min_Max_Dist[1];
+
+                    minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
+                    if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
+                    WakeCollection.WakeLossCoeffs[] wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, thisInst.metList);
+
+                    thisAvgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
+                        powerCurve, thisWakeModel, wakeCoeffs, thisInst.metList.GetMCP_MethodUsed());
+                }
+                else
+                    thisAvgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
+                        powerCurve, null, null, thisInst.metList.GetMCP_MethodUsed());
+
+                thisTurb.UpdateAvgWS_EstWithTS(thisAvgEst);
+
+            }
+            else if (thisInst.metList.HaveTimeSeriesData() == false)
+                return;
+
+            int firstYear = thisAvgEst.timeSeries[0].dateTime.Year; // thisInst.merraList.startDate.Year;
+            int lastYear = thisAvgEst.timeSeries[thisAvgEst.timeSeries.Length - 1].dateTime.Year; // thisInst.merraList.endDate.Year;
 
             for (int i = firstYear; i <= lastYear; i++)
             {
@@ -9880,7 +10181,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the yearly table on Time Series Analysis tab </summary>        
-        public void TurbineMonthlyTable(Continuum thisInst)
+        public void TurbineMonthlyTable()
         {
             thisInst.lstMonthlyTurbine.Items.Clear();
             Turbine thisTurb = thisInst.GetSelectedTurbine("Monthly");
@@ -9966,7 +10267,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the monthly plot on Time Series Analysis tab </summary> 
-        public void TurbineMonthlyPlot(Continuum thisInst)
+        public void TurbineMonthlyPlot()
         {
             Turbine thisTurb = thisInst.GetSelectedTurbine("Monthly");
 
@@ -10269,7 +10570,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates zone list and zone dropdown on Site Suitability tab </summary> 
-        public void ZoneList(Continuum thisInst)
+        public void ZoneList()
         {
             thisInst.okToUpdate = false;
             thisInst.lstZones.Items.Clear();
@@ -10302,7 +10603,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Creates a surface plot showing of ice throw surrounding turbines and specified zones. </summary>        
-        public void IceThrowSurfacePlot(Continuum thisInst)
+        public void IceThrowSurfacePlot()
         {
             thisInst.plotIceShadowSound.Model = new PlotModel();
             var model = thisInst.plotIceShadowSound.Model;
@@ -10370,13 +10671,13 @@ namespace ContinuumNS
                 iceThrowSeries.Points.Add(new ScatterPoint(thisX, thisY, 2, 2));
             }
 
-            SiteSuitabilitySurfacePlotLabels(thisInst, -999, false);
+            SiteSuitabilitySurfacePlotLabels(-999, false);
             thisInst.plotIceShadowSound.Refresh();
 
         }
 
         /// <summary> Updates labels on model surface plot on Site Suitability tab. </summary>        
-        public void SiteSuitabilitySurfacePlotLabels(Continuum thisInst, int changedIndex, bool changedItemChecked)
+        public void SiteSuitabilitySurfacePlotLabels(int changedIndex, bool changedItemChecked)
         {
             if (thisInst.plotIceShadowSound.Model == null)
                 return;
@@ -10433,7 +10734,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates dropdown menu on Site Suitability tab. </summary>
-        public void SiteSuitabilityDropdown(Continuum thisInst, string modelToSelect)
+        public void SiteSuitabilityDropdown(string modelToSelect)
         {
             thisInst.okToUpdate = false;
 
@@ -10470,7 +10771,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates map to show total shadow flicker of selected month and hour at each grid node. </summary>        
-        public void ShadowFlickerSurfacePlot(Continuum thisInst)
+        public void ShadowFlickerSurfacePlot()
         {
             string thisMonthStr = thisInst.cboSiteSuitMonth.SelectedItem.ToString();
             string thisHourStr = thisInst.cboSiteSuitHour.SelectedItem.ToString();
@@ -10534,7 +10835,7 @@ namespace ContinuumNS
             flickerSurface.Data = flickerGrid;
             model.Series.Add(flickerSurface);
 
-            SiteSuitabilitySurfacePlotLabels(thisInst, -999, true);
+            SiteSuitabilitySurfacePlotLabels(-999, true);
             thisInst.plotIceShadowSound.Refresh();
 
         }
@@ -10655,9 +10956,9 @@ namespace ContinuumNS
         }
 
         /// <summary>  Updates the textbox showing the daily max number of flicker hours and date of occurrence on Site Suitability tab. </summary> 
-        public void ShadowFlickerMaxDay(Continuum thisInst)
+        public void ShadowFlickerMaxDay()
         {
-            SiteSuitability.Zone zone = GetSelectedZone(thisInst);
+            SiteSuitability.Zone zone = GetSelectedZone();
 
             if (zone.flickerStats.maxDailyShadowMins > 0)
             {
@@ -10673,10 +10974,13 @@ namespace ContinuumNS
         }
 
         /// <summary> Returns zone selected on list on Site Suitabiity tab. </summary> 
-        public SiteSuitability.Zone GetSelectedZone(Continuum thisInst)
+        public SiteSuitability.Zone GetSelectedZone()
         {
             string zoneStr = "";
             SiteSuitability.Zone zone = new SiteSuitability.Zone();
+
+            if (thisInst.cboZoneList.SelectedItem == null)
+                return zone;
 
             try
             {
@@ -10695,12 +10999,12 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates in Shadow Flicker 12x24 table and textbox on Site Suitability tab. </summary> 
-        public void ShadowFlicker12x24(Continuum thisInst)
+        public void ShadowFlicker12x24()
         {
             thisInst.lstShadow12x24.Items.Clear();
             thisInst.txtTotalShadow.Text = "";
 
-            SiteSuitability.Zone thisZone = GetSelectedZone(thisInst);
+            SiteSuitability.Zone thisZone = GetSelectedZone();
 
             if (thisZone.flickerStats.shadowMins12x24 == null)
                 return;
@@ -10731,7 +11035,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the list showing total number of shadow flicker hours at each zone on Site Suitability tab . </summary> 
-        public void ZoneShadowSummary(Continuum thisInst)
+        public void ZoneShadowSummary()
         {
             thisInst.lstShadowZoneSummary.Items.Clear();
             thisInst.lstShadowZoneSummary.Columns[0].Text = "Zone";
@@ -10763,7 +11067,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Update the yearly ice hits table on Site Suitability tab. </summary> 
-        public void IceHitsByZone(Continuum thisInst)
+        public void IceHitsByZone()
         {
             thisInst.lstZoneIceHits.Items.Clear();
 
@@ -10810,7 +11114,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Creates a surface plot of turbine sound model on Site Suitability tab. </summary>        
-        public void SoundMap(Continuum thisInst)
+        public void SoundMap()
         {
             thisInst.plotIceShadowSound.Model = new PlotModel();
             var model = thisInst.plotIceShadowSound.Model;
@@ -10838,13 +11142,13 @@ namespace ContinuumNS
 
             model.Series.Add(soundSurface);
 
-            SiteSuitabilitySurfacePlotLabels(thisInst, -999, true);
+            SiteSuitabilitySurfacePlotLabels(-999, true);
             thisInst.plotIceShadowSound.Refresh();
 
         }
 
         /// <summary> Updates estimated sound level at turbine sites on Site Suitability tab. </summary>
-        public void SoundAtZones(Continuum thisInst)
+        public void SoundAtZones()
         {
             thisInst.lstZoneSound.Items.Clear();
 
@@ -10864,16 +11168,15 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates all tables and plots on Exceedance tab. </summary>
-        public void Exceedance_TAB(Continuum thisInst)
+        public void Exceedance_TAB()
         {
-            PerformanceFactorList(thisInst);
-            PerformanceFactorsPlot(thisInst);
-            PValsTable(thisInst);
-
+            PerformanceFactorList();
+            PerformanceFactorsPlot();
+            PValsTable();
         }
 
         /// <summary> Updates Performance Curves table on Exceedance tab. </summary>
-        public void PerformanceFactorList(Continuum thisInst)
+        public void PerformanceFactorList()
         {
             thisInst.okToUpdate = false;
             thisInst.lstDefinedLosses.Items.Clear();
@@ -10927,7 +11230,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Plots probability and cumulative density function of all (checked) defined exceedance on Exceedance tab. </summary>
-        public void PerformanceFactorsPlot(Continuum thisInst)
+        public void PerformanceFactorsPlot()
         {
             thisInst.plotExceedCurves.Model = new PlotModel();
             var model = thisInst.plotExceedCurves.Model;
@@ -10996,7 +11299,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the table and plot of P values on Exceedance tab. </summary>
-        public void PValsTable(Continuum thisInst)
+        public void PValsTable()
         {
             thisInst.plotCompositeExceed.Model = new PlotModel();
             var model = thisInst.plotCompositeExceed.Model;
@@ -11190,7 +11493,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates visibility of plots and tables on Site Suitability tab based on selected model. </summary>
-        public void SiteSuitabilityVisibility(Continuum thisInst)
+        public void SiteSuitabilityVisibility()
         {
             thisInst.okToUpdate = false;
             string selectedModel = thisInst.GetSelectedSiteSuitabilityModel();
@@ -11322,7 +11625,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates probability vs. distance plot on Site Suitability tab. </summary>        
-        public void IceHitsVsDistancePlot(Continuum thisInst)
+        public void IceHitsVsDistancePlot()
         {
             thisInst.plotIceVsDist.Model = new PlotModel();
             var model = thisInst.plotIceVsDist.Model;
@@ -11365,7 +11668,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates Ice hit count versus Distance table on Site Suitability tab. </summary>
-        public void IceHitVsDistTable(Continuum thisInst)
+        public void IceHitVsDistTable()
         {
             thisInst.lstShadowZoneSummary.Items.Clear();
 
@@ -11391,7 +11694,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates year dropdown menu on Site Suitability tab (used for ice throw model). </summary>        
-        public void IcingYearsDropDown(Continuum thisInst)
+        public void IcingYearsDropDown()
         {
             thisInst.okToUpdate = false;
 
@@ -11410,30 +11713,30 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates all plots and tables on Site Suitability tab related to ice throw. </summary>  
-        public void IceThrowPlotsAndTables(Continuum thisInst)
+        public void IceThrowPlotsAndTables()
         {
-            SiteSuitabilityVisibility(thisInst);
-            IceHitsByZone(thisInst);
-            IceHitVsDistTable(thisInst);
+            SiteSuitabilityVisibility();
+            IceHitsByZone();
+            IceHitVsDistTable();
 
             string plotSelected = thisInst.cboIceDistORIceHisto.SelectedItem.ToString();
 
             if (plotSelected == "Ice Hit vs. Distance")
-                IceHitsVsDistancePlot(thisInst);
+                IceHitsVsDistancePlot();
             else
-                IceHitHistogram(thisInst);
+                IceHitHistogram();
 
-            IceThrowSurfacePlot(thisInst);
+            IceThrowSurfacePlot();
         }
 
         /// <summary> Updates yearly ice hit histogram on Site Suitability tab. </summary> 
-        public void IceHitHistogram(Continuum thisInst)
+        public void IceHitHistogram()
         {
             thisInst.plotIceVsDist.Model = new PlotModel();
             var model = thisInst.plotIceVsDist.Model;
             model.IsLegendVisible = false;
 
-            SiteSuitability.Zone zone = GetSelectedZone(thisInst);
+            SiteSuitability.Zone zone = GetSelectedZone();
 
             if (zone.latitude == 0)
             {
@@ -11483,7 +11786,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates the turbulence intensity plot and table on Site Conditions tab. </summary> 
-        public void TurbulenceIntensityPlotAndTable(Continuum thisInst)
+        public void TurbulenceIntensityPlotAndTable(bool reCalc = false)
         {
             thisInst.plotTurbInt.Model = new PlotModel();
             var model = thisInst.plotTurbInt.Model;
@@ -11500,11 +11803,9 @@ namespace ContinuumNS
             DateTime endTime = thisInst.dateTIEnd.Value;
             int WD_Ind = thisInst.GetWD_ind("Site Conditions TI");
 
-            if (thisMet.turbulence.avgWS == null)
+            if (reCalc || thisMet.turbulence.avgWS == null || thisMet.turbulence.startTime != startTime || thisMet.turbulence.endTime != endTime)
                 thisMet.CalcTurbulenceIntensity(startTime, endTime, thisInst.modeledHeight, thisInst);
-            else if (thisMet.turbulence.startTime != startTime || thisMet.turbulence.endTime != endTime)
-                thisMet.CalcTurbulenceIntensity(startTime, endTime, thisInst.modeledHeight, thisInst);
-
+            
             thisInst.lstTurbulence.Items.Clear();
 
             string turbType = thisInst.cboTI_Type.SelectedItem.ToString();
@@ -11515,7 +11816,18 @@ namespace ContinuumNS
                 Turbine thisTurb = thisInst.GetSelectedTurbine("Turbulence");
                 double wohler = Convert.ToDouble(thisInst.cboEffectiveTI_m.SelectedItem.ToString());
                 TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Turbulence");
-                effectiveTI = thisTurb.CalcEffectiveTI(thisMet, wohler, thisInst, powerCurve, WD_Ind);
+                double terrComplCorr = 1.0;
+                if (thisInst.chkApplyTCCtoEffTI.Checked)
+                {
+                    if (thisInst.cboTI_TerrainComplexCorr.SelectedIndex == 1)
+                        terrComplCorr = 1.05;
+                    else if (thisInst.cboTI_TerrainComplexCorr.SelectedIndex == 2)
+                        terrComplCorr = 1.10;
+                    else if (thisInst.cboTI_TerrainComplexCorr.SelectedIndex == 3)
+                        terrComplCorr = 1.15;
+                }
+                    
+                effectiveTI = thisTurb.CalcEffectiveTI(thisMet, wohler, thisInst, powerCurve, WD_Ind, terrComplCorr);
             }
 
             // Specify axes
@@ -11642,8 +11954,8 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Updates start/end dates on Site Conditions tab. </summary>
-        public void SiteConditionsMetDates(Continuum thisInst)
+        /// <summary> Updates start/end dates on Site Conditions tab's TI or Extreme Shear tab. </summary>
+        public void SiteConditionsMetDates(string subTabName)
         {
             // It's called in All_Tabs with okToUpdate sent to false so need to check if it's already false before setting/resetting it.
 
@@ -11658,27 +11970,33 @@ namespace ContinuumNS
             if (alreadyOff == false)
                 thisInst.okToUpdate = false;
 
-            Met thisMet = thisInst.GetSelectedMet("Site Conditions TI");
-
-            thisInst.dateTIStart.Value = thisMet.metData.startDate;
-            thisInst.dateTIEnd.Value = thisMet.metData.endDate;
-            thisMet = thisInst.GetSelectedMet("Site Conditions Shear");
-            thisInst.dateTimeExtremeShearStart.Value = thisMet.metData.startDate;
-            thisInst.dateTimeExtremeShearEnd.Value = thisMet.metData.endDate;
+            if (subTabName == "TI")
+            {
+                Met thisMet = thisInst.GetSelectedMet("Site Conditions TI");
+                thisInst.dateTIStart.Value = thisMet.metData.startDate;
+                thisInst.dateTIEnd.Value = thisMet.metData.endDate;
+            }
+            else if (subTabName == "Extreme Shear")
+            {
+                Met thisMet = thisInst.GetSelectedMet("Site Conditions Shear");
+                thisInst.dateTimeExtremeShearStart.Value = thisMet.metData.startDate;
+                thisInst.dateTimeExtremeShearEnd.Value = thisMet.metData.endDate;
+            }
 
             if (alreadyOff == false)
                 thisInst.okToUpdate = true;
         }
 
         /// <summary> Updates extreme shear statistics on Site Conditions tab. </summary>
-        public void SiteConditionsAlpha(Continuum thisInst)
+        public void SiteConditionsAlpha()
         {
-            AlphaHistogram(thisInst);
-            ExtremeShearTable(thisInst);
+            // update alpha settings
+            AlphaHistogram();
+            ExtremeShearTable();
         }
 
         /// <summary> Updates extreme shear histogram on Site Conditions tab. </summary>
-        public void AlphaHistogram(Continuum thisInst)
+        public void AlphaHistogram()
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Shear");
 
@@ -11704,6 +12022,9 @@ namespace ContinuumNS
                 thisInst.plotExtremeShear.Refresh();
                 return;
             }
+
+            if (thisInst.dateTimeExtremeShearStart.Value == thisInst.dateTimeExtremeShearEnd.Value)
+                SiteConditionsMetDates("Extreme Shear");
 
             // Specify axes
             CategoryAxis xAxis = new CategoryAxis();
@@ -11739,8 +12060,8 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Updates extreme shear P table (P1, P10, and P50) for wind speed ranges: 5 - 10, 10 - 15, 15+, All WS on Site Conditions tab. </summary>
-        public void ExtremeShearTable(Continuum thisInst)
+        /// <summary> Updates shear calc method and extreme shear P table (P1, P10, and P50) for wind speed ranges: 5 - 10, 10 - 15, 15+, All WS on Site Conditions tab. </summary>
+        public void ExtremeShearTable()
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Shear");
             thisInst.lstExtremeShear.Items.Clear();
@@ -11748,6 +12069,11 @@ namespace ContinuumNS
             if (thisMet.metData == null)
                 return;
 
+            thisInst.txtShearCalcMethodExtremeTab.Text = thisMet.metData.GetShearCalcNameFromEnum(thisMet.metData.shearSettings.shearCalcType);
+                      
+            thisInst.txtMinHeight.Text = thisMet.metData.shearSettings.minHeight.ToString();
+            thisInst.txtMaxHeight.Text = thisMet.metData.shearSettings.maxHeight.ToString();           
+            
             double[] anemHeights = thisMet.metData.GetHeightsOfAnems();
             if (anemHeights.Length == 1)
                 return;
@@ -11756,79 +12082,257 @@ namespace ContinuumNS
             DateTime startTime = thisInst.dateTimeExtremeShearStart.Value;
             DateTime endTime = thisInst.dateTimeExtremeShearEnd.Value;
 
-            double alphaP1_5_to_10 = thisMet.GetAlphaPValue(5, 10, 1, thisInst, startTime, endTime);
-            double alphaP10_5_to_10 = thisMet.GetAlphaPValue(5, 10, 10, thisInst, startTime, endTime);
-            double alphaP50_5_to_10 = thisMet.GetAlphaPValue(5, 10, 50, thisInst, startTime, endTime);
+            double[] alphaP1_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 1, thisInst, startTime, endTime);
+            double[] alphaP10_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, startTime, endTime);
+            double[] alphaP50_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 50, thisInst, startTime, endTime);
 
-            double alphaP1_10_to_15 = thisMet.GetAlphaPValue(10, 15, 1, thisInst, startTime, endTime);
-            double alphaP10_10_to_15 = thisMet.GetAlphaPValue(10, 15, 10, thisInst, startTime, endTime);
-            double alphaP50_10_to_15 = thisMet.GetAlphaPValue(10, 15, 50, thisInst, startTime, endTime);
+            double[] alphaP1_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 1, thisInst, startTime, endTime);
+            double[] alphaP10_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 10, thisInst, startTime, endTime);
+            double[] alphaP50_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 50, thisInst, startTime, endTime);
 
-            double alphaP1_15plus = thisMet.GetAlphaPValue(15, 30, 1, thisInst, startTime, endTime);
-            double alphaP10_15plus = thisMet.GetAlphaPValue(15, 30, 10, thisInst, startTime, endTime);
-            double alphaP50_15plus = thisMet.GetAlphaPValue(15, 30, 50, thisInst, startTime, endTime);
+            double[] alphaP1_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 1, thisInst, startTime, endTime);
+            double[] alphaP10_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 10, thisInst, startTime, endTime);
+            double[] alphaP50_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 50, thisInst, startTime, endTime);
 
-            double alphaP1_All = thisMet.GetAlphaPValue(3, 30, 1, thisInst, startTime, endTime);
-            double alphaP10_All = thisMet.GetAlphaPValue(3, 30, 10, thisInst, startTime, endTime);
-            double alphaP50_All = thisMet.GetAlphaPValue(3, 30, 50, thisInst, startTime, endTime);
+            double[] alphaP1_All = thisMet.GetAlphaPValueAndCount(3, 30, 1, thisInst, startTime, endTime);
+            double[] alphaP10_All = thisMet.GetAlphaPValueAndCount(3, 30, 10, thisInst, startTime, endTime);
+            double[] alphaP50_All = thisMet.GetAlphaPValueAndCount(3, 30, 50, thisInst, startTime, endTime);
 
             objListItem = new ListViewItem("P1");
-            objListItem.SubItems.Add(Math.Round(alphaP1_5_to_10, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP1_10_to_15, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP1_15plus, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP1_All, 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP1_5_to_10[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP1_10_to_15[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP1_15plus[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP1_All[0], 3).ToString());
             thisInst.lstExtremeShear.Items.Add(objListItem);
 
             objListItem = new ListViewItem("P10");
-            objListItem.SubItems.Add(Math.Round(alphaP10_5_to_10, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP10_10_to_15, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP10_15plus, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP10_All, 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP10_5_to_10[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP10_10_to_15[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP10_15plus[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP10_All[0], 3).ToString());
             thisInst.lstExtremeShear.Items.Add(objListItem);
 
             objListItem = new ListViewItem("P50");
-            objListItem.SubItems.Add(Math.Round(alphaP50_5_to_10, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP50_10_to_15, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP50_15plus, 3).ToString());
-            objListItem.SubItems.Add(Math.Round(alphaP50_All, 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_5_to_10[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_10_to_15[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_15plus[0], 3).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_All[0], 3).ToString());
+            thisInst.lstExtremeShear.Items.Add(objListItem);
+
+            objListItem = new ListViewItem("Count");
+            objListItem.SubItems.Add(Math.Round(alphaP50_5_to_10[1], 0).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_10_to_15[1], 0).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_15plus[1], 0).ToString());
+            objListItem.SubItems.Add(Math.Round(alphaP50_All[1], 0).ToString());
             thisInst.lstExtremeShear.Items.Add(objListItem);
         }
 
+        /// <summary> Populate WMO dropdowns with terrain class, description, and hour-to-10 min and hour-to-gust factors </summary>
+        public void WMO_GustFactors()
+        {
+            thisInst.cboWMO_Class.Items.Clear();
+            
+            WMO_GustFactor[] gustFactors = GetWMO_GustFactors();
+
+            for (int g = 0; g < gustFactors.Length; g++)            
+                thisInst.cboWMO_Class.Items.Add(gustFactors[g].thisClass);
+
+            thisInst.cboWMO_Class.SelectedIndex = 0;
+
+        }
+
+        /// <summary> Update description and gust factors associated with selected terrain class </summary>
+        public void WMO_GustFactorSelected()
+        {
+            WMO_GustFactor[] gustFactors = GetWMO_GustFactors();
+
+            for (int g = 0; g < gustFactors.Length; g++)
+                if (gustFactors[g].thisClass == thisInst.cboWMO_Class.SelectedItem.ToString())
+                {
+                    thisInst.txtWMO_Desc.Text = gustFactors[g].thisDesc;
+                    thisInst.txtWMO_HourTenMin.Text = gustFactors[g].hourToTenMin.ToString();
+                    thisInst.txtWMO_HourGust.Text = gustFactors[g].hourToGust.ToString();
+                    break;
+                }
+        }
+
+        /// <summary> Returns WMO Gust Factor based on specified terrain type and wind speed type </summary>
+
+        public WMO_GustFactor[] GetWMO_GustFactors()
+        {
+            WMO_GustFactor[] wmoGustFactors = new WMO_GustFactor[4];
+
+            wmoGustFactors[0].thisClass = "In-Land";
+            wmoGustFactors[0].thisDesc = "Roughly open terrain";
+            wmoGustFactors[0].hourToTenMin = 1.08;
+            wmoGustFactors[0].hourToGust = 1.75;
+
+            wmoGustFactors[1].thisClass = "Off-Land";
+            wmoGustFactors[1].thisDesc = "Offshore winds at a coastline";
+            wmoGustFactors[1].hourToTenMin = 1.06;
+            wmoGustFactors[1].hourToGust = 1.60;
+
+            wmoGustFactors[2].thisClass = "Off-Sea";
+            wmoGustFactors[2].thisDesc = "Onshore winds at a coastline";
+            wmoGustFactors[2].hourToTenMin = 1.05;
+            wmoGustFactors[2].hourToGust = 1.45;
+
+            wmoGustFactors[3].thisClass = "At-Sea";
+            wmoGustFactors[3].thisDesc = ">20 km offshore";
+            wmoGustFactors[3].hourToTenMin = 1.03;
+            wmoGustFactors[3].hourToGust = 1.30;
+
+            return wmoGustFactors;
+        }
+
         /// <summary> Updates extreme wind speed textboxes and plots on Site Conditions tab. </summary>        
-        public void ExtremeWindSpeed(Continuum thisInst)
+        public void ExtremeWindSpeed()
         {
             Met thisMet = thisInst.GetSelectedMet("Site Conditions Extreme WS");
+
+            if (thisMet.name == null)
+                return;
+
             Met.Extreme_WindSpeed extremeWS = thisMet.CalcExtremeWindSpeeds(thisInst);
 
+            // Reset Gumbel distribution plot
             thisInst.plotExtremeWS.Model = new PlotModel();
             var model = thisInst.plotExtremeWS.Model;
             model.IsLegendVisible = false;
+            
+            // Reset Extreme WS time series plot
+            thisInst.plotExtremeWS_TS.Model = new PlotModel();
+            var tsModel = thisInst.plotExtremeWS_TS.Model;
+            tsModel.IsLegendVisible = thisInst.chkExtremeWS_ShowLegend.Checked;
+            tsModel.LegendPlacement = LegendPlacement.Outside;
+            tsModel.LegendPosition = LegendPosition.RightMiddle;
 
-            thisInst.lblNoExtremeWS.Text = "";
+            // Reset Gumbel dist.  textboxes
+            thisInst.txtGumbelGustBeta.Text = "";
+            thisInst.txtGumbelGustMu.Text = "";
+            thisInst.txt1yrExtremeGust.Text = "";
+            thisInst.txt50yrExtremeGust.Text = "";
+
+            thisInst.txtGumbelTenMinBeta.Text = "";
+            thisInst.txtGumbelTenMinMu.Text = "";
+            thisInst.txt1yrExtreme10min.Text = "";
+            thisInst.txt50yrExtreme10min.Text = "";
+
+            // Clear data table
+            thisInst.dataExtremeWS.Rows.Clear();
 
             if (extremeWS.tenMin1yr == 0)
-            {
-                if (thisInst.merraList.numMERRA_Data == 0)
-                    thisInst.lblNoExtremeWS.Text = "MERRA2 data not loaded. MERRA2 required for extreme WS calculations.";
-                else
-                    thisInst.lblNoExtremeWS.Text = "Met data does not cover a full year (Jan. - Dec.) required for extreme WS calculations.";
-
-                thisInst.txt50yrExtreme10min.Text = "";
-                thisInst.txt50yrExtremeGust.Text = "";
-                thisInst.txt1yrExtreme10min.Text = "";
-                thisInst.txt1yrExtremeGust.Text = "";
-
+            {   
+                thisInst.plotExtremeWS_TS.Refresh();
+                thisInst.plotExtremeWS.Refresh();
                 return;
-            }
+            }                        
 
-            if (extremeWS.gust1yr != 0)
+            // Update extreme WS textboxes
+            if (extremeWS.gust1yr != 0) // Extreme Gust WS not calculated when extrapolated WS used
             {
-                thisInst.txt50yrExtreme10min.Text = Math.Round(extremeWS.tenMin50yr, 2).ToString();
-                thisInst.txt50yrExtremeGust.Text = Math.Round(extremeWS.gust50yr, 2).ToString();
-                thisInst.txt1yrExtreme10min.Text = Math.Round(extremeWS.tenMin1yr, 2).ToString();
+                thisInst.txtGumbelGustBeta.Text = Math.Round(extremeWS.gustDist.beta, 5).ToString();
+                thisInst.txtGumbelGustMu.Text = Math.Round(extremeWS.gustDist.mu, 5).ToString();
                 thisInst.txt1yrExtremeGust.Text = Math.Round(extremeWS.gust1yr, 2).ToString();
+                thisInst.txt50yrExtremeGust.Text = Math.Round(extremeWS.gust50yr, 2).ToString();
             }
 
+            thisInst.txtGumbelTenMinBeta.Text = Math.Round(extremeWS.tenMinDist.beta, 5).ToString();
+            thisInst.txtGumbelTenMinMu.Text = Math.Round(extremeWS.tenMinDist.mu, 5).ToString();
+            thisInst.txt1yrExtreme10min.Text = Math.Round(extremeWS.tenMin1yr, 2).ToString();
+            thisInst.txt50yrExtreme10min.Text = Math.Round(extremeWS.tenMin50yr, 2).ToString();
+            
+           
+            // Update Extreme WS time series plot and data table
+            tsModel.Title = "Extreme Wind Speed Time Series";
+
+            // Specify axes
+            LinearAxis xAxisTS = new LinearAxis();
+            xAxisTS.Position = AxisPosition.Bottom;
+            xAxisTS.Title = "Year";
+            LinearAxis yAxisTS = new LinearAxis();
+            yAxisTS.Position = AxisPosition.Left;
+            yAxisTS.Title = "Max. Wind Speed, m/s";
+
+            tsModel.Axes.Add(xAxisTS);
+            tsModel.Axes.Add(yAxisTS);
+
+            LineSeries maxHourlySeries = new LineSeries();
+            maxHourlySeries.Title = "Max. Reference Hourly WS";
+            tsModel.Series.Add(maxHourlySeries);
+            maxHourlySeries.MarkerStroke = OxyColors.Red;
+
+            ScatterSeries maxHourlyConcSeries = new ScatterSeries();
+            maxHourlyConcSeries.Title = "Max. Reference Hourly WS [Conc. w. Met.]";            
+            tsModel.Series.Add(maxHourlyConcSeries);
+
+            ScatterSeries maxTenMinActSeries = new ScatterSeries();
+            maxTenMinActSeries.Title = "Max Actual Ten-Min WS";
+            tsModel.Series.Add(maxTenMinActSeries);
+            //     maxTenMinActSeries.MarkerStroke = OxyColors.Red;
+
+            LineSeries maxTenMinEstSeries = new LineSeries();
+            maxTenMinEstSeries.Title = "Max Estimated Ten-Min WS";
+            tsModel.Series.Add(maxTenMinEstSeries);
+
+            ScatterSeries maxGustActSeries = new ScatterSeries();
+            maxGustActSeries.Title = "Max Actual Gust WS";
+            tsModel.Series.Add(maxGustActSeries);
+
+            LineSeries maxGustEstSeries = new LineSeries();
+            maxGustEstSeries.Title = "Max Estimated Gust WS";
+            if (extremeWS.maxEstGust != null)
+                tsModel.Series.Add(maxGustEstSeries);
+     //       maxGustEstSeries.MarkerStroke = OxyColors.Blue;
+
+            for (int i = 0; i < extremeWS.maxHourlyRefWS.Length; i++)
+            {
+                maxHourlySeries.Points.Add(new DataPoint(extremeWS.maxHourlyRefWS[i].thisYear, extremeWS.maxHourlyRefWS[i].maxWS));
+                int rowInd = thisInst.dataExtremeWS.Rows.Add();
+                thisInst.dataExtremeWS.Rows[rowInd].Cells[0].Value = extremeWS.maxHourlyRefWS[i].thisYear;
+                thisInst.dataExtremeWS.Rows[rowInd].Cells[1].Value = Math.Round(extremeWS.maxHourlyRefWS[i].maxWS, 3);
+
+                maxTenMinEstSeries.Points.Add(new DataPoint(extremeWS.maxEstTenMin[i].thisYear, extremeWS.maxEstTenMin[i].maxWS));
+                thisInst.dataExtremeWS.Rows[rowInd].Cells[4].Value = Math.Round(extremeWS.maxEstTenMin[i].maxWS, 3);
+
+                if (extremeWS.maxEstGust != null)
+                {
+                    maxGustEstSeries.Points.Add(new DataPoint(extremeWS.maxEstGust[i].thisYear, extremeWS.maxEstGust[i].maxWS));
+                    thisInst.dataExtremeWS.Rows[rowInd].Cells[6].Value = Math.Round(extremeWS.maxEstGust[i].maxWS, 3);
+                }
+            }
+
+            for (int i = 0; i < extremeWS.maxMetTenMin.Length; i++)
+            {
+                maxHourlyConcSeries.Points.Add(new ScatterPoint(extremeWS.maxHourlyRefConcWS[i].thisYear, extremeWS.maxHourlyRefConcWS[i].maxWS));
+                maxTenMinActSeries.Points.Add(new ScatterPoint(extremeWS.maxMetTenMin[i].thisYear, extremeWS.maxMetTenMin[i].maxWS));
+
+                if (extremeWS.maxMetGust != null)
+                    maxGustActSeries.Points.Add(new ScatterPoint(extremeWS.maxMetGust[i].thisYear, extremeWS.maxMetGust[i].maxWS));
+
+                // Find row index with this year
+                int rowIndYear = -999;
+
+                for (int r = 0; r < thisInst.dataExtremeWS.RowCount - 1; r++)
+                    if (thisInst.dataExtremeWS.Rows[r].Cells[0].Value.ToString() == extremeWS.maxMetTenMin[i].thisYear.ToString())
+                    {
+                        rowIndYear = r;
+                        break;
+                    }
+
+                if (rowIndYear != -999)
+                {
+                    thisInst.dataExtremeWS.Rows[rowIndYear].Cells[2].Value = Math.Round(extremeWS.maxHourlyRefConcWS[i].maxWS, 3);
+                    thisInst.dataExtremeWS.Rows[rowIndYear].Cells[3].Value = Math.Round(extremeWS.maxMetTenMin[i].maxWS, 3);
+
+                    if (extremeWS.maxMetGust != null)
+                        thisInst.dataExtremeWS.Rows[rowIndYear].Cells[5].Value = Math.Round(extremeWS.maxMetGust[i].maxWS, 3);
+                }
+            }
+
+            thisInst.plotExtremeWS_TS.Refresh();
+
+            // Update Gumbel distribution curves
             model.Title = "Extreme Wind Speeds by Years of Recurrence";
 
             // Specify axes
@@ -11852,17 +12356,23 @@ namespace ContinuumNS
             model.Series.Add(maxGustSeries);
             maxGustSeries.MarkerStroke = OxyColors.Blue;
 
-            for (int i = 0; i < extremeWS.yearsOfOcc.Length; i++)
+            for (int i = 0; i < extremeWS.extremeCurve.Length; i++)
             {
-                maxTenMinSeries.Points.Add(new DataPoint(1.5 + i * 0.5, extremeWS.maxTenMin[i]));
-                maxGustSeries.Points.Add(new DataPoint(1.5 + i * 0.5, extremeWS.maxGust[i]));
+                maxTenMinSeries.Points.Add(new DataPoint(extremeWS.extremeCurve[i].yearsOfOcc, extremeWS.extremeCurve[i].maxTenMin));
+                if (extremeWS.maxEstGust != null)
+                    maxGustSeries.Points.Add(new DataPoint(extremeWS.extremeCurve[i].yearsOfOcc, extremeWS.extremeCurve[i].maxGust));
             }
 
             thisInst.plotExtremeWS.Refresh();
+
+            if (extremeWS.maxEstGust != null)
+                thisInst.lblGustExtremeWSUnavailable.Visible = false;
+            else
+                thisInst.lblGustExtremeWSUnavailable.Visible = true;
         }
 
         /// <summary> Updates the inflow angle plot and textboxes on Site Conditions tab. </summary>
-        public void InflowAnglePlotAndTable(Continuum thisInst)
+        public void InflowAnglePlotAndTable()
         {
             thisInst.plotInflowAngle.Model = new PlotModel();
             var model = thisInst.plotInflowAngle.Model;
@@ -11870,13 +12380,13 @@ namespace ContinuumNS
 
             Turbine thisTurb = thisInst.GetSelectedTurbine("Inflow Angle");
 
-            if (thisInst.cboInflowWD.Items.Count == 0 || thisTurb.UTMX == 0 || thisInst.topo.gotTopo == false)
+            if (thisInst.cboInflowWD.Items.Count == 0 || thisTurb.UTMX == 0 || thisTurb.elev == 0 || thisInst.topo.gotTopo == false)
             {
                 thisInst.plotInflowAngle.Refresh();
                 return;
             }
 
-            if (thisInst.topo.topoNumXY.X.calcs.min == 0)
+            if (thisInst.topo.topoNumXY.X.calcs.min == 0 || thisInst.topo.elevsForCalcs == null)
                 thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
             if (thisInst.cboInflowWD.SelectedItem == null)
@@ -11892,10 +12402,7 @@ namespace ContinuumNS
             if (thisInst.cboInflowReso.SelectedItem == null)
                 thisInst.cboInflowReso.SelectedIndex = 0;
 
-            int reso = Convert.ToInt16(thisInst.cboInflowReso.SelectedItem.ToString());
-
-            if (thisInst.topo.elevsForCalcs == null)
-                thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
+            int reso = Convert.ToInt16(thisInst.cboInflowReso.SelectedItem.ToString());                       
 
             // Find elevation profile along WD
             TopoInfo.TopoGrid[] elevProfile = thisInst.topo.GetElevationProfile(thisTurb.UTMX, thisTurb.UTMY, thisWD, radius, reso);
@@ -11911,9 +12418,12 @@ namespace ContinuumNS
                 yVals[i] = elevProfile[i].elev;
             }
 
-            double slope = thisInst.topo.CalcSlope(xVals, yVals);
-            double inflowAngle = Math.Atan(slope) * 180 / Math.PI;
-            thisInst.txtInflowAngle.Text = Math.Round(inflowAngle, 2).ToString();
+            double[] sectSlopes = thisInst.siteSuitability.CalcTerrainSlopeOrVariationBySector(radius, "Slope", thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, true, thisInst.chkForceThruBase.Checked,
+                thisInst.metList.numWD, thisInst.topo);
+            double slopeAtWD = sectSlopes[thisInst.cboInflowWD.SelectedIndex];
+
+            double[] slopeAndVars = thisInst.topo.CalcSlopeAndVariation(xVals, yVals);            
+            thisInst.txtInflowAngle.Text = Math.Round(slopeAtWD, 2).ToString();
 
             // Update plot
             model.Title = "Elevation Profile along WD = " + thisWD.ToString();
@@ -11934,7 +12444,7 @@ namespace ContinuumNS
             elevSeries.MarkerStroke = OxyColors.Blue;
 
             for (int i = 0; i < elevProfile.Length; i++)
-                elevSeries.Points.Add(new DataPoint(Math.Round((double)(i * reso), 1), Math.Round(elevProfile[i].elev, 2)));
+                elevSeries.Points.Add(new DataPoint(Math.Round((double)(i * reso), 1), Math.Round(elevProfile[elevProfile.Length - 1 - i].elev, 2)));
 
             LineSeries slopeSeries = new LineSeries();
             slopeSeries.Title = "Best-Fit Slope";
@@ -11942,8 +12452,9 @@ namespace ContinuumNS
             slopeSeries.MarkerStroke = OxyColors.Red;
             slopeSeries.LineStyle = LineStyle.Dash;
 
-            slopeSeries.Points.Add(new DataPoint(0, elevProfile[0].elev));
-            slopeSeries.Points.Add(new DataPoint(radius, elevProfile[0].elev + radius * slope));
+            slopeSeries.Points.Add(new DataPoint(0, elevProfile[elevProfile.Length - 1].elev));
+            slopeSeries.Points.Add(new DataPoint(radius, elevProfile[elevProfile.Length - 1].elev + radius * Math.Tan(Math.PI / 180.0 * slopeAtWD)));
+            
 
             // Add point for turbine location
             ScatterSeries turbineSite = new ScatterSeries();
@@ -11954,8 +12465,192 @@ namespace ContinuumNS
             thisInst.plotInflowAngle.Refresh();
         }
 
+        /// <summary> Populates Terrain Complexity table on Site Conditions - Terrain Complexity tab </summary>        
+        public void TerrainComplexityTable()
+        {
+            thisInst.dataTerrainComplex.Rows.Clear();
+
+      //      if (thisInst.turbineList.turbineCalcsDone == false)
+      //          return;
+
+            double hubH = thisInst.modeledHeight;
+            int numWD = thisInst.metList.numWD;
+            double[] energyRose = thisInst.metList.GetAvgEnergyRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All, thisInst.metList.numWD);            
+            double[] refEnergyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);            
+
+            if (energyRose == null)
+                energyRose = refEnergyRose;  
+            
+
+            for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
+            {
+                Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                double UTMX = thisInst.turbineList.turbineEsts[t].UTMX;
+                double UTMY = thisInst.turbineList.turbineEsts[t].UTMY;
+                int rowInd = thisInst.dataTerrainComplex.Rows.Add(thisTurb.name);
+
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[1].Value = Math.Round(thisTurb.elev, 1);
+
+                string turbComplexity = thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo, thisInst.modeledHeight, energyRose, "WTG", numWD,
+                    thisTurb);
+
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Value = turbComplexity;
+                if (turbComplexity == "Not Complex")
+                    thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Style.BackColor = Color.Green;
+                else if (turbComplexity == "Low Complex")
+                    thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Style.BackColor = Color.Yellow;
+                else if (turbComplexity == "Mod. Complex")
+                    thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Style.BackColor = Color.Orange;
+                else if (turbComplexity == "High Complex")
+                    thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Style.BackColor = Color.Red;
+
+                // 5 hub heights - 360 degs TSI and TVI
+                double[] slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, numWD);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[3].Value = Math.Round(slopeAndVarInds[0], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[4].Value = Math.Round(slopeAndVarInds[1], 3);
+                
+                // 5 hub heights - 30 degs TSI and TVI
+                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, numWD, energyRose);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[5].Value = Math.Round(slopeAndVarInds[0], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[6].Value = Math.Round(slopeAndVarInds[1], 3);
+
+                // 10 hub heights - 30 degs TSI and TVI
+                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 10 * hubH, thisInst.topo, numWD, energyRose);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[7].Value = Math.Round(slopeAndVarInds[0], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[8].Value = Math.Round(slopeAndVarInds[1], 3);
+
+                // 20 hub heights - 30 degs TSI and TVI
+                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 20 * hubH, thisInst.topo, numWD, energyRose);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[9].Value = Math.Round(slopeAndVarInds[0], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[10].Value = Math.Round(slopeAndVarInds[1], 3);
+
+                // P10 UW & DW Exposure R = 6000
+                double thisUWP10 = thisTurb.gridStats.GetOverallP10(energyRose, 2, "UW");
+                double thisDWP10 = thisTurb.gridStats.GetOverallP10(energyRose, 2, "DW");
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[11].Value = Math.Round(thisUWP10, 1);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[12].Value = Math.Round(thisDWP10, 1);
+            }
+
+        }
+
+        /// <summary> Updates Terrain Complexity tab on Site Conditions tab </summary>
+        public void TerrainComplexityTab()
+        {
+            if (thisInst.turbineList.expoCalcsDone == true)
+            {
+                if (thisInst.topo.elevsForCalcs == null)
+                    thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
+
+                TerrainComplexityTable();
+                TerrainComplexityHistogram();
+
+                double[] energyRose = thisInst.metList.GetAvgEnergyRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All, thisInst.metList.numWD);
+
+                if (energyRose == null)
+                    energyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, thisInst.metList.numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);
+
+                thisInst.chkForceThruBase.Checked = thisInst.siteSuitability.forceThruTurbBase;
+
+                thisInst.lblIEC_Complexity.Text = thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo,
+                thisInst.modeledHeight, energyRose, "Farm", thisInst.metList.numWD);
+            }
+            else
+            {
+                thisInst.dataTerrainComplex.Rows.Clear();
+                thisInst.plotComplexHisto.Model = new PlotModel();
+                thisInst.plotInflowAngle.Model = new PlotModel();
+            }
+        }
+
+        /// <summary> Updates plot showing histogram of selected terrain complexity metric </summary>
+        public void TerrainComplexityHistogram()
+        {
+            if (thisInst.turbineList.expoCalcsDone == false || thisInst.turbineList.TurbineCount == 0)
+                return;
+
+            if (thisInst.cboTSIorTVIorP90.SelectedItem == null)
+                thisInst.cboTSIorTVIorP90.SelectedIndex = 0;
+
+            string terrainComplex = thisInst.cboTSIorTVIorP90.SelectedItem.ToString();
+
+            string xAxisTitle = "TSI [deg]";
+            if (terrainComplex.Contains("TVI"))
+                xAxisTitle = "TVI [%]";
+            else if (terrainComplex.Contains("P10"))
+                xAxisTitle = "P10 Exposure [m]";
+
+            thisInst.plotComplexHisto.Model = new PlotModel();
+            var model = thisInst.plotComplexHisto.Model;
+            model.IsLegendVisible = false;
+
+            // Specify axes
+            CategoryAxis xAxis = new CategoryAxis();
+            xAxis.Position = AxisPosition.Bottom;
+            xAxis.Title = xAxisTitle;
+            LinearAxis yAxis = new LinearAxis();
+            yAxis.Position = AxisPosition.Left;
+            yAxis.Title = "Freq. of Occurrence";
+
+            model.Axes.Add(xAxis);
+            model.Axes.Add(yAxis);
+
+            ColumnSeries complexHisto = new ColumnSeries();            
+            model.Series.Add(complexHisto);
+
+            double[] energyRose = thisInst.metList.GetAvgEnergyRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All, thisInst.metList.numWD);
+
+            if (energyRose == null)
+                energyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, thisInst.metList.numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);
+
+            double[] complexVals = thisInst.siteSuitability.GetTerrainComplexityAtAllTurbines(thisInst.turbineList, thisInst.topo, terrainComplex, energyRose,
+                thisInst.modeledHeight, thisInst.metList.numWD);
+            Array.Sort(complexVals);
+            int histoSize = 10;
+            double minVal = complexVals[0];
+            double maxVal = complexVals[complexVals.Length - 1];
+            double histoWidth = (maxVal - minVal) / histoSize;
+            int numSigDigs = 0;
+
+            if (histoWidth < 1 && histoWidth >= 0.01)
+                numSigDigs = 1;
+            else if (histoWidth < 0.01 && histoWidth >= 0.001)
+                numSigDigs = 2;
+            else if (histoWidth < 0.001)
+                numSigDigs = 3;
+
+            double[] histoVals = new double[histoSize];
+
+            for (int i = 0; i < histoSize; i++)
+                histoVals[i] = i * histoWidth;
+
+            List<double> histoLabels = new List<double>();
+            for (int i = 0; i < histoSize; i++)
+                histoLabels.Add(Math.Round(histoVals[i], numSigDigs));
+
+            xAxis.ItemsSource = histoLabels;
+
+            if (histoSize > complexVals.Length)
+                return;
+
+            for (int i = 0; i < histoSize; i++)
+            {
+                // Get count for this histoVal
+                int histoCount = 0;
+                double thisMinVal = i * histoWidth; ;
+                double thisMaxVal = thisMinVal + histoWidth;
+
+                for (int c = 0; c < complexVals.Length; c++)
+                    if (complexVals[c] >= thisMinVal && complexVals[c] < thisMaxVal)
+                        histoCount++;
+                    
+                complexHisto.Items.Add(new ColumnItem { Value = histoCount });  
+            }
+
+            thisInst.plotComplexHisto.Refresh();
+        }
+
         /// <summary> Calculates the statistics (avg, min, max, SD) of map and updates the textboxes on Maps tab. </summary> 
-        public void FindMapStats(Continuum thisInst, Map thisMap)
+        public void FindMapStats(Map thisMap)
         {
             double avg = 0;
             double stdev = 0;
@@ -12006,22 +12701,22 @@ namespace ContinuumNS
         }
 
         /// <summary> Updates all plots and tables on Time Series tab </summary>        
-        public void TimeSeries_TAB(Continuum thisInst)
+        public void TimeSeries_TAB()
         {
-            MetDataQC_TAB(thisInst);
-            MetTurbSummaryAndStatsTable(thisInst);
-            GrossTurbineEstsTAB(thisInst);
-            Exceedance_TAB(thisInst);
-            NetTurbineEstsTAB(thisInst);
-            Monthly_TAB(thisInst);
-            MapsTAB(thisInst);
-            Uncertainty_TAB_Round_Robin(thisInst);
-            Uncertainty_TAB_Turbine_Ests(thisInst);
-            AdvancedTAB(thisInst);
+            MetDataQC_TAB();
+            MetTurbSummaryAndStatsTable();
+            GrossTurbineEstsTAB();
+            Exceedance_TAB();
+            NetTurbineEstsTAB();
+            Monthly_TAB();
+            MapsTAB();
+            Uncertainty_TAB_Round_Robin();
+            Uncertainty_TAB_Turbine_Ests();
+            AdvancedTAB();
         }
 
         /// <summary> Updates anemometer A and B dropdown on Met Data QC tab </summary>  
-        public void MetQCAnemVaneDropdown(Continuum thisInst)
+        public void MetQCAnemVaneDropdown()
         {            
             Met selectedMet = thisInst.GetSelectedMet("Met Data QC");
             if (selectedMet.name == null)
@@ -12063,6 +12758,1520 @@ namespace ContinuumNS
 
             thisInst.okToUpdate = true;
         }
+
+        /// <summary> Updates list of met sites on Met Data Time Series tab </summary>
+        public void MetTS_CheckList()
+        {
+            thisInst.okToUpdate = false;
+            thisInst.chkMetsTS.Items.Clear();
+
+            for (int m = 0; m < thisInst.metList.ThisCount; m++)
+                thisInst.chkMetsTS.Items.Add(thisInst.metList.metItem[m].name, true);
+
+            thisInst.okToUpdate = true;
+            MetDataTS_CheckList();
+        }
+
+        /// <summary> Updates checklist showing all met data parameters for mets selected in checklist </summary>        
+        public void MetDataTS_CheckList()
+        {
+            
+            thisInst.okToUpdate = false;
+            thisInst.chkTS_Params.Items.Clear();
+
+            if (thisInst.metList.isTimeSeries == false)
+            {
+                thisInst.okToUpdate = true;
+                return;
+            }
+
+            for (int m = 0; m < thisInst.chkMetsTS.CheckedItems.Count; m++)
+            {
+                Met thisMet = thisInst.metList.GetMet(thisInst.chkMetsTS.CheckedItems[m].ToString());
+
+                // Anemometers
+                for (int s = 0; s < thisMet.metData.GetNumAnems(); s++)
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetAnemName(thisMet.metData.anems[s], true), true);
+
+                // Shear exponent and extrapolated WS (if they exist)
+                if (thisMet.metData.GetNumSimData() > 0)
+                {
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " Shear", true);
+
+                    for (int h = 0; h < thisMet.metData.GetNumSimData(); h++)
+                        thisInst.chkTS_Params.Items.Add(thisMet.name + " Extrap WS " + thisMet.metData.simData[h].height, true);
+                }
+
+                // Vanes
+                for (int s = 0; s < thisMet.metData.GetNumVanes(); s++)
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetVaneName(thisMet.metData.vanes[s], true));
+
+                // Thermometers
+                for (int s = 0; s < thisMet.metData.GetNumTemps(); s++)
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetTempName(thisMet.metData.temps[s], true));
+
+                // Barometers
+                for (int s = 0; s < thisMet.metData.GetNumBaros(); s++)
+                    thisInst.chkTS_Params.Items.Add(thisMet.name + " " + thisMet.metData.GetPressName(thisMet.metData.baros[s], true));
+            }
+            thisInst.okToUpdate = true;
+        }
+
+        /// <summary> Updates Met data Time Series tab </summary>
+        public void MetDataTS_Tab()
+        {
+            if (thisInst.metList.isTimeSeries == false)
+            {
+                thisInst.dataMetTS.Rows.Clear();
+                MetDataPlots();
+                return;
+            }
+
+            if (thisInst.txtNumDaysTS.Text == "")            
+                MetDataTS_Dates();
+
+            if (thisInst.isTest)
+                return;
+
+            if (thisInst.dataMetTS.Columns.Count == 0 && thisInst.metList.ThisCount > 0)
+                MetDataTS_DataTableALL();
+            else
+            {
+                thisInst.dataMetTS.Update();
+                MetDataTS_TableVisibleColumns();
+                MetDataPlots();
+            }
+            
+            
+        }
+
+        /// <summary> Returns sensor type based on checked item on chkTS_Params </summary>        
+        public string GetSensorTypeFromChkTS_Params(string checkedItem)
+        {
+            string sensorType = "";
+
+            if (checkedItem.Contains(" ANEM "))
+                sensorType = "ANEM";
+            else if (checkedItem.Contains(" VANE "))
+                sensorType = "VANE";
+            else if (checkedItem.Contains(" TEMP "))
+                sensorType = "TEMP";
+            else if (checkedItem.Contains(" BARO "))
+                sensorType = "BARO";
+
+            return sensorType;
+        }
+
+
+        public void MetDataTS_DataTableALL()
+        {
+            
+            BackgroundWork.Vars_for_MetTS_Import varsForUpdate = new BackgroundWork.Vars_for_MetTS_Import();
+            varsForUpdate.thisInst = thisInst;
+            varsForUpdate.isTest = thisInst.isTest;
+
+            BackgroundWork BW_worker = new BackgroundWork();
+            BW_worker.Call_BW_MetImport(varsForUpdate);          
+
+        }
+
+        /// <summary> Updates table with filter flags </summary>
+        public void SetMetDataFlagColors()
+        {            
+            // Set flag color
+            int rowInd = 0;
+                        
+            DateTime startTime = Convert.ToDateTime(thisInst.dataMetTS.Rows[0].Cells[0].Value);
+            DateTime endTime = Convert.ToDateTime(thisInst.dataMetTS.Rows[thisInst.dataMetTS.Rows.Count - 2].Cells[0].Value);
+            Met[] selMets = thisInst.metList.metItem;
+            
+            if (selMets == null)
+                return;
+
+            int numMets = selMets.Length;
+            int dataInt = 10;
+            string dataIntStr = thisInst.metList.GetMetDataInterval();
+            if (dataIntStr == "60-min")
+                dataInt = 60;
+
+            for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(dataInt))
+            {
+                int colInd = 1;
+                
+                // Clear all previous flag colors
+                for (int c = 0; c < thisInst.dataMetTS.ColumnCount; c++)
+                    if (thisInst.dataMetTS.Rows[rowInd].Cells[c].Style.BackColor.Name != "0")  
+                        thisInst.dataMetTS.Rows[rowInd].Cells[c].Style.BackColor = Color.White;                    
+
+                for (int m = 0; m < numMets; m++)
+                {    
+                    for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
+                    {                        
+                        int tsIndex = selMets[m].metData.anems[s].GetTS_Index(thisTS);
+                        
+                        if (tsIndex != -999) // Found record at specified TS
+                        {
+                            Met_Data_Filter.Filter_Flags thisFlag = selMets[m].metData.anems[s].windData[tsIndex].filterFlag;
+                            
+                            if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
+                                for (int i = 0; i < 4; i++)                                
+                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(thisFlag);  
+                        }
+                        else
+                        {                            
+                            for (int i = 0; i < 4; i++) 
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);                            
+                        }
+                        colInd = colInd + 4;
+                    }
+
+                    // Skip shear and extrap WS columns
+                    if (selMets[m].metData.GetNumSimData() > 0)
+                    {
+                        int tsIndex = selMets[m].metData.simData[0].GetTS_Index(thisTS);
+                        
+                        if (tsIndex == -999)
+                        {
+                            thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                            
+                            for (int s = 0; s < selMets[m].metData.GetNumSimData(); s++)
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + 1 + s].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                        }
+
+                        colInd = colInd + 1 + selMets[m].metData.GetNumSimData();
+                    }
+
+                    for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
+                    {
+                        int tsIndex = selMets[m].metData.vanes[s].GetTS_Index(thisTS);
+                        
+                        if (tsIndex != -999) // Found record at specified TS
+                        {
+                            Met_Data_Filter.Filter_Flags thisFlag = selMets[m].metData.vanes[s].dirData[tsIndex].filterFlag;
+                            if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
+                                for (int i = 0; i < 4; i++)
+                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(thisFlag);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 4; i++)
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                        }
+                        colInd = colInd + 4;
+                    }
+
+                    for (int s = 0; s < selMets[m].metData.GetNumTemps(); s++)
+                    {
+                        int tsIndex = selMets[m].metData.temps[s].GetTS_Index(thisTS);
+                                                
+                        if (tsIndex != -999) // Found record at specified TS
+                        {
+                            Met_Data_Filter.Filter_Flags thisFlag = selMets[m].metData.temps[s].temp[tsIndex].filterFlag;
+                            
+                            if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
+                                for (int i = 0; i < 4; i++)
+                                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(thisFlag);                                
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 4; i++)
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                        }
+
+                        colInd = colInd + 4;
+                    }                                       
+
+                    for (int s = 0; s < selMets[m].metData.GetNumBaros(); s++)
+                    {
+                        int tsIndex = selMets[m].metData.baros[s].GetTS_Index(thisTS);
+                        
+                        if (tsIndex != -999) // Found record at specified TS
+                        {
+                            Met_Data_Filter.Filter_Flags thisFlag = selMets[m].metData.baros[s].pressure[tsIndex].filterFlag;
+                            if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
+                                for (int i = 0; i < 4; i++)
+                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(thisFlag);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 4; i++)
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                        }
+
+                        colInd = colInd + 4;
+                    }
+                    
+                }
+
+                rowInd++;
+
+            }
+        }               
+        
+
+        /// <summary> Returns color assigned to each filter flag </summary>
+        public Color GetFilterFlagColor(Met_Data_Filter.Filter_Flags thisFlag)
+        {  
+            if (thisFlag == Filter_Flags.towerEffect)
+                return Color.LightPink;
+            else if (thisFlag == Filter_Flags.outsideRange)
+                return Color.LightGray;            
+            else if (thisFlag == Filter_Flags.maxAnemRange)
+                return Color.LightCoral;
+            else if (thisFlag == Filter_Flags.Icing)
+                return Color.LightCyan;
+            else if (thisFlag == Filter_Flags.maxDeltaWS)
+                return Color.LightGreen;
+            else if (thisFlag == Filter_Flags.maxAnemSD)
+                return Color.LightSeaGreen;
+            else if (thisFlag == Filter_Flags.missing)
+                return Color.LightYellow;
+            else if (thisFlag == Filter_Flags.minWS)
+                return Color.LightSlateGray;
+            else if (thisFlag == Filter_Flags.minAnemSD)
+                return Color.LightSalmon;
+
+            return Color.Transparent;
+        }
+
+        /// <summary> Updates hidden/unhidden columsn in Met Data TS table </summary>
+        public void MetDataTS_TableVisibleColumns()
+        {
+            int colInd = 1;
+            
+            for (int m = 0; m < thisInst.metList.ThisCount; m++)
+            {
+                Met thisMet = thisInst.metList.metItem[m];
+                bool isMetChecked = thisInst.IsMetSiteSelected(thisMet.name);
+                 
+                for (int s = 0; s < thisMet.metData.GetNumAnems(); s++)
+                {
+                    string sensName = thisMet.name + " " + thisMet.metData.GetAnemName(thisMet.metData.anems[s], true);
+                    bool isSensChecked = thisInst.IsMetSensorSelected(sensName);
+
+                    if (isMetChecked && isSensChecked)
+                    {
+                        if (thisInst.treeDataParams.Nodes[0].Nodes[0].Checked)
+                            thisInst.dataMetTS.Columns[colInd].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[0].Nodes[1].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 1].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 1].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[0].Nodes[2].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 2].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 2].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[0].Nodes[3].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 3].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 3].Visible = false;
+                    }
+                    else
+                    {
+                        thisInst.dataMetTS.Columns[colInd].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 1].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 2].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 3].Visible = false;
+                    }
+
+                    colInd = colInd + 4;
+                }
+
+                if (thisMet.metData.GetNumSimData() > 0)
+                {
+                    string sensName = thisMet.name + " Shear";
+                    if (thisInst.IsMetSensorSelected(sensName))
+                        thisInst.dataMetTS.Columns[colInd].Visible = true;
+                    else
+                        thisInst.dataMetTS.Columns[colInd].Visible = false;
+
+                    colInd++;
+
+                    for (int s = 0; s < thisMet.metData.GetNumSimData(); s++)
+                    { 
+                        sensName = thisMet.name + " Extrap WS " + thisMet.metData.simData[s].height;
+
+                        if (thisInst.IsMetSensorSelected(sensName))
+                            thisInst.dataMetTS.Columns[colInd].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd].Visible = false;
+
+                        colInd++;
+                    }
+                }                
+
+                for (int s = 0; s < thisMet.metData.GetNumVanes(); s++)
+                {
+                    string sensName = thisMet.name + " " + thisMet.metData.GetVaneName(thisMet.metData.vanes[s], true);
+                    bool isSensChecked = thisInst.IsMetSensorSelected(sensName);
+
+                    if (isMetChecked && isSensChecked)
+                    {
+                        if (thisInst.treeDataParams.Nodes[1].Nodes[0].Checked)
+                            thisInst.dataMetTS.Columns[colInd].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[1].Nodes[1].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 1].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 1].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[1].Nodes[2].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 2].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 2].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[1].Nodes[3].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 3].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 3].Visible = false;
+                    }
+                    else
+                    {
+                        thisInst.dataMetTS.Columns[colInd].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 1].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 2].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 3].Visible = false;
+                    }
+
+                    colInd = colInd + 4;
+                }
+
+                for (int s = 0; s < thisMet.metData.GetNumTemps(); s++)
+                {
+                    string sensName = thisMet.name + " " + thisMet.metData.GetTempName(thisMet.metData.temps[s], true);
+                    bool isSensChecked = thisInst.IsMetSensorSelected(sensName);
+
+                    if (isMetChecked && isSensChecked)
+                    {
+                        if (thisInst.treeDataParams.Nodes[2].Nodes[0].Checked)
+                            thisInst.dataMetTS.Columns[colInd].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[2].Nodes[1].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 1].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 1].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[2].Nodes[2].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 2].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 2].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[2].Nodes[3].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 3].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 3].Visible = false;
+                    }
+                    else
+                    {
+                        thisInst.dataMetTS.Columns[colInd].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 1].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 2].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 3].Visible = false;
+                    }
+
+                    colInd = colInd + 4;
+                }
+
+                for (int s = 0; s < thisMet.metData.GetNumBaros(); s++)
+                {
+                    string sensName = thisMet.name + " " + thisMet.metData.GetPressName(thisMet.metData.baros[s], true);
+                    bool isSensChecked = thisInst.IsMetSensorSelected(sensName);
+
+                    if (isMetChecked && isSensChecked)
+                    {
+                        if (thisInst.treeDataParams.Nodes[3].Nodes[0].Checked)
+                            thisInst.dataMetTS.Columns[colInd].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[3].Nodes[1].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 1].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 1].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[3].Nodes[2].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 2].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 2].Visible = false;
+
+                        if (thisInst.treeDataParams.Nodes[3].Nodes[3].Checked)
+                            thisInst.dataMetTS.Columns[colInd + 3].Visible = true;
+                        else
+                            thisInst.dataMetTS.Columns[colInd + 3].Visible = false;
+                    }
+                    else
+                    {
+                        thisInst.dataMetTS.Columns[colInd].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 1].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 2].Visible = false;
+                        thisInst.dataMetTS.Columns[colInd + 3].Visible = false;
+                    }
+
+                    colInd = colInd + 4;
+                }
+            }
+        }
+
+        
+
+        /// <summary> Returns number of selected metrics (i.e. avg, SD, min, or max) for specified parameter (i.e. ANEM, VANE, TEMP, or BARO) </summary>        
+        public int GetNumMetrics(string paramType)
+        {
+            int numMetrics = 0;
+            int nodeIndex = 0;
+
+            if (paramType == "VANE")
+                nodeIndex = 1;
+            if (paramType == "TEMP")
+                nodeIndex = 2;
+            if (paramType == "BARO")
+                nodeIndex = 3;
+
+            if (thisInst.treeDataParams.Nodes[nodeIndex].Nodes[0].Checked)
+                numMetrics++;
+            if (thisInst.treeDataParams.Nodes[nodeIndex].Nodes[1].Checked)
+                numMetrics++;
+            if (thisInst.treeDataParams.Nodes[nodeIndex].Nodes[2].Checked)
+                numMetrics++;
+            if (thisInst.treeDataParams.Nodes[nodeIndex].Nodes[3].Checked)
+                numMetrics++;
+
+            return numMetrics;
+        }
+
+        /// <summary> Scrolls to row of met data time series that corresponds to selected start time  </summary>
+        public void ScrollToSelectedMetDataStart()
+        {
+            // Figure out what row index corresponds to selected start date
+            DateTime selStart = thisInst.dateMetTS_Start.Value;
+            DateTime tableStart = Convert.ToDateTime(thisInst.dataMetTS.Rows[0].Cells[0].Value);
+            DateTime tableEnd = Convert.ToDateTime(thisInst.dataMetTS.Rows[thisInst.dataMetTS.RowCount - 2].Cells[0].Value);
+
+            if (selStart > tableEnd)
+                selStart = tableEnd;
+
+            string dataInt = thisInst.metList.GetMetDataInterval();
+            int numMinsPerInt = 10;
+            if (dataInt == "60-min")
+                numMinsPerInt = 60;
+
+            int startRow = Convert.ToInt32(selStart.Subtract(tableStart).TotalMinutes / numMinsPerInt);
+
+            if (startRow < 0)
+                startRow = 0;
+            
+            TimeSpan timeDiff = new TimeSpan();
+            bool diffGettingSmaller = true;
+
+            DateTime thisRowTS = Convert.ToDateTime(thisInst.dataMetTS.Rows[startRow].Cells[0].Value);
+            timeDiff = selStart.Subtract(thisRowTS);                        
+
+            double stepSize = startRow / 2;
+            TimeSpan lastTimeDiff = timeDiff;
+            
+            while (Math.Abs(timeDiff.TotalMinutes) > numMinsPerInt && diffGettingSmaller)
+            {
+                lastTimeDiff = timeDiff;
+
+                if (timeDiff.TotalMinutes < 0)                
+                    // thisRowTS is before selStart
+                    startRow = Convert.ToInt32(startRow - stepSize);
+                else                
+                    // thisRowTS is after selStart
+                    startRow = Convert.ToInt32(startRow + stepSize); 
+
+                thisRowTS = Convert.ToDateTime(thisInst.dataMetTS.Rows[startRow].Cells[0].Value);
+                timeDiff = selStart.Subtract(thisRowTS);
+                stepSize = stepSize / 2;
+
+                if (Math.Abs(timeDiff.TotalMinutes) >= Math.Abs(lastTimeDiff.TotalMinutes))
+                    diffGettingSmaller = false;
+            }
+
+            thisInst.dataMetTS.FirstDisplayedScrollingRowIndex = startRow;
+        }
+
+        /// <summary> Updates plots on Met Data TS tab </summary>       
+        public void MetDataPlots()
+        {
+            // Clear all plots
+            thisInst.plotTS_Anems.Model = new PlotModel();
+            thisInst.plotTS_Vanes.Model = new PlotModel();
+            thisInst.plotTS_Temp.Model = new PlotModel();
+            thisInst.plotTS_Baros.Model = new PlotModel();
+
+            if (thisInst.metList.isTimeSeries == false || thisInst.metList.HaveTimeSeriesData() == false)
+                return;
+
+            if (thisInst.cboNumPlots.SelectedItem == null)
+                thisInst.cboNumPlots.SelectedIndex = 0;
+
+            // Figure out how and what kind of plots to create
+            int numPlots = Convert.ToInt16(thisInst.cboNumPlots.SelectedItem.ToString());
+            bool showAnems = false;            
+            bool showVanes = false;
+            bool showTemps = false;
+            bool showBaros = false;
+
+            if (numPlots >= 1)
+            {
+                if (thisInst.cboPlot1Type.SelectedItem == null)
+                {
+                    thisInst.cboPlot1Type.SelectedIndex = 0; // This triggers update.MetDataPlots();
+                    return;
+                }
+
+                if (thisInst.cboPlot1Type.SelectedItem.ToString() == "WS")                
+                    showAnems = true;
+                else if (thisInst.cboPlot1Type.SelectedItem.ToString() == "WD")
+                    showVanes = true;
+                else if (thisInst.cboPlot1Type.SelectedItem.ToString() == "Temp.")
+                    showTemps = true;
+                else if (thisInst.cboPlot1Type.SelectedItem.ToString() == "Press.")
+                    showBaros = true;
+            }
+
+            if (numPlots >= 2)
+            {
+                if (thisInst.cboPlot2Type.SelectedItem == null)
+                {
+                    thisInst.cboPlot2Type.SelectedIndex = 0;
+                    return;
+                }
+
+                if (thisInst.cboPlot2Type.SelectedItem.ToString() == "WS")
+                    showAnems = true;
+                else if (thisInst.cboPlot2Type.SelectedItem.ToString() == "WD")
+                    showVanes = true;
+                else if (thisInst.cboPlot2Type.SelectedItem.ToString() == "Temp.")
+                    showTemps = true;
+                else if (thisInst.cboPlot2Type.SelectedItem.ToString() == "Press.")
+                    showBaros = true;
+            }
+
+            if (numPlots >= 3)
+            {
+                if (thisInst.cboPlot3Type.SelectedItem == null)
+                {
+                    thisInst.cboPlot3Type.SelectedIndex = 0;
+                    return;
+                }
+
+                if (thisInst.cboPlot3Type.SelectedItem.ToString() == "WS")
+                    showAnems = true;
+                else if (thisInst.cboPlot3Type.SelectedItem.ToString() == "WD")
+                    showVanes = true;
+                else if (thisInst.cboPlot3Type.SelectedItem.ToString() == "Temp.")
+                    showTemps = true;
+                else if (thisInst.cboPlot3Type.SelectedItem.ToString() == "Press.")
+                    showBaros = true;
+            }
+
+            // if numPlots is 4 then all are true
+            if (numPlots == 4)
+            {
+                if (thisInst.cboPlot4Type.SelectedItem == null)
+                {
+                    thisInst.cboPlot4Type.SelectedIndex = 0;
+                    return;
+                }
+
+                showAnems = true;
+                showVanes = true;
+                showTemps = true;
+                showBaros = true;
+            }
+
+            // Set plot height based on number selected and height of form
+            int formHeight = thisInst.Height;
+            int plotHeight = Convert.ToInt32(formHeight * 0.752);
+
+            if (numPlots == 2)
+                plotHeight = Convert.ToInt32(formHeight * 0.376); 
+            else if (numPlots == 3)
+                plotHeight = Convert.ToInt32(formHeight * 0.251); 
+            else if (numPlots == 4)
+                plotHeight = Convert.ToInt32(formHeight * 0.188); 
+
+            int[] plotY_Loca = new int[numPlots];
+
+            for (int l = 0; l < numPlots; l++)
+                plotY_Loca[l] = 72 + l * plotHeight;
+
+            int localInd = 0;
+
+            DateTime startTime = thisInst.dateMetTS_Start.Value;
+            DateTime endTime = thisInst.dateMetTS_End.Value; 
+
+            bool showLegend = thisInst.chkShowLegenMetDataTS.Checked;
+
+            Met[] selMets = thisInst.GetCheckedMets("Met Data TS");
+            DateTime[] metStartEndAll = thisInst.metList.GetMetStartEndDates("All");
+
+            if (showAnems)
+            {
+                // Create and populate wind speed plots
+                thisInst.plotTS_Anems.Location = new Point(28, plotY_Loca[localInd]);
+                thisInst.plotTS_Anems.Height = plotHeight;
+                DateTimeAxis timeAxis = new DateTimeAxis();
+         //       timeAxis.Minimum = metStartEndAll[0].ToOADate();
+         //       timeAxis.Maximum = metStartEndAll[1].ToOADate();
+                timeAxis.AxisChanged += MetTS_Anem_AxisChanged;
+                thisInst.plotTS_Anems.Model.Axes.Add(timeAxis);
+
+                LinearAxis yAxis = new LinearAxis();
+                yAxis.IsZoomEnabled = false;
+                yAxis.Title = "Wind Speed [m/s]";
+                thisInst.plotTS_Anems.Model.Axes.Add(yAxis);
+
+                thisInst.plotTS_Anems.Model.LegendPlacement = LegendPlacement.Outside;
+                thisInst.plotTS_Anems.Model.LegendPosition = LegendPosition.RightMiddle;
+                thisInst.plotTS_Anems.Model.IsLegendVisible = showLegend;
+
+                localInd++;
+
+                for (int m = 0; m < selMets.Length; m++)
+                {
+                    Met thisMet = selMets[m];
+                   
+                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                        AddAnemDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
+
+                    if (thisMet.metData.GetNumSimData() > 0)
+                        for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                            AddExtrapWSDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
+                }                               
+                                
+                thisInst.plotTS_Anems.Visible = true;
+            }
+            else
+                thisInst.plotTS_Anems.Visible = false;
+
+            if (showVanes)
+            {
+                // Create and populate wind direction plots
+                thisInst.plotTS_Vanes.Location = new Point(28, plotY_Loca[localInd]);
+                thisInst.plotTS_Vanes.Height = plotHeight;
+                DateTimeAxis timeAxis = new DateTimeAxis();
+                timeAxis.AxisChanged += MetTS_Vane_AxisChanged;
+                thisInst.plotTS_Vanes.Model.Axes.Add(timeAxis);
+
+                LinearAxis yAxis = new LinearAxis();
+                yAxis.IsZoomEnabled = false;
+                yAxis.Title = "Wind Direction [degs]";
+                thisInst.plotTS_Vanes.Model.Axes.Add(yAxis);
+
+                thisInst.plotTS_Vanes.Model.LegendPlacement = LegendPlacement.Outside;
+                thisInst.plotTS_Vanes.Model.LegendPosition = LegendPosition.RightMiddle;
+                thisInst.plotTS_Vanes.Model.IsLegendVisible = showLegend;
+
+                localInd++;                                
+
+                for (int m = 0; m < selMets.Length; m++)
+                {
+                    Met thisMet = selMets[m];
+
+                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                        AddVaneDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
+                }
+
+                thisInst.plotTS_Vanes.Visible = true;
+            }
+            else
+                thisInst.plotTS_Vanes.Visible = false;
+
+            if (showTemps)
+            {
+                // Create and populate temperature plots
+                thisInst.plotTS_Temp.Location = new Point(28, plotY_Loca[localInd]);
+                thisInst.plotTS_Temp.Height = plotHeight;
+                DateTimeAxis timeAxis = new DateTimeAxis();
+                timeAxis.AxisChanged += MetTS_Temp_AxisChanged;
+                thisInst.plotTS_Temp.Model.Axes.Add(timeAxis);
+
+                LinearAxis yAxis = new LinearAxis();
+                yAxis.IsZoomEnabled = false;
+                yAxis.Title = "Temperature [C]";
+                thisInst.plotTS_Temp.Model.Axes.Add(yAxis);
+
+                thisInst.plotTS_Temp.Model.LegendPlacement = LegendPlacement.Outside;
+                thisInst.plotTS_Temp.Model.LegendPosition = LegendPosition.RightMiddle;
+                thisInst.plotTS_Temp.Model.IsLegendVisible = showLegend;
+
+                localInd++;
+
+                for (int m = 0; m < selMets.Length; m++)
+                {
+                    Met thisMet = selMets[m];
+
+                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                        AddTempDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
+                }
+
+                thisInst.plotTS_Temp.Visible = true;
+            }
+            else
+                thisInst.plotTS_Temp.Visible = false;
+
+            if (showBaros)
+            {
+                // Create and populate pressure plots
+                thisInst.plotTS_Baros.Location = new Point(28, plotY_Loca[localInd]);
+                thisInst.plotTS_Baros.Height = plotHeight;
+                DateTimeAxis timeAxis = new DateTimeAxis();
+                timeAxis.AxisChanged += MetTS_Baro_AxisChanged;
+                thisInst.plotTS_Baros.Model.Axes.Add(timeAxis);
+
+                LinearAxis yAxis = new LinearAxis();
+                yAxis.IsZoomEnabled = false;
+                yAxis.Title = "Pressure [mB]";
+                thisInst.plotTS_Baros.Model.Axes.Add(yAxis);
+
+                thisInst.plotTS_Baros.Model.LegendPlacement = LegendPlacement.Outside;
+                thisInst.plotTS_Baros.Model.LegendPosition = LegendPosition.RightMiddle;
+                thisInst.plotTS_Baros.Model.IsLegendVisible = showLegend;
+
+                localInd++;
+
+                for (int m = 0; m < selMets.Length; m++)
+                {
+                    Met thisMet = selMets[m];
+
+                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                        AddPressDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
+                }
+
+                thisInst.plotTS_Baros.Visible = true;
+            }
+            else
+                thisInst.plotTS_Baros.Visible = false;
+
+        }
+
+        /// <summary> Gets called when Met data anemometer TS plot axis is changed by user </summary>        
+        void MetTS_Anem_AxisChanged(object sender, AxisChangedEventArgs e)
+        {           
+
+            if (thisInst.okToUpdate)
+            { 
+                // Get new x-axis range on Anem plot
+                DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Anems.Model.Axes[0].ActualMinimum);
+                DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Anems.Model.Axes[0].ActualMaximum);
+
+                // Limit zooms to met start/end date
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates("All");
+
+                if (startDate < metStartEnd[0])
+                    startDate = metStartEnd[0];
+
+                if (endDate > metStartEnd[1])
+                    endDate = metStartEnd[1];
+
+                // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
+                // Set okToUpdate to false so that change to axes' zoom won't trigger an 'AxisChanged' event
+                thisInst.okToUpdate = false;
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (startDate.Minute % 10 != 0 || startDate.Second != 0)                
+                    startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);                                  
+
+                // Make sure end time is at a 10-min value otherwise set to closest one
+                if (endDate.Minute % 10 != 0 || endDate.Second != 0)                
+                    endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);                               
+                
+                // Update min/max of axes for all other visible plots
+                if (thisInst.plotTS_Vanes.Visible && startDate.ToOADate() != thisInst.plotTS_Vanes.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Vanes.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());             
+                    thisInst.plotTS_Vanes.InvalidatePlot(false);
+                }
+
+                if (thisInst.plotTS_Temp.Visible && startDate.ToOADate() != thisInst.plotTS_Temp.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Temp.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Temp.InvalidatePlot(false);                    
+                }
+
+                if (thisInst.plotTS_Baros.Visible && startDate.ToOADate() != thisInst.plotTS_Baros.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Baros.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Baros.InvalidatePlot(false);                    
+                }  
+                
+                // If user zoomed out, need to replot.  Check new startDate compared to start date on GUI.  If it's earlier, call MetDataPlots()
+                if (startDate < thisInst.dateMetTS_Start.Value)
+                {
+                    // Update dates on Met Data TS form
+                    thisInst.dateMetTS_Start.Value = startDate;
+                    thisInst.dateMetTS_End.Value = endDate;
+
+                    double numdays = endDate.Subtract(startDate).TotalDays;
+                    thisInst.txtNumDaysTS.Text = Math.Round(numdays, 1).ToString();
+
+                    thisInst.okToUpdate = true; 
+                    MetDataPlots();
+                    ScrollToSelectedMetDataStart();
+                    return;
+                }
+                
+                // Update dates on Met Data TS form
+                thisInst.dateMetTS_Start.Value = startDate;
+                thisInst.dateMetTS_End.Value = endDate;
+
+                // Update number of days shown on Met Data TS plots
+                double numDays = endDate.Subtract(startDate).TotalDays;
+                thisInst.txtNumDaysTS.Text = Math.Round(numDays, 1).ToString();
+
+                thisInst.okToUpdate = true;                            
+
+                // Update table to same start row
+                ScrollToSelectedMetDataStart();                                
+            }
+        }
+
+        /// <summary> Gets called when Met data vane TS plot axis is changed by user </summary>        
+        void MetTS_Vane_AxisChanged(object sender, AxisChangedEventArgs e)
+        {
+            if (thisInst.okToUpdate)
+            {
+                thisInst.okToUpdate = false;
+
+                // Limit zooms to met start/end date
+                DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMinimum);
+                DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMaximum);
+
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates("All");
+
+                if (startDate < metStartEnd[0])
+                    startDate = metStartEnd[0];
+
+                if (endDate > metStartEnd[1])
+                    endDate = metStartEnd[1];
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (startDate.Minute % 10 != 0 || startDate.Second != 0)
+                    startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (endDate.Minute % 10 != 0 || endDate.Second != 0)
+                    endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
+
+                // Update min/max of axes for all other visible plots
+                if (thisInst.plotTS_Anems.Visible && startDate.ToOADate() != thisInst.plotTS_Anems.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Anems.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Anems.InvalidatePlot(false);
+                }
+
+                if (thisInst.plotTS_Temp.Visible && startDate.ToOADate() != thisInst.plotTS_Temp.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Temp.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Temp.InvalidatePlot(false);
+                }
+
+                if (thisInst.plotTS_Baros.Visible && startDate.ToOADate() != thisInst.plotTS_Baros.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Baros.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Baros.InvalidatePlot(false);
+                }
+
+                // If user zoomed out, need to replot.  Check new startDate compared to start date on GUI.  If it's earlier, call MetDataPlots()
+                if (startDate < thisInst.dateMetTS_Start.Value)
+                {
+                    // Update dates on Met Data TS form
+                    thisInst.dateMetTS_Start.Value = startDate;
+                    thisInst.dateMetTS_End.Value = endDate;
+
+                    double numdays = endDate.Subtract(startDate).TotalDays;
+                    thisInst.txtNumDaysTS.Text = Math.Round(numdays, 1).ToString();
+
+                    thisInst.okToUpdate = true;
+                    MetDataPlots();
+                    ScrollToSelectedMetDataStart();
+                    return;
+                }
+
+                // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
+
+                thisInst.dateMetTS_Start.Value = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMinimum);
+                thisInst.dateMetTS_End.Value = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMaximum);
+
+                double numDays = thisInst.dateMetTS_End.Value.Subtract(thisInst.dateMetTS_Start.Value).TotalDays;
+                thisInst.txtNumDaysTS.Text = Math.Round(numDays, 1).ToString();
+                thisInst.okToUpdate = true;
+
+                // Update table to same start row
+                ScrollToSelectedMetDataStart();
+            }
+        }
+
+        /// <summary> Gets called when Met data temperature TS plot axis is changed by user </summary>        
+        void MetTS_Temp_AxisChanged(object sender, AxisChangedEventArgs e)
+        {
+            if (thisInst.okToUpdate)
+            {
+                thisInst.okToUpdate = false;
+
+                // Limit zooms to met start/end date
+                DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMinimum);
+                DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMaximum);
+
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates("All");
+
+                if (startDate < metStartEnd[0])
+                    startDate = metStartEnd[0];
+
+                if (endDate > metStartEnd[1])
+                    endDate = metStartEnd[1];
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (startDate.Minute % 10 != 0 || startDate.Second != 0)
+                    startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (endDate.Minute % 10 != 0 || endDate.Second != 0)
+                    endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
+
+                // Update min/max of axes for all other visible plots
+                if (thisInst.plotTS_Anems.Visible && startDate.ToOADate() != thisInst.plotTS_Anems.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Anems.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Anems.InvalidatePlot(false);
+                }
+
+                if (thisInst.plotTS_Vanes.Visible && startDate.ToOADate() != thisInst.plotTS_Vanes.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Vanes.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Vanes.InvalidatePlot(false);
+                }
+
+                if (thisInst.plotTS_Baros.Visible && startDate.ToOADate() != thisInst.plotTS_Baros.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Baros.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Baros.InvalidatePlot(false);
+                }
+
+                // If user zoomed out, need to replot.  Check new startDate compared to start date on GUI.  If it's earlier, call MetDataPlots()
+                if (startDate < thisInst.dateMetTS_Start.Value)
+                {
+                    // Update dates on Met Data TS form
+                    thisInst.dateMetTS_Start.Value = startDate;
+                    thisInst.dateMetTS_End.Value = endDate;
+
+                    double numdays = endDate.Subtract(startDate).TotalDays;
+                    thisInst.txtNumDaysTS.Text = Math.Round(numdays, 1).ToString();
+
+                    thisInst.okToUpdate = true;
+                    MetDataPlots();
+                    ScrollToSelectedMetDataStart();
+                    return;
+                }
+
+                // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
+
+                thisInst.dateMetTS_Start.Value = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMinimum);
+                thisInst.dateMetTS_End.Value = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMaximum);
+
+                double numDays = thisInst.dateMetTS_End.Value.Subtract(thisInst.dateMetTS_Start.Value).TotalDays;
+                thisInst.txtNumDaysTS.Text = Math.Round(numDays, 1).ToString();
+                thisInst.okToUpdate = true;
+
+                // Update table to same start row
+                ScrollToSelectedMetDataStart();
+            }
+        }
+
+        /// <summary> Gets called when Met data pressure TS plot axis is changed by user </summary>        
+        void MetTS_Baro_AxisChanged(object sender, AxisChangedEventArgs e)
+        {
+            if (thisInst.okToUpdate)
+            {
+                thisInst.okToUpdate = false;
+
+                // Limit zooms to met start/end date
+                DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMinimum);
+                DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMaximum);
+
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates("All");
+
+                if (startDate < metStartEnd[0])
+                    startDate = metStartEnd[0];
+
+                if (endDate > metStartEnd[1])
+                    endDate = metStartEnd[1];
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (startDate.Minute % 10 != 0 || startDate.Second != 0)
+                    startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);
+
+                // Make sure start time is at a 10-min value otherwise set to closest one
+                if (endDate.Minute % 10 != 0 || endDate.Second != 0)
+                    endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
+                
+                // Update min/max of axes for all other visible plots
+                if (thisInst.plotTS_Anems.Visible && startDate.ToOADate() != thisInst.plotTS_Anems.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Anems.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Anems.InvalidatePlot(false);
+                }
+
+                if (thisInst.plotTS_Vanes.Visible && startDate.ToOADate() != thisInst.plotTS_Vanes.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Vanes.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Vanes.InvalidatePlot(false);
+                }
+
+                if (thisInst.plotTS_Temp.Visible && startDate.ToOADate() != thisInst.plotTS_Temp.Model.Axes[0].Minimum)
+                {
+                    thisInst.plotTS_Temp.Model.Axes[0].Zoom(startDate.ToOADate(), endDate.ToOADate());
+                    thisInst.plotTS_Temp.InvalidatePlot(false);
+                }
+
+                // If user zoomed out, need to replot.  Check new startDate compared to start date on GUI.  If it's earlier, call MetDataPlots()
+                if (startDate < thisInst.dateMetTS_Start.Value)
+                {
+                    // Update dates on Met Data TS form
+                    thisInst.dateMetTS_Start.Value = startDate;
+                    thisInst.dateMetTS_End.Value = endDate;
+
+                    double numdays = endDate.Subtract(startDate).TotalDays;
+                    thisInst.txtNumDaysTS.Text = Math.Round(numdays, 1).ToString();
+
+                    thisInst.okToUpdate = true;
+                    MetDataPlots();
+                    ScrollToSelectedMetDataStart();
+                    return;
+                }
+
+                // Update met start/end dates but don't trigger met plots to refresh (i.e. set okToUpdate to false)
+
+                thisInst.dateMetTS_Start.Value = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMinimum);
+                thisInst.dateMetTS_End.Value = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMaximum);
+
+                double numDays = thisInst.dateMetTS_End.Value.Subtract(thisInst.dateMetTS_Start.Value).TotalDays;
+                thisInst.txtNumDaysTS.Text = Math.Round(numDays, 1).ToString();
+                thisInst.okToUpdate = true;
+
+                // Update table to same start row
+                ScrollToSelectedMetDataStart();
+            }
+        }
+
+
+        /// <summary> Add vane data to TS plot </summary>        
+        public void AddVaneDataToTS_Plot(string checkedItem, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            // Check to see what metrics to plot (i.e. Avg, Min, Max, and/or SD)
+            bool showAvg = thisInst.treeDataParams.Nodes[1].Nodes[0].Checked;
+            bool showSD = thisInst.treeDataParams.Nodes[1].Nodes[1].Checked;
+            bool showMin = thisInst.treeDataParams.Nodes[1].Nodes[2].Checked;
+            bool showMax = thisInst.treeDataParams.Nodes[1].Nodes[3].Checked;
+            bool showFiltered = thisInst.chkShowFilteredData.Checked;
+
+            for (int v = 0; v < thisMet.metData.GetNumVanes(); v++)
+            {
+                Met_Data_Filter.Vane_Data thisVane = thisMet.metData.vanes[v];
+
+                if (checkedItem == (thisMet.name + " " + thisMet.metData.GetVaneName(thisVane, true)))
+                {
+                    int startInd = thisVane.GetTS_Index(startTime);
+                    int endInd = thisVane.GetTS_Index(endTime);
+
+                    if (startInd < 0)
+                        startInd = 0;
+
+                    if (endInd < 0)
+                        endInd = thisVane.dirData.Length - 1;
+
+                    if (showAvg)
+                    {
+                        LineSeries thisVaneAvg = new LineSeries();
+                        thisVaneAvg.Title = checkedItem + " Avg";
+                        thisVaneAvg.LineStyle = LineStyle.Solid;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisVane.dirData[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisVaneAvg.Points.Add(new DataPoint(thisVane.dirData[t].timeStamp.ToOADate(), thisVane.dirData[t].avg));
+
+                        thisInst.plotTS_Vanes.Model.Series.Add(thisVaneAvg);
+                    }
+
+                    if (showSD)
+                    {
+                        LineSeries thisVaneSD = new LineSeries();
+                        thisVaneSD.Title = checkedItem + " SD";
+                        thisVaneSD.LineStyle = LineStyle.Dot;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisVane.dirData[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisVaneSD.Points.Add(new DataPoint(thisVane.dirData[t].timeStamp.ToOADate(), thisVane.dirData[t].SD));
+
+                        thisInst.plotTS_Vanes.Model.Series.Add(thisVaneSD);
+                    }
+
+                    if (showMin)
+                    {
+                        LineSeries thisVaneMin = new LineSeries();
+                        thisVaneMin.Title = checkedItem + " Min";
+                        thisVaneMin.LineStyle = LineStyle.Dash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisVane.dirData[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisVaneMin.Points.Add(new DataPoint(thisVane.dirData[t].timeStamp.ToOADate(), thisVane.dirData[t].min));
+
+                        thisInst.plotTS_Vanes.Model.Series.Add(thisVaneMin);
+                    }
+
+                    if (showMax)
+                    {
+                        LineSeries thisVaneMax = new LineSeries();
+                        thisVaneMax.Title = checkedItem + " Max";
+                        thisVaneMax.LineStyle = LineStyle.LongDash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisVane.dirData[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisVaneMax.Points.Add(new DataPoint(thisVane.dirData[t].timeStamp.ToOADate(), thisVane.dirData[t].max));
+
+                        thisInst.plotTS_Vanes.Model.Series.Add(thisVaneMax);
+                    }
+                }
+            }
+        }
+        
+        /// <summary> Add anemometer data to TS plot </summary>        
+        public void AddAnemDataToTS_Plot(string checkedItem, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            // Check to see what metrics to plot (i.e. Avg, Min, Max, and/or SD)
+            bool showAvg = thisInst.treeDataParams.Nodes[0].Nodes[0].Checked;
+            bool showSD = thisInst.treeDataParams.Nodes[0].Nodes[1].Checked;
+            bool showMin = thisInst.treeDataParams.Nodes[0].Nodes[2].Checked;
+            bool showMax = thisInst.treeDataParams.Nodes[0].Nodes[3].Checked;
+            bool showFiltered = thisInst.chkShowFilteredData.Checked;
+
+            for (int a = 0; a < thisMet.metData.GetNumAnems(); a++)
+            {
+                Met_Data_Filter.Anem_Data thisAnem = thisMet.metData.anems[a];
+
+                if (checkedItem == (thisMet.name + " " + thisMet.metData.GetAnemName(thisAnem, true)))
+                {
+                    int startInd = thisAnem.GetTS_Index(startTime);
+                    int endInd = thisAnem.GetTS_Index(endTime);
+
+             /*       if (startInd == -999) // Adjust start time until find a valid index
+                        while (startInd == -999)
+                        {
+                            startTime = startTime.AddMinutes(10);
+                            startInd = thisAnem.GetTS_Index(startTime);
+                        }
+
+                    if (endInd == -999) // Adjust start time until find a valid index
+                        while (endInd == -999)
+                        {
+                            endTime = endTime.AddMinutes(-10);
+                            endInd = thisAnem.GetTS_Index(endTime);
+                        }
+             */
+                    if (startInd < 0)
+                        startInd = 0;
+
+                    if (endInd < 0)
+                        endInd = thisAnem.windData.Length - 1;
+
+                    if (showAvg)
+                    {
+                        LineSeries thisAnemAvg = new LineSeries();
+                        thisAnemAvg.Title = checkedItem + " Avg";
+                        thisAnemAvg.LineStyle = LineStyle.Solid;
+
+                        for (int t = startInd; t <= endInd; t++)                        
+                            if (showFiltered || thisAnem.windData[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisAnemAvg.Points.Add(new DataPoint(thisAnem.windData[t].timeStamp.ToOADate(), thisAnem.windData[t].avg));
+                        
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisAnemAvg);
+                    }
+
+                    if (showSD)
+                    {
+                        LineSeries thisAnemSD = new LineSeries();
+                        thisAnemSD.Title = checkedItem + " SD";
+                        thisAnemSD.LineStyle = LineStyle.Dot;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisAnem.windData[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisAnemSD.Points.Add(new DataPoint(thisAnem.windData[t].timeStamp.ToOADate(), thisAnem.windData[t].SD));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisAnemSD);
+                    }
+
+                    if (showMin)
+                    {
+                        LineSeries thisAnemMin = new LineSeries();
+                        thisAnemMin.Title = checkedItem + " Min";
+                        thisAnemMin.LineStyle = LineStyle.Dash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisAnem.windData[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisAnemMin.Points.Add(new DataPoint(thisAnem.windData[t].timeStamp.ToOADate(), thisAnem.windData[t].min));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisAnemMin);
+                    }
+
+                    if (showMax)
+                    {
+                        LineSeries thisAnemMax = new LineSeries();
+                        thisAnemMax.Title = checkedItem + " Max";
+                        thisAnemMax.LineStyle = LineStyle.LongDash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisAnem.windData[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisAnemMax.Points.Add(new DataPoint(thisAnem.windData[t].timeStamp.ToOADate(), thisAnem.windData[t].max));
+
+                        thisInst.plotTS_Anems.Model.Series.Add(thisAnemMax);
+                    }
+                }
+            }
+        }
+
+        /// <summary> Add extrapolated wind speed data to TS plot </summary>        
+        public void AddExtrapWSDataToTS_Plot(string checkedItem, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            for (int s = 0; s < thisMet.metData.GetNumSimData(); s++)
+            {
+                Met_Data_Filter.Sim_TS thisExtrapTS = thisMet.metData.simData[s];
+
+                if (checkedItem == (thisMet.name + " Extrap WS " + thisExtrapTS.height))
+                {
+                    int startInd = thisExtrapTS.GetTS_Index(startTime);
+                    int endInd = thisExtrapTS.GetTS_Index(endTime);
+                                       
+                    if (startInd < 0)
+                        startInd = 0;
+
+                    if (endInd < 0)
+                        endInd = thisExtrapTS.WS_WD_data.Length - 1;
+                                        
+                    LineSeries thisExtrapAvg = new LineSeries();
+                    thisExtrapAvg.Title = checkedItem;
+                    thisExtrapAvg.LineStyle = LineStyle.Dash;
+
+                    for (int t = startInd; t <= endInd; t++)
+                        if (thisExtrapTS.WS_WD_data[t].WS > 0)
+                            thisExtrapAvg.Points.Add(new DataPoint(thisExtrapTS.WS_WD_data[t].timeStamp.ToOADate(), thisExtrapTS.WS_WD_data[t].WS));
+
+                    thisInst.plotTS_Anems.Model.Series.Add(thisExtrapAvg);                                       
+                }
+            }
+        }
+
+        /// <summary> Add temperature data to TS plot </summary>        
+        public void AddTempDataToTS_Plot(string checkedItem, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            // Check to see what metrics to plot (i.e. Avg, Min, Max, and/or SD)
+            bool showAvg = thisInst.treeDataParams.Nodes[2].Nodes[0].Checked;
+            bool showSD = thisInst.treeDataParams.Nodes[2].Nodes[1].Checked;
+            bool showMin = thisInst.treeDataParams.Nodes[2].Nodes[2].Checked;
+            bool showMax = thisInst.treeDataParams.Nodes[2].Nodes[3].Checked;
+            bool showFiltered = thisInst.chkShowFilteredData.Checked;
+
+            for (int n = 0; n < thisMet.metData.GetNumTemps(); n++)
+            {
+                Met_Data_Filter.Temp_Data thisTemp = thisMet.metData.temps[n];
+
+                if (checkedItem == (thisMet.name + " " + thisMet.metData.GetTempName(thisTemp, true)))
+                {
+                    int startInd = thisTemp.GetTS_Index(startTime);
+                    int endInd = thisTemp.GetTS_Index(endTime);
+
+                    if (startInd < 0)
+                        startInd = 0;
+
+                    if (endInd < 0)
+                        endInd = thisTemp.temp.Length - 1;
+
+                    if (showAvg)
+                    {
+                        LineSeries thisTempAvg = new LineSeries();
+                        thisTempAvg.Title = checkedItem + " Avg";
+                        thisTempAvg.LineStyle = LineStyle.Solid;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisTemp.temp[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisTempAvg.Points.Add(new DataPoint(thisTemp.temp[t].timeStamp.ToOADate(), thisTemp.temp[t].avg));
+
+                        thisInst.plotTS_Temp.Model.Series.Add(thisTempAvg);
+                    }
+
+                    if (showSD)
+                    {
+                        LineSeries thisTempSD = new LineSeries();
+                        thisTempSD.Title = checkedItem + " SD";
+                        thisTempSD.LineStyle = LineStyle.Dot;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisTemp.temp[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisTempSD.Points.Add(new DataPoint(thisTemp.temp[t].timeStamp.ToOADate(), thisTemp.temp[t].SD));
+
+                        thisInst.plotTS_Temp.Model.Series.Add(thisTempSD);
+                    }
+
+                    if (showMin)
+                    {
+                        LineSeries thisTempMin = new LineSeries();
+                        thisTempMin.Title = checkedItem + " Min";
+                        thisTempMin.LineStyle = LineStyle.Dash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisTemp.temp[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisTempMin.Points.Add(new DataPoint(thisTemp.temp[t].timeStamp.ToOADate(), thisTemp.temp[t].min));
+
+                        thisInst.plotTS_Temp.Model.Series.Add(thisTempMin);
+                    }
+
+                    if (showMax)
+                    {
+                        LineSeries thisTempMax = new LineSeries();
+                        thisTempMax.Title = checkedItem + " Max";
+                        thisTempMax.LineStyle = LineStyle.LongDash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisTemp.temp[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisTempMax.Points.Add(new DataPoint(thisTemp.temp[t].timeStamp.ToOADate(), thisTemp.temp[t].max));
+
+                        thisInst.plotTS_Temp.Model.Series.Add(thisTempMax);
+                    }
+                }
+            }
+        }
+
+        /// <summary> Add pressure data to TS plot </summary>        
+        public void AddPressDataToTS_Plot(string checkedItem, Met thisMet, DateTime startTime, DateTime endTime)
+        {
+            // Check to see what metrics to plot (i.e. Avg, Min, Max, and/or SD)
+            bool showAvg = thisInst.treeDataParams.Nodes[3].Nodes[0].Checked;
+            bool showSD = thisInst.treeDataParams.Nodes[3].Nodes[1].Checked;
+            bool showMin = thisInst.treeDataParams.Nodes[3].Nodes[2].Checked;
+            bool showMax = thisInst.treeDataParams.Nodes[3].Nodes[3].Checked;
+            bool showFiltered = thisInst.chkShowFilteredData.Checked;
+
+            for (int p = 0; p < thisMet.metData.GetNumBaros(); p++)
+            {
+                Met_Data_Filter.Press_Data thisBaro = thisMet.metData.baros[p];
+
+                if (checkedItem == (thisMet.name + " " + thisMet.metData.GetPressName(thisBaro, true)))
+                {
+                    int startInd = thisBaro.GetTS_Index(startTime);
+                    int endInd = thisBaro.GetTS_Index(endTime);
+
+                    if (startInd < 0)
+                        startInd = 0;
+
+                    if (endInd < 0)
+                        endInd = thisBaro.pressure.Length - 1;
+
+                    if (showAvg)
+                    {
+                        LineSeries thisBaroAvg = new LineSeries();
+                        thisBaroAvg.Title = checkedItem + " Avg";
+                        thisBaroAvg.LineStyle = LineStyle.Solid;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisBaro.pressure[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisBaroAvg.Points.Add(new DataPoint(thisBaro.pressure[t].timeStamp.ToOADate(), thisBaro.pressure[t].avg));
+
+                        thisInst.plotTS_Baros.Model.Series.Add(thisBaroAvg);
+                    }
+
+                    if (showSD)
+                    {
+                        LineSeries thisBaroSD = new LineSeries();
+                        thisBaroSD.Title = checkedItem + " SD";
+                        thisBaroSD.LineStyle = LineStyle.Dot;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisBaro.pressure[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisBaroSD.Points.Add(new DataPoint(thisBaro.pressure[t].timeStamp.ToOADate(), thisBaro.pressure[t].SD));
+
+                        thisInst.plotTS_Baros.Model.Series.Add(thisBaroSD);
+                    }
+
+                    if (showMin)
+                    {
+                        LineSeries thisBaroMin = new LineSeries();
+                        thisBaroMin.Title = checkedItem + " Min";
+                        thisBaroMin.LineStyle = LineStyle.Dash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisBaro.pressure[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisBaroMin.Points.Add(new DataPoint(thisBaro.pressure[t].timeStamp.ToOADate(), thisBaro.pressure[t].min));
+
+                        thisInst.plotTS_Baros.Model.Series.Add(thisBaroMin);
+                    }
+
+                    if (showMax)
+                    {
+                        LineSeries thisBaroMax = new LineSeries();
+                        thisBaroMax.Title = checkedItem + " Max";
+                        thisBaroMax.LineStyle = LineStyle.LongDash;
+
+                        for (int t = startInd; t <= endInd; t++)
+                            if (showFiltered || thisBaro.pressure[t].filterFlag == Met_Data_Filter.Filter_Flags.Valid)
+                                thisBaroMax.Points.Add(new DataPoint(thisBaro.pressure[t].timeStamp.ToOADate(), thisBaro.pressure[t].max));
+
+                        thisInst.plotTS_Baros.Model.Series.Add(thisBaroMax);
+                    }
+                }
+            }
+        }
+
+        /// <summary> Updates calculated shear exponent (alpha) and extrapolated wind speeds in table on Met Data TS tab </summary>
+        
+        public void ShearAndExtrapWSInTable(Met thisMet)
+        {
+
+            // Loop through and find columns with thisMet's shear alpha and extrapolated wind speed 
+            int shearInd = 0;
+            int numExtrap = thisMet.metData.GetNumSimData();
+            int[] extrapInd = new int[numExtrap];                       
+
+            for (int c = 0; c < thisInst.dataMetTS.ColumnCount; c++)
+            {
+                string colName = thisInst.dataMetTS.Columns[c].HeaderText;
+                if (colName == thisMet.name + " Shear")
+                    shearInd = c;
+
+                for  (int h = 0; h < numExtrap; h++)
+                    if (colName == thisMet.name + " Extrap WS " + thisMet.metData.simData[h].height)
+                            extrapInd[h] = c;
+            }
+
+            // Loop through each row and update values
+            for (int r = 0; r < thisInst.dataMetTS.RowCount; r++)
+            {
+                DateTime thisTS = Convert.ToDateTime(thisInst.dataMetTS.Rows[r].Cells[0].Value);
+                int tsInd = thisMet.metData.simData[0].GetTS_Index(thisTS);
+
+                if (tsInd != -999)
+                {
+                    thisInst.dataMetTS.Rows[r].Cells[shearInd].Value = Math.Round(thisMet.metData.simData[0].WS_WD_data[tsInd].alpha, 3);
+
+                    for (int h = 0; h < numExtrap; h++)
+                        thisInst.dataMetTS.Rows[r].Cells[extrapInd[h]].Value = Math.Round(thisMet.metData.simData[h].WS_WD_data[tsInd].WS, 3);
+                    
+                }                
+            }
+
+
+        }       
 
     }
 

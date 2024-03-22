@@ -139,7 +139,9 @@ namespace ContinuumNS
                 {
                     argsForBW.thisInst = thisInst;
                     argsForBW.thisWakeModel = thisInst.wakeModelList.wakeModels[wakeModelInd];
-                    argsForBW.MCP_Method = thisInst.Get_MCP_Method();
+
+                    if (thisInst.metList.allMCPd) 
+                        argsForBW.MCP_Method = thisInst.metList.GetMCP_MethodUsed();                                        
 
                     // Call background worker to run calculations
                     thisInst.BW_worker = new BackgroundWork();
@@ -150,8 +152,7 @@ namespace ContinuumNS
             else
             {
                 // Update Net turb tab
-                Update updateThe = new Update();
-                updateThe.NetTurbineEstsTAB(thisInst);
+                thisInst.updateThe.NetTurbineEstsTAB();
             }
 
             Close();

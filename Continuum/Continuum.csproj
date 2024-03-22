@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -58,12 +59,18 @@
   <PropertyGroup>
     <ApplicationIcon>Continuum icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamicInterop, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicInterop.0.9.1\lib\netstandard2.0\DynamicInterop.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="gdalconst_csharp, Version=1.0.7127.27225, Culture=neutral, PublicKeyToken=db5a52b08dc5b321, processorArchitecture=MSIL">
       <HintPath>..\packages\GDAL.2.4.2\lib\net40\gdalconst_csharp.dll</HintPath>
@@ -74,11 +81,32 @@
     <Reference Include="GeoTimeZone, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e20ab7d0d9479841, processorArchitecture=MSIL">
       <HintPath>..\packages\GeoTimeZone.4.0.0\lib\net461\GeoTimeZone.dll</HintPath>
     </Reference>
+    <Reference Include="IronPython, Version=3.4.1.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.3.4.1\lib\net462\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules, Version=3.4.1.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.3.4.1\lib\net462\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.SQLite, Version=3.4.1.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.3.4.1\lib\net462\IronPython.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Wpf, Version=3.4.1.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPython.3.4.1\lib\net462\IronPython.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.8.1\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="MatplotlibCS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MatplotlibCS.1.0.63\lib\netstandard2.0\MatplotlibCS.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic, Version=1.3.4.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.3.4\lib\net452\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.3.4.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.3.4\lib\net452\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata, Version=1.3.4.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicLanguageRuntime.1.3.4\lib\net452\Microsoft.Scripting.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -98,15 +126,45 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Python.Runtime, Version=3.0.3.0, Culture=neutral, PublicKeyToken=5000fea6cba702dd, processorArchitecture=MSIL">
+      <HintPath>..\packages\pythonnet.3.0.3\lib\netstandard2.0\Python.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="ScientificDataSet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SDSLite.3.0.1\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Security.AccessControl, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.4.7.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Permissions, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Permissions.4.7.0\lib\net461\System.Security.Permissions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.4.7.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
@@ -129,6 +187,12 @@
     </Compile>
     <Compile Include="AboutContinuum.Designer.cs">
       <DependentUpon>AboutContinuum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddEditReference.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddEditReference.Designer.cs">
+      <DependentUpon>AddEditReference.cs</DependentUpon>
     </Compile>
     <Compile Include="AddPFCurve.cs">
       <SubType>Form</SubType>
@@ -162,11 +226,31 @@
     <Compile Include="Continuum.Designer.cs">
       <DependentUpon>Continuum.cs</DependentUpon>
     </Compile>
+    <Compile Include="Continuum_ContextFactory.cs" />
+    <Compile Include="Continuum_EDM_OLD.Context.cs" />
+    <Compile Include="Copernicus_LogIn.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Copernicus_LogIn.Designer.cs">
+      <DependentUpon>Copernicus_LogIn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditShearCalcSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditShearCalcSettings.Designer.cs">
+      <DependentUpon>EditShearCalcSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Explaining_MERRA2.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Explaining_MERRA2.Designer.cs">
       <DependentUpon>Explaining_MERRA2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FilterFlagLegend.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FilterFlagLegend.Designer.cs">
+      <DependentUpon>FilterFlagLegend.cs</DependentUpon>
     </Compile>
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GenHeaders.cs">
@@ -230,6 +314,13 @@
     <Compile Include="MCP_ValidSettings.Designer.cs">
       <DependentUpon>MCP_ValidSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Reanalysis_Download.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reanalysis_Download.Designer.cs">
+      <DependentUpon>Reanalysis_Download.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ERA_Node_table.cs" />
     <Compile Include="MERRA_Node_table.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Mod_LC_Key.cs">
@@ -243,6 +334,14 @@
     </Compile>
     <Compile Include="NASA_LogIn.Designer.cs">
       <DependentUpon>NASA_LogIn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reference.cs" />
+    <Compile Include="ReferenceCollection.cs" />
+    <Compile Include="ShowIEC_TerrainComplexity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowIEC_TerrainComplexity.Designer.cs">
+      <DependentUpon>ShowIEC_TerrainComplexity.cs</DependentUpon>
     </Compile>
     <Compile Include="SiteSuitability.cs" />
     <Compile Include="InvestCollection.cs" />
@@ -294,6 +393,7 @@
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Stats.cs" />
+    <Compile Include="Baro_table.cs" />
     <Compile Include="Temp_table.cs" />
     <Compile Include="TopoInfo.cs" />
     <Compile Include="Topo_Load_UTM_Datum_Zone.cs">
@@ -322,6 +422,9 @@
       <DependentUpon>AboutContinuum.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="AddEditReference.resx">
+      <DependentUpon>AddEditReference.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AddPFCurve.resx">
       <DependentUpon>AddPFCurve.cs</DependentUpon>
     </EmbeddedResource>
@@ -340,8 +443,17 @@
       <DependentUpon>Continuum.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Copernicus_LogIn.resx">
+      <DependentUpon>Copernicus_LogIn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditShearCalcSettings.resx">
+      <DependentUpon>EditShearCalcSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Explaining_MERRA2.resx">
       <DependentUpon>Explaining_MERRA2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FilterFlagLegend.resx">
+      <DependentUpon>FilterFlagLegend.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GenHeaders.resx">
       <DependentUpon>GenHeaders.cs</DependentUpon>
@@ -377,6 +489,9 @@
     <EmbeddedResource Include="MCP_ValidSettings.resx">
       <DependentUpon>MCP_ValidSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reanalysis_Download.resx">
+      <DependentUpon>Reanalysis_Download.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mod_LC_Key.resx">
       <DependentUpon>Mod_LC_Key.cs</DependentUpon>
     </EmbeddedResource>
@@ -402,6 +517,9 @@
     <EmbeddedResource Include="Roughness_File_Format.resx">
       <DependentUpon>Roughness_File_Format.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ShowIEC_TerrainComplexity.resx">
+      <DependentUpon>ShowIEC_TerrainComplexity.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </EmbeddedResource>
@@ -411,6 +529,7 @@
     <EmbeddedResource Include="UTM_datum.resx">
       <DependentUpon>UTM_datum.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -428,6 +547,12 @@
   <ItemGroup>
     <Content Include="Continuum icon Hi Res.ico" />
     <Content Include="Continuum icon.ico" />
+    <Content Include="ERA5_CredsCheck.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ERA5_Downloader.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="iconlogoalts__1__S3C_icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -452,5 +577,8 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
   </Target>
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
 </Project>

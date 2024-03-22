@@ -7,9 +7,15 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class MetPairCollection_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\MetPairCollection";
-        
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public MetPairCollection_Tests()
+        {
+            testingFolder = globals.testingFolder + "MetPairCollection";
+        }
+
         [TestMethod]
         public void GetRMS_SectorErr_Test()
         {

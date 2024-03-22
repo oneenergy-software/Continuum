@@ -7,7 +7,8 @@ using OSGeo.GDAL;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using System.Runtime.Serialization.Formatters.Binary;
- 
+using MathNet.Numerics.Statistics;
+
 namespace ContinuumNS
 {
     
@@ -17,6 +18,8 @@ namespace ContinuumNS
     [Serializable()]
     public class TopoInfo
     {
+        /// <summary> Null value in topography file (default = -99999) </summary>
+        public int topoNull = -99999;
         /// <summary> Elevation data used for plotting only. </summary>
         public double[,] topoElevs;
         /// <summary> Elevation data used for calculations. </summary>
@@ -225,8 +228,13 @@ namespace ContinuumNS
 
             for (int i = 0; i <= param.GetUpperBound(0); i++)
                 for (int j = 0; j <= param.GetUpperBound(1); j++)
-                    if (param[i, j] < thisMin && param[i,j] != -999 && ((ignoreZeros == true && param[i, j] != 0) || (ignoreZeros == false)))
+                    if (param[i, j] < thisMin && ((ignoreZeros == true && Convert.ToInt32(Math.Round(param[i, j], 0)) != topoNull) || (ignoreZeros == false)))
+                    {                        
+                        if (param[i, j] < -1)
+                            i = i;
+
                         thisMin = param[i, j];
+                    }
 
             return thisMin;
         }
@@ -1853,11 +1861,10 @@ namespace ContinuumNS
 
             continuum.turbineList.ClearAllCalcs();
             continuum.ChangesMade();
-
-            Update update = new Update();
-            update.TopoMap(continuum);
-            update.ClearMapsPlotsAndTables(continuum);
-            update.ClearStats(continuum);
+           
+            continuum.updateThe.TopoMap();
+            continuum.updateThe.ClearMapsPlotsAndTables();
+            continuum.updateThe.ClearStats();
 
         }
 
@@ -2673,7 +2680,7 @@ namespace ContinuumNS
                 {
                     double thisX = new_MinX + i * topoNumXY.X.all.reso;
                     double thisY = new_MinY + j * topoNumXY.Y.all.reso;
-                    double Interp_Elev = -999;                                       
+                    double Interp_Elev = topoNull;                                       
 
                     UTM_Point[0] = thisX; // convert desired UTMX/Y to lat/long
                     UTM_Point[1] = thisY; 
@@ -2713,41 +2720,40 @@ namespace ContinuumNS
                                 Interp_Elev = rawGeoTiff[index4].elev;
                             else
                             {
-                                Interp_Elev = 0;
+                                Interp_Elev = topoNull;
                                 double sumDist = 0;
-                                if (rawGeoTiff[index1].elev > 0)
+                                if (rawGeoTiff[index1].elev != topoNull)
                                 {
                                     Interp_Elev = rawGeoTiff[index1].elev / dist1;
                                     sumDist = 1 / dist1;
                                 }
                                 
-                                if (rawGeoTiff[index2].elev > 0)
+                                if (rawGeoTiff[index2].elev != topoNull)
                                 {
                                     Interp_Elev = Interp_Elev + rawGeoTiff[index2].elev / dist2;
                                     sumDist = sumDist + 1 / dist2;
                                 }
 
-                                if (rawGeoTiff[index3].elev > 0)
+                                if (rawGeoTiff[index3].elev != topoNull)
                                 {
                                     Interp_Elev = Interp_Elev + rawGeoTiff[index3].elev / dist3;
                                     sumDist = sumDist + 1 / dist3;
                                 }
 
-                                if (rawGeoTiff[index4].elev > 0)
+                                if (rawGeoTiff[index4].elev != topoNull)
                                 {
                                     Interp_Elev = Interp_Elev + rawGeoTiff[index4].elev / dist4;
                                     sumDist = sumDist + 1 / dist4;
                                 }
 
-                                if (Interp_Elev > 0 && sumDist > 0)
+                                if (Interp_Elev != topoNull && sumDist > 0)
                                     Interp_Elev = Interp_Elev / sumDist;
                                 else
-                                    Interp_Elev = -999;
-                           
-                            }
+                                    Interp_Elev = topoNull;
 
-                            if (Interp_Elev < 0 && Interp_Elev != -999)
-                                Interp_Elev = Interp_Elev;
+                                if (Interp_Elev < -1)
+                                    Interp_Elev = Interp_Elev;
+                            }                            
                         }
                     }                
                     Proj_Elev[i, j] = Interp_Elev;         
@@ -4155,7 +4161,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Creates array of elevation data along line specified by WD and radius (+/- distance from site) using elevReso as spacing between points. </summary>        
-        public TopoGrid[] GetElevationProfile(double UTMX, double UTMY, double WD, int radius, int elevReso)
+        public TopoGrid[] GetElevationProfile(double UTMX, double UTMY, double WD, int radius, int elevReso, bool UW_only = false)
         {             
             TopoGrid[] elevProfile = new TopoGrid[0];
 
@@ -4163,34 +4169,54 @@ namespace ContinuumNS
                 return elevProfile;
 
             int numPoints = 2 * radius / elevReso + 1;
+
+            if (UW_only)
+                numPoints = radius / elevReso + 1;
+
             elevProfile = new TopoGrid[numPoints];
-                        
-            for (int i = 0; i < numPoints; i++)
+                      
+            if (UW_only)
             {
-                int relDist = -radius + i * elevReso;
-                elevProfile[i].UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * relDist;
-                elevProfile[i].UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * relDist;
-                elevProfile[i].elev = CalcElevs(elevProfile[i].UTMX, elevProfile[i].UTMY);
+                for (int i = 0; i < numPoints; i++)
+                {
+                    int relDist = i * elevReso;
+                    elevProfile[i].UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * relDist;
+                    elevProfile[i].UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * relDist;
+                    elevProfile[i].elev = CalcElevs(elevProfile[i].UTMX, elevProfile[i].UTMY);
+                }
             }
+            else
+            {
+                int stepSize = elevReso * ((numPoints - 1) / 2);
+
+                for (int i = 0; i < numPoints; i++)
+                {
+                    int relDist = -stepSize + i * elevReso;
+                    elevProfile[i].UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * relDist;
+                    elevProfile[i].UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * relDist;
+                    elevProfile[i].elev = CalcElevs(elevProfile[i].UTMX, elevProfile[i].UTMY);
+                }
+            }
+            
             
             return elevProfile;
         }
 
-        /// <summary> Calculates and returns best-fit slope (using least squares regression) along X and Y values. </summary>        
-        public double CalcSlope(double[] xVals, double[] yVals)
+        /// <summary> Calculates and returns best-fit slope (using least squares regression) along X and Y values and standard deviation of variability. </summary>        
+        public double[] CalcSlopeAndVariation(double[] xVals, double[] yVals)
         {             
-            double slope = 0;
-
+            double[] slopeAndVarSD = new double[2]; // Index 0: Slope, Index 1: St. dev. of Variation
+                        
             if (xVals == null || yVals == null)
-                return slope;
+                return slopeAndVarSD;
 
             if (xVals.Length != yVals.Length)
-                return slope;
+                return slopeAndVarSD;
 
             int numPts = xVals.Length;
 
             if (numPts == 0)
-                return slope;
+                return slopeAndVarSD;
 
             // Calculate mean of X and Y
             double meanX = 0;
@@ -4216,10 +4242,79 @@ namespace ContinuumNS
             }
 
             if (sXX != 0)
-                slope = sXY / sXX;        
-                     
-            return slope;
+                slopeAndVarSD[0] = sXY / sXX;
+
+            // Find intercept and populate array with elevation variability
+            double intercept = meanY - slopeAndVarSD[0] * meanX;
+
+            double[] elevVars = new double[numPts];
+
+            for (int i = 0; i < numPts; i++)            
+                elevVars[i] = yVals[i] - slopeAndVarSD[0] * xVals[i] + intercept;
+
+            // Calculate standard deviation of elevation variations            
+            slopeAndVarSD[1] = elevVars.StandardDeviation();
+
+            // Convert slope to degrees
+            slopeAndVarSD[0] = Math.Atan(slopeAndVarSD[0]) * 180 / Math.PI;
+
+            return slopeAndVarSD;
         }
+
+        /// <summary> Calculate and return the slope along centerline of fitted plane </summary>        
+        public double CalcSlopeAlongCenterlineOfFittedPlane(double[] regression, double radius, double WD, double UTMX, double UTMY, double elev, bool forceThruBase)
+        {            
+            // Define two points to calculate slope in between
+            UTM_X_Y point1 = new TopoInfo.UTM_X_Y(); // Center point
+            point1.UTMX = UTMX;
+            point1.UTMY = UTMY;
+            double point1_FittedElev = elev;
+            
+            if (forceThruBase == false)
+                point1_FittedElev = regression[0] + elev;
+
+            TopoInfo.UTM_X_Y point2 = new TopoInfo.UTM_X_Y(); // Point at edge of sector
+            point2.UTMX = UTMX + Math.Cos(Math.PI / 180.0 * (90.0 - WD)) * radius;
+            point2.UTMY = UTMY + Math.Sin(Math.PI / 180.0 * (90.0 - WD)) * radius;
+            double point2_FittedElev = 0;  
+
+            if (forceThruBase)
+                point2_FittedElev = elev + (point2.UTMX - point1.UTMX) * regression[0] + (point2.UTMY - point1.UTMY) * regression[1];
+            else
+                point2_FittedElev = regression[0] + elev + (point2.UTMX - point1.UTMX) * regression[1] + (point2.UTMY - point1.UTMY) * regression[2];
+                        
+            double slopeCenter = Math.Atan2(point1_FittedElev - point2_FittedElev, radius);
+            double slopeDegs = slopeCenter * 180.0 / Math.PI;
+
+            return slopeDegs;
+        }
+
+        /// <summary> Calculates and returns the standard deviation of the elevation variations from a fitted plane </summary>
+        /// <returns></returns>
+        public double CalcElevVariationInFittedPlane(double[] regression, double[][] utmXandYs, double[] actElevs, double elev, bool forceThruBase)
+        {
+            double elevVar = 0;
+            double[] elevDiffs = new double[actElevs.Length];
+
+            for (int i = 0; i < actElevs.Length; i++)
+            {
+                double elevFitted = 0;
+                
+                if (forceThruBase)
+                    elevFitted = regression[0] * utmXandYs[i][0] + regression[1] * utmXandYs[i][1] + elev;
+                else
+                    elevFitted = regression[0] + utmXandYs[i][0] * regression[1] + utmXandYs[i][1] * regression[2] + elev;
+                                
+                elevDiffs[i] = actElevs[i] - elevFitted;
+            }
+
+            elevVar = Statistics.PopulationStandardDeviation(elevDiffs);
+            
+            double avgDiff = Statistics.Mean(elevDiffs);
+
+            return elevVar;
+        }
+        
         
     }
      

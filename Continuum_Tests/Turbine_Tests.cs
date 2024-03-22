@@ -8,8 +8,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class Turbine_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Turbine";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public Turbine_Tests()
+        {
+            testingFolder = globals.testingFolder + "Turbine";
+        }
 
         [TestMethod]
         public void DoWS_EstAlongNodes_Test()
@@ -352,7 +358,7 @@ namespace Continuum_Tests
             // Test 1 WD = 4 Wohler = 1
             string tiFile = testingFolder + "\\CalcEffectiveTI\\WD 4 TI Wohler 1.csv";
             StreamReader sr = new StreamReader(tiFile);
-            double[] effectiveTI = thisTurb.CalcEffectiveTI(thisMet, 1.0, thisInst, thisInst.turbineList.powerCurves[0], 4);
+            double[] effectiveTI = thisTurb.CalcEffectiveTI(thisMet, 1.0, thisInst, thisInst.turbineList.powerCurves[0], 4, 1.0);
 
             for (int i = 0; i < effectiveTI.Length; i++)
             {
@@ -376,7 +382,7 @@ namespace Continuum_Tests
             // Test 2 WD = 13 Wohler = 10
             tiFile = testingFolder + "\\CalcEffectiveTI\\WD 13 TI Wohler 10.csv";
             sr = new StreamReader(tiFile);
-            effectiveTI = thisTurb.CalcEffectiveTI(thisMet, 10, thisInst, thisInst.turbineList.powerCurves[0], 13);
+            effectiveTI = thisTurb.CalcEffectiveTI(thisMet, 10, thisInst, thisInst.turbineList.powerCurves[0], 13, 1.0);
             
             for (int i = 0; i < effectiveTI.Length; i++)
             {

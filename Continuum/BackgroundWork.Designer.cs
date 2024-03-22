@@ -43,11 +43,14 @@
             this.BackgroundWorker_WAsP_Map = new System.ComponentModel.BackgroundWorker();
             this.lblprogbar = new System.Windows.Forms.Label();
             this.BackgroundWorker_Node_SR_Recalc = new System.ComponentModel.BackgroundWorker();
-            this.BackgroundWorker_MERRA = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_RefDataExtract = new System.ComponentModel.BackgroundWorker();
             this.BackgroundWorker_IceThrow = new System.ComponentModel.BackgroundWorker();
             this.BackgroundWorker_Shadow = new System.ComponentModel.BackgroundWorker();
             this.BackgroundWorker_Exceed = new System.ComponentModel.BackgroundWorker();
             this.BackgroundWorker_MERRADownload = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_ERA5Download = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_DBUpdate = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_MetImport = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // progbar
@@ -166,13 +169,13 @@
             this.BackgroundWorker_Node_SR_Recalc.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_Node_SR_Recalc_ProgressChanged);
             this.BackgroundWorker_Node_SR_Recalc.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_Node_SR_Recalc_RunWorkerCompleted);
             // 
-            // BackgroundWorker_MERRA
+            // BackgroundWorker_RefDataExtract
             // 
-            this.BackgroundWorker_MERRA.WorkerReportsProgress = true;
-            this.BackgroundWorker_MERRA.WorkerSupportsCancellation = true;
-            this.BackgroundWorker_MERRA.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_MERRA_DoWork);
-            this.BackgroundWorker_MERRA.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_MERRA_ProgressChanged);
-            this.BackgroundWorker_MERRA.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_MERRA_RunWorkerCompleted);
+            this.BackgroundWorker_RefDataExtract.WorkerReportsProgress = true;
+            this.BackgroundWorker_RefDataExtract.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_RefDataExtract.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_RefDataExtract_DoWork);
+            this.BackgroundWorker_RefDataExtract.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_MERRA_ProgressChanged);
+            this.BackgroundWorker_RefDataExtract.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_MERRA_RunWorkerCompleted);
             // 
             // BackgroundWorker_IceThrow
             // 
@@ -206,6 +209,30 @@
             this.BackgroundWorker_MERRADownload.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_MERRADownload_ProgressChanged);
             this.BackgroundWorker_MERRADownload.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_MERRADownload_RunWorkerCompleted);
             // 
+            // BackgroundWorker_ERA5Download
+            // 
+            this.BackgroundWorker_ERA5Download.WorkerReportsProgress = true;
+            this.BackgroundWorker_ERA5Download.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_ERA5Download.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_ERA5Download_DoWork);
+            this.BackgroundWorker_ERA5Download.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_ERA5Download_ProgressChanged);
+            this.BackgroundWorker_ERA5Download.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_ERA5Download_RunWorkerCompleted);
+            // 
+            // BackgroundWorker_DBUpdate
+            // 
+            this.BackgroundWorker_DBUpdate.WorkerReportsProgress = true;
+            this.BackgroundWorker_DBUpdate.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_DBUpdate.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_DBUpdate_DoWork);
+            this.BackgroundWorker_DBUpdate.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_DBUpdate_ProgressChanged);
+            this.BackgroundWorker_DBUpdate.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_DBUpdate_RunWorkerCompleted);
+            // 
+            // BackgroundWorker_MetImport
+            // 
+            this.BackgroundWorker_MetImport.WorkerReportsProgress = true;
+            this.BackgroundWorker_MetImport.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_MetImport.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_MetImport_DoWork);
+            this.BackgroundWorker_MetImport.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_MetImport_ProgressChanged);
+            this.BackgroundWorker_MetImport.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_MetImport_RunWorkerCompleted);
+            // 
             // BackgroundWork
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -238,10 +265,13 @@
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_WAsP_Map;
         private System.Windows.Forms.Label lblprogbar;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_Node_SR_Recalc;
-        internal System.ComponentModel.BackgroundWorker BackgroundWorker_MERRA;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_RefDataExtract;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_IceThrow;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_Shadow;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_Exceed;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_MERRADownload;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_ERA5Download;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_DBUpdate;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_MetImport;
     }
 }

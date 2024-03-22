@@ -9,19 +9,24 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using ContinuumNS;
+using System.Drawing.Imaging;
 
 namespace GUI_Test_Creator
 {
     public partial class GUI_Creator2 : Form
     {
-        string testFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder\\Snippets";
-     
-        string saveToFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
-        string continuumFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\SaveFolder";
-        string combinedTestsFolder = "C:\\Users\\liz_w\\Desktop\\Continuum 3 GUI Testing\\TestFolder\\Combined Tests";
+        // TO DO: Get user folder and create folder names
+        string unitTestFolder = ""; // Continuum 3 GUI Test folder which contains SaveFolder and TestFolder
+        string testFolder = ""; // Contains folders with all input files (i.e. topo, land cover, LT Reference, Met tab, Met TS, Power curves, Turbine sites, Zones
+        string snippetFolder = ""; // Contains code snippets used to create GUI unit tests
+        string saveToFolder = ""; // Folder where .CFM are saved (and then used in GUI tests)
+        string continuumFolder = ""; // 
+        string combinedTestsFolder = "";
 
-        string firewheelMERRA = "C:\\Users\\liz_w\\Desktop\\MERRA2\\Firewheel";
-        string ohioMERRA = "C:\\Users\\liz_w\\Desktop\\MERRA2";
+        string vsTestFolder = ""; // Visual Studio Continuum_Tests folder
+
+        string firewheelMERRA = "";
+        string ohioMERRA = "";
 
         bool okToUpdate = true;
 
@@ -39,6 +44,7 @@ namespace GUI_Test_Creator
         string powerCurveSnip = "\\Import Power Curve.txt";
         string zonesSnip = "\\Import Zones.txt";
         string merraSnip = "\\Import MERRA.txt";
+        string referenceSnip = "\\Import Reference.txt";
 
         // Action snippets
         string genTurbEstsSnip = "\\Action Gen Turb Ests.txt";
@@ -61,15 +67,47 @@ namespace GUI_Test_Creator
         string deleteTurbine = "\\Delete One Turbine.txt";
         string deleteMet = "\\Delete Met.txt";
 
+        // Standard test code
+        string mcpTestCode = "\\MCP Test code.txt";
+
         public GUI_Creator2()
         {
             InitializeComponent();
+            MessageBox.Show("Please specify location of folder: Continuum 3 GUI Testing");
+            DialogResult goodToGo = fbd_Folder.ShowDialog();
+
+            if (goodToGo == DialogResult.Cancel)
+                return;
+
+            unitTestFolder = fbd_Folder.SelectedPath;
+
+            MessageBox.Show("Please specify location of Visual Studio project 'Continuum_Tests'");
+            goodToGo = fbd_Folder.ShowDialog();
+
+            if (goodToGo == DialogResult.Cancel)
+                return;
+
+            vsTestFolder = fbd_Folder.SelectedPath;
+
+            testFolder = unitTestFolder + "\\TestFolder";
+            snippetFolder = unitTestFolder + "\\TestFolder\\Snippets";
+            saveToFolder = unitTestFolder + "\\SaveFolder";
+            continuumFolder = unitTestFolder + "\\SaveFolder";
+            combinedTestsFolder = unitTestFolder + "\\Combined Tests";
+
+            firewheelMERRA = unitTestFolder + "\\TestFolder\\MERRA2 Firewheel";
+            ohioMERRA = unitTestFolder + "\\TestFolder\\MERRA2 NW Ohio";
+
             okToUpdate = false;
             cboProject.SelectedIndex = 0;
             cboTABorTS.SelectedIndex = 0;
             cboNorthOrSouth.SelectedIndex = 0;
             cboPowerCurves.SelectedIndex = 0;
+            txtGUI_TestFolder.Text = unitTestFolder;
+            txtContinuumTestsVS.Text = vsTestFolder;
+
             UpdateCFNList();
+            UpdateListOfTests();
             okToUpdate = true;
             
         }
@@ -86,7 +124,7 @@ namespace GUI_Test_Creator
 
         public void WriteTopographySnippet(StreamWriter sw, string thisFile)
         {
-            StreamReader sr = new StreamReader(testFolder + topoSnip);
+            StreamReader sr = new StreamReader(snippetFolder + topoSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -102,7 +140,7 @@ namespace GUI_Test_Creator
 
         public void WriteLandCoverSnippet(StreamWriter sw, string thisFile)
         {
-            StreamReader sr = new StreamReader(testFolder + landCoverSnip);
+            StreamReader sr = new StreamReader(snippetFolder + landCoverSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -118,7 +156,7 @@ namespace GUI_Test_Creator
 
         public void WriteMetTABSnippet(StreamWriter sw, string thisFile)
         {
-            StreamReader sr = new StreamReader(testFolder + metTABSnip);
+            StreamReader sr = new StreamReader(snippetFolder + metTABSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -134,7 +172,7 @@ namespace GUI_Test_Creator
 
         public void WriteMetTSSnippet(StreamWriter sw, string thisFile, bool doFiltering)
         {
-            StreamReader sr = new StreamReader(testFolder + metTSSnip);
+            StreamReader sr = new StreamReader(snippetFolder + metTSSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -142,15 +180,19 @@ namespace GUI_Test_Creator
                 if (trimmedLine.Length > 8)
                     if (trimmedLine.Substring(0, 9) == "metTSFile")
                         lineToWrite = lineToWrite + thisFile + "\";";
-
-                if (trimmedLine.Length > 34)
-                    if (trimmedLine.Substring(0, 35) == "thisInst.metList.filteringEnabled =")
+                
+                if (trimmedLine.Length > 33)
+                    if (trimmedLine.Substring(0, 34) == "thisMet.metData.filteringEnabled =")
                     {
                         if (doFiltering)
                             lineToWrite = lineToWrite + " true;";
                         else
                             lineToWrite = lineToWrite + " false;";
-                    }                        
+                    }
+
+                if (trimmedLine.Length > 42)
+                    if (trimmedLine.Substring(0, 42) == "thisInst.metList.ImportFilterExtrapMetData")
+                        lineToWrite = lineToWrite + doFiltering.ToString().ToLower() + ");";
 
                 sw.WriteLine(lineToWrite);
             }
@@ -159,7 +201,7 @@ namespace GUI_Test_Creator
 
         public void WriteTurbineSnippet(StreamWriter sw, string thisFile, string projectName)
         {
-            StreamReader sr = new StreamReader(testFolder + turbineSnip);
+            StreamReader sr = new StreamReader(snippetFolder + turbineSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -175,7 +217,7 @@ namespace GUI_Test_Creator
 
         public void WritePowerCurveSnippet(StreamWriter sw, string thisFile)
         {
-            StreamReader sr = new StreamReader(testFolder + powerCurveSnip);
+            StreamReader sr = new StreamReader(snippetFolder + powerCurveSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -191,7 +233,7 @@ namespace GUI_Test_Creator
 
         public void WriteZoneSnippet(StreamWriter sw, string thisFile, string projectName)
         {
-            StreamReader sr = new StreamReader(testFolder + zonesSnip);
+            StreamReader sr = new StreamReader(snippetFolder + zonesSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -205,12 +247,10 @@ namespace GUI_Test_Creator
             sr.Close();
         }
 
-        public void WriteMERRA2Snippet(StreamWriter sw, int metInd, DateTime startTime, DateTime endTime, int merraFolderInd)
-        {
-            
-            StreamReader sr = new StreamReader(testFolder + merraSnip);
-            int merraFolderCount = 0; 
-
+        public void WriteMERRA2Snippet(StreamWriter sw, int metInd, string merraFolder)
+        {            
+            StreamReader sr = new StreamReader(snippetFolder + referenceSnip);
+           
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -219,25 +259,37 @@ namespace GUI_Test_Creator
                     if (trimmedLine.Substring(0, 7) == "thisMet")
                         lineToWrite = lineToWrite + metInd + "];";
 
-                if (trimmedLine.Length > 30)
-                    if (trimmedLine.Substring(0, 31) == "thisInst.dateMERRAStart.Value =")
-                        lineToWrite = lineToWrite + "\"" + startTime.ToString() + "\");";
-
-                if (trimmedLine.Length > 28)
-                    if (trimmedLine.Substring(0, 29) == "thisInst.dateMERRAEnd.Value =")
-                        lineToWrite = lineToWrite + "\"" + endTime.ToString() + "\");";
-
-                if (trimmedLine.Length > 12)
-                    if (trimmedLine.Substring(0, 13) == "merraFolder =")
-                    {
-                        if (merraFolderInd == merraFolderCount)
-                            lineToWrite = lineToWrite;
-                        else
-                            lineToWrite = "";
-
-                        merraFolderCount++;
-                    }                   
+                if (trimmedLine.Length > 19)
+                    if (trimmedLine.Substring(0, 20) == "string refDataFolder")
+                        lineToWrite = lineToWrite + "\"" + merraFolder.Replace("\\", "\\\\") + "\"" + ";";
                        
+                sw.WriteLine(lineToWrite);
+            }
+            sr.Close();
+        }
+
+        public void WriteReferenceSnippet(StreamWriter sw, int metInd, string referenceName, int numNodes)
+        {
+
+            StreamReader sr = new StreamReader(snippetFolder + referenceSnip);
+            string refFolderPath = ohioMERRA;
+
+            if (referenceName == "Firewheel")
+                refFolderPath = firewheelMERRA;
+
+            while (sr.EndOfStream == false)
+            {
+                string lineToWrite = sr.ReadLine();
+                string trimmedLine = lineToWrite.Trim();
+                if (trimmedLine.Length > 6)
+                    if (trimmedLine.Substring(0, 7) == "thisMet")
+                        lineToWrite = lineToWrite + metInd + "];";                               
+
+                if (trimmedLine.Contains("ReadFileAndDefineRefDataDownload"))                    
+                    lineToWrite = lineToWrite + refFolderPath + ");";
+
+                if (trimmedLine.Contains("thisRef.numNodes ="))
+                    lineToWrite = lineToWrite + numNodes.ToString() + ";";
 
                 sw.WriteLine(lineToWrite);
             }
@@ -246,7 +298,7 @@ namespace GUI_Test_Creator
 
         public void WriteMCPSnippet(StreamWriter sw, int metInd)
         {
-            StreamReader sr = new StreamReader(testFolder + mcpSnip);
+            StreamReader sr = new StreamReader(snippetFolder + mcpSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -295,8 +347,8 @@ namespace GUI_Test_Creator
             {
                 // (got a new permutation)
                 for (int i = 0; i < a.Length; i++)
-                    inputOrderAllPerms[i, comboInd] = a[i];
 
+                    inputOrderAllPerms[i, comboInd] = a[i];
                 comboInd++;
                 return;
             }
@@ -386,7 +438,7 @@ namespace GUI_Test_Creator
 
         public void WriteTurbineGrossEsts(StreamWriter sw)
         {
-            StreamReader sr = new StreamReader(testFolder + genTurbEstsSnip);
+            StreamReader sr = new StreamReader(snippetFolder + genTurbEstsSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -397,7 +449,7 @@ namespace GUI_Test_Creator
 
         public void WriteDoMonteCarlo(StreamWriter sw)
         {
-            StreamReader sr = new StreamReader(testFolder + monteCarloSnip);
+            StreamReader sr = new StreamReader(snippetFolder + monteCarloSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -408,7 +460,7 @@ namespace GUI_Test_Creator
 
         public void WriteNetEsts(StreamWriter sw)
         {
-            StreamReader sr = new StreamReader(testFolder + wakeNetEstSnip);
+            StreamReader sr = new StreamReader(snippetFolder + wakeNetEstSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -428,23 +480,21 @@ namespace GUI_Test_Creator
             // Generate test with specified parameters
             try
             {
-                string fileName = saveToFolder + "\\" + txtCustomFilename.Text;
+                string fileName = testFolder + "\\" + txtCustomFilename.Text;
                 string projectName = cboProject.Text;
                 DateTime startMERRA = dateCustomMERRAStart.Value;
                 DateTime endMERRA = dateCustomMERRAEnd.Value;
+                                
+                string merraFolder = ohioMERRA;
 
-                int merraInd = 0;
-
-                if (projectName == "Findlay" || projectName == "NW Ohio")
-                    merraInd = 0;
-                else if (projectName == "Firewheel")
-                    merraInd = 1;
+                if (projectName == "Firewheel")
+                    merraFolder = firewheelMERRA;
 
                 bool doFiltering = chkDoFilterCustom.Checked;
                 StreamWriter sw = new StreamWriter(fileName);
 
                 // First, write start of test
-                StreamReader sr = new StreamReader(testFolder + startSnip);
+                StreamReader sr = new StreamReader(snippetFolder + startSnip);
                 while (sr.EndOfStream == false)
                 {
                     string lineToWrite = sr.ReadLine();
@@ -555,12 +605,12 @@ namespace GUI_Test_Creator
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Zones")
                             WriteZoneSnippet(sw, thisFilename, projectName);
                         else if (thisInputOrAcion.SelectedItem.ToString() == "MERRA")
-                            WriteMERRA2Snippet(sw, 0, startMERRA, endMERRA, merraInd);
+                            WriteMERRA2Snippet(sw, 0, merraFolder);
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Gen. Turb. Ests.")
                             WriteTurbineGrossEsts(sw);
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Analyze Mets")
                         {
-                            sr = new StreamReader(testFolder + analyzeMetsSnip);
+                            sr = new StreamReader(snippetFolder + analyzeMetsSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -576,7 +626,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Create wake map")
                         {
-                            sr = new StreamReader(testFolder + wakeMapSnip);
+                            sr = new StreamReader(snippetFolder + wakeMapSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -586,7 +636,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Create largest map")
                         {
-                            sr = new StreamReader(testFolder + mapLargest);
+                            sr = new StreamReader(snippetFolder + mapLargest);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -596,7 +646,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Create map around turbs")
                         {
-                            sr = new StreamReader(testFolder + mapTurbine);
+                            sr = new StreamReader(snippetFolder + mapTurbine);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -606,7 +656,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Run Round Robin")
                         {
-                            sr = new StreamReader(testFolder + roundRobinSnip);
+                            sr = new StreamReader(snippetFolder + roundRobinSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -616,7 +666,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Do Ice Throw")
                         {
-                            sr = new StreamReader(testFolder + iceThrowSnip);
+                            sr = new StreamReader(snippetFolder + iceThrowSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -626,7 +676,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Do Shadow")
                         {
-                            sr = new StreamReader(testFolder + shadowFlickerSnip);
+                            sr = new StreamReader(snippetFolder + shadowFlickerSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -636,7 +686,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "Do Noise")
                         {
-                            sr = new StreamReader(testFolder + noiseModelSnip);
+                            sr = new StreamReader(snippetFolder + noiseModelSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -646,7 +696,7 @@ namespace GUI_Test_Creator
                         }
                         else if (thisInputOrAcion.SelectedItem.ToString() == "MCP")
                         {
-                            sr = new StreamReader(testFolder + mcpSnip);
+                            sr = new StreamReader(snippetFolder + mcpSnip);
                             while (sr.EndOfStream == false)
                             {
                                 string lineToWrite = sr.ReadLine();
@@ -657,7 +707,7 @@ namespace GUI_Test_Creator
 
                 }
 
-                sr = new StreamReader(testFolder + endSnip);
+                sr = new StreamReader(snippetFolder + endSnip);
                 while (sr.EndOfStream == false)
                 {
                     string lineToWrite = sr.ReadLine();
@@ -981,14 +1031,11 @@ namespace GUI_Test_Creator
             string txtFileName = txtTestFilename.Text;
             string projectName = cboProject.Text;
             int merraInd = 0;
+            string merraFolder = ohioMERRA;
 
-            if (projectName == "Findlay" || projectName == "NW Ohio")
-                merraInd = 0;
-            else if (projectName == "Firewheel")
-                merraInd = 1;
-            else if (projectName == "Bobcat Bluff")
-                merraInd = 2;
-
+            if (projectName == "Firewheel")
+                merraFolder = firewheelMERRA;
+            
             string topoFile = GetTopoFileName(projectName);
             string landCoverFile = GetLandCoverFileName(projectName);
             string[] metFiles = GetMetFilenames(projectName);
@@ -1010,6 +1057,8 @@ namespace GUI_Test_Creator
             bool doNet = chkDoNetEsts.Checked;
             bool doMCP = chkDoMCP.Checked;
 
+            string folderLoc = testFolder + "\\Tests\\" + cboTestFolder.SelectedItem.ToString();
+
             int fileCount = 0;
             
             for (int i = 0; i < numCombos; i++)
@@ -1029,15 +1078,13 @@ namespace GUI_Test_Creator
 
                 if (merraOrder > metOrder || numInputs == 6)
                 {
+                    string fileName = folderLoc + "\\" + txtFileName + "_" + (fileCount + 1).ToString();
+                    StreamWriter sw = new StreamWriter(fileName);
 
                     try
                     {
-                        string fileName = saveToFolder + "\\" + txtFileName + "_" + (fileCount + 1).ToString();
-
-                        StreamWriter sw = new StreamWriter(fileName);
-
                         // First, write start of test
-                        StreamReader sr = new StreamReader(testFolder + startSnip);
+                        StreamReader sr = new StreamReader(snippetFolder + startSnip);
                         while (sr.EndOfStream == false)
                         {
                             string lineToWrite = sr.ReadLine();
@@ -1091,7 +1138,7 @@ namespace GUI_Test_Creator
                                 WriteZoneSnippet(sw, zoneFile, projectName);
                             else if (inputOrder[j, i] == 6)
                                 for (int m = 0; m < metFiles.Length; m++)
-                                    WriteMERRA2Snippet(sw, m, startMERRA, endMERRA, merraInd);
+                                    WriteMERRA2Snippet(sw, m, merraFolder);
                         }
 
                         sw.WriteLine();
@@ -1115,7 +1162,7 @@ namespace GUI_Test_Creator
                             }
                         }
 
-                        sr = new StreamReader(testFolder + endSnip);
+                        sr = new StreamReader(snippetFolder + endSnip);
                         while (sr.EndOfStream == false)
                         {
                             string lineToWrite = sr.ReadLine();
@@ -1125,32 +1172,162 @@ namespace GUI_Test_Creator
                         sw.Close();
                         fileCount++;
                     }
-                    catch
+                    catch (Exception ex)
                     {
-
+                        sw.Close();
+                        MessageBox.Show(ex.Message);
                     }
                 }
             }
             
         }
 
-        private void BtnCombineTests_Click_1(object sender, EventArgs e)
+        public void WriteClassStart(StreamWriter sw, string className)
         {
-            // Find all tests that start with filename and merge into one file
-            string fileName = txtTestFilename.Text;
-            int underScore = fileName.LastIndexOf('_');
+            sw.WriteLine("using System;");
+            sw.WriteLine("using Microsoft.VisualStudio.TestTools.UnitTesting;");
+            sw.WriteLine("using ContinuumNS;");
+            sw.WriteLine("using System.Diagnostics;");
+            sw.WriteLine("using System.IO;");
+            sw.WriteLine("using System.Threading;");
+            sw.WriteLine();
 
-            if (underScore != -1)
-                fileName = fileName.Substring(0, underScore);
+            sw.WriteLine("namespace Continuum_Tests.GUI_Tests");
+            sw.WriteLine("{");
+            sw.WriteLine("   [TestClass]");
+            sw.WriteLine("   public class " + className);
+            sw.WriteLine("   {");
+            sw.WriteLine("      string testingFolder;");
+            sw.WriteLine("      string saveFolder;");
+            sw.WriteLine("      string refFolder;");
+            sw.WriteLine("      Globals globals = new Globals();");
+            sw.WriteLine();
+            sw.WriteLine("      string metTSFile;");
+            sw.WriteLine("      string metName;");
+            sw.WriteLine("      string MCP_Method;");
+            sw.WriteLine("      Met thisMet;");
+            sw.WriteLine("      UTM_conversion.Lat_Long theseLL;");
+            sw.WriteLine("      int offset;");
+            sw.WriteLine("      Reference thisRef;");
+            sw.WriteLine();
 
-            string combinedFilename = fileName + "_Tests.txt";
+            // Constructor
+            sw.WriteLine("      public " + className + "()");
+            sw.WriteLine("      {");
+            sw.WriteLine("         testingFolder = globals.testFolder;");
+            sw.WriteLine("         saveFolder = globals.saveFolder;");
+            sw.WriteLine("         refFolder = globals.merraFolder;");
+            sw.WriteLine("      }");
+            sw.WriteLine();
+                       
 
-            StreamWriter sw = new StreamWriter(combinedTestsFolder + "\\" + combinedFilename);
+        }
 
-            string[] testfiles = Directory.GetFiles(saveToFolder, fileName + "*");
+        public void WriteDeleteClassStart(StreamWriter sw, string className)
+        {
+            sw.WriteLine("using System;");
+            sw.WriteLine("using Microsoft.VisualStudio.TestTools.UnitTesting;");
+            sw.WriteLine("using ContinuumNS;");
+            sw.WriteLine("using System.Diagnostics;");
+            sw.WriteLine("using System.IO;");
+            sw.WriteLine("using System.Threading;");
+            sw.WriteLine();
+
+            sw.WriteLine("namespace Continuum_Tests.GUI_Tests");
+            sw.WriteLine("{");
+            sw.WriteLine("   [TestClass]");
+            sw.WriteLine("   public class " + className);
+            sw.WriteLine("   {");
+            sw.WriteLine("      string testingFolder;");
+            sw.WriteLine("      string saveFolder;");
+            sw.WriteLine("      string refFolder;");
+            sw.WriteLine("      Globals globals = new Globals();");
+            sw.WriteLine();            
+            sw.WriteLine("      string metToDelete;");            
+            sw.WriteLine("      int turbCount;");
+            sw.WriteLine("      string turbineName;");
+            sw.WriteLine("      int crvCount;");
+            sw.WriteLine("      int numToDelete;");
+            sw.WriteLine("      int numZones;");
+            sw.WriteLine("      int numZonesToDelete;");           
+            sw.WriteLine("      Reference thisRef;");
+            sw.WriteLine();
+
+            // Constructor
+            sw.WriteLine("      public " + className + "()");
+            sw.WriteLine("      {");
+            sw.WriteLine("         testingFolder = globals.testFolder;");
+            sw.WriteLine("         saveFolder = globals.saveFolder;");
+            sw.WriteLine("         refFolder = globals.merraFolder;");
+            sw.WriteLine("      }");
+            sw.WriteLine();
+
+
+        }
+
+        public int CombineTestsToOneFile(string fileName, string testFolderName, int numTestsToKeep, bool isDeleteTest = false)
+        {
+            // Finds all tests that start with filename and randomly picks subset (numTestsToKeep) and merges into one file
+            // Returns the first (randomly chosen) test number (used for Delete tests)
+     //       int underScore = fileName.LastIndexOf('_');
+            int firstTestNum = -999;
+
+      //      if (underScore != -1)
+      //          fileName = fileName.Substring(0, underScore);
+
+            // Ask user where to save the .cs file
+            string combinedFilename = fileName + "_Tests.cs";
+            combinedFilename = testFolder + "\\Tests\\GUI Tests\\" + testFolderName + "\\" + combinedFilename;
+
+            if (File.Exists(combinedFilename))
+                File.Delete(combinedFilename);
+
+            StreamWriter sw = new StreamWriter(combinedFilename);
+
+            // First, write start of class
+            if (isDeleteTest)
+                WriteDeleteClassStart(sw, fileName);
+            else
+                WriteClassStart(sw, fileName);
+
+            string[] testfiles = Directory.GetFiles(testFolder + "\\Tests\\GUI Tests\\" + testFolderName, fileName + "_*");
+            int numTestsAll = testfiles.Length;
+
+            if (numTestsToKeep < numTestsAll)
+            {
+                // Randomly delete testfiles until reaches numTestsToKeep
+                Random random = new Random();
+
+                while (numTestsToKeep < numTestsAll)
+                {
+                    double randDecimal = random.NextDouble();
+                    int testToDel = Convert.ToInt32(randDecimal * numTestsAll);
+
+                    string[] tempArray = new string[testfiles.Length - 1];
+                    int tempInd = 0;
+
+                    if (testToDel >= testfiles.Length - 1)
+                        testToDel--;
+                    
+                    for (int t = 0; t < testfiles.Length; t++)
+                    {
+                        if (t != testToDel)
+                        {
+                            tempArray[tempInd] = testfiles[t];
+                            tempInd++;
+                        }                        
+                    }
+
+                    testfiles = tempArray;
+                    numTestsAll = testfiles.Length;
+                }
+            }
 
             foreach (string testfile in testfiles)
             {
+                if (testfile == combinedFilename)
+                    continue;
+
                 StreamReader sr = new StreamReader(testfile);
 
                 while (sr.EndOfStream == false)
@@ -1163,27 +1340,372 @@ namespace GUI_Test_Creator
                 sr.Close();
             }
 
+            sw.WriteLine("}");
+            sw.WriteLine("}");
+
+            sw.Close();
+
+            int underScoreInd = testfiles[0].LastIndexOf("_");
+            firstTestNum = Convert.ToInt32(testfiles[0].Substring(underScoreInd + 1, testfiles[0].Length - underScoreInd - 1));
+
+            // Delete individual text files
+            testfiles = Directory.GetFiles(testFolder + "\\Tests\\GUI Tests\\" + testFolderName, fileName + "_*");
+
+            foreach (string testfile in testfiles)
+            {
+                if (testfile == combinedFilename)
+                    continue;
+
+                File.Delete(testfile);
+            }
+                       
+            string vsFileName = vsTestFolder + "\\GUI Tests\\" + testFolderName + "\\" + fileName + "_Tests.cs";
+
+            if (File.Exists(vsFileName))
+                File.Delete(vsFileName);
+
+            File.Copy(combinedFilename, vsFileName);
+
+            UpdateListOfTests();                      
+                        
+            return firstTestNum;
+        }
+
+        private void BtnCombineTests_Click_1(object sender, EventArgs e)
+        {
+            // Find all tests that start with filename and merge into one file
+            string fileName = txtTestFilename.Text;
+            int underScore = fileName.LastIndexOf('_');
+
+            if (underScore != -1)
+                fileName = fileName.Substring(0, underScore);
+
+            // Ask user where to save the .cs file
+            string combinedFilename = fileName + "_Tests.cs";
+            combinedFilename = testFolder + "\\Tests\\" + cboTestFolder.SelectedItem.ToString() + "\\" + combinedFilename;
+
+            if (File.Exists(combinedFilename))
+                File.Delete(combinedFilename);
+
+            StreamWriter sw = new StreamWriter(combinedFilename);
+
+            // First, write start of class
+            WriteClassStart(sw, fileName);
+
+            string[] testfiles = Directory.GetFiles(testFolder + "\\Tests\\" + cboTestFolder.SelectedItem.ToString(), fileName + "_*");
+
+            foreach (string testfile in testfiles)
+            {
+                if (testfile == combinedFilename)
+                    continue;
+
+                StreamReader sr = new StreamReader(testfile);
+
+                while (sr.EndOfStream == false)
+                {
+                    string lineToWrite = sr.ReadLine();
+                    sw.WriteLine(lineToWrite);
+                }
+
+                sw.WriteLine();
+                sr.Close();
+            }
+
+            sw.WriteLine("}");
+            sw.WriteLine("}");
+
             sw.Close();
 
             // Delete individual text files
             foreach (string testfile in testfiles)
             {
+                if (testfile == combinedFilename)
+                    continue;
+
                 File.Delete(testfile);
             }
+
+            UpdateListOfTests();
         }
 
         private void CboProject_SelectedIndexChanged_1(object sender, EventArgs e)
         {
             if (okToUpdate)
-                UpdateProjectDetails();
+                UpdateProjectDetails("Create Tests All Perms");
         }
 
-        public void UpdateProjectDetails()
+        public string[] GetTurbineFilesAtProject(string projectName)
+        {
+            string[] turbineFiles = new string[0];
+
+            if (projectName == "NW Ohio")
+            {
+                turbineFiles = new string[8];
+                turbineFiles[0] = "Ball 2 Turbines";
+                turbineFiles[1] = "Findlay Turbine sites";
+                turbineFiles[2] = "Whirlpool W1";
+                turbineFiles[3] = "Harpster";
+                turbineFiles[4] = "Haviland turbines";
+                turbineFiles[5] = "Marion Turbines";
+                turbineFiles[6] = "OE Operating Turbine Sites";
+                turbineFiles[7] = "Paulding Met as Turb";               
+            }
+            else if (projectName == "Findlay")
+            {
+                turbineFiles = new string[3];
+                turbineFiles[0] = "Ball 2 Turbines";
+                turbineFiles[1] = "Findlay Turbine sites";
+                turbineFiles[2] = "Whirlpool W1";               
+            }
+            else if (projectName == "Firewheel")
+            {
+                turbineFiles = new string[2];
+                turbineFiles[0] = "Firewheel turbine sites";
+                turbineFiles[1] = "Firewheel 5 turbine sites";                
+            }
+            else if (projectName == "Bobcat Bluff")
+            {
+                turbineFiles = new string[2];
+                turbineFiles[0] = "Bobcat Bluff turbines";
+                turbineFiles[1] = "Bobcat Bluff 3 turbines";               
+            }
+
+            return turbineFiles;
+        }
+
+        public string[] GetZonesAtProject(string projectName)
+        {
+            string[] zoneFiles = new string[0];
+
+            if (projectName == "NW Ohio")
+            {
+                zoneFiles = new string[4];
+                zoneFiles[0] = "Ball 2 Zones";
+                zoneFiles[1] = "Haviland one zone";
+                zoneFiles[2] = "Haviland zones";
+                zoneFiles[3] = "Marion zones";                
+            }
+            else if (projectName == "Findlay")
+            {
+                zoneFiles = new string[1];
+                zoneFiles[0] = "Ball 2 Zones";                
+            }
+            else if (projectName == "Firewheel")
+            {
+                zoneFiles = new string[1];
+                zoneFiles[0] = "Firewheel Zones";                
+            }
+            else if (projectName == "Bobcat Bluff")
+            {
+                zoneFiles = new string[1];
+                zoneFiles[0] = "Bobcat Bluff zones";
+            }
+
+            return zoneFiles;
+        }
+
+        public string[] GetMetsAtProject(string projectName, string TABorTS)
+        {
+            string[] metNames = new string[0];
+
+            if (projectName == "NW Ohio")
+            {
+                if (TABorTS == "TS")
+                {
+                    metNames = new string[7];
+                    metNames[0] = projectName + "\\\\OH - Archbold Formatted - 20180709.csv";
+                    metNames[1] = projectName + "\\\\OH - Ashtabula Iten Formatted - 20180709.csv";
+                    metNames[2] = projectName + "\\\\OH - New Bremen Formatted - 20180709.csv";
+                    metNames[3] = projectName + "\\\\OH - Paulding formatted - 20180709.csv";
+                    metNames[4] = projectName + "\\\\OH - Pettisville formatted - 20180709.csv";
+                    metNames[5] = projectName + "\\\\OH - Port Clinton Formatted C3 - 20190813.csv";
+                    metNames[6] = projectName + "\\\\OH - Wapakoneta Formatted - no Vane95 - 20180709.csv";                                        
+                }
+                else
+                {
+                    metNames = new string[4];
+                    metNames[0] = projectName + "\\\\Archbold";
+                    metNames[1] = projectName + "\\\\Paulding";
+                    metNames[2] = projectName + "\\\\Sullivan";
+                    metNames[3] = projectName + "\\\\Wapakoneta";                    
+                }
+            }
+            else if (projectName == "Findlay")
+            {
+                if (TABorTS == "TS")
+                {
+                    metNames = new string[4];
+                    metNames[0] = projectName + "\\\\Archbold TS short Findlay coords.csv";
+                    metNames[1] = projectName + "\\\\Archbold TS Findlay coords.csv";
+                    metNames[2] = projectName + "\\\\Ashtabula Findlay coords.csv";
+                    metNames[3] = projectName + "\\\\New Bremen Findlay coords.csv";                   
+                }
+                else
+                {
+                    metNames = new string[4];
+                    metNames[0] = projectName + "\\\\Archbold Findlay coords";
+                    metNames[1] = projectName + "\\\\Paulding Findlay coords";
+                    metNames[2] = projectName + "\\\\Sullivan Findlay coords";
+                    metNames[3] = projectName + "\\\\Wapakoneta Findlay coords";                   
+                } 
+            }
+            else if (projectName == "Firewheel")
+            {
+                if (TABorTS == "TS")
+                {
+                    metNames = new string[6];
+                    metNames[0] = projectName + "\\\\Met_1.csv";
+                    metNames[1] = projectName + "\\\\Met_1 short.csv";
+                    metNames[2] = projectName + "\\\\Met_2.csv";
+                    metNames[3] = projectName + "\\\\Met_2 short.csv";
+                    metNames[4] = projectName + "\\\\Met_3.csv";
+                    metNames[5] = projectName + "\\\\Met_4.csv";                    
+                }
+                else
+                {
+                    metNames = new string[4];
+                    metNames[0] = projectName + "\\\\Met_1";
+                    metNames[1] = projectName + "\\\\Met_2";
+                    metNames[2] = projectName + "\\\\Met_3";
+                    metNames[3] = projectName + "\\\\Met_4";                   
+                } 
+            }
+            else if (projectName == "Bobcat Bluff")
+            {
+                if (TABorTS == "TS")
+                {
+                    metNames = new string[6];
+                    metNames[0] = projectName + "\\\\Met_2001.csv";
+                    metNames[1] = projectName + "\\\\Met_5444.csv";
+                    metNames[2] = projectName + "\\\\Met_9900.csv";
+                    metNames[3] = projectName + "\\\\Met_2001 short.csv";
+                    metNames[4] = projectName + "\\\\Met_5444 short.csv";
+                    metNames[5] = projectName + "\\\\Met_9900 short.csv";                   
+                }
+                else
+                {
+                    metNames = new string[6];
+                    metNames[0] = projectName + "\\\\Met_2001";
+                    metNames[1] = projectName + "\\\\Met_5444";
+                    metNames[2] = projectName + "\\\\Met_9900";                   
+                }                
+            }
+
+            return metNames;
+        }
+
+        public string[] GetMetsNamesAtProject(string projectName, string TABorTS)
+        {
+            string[] metNames = new string[0];
+
+            if (projectName == "NW Ohio")
+            {
+                if (TABorTS == "TS")
+                {
+                    metNames = new string[7];
+                    metNames[0] = "Archbold";
+                    metNames[1] = "Ashtabula";
+                    metNames[2] = "New Bremen";
+                    metNames[3] = "Paulding";
+                    metNames[4] = "Pettisville";
+                    metNames[5] = "Port Clinton";
+                    metNames[6] = "Wapakoneta";
+                }
+                else
+                {
+                    metNames = new string[4];
+                    metNames[0] = "Archbold";
+                    metNames[1] = "Paulding";
+                    metNames[2] = "Sullivan";
+                    metNames[3] = "Wapakoneta";
+                }
+            }
+            else if (projectName == "Findlay")
+            {
+                if (TABorTS == "TS")
+                {
+                    metNames = new string[4];
+                    metNames[0] = "Archbold";
+                    metNames[1] = "Archbold";
+                    metNames[2] = "Ashtabula";
+                    metNames[3] = "New Bremen";
+                }
+                else
+                {
+                    metNames = new string[4];
+                    metNames[0] = "Archbold";
+                    metNames[1] = "Paulding";
+                    metNames[2] = "Sullivan";
+                    metNames[3] = "Wapakoneta";
+                }
+            }
+            else if (projectName == "Firewheel")
+            {
+                if (TABorTS == "TS")
+                {
+                    metNames = new string[6];
+                    metNames[0] = "Met_1";
+                    metNames[1] = "Met_1";
+                    metNames[2] = "Met_2";
+                    metNames[3] = "Met_2";
+                    metNames[4] = "Met_3";
+                    metNames[5] = "Met_4";
+                }
+                else
+                {
+                    metNames = new string[4];
+                    metNames[0] = "Met_1";
+                    metNames[1] = "Met_2";
+                    metNames[2] = "Met_3";
+                    metNames[3] = "Met_4";
+                }
+            }
+            else if (projectName == "Bobcat Bluff")
+            {
+                if (TABorTS == "TS")
+                {
+                    metNames = new string[6];
+                    metNames[0] = "Met_2001";
+                    metNames[1] = "Met_5444";
+                    metNames[2] = "Met_9900";
+                    metNames[3] = "Met_2001";
+                    metNames[4] = "Met_5444";
+                    metNames[5] = "Met_9900";
+                }
+                else
+                {
+                    metNames = new string[6];
+                    metNames[0] = "Met_2001";
+                    metNames[1] = "Met_5444";
+                    metNames[2] = "Met_9900";
+                }
+            }
+
+            return metNames;
+        }
+
+        public void UpdateProjectDetails(string tabName)
         {
             // Update met list, turbine list, zone list, and Met for MERRA list 
-            chkMets.Items.Clear();
-            cboTurbineSite.Items.Clear();
-            cboZones.Items.Clear();
+            CheckedListBox thisChkMets = new CheckedListBox();
+            ComboBox thisTurbCbo = new ComboBox();
+            ComboBox thisZoneCbo = new ComboBox();
+
+            if (tabName == "Create Tests All Perms")
+            {
+                thisChkMets = chkMets;
+                thisTurbCbo = cboTurbineSite;
+                thisZoneCbo = cboZones;
+            }
+            else if (tabName == "Maps")
+            {
+                thisChkMets = chkListMetsMaps;
+                thisTurbCbo = cboTurbSitesMaps;
+            }
+                        
+            thisChkMets.Items.Clear();
+            thisTurbCbo.Items.Clear();
+            thisZoneCbo.Items.Clear();
             
             string thisProject = cboProject.SelectedItem.ToString();
             bool isTimeSeries = false;
@@ -1194,111 +1716,111 @@ namespace GUI_Test_Creator
             {
                 if (isTimeSeries)
                 {
-                    chkMets.Items.Add("OH - Archbold Formatted - 20180709.csv", true);
-                    chkMets.Items.Add("OH - Ashtabula Iten Formatted - 20180709.csv", true);
-                    chkMets.Items.Add("OH - New Bremen Formatted - 20180709.csv", true);
-                    chkMets.Items.Add("OH - Paulding formatted - 20180709.csv", true);
-                    chkMets.Items.Add("OH - Pettisville formatted - 20180709.csv", true);
-                    chkMets.Items.Add("OH - Port Clinton Formatted C3 - 20190813.csv", true);
-                    chkMets.Items.Add("OH - Wapakoneta Formatted - no Vane95 - 20180709.csv", true);                                        
+                    thisChkMets.Items.Add("OH - Archbold Formatted - 20180709.csv", true);
+                    thisChkMets.Items.Add("OH - Ashtabula Iten Formatted - 20180709.csv", true);
+                    thisChkMets.Items.Add("OH - New Bremen Formatted - 20180709.csv", true);
+                    thisChkMets.Items.Add("OH - Paulding formatted - 20180709.csv", true);
+                    thisChkMets.Items.Add("OH - Pettisville formatted - 20180709.csv", true);
+                    thisChkMets.Items.Add("OH - Port Clinton Formatted C3 - 20190813.csv", true);
+                    thisChkMets.Items.Add("OH - Wapakoneta Formatted - no Vane95 - 20180709.csv", true);                                        
                 }
                 else
                 {
-                    chkMets.Items.Add("Archbold", true);
-                    chkMets.Items.Add("Paulding", true);
-                    chkMets.Items.Add("Sullivan", true);
-                    chkMets.Items.Add("Wapakoneta", true);                    
+                    thisChkMets.Items.Add("Archbold", true);
+                    thisChkMets.Items.Add("Paulding", true);
+                    thisChkMets.Items.Add("Sullivan", true);
+                    thisChkMets.Items.Add("Wapakoneta", true);                    
                 }
 
-                cboTurbineSite.Items.Add("Ball 2 Turbines");
-                cboTurbineSite.Items.Add("Findlay Turbine sites");
-                cboTurbineSite.Items.Add("Whirlpool W1");
-                cboTurbineSite.Items.Add("Harpster");
-                cboTurbineSite.Items.Add("Haviland turbines");
-                cboTurbineSite.Items.Add("Marion Turbines");
-                cboTurbineSite.Items.Add("OE Operating Turbine Sites");
-                cboTurbineSite.Items.Add("Paulding Met as Turb");
+                thisTurbCbo.Items.Add("Ball 2 Turbines");
+                thisTurbCbo.Items.Add("Findlay Turbine sites");
+                thisTurbCbo.Items.Add("Whirlpool W1");
+                thisTurbCbo.Items.Add("Harpster");
+                thisTurbCbo.Items.Add("Haviland turbines");
+                thisTurbCbo.Items.Add("Marion Turbines");
+                thisTurbCbo.Items.Add("OE Operating Turbine Sites");
+                thisTurbCbo.Items.Add("Paulding Met as Turb");
 
-                cboZones.Items.Add("Ball 2 Zones");
-                cboZones.Items.Add("Haviland one zone");
-                cboZones.Items.Add("Haviland zones");
-                cboZones.Items.Add("Marion zones");
+                thisZoneCbo.Items.Add("Ball 2 Zones");
+                thisZoneCbo.Items.Add("Haviland one zone");
+                thisZoneCbo.Items.Add("Haviland zones");
+                thisZoneCbo.Items.Add("Marion zones");
 
             }
             else if (thisProject == "Findlay")
             {
                 if (isTimeSeries)
                 {
-                    chkMets.Items.Add("Archbold TS short Findlay coords.csv", true);
-                    chkMets.Items.Add("Archbold TS Findlay coords.csv", true);
-                    chkMets.Items.Add("Ashtabula Findlay coords.csv", true);
-                    chkMets.Items.Add("New Bremen Findlay coords.csv", true);                                        
+                    thisChkMets.Items.Add("Archbold TS short Findlay coords.csv", true);
+                    thisChkMets.Items.Add("Archbold TS Findlay coords.csv", true);
+                    thisChkMets.Items.Add("Ashtabula Findlay coords.csv", true);
+                    thisChkMets.Items.Add("New Bremen Findlay coords.csv", true);                                        
                 }
                 else
                 {
-                    chkMets.Items.Add("Archbold Findlay coords", true);
-                    chkMets.Items.Add("Paulding Findlay coords", true);
-                    chkMets.Items.Add("Sullivan Findlay coords", true);
-                    chkMets.Items.Add("Wapakoneta Findlay coords", true);                    
+                    thisChkMets.Items.Add("Archbold Findlay coords", true);
+                    thisChkMets.Items.Add("Paulding Findlay coords", true);
+                    thisChkMets.Items.Add("Sullivan Findlay coords", true);
+                    thisChkMets.Items.Add("Wapakoneta Findlay coords", true);                    
                 }
 
-                cboTurbineSite.Items.Add("Ball 2 Turbines");
-                cboTurbineSite.Items.Add("Findlay Turbine sites");
-                cboTurbineSite.Items.Add("Whirlpool W1");
+                thisTurbCbo.Items.Add("Ball 2 Turbines");
+                thisTurbCbo.Items.Add("Findlay Turbine sites");
+                thisTurbCbo.Items.Add("Whirlpool W1");
 
-                cboZones.Items.Add("Ball 2 Zones");
+                thisZoneCbo.Items.Add("Ball 2 Zones");
 
             }
             else if (thisProject == "Firewheel")
             {
                 if (isTimeSeries)
                 {
-                    chkMets.Items.Add("Met_1.csv", true);
-                    chkMets.Items.Add("Met_1 short.csv", true);
-                    chkMets.Items.Add("Met_2.csv", true);
-                    chkMets.Items.Add("Met_2 short.csv", true);
-                    chkMets.Items.Add("Met_3.csv", true);
-                    chkMets.Items.Add("Met_4.csv", true);
+                    thisChkMets.Items.Add("Met_1.csv", true);
+                    thisChkMets.Items.Add("Met_1 short.csv", true);
+                    thisChkMets.Items.Add("Met_2.csv", true);
+                    thisChkMets.Items.Add("Met_2 short.csv", true);
+                    thisChkMets.Items.Add("Met_3.csv", true);
+                    thisChkMets.Items.Add("Met_4.csv", true);
                 }
                 else
                 {
-                    chkMets.Items.Add("Met_1", true);
-                    chkMets.Items.Add("Met_2", true);
-                    chkMets.Items.Add("Met_3", true);
-                    chkMets.Items.Add("Met_4", true);                    
+                    thisChkMets.Items.Add("Met_1", true);
+                    thisChkMets.Items.Add("Met_2", true);
+                    thisChkMets.Items.Add("Met_3", true);
+                    thisChkMets.Items.Add("Met_4", true);                    
                 }
 
-                cboTurbineSite.Items.Add("Firewheel turbine sites");
-                cboTurbineSite.Items.Add("Firewheel 5 turbine sites");
+                thisTurbCbo.Items.Add("Firewheel turbine sites");
+                thisTurbCbo.Items.Add("Firewheel 5 turbine sites");
 
-                cboZones.Items.Add("Firewheel Zones");                
+                thisZoneCbo.Items.Add("Firewheel Zones");                
             }
             else if (thisProject == "Bobcat Bluff")
             {
                 if (isTimeSeries)
                 {
-                    chkMets.Items.Add("Met_2001.csv", true);
-                    chkMets.Items.Add("Met_5444.csv", true);
-                    chkMets.Items.Add("Met_9900.csv", true);
-                    chkMets.Items.Add("Met_2001 short.csv", true);
-                    chkMets.Items.Add("Met_5444 short.csv", true);
-                    chkMets.Items.Add("Met_9900 short.csv", true);
+                    thisChkMets.Items.Add("Met_2001.csv", true);
+                    thisChkMets.Items.Add("Met_5444.csv", true);
+                    thisChkMets.Items.Add("Met_9900.csv", true);
+                    thisChkMets.Items.Add("Met_2001 short.csv", true);
+                    thisChkMets.Items.Add("Met_5444 short.csv", true);
+                    thisChkMets.Items.Add("Met_9900 short.csv", true);
                 }
                 else
                 {
-                    chkMets.Items.Add("Met_2001", true);
-                    chkMets.Items.Add("Met_5444", true);
-                    chkMets.Items.Add("Met_9900", true);
+                    thisChkMets.Items.Add("Met_2001", true);
+                    thisChkMets.Items.Add("Met_5444", true);
+                    thisChkMets.Items.Add("Met_9900", true);
                 }
 
-                cboTurbineSite.Items.Add("Bobcat Bluff turbines");
-                cboTurbineSite.Items.Add("Bobcat Bluff 3 turbines");
+                thisTurbCbo.Items.Add("Bobcat Bluff turbines");
+                thisTurbCbo.Items.Add("Bobcat Bluff 3 turbines");
 
-                cboZones.Items.Add("Bobcat Bluff zones");                
+                thisZoneCbo.Items.Add("Bobcat Bluff zones");                
             }
 
-            cboTurbineSite.SelectedIndex = 0;
-            cboZones.SelectedIndex = 0;            
+            thisTurbCbo.SelectedIndex = 0;
+            thisZoneCbo.SelectedIndex = 0;            
         }
 
         private void CboTABorTS_SelectedIndexChanged(object sender, EventArgs e)
@@ -1322,20 +1844,25 @@ namespace GUI_Test_Creator
             }
 
             if (okToUpdate)
-                UpdateProjectDetails();
+                UpdateProjectDetails("Create Tests All Perms");
         }
 
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateProjectDetails();
+            UpdateProjectDetails("Create Tests All Perms");
         }
 
         public void UpdateCFNList()
         {
             cboCFNFiles.Items.Clear();
-            string[] CFNfiles = Directory.GetFiles(continuumFolder, "*.CFM");
+            cboCFM_ForMCP_Test.Items.Clear();
+
+            string[] CFNfiles = Directory.GetFiles(continuumFolder, "*.CFM", SearchOption.AllDirectories);
 
             if (CFNfiles == null)
+                return;
+
+            if (CFNfiles.Length == 0)
                 return;
 
             for (int i = 0; i < CFNfiles.Length; i++)
@@ -1344,6 +1871,7 @@ namespace GUI_Test_Creator
                 int lastDot = CFNfiles[i].LastIndexOf(".");
                 string cfnName = CFNfiles[i].Substring(lastSlash, lastDot - lastSlash);
                 cboCFNFiles.Items.Add(cfnName);
+                cboCFM_ForMCP_Test.Items.Add(cfnName);
             }                
 
             cboCFNFiles.SelectedIndex = 0;
@@ -1375,7 +1903,7 @@ namespace GUI_Test_Creator
             
             for (int i = 0; i < numCombos; i++)
             {
-                string testName = saveToFolder + "\\" + txtFileName + "_" + (i + 1).ToString();
+                string testName = testFolder + "\\" + txtFileName + "_" + (i + 1).ToString();
 
                 StreamWriter sw = new StreamWriter(testName);
                 string newCFNname = continuumFolder + "\\" + txtFileName + "_" + (i + 1).ToString();
@@ -1405,7 +1933,7 @@ namespace GUI_Test_Creator
                         for (int p = 0; p < crvsToDelete.Count(); p++)
                             crvsToDelete[p] = chkCrvsToDelete.CheckedItems[p].ToString();
 
-                        WriteDeletePowerCurve(sw, crvsToDelete);
+                        WriteDeletePowerCurves(sw, crvsToDelete);
                     }
                     else if (deleteOrder[j, i] == 3)
                     {
@@ -1421,7 +1949,7 @@ namespace GUI_Test_Creator
                     }
                 }
 
-                StreamReader sr = new StreamReader(testFolder + endDeleteSnip);
+                StreamReader sr = new StreamReader(snippetFolder + endDeleteSnip);
                 while (sr.EndOfStream == false)
                 {
                     string lineToWrite = sr.ReadLine();
@@ -1432,9 +1960,109 @@ namespace GUI_Test_Creator
             }  
         }
 
+        public string[] ReadAndGetTurbineNames(string projectName, string turbineFile)
+        {
+            string[] turbNames = new string[0];
+
+            StreamReader sr = new StreamReader(testFolder + "\\Turbine sites\\" + projectName + "\\" + turbineFile + ".csv");
+
+            while (sr.EndOfStream == false)
+            {
+                string[] turbNameLL = sr.ReadLine().Split(',');
+                int numTurbs = turbNames.Length;
+                Array.Resize(ref turbNames, numTurbs + 1);
+                turbNames[turbNames.Length - 1] = turbNameLL[0];
+            }
+
+            sr.Close();
+
+            return turbNames;
+        }
+
+        public string[] ReadAndGetZoneNames(string projectName, string zoneFile)
+        {
+            string[] zoneNames = new string[0];
+
+            StreamReader sr = new StreamReader(testFolder + "\\Zones\\" + projectName + "\\" + zoneFile + ".csv");
+
+            while (sr.EndOfStream == false)
+            {
+                string[] zoneNameLL = sr.ReadLine().Split(',');
+                int numTurbs = zoneNames.Length;
+                Array.Resize(ref zoneNames, numTurbs + 1);
+                zoneNames[zoneNames.Length - 1] = zoneNameLL[0];
+            }
+
+            sr.Close();
+
+            return zoneNames;
+        }
+
+        public void CreateDeleteTests(string[] metsToDel, string testFolderName, string setupTestName, int setupTestNum, string testFilename, string projectName, string TABorTS, string turbineFile, 
+            string powerCurveFile, string zoneFile)
+        {
+            // Generates test files for deleting inputs in every possible order using Continuum file created for specified test            
+                        
+            string cfnFileName = setupTestName + "_" + setupTestNum + ".cfm";
+            
+            // Things to delete:
+            // 1) Mets (TS or TAB)
+            // 2) Turbine site (1 or all)
+            // 3) Power curve
+            // 4) Zones (1 or all)
+
+            int[,] deleteOrder = GetAllPermutations(4);
+            int numCombos = deleteOrder.GetUpperBound(1) + 1;
+            
+            int numMetsToDelete = metsToDel.Length;
+            string[] turbsToDelete = ReadAndGetTurbineNames(projectName, turbineFile);
+            int numTurbsToDelete = turbsToDelete.Length;
+
+            string[] powerCrvsToDel = new string[1];
+            powerCrvsToDel[0] = powerCurveFile;
+
+            string[] zonesToDel = ReadAndGetZoneNames(projectName, zoneFile);
+
+            for (int i = 0; i < numCombos; i++)
+            {
+                string testName = testFolder + "\\Tests\\GUI Tests\\" + testFolderName + "\\" + testFilename + "_" + (i + 1).ToString();
+
+                StreamWriter sw = new StreamWriter(testName);
+               
+                WriteTestStartDelete(sw, testFilename + "_" + (i + 1).ToString(), cfnFileName);
+               
+                for (int j = 0; j < 4; j++)
+                {
+                    if (deleteOrder[j, i] == 0)
+                    {
+                        for (int m = 0; m < numMetsToDelete; m++)
+                            WriteDeleteMetSnippet(sw, metsToDel[m]);
+                    }
+                    else if (deleteOrder[j, i] == 1)
+                    {
+                        for (int t = 0; t < numTurbsToDelete; t++)
+                            WriteDeleteOneTurbineSiteSnippet(sw, turbsToDelete[t]);
+                    }
+                    else if (deleteOrder[j, i] == 2)                    
+                        WriteDeletePowerCurves(sw, powerCrvsToDel);                    
+                    else if (deleteOrder[j, i] == 3)                    
+                        WriteDeleteZone(sw, zonesToDel);                    
+                }
+
+                StreamReader sr = new StreamReader(snippetFolder + endDeleteSnip);
+                while (sr.EndOfStream == false)
+                {
+                    string lineToWrite = sr.ReadLine();
+                    sw.WriteLine(lineToWrite);
+                }
+
+                sw.Close();
+            }
+        }
+
         public void WriteDeleteMetSnippet(StreamWriter sw, string metName)
         {
-            StreamReader sr = new StreamReader(testFolder + deleteMet);
+            StreamReader sr = new StreamReader(snippetFolder + deleteMet);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1450,7 +2078,7 @@ namespace GUI_Test_Creator
 
         public void WriteDeleteOneTurbineSiteSnippet(StreamWriter sw, string turbineName)
         {
-            StreamReader sr = new StreamReader(testFolder + deleteTurbine);
+            StreamReader sr = new StreamReader(snippetFolder + deleteTurbine);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1464,14 +2092,14 @@ namespace GUI_Test_Creator
             sr.Close();
         }
 
-        public void WriteDeletePowerCurve(StreamWriter sw, string[] powerCurveNames)
+        public void WriteDeletePowerCurves(StreamWriter sw, string[] powerCurveNames)
         {
             if (powerCurveNames == null)
                 return;
 
             int numCrvs = powerCurveNames.Length;
 
-            StreamReader sr = new StreamReader(testFolder + deleteCurves);
+            StreamReader sr = new StreamReader(snippetFolder + deleteCurves);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1496,6 +2124,7 @@ namespace GUI_Test_Creator
             sr.Close();
         }
 
+
         public void WriteDeleteZone(StreamWriter sw, string[] zoneNames)
         {
             if (zoneNames == null)
@@ -1503,7 +2132,7 @@ namespace GUI_Test_Creator
 
             int numZones = zoneNames.Length;
 
-            StreamReader sr = new StreamReader(testFolder + deleteZones);
+            StreamReader sr = new StreamReader(snippetFolder + deleteZones);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1529,7 +2158,7 @@ namespace GUI_Test_Creator
         public void WriteTestStartDelete(StreamWriter sw, string testName, string cfnName)
         {
             // Write start of test for delete test
-            StreamReader sr = new StreamReader(testFolder + startDeleteSnip);
+            StreamReader sr = new StreamReader(snippetFolder + startDeleteSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1539,29 +2168,9 @@ namespace GUI_Test_Creator
                     lineToWrite = lineToWrite + testName + "()";
 
                 if (trimmedLine.Length > 14)
-                    if (trimmedLine.Substring(0, 15) == "string fileName")
-                    {
-                        lineToWrite = "string fileName = \"";
-                        sw.Write("\t");
-
-                        for (int i = 0; i < lineToWrite.Length; i++)
-                            sw.Write(lineToWrite[i]);
-
-                        for (int i = 0; i < cfnName.Length; i++)
-                        {
-                            if (cfnName.Substring(i, 1) == "\\")
-                            {
-                                sw.Write(cfnName.Substring(i, 1));
-                                sw.Write("\\");
-                            }
-                            else
-                                sw.Write(cfnName.Substring(i, 1));
-                        }
-
-                        sw.Write("\";");
-                        lineToWrite = "";
-                    }                        
-
+                    if (trimmedLine.Substring(0, 15) == "string fileName")                    
+                        lineToWrite = "string fileName = saveFolder + " + "\"" + "\\\\" + cfnName  +"\"" + ";";                                             
+                                        
                 sw.WriteLine(lineToWrite);
             }
 
@@ -1571,7 +2180,7 @@ namespace GUI_Test_Creator
         public void WriteSaveAs(StreamWriter sw, string newFileName)
         {
             // Save file using filename
-            StreamReader sr = new StreamReader(testFolder + saveAsSnip);
+            StreamReader sr = new StreamReader(snippetFolder + saveAsSnip);
             while (sr.EndOfStream == false)
             {
                 string lineToWrite = sr.ReadLine();
@@ -1616,9 +2225,11 @@ namespace GUI_Test_Creator
         public void UpdateDeleteTables()
         {
             string continuumFile = cboCFNFiles.SelectedItem.ToString();
-            Continuum thisInst = new Continuum();
 
-            try
+            continuumFile = continuumFolder + "\\" + continuumFile + ".cfm";
+            Continuum thisInst = new Continuum(continuumFile);
+
+ /*           try
             {
                 thisInst.Open(continuumFolder + "\\" + continuumFile + ".cfm");
             }
@@ -1626,7 +2237,7 @@ namespace GUI_Test_Creator
             {
                 MessageBox.Show("Error opening Continuum file");
             }
-
+ */
             int numMets = thisInst.metList.ThisCount;
             int numTurbines = thisInst.turbineList.TurbineCount;
             int numCrvs = thisInst.turbineList.PowerCurveCount;
@@ -1662,6 +2273,1039 @@ namespace GUI_Test_Creator
         private void CboCFNFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateDeleteTables();
+        }
+
+        private void btnCreateMCP_Tests_Click(object sender, EventArgs e)
+        {
+            // Create MCP_Tests.cs file which tests running each type of MCP algorithm
+            string selCFM_file = saveToFolder + "\\" + cboCFM_ForMCP_Test.SelectedItem.ToString();
+
+            string fileName = testFolder + "\\Tests\\MCP_Tests.cs";
+            StreamWriter sw = new StreamWriter(fileName);
+
+            // First, write start of test
+            StreamReader sr = new StreamReader(snippetFolder + "\\" + mcpTestCode);
+
+            while (sr.EndOfStream == false)
+            {
+                string lineToWrite = sr.ReadLine();
+                string trimmedLine = lineToWrite.Trim();
+
+                if (lineToWrite.Contains("string testingFolder = "))
+                    lineToWrite = lineToWrite + "\"" + testFolder + "\";";
+
+                if (lineToWrite.Contains("string saveFolder = "))
+                    lineToWrite = lineToWrite + "\"" + saveToFolder + "\";";
+                                
+                if (lineToWrite.Contains("string fileName = "))
+                    lineToWrite = lineToWrite + "\"" + selCFM_file + "\";";                               
+
+                sw.WriteLine(lineToWrite);
+            }
+
+            sr.Close();
+            sw.Close();
+
+            UpdateListOfTests();
+        }
+
+        private void tabPage4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        public void UpdateListOfTests()
+        {
+            lstTestsInC3GUI_TestsFolder.Items.Clear();
+            lstTestsInVS_Folder.Items.Clear();
+
+            // Update list of tests in 'Continuum 3 GUI Testing' folder
+            string[] allTests = Directory.GetFiles(testFolder, "*.cs", SearchOption.AllDirectories);
+
+            for (int t = 0; t < allTests.Length; t++)
+                lstTestsInC3GUI_TestsFolder.Items.Add(allTests[t].Replace(testFolder + "\\Tests\\", ""));
+
+            // Update list of tests in Visual Studio Continuum_Tests project folder
+            allTests = Directory.GetFiles(vsTestFolder, "*.cs", SearchOption.AllDirectories);
+
+            for (int t = 0; t < allTests.Length; t++)
+                lstTestsInVS_Folder.Items.Add(allTests[t].Replace(vsTestFolder + "\\", ""));
+        }
+
+        private void btnClearTestsFromC3GUIFolder_Click(object sender, EventArgs e)
+        {
+            // Clear all tests from Continuum 3 GUI Test folder
+
+            string[] allTests = Directory.GetFiles(testFolder, "*.cs", SearchOption.AllDirectories);
+
+            for (int t = 0; t < allTests.Length; t++)
+                File.Delete(allTests[t]);
+
+            UpdateListOfTests();
+        }
+
+        private void btnClearSelectedTests_Click(object sender, EventArgs e)
+        {
+            // Clear selected tests from 'Continuum 3 GUI Test folder'
+
+            if (lstTestsInC3GUI_TestsFolder.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Select a test(s) to clear from 'Continuum 3 GUI Testing' folder.");
+                return;
+            }
+
+            for (int t = 0; t < lstTestsInC3GUI_TestsFolder.SelectedItems.Count; t++)
+                File.Delete(testFolder + "\\Tests\\" + lstTestsInC3GUI_TestsFolder.SelectedItems[t].Text);
+
+            UpdateListOfTests();
+        }
+
+        private void btnClearTestsFromVS_Click(object sender, EventArgs e)
+        {
+            // Clear all tests from Visual Studio project folder
+            string[] allTests = Directory.GetFiles(vsTestFolder, "*.cs", SearchOption.AllDirectories);
+
+            for (int t = 0; t < allTests.Length; t++)
+                File.Delete(allTests[t]);
+
+            UpdateListOfTests();
+
+        }
+
+        private void btnClearSelectedFromVS_Click(object sender, EventArgs e)
+        {
+            // Clear selected tests from Visual Studio 'Continuum_Tests' folder'
+
+            if (lstTestsInVS_Folder.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Select a test(s) to clear from the VS Continuum_Tests folder");
+                return;
+            }
+
+            for (int t = 0; t < lstTestsInVS_Folder.SelectedItems.Count; t++)
+                File.Delete(vsTestFolder + "//" + lstTestsInVS_Folder.SelectedItems[t].Text);
+
+            UpdateListOfTests();
+        }
+
+        private void btnCopyTestsToVSFolder_Click(object sender, EventArgs e)
+        {
+            // Copy selected tests to VS Folder
+
+            if (lstTestsInC3GUI_TestsFolder.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Select one or more tests to copy to Visual Studio Continuum_Tests project");
+                return;
+            }
+
+            for (int t = 0; t < lstTestsInC3GUI_TestsFolder.SelectedItems.Count; t++)
+            {
+                string selFileName = lstTestsInC3GUI_TestsFolder.SelectedItems[t].Text;
+                string testFileName = testFolder + "\\Tests\\" + selFileName;
+                string vsFileName = vsTestFolder + "\\" + selFileName;
+
+                if (File.Exists(vsFileName))
+                    File.Delete(vsFileName);                                
+
+                File.Copy(testFileName, vsFileName);
+            }
+
+            UpdateListOfTests();
+        }
+
+        private void cboCFM_ForMCP_Test_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label40_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label45_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label47_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnCreateMapTest_Click(object sender, EventArgs e)
+        {
+            // Create Map Tests: Load topography and land cover, load met data, load turbine sites, analyze mets, generate map (largest and 
+            // around turbines if turb sites loaded)
+
+            string fileName = testFolder + "\\" + txtMapsTestFilename.Text;
+            string projectName = cboProject_Maps.Text;
+
+            bool doFiltering = chkDoMetFiltMaps.Checked;
+
+            try
+            {
+                StreamWriter sw = new StreamWriter(fileName);
+
+                // First, write start of test
+                StreamReader sr = new StreamReader(snippetFolder + startSnip);
+                while (sr.EndOfStream == false)
+                {
+                    string lineToWrite = sr.ReadLine();
+                    string trimmedLine = lineToWrite.Trim();
+
+                    if (lineToWrite == "public void ")
+                        lineToWrite = lineToWrite + txtMapsTestFilename.Text + "()";
+
+                    if (trimmedLine.Length > 14)
+                        if (trimmedLine.Substring(0, 15) == "string fileName")
+                            lineToWrite = lineToWrite + txtMapsTestFilename.Text + "\";";
+
+                    if (trimmedLine.Length > 42)
+                        if (trimmedLine.Substring(0, 43) == "thisInst.UTM_conversions.UTMZoneNumber = ")
+                            lineToWrite = lineToWrite + cboUTMZoneMaps.Text + "\";";
+
+                    if (trimmedLine.Length > 34)
+                        if (trimmedLine.Substring(0, 35) == "thisInst.UTM_conversions.hemisphere = ")
+                            lineToWrite = lineToWrite + cboHemisphereMaps.Text + "\";";
+
+                    sw.WriteLine(lineToWrite);
+                }
+
+                sw.WriteLine();
+
+                string thisFilename = "";
+
+                // Import Topography 
+                if (projectName == "Findlay")
+                    thisFilename = "Findlay Topo.tif";
+                else if (projectName == "NW Ohio")
+                    thisFilename = "NW Ohio Topo.tif";
+                else if (projectName == "Firewheel")
+                    thisFilename = "w001001.adf";
+
+                WriteTopographySnippet(sw, thisFilename);
+
+                // Import Land Cover
+                if (projectName == "Findlay")
+                    thisFilename = "Findlay Land Cover.tif";
+                else if (projectName == "NW Ohio")
+                    thisFilename = "NW Ohio Land Cover.tif";
+                else if (projectName == "Firewheel")
+                    thisFilename = "Firewheel Land Cover.tif";
+
+                WriteLandCoverSnippet(sw, thisFilename);
+
+                // Import met data (either time series or TAB files)
+                if (cboTAB_or_TS_Maps.SelectedItem.ToString() == "TAB files")
+                {
+                    for (int m = 0; m < chkListMetsMaps.CheckedItems.Count; m++)
+                        WriteMetTABSnippet(sw, chkListMetsMaps.CheckedItems[m].ToString());
+                }
+                else
+                {
+                    for (int m = 0; m < chkListMetsMaps.CheckedItems.Count; m++)
+                        WriteMetTSSnippet(sw, chkListMetsMaps.CheckedItems[m].ToString(), doFiltering);
+                }
+
+                // Import Turbines sites (if selected)
+                if (cboTurbSitesMaps.SelectedItem != null)
+                    WriteTurbineSnippet(sw, cboTurbSitesMaps.SelectedItem.ToString(), projectName);
+
+                // Analzye mets            
+                sr = new StreamReader(snippetFolder + analyzeMetsSnip);
+                while (sr.EndOfStream == false)
+                {
+                    string lineToWrite = sr.ReadLine();
+                    sw.WriteLine(lineToWrite);
+                }
+                sr.Close();
+
+                if (cboWakeModelMaps.SelectedItem.ToString() != "Unwaked")
+                {
+                    WritePowerCurveSnippet(sw, cboPowerCrvsMaps.SelectedItem.ToString());
+                    WriteDoMonteCarlo(sw);
+
+                    sr = new StreamReader(snippetFolder + wakeMapSnip);
+                    while (sr.EndOfStream == false)
+                    {
+                        string lineToWrite = sr.ReadLine();
+                        sw.WriteLine(lineToWrite);
+                    }
+                    sr.Close();
+                }
+                else
+                {
+                    sr = new StreamReader(snippetFolder + mapLargest);
+                    while (sr.EndOfStream == false)
+                    {
+                        string lineToWrite = sr.ReadLine();
+                        sw.WriteLine(lineToWrite);
+                    }
+                    sr.Close();
+
+                    sr = new StreamReader(snippetFolder + mapTurbine);
+                    while (sr.EndOfStream == false)
+                    {
+                        string lineToWrite = sr.ReadLine();
+                        sw.WriteLine(lineToWrite);
+                    }
+                    sr.Close();
+                }
+
+
+                sr = new StreamReader(snippetFolder + endSnip);
+                while (sr.EndOfStream == false)
+                {
+                    string lineToWrite = sr.ReadLine();
+                    sw.WriteLine(lineToWrite);
+                }
+
+                sr.Close();
+                sw.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Error writing to specified file.");
+                return;
+            }
+        }
+
+        private void cboTAB_or_TS_Maps_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnCreateGUI_SetupFiles_Click(object sender, EventArgs e)
+        {
+            // Using selected project input data, creates default model setup (import) and delete GUI tests with the following tests created and saved in 5 folders:
+            // Each folder represents a type of model that may be created in Continuum:
+            // 1) TAB file Tests: Met data imported as a WS/WD distribution in TAB file format (no filtering or MCP'ing may be done)
+            // 2) Raw TS file Tests: Met data imported as a time series.  Data is not filtered and is not MCP'd in these tests.
+            // 3) Raw LT TS file Tests: Met data imported as a time series.  Data is not filtered but is MCP'd in these tests.
+            // 4) Filtered TS file Tests: Met data imported as a time series.  Data is filtered but is not MCP'd in these tests.
+            // 5) Filtered LT TS file Tests: Met data imported as a time series.  Data is filtered and is MCP'd in these tests.
+
+            // Each folder contains 6 test class files with:
+            // 3 test class files testing the import of model inputs using 1, 2, or 3 met sites
+            // 3 tests class testing the delete of model inputs from a model with 1, 2, or 3 met sites
+
+            // For the model setup tests, Continuum files (.cfn and corresponding SQL files) are created and saved in 'SaveFolder'.  These are used by the delete tests.            
+            // Saves test files in 'Continuum 3 GUI Testing folder' and automatically copies over to Visual studio project
+
+            CreateTAB_Tests();
+            CreateRawTS_Tests();
+            CreateRawTS_LT_Tests();
+            CreateFiltTS_Tests();
+            CreateFiltLT_TS_Tests();          
+                        
+        }
+
+        public void CreateRawTS_Tests()
+        {
+            // TESTS: 2 - Raw TS file Tests            
+            // Using one met TS file
+            string testFolderName = "2 - Raw TS file Tests";
+            string testFileName = "OneMetRawTS_GrossNet";
+            string deleteTestName = "DelOneMetTS";
+            string projectName = "Findlay"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            string utmZone = "17"; // UTM zone
+            string northOrSouth = "Northern";
+            string[] metFiles = GetMetsAtProject(projectName, "TS");
+            string[] metFilesForTest = new string[1];
+            metFilesForTest[0] = metFiles[0];
+
+            string[] allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            string[] metsToDel = new string[1];
+            metsToDel[0] = allMetsToDel[0];
+
+            string[] turbineFiles = GetTurbineFilesAtProject(projectName);
+            string turbineFile = turbineFiles[0];
+
+            string powerCurveFile = "Goldwind 87-1500 PC_1.205"; // Options: "GE_1_85_CRV", "Goldwind 87-1500 PC_1.205", "Vestas_V150@1.041kgm ^ -3", "Goldwind 93-1500 PC_1.205", 
+
+            string[] zoneFiles = GetZonesAtProject(projectName);
+            string zoneFile = zoneFiles[0];
+
+            bool inputReference = false;
+            string merraFolder = "";
+            bool doFiltering = false;
+            bool doGross = true;
+            bool doNet = true;
+            bool doMCP = false;
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+
+            int firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using two met TS file            
+            testFileName = "TwoMetRawTS_GrossNet";
+            deleteTestName = "DelTwoMetTS";
+            projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "17"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TS");
+            metFilesForTest = new string[2];
+            metFilesForTest[0] = metFiles[2];
+            metFilesForTest[1] = metFiles[3];
+
+            allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            metsToDel = new string[2];
+            metsToDel[0] = allMetsToDel[2];
+            metsToDel[1] = allMetsToDel[3];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[1];
+
+            powerCurveFile = "Vestas_V150@1.041kgm^-3"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using three met TS file            
+            testFileName = "ThreeMetRawTS_GrossNet";
+            deleteTestName = "DelThreeMetTS";
+            projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "17"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TS");
+            metFilesForTest = new string[3];
+            metFilesForTest[0] = metFiles[3];
+            metFilesForTest[1] = metFiles[4];
+            metFilesForTest[2] = metFiles[5];
+
+            allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            metsToDel = new string[3];
+            metsToDel[0] = allMetsToDel[3];
+            metsToDel[1] = allMetsToDel[4];
+            metsToDel[2] = allMetsToDel[5];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[3];
+
+            powerCurveFile = "Goldwind 87-1500 PC_1.205"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+        }
+
+        public void CreateRawTS_LT_Tests()
+        {
+            // TESTS: 3 - Raw LT TS file Tests            
+            // Using one met TS file and MCPing with MERRA2 data
+            string testFolderName = "3 - Raw LT TS file Tests";
+            string testFileName = "OneMetRawTS_LTGrossNet";
+            string deleteTestName = "DelOneMetTS_LT";
+            string projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            string utmZone = "17"; // UTM zone
+            string northOrSouth = "Northern";
+            string[] metFiles = GetMetsAtProject(projectName, "TS");
+            string[] metFilesForTest = new string[1];
+            metFilesForTest[0] = metFiles[2];
+
+            string[] allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            string[] metsToDel = new string[1];
+            metsToDel[0] = allMetsToDel[2];
+
+            string[] turbineFiles = GetTurbineFilesAtProject(projectName);
+            string turbineFile = turbineFiles[1];
+
+            string powerCurveFile = "GE_1_85_CRV"; // Options: "GE_1_85_CRV", "Goldwind 87-1500 PC_1.205", "Vestas_V150@1.041kgm ^ -3", "Goldwind 93-1500 PC_1.205", 
+
+            string[] zoneFiles = GetZonesAtProject(projectName);
+            string zoneFile = zoneFiles[0];
+
+            bool inputReference = true;
+            string merraFolder = ohioMERRA;
+            bool doMCP = true;
+            bool doFiltering = false;
+            bool doGross = true;
+            bool doNet = true;
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+
+            int firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using two met TS file and MCPing with MERRA2 data           
+            testFileName = "TwoMetRawTS_LTGrossNet";
+            deleteTestName = "DelTwoMetTS_LT";
+            projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "17"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TS");
+            metFilesForTest = new string[2];
+            metFilesForTest[0] = metFiles[2];
+            metFilesForTest[1] = metFiles[3];
+
+            allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            metsToDel = new string[2];
+            metsToDel[0] = allMetsToDel[2];
+            metsToDel[1] = allMetsToDel[3];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[1];
+
+            powerCurveFile = "Vestas_V150@1.041kgm^-3"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using three met TS file            
+            testFileName = "ThreeMetRawTS_LTGrossNet";
+            deleteTestName = "DelThreeMetTS_LT";
+            projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "17"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TS");
+            metFilesForTest = new string[3];
+            metFilesForTest[0] = metFiles[3];
+            metFilesForTest[1] = metFiles[4];
+            metFilesForTest[2] = metFiles[5];
+
+            allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            metsToDel = new string[3];
+            metsToDel[0] = allMetsToDel[3];
+            metsToDel[1] = allMetsToDel[4];
+            metsToDel[2] = allMetsToDel[5];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[3];
+
+            powerCurveFile = "Goldwind 87-1500 PC_1.205"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+
+        }
+
+        public void CreateFiltTS_Tests()
+        {
+            // TESTS: 4 - Filtered TS file Tests            
+            // Using one met TS file QC filtered
+            string testFolderName = "4 - Filtered TS file Tests";
+            string testFileName = "OneMetFiltTS_GrossNet";
+            string deleteTestName = "DelOneMetFiltTS";
+            string projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            string utmZone = "17"; // UTM zone
+            string northOrSouth = "Northern";
+            string[] metFiles = GetMetsAtProject(projectName, "TS");
+            string[] metFilesForTest = new string[1];
+            metFilesForTest[0] = metFiles[2];
+
+            string[] allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            string[] metsToDel = new string[1];
+            metsToDel[0] = allMetsToDel[2];
+
+            string[] turbineFiles = GetTurbineFilesAtProject(projectName);
+            string turbineFile = turbineFiles[1];
+
+            string powerCurveFile = "GE_1_85_CRV"; // Options: "GE_1_85_CRV", "Goldwind 87-1500 PC_1.205", "Vestas_V150@1.041kgm ^ -3", "Goldwind 93-1500 PC_1.205", 
+
+            string[] zoneFiles = GetZonesAtProject(projectName);
+            string zoneFile = zoneFiles[0];
+
+            bool doFiltering = true;
+            bool inputReference = false;
+            string merraFolder = "";
+            bool doMCP = false;
+            bool doGross = true;
+            bool doNet = true;
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+
+            int firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using two met TS file QC filtered          
+            testFileName = "TwoMetFiltTS_GrossNet";
+            deleteTestName = "DelTwoMetFiltTS";
+            projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "17"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TS");
+            metFilesForTest = new string[2];
+            metFilesForTest[0] = metFiles[2];
+            metFilesForTest[1] = metFiles[3];
+
+            allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            metsToDel = new string[2];
+            metsToDel[0] = allMetsToDel[2];
+            metsToDel[1] = allMetsToDel[3];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[1];
+
+            powerCurveFile = "Vestas_V150@1.041kgm^-3"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using three met TS file QC filtered           
+            testFileName = "ThreeMetFiltTS_GrossNet";
+            deleteTestName = "DelThreeMetFiltTS";
+            projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "17"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TS");
+            metFilesForTest = new string[3];
+            metFilesForTest[0] = metFiles[2];
+            metFilesForTest[1] = metFiles[3];
+            metFilesForTest[2] = metFiles[4];
+
+            allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            metsToDel = new string[3];
+            metsToDel[0] = allMetsToDel[3];
+            metsToDel[1] = allMetsToDel[4];
+            metsToDel[2] = allMetsToDel[5];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[3];
+
+            powerCurveFile = "Goldwind 87-1500 PC_1.205"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+        }
+
+        public void CreateFiltLT_TS_Tests()
+        {
+            // TESTS: 5 - Filtered LT TS file Tests            
+            // Using one met TS file QC filtered and MCPd with MERRA2
+            string testFolderName = "5 - Filtered LT TS file Tests";
+            string testFileName = "OneMetFiltTS_LTGrossNet";
+            string deleteTestName = "DelOneMetFiltTS_LT";
+            string projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            string utmZone = "17"; // UTM zone
+            string northOrSouth = "Northern";
+            string[] metFiles = GetMetsAtProject(projectName, "TS");
+            string[] metFilesForTest = new string[1];
+            metFilesForTest[0] = metFiles[2];
+
+            string[] allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            string[] metsToDel = new string[1];
+            metsToDel[0] = allMetsToDel[2];
+
+            string[] turbineFiles = GetTurbineFilesAtProject(projectName);
+            string turbineFile = turbineFiles[1];
+
+            string powerCurveFile = "GE_1_85_CRV"; // Options: "GE_1_85_CRV", "Goldwind 87-1500 PC_1.205", "Vestas_V150@1.041kgm ^ -3", "Goldwind 93-1500 PC_1.205", 
+
+            string[] zoneFiles = GetZonesAtProject(projectName);
+            string zoneFile = zoneFiles[0];
+
+            bool doFiltering = true;
+            bool inputReference = true;
+            string merraFolder = ohioMERRA;
+            bool doMCP = true;
+
+            bool doGross = true;
+            bool doNet = true;
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+
+            int firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using two met TS file QC filtered and MCPd with MERRA2         
+            testFileName = "TwoMetFiltTS_LTGrossNet";
+            deleteTestName = "DelTwoMetFiltTS_LT";
+            projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "17"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TS");
+            metFilesForTest = new string[2];
+            metFilesForTest[0] = metFiles[2];
+            metFilesForTest[1] = metFiles[3];
+
+            allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            metsToDel = new string[2];
+            metsToDel[0] = allMetsToDel[2];
+            metsToDel[1] = allMetsToDel[3];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[1];
+
+            powerCurveFile = "Vestas_V150@1.041kgm^-3"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using three met TS file QC filtered and MCPd with MERRA2           
+            testFileName = "ThreeMetFiltTS_LTGrossNet";
+            deleteTestName = "DelThreeMetFiltTS_LT";
+            projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "17"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TS");
+            metFilesForTest = new string[3];
+            metFilesForTest[0] = metFiles[3];
+            metFilesForTest[1] = metFiles[4];
+            metFilesForTest[2] = metFiles[5];
+
+            allMetsToDel = GetMetsNamesAtProject(projectName, "TS");
+            metsToDel = new string[3];
+            metsToDel[0] = allMetsToDel[3];
+            metsToDel[1] = allMetsToDel[4];
+            metsToDel[2] = allMetsToDel[5];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[3];
+
+            powerCurveFile = "Goldwind 87-1500 PC_1.205"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TS", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metsToDel, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TS", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+        }
+
+        public void CreateTAB_Tests()
+        {
+            // TESTS: 1 - TAB file Tests            
+            // Using one met TAB file
+            string testFolderName = "1 - TAB file Tests";
+            string testFileName = "OneMetTABAndGrossNet";
+            string deleteTestName = "DelOneMetTAB";
+            string projectName = "Findlay"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            string utmZone = "17"; // UTM zone
+            string northOrSouth = "Northern";
+            string[] metFiles = GetMetsAtProject(projectName, "TAB");
+            string[] metFilesForTest = new string[1];
+            metFilesForTest[0] = metFiles[0];
+
+            string[] turbineFiles = GetTurbineFilesAtProject(projectName);
+            string turbineFile = turbineFiles[0];
+
+            string powerCurveFile = "GE_1_85_CRV"; // Options: "GE_1_85_CRV", "Goldwind 87-1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93-1500 PC_1.205", 
+
+            string[] zoneFiles = GetZonesAtProject(projectName);
+            string zoneFile = zoneFiles[0];
+
+            string merraFolder = ""; // Options: ohioMERRA, firewheelMERRA;
+            bool inputReference = false;
+
+            bool doFiltering = false;
+            bool doGross = true;
+            bool doNet = true;
+            bool doMCP = false;
+
+            CreateGUITests("TAB", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            int firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metFilesForTest, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TAB", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using two met TAB file            
+            testFileName = "TwoMetTABAndGrossNet";
+            deleteTestName = "DelTwoMetTABs";
+            projectName = "NW Ohio"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "17"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TAB");
+            metFilesForTest = new string[2];
+            metFilesForTest[0] = metFiles[0];
+            metFilesForTest[1] = metFiles[1];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[0];
+
+            powerCurveFile = "Vestas_V150@1.041kgm^-3"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TAB", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metFilesForTest, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TAB", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+
+            // Using three met TAB file            
+            testFileName = "ThreeMetTABAndGrossNet";
+            deleteTestName = "DelThreeMetTABs";
+            projectName = "Firewheel"; // Options: "Findlay", "NW Ohio", "Firewheel", "Bobcat Bluff"
+            utmZone = "14"; // UTM zone
+            northOrSouth = "Northern";
+            metFiles = GetMetsAtProject(projectName, "TAB");
+            metFilesForTest = new string[3];
+            metFilesForTest[0] = metFiles[0];
+            metFilesForTest[1] = metFiles[1];
+            metFilesForTest[2] = metFiles[2];
+
+            turbineFiles = GetTurbineFilesAtProject(projectName);
+            turbineFile = turbineFiles[0];
+
+            powerCurveFile = "Goldwind 87-1500 PC_1.205"; // Options: "GE_1_85_CRV", "Goldwind 87 - 1500 PC_1.205", "Vestas_V150@1.041kgm^-3", "Goldwind 93 - 1500 PC_1.205", 
+
+            zoneFiles = GetZonesAtProject(projectName);
+            zoneFile = zoneFiles[0];
+
+            CreateGUITests("TAB", inputReference, merraFolder, testFileName, projectName, utmZone, northOrSouth, metFilesForTest, 80, turbineFile, powerCurveFile,
+                zoneFile, doFiltering, doGross, doNet, doMCP, testFolderName);
+            firstTestNum = CombineTestsToOneFile(testFileName, testFolderName, 2);
+
+            CreateDeleteTests(metFilesForTest, testFolderName, testFileName, firstTestNum, deleteTestName, projectName, "TAB", turbineFile, powerCurveFile, zoneFile);
+            CombineTestsToOneFile(deleteTestName, testFolderName, 2, true);
+        }
+
+        public void CreateGUITests(string TABorTS, bool inputMERRA, string merraFolder, string txtFileName, string projectName, string utmZone, string northOrSouth, string[] metFiles,
+            int modeledHeight, string turbineFile, string powerCurveFile, string zoneFile, bool doFiltering, bool doGross, bool doNet, bool doMCP, string testFolderName)
+        {
+
+            // Create test files for every combination of inputs
+
+            // For TAB files, there are six possible inputs:
+            // Topo, Land Cover, Met TABs, Turbines, Power Curves, Zones
+
+            // For TS files, there are seven inputs with one additional input: MERRA2
+            string folderLoc = testFolder + "\\Tests\\GUI Tests\\" + testFolderName;
+            int numInputs = 6;
+
+            if ((TABorTS == "Time Series" && inputMERRA == true) || (TABorTS == "TS" && inputMERRA == true))
+                numInputs = 7;
+
+            int[,] inputOrder = GetAllPermutations(numInputs);
+            int numCombos = inputOrder.GetUpperBound(1) + 1;                       
+            
+            string topoFile = GetTopoFileName(projectName);
+            string landCoverFile = GetLandCoverFileName(projectName);                                  
+
+            if (metFiles == null)
+            {
+                MessageBox.Show("Select at least one met site to use in tests.");
+                return;
+            }            
+
+            int fileCount = 0;
+
+            for (int i = 0; i < numCombos; i++)
+            {
+                // Generate test with specified parameters
+                // Check that MERRA load is called after the met load. If not, go to next 
+                int merraOrder = 0;
+                int metOrder = 0;
+
+                for (int j = 0; j < numInputs; j++)
+                {
+                    if (inputOrder[j, i] == 2)
+                        metOrder = j;
+                    else if (inputOrder[j, i] == 6)
+                        merraOrder = j;
+                }
+
+                if (merraOrder > metOrder || numInputs == 6)
+                {
+                    string fileName = folderLoc + "\\" + txtFileName + "_" + (fileCount + 1).ToString();
+                    StreamWriter sw = new StreamWriter(fileName);
+
+                    Directory.GetFiles(saveToFolder);
+
+                    try
+                    {
+                        // First, write start of test
+                        StreamReader sr = new StreamReader(snippetFolder + startSnip);
+                        while (sr.EndOfStream == false)
+                        {
+                            string lineToWrite = sr.ReadLine();
+                            string trimmedLine = lineToWrite.Trim();
+
+                            if (lineToWrite == "public void ")
+                                lineToWrite = lineToWrite + txtFileName + "_" + (i + 1).ToString() + "()";
+
+                            if (trimmedLine.Length > 14)
+                                if (trimmedLine.Substring(0, 15) == "string fileName")
+                                    lineToWrite = lineToWrite + txtFileName + "_" + (i + 1).ToString() + "\";";
+
+                            if (trimmedLine.Length > 39)
+                                if (trimmedLine.Substring(0, 40) == "thisInst.UTM_conversions.UTMZoneNumber =")
+                                    lineToWrite = lineToWrite + utmZone + ";";
+
+                            if (trimmedLine.Length > 36)
+                                if (trimmedLine.Substring(0, 37) == "thisInst.UTM_conversions.hemisphere =")
+                                    lineToWrite = lineToWrite + "\"" + northOrSouth + "\";";
+
+                            if (trimmedLine.Length > 23)
+                                if (trimmedLine.Substring(0, 24) == "thisInst.modeledHeight =")
+                                    lineToWrite = lineToWrite + " " + modeledHeight.ToString() + ";";
+
+                            sw.WriteLine(lineToWrite);
+                        }
+
+                        // Now create test file using inputs in specfied order
+
+                        for (int j = 0; j < numInputs; j++)
+                        {
+                            if (inputOrder[j, i] == 0)
+                                WriteTopographySnippet(sw, topoFile);
+                            else if (inputOrder[j, i] == 1)
+                                WriteLandCoverSnippet(sw, landCoverFile);
+                            else if (inputOrder[j, i] == 2) // Met sites
+                            {
+                                for (int m = 0; m < metFiles.Length; m++)
+                                {
+                                    if (TABorTS == "TAB")
+                                        WriteMetTABSnippet(sw, metFiles[m]);
+                                    else
+                                        WriteMetTSSnippet(sw, metFiles[m], doFiltering);
+                                }
+                            }
+                            else if (inputOrder[j, i] == 3)
+                                WriteTurbineSnippet(sw, turbineFile, projectName);
+                            else if (inputOrder[j, i] == 4)
+                                WritePowerCurveSnippet(sw, powerCurveFile);
+                            else if (inputOrder[j, i] == 5)
+                                WriteZoneSnippet(sw, zoneFile, projectName);
+                            else if (inputOrder[j, i] == 6)
+                                for (int m = 0; m < metFiles.Length; m++)
+                                    WriteMERRA2Snippet(sw, m, merraFolder);
+                        }
+
+                        sw.WriteLine();
+
+                        if (doMCP)
+                            for (int m = 0; m < metFiles.Length; m++)
+                                WriteMCPSnippet(sw, m);
+
+                        if (doGross)
+                        {
+                            // Do turbine gross estimates
+                            WriteTurbineGrossEsts(sw);
+
+                            if (doNet)
+                            {
+                                // Do Monte Carlo ests
+                                WriteDoMonteCarlo(sw);
+
+                                // Do turbine net estimates
+                                WriteNetEsts(sw);
+                            }
+                        }
+
+                        sr = new StreamReader(snippetFolder + endSnip);
+                        while (sr.EndOfStream == false)
+                        {
+                            string lineToWrite = sr.ReadLine();
+                            sw.WriteLine(lineToWrite);
+                        }
+
+                        sw.Close();
+                        fileCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        sw.Close();
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+        }
+
+        private void btnCreateGUI_SetupFiles1_Click(object sender, EventArgs e)
+        {
+            CreateTAB_Tests();
+        }
+
+        private void btnCreateGUI_SetupFiles2_Click(object sender, EventArgs e)
+        {
+            CreateRawTS_Tests();
+        }
+
+        private void btnCreateGUI_SetupFiles3_Click(object sender, EventArgs e)
+        {
+            CreateRawTS_LT_Tests();
+        }
+
+        private void btnCreateGUI_SetupFiles4_Click(object sender, EventArgs e)
+        {
+            CreateFiltTS_Tests();
+        }
+
+        private void btnCreateGUI_SetupFiles5_Click(object sender, EventArgs e)
+        {
+            CreateFiltLT_TS_Tests();
         }
     }
 }

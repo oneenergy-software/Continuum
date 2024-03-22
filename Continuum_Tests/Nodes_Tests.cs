@@ -7,8 +7,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class Nodes_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Nodes";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public Nodes_Tests()
+        {
+            testingFolder = globals.testingFolder + "Nodes";
+        }
 
         [TestMethod]
         public void CalcGridStatsAndExposures_Test()

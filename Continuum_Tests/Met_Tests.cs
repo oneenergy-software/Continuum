@@ -7,8 +7,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class Met_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\Met";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public Met_Tests()
+        {
+            testingFolder = globals.testingFolder + "Met";
+        }
 
         [TestMethod]
         public void CalcAvgWS_Test()
@@ -73,12 +79,11 @@ namespace Continuum_Tests
             string MCP_Method = "Orth. Regression";
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             int offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-            MERRA thisMERRA = thisInst.merraList.GetMERRA(theseLL.latitude, theseLL.longitude);
+            Reference thisMERRA = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
-            thisInst.metList.isMCPd = true;
-
+           
             // Test 1
-            Met.WSWD_Dist thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.All, thisInst, thisMet.mcp.LT_WS_Ests);
+            Met.WSWD_Dist thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.All, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 6.566949, 0.01, "Wrong overall WS Test 1");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 4.993328, 0.01, "Wrong WS in WD 0 Test 1");
@@ -90,9 +95,8 @@ namespace Continuum_Tests
             thisInst.ResetTimeSeries();
             thisInst.metList.numTOD = 2;
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
-            thisInst.metList.isMCPd = true;
-
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Day, Met.Season.All, thisInst, thisMet.mcp.LT_WS_Ests);
+            
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Day, Met.Season.All, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 6.296237, 0.01, "Wrong overall WS Test 2");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 4.80529, 0.01, "Wrong WS in WD 0 Test 2");
@@ -100,7 +104,7 @@ namespace Continuum_Tests
             Assert.AreEqual(thisDist.sectorWS_Ratio[8] * thisDist.WS, 6.918986, 0.01, "Wrong WS in WD 8 Test 2");
             Assert.AreEqual(thisDist.sectorWS_Ratio[15] * thisDist.WS, 5.327543, 0.01, "Wrong WS in WD 15 Test 2");
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.All, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.All, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 6.83764, 0.01, "Wrong overall WS Test 3");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 5.182166, 0.01, "Wrong WS in WD 0 Test 3");
@@ -113,9 +117,8 @@ namespace Continuum_Tests
             thisInst.metList.numTOD = 1;
             thisInst.metList.numSeason = 4;
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
-            thisInst.metList.isMCPd = true;
-
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Winter, thisInst, thisMet.mcp.LT_WS_Ests);
+            
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Winter, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 7.413855, 0.01, "Wrong overall WS Test 4");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 5.1053, 0.01, "Wrong WS in WD 0 Test 4");
@@ -123,21 +126,21 @@ namespace Continuum_Tests
             Assert.AreEqual(thisDist.sectorWS_Ratio[8] * thisDist.WS, 8.429297, 0.01, "Wrong WS in WD 8 Test 4");
             Assert.AreEqual(thisDist.sectorWS_Ratio[15] * thisDist.WS, 6.318312, 0.01, "Wrong WS in WD 15 Test 4");
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Spring, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Spring, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 7.015339, 0.01, "Wrong overall WS Test 5");
             Assert.AreEqual(thisDist.sectorWS_Ratio[2] * thisDist.WS, 6.313987, 0.01, "Wrong WS in WD 2 Test 5");
             Assert.AreEqual(thisDist.sectorWS_Ratio[6] * thisDist.WS, 6.10201, 0.01, "Wrong WS in WD 6 Test 5");
             Assert.AreEqual(thisDist.sectorWS_Ratio[12] * thisDist.WS, 8.21204, 0.01, "Wrong WS in WD 12 Test 5");
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Summer, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Summer, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 5.344627, 0.01, "Wrong overall WS Test 6");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 4.7078, 0.01, "Wrong WS in WD 2 Test 6");
             Assert.AreEqual(thisDist.sectorWS_Ratio[4] * thisDist.WS, 4.88008, 0.01, "Wrong WS in WD 6 Test 6");
             Assert.AreEqual(thisDist.sectorWS_Ratio[14] * thisDist.WS, 4.95684, 0.01, "Wrong WS in WD 12 Test 6");
 
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Fall, thisInst, thisMet.mcp.LT_WS_Ests);
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Fall, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 6.50441, 0.01, "Wrong overall WS Test 7");
             Assert.AreEqual(thisDist.sectorWS_Ratio[1] * thisDist.WS, 4.96994, 0.01, "Wrong WS in WD 1 Test 7");
@@ -150,9 +153,8 @@ namespace Continuum_Tests
             thisInst.metList.numSeason = 4;
             thisInst.metList.numWD = 24;
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
-            thisInst.metList.isMCPd = true;
-
-            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.Summer, thisInst, thisMet.mcp.LT_WS_Ests);
+            
+            thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.Summer, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 5.76306, 0.01, "Wrong overall WS Test 9");
             Assert.AreEqual(thisDist.sectorWS_Ratio[0] * thisDist.WS, 4.90395, 0.01, "Wrong WS in WD 0 Test 4");
@@ -299,7 +301,7 @@ namespace Continuum_Tests
             string WS_Range = "All > Cut-In";
 
             // Test 1: All > Cut-In
-            double[] alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            double[] alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
 
             int thisDelta = Convert.ToInt16(3 * 0.01);
             Assert.AreEqual(alphaHisto[0], 3, thisDelta, "Wrong Alpha Histo Test 1");
@@ -321,7 +323,7 @@ namespace Continuum_Tests
 
             // Test 2: 5 - 10 m/s
             WS_Range = "5 - 10 m/s";
-            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
 
             thisDelta = Convert.ToInt16(0 * 0.01);
             Assert.AreEqual(alphaHisto[3], 0, thisDelta, "Wrong Alpha Histo Test 2");
@@ -340,7 +342,7 @@ namespace Continuum_Tests
 
             // Test 3: 10 - 15 m/s
             WS_Range = "10 - 15 m/s";
-            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
 
             thisDelta = Convert.ToInt16(423 * 0.01);
             Assert.AreEqual(alphaHisto[34], 423, thisDelta, "Wrong Alpha Histo Test 3");
@@ -350,7 +352,7 @@ namespace Continuum_Tests
 
             // Test 4: 15+ m/s
             WS_Range = "15+ m/s";
-            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
 
             thisDelta = Convert.ToInt16(46 * 0.01);
             Assert.AreEqual(alphaHisto[29], 46, thisDelta, "Wrong Alpha Histo Test 3");
@@ -371,17 +373,17 @@ namespace Continuum_Tests
 
             Met thisMet = thisInst.metList.metItem[0];
 
-            double thisAlphaVal = thisMet.GetAlphaPValue(5, 10, 10, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
-            Assert.AreEqual(thisAlphaVal, 0.6537, 0.001, "Wrong Alpha P Value Test 1");
+            double[] thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
+            Assert.AreEqual(thisAlphaVal[0], 0.6537, 0.001, "Wrong Alpha P Value Test 1");
 
-            thisAlphaVal = thisMet.GetAlphaPValue(5, 10, 50, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
-            Assert.AreEqual(thisAlphaVal, 0.276, 0.001, "Wrong Alpha P Value Test 2");
+            thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 50, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
+            Assert.AreEqual(thisAlphaVal[0], 0.276, 0.001, "Wrong Alpha P Value Test 2");
 
-            thisAlphaVal = thisMet.GetAlphaPValue(5, 10, 90, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
-            Assert.AreEqual(thisAlphaVal, 0.0791, 0.001, "Wrong Alpha P Value Test 3");
+            thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 90, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
+            Assert.AreEqual(thisAlphaVal[0], 0.0791, 0.001, "Wrong Alpha P Value Test 3");
 
-            thisAlphaVal = thisMet.GetAlphaPValue(5, 10, 99, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
-            Assert.AreEqual(thisAlphaVal, -0.0082, 0.001, "Wrong Alpha P Value Test 4");
+            thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 99, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
+            Assert.AreEqual(thisAlphaVal[0], -0.0082, 0.001, "Wrong Alpha P Value Test 4");
 
             thisInst.Close();
         }
@@ -395,12 +397,12 @@ namespace Continuum_Tests
             thisInst.Open(fileName);
             Met thisMet = thisInst.metList.metItem[0];
 
-            Met.MaxYearlyWind[] maxWS = thisMet.GetMaxYearlyWinds("10-min", thisInst);
+            Met.MaxYearlyWind[] maxWS = thisMet.GetMaxYearlyWinds("10-min", 49, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
 
             Assert.AreEqual(maxWS[0].maxWS, 16.0934, 0.001, "Wrong max 10-min WS 2007");
             Assert.AreEqual(maxWS[1].maxWS, 18.28394, 0.001, "Wrong max 10-min WS 2008");
 
-            maxWS = thisMet.GetMaxYearlyWinds("Gust", thisInst);
+            maxWS = thisMet.GetMaxYearlyWinds("Gust", 49, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
 
             Assert.AreEqual(maxWS[0].maxWS, 25.973, 0.001, "Wrong max gust WS 2007");
             Assert.AreEqual(maxWS[1].maxWS, 29.0576, 0.001, "Wrong max gust WS 2008");
@@ -421,8 +423,8 @@ namespace Continuum_Tests
 
             Assert.AreEqual(maxWS.gust1yr, 27.0, 0.1, "Wrong Gust 1-year WS");
             Assert.AreEqual(maxWS.tenMin1yr, 16.87, 0.1, "Wrong Ten-Min 1yrear WS");
-            Assert.AreEqual(maxWS.gust50yr, 32.0, 0.1, "Wrong Gust 50-year WS");
-            Assert.AreEqual(maxWS.tenMin50yr, 20.0, 0.1, "Wrong Ten-Min 50-year WS");
+            Assert.AreEqual(maxWS.gust50yr, 32.1, 0.1, "Wrong Gust 50-year WS");
+            Assert.AreEqual(maxWS.tenMin50yr, 20.1, 0.1, "Wrong Ten-Min 50-year WS");
 
             thisInst.Close();
         }

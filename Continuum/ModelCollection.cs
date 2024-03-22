@@ -17,7 +17,11 @@ namespace ContinuumNS
         public double maxElevAllowed = 300;
         /// <summary> Maximum P10 exposure difference between predictor and target site for wind speed estimate to be formed (not currently used)  </summary>
         public double maxP10ExpoAllowed = 200;
-        
+
+        public double rotorDiam = 100; // Wind turbine rotor diameter.  Default is 100 m until user imports a power curve (or edits from Input tab)
+        public double airDens = 1.225; // Air density kg/m^3 (default of 1.225)
+
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary> Holds sectorwise wind speeds at site of interest and sectorwise wind speed estimates at each node in path of nodes  </summary>
@@ -693,7 +697,7 @@ namespace ContinuumNS
                         }
 
                         thisInst.metList.numWD = WD_Ind;
-                        thisInst.updateThe.WindDirectionToDisplay(thisInst);                        
+                        thisInst.updateThe.WindDirectionToDisplay();                        
 
                     }
                 }
@@ -705,7 +709,7 @@ namespace ContinuumNS
                 sr.Close();
                 
                 AddModel(importModel);
-                thisInst.updateThe.AdvancedTAB(thisInst);
+                thisInst.updateThe.AdvancedTAB();
                 
             }
         }
@@ -2476,11 +2480,13 @@ namespace ContinuumNS
         /// </summary>
 
         public TimeSeries[] GenerateTimeSeries(Continuum thisInst, string[] metsUsed, Nodes targetNode, TurbineCollection.PowerCurve powerCurve,
-            Wake_Model wakeModel, WakeCollection.WakeLossCoeffs[] wakeCoeffs, string MCP_Method)
+            Wake_Model wakeModel, WakeCollection.WakeLossCoeffs[] wakeCoeffs, string MCP_Method = "")
         {
             
             TimeSeries[] thisTS = new TimeSeries[0];
             int numMets = metsUsed.Length;
+            MetLTEsts[] metLT_Ests = new MetLTEsts[numMets];
+            int TS_Length = 0;
 
             if (metsUsed == null)
                 return thisTS;
@@ -2491,29 +2497,53 @@ namespace ContinuumNS
             if (thisInst.topo.elevsForCalcs == null)
                 thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
-            // Size time series array to same length at met's long-term estimates
-            int TS_Length = thisInst.merraList.GetLTRefLength();
-            Array.Resize(ref thisTS, TS_Length);
-
-            // Get LT Estimates at each met used in model. Save in MetLTEsts struct which holds an array of MCP.Site_Data struct           
-            MetLTEsts[] metLT_Ests = new MetLTEsts[numMets];
-
-            for (int i = 0; i < numMets; i++)
+            if (MCP_Method != null && MCP_Method != "")
             {
-                for (int j = 0; j < thisInst.metList.ThisCount; j++)
-                    if (metsUsed[i] == thisInst.metList.metItem[j].name)
-                    {
-                        if (thisInst.metList.metItem[j].mcp.LT_WS_Ests.Length == 0)
-                            thisInst.metList.metItem[j].mcp.LT_WS_Ests = thisInst.metList.metItem[j].mcp.GenerateLT_WS_TS(thisInst, thisInst.metList.metItem[j], MCP_Method);
+                // Size time series array to same length at met's long-term estimates
+                Reference thisRef = thisInst.metList.GetReferenceUsedInMCP(metsUsed);
 
-                        metLT_Ests[i].estWS = thisInst.metList.metItem[j].mcp.LT_WS_Ests;
-                    }                 
-                     
+                if (thisRef.interpData.TS_Data.Length == 0)
+                {
+                    thisRef.GetReferenceDataFromDB(thisInst);
+                    thisRef.GetInterpData(thisInst.UTM_conversions);
+                }
+
+                TS_Length = thisRef.interpData.TS_Data.Length;
+                Array.Resize(ref thisTS, TS_Length);
+
+                // Get LT Estimates at each met used in model. Save in MetLTEsts struct which holds an array of MCP.Site_Data struct           
+
+                for (int i = 0; i < numMets; i++)
+                {
+                    for (int j = 0; j < thisInst.metList.ThisCount; j++)
+                        if (metsUsed[i] == thisInst.metList.metItem[j].name)
+                        {
+                            if (thisInst.metList.metItem[j].mcpList[0].LT_WS_Ests.Length == 0) // mcpList[0] is MCP at modeled height
+                                thisInst.metList.metItem[j].mcpList[0].LT_WS_Ests = thisInst.metList.metItem[j].mcpList[0].GenerateLT_WS_TS(thisInst, thisInst.metList.metItem[j], MCP_Method);
+
+                            metLT_Ests[i].estWS = thisInst.metList.metItem[j].mcpList[0].LT_WS_Ests;
+                        }
+                }
+            }
+            else
+            {
+                // Using data period of all mets used in model (i.e. minimum allStartDate and maximum allEndDate of all mets)                
+                for (int i = 0; i < numMets; i++)
+                {
+                    for (int j = 0; j < thisInst.metList.ThisCount; j++)
+                        if (metsUsed[i] == thisInst.metList.metItem[j].name) 
+                            metLT_Ests[i].estWS = thisInst.metList.GetMetDataTSOverEntireRange(metsUsed[i], thisInst.modeledHeight); 
+                }
+                                
+                if (numMets > 0)
+                    TS_Length = metLT_Ests[0].estWS.Length;                              
+
+                Array.Resize(ref thisTS, TS_Length);
             }
 
             // Get all models used. 
-            int numTODs = thisInst.metList.metItem[0].mcp.numTODs;
-            int numSeasons = thisInst.metList.metItem[0].mcp.numSeasons;
+         //   int numTODs = thisInst.metList.metItem[0].mcp.numTODs;
+         //   int numSeasons = thisInst.metList.metItem[0].mcp.numSeasons;
 
             // Get all models used
             Models[] models = GetAllModelsUsed(thisInst);
@@ -2558,53 +2588,92 @@ namespace ContinuumNS
                         pathInd++;
                     }
 
-            // Figure out which met is closest (for wind direction)
-            int closestMetInd = 0;
-            double closestDist = 1000000;
-            Met_Data_Filter metDataFilter = new Met_Data_Filter();
+            // Figure out order of mets by distance (for wind direction)
+            int[] metOrderByDist = new int[numMets];
+            
+       //     int closestMetInd = 0;
+            double[] distsToTarget = new double[numMets];
+           
             int numWD = thisInst.metList.numWD;
 
             for (int m = 0; m < numMets; m++)
             {
                 Met thisMet = thisInst.metList.GetMet(metsUsed[m]);
-                double thisDist = thisInst.topo.CalcDistanceBetweenPoints(targetNode.UTMX, targetNode.UTMY, thisMet.UTMX, thisMet.UTMY);
+                distsToTarget[m] = thisInst.topo.CalcDistanceBetweenPoints(targetNode.UTMX, targetNode.UTMY, thisMet.UTMX, thisMet.UTMY);                
+            }
 
-                if (thisDist < closestDist)
+            Array.Sort(distsToTarget);
+            for (int m = 0; m < numMets; m++)
+            {
+                Met thisMet = thisInst.metList.GetMet(metsUsed[m]);
+
+                for (int n = 0; n < numMets; n++)
                 {
-                    closestDist = thisDist;
-                    closestMetInd = m;
+                    if (distsToTarget[n] == thisInst.topo.CalcDistanceBetweenPoints(targetNode.UTMX, targetNode.UTMY, thisMet.UTMX, thisMet.UTMY))
+                        metOrderByDist[n] = m;
                 }
             }
 
             // Figure out time series interval
-            int timeInt = 1; // number of hours per time interval
+            double timeInt = 1; // number of hours per time interval
 
             if (metLT_Ests[0].estWS.Length < 2)
                 return thisTS;
 
             TimeSpan timeSpan = metLT_Ests[0].estWS[1].thisDate - metLT_Ests[0].estWS[0].thisDate;
-            timeInt = timeSpan.Hours;
+            timeInt = timeSpan.TotalHours;
+            Met_Data_Filter metDataFilter = new Met_Data_Filter();
 
             // For each time interval and for each predicting met and each model (radius), get path of nodes and do wind speed estimate along nodes
             // Then combine wind speed estimates using weights to form average wind speed
-                        
+
             List<int> integerList = Enumerable.Range(0, TS_Length).ToList();
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
             {
 
-                //    for (int i = 0; i < TS_Length; i++)
-                //{
+       //     for (int i = 0; i < TS_Length; i++)
+        //    {               
                 DateTime dateTime = metLT_Ests[0].estWS[i].thisDate;
                 Met.TOD thisTOD = thisInst.metList.GetTOD(dateTime);
                 Met.Season season = thisInst.metList.GetSeason(dateTime);
                 double thisAvg = 0;
                 double sumWeights = 0;
+                int closestMetInd = metOrderByDist[0];
                 double thisWD = metLT_Ests[closestMetInd].estWS[i].thisWD;
+
+                if (thisWD == 0 || thisWD == -999) // Check other mets for a valid WD
+                {
+                    for (int m = 0; m < numMets; m++)
+                        if (metLT_Ests[metOrderByDist[m]].estWS[i].thisWD != 0 && metLT_Ests[metOrderByDist[m]].estWS[i].thisWD != -999)
+                        {
+                            closestMetInd = metOrderByDist[m];
+                            break;
+                        }
+
+                    thisWD = metLT_Ests[closestMetInd].estWS[i].thisWD;
+
+                    if (thisWD == 0 || thisWD == -999) // No valid WD at any sites so set closestMetInd back to zero
+                    {
+                        closestMetInd = metOrderByDist[0];
+                        thisWD = metLT_Ests[metOrderByDist[closestMetInd]].estWS[i].thisWD;
+                    }
+                }
+
+                if (thisWD == -999 || thisWD == 0)
+                    thisWD = GetLastOrNextWDForTimeSeriesModeling(metLT_Ests[closestMetInd].estWS, i);
+
                 int thisWD_Ind = metDataFilter.GetWD_Ind(thisWD, numWD);
 
+                // Find average wind speed estimate using all mets with a valid WS
                 for (int m = 0; m < numMets; m++)
                 {
                     Met thisMet = thisInst.metList.GetMet(metsUsed[m]);
+
+                    if (metLT_Ests[m].estWS[i].thisWS == 0 && metLT_Ests[m].estWS[i].thisWD == 0)
+                        continue;
+
+                    if (metLT_Ests[m].estWS[i].thisWS == -999)
+                        continue;
 
                     for (int r = 0; r < numRad; r++)
                     {
@@ -2619,28 +2688,78 @@ namespace ContinuumNS
 
                 if (sumWeights > 0)
                     thisAvg = thisAvg / sumWeights;
+                else
+                    thisAvg = -999;
 
                 thisTS[i].dateTime = metLT_Ests[closestMetInd].estWS[i].thisDate;
-                thisTS[i].WD = metLT_Ests[closestMetInd].estWS[i].thisWD;
+                thisTS[i].WD = thisWD;
                 thisTS[i].freeStreamWS = thisAvg;
 
-                if (powerCurve.name != null)
+                if (powerCurve.name != null && thisAvg != -999)
                     thisTS[i].grossEnergy = thisInst.turbineList.GetInterpPowerOrThrust(thisTS[i].freeStreamWS, powerCurve, "Power") * timeInt;
+                else
+                    thisTS[i].grossEnergy = -999;
 
                 if (wakeModel != null)
                 {
                     if (wakeModel.comboMethod != null)
                     {
-                        double[] wakedValues = thisInst.wakeModelList.CalcNetEnergyTimeSeries(wakeCoeffs, targetNode.UTMX, targetNode.UTMY, thisAvg, thisInst, wakeModel, thisTS[i].WD, thisTS[i].grossEnergy, timeInt);
+                        if (thisAvg != -999)
+                        {
+                            double[] wakedValues = thisInst.wakeModelList.CalcNetEnergyTimeSeries(wakeCoeffs, targetNode.UTMX, targetNode.UTMY, thisAvg, thisInst, wakeModel, thisTS[i].WD,
+                                thisTS[i].grossEnergy, timeInt);
 
-                        thisTS[i].wakedWS = wakedValues[0];
-                        thisTS[i].netEnergy = wakedValues[1] * thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+                            thisTS[i].wakedWS = wakedValues[0];
+                            thisTS[i].netEnergy = wakedValues[1] * thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+                        }
+                        else
+                        {
+                            thisTS[i].wakedWS = -999;
+                            thisTS[i].netEnergy = -999;
+                        }
                     }
                 }
 
             });
+          //  }
 
             return thisTS;
+        }
+
+        /// <summary> Find last (or next) timestamp with a valid WD and use that </summary>        
+        public double GetLastOrNextWDForTimeSeriesModeling(MCP.Site_data[] estData, int i)
+        {
+            double thisWD = 0;   
+            int numStepsToLastValid = 0;
+            int lastValidInd = i;
+            int numStepsToNextValid = 0;
+            int nextValidInd = i;
+
+            while (lastValidInd > 0 && (estData[lastValidInd].thisWD == -999 || estData[lastValidInd].thisWD == 0))
+                lastValidInd--;
+
+            if (estData[lastValidInd].thisWD != -999 && estData[lastValidInd].thisWD != 0)
+                numStepsToLastValid = i - lastValidInd;
+
+            while (nextValidInd < estData.Length - 1 && (estData[nextValidInd].thisWD == -999 || estData[nextValidInd].thisWD == 0))
+                nextValidInd++;
+
+            if (estData[nextValidInd].thisWD != -999 && estData[nextValidInd].thisWD != 0)
+                numStepsToNextValid = i - nextValidInd;
+
+            if (numStepsToLastValid != 0 && numStepsToNextValid != 0) // Found last and next valid WD so use WD closest to this timestamp
+            {
+                if (Math.Abs(numStepsToNextValid) < Math.Abs(numStepsToLastValid))
+                    thisWD = estData[nextValidInd].thisWD;
+                else
+                    thisWD = estData[lastValidInd].thisWD;
+            }
+            else if (numStepsToNextValid != 0)
+                thisWD = estData[nextValidInd].thisWD;
+            else if (numStepsToLastValid != 0)
+                thisWD = estData[lastValidInd].thisWD;
+
+            return thisWD;
         }
 
         /// <summary> Finds and returns model with specified settings </summary>
@@ -2694,6 +2813,9 @@ namespace ContinuumNS
             for (int i = 0; i < thisTS.Length; i++)
             {
                 double thisWS = 0;
+
+                if (thisTS[i].WD == -999 || thisTS[i].freeStreamWS == -999)
+                    continue;
 
                 if (wakedOrFreestream == "Freestream")
                     thisWS = thisTS[i].freeStreamWS;
@@ -2770,30 +2892,38 @@ namespace ContinuumNS
         {     
 
             if (thisTS == null) return;
-            if (thisTS.Length < 1) return;
+            if (thisTS.Length < 2) return;
 
             int TS_Length = thisTS.Length;
-            
-            // Start on first hour of January
+
+            // Figure out time interval (in hours)
+            TimeSpan timeSpan = thisTS[1].dateTime - thisTS[0].dateTime;
+            double timeInt = timeSpan.TotalMinutes / 60.0;
+
+            // Start on first hour of month
             int TS_Ind = 0;
             int thisDay = thisTS[TS_Ind].dateTime.Day;
             int thisHour = thisTS[TS_Ind].dateTime.Hour;
-            int thisMonth = thisTS[TS_Ind].dateTime.Month;
-            
+                        
             MCP mcp = new MCP(); // Created to use GetWD_Ind function
             mcp.numWD = thisInst.metList.numWD;
 
-            while (thisMonth != 1 && thisDay != 1 && thisHour != 0)
+            // Go to first day of month
+            bool atFirstDay = false;
+
+            if (thisDay == 1 && thisHour == 0)
+                atFirstDay = true;
+
+            while (atFirstDay == false && TS_Ind < thisTS.Length - 1)
             {
                 TS_Ind++;
                 thisDay = thisTS[TS_Ind].dateTime.Day;
                 thisHour = thisTS[TS_Ind].dateTime.Hour;
-                thisMonth = thisTS[TS_Ind].dateTime.Month;
+                
+                if (thisDay == 1 && thisHour == 0)
+                    atFirstDay = true;
             }
-
-            int lastMonth = thisTS[TS_Ind].dateTime.Month;
-            int lastYear = thisTS[TS_Ind].dateTime.Year;
-
+                                                
             double LT_AEP = 0;
             int yearCount = 0;
             double thisAEP = 0;
@@ -2801,11 +2931,15 @@ namespace ContinuumNS
             double[] thisSectorEnergy = new double[thisInst.metList.numWD];
             grossEst.sectorEnergy = new double[thisInst.metList.numWD];
 
+            if (atFirstDay == false)
+                return;
+
+            int lastMonth = thisTS[TS_Ind].dateTime.Month;
+            int lastYear = thisTS[TS_Ind].dateTime.Year;
+
             double monthEnergy = 0;
             int monthInd = 0;
-                        
-            Array.Resize(ref grossEst.monthlyVals, 1);
-
+                                    
             // Calculates gross energy production for every year which is used to find the LT average gross AEP
             // Also calculates the monthly energy production for each month in the time series
             // And calculates the average LT sectorwise energy production
@@ -2813,12 +2947,16 @@ namespace ContinuumNS
             {
                 int month = thisTS[t].dateTime.Month;
                 int year = thisTS[t].dateTime.Year;
+
                 int WD_ind = mcp.Get_WD_ind(thisTS[t].WD);
 
                 if (year == lastYear)
                 {
-                    thisAEP = thisAEP + thisTS[t].grossEnergy;
-                    thisSectorEnergy[WD_ind] = thisSectorEnergy[WD_ind] + thisTS[t].grossEnergy;
+                    if (thisTS[t].grossEnergy != -999)
+                    {
+                        thisAEP = thisAEP + thisTS[t].grossEnergy;
+                        thisSectorEnergy[WD_ind] = thisSectorEnergy[WD_ind] + thisTS[t].grossEnergy;
+                    }
                 }
                 else
                 {
@@ -2827,30 +2965,38 @@ namespace ContinuumNS
                         LT_SectorEnergy[WD] = LT_SectorEnergy[WD] + thisSectorEnergy[WD];
 
                     yearCount++;
-                    thisAEP = thisTS[t].grossEnergy;                
+
+                    if (thisTS[t].grossEnergy != -999)
+                        thisAEP = thisTS[t].grossEnergy;
+                    else
+                        thisAEP = 0;
+
                     thisSectorEnergy = new double[thisInst.metList.numWD];
                     thisSectorEnergy[WD_ind] = thisTS[t].grossEnergy;
                 }
 
                 if (month == lastMonth && year == lastYear)
                 {
-                    monthEnergy = monthEnergy + thisTS[t].grossEnergy;
+                    if (thisTS[t].grossEnergy != -999)
+                        monthEnergy = monthEnergy + thisTS[t].grossEnergy;
                 }
                 else
                 {
+                    Array.Resize(ref grossEst.monthlyVals, monthInd + 1);
                     grossEst.monthlyVals[monthInd].month = lastMonth;
                     grossEst.monthlyVals[monthInd].year = lastYear;
                     grossEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
 
-                    monthEnergy = thisTS[t].grossEnergy;
+                    if (thisTS[t].grossEnergy != -999)
+                        monthEnergy = thisTS[t].grossEnergy;
+                    else
+                        monthEnergy = 0;
+
                     monthInd++;
 
                     lastMonth = month;
-                    lastYear = year;
-
-                    Array.Resize(ref grossEst.monthlyVals, monthInd + 1);
+                    lastYear = year;                                        
                 }
-
             }
 
             // Add last year and last month of last year
@@ -2862,9 +3008,23 @@ namespace ContinuumNS
 
                 yearCount++;
 
+                Array.Resize(ref grossEst.monthlyVals, monthInd + 1);
                 grossEst.monthlyVals[monthInd].month = lastMonth;
                 grossEst.monthlyVals[monthInd].year = lastYear;
                 grossEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
+            }
+            else
+            {
+                // Add last month (if it's a full month)
+                DateTime nextTS = thisTS[thisTS.Length - 1].dateTime.AddHours(timeInt);
+
+                if (nextTS.Day == 1 && nextTS.Hour == 0)
+                {
+                    Array.Resize(ref grossEst.monthlyVals, monthInd + 1);
+                    grossEst.monthlyVals[monthInd].month = lastMonth;
+                    grossEst.monthlyVals[monthInd].year = lastYear;
+                    grossEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
+                }
             }
 
             if (yearCount > 0)
@@ -2887,26 +3047,34 @@ namespace ContinuumNS
             if (thisTS.Length < 1) return;
 
             int TS_Length = thisTS.Length;
-            
+
+            // Figure out time interval (in hours)
+            TimeSpan timeSpan = thisTS[1].dateTime - thisTS[0].dateTime;
+            double timeInt = timeSpan.TotalMinutes / 60.0;
+
             // Start on first hour on first of month
             int TS_Ind = 0;
             int thisDay = thisTS[TS_Ind].dateTime.Day;
             int thisHour = thisTS[TS_Ind].dateTime.Hour;
-            int thisMonth = thisTS[TS_Ind].dateTime.Month;
-            
+                        
             MCP mcp = new MCP(); // Created to use Get_WD_Ind function
             mcp.numWD = thisInst.metList.numWD;
 
-            while (thisMonth != 1 && thisDay != 1 && thisHour != 0)
+            // Go to first day of month
+            bool atFirstDay = false;
+
+            if (thisDay == 1 && thisHour == 0)
+                atFirstDay = true;
+
+            while (atFirstDay == false && TS_Ind < thisTS.Length - 1)
             {
                 TS_Ind++;
                 thisDay = thisTS[TS_Ind].dateTime.Day;
                 thisHour = thisTS[TS_Ind].dateTime.Hour;
-                thisMonth = thisTS[TS_Ind].dateTime.Month;
-            }
 
-            int lastMonth = thisTS[TS_Ind].dateTime.Month;
-            int lastYear = thisTS[TS_Ind].dateTime.Year;
+                if (thisDay == 1 && thisHour == 0)
+                    atFirstDay = true;
+            }                        
 
             double LT_AEP = 0;
             int yearCount = 0;
@@ -2915,10 +3083,14 @@ namespace ContinuumNS
             double[] thisSectorEnergy = new double[thisInst.metList.numWD];
             netEst.sectorEnergy = new double[thisInst.metList.numWD];
 
+            if (atFirstDay == false)
+                return;
+
+            int lastMonth = thisTS[TS_Ind].dateTime.Month;
+            int lastYear = thisTS[TS_Ind].dateTime.Year;
+
             double monthEnergy = 0;
-            int monthInd = 0;
-                        
-            Array.Resize(ref netEst.monthlyVals, 1);
+            int monthInd = 0;                                    
 
             for (int t = TS_Ind; t < TS_Length; t++)
             {
@@ -2928,8 +3100,11 @@ namespace ContinuumNS
 
                 if (year == lastYear)
                 {
-                    thisAEP = thisAEP + thisTS[t].netEnergy;
-                    thisSectorEnergy[WD_ind] = thisSectorEnergy[WD_ind] + thisTS[t].netEnergy;
+                    if (thisTS[t].netEnergy != -999)
+                    {
+                        thisAEP = thisAEP + thisTS[t].netEnergy;
+                        thisSectorEnergy[WD_ind] = thisSectorEnergy[WD_ind] + thisTS[t].netEnergy;
+                    }
                 }
                 else
                 {
@@ -2937,28 +3112,36 @@ namespace ContinuumNS
                     for (int WD = 0; WD < thisInst.metList.numWD; WD++)
                         LT_SectorEnergy[WD] = LT_SectorEnergy[WD] + thisSectorEnergy[WD];
 
-                    yearCount++;
-                    thisAEP = thisTS[t].netEnergy;
+                    yearCount++;                    
                     thisSectorEnergy = new double[thisInst.metList.numWD];
+
+                    if (thisTS[t].netEnergy != -999)
+                        thisAEP = thisTS[t].netEnergy;
+                    else
+                        thisAEP = 0;
                 }
 
                 if (month == lastMonth && year == lastYear)
                 {
-                    monthEnergy = monthEnergy + thisTS[t].netEnergy;
+                    if (thisTS[t].netEnergy != -999)
+                        monthEnergy = monthEnergy + thisTS[t].netEnergy;
                 }
                 else
                 {
+                    Array.Resize(ref netEst.monthlyVals, monthInd + 1);
                     netEst.monthlyVals[monthInd].month = lastMonth;
                     netEst.monthlyVals[monthInd].year = lastYear;
                     netEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
 
-                    monthEnergy = thisTS[t].netEnergy;
+                    if (thisTS[t].netEnergy != -999)
+                        monthEnergy = thisTS[t].netEnergy;
+                    else
+                        monthEnergy = 0;
+                    
                     monthInd++;
 
                     lastMonth = month;
-                    lastYear = year;
-
-                    Array.Resize(ref netEst.monthlyVals, monthInd + 1);
+                    lastYear = year;                                        
                 }
 
             }
@@ -2972,9 +3155,23 @@ namespace ContinuumNS
 
                 yearCount++;
 
+                Array.Resize(ref netEst.monthlyVals, monthInd + 1);
                 netEst.monthlyVals[monthInd].month = lastMonth;
                 netEst.monthlyVals[monthInd].year = lastYear;
                 netEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
+            }
+            else
+            {
+                // Add last month (if it's a full month)
+                DateTime nextTS = thisTS[thisTS.Length - 1].dateTime.AddHours(timeInt);
+
+                if (nextTS.Day == 1 && nextTS.Hour == 0)
+                {
+                    Array.Resize(ref netEst.monthlyVals, monthInd + 1);
+                    netEst.monthlyVals[monthInd].month = lastMonth;
+                    netEst.monthlyVals[monthInd].year = lastYear;
+                    netEst.monthlyVals[monthInd].energyProd = monthEnergy / 1000; // Save in MWh
+                }
             }
 
             if (yearCount > 0)

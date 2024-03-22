@@ -80,7 +80,7 @@ namespace ContinuumNS
                 inputTurbine = check.NewTurbOrMet(thisInst.topo, name, UTMX, UTMY, true);
                 if (inputTurbine == true) thisInst.turbineList.AddTurbine(name, UTMX, UTMY, stringNum);
                 
-                thisInst.updateThe.AllTABs(thisInst);                    
+                thisInst.updateThe.AllTABs();                    
                 thisInst.ChangesMade();
                 
                 Close();

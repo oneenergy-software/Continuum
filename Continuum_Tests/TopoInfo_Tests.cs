@@ -11,8 +11,14 @@ namespace Continuum_Tests
 {
     [TestClass]
     public class TopoInfo_Tests
-    {
-        string testingFolder = "C:\\Users\\liz_w\\Dropbox\\Continuum 3 Source code\\Critical Unit Test Docs\\TopoInfo";
+    {        
+        Globals globals = new Globals();
+        string testingFolder;
+
+        public TopoInfo_Tests()
+        {
+            testingFolder = globals.testingFolder + "TopoInfo";
+        }
 
         [TestMethod]
         public void ExportTopoData()
@@ -150,7 +156,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum("");
             
             thisInst.savedParams.savedFileName = testingFolder + "\\Testing GeoTiff load.cfm";
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.UTM_conversions.savedDatumIndex = 0;
             thisInst.UTM_conversions.UTMZoneNumber = 17;
             thisInst.UTM_conversions.hemisphere = "Northern";
@@ -198,7 +204,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum("");
             
             thisInst.savedParams.savedFileName = testingFolder + "\\Testing LandCover load.cfm";
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.UTM_conversions.savedDatumIndex = 0;
             thisInst.UTM_conversions.UTMZoneNumber = 17;
             thisInst.UTM_conversions.hemisphere = "Northern";
@@ -353,5 +359,94 @@ namespace Continuum_Tests
             sr.Close();
             thisInst.Close();
         }
+
+        [TestMethod]
+        public void CalcSlopeAlongCenterlineOfFittedPlane()
+        {
+            TopoInfo topo = new TopoInfo();
+
+            // Test 1: Forced through base
+            double[] regression = new double[2];
+            regression[0] = 0.01;
+            regression[1] = -0.01;
+            double radius = 400;
+            double WD = 90;
+            double UTMX = 434210;
+            double UTMY = 4515955;
+            double elev = 900;
+
+            double thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, true);
+            Assert.AreEqual(thisSlope, -0.572939, 0.0001);
+
+            // Test 2: NOT Forced through base
+            regression = new double[3];
+            regression[0] = -3;
+            regression[1] = 0.005;
+            regression[2] = -0.03;
+            radius = 400;
+            WD = 225;
+
+            thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, false);
+            Assert.AreEqual(thisSlope, -1.01275037, 0.0001);
+
+            // Test 2: NOT Forced through base
+            regression[0] = 4.2;
+            regression[1] = -0.025;
+            regression[2] = 0.025;
+            radius = 800;
+            WD = 315;
+
+            thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, false);
+            Assert.AreEqual(thisSlope, -2.024868297, 0.0001);
+        }
+
+        [TestMethod]
+        public void CalcElevVariationInFittedPlane()
+        {
+            string terrComplFolder = testingFolder + "\\Terrain Complexity";
+
+            int numDataPoints = 104;
+            double[][] utmXandYs = new double[numDataPoints][];
+            double[] elevData = new double[numDataPoints];
+
+            StreamReader sr = new StreamReader(terrComplFolder + "\\UTM X and Y vals.csv");
+            int valInd = 0;
+
+            while (sr.EndOfStream == false)
+            {
+                string[] utmData = sr.ReadLine().Split(',');
+                utmXandYs[valInd] = new double[2];
+                utmXandYs[valInd][0] = Convert.ToDouble(utmData[0]);
+                utmXandYs[valInd][1] = Convert.ToDouble(utmData[1]);
+                valInd++;
+            }
+
+            sr.Close();
+
+            sr = new StreamReader(terrComplFolder + "\\Elev vals.csv");
+            valInd = 0;
+
+            while (sr.EndOfStream == false)
+            {
+                string elevDataStr = sr.ReadLine();
+                elevData[valInd] = Convert.ToDouble(elevDataStr);
+                
+                valInd++;
+            }
+
+            sr.Close();
+
+            double[] regression = new double[2];
+            regression[0] = 0.001943942;
+            regression[1] = -0.057339727;
+            double poiElev = 802.151;
+
+            TopoInfo topo = new TopoInfo();
+            double elevVar = topo.CalcElevVariationInFittedPlane(regression, utmXandYs, elevData, poiElev, true);
+
+            Assert.AreEqual(elevVar, 1.37338277, 0.0001);
+
+        }
+
     }
 }
