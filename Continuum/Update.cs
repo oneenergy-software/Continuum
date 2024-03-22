@@ -11,6 +11,9 @@ using System.Security.Policy;
 using System.Threading;
 using System.IO.Packaging;
 using static ContinuumNS.Met;
+using static ContinuumNS.Met_Data_Filter;
+using static IronPython.Modules._ast;
+//using System.Windows.Media;
 
 namespace ContinuumNS
 {
@@ -993,22 +996,69 @@ namespace ContinuumNS
             thisInst.cboExtremeShearMet.Items.Clear();
             thisInst.cboExtremeWSMet.Items.Clear();
 
+            if (thisInst.cboInputLLorDD.SelectedIndex == -1)
+                thisInst.cboInputLLorDD.SelectedIndex = 0;
+            string DDorLL = thisInst.cboInputLLorDD.SelectedItem.ToString();
+
+            if (DDorLL == "DD")
+            {
+                thisInst.lstMetTowers.Columns[1].Text = "Lat. [degs]";
+                thisInst.lstMetTowers.Columns[2].Text = "Long. [degs]";
+            }
+            else
+            {
+                thisInst.lstMetTowers.Columns[1].Text = "Easting [m]";
+                thisInst.lstMetTowers.Columns[2].Text = "Northing [m]";
+            }
+
             int numMets = thisInst.metList.ThisCount;
 
             if (numMets > 0)
             {
                 Met thisMet = thisInst.metList.metItem[0];
-                thisInst.lstMetTowers.Columns[3].Text = thisInst.modeledHeight + " m Wind Speed";
+                thisInst.lstMetTowers.Columns[3].Text = thisInst.modeledHeight + " m WS [m/s]";
+
+                // If long-term WS estimated at 1 or more mets, then add column 'LT Est. Wind Speed'
+                bool oneHasLT = false;
+                for (int m = 0; m < numMets; m++)
+                    if (thisInst.metList.metItem[m].isMCPd)
+                    {
+                        oneHasLT = true;
+                        break;
+                    }
+
+                if (oneHasLT && thisInst.lstMetTowers.Columns.Count < 5)
+                    thisInst.lstMetTowers.Columns.Add("LT Est. WS [m/s]");
+                else if (oneHasLT == false && thisInst.lstMetTowers.Columns.Count == 5)
+                    thisInst.lstMetTowers.Columns.Remove(thisInst.lstMetTowers.Columns[4]);
 
                 for (int j = 0; j < numMets; j++) // Now repopulate it with met towers
                 {
                     thisMet = thisInst.metList.metItem[j];
                     Met.WSWD_Dist thisDist = thisMet.GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+                    Met.WSWD_Dist measDist = new WSWD_Dist();
+                    
+                    if (thisInst.metList.isTimeSeries)
+                        measDist = thisMet.CalcMeas_WSWD_Dists(thisInst.modeledHeight, Met.TOD.All, Met.Season.All, thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
 
                     ListViewItem objListItem = thisInst.lstMetTowers.Items.Add(thisMet.name);
-                    objListItem.SubItems.Add(Math.Round(thisMet.UTMX, 0).ToString());
-                    objListItem.SubItems.Add(Math.Round(thisMet.UTMY, 0).ToString());
-                    if (thisDist.WS != 0)
+
+                    if (DDorLL == "UTM")
+                    {
+                        objListItem.SubItems.Add(Math.Round(thisMet.UTMX, 0).ToString());
+                        objListItem.SubItems.Add(Math.Round(thisMet.UTMY, 0).ToString());
+                    }
+                    else
+                    {
+                        UTM_conversion.Lat_Long thisLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+                        objListItem.SubItems.Add(Math.Round(thisLL.latitude, 4).ToString());
+                        objListItem.SubItems.Add(Math.Round(thisLL.longitude, 4).ToString());
+                    }
+                    
+                    if (measDist.WS != 0)
+                        objListItem.SubItems.Add(Math.Round(measDist.WS, 3).ToString());
+
+                    if ((oneHasLT && thisDist.WS != measDist.WS) || thisInst.metList.isTimeSeries == false)
                         objListItem.SubItems.Add(Math.Round(thisDist.WS, 3).ToString());
 
                     thisInst.chkMetLabels.Items.Add(thisMet.name, true);
@@ -4575,12 +4625,37 @@ namespace ContinuumNS
             string[] stringNames = null;
             int numStrings = 0;
 
+            if (thisInst.cboInputLLorDD.SelectedItem == null)
+                thisInst.cboInputLLorDD.SelectedIndex = 0;
+            string DDorLL = thisInst.cboInputLLorDD.SelectedItem.ToString();
+
+            if (DDorLL == "UTM")
+            {
+                thisInst.lstTurbines.Columns[1].Text = "Easting [m]";
+                thisInst.lstTurbines.Columns[2].Text = "Northing [m]";
+            }
+            else
+            {
+                thisInst.lstTurbines.Columns[1].Text = "Latitude [degs]";
+                thisInst.lstTurbines.Columns[2].Text = "Longitude [degs]";
+            }
+
             for (int i = 0; i < turbCount; i++)
             {
                 Turbine thisTurb = thisInst.turbineList.turbineEsts[i];
                 objListItem = thisInst.lstTurbines.Items.Add(thisTurb.name);
-                objListItem.SubItems.Add(Math.Round(thisTurb.UTMX, 0).ToString());
-                objListItem.SubItems.Add(Math.Round(thisTurb.UTMY, 0).ToString());
+
+                if (DDorLL == "UTM")
+                {
+                    objListItem.SubItems.Add(Math.Round(thisTurb.UTMX, 0).ToString());
+                    objListItem.SubItems.Add(Math.Round(thisTurb.UTMY, 0).ToString());
+                }
+                else
+                {
+                    UTM_conversion.Lat_Long thisLL = thisInst.UTM_conversions.UTMtoLL(thisTurb.UTMX, thisTurb.UTMY);
+                    objListItem.SubItems.Add(Math.Round(thisLL.latitude, 4).ToString());
+                    objListItem.SubItems.Add(Math.Round(thisLL.longitude, 4).ToString());
+                }
 
                 thisInst.chkTurbLabels.Items.Add(thisTurb.name, true);
                 thisInst.chkTurbLabels_Maps.Items.Add(thisTurb.name, true);
@@ -6624,7 +6699,7 @@ namespace ContinuumNS
                 double[,] paramToPlot = null;
                 // Plot land cover, surface roughness, or displacement height
                 if (topoOrRough == "Surface Roughness") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Surface Roughness");
-                if (topoOrRough == "Displacement height") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Displacement height");
+                if (topoOrRough == "Displacement height") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Displacement Height");
                 if (topoOrRough == "Land Cover") paramToPlot = thisInst.topo.GetLC_ParamToPlot("Land Cover");
                 if (topoOrRough == "Topography") paramToPlot = thisInst.topo.topoElevs;
 
@@ -6644,11 +6719,27 @@ namespace ContinuumNS
                     thisInst.txtTopoSource.Text = thisInst.savedParams.landCoverFileName;
                 }
 
+                // Make the X and Y axis same length
+                double xMinExtent = theseXYs.X.plot.max - theseXYs.X.plot.min;
+                double yMinExtent = theseXYs.Y.plot.max - theseXYs.Y.plot.min;
+                double extentYoverX = yMinExtent / xMinExtent;
+
+                double appAspectRatio = (double)thisInst.Height / thisInst.Width;
+
+                if (thisInst.WindowState == FormWindowState.Normal)
+                {
+                    if (extentYoverX > 1)
+                        thisInst.plotTopo.Width = Convert.ToInt32(633 / extentYoverX);
+                    else if (extentYoverX < 1)
+                        thisInst.plotTopo.Height = Convert.ToInt32(522 / extentYoverX);
+                }
+
                 // Create heat map series
                 var cs = new HeatMapSeries
                 {
                     X0 = theseXYs.X.plot.min,
                     X1 = theseXYs.X.plot.max,
+
                     Y0 = theseXYs.Y.plot.min,
                     Y1 = theseXYs.Y.plot.max,
 
@@ -6663,12 +6754,12 @@ namespace ContinuumNS
                     LowColor = OxyColors.Gray,
                     Minimum = thisInst.topo.GetMin(paramToPlot, true),
                     Maximum = thisInst.topo.GetMax(paramToPlot)
-                });
+                });                                         
 
                 thisInst.plotTopo.Model.Series.Add(cs);
 
-                Labels();
-
+                Labels();                                
+                
                 // Refresh plot
                 thisInst.plotTopo.Refresh();
 
@@ -7096,7 +7187,7 @@ namespace ContinuumNS
 
             thisInst.plotInputWindRose.Model = new PlotModel();
             var model = thisInst.plotInputWindRose.Model;
-            model.Title = windOrEnergy + " at Met Sites";
+            model.Title = windOrEnergy; 
             model.PlotType = PlotType.Polar;
             model.IsLegendVisible = false;
             model.PlotAreaBorderThickness = new OxyThickness(0);
@@ -7119,6 +7210,9 @@ namespace ContinuumNS
                 for (int i = 0; i < metCount; i++)
                 {
                     Met.WSWD_Dist thisDist = checkedMets[i].GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+
+                    if (thisDist.windRose == null)
+                        continue;
 
                     var metSeries = new LineSeries();
                     SortedList<double, double> ii = new SortedList<double, double>();
@@ -7153,7 +7247,7 @@ namespace ContinuumNS
         {
             thisInst.plotDirectionalWS_Ratios.Model = new PlotModel();
             var model = thisInst.plotDirectionalWS_Ratios.Model;
-            model.Title = "Directional WS Ratios at Met Sites";
+            model.Title = "Directional WS Ratios";
             model.PlotType = PlotType.Polar;
             model.IsLegendVisible = false;
             model.PlotAreaBorderThickness = new OxyThickness(0);
@@ -7182,6 +7276,9 @@ namespace ContinuumNS
                 {
                     Color lineColor = GetMetOrTurbColor(i);
                     Met.WSWD_Dist thisDist = checkedMets[i].GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
+
+                    if (thisDist.sectorWS_Dist == null)
+                        continue;
 
                     var metSeries = new LineSeries();
                     SortedList<double, double> ii = new SortedList<double, double>();
@@ -8471,7 +8568,7 @@ namespace ContinuumNS
             string MCP_method = thisInst.Get_MCP_Method();
 
             if (thisMCP.concData.Length == 0)
-                thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"));
+                thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"), false);
 
             int Num_WD = thisInst.metList.numWD;
             Met.TOD thisTOD = thisInst.GetSelectedTOD("MCP");
@@ -8904,7 +9001,8 @@ namespace ContinuumNS
             if (thisMCP.targetData.Length == 0)
                 thisMCP.targetData = thisMCP.GetTargetData(thisInst.modeledHeight, thisMet);
 
-            if (thisMCP.concData.Length == 0) thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"));
+            if (thisMCP.concData.Length == 0) 
+                thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"), false);
 
             if (thisMCP.concData.Length > 0)
             {
@@ -9606,20 +9704,24 @@ namespace ContinuumNS
             thisInst.txtMinLong.Text = thisRef.refDataDownload.minLon.ToString();
             thisInst.txtMaxLat.Text = thisRef.refDataDownload.maxLat.ToString();
             thisInst.txtMaxLong.Text = thisRef.refDataDownload.maxLon.ToString();
+                        
+            int offset = thisInst.UTM_conversions.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
 
-            //     Reference.Node_Data[] refNodes = thisRef.GetAllNodesInFile();
-            DateTime[] startEndDates = thisInst.refList.GetDataFileStartEndDate(thisRef.refDataDownload.folderLocation, thisRef.refDataDownload.refType);
+            thisInst.dateLTRefAvailStart.Value = thisRef.refDataDownload.startDate.AddHours(offset);
+            thisInst.dateLTRefAvailEnd.Value = thisRef.refDataDownload.endDate.AddHours(offset);
 
-            if (startEndDates[0].Year != 1)
-            {
-                int offset = thisInst.UTM_conversions.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
+            ReferenceCollection.DateRangeAndCompletion dateRangeAndComplete = thisInst.refList.GetDataFileStartEndDateAndCompletion(thisRef.refDataDownload.folderLocation, thisRef.refDataDownload.refType);
+            thisRef.refDataDownload.completion = dateRangeAndComplete.completion;
+            thisInst.txtRefDataAvail.Text = Math.Round(thisRef.refDataDownload.completion * 100.0, 1).ToString();
+         
+            // Update ref data download completion in refList
+            for (int i = 0; i < thisInst.refList.numRefDataDownloads; i++)
+                if (thisInst.refList.IsSameRefDataDownload(thisRef.refDataDownload, thisInst.refList.refDataDownloads[i]))
+                {
+                    thisInst.refList.refDataDownloads[i].completion = dateRangeAndComplete.completion;
+                    break;
+                }
 
-                thisInst.dateLTRefAvailStart.Value = startEndDates[0].AddHours(offset);
-                thisInst.dateLTRefAvailEnd.Value = startEndDates[1].AddHours(offset);
-
-                double completePerc = thisInst.refList.CalcDownloadedDataCompletion(thisRef.refDataDownload);
-                thisInst.txtRefDataAvail.Text = Math.Round(completePerc, 1).ToString();
-            }            
         }
 
         /// <summary> Updates textboxes on LT Reference tab. </summary> 
@@ -9673,7 +9775,7 @@ namespace ContinuumNS
 
             int thisMonth = 100;
             if (thisInst.cboReferenceMonth.SelectedItem.ToString() != "All Months")
-                thisMonth = thisInst.cboReferenceMonth.SelectedIndex + 1;
+                thisMonth = thisInst.cboReferenceMonth.SelectedIndex;
 
             int thisYear = 100;
 
@@ -9749,7 +9851,7 @@ namespace ContinuumNS
 
             // If MCP has been calcuated, set reference dropdown to reference used in MCP
             Met selMet = thisInst.GetSelectedMet("MCP");
-            if (thisInst.metList.isMCPd && selMet.mcpList != null)
+            if (selMet.isMCPd)
             {
                 Reference refUsed = selMet.mcpList[0].reference;
                 for (int r = 0; r < thisInst.cboMCP_Ref.Items.Count; r++)
@@ -9942,8 +10044,9 @@ namespace ContinuumNS
             {
                 LinearAxis secYAxis = new LinearAxis();
                 secYAxis.Position = AxisPosition.Right;
-                secYAxis.Title = "Net AEP";
+                secYAxis.Title = "AEP [MWh]";
                 secYAxis.Key = "Secondary";
+                model.Axes.Add(secYAxis);
             }
 
             Wake_Model thisWakeModel = null;
@@ -9956,29 +10059,37 @@ namespace ContinuumNS
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
             Turbine.Avg_Est thisAvgEst = thisTurb.GetAvgWS_Est(thisWakeModel);
 
-            if (thisAvgEst.timeSeries.Length == 0)
+            if (thisAvgEst.timeSeries.Length == 0 && thisInst.metList.HaveTimeSeriesData())
             {
                 NodeCollection nodeList = new NodeCollection();
                 Nodes targetNode = nodeList.GetTurbNode(thisTurb);
 
-                // Find wake loss coeffs                    
-                int minDistance = 10000000;
-                int maxDistance = 0;
-                                
-                int[] Min_Max_Dist = thisInst.turbineList.CalcMinMaxDistanceToTurbines(thisTurb.UTMX, thisTurb.UTMY);
-                if (Min_Max_Dist[0] < minDistance) minDistance = Min_Max_Dist[0]; // this is min distance to turbine but when WD is at a different angle (not in line with turbines) the X dist is less than this value so making this always equal to 2*RD
-                if (Min_Max_Dist[1] > maxDistance) maxDistance = Min_Max_Dist[1];                
+                if (thisWakeModel != null)
+                {
+                    // Find wake loss coeffs                    
+                    int minDistance = 10000000;
+                    int maxDistance = 0;
 
-                minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
-                if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
-                WakeCollection.WakeLossCoeffs[] wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, thisInst.metList);
+                    int[] Min_Max_Dist = thisInst.turbineList.CalcMinMaxDistanceToTurbines(thisTurb.UTMX, thisTurb.UTMY);
+                    if (Min_Max_Dist[0] < minDistance) minDistance = Min_Max_Dist[0]; // this is min distance to turbine but when WD is at a different angle (not in line with turbines) the X dist is less than this value so making this always equal to 2*RD
+                    if (Min_Max_Dist[1] > maxDistance) maxDistance = Min_Max_Dist[1];
 
-                thisAvgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
-                    powerCurve, thisWakeModel, wakeCoeffs, thisInst.metList.GetMCP_MethodUsed());
+                    minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
+                    if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
+                    WakeCollection.WakeLossCoeffs[] wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, thisInst.metList);
+
+                    thisAvgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
+                        powerCurve, thisWakeModel, wakeCoeffs, thisInst.metList.GetMCP_MethodUsed());
+                }
+                else
+                    thisAvgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
+                        powerCurve, null, null, thisInst.metList.GetMCP_MethodUsed());
 
                 thisTurb.UpdateAvgWS_EstWithTS(thisAvgEst);
-                
+
             }
+            else if (thisInst.metList.HaveTimeSeriesData() == false)
+                return;
 
             int firstYear = thisAvgEst.timeSeries[0].dateTime.Year; // thisInst.merraList.startDate.Year;
             int lastYear = thisAvgEst.timeSeries[thisAvgEst.timeSeries.Length - 1].dateTime.Year; // thisInst.merraList.endDate.Year;
@@ -11912,6 +12023,9 @@ namespace ContinuumNS
                 return;
             }
 
+            if (thisInst.dateTimeExtremeShearStart.Value == thisInst.dateTimeExtremeShearEnd.Value)
+                SiteConditionsMetDates("Extreme Shear");
+
             // Specify axes
             CategoryAxis xAxis = new CategoryAxis();
             xAxis.Position = AxisPosition.Bottom;
@@ -12272,7 +12386,7 @@ namespace ContinuumNS
                 return;
             }
 
-            if (thisInst.topo.topoNumXY.X.calcs.min == 0)
+            if (thisInst.topo.topoNumXY.X.calcs.min == 0 || thisInst.topo.elevsForCalcs == null)
                 thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
             if (thisInst.cboInflowWD.SelectedItem == null)
@@ -12288,10 +12402,7 @@ namespace ContinuumNS
             if (thisInst.cboInflowReso.SelectedItem == null)
                 thisInst.cboInflowReso.SelectedIndex = 0;
 
-            int reso = Convert.ToInt16(thisInst.cboInflowReso.SelectedItem.ToString());
-
-            if (thisInst.topo.elevsForCalcs == null)
-                thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
+            int reso = Convert.ToInt16(thisInst.cboInflowReso.SelectedItem.ToString());                       
 
             // Find elevation profile along WD
             TopoInfo.TopoGrid[] elevProfile = thisInst.topo.GetElevationProfile(thisTurb.UTMX, thisTurb.UTMY, thisWD, radius, reso);
@@ -12307,8 +12418,12 @@ namespace ContinuumNS
                 yVals[i] = elevProfile[i].elev;
             }
 
+            double[] sectSlopes = thisInst.siteSuitability.CalcTerrainSlopeOrVariationBySector(radius, "Slope", thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, true, thisInst.chkForceThruBase.Checked,
+                thisInst.metList.numWD, thisInst.topo);
+            double slopeAtWD = sectSlopes[thisInst.cboInflowWD.SelectedIndex];
+
             double[] slopeAndVars = thisInst.topo.CalcSlopeAndVariation(xVals, yVals);            
-            thisInst.txtInflowAngle.Text = Math.Round(slopeAndVars[0], 2).ToString();
+            thisInst.txtInflowAngle.Text = Math.Round(slopeAtWD, 2).ToString();
 
             // Update plot
             model.Title = "Elevation Profile along WD = " + thisWD.ToString();
@@ -12337,8 +12452,9 @@ namespace ContinuumNS
             slopeSeries.MarkerStroke = OxyColors.Red;
             slopeSeries.LineStyle = LineStyle.Dash;
 
-            slopeSeries.Points.Add(new DataPoint(2 * radius, elevProfile[0].elev));
-            slopeSeries.Points.Add(new DataPoint(radius, elevProfile[0].elev + radius * Math.Tan(Math.PI / 180.0 * slopeAndVars[0])));
+            slopeSeries.Points.Add(new DataPoint(0, elevProfile[elevProfile.Length - 1].elev));
+            slopeSeries.Points.Add(new DataPoint(radius, elevProfile[elevProfile.Length - 1].elev + radius * Math.Tan(Math.PI / 180.0 * slopeAtWD)));
+            
 
             // Add point for turbine location
             ScatterSeries turbineSite = new ScatterSeries();
@@ -12358,8 +12474,9 @@ namespace ContinuumNS
       //          return;
 
             double hubH = thisInst.modeledHeight;
+            int numWD = thisInst.metList.numWD;
             double[] energyRose = thisInst.metList.GetAvgEnergyRose(thisInst.modeledHeight, Met.TOD.All, Met.Season.All, thisInst.metList.numWD);            
-            double[] refEnergyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, thisInst.metList.numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);            
+            double[] refEnergyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);            
 
             if (energyRose == null)
                 energyRose = refEnergyRose;  
@@ -12374,7 +12491,7 @@ namespace ContinuumNS
 
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[1].Value = Math.Round(thisTurb.elev, 1);
 
-                string turbComplexity = thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo, thisInst.modeledHeight, energyRose, "WTG", 
+                string turbComplexity = thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo, thisInst.modeledHeight, energyRose, "WTG", numWD,
                     thisTurb);
 
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Value = turbComplexity;
@@ -12388,22 +12505,22 @@ namespace ContinuumNS
                     thisInst.dataTerrainComplex.Rows[rowInd].Cells[2].Style.BackColor = Color.Red;
 
                 // 5 hub heights - 360 degs TSI and TVI
-                double[] slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 5 * hubH, thisInst.topo);
+                double[] slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, numWD);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[3].Value = Math.Round(slopeAndVarInds[0], 3);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[4].Value = Math.Round(slopeAndVarInds[1], 3);
                 
                 // 5 hub heights - 30 degs TSI and TVI
-                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, energyRose);
+                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, numWD, energyRose);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[5].Value = Math.Round(slopeAndVarInds[0], 3);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[6].Value = Math.Round(slopeAndVarInds[1], 3);
 
                 // 10 hub heights - 30 degs TSI and TVI
-                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 10 * hubH, thisInst.topo, energyRose);
+                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 10 * hubH, thisInst.topo, numWD, energyRose);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[7].Value = Math.Round(slopeAndVarInds[0], 3);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[8].Value = Math.Round(slopeAndVarInds[1], 3);
 
                 // 20 hub heights - 30 degs TSI and TVI
-                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 20 * hubH, thisInst.topo, energyRose);
+                slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 20 * hubH, thisInst.topo, numWD, energyRose);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[9].Value = Math.Round(slopeAndVarInds[0], 3);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[10].Value = Math.Round(slopeAndVarInds[1], 3);
 
@@ -12421,6 +12538,9 @@ namespace ContinuumNS
         {
             if (thisInst.turbineList.expoCalcsDone == true)
             {
+                if (thisInst.topo.elevsForCalcs == null)
+                    thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
+
                 TerrainComplexityTable();
                 TerrainComplexityHistogram();
 
@@ -12432,7 +12552,7 @@ namespace ContinuumNS
                 thisInst.chkForceThruBase.Checked = thisInst.siteSuitability.forceThruTurbBase;
 
                 thisInst.lblIEC_Complexity.Text = thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo,
-                thisInst.modeledHeight, energyRose, "Farm");
+                thisInst.modeledHeight, energyRose, "Farm", thisInst.metList.numWD);
             }
             else
             {
@@ -12483,7 +12603,7 @@ namespace ContinuumNS
                 energyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, thisInst.metList.numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);
 
             double[] complexVals = thisInst.siteSuitability.GetTerrainComplexityAtAllTurbines(thisInst.turbineList, thisInst.topo, terrainComplex, energyRose,
-                thisInst.modeledHeight);
+                thisInst.modeledHeight, thisInst.metList.numWD);
             Array.Sort(complexVals);
             int histoSize = 10;
             double minVal = complexVals[0];
@@ -12710,6 +12830,9 @@ namespace ContinuumNS
             if (thisInst.txtNumDaysTS.Text == "")            
                 MetDataTS_Dates();
 
+            if (thisInst.isTest)
+                return;
+
             if (thisInst.dataMetTS.Columns.Count == 0 && thisInst.metList.ThisCount > 0)
                 MetDataTS_DataTableALL();
             else
@@ -12745,6 +12868,7 @@ namespace ContinuumNS
             
             BackgroundWork.Vars_for_MetTS_Import varsForUpdate = new BackgroundWork.Vars_for_MetTS_Import();
             varsForUpdate.thisInst = thisInst;
+            varsForUpdate.isTest = thisInst.isTest;
 
             BackgroundWork BW_worker = new BackgroundWork();
             BW_worker.Call_BW_MetImport(varsForUpdate);          
@@ -12753,14 +12877,14 @@ namespace ContinuumNS
 
         /// <summary> Updates table with filter flags </summary>
         public void SetMetDataFlagColors()
-        {
+        {            
             // Set flag color
             int rowInd = 0;
-
+                        
             DateTime startTime = Convert.ToDateTime(thisInst.dataMetTS.Rows[0].Cells[0].Value);
             DateTime endTime = Convert.ToDateTime(thisInst.dataMetTS.Rows[thisInst.dataMetTS.Rows.Count - 2].Cells[0].Value);
             Met[] selMets = thisInst.metList.metItem;
-
+            
             if (selMets == null)
                 return;
 
@@ -12768,34 +12892,35 @@ namespace ContinuumNS
             int dataInt = 10;
             string dataIntStr = thisInst.metList.GetMetDataInterval();
             if (dataIntStr == "60-min")
-                dataInt = 60;                       
+                dataInt = 60;
 
             for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(dataInt))
             {
                 int colInd = 1;
-
+                
                 // Clear all previous flag colors
                 for (int c = 0; c < thisInst.dataMetTS.ColumnCount; c++)
-                    if (thisInst.dataMetTS.Rows[rowInd].Cells[c].Style.BackColor.Name != "0")
-                        thisInst.dataMetTS.Rows[rowInd].Cells[c].Style.BackColor = Color.White;
+                    if (thisInst.dataMetTS.Rows[rowInd].Cells[c].Style.BackColor.Name != "0")  
+                        thisInst.dataMetTS.Rows[rowInd].Cells[c].Style.BackColor = Color.White;                    
 
                 for (int m = 0; m < numMets; m++)
-                {
+                {    
                     for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
-                    {
+                    {                        
                         int tsIndex = selMets[m].metData.anems[s].GetTS_Index(thisTS);
-
+                        
                         if (tsIndex != -999) // Found record at specified TS
                         {
                             Met_Data_Filter.Filter_Flags thisFlag = selMets[m].metData.anems[s].windData[tsIndex].filterFlag;
+                            
                             if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
-                                for (int i = 0; i < 4; i++)
-                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(thisFlag);
+                                for (int i = 0; i < 4; i++)                                
+                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(thisFlag);  
                         }
                         else
-                        {
-                            for (int i = 0; i < 4; i++)
-                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                        {                            
+                            for (int i = 0; i < 4; i++) 
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);                            
                         }
                         colInd = colInd + 4;
                     }
@@ -12804,13 +12929,13 @@ namespace ContinuumNS
                     if (selMets[m].metData.GetNumSimData() > 0)
                     {
                         int tsIndex = selMets[m].metData.simData[0].GetTS_Index(thisTS);
-
+                        
                         if (tsIndex == -999)
                         {
-                            thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = selMets[m].metData.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
-
+                            thisInst.dataMetTS.Rows[rowInd].Cells[colInd].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                            
                             for (int s = 0; s < selMets[m].metData.GetNumSimData(); s++)
-                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + 1 + s].Style.BackColor = selMets[m].metData.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + 1 + s].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
                         }
 
                         colInd = colInd + 1 + selMets[m].metData.GetNumSimData();
@@ -12819,18 +12944,18 @@ namespace ContinuumNS
                     for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
                     {
                         int tsIndex = selMets[m].metData.vanes[s].GetTS_Index(thisTS);
-
+                        
                         if (tsIndex != -999) // Found record at specified TS
                         {
                             Met_Data_Filter.Filter_Flags thisFlag = selMets[m].metData.vanes[s].dirData[tsIndex].filterFlag;
                             if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
                                 for (int i = 0; i < 4; i++)
-                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(thisFlag);
+                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(thisFlag);
                         }
                         else
                         {
                             for (int i = 0; i < 4; i++)
-                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
                         }
                         colInd = colInd + 4;
                     }
@@ -12838,37 +12963,75 @@ namespace ContinuumNS
                     for (int s = 0; s < selMets[m].metData.GetNumTemps(); s++)
                     {
                         int tsIndex = selMets[m].metData.temps[s].GetTS_Index(thisTS);
-
+                                                
                         if (tsIndex != -999) // Found record at specified TS
                         {
                             Met_Data_Filter.Filter_Flags thisFlag = selMets[m].metData.temps[s].temp[tsIndex].filterFlag;
+                            
                             if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
                                 for (int i = 0; i < 4; i++)
-                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(thisFlag);
+                                        thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(thisFlag);                                
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 4; i++)
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
                         }
 
                         colInd = colInd + 4;
-                    }
+                    }                                       
 
                     for (int s = 0; s < selMets[m].metData.GetNumBaros(); s++)
                     {
                         int tsIndex = selMets[m].metData.baros[s].GetTS_Index(thisTS);
-
+                        
                         if (tsIndex != -999) // Found record at specified TS
                         {
                             Met_Data_Filter.Filter_Flags thisFlag = selMets[m].metData.baros[s].pressure[tsIndex].filterFlag;
                             if (thisFlag != Met_Data_Filter.Filter_Flags.Valid)
                                 for (int i = 0; i < 4; i++)
-                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = selMets[m].metData.GetFilterFlagColor(thisFlag);
+                                    thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(thisFlag);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 4; i++)
+                                thisInst.dataMetTS.Rows[rowInd].Cells[colInd + i].Style.BackColor = GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
                         }
 
                         colInd = colInd + 4;
                     }
+                    
                 }
 
                 rowInd++;
 
             }
+        }               
+        
+
+        /// <summary> Returns color assigned to each filter flag </summary>
+        public Color GetFilterFlagColor(Met_Data_Filter.Filter_Flags thisFlag)
+        {  
+            if (thisFlag == Filter_Flags.towerEffect)
+                return Color.LightPink;
+            else if (thisFlag == Filter_Flags.outsideRange)
+                return Color.LightGray;            
+            else if (thisFlag == Filter_Flags.maxAnemRange)
+                return Color.LightCoral;
+            else if (thisFlag == Filter_Flags.Icing)
+                return Color.LightCyan;
+            else if (thisFlag == Filter_Flags.maxDeltaWS)
+                return Color.LightGreen;
+            else if (thisFlag == Filter_Flags.maxAnemSD)
+                return Color.LightSeaGreen;
+            else if (thisFlag == Filter_Flags.missing)
+                return Color.LightYellow;
+            else if (thisFlag == Filter_Flags.minWS)
+                return Color.LightSlateGray;
+            else if (thisFlag == Filter_Flags.minAnemSD)
+                return Color.LightSalmon;
+
+            return Color.Transparent;
         }
 
         /// <summary> Updates hidden/unhidden columsn in Met Data TS table </summary>
@@ -13228,15 +13391,16 @@ namespace ContinuumNS
                 showBaros = true;
             }
 
-            // Set plot height based on number selected
-            int plotHeight = 840;
+            // Set plot height based on number selected and height of form
+            int formHeight = thisInst.Height;
+            int plotHeight = Convert.ToInt32(formHeight * 0.752);
 
             if (numPlots == 2)
-                plotHeight = 420;
+                plotHeight = Convert.ToInt32(formHeight * 0.376); 
             else if (numPlots == 3)
-                plotHeight = 280;
+                plotHeight = Convert.ToInt32(formHeight * 0.251); 
             else if (numPlots == 4)
-                plotHeight = 210;
+                plotHeight = Convert.ToInt32(formHeight * 0.188); 
 
             int[] plotY_Loca = new int[numPlots];
 
@@ -13251,7 +13415,7 @@ namespace ContinuumNS
             bool showLegend = thisInst.chkShowLegenMetDataTS.Checked;
 
             Met[] selMets = thisInst.GetCheckedMets("Met Data TS");
-            DateTime[] metStartEndAll = thisInst.metList.GetMetStartEndDates();
+            DateTime[] metStartEndAll = thisInst.metList.GetMetStartEndDates("All");
 
             if (showAnems)
             {
@@ -13404,7 +13568,7 @@ namespace ContinuumNS
                 DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Anems.Model.Axes[0].ActualMaximum);
 
                 // Limit zooms to met start/end date
-                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates();
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates("All");
 
                 if (startDate < metStartEnd[0])
                     startDate = metStartEnd[0];
@@ -13485,7 +13649,7 @@ namespace ContinuumNS
                 DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMinimum);
                 DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Vanes.Model.Axes[0].ActualMaximum);
 
-                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates();
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates("All");
 
                 if (startDate < metStartEnd[0])
                     startDate = metStartEnd[0];
@@ -13561,7 +13725,7 @@ namespace ContinuumNS
                 DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMinimum);
                 DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Temp.Model.Axes[0].ActualMaximum);
 
-                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates();
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates("All");
 
                 if (startDate < metStartEnd[0])
                     startDate = metStartEnd[0];
@@ -13637,7 +13801,7 @@ namespace ContinuumNS
                 DateTime startDate = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMinimum);
                 DateTime endDate = DateTime.FromOADate(thisInst.plotTS_Baros.Model.Axes[0].ActualMaximum);
 
-                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates();
+                DateTime[] metStartEnd = thisInst.metList.GetMetStartEndDates("All");
 
                 if (startDate < metStartEnd[0])
                     startDate = metStartEnd[0];

@@ -152,8 +152,6 @@
             this.label27 = new System.Windows.Forms.Label();
             this.btnCreateTest = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.cboProject_GUITests = new System.Windows.Forms.ComboBox();
-            this.label55 = new System.Windows.Forms.Label();
             this.btnCreateGUI_SetupFiles = new System.Windows.Forms.Button();
             this.cboHemisphereMaps = new System.Windows.Forms.ComboBox();
             this.label53 = new System.Windows.Forms.Label();
@@ -185,6 +183,12 @@
             this.fbd_Folder = new System.Windows.Forms.FolderBrowserDialog();
             this.label41 = new System.Windows.Forms.Label();
             this.txtContinuumTestsVS = new System.Windows.Forms.TextBox();
+            this.label57 = new System.Windows.Forms.Label();
+            this.btnCreateGUI_SetupFiles1 = new System.Windows.Forms.Button();
+            this.btnCreateGUI_SetupFiles2 = new System.Windows.Forms.Button();
+            this.btnCreateGUI_SetupFiles3 = new System.Windows.Forms.Button();
+            this.btnCreateGUI_SetupFiles4 = new System.Windows.Forms.Button();
+            this.btnCreateGUI_SetupFiles5 = new System.Windows.Forms.Button();
             this.tabGUITester.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -3262,8 +3266,12 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.cboProject_GUITests);
-            this.tabPage3.Controls.Add(this.label55);
+            this.tabPage3.Controls.Add(this.btnCreateGUI_SetupFiles5);
+            this.tabPage3.Controls.Add(this.btnCreateGUI_SetupFiles4);
+            this.tabPage3.Controls.Add(this.btnCreateGUI_SetupFiles3);
+            this.tabPage3.Controls.Add(this.btnCreateGUI_SetupFiles2);
+            this.tabPage3.Controls.Add(this.btnCreateGUI_SetupFiles1);
+            this.tabPage3.Controls.Add(this.label57);
             this.tabPage3.Controls.Add(this.btnCreateGUI_SetupFiles);
             this.tabPage3.Controls.Add(this.cboHemisphereMaps);
             this.tabPage3.Controls.Add(this.label53);
@@ -3298,161 +3306,13 @@
             this.tabPage3.UseVisualStyleBackColor = true;
             this.tabPage3.Click += new System.EventHandler(this.tabPage3_Click);
             // 
-            // cboProject_GUITests
-            // 
-            this.cboProject_GUITests.AutoCompleteCustomSource.AddRange(new string[] {
-            "-60",
-            "-59",
-            "-58",
-            "-57",
-            "-56",
-            "-55",
-            "-54",
-            "-53",
-            "-52",
-            "-51",
-            "-50",
-            "-49",
-            "-48",
-            "-47",
-            "-46",
-            "-45",
-            "-44",
-            "-43",
-            "-42",
-            "-41",
-            "-40",
-            "-39",
-            "-38",
-            "-37",
-            "-36",
-            "-35",
-            "-34",
-            "-33",
-            "-32",
-            "-31",
-            "-30",
-            "-29",
-            "-28",
-            "-27",
-            "-26",
-            "-25",
-            "-24",
-            "-23",
-            "-22",
-            "-21",
-            "-20",
-            "-19",
-            "-18",
-            "-17",
-            "-16",
-            "-15",
-            "-14",
-            "-13",
-            "-12",
-            "-11",
-            "-10",
-            "-9",
-            "-8",
-            "-7",
-            "-6",
-            "-5",
-            "-4",
-            "-3",
-            "-2",
-            "-1",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-            "21",
-            "22",
-            "23",
-            "24",
-            "25",
-            "26",
-            "27",
-            "28",
-            "29",
-            "30",
-            "31",
-            "32",
-            "33",
-            "34",
-            "35",
-            "36",
-            "37",
-            "38",
-            "39",
-            "40",
-            "41",
-            "42",
-            "43",
-            "44",
-            "45",
-            "46",
-            "47",
-            "48",
-            "49",
-            "50",
-            "51",
-            "52",
-            "53",
-            "54",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "60"});
-            this.cboProject_GUITests.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cboProject_GUITests.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cboProject_GUITests.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboProject_GUITests.FormattingEnabled = true;
-            this.cboProject_GUITests.Items.AddRange(new object[] {
-            "Findlay",
-            "NW Ohio",
-            "Firewheel",
-            "Bobcat Bluff"});
-            this.cboProject_GUITests.Location = new System.Drawing.Point(141, 418);
-            this.cboProject_GUITests.MaxDropDownItems = 11;
-            this.cboProject_GUITests.Name = "cboProject_GUITests";
-            this.cboProject_GUITests.Size = new System.Drawing.Size(282, 26);
-            this.cboProject_GUITests.TabIndex = 138;
-            // 
-            // label55
-            // 
-            this.label55.AutoSize = true;
-            this.label55.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label55.Location = new System.Drawing.Point(28, 421);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(56, 18);
-            this.label55.TabIndex = 137;
-            this.label55.Text = "Project :";
-            // 
             // btnCreateGUI_SetupFiles
             // 
-            this.btnCreateGUI_SetupFiles.Location = new System.Drawing.Point(474, 418);
+            this.btnCreateGUI_SetupFiles.Location = new System.Drawing.Point(485, 474);
             this.btnCreateGUI_SetupFiles.Name = "btnCreateGUI_SetupFiles";
             this.btnCreateGUI_SetupFiles.Size = new System.Drawing.Size(99, 42);
             this.btnCreateGUI_SetupFiles.TabIndex = 136;
-            this.btnCreateGUI_SetupFiles.Text = "Create Model Setup Tests";
+            this.btnCreateGUI_SetupFiles.Text = "Create All Setup Tests";
             this.btnCreateGUI_SetupFiles.UseVisualStyleBackColor = true;
             this.btnCreateGUI_SetupFiles.Click += new System.EventHandler(this.btnCreateGUI_SetupFiles_Click);
             // 
@@ -4862,6 +4722,66 @@
             this.txtContinuumTestsVS.Size = new System.Drawing.Size(632, 20);
             this.txtContinuumTestsVS.TabIndex = 120;
             // 
+            // label57
+            // 
+            this.label57.AutoSize = true;
+            this.label57.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label57.Location = new System.Drawing.Point(28, 444);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(124, 20);
+            this.label57.TabIndex = 139;
+            this.label57.Text = "GUI Setup Tests :";
+            // 
+            // btnCreateGUI_SetupFiles1
+            // 
+            this.btnCreateGUI_SetupFiles1.Location = new System.Drawing.Point(31, 474);
+            this.btnCreateGUI_SetupFiles1.Name = "btnCreateGUI_SetupFiles1";
+            this.btnCreateGUI_SetupFiles1.Size = new System.Drawing.Size(80, 42);
+            this.btnCreateGUI_SetupFiles1.TabIndex = 140;
+            this.btnCreateGUI_SetupFiles1.Text = "Create TAB file Tests";
+            this.btnCreateGUI_SetupFiles1.UseVisualStyleBackColor = true;
+            this.btnCreateGUI_SetupFiles1.Click += new System.EventHandler(this.btnCreateGUI_SetupFiles1_Click);
+            // 
+            // btnCreateGUI_SetupFiles2
+            // 
+            this.btnCreateGUI_SetupFiles2.Location = new System.Drawing.Point(115, 474);
+            this.btnCreateGUI_SetupFiles2.Name = "btnCreateGUI_SetupFiles2";
+            this.btnCreateGUI_SetupFiles2.Size = new System.Drawing.Size(80, 42);
+            this.btnCreateGUI_SetupFiles2.TabIndex = 141;
+            this.btnCreateGUI_SetupFiles2.Text = "Create Raw TS file Tests";
+            this.btnCreateGUI_SetupFiles2.UseVisualStyleBackColor = true;
+            this.btnCreateGUI_SetupFiles2.Click += new System.EventHandler(this.btnCreateGUI_SetupFiles2_Click);
+            // 
+            // btnCreateGUI_SetupFiles3
+            // 
+            this.btnCreateGUI_SetupFiles3.Location = new System.Drawing.Point(199, 474);
+            this.btnCreateGUI_SetupFiles3.Name = "btnCreateGUI_SetupFiles3";
+            this.btnCreateGUI_SetupFiles3.Size = new System.Drawing.Size(80, 42);
+            this.btnCreateGUI_SetupFiles3.TabIndex = 142;
+            this.btnCreateGUI_SetupFiles3.Text = "Create Raw LT TS Tests";
+            this.btnCreateGUI_SetupFiles3.UseVisualStyleBackColor = true;
+            this.btnCreateGUI_SetupFiles3.Click += new System.EventHandler(this.btnCreateGUI_SetupFiles3_Click);
+            // 
+            // btnCreateGUI_SetupFiles4
+            // 
+            this.btnCreateGUI_SetupFiles4.Location = new System.Drawing.Point(283, 474);
+            this.btnCreateGUI_SetupFiles4.Name = "btnCreateGUI_SetupFiles4";
+            this.btnCreateGUI_SetupFiles4.Size = new System.Drawing.Size(80, 42);
+            this.btnCreateGUI_SetupFiles4.TabIndex = 143;
+            this.btnCreateGUI_SetupFiles4.Text = "Create Filt TS Tests";
+            this.btnCreateGUI_SetupFiles4.UseVisualStyleBackColor = true;
+            this.btnCreateGUI_SetupFiles4.Click += new System.EventHandler(this.btnCreateGUI_SetupFiles4_Click);
+            // 
+            // btnCreateGUI_SetupFiles5
+            // 
+            this.btnCreateGUI_SetupFiles5.Location = new System.Drawing.Point(366, 474);
+            this.btnCreateGUI_SetupFiles5.Name = "btnCreateGUI_SetupFiles5";
+            this.btnCreateGUI_SetupFiles5.Size = new System.Drawing.Size(80, 42);
+            this.btnCreateGUI_SetupFiles5.TabIndex = 144;
+            this.btnCreateGUI_SetupFiles5.Text = "Create Filt LT TS Tests";
+            this.btnCreateGUI_SetupFiles5.UseVisualStyleBackColor = true;
+            this.btnCreateGUI_SetupFiles5.Click += new System.EventHandler(this.btnCreateGUI_SetupFiles5_Click);
+            // 
             // GUI_Creator2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -5043,9 +4963,13 @@
         internal System.Windows.Forms.ComboBox cboUTMZoneMaps;
         internal System.Windows.Forms.Label label54;
         private System.Windows.Forms.Button btnCreateGUI_SetupFiles;
-        internal System.Windows.Forms.ComboBox cboProject_GUITests;
-        internal System.Windows.Forms.Label label55;
         internal System.Windows.Forms.Label label56;
         internal System.Windows.Forms.ComboBox cboTestFolder;
+        internal System.Windows.Forms.Label label57;
+        private System.Windows.Forms.Button btnCreateGUI_SetupFiles5;
+        private System.Windows.Forms.Button btnCreateGUI_SetupFiles4;
+        private System.Windows.Forms.Button btnCreateGUI_SetupFiles3;
+        private System.Windows.Forms.Button btnCreateGUI_SetupFiles2;
+        private System.Windows.Forms.Button btnCreateGUI_SetupFiles1;
     }
 }

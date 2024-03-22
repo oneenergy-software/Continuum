@@ -1349,6 +1349,9 @@ namespace ContinuumNS
                     {
                         var thisMERRAData = from N in context.MERRA_Node_table where N.latitude == thisLat && N.longitude == thisLong select N;
 
+                        if (thisMERRAData.Count() == 0)
+                            gotTheData = false;
+
                         foreach (var N in thisMERRAData)
                         {
                             MemoryStream MS = new MemoryStream(N.merraData);
@@ -1395,6 +1398,9 @@ namespace ContinuumNS
                     {
                         Wind_TS_with_Prod[] newStructTSData = new Wind_TS_with_Prod[0];
                         var thisERA5Data = from N in context.ERA_Node_table where N.latitude == thisLat && N.longitude == thisLong select N;
+
+                        if (thisERA5Data.Count() == 0)
+                            gotTheData = false;
 
                         foreach (var N in thisERA5Data)
                         {

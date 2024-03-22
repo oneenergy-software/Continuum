@@ -41,7 +41,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.UTM_conversions.hemisphere = "Northern";
 
             thisInst.modeledHeight = 80;
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Load topo data
@@ -60,7 +60,7 @@ namespace Continuum_Tests.GUI_Tests
                 Assert.Fail();
 
             // Called in BackgroundWorker RunWorkerCompleted
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.updateThe.AllTABs();
             thisInst.BW_worker.Close();
 
@@ -101,7 +101,7 @@ namespace Continuum_Tests.GUI_Tests
                 if (thisInst.BW_worker.WasReturned)
                     Assert.Fail();
 
-                thisInst.SaveFile(true);
+                thisInst.SaveFile();
                 thisInst.updateThe.AllTABs();
                 thisInst.BW_worker.Close();
             }
@@ -143,7 +143,7 @@ namespace Continuum_Tests.GUI_Tests
                 if (thisInst.BW_worker.WasReturned)
                     Assert.Fail();
 
-                thisInst.SaveFile(true);
+                thisInst.SaveFile();
                 thisInst.updateThe.AllTABs();
                 thisInst.BW_worker.Close();
             }
@@ -300,7 +300,7 @@ namespace Continuum_Tests.GUI_Tests
 
             Assert.AreEqual(thisInst.mapList.ThisCount, numMaps + 1, "Didn't create map");
 
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.Close();
         }
 
@@ -327,7 +327,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.UTM_conversions.hemisphere = "Northern";
 
             thisInst.modeledHeight = 80;
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Load topo data
@@ -346,7 +346,7 @@ namespace Continuum_Tests.GUI_Tests
                 Assert.Fail();
 
             // Called in BackgroundWorker RunWorkerCompleted
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.updateThe.AllTABs();
             thisInst.BW_worker.Close();
 
@@ -387,7 +387,7 @@ namespace Continuum_Tests.GUI_Tests
                 if (thisInst.BW_worker.WasReturned)
                     Assert.Fail();
 
-                thisInst.SaveFile(true);
+                thisInst.SaveFile();
                 thisInst.updateThe.AllTABs();
                 thisInst.BW_worker.Close();
             }
@@ -534,7 +534,7 @@ namespace Continuum_Tests.GUI_Tests
 
             Assert.AreEqual(thisInst.wakeModelList.NumCompleteWakeGridMaps, numMaps + 1, "Didn't create waked map");
 
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.Close();
         }
 

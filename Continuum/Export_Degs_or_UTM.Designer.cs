@@ -32,7 +32,7 @@
             this.Label2 = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.cbo_Lats_UTMs = new System.Windows.Forms.ComboBox();
-            this.Label1 = new System.Windows.Forms.Label();
+            this.lblQuestion = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Label2
@@ -49,7 +49,7 @@
             // 
             this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOK.Location = new System.Drawing.Point(343, 49);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(4);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(110, 43);
             this.btnOK.TabIndex = 6;
@@ -64,20 +64,20 @@
             "Lats/Longs",
             "UTM coords"});
             this.cbo_Lats_UTMs.Location = new System.Drawing.Point(110, 45);
-            this.cbo_Lats_UTMs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbo_Lats_UTMs.Margin = new System.Windows.Forms.Padding(4);
             this.cbo_Lats_UTMs.Name = "cbo_Lats_UTMs";
             this.cbo_Lats_UTMs.Size = new System.Drawing.Size(192, 26);
             this.cbo_Lats_UTMs.TabIndex = 5;
             // 
-            // Label1
+            // lblQuestion
             // 
-            this.Label1.AutoSize = true;
-            this.Label1.Location = new System.Drawing.Point(23, 18);
-            this.Label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.Label1.Name = "Label1";
-            this.Label1.Size = new System.Drawing.Size(441, 18);
-            this.Label1.TabIndex = 4;
-            this.Label1.Text = "Would you like the turbine coordinates in Lat/Long or UTM coordinates?";
+            this.lblQuestion.AutoSize = true;
+            this.lblQuestion.Location = new System.Drawing.Point(23, 18);
+            this.lblQuestion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblQuestion.Name = "lblQuestion";
+            this.lblQuestion.Size = new System.Drawing.Size(441, 18);
+            this.lblQuestion.TabIndex = 4;
+            this.lblQuestion.Text = "Would you like the turbine coordinates in Lat/Long or UTM coordinates?";
             // 
             // Export_Degs_or_UTM
             // 
@@ -87,10 +87,10 @@
             this.Controls.Add(this.Label2);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.cbo_Lats_UTMs);
-            this.Controls.Add(this.Label1);
+            this.Controls.Add(this.lblQuestion);
             this.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Export_Degs_or_UTM";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -101,7 +101,7 @@
 
         internal System.Windows.Forms.Label Label2;
         internal System.Windows.Forms.Button btnOK;
-        internal System.Windows.Forms.ComboBox cbo_Lats_UTMs;
-        internal System.Windows.Forms.Label Label1;
+        public System.Windows.Forms.ComboBox cbo_Lats_UTMs;
+        public System.Windows.Forms.Label lblQuestion;
     }
 }

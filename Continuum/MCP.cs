@@ -614,7 +614,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Defines concDataAll array which contains all concurrent WS and WD at reference and target sites. Also creates concData (are both needed?) </summary>       
-        public void FindConcurrentData(DateTime start, DateTime end)
+        public void FindConcurrentData(DateTime start, DateTime end, bool showMsg)
         {            
             int concCount = 0;
             int refStartInd = 0;
@@ -666,7 +666,7 @@ namespace ContinuumNS
 
             concData = concDataAll;
 
-            if (concCount == 0)
+            if (concCount == 0 && showMsg)
                 MessageBox.Show("There is no concurrent data between the reference and target site for the selected start and end dates.");
                         
         }
@@ -1576,7 +1576,7 @@ namespace ContinuumNS
             if (targetData == null)
                 targetData = GetTargetData(thisInst.modeledHeight, thisMet); 
                       
-            FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate);
+            FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate, false);
             // Find concurrent data to be referenced in DoMCP function            
             
             // For every MCP_Uncert, for every possible conc window, construct Uncert structures

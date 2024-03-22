@@ -23,7 +23,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\Stats testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
 
             Stats thisStats = new Stats();
 
@@ -97,11 +97,11 @@ namespace Continuum_Tests
         public void Get_Data_Count_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\Stats testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
 
             Stats thisStats = new Stats();
 

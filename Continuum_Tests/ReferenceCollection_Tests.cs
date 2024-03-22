@@ -228,7 +228,7 @@ namespace Continuum_Tests
             thisInst.UTM_conversions.hemisphere = "Northern";
 
             thisInst.modeledHeight = 80;
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
 
             // Test MERRA2 file reading
             ReferenceCollection.RefDataDownload refDataDown = new ReferenceCollection.RefDataDownload();
@@ -347,15 +347,15 @@ namespace Continuum_Tests
         public void GetDataFileStartEndDate_Test()
         {
             ReferenceCollection refList = new ReferenceCollection();
-            DateTime[] merraStartEnd = refList.GetDataFileStartEndDate(MERRA2Folder, "MERRA2");
+            ReferenceCollection.DateRangeAndCompletion datesAndComplete = refList.GetDataFileStartEndDateAndCompletion(MERRA2Folder, "MERRA2");
             
-            Assert.AreEqual(merraStartEnd[0], new DateTime(1988, 1, 1));
-            Assert.AreEqual(merraStartEnd[1], new DateTime(2019, 1, 31, 23, 0, 0));
+            Assert.AreEqual(datesAndComplete.startEnd[0], new DateTime(1988, 1, 1));
+            Assert.AreEqual(datesAndComplete.startEnd[1], new DateTime(2019, 1, 31, 23, 0, 0));
 
-            DateTime[] eraStartEnd = refList.GetDataFileStartEndDate(ERA5Folder, "ERA5");
+            datesAndComplete = refList.GetDataFileStartEndDateAndCompletion(ERA5Folder, "ERA5");
 
-            Assert.AreEqual(eraStartEnd[0], new DateTime(2002, 1, 1));
-            Assert.AreEqual(eraStartEnd[1], new DateTime(2003, 1, 2, 23, 0, 0));
+            Assert.AreEqual(datesAndComplete.startEnd[0], new DateTime(2002, 1, 1));
+            Assert.AreEqual(datesAndComplete.startEnd[1], new DateTime(2003, 1, 2, 23, 0, 0));
 
         }
 

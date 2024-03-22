@@ -153,6 +153,7 @@ namespace ContinuumNS
             public Continuum thisInst;
             public List<DataGridViewColumn> cols;
             public List<DataGridViewRow> rows;
+            public bool isTest;
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,14 +237,15 @@ namespace ContinuumNS
                 BackgroundWorker_MetCalcs.ReportProgress(10 + 40 * (i + 1) / numMets, textForProgBar);
             }
 
-            // If using time series mets and isMCPd = true, only create model if all mets have LT ests (i.e. user might have to import reference data)
+            // If using time series mets and isMCPd = true, only create model if all mets have LT ests (i.e. user might have to import reference data) TAKING THIS OUT 3/12/204
             thisInst.metList.AreAllMetsMCPd();
-            if (thisInst.metList.isTimeSeries && thisInst.metList.isMCPd && thisInst.metList.allMCPd == false)
+       /*     if (thisInst.metList.isTimeSeries && thisInst.metList.allMCPd == false)
             {
                 e.Cancel = true;
                 WasReturned = true;
                 return;
             }
+       */
 
             // Create met pairs with single met models at all radii in list.  First checks to see what pairs already exist before making new ones.
             metPairs.CreateMetPairs(thisInst);
@@ -271,7 +273,8 @@ namespace ContinuumNS
                 textForProgBar = "Finding site-calibrated models...";
                 BackgroundWorker_MetCalcs.ReportProgress(0, textForProgBar);
                 modelList.ClearImported();
-                if (metList.isTimeSeries == false || metList.isMCPd == false)
+
+                if (metList.isTimeSeries == false || metList.allMCPd == false)
                 {
                     BackgroundWorker_MetCalcs.ReportProgress(50, textForProgBar);
                     if (thisInst.metList.ThisCount == 1)
@@ -355,7 +358,7 @@ namespace ContinuumNS
 
                 if (thisInst.IsDisposed == false)
                 {
-                    thisInst.SaveFile(false);
+                    thisInst.SaveFile();
                     thisInst.updateThe.AllTABs();
                 }
             }
@@ -510,7 +513,7 @@ namespace ContinuumNS
 
                 if (thisInst.IsDisposed == false)
                 {
-                    thisInst.SaveFile(false);
+                    thisInst.SaveFile();
                     thisInst.updateThe.AllTABs();
                 }
             }
@@ -733,7 +736,7 @@ namespace ContinuumNS
             if (thisInst.IsDisposed == false)
             {
                 if (e.Cancelled == false)
-                    thisInst.SaveFile(false);
+                    thisInst.SaveFile();
 
                 thisInst.updateThe.AllTABs();
             }
@@ -1189,13 +1192,11 @@ namespace ContinuumNS
                         bool haveWS = turbine.HaveTS_Estimate("WS", null, new TurbineCollection.PowerCurve());
 
                         if (haveWS == false)
-                        {
-                            
-                                ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, new TurbineCollection.PowerCurve(),
-                                    null, null, MCP_Method);
+                        {                            
+                                ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, 
+                                    new TurbineCollection.PowerCurve(), null, null, MCP_Method);
 
-                                turbine.GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), false, MCP_Method, false, new TurbineCollection.PowerCurve());  // Creates and adds new Avg_Est based on time series data
-                                                        
+                                turbine.GenerateAvgWSTimeSeries(thisTS, thisInst, new Wake_Model(), false, MCP_Method, false, new TurbineCollection.PowerCurve());  // Creates and adds new Avg_Est based on time series data                                                        
                         }
                     }
                     else
@@ -1233,7 +1234,7 @@ namespace ContinuumNS
                 }
             }
 
-            if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0 && thisInst.turbineList.PowerCurveCount > 0) // Gross estimates using time series calculated earlier
+            if ((thisInst.metList.isTimeSeries == false || thisInst.metList.allMCPd == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0 && thisInst.turbineList.PowerCurveCount > 0) // Gross estimates using time series calculated earlier
             {
                 textForProgBar = "Calculating gross AEP at turbine sites.";
                 BackgroundWorker_TurbCalcs.ReportProgress(90, textForProgBar);
@@ -1283,7 +1284,7 @@ namespace ContinuumNS
                             return;
                         }
 
-                        if ((thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0)
+                        if ((thisInst.metList.isTimeSeries == false || turbList.genTimeSeries == false) && thisInst.modelList.ModelCount > 0)
                         {
                             turbList.turbineEsts[i].CalcTurbineWakeLosses(thisInst, wakeCoeffs, thisWakeModel);
                         }
@@ -1470,7 +1471,7 @@ namespace ContinuumNS
                             nodeList.AddNodes(nodesToAdd, thisInst.savedParams.savedFileName);
                         }
 
-                        if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || thisMap.useTimeSeries == false || thisMap.modelType <= 1)
+                        if (thisInst.metList.isTimeSeries == false || thisInst.metList.allMCPd == false || thisMap.useTimeSeries == false || thisMap.modelType <= 1)
                         {
                             // if (mapNodeCount > 0 && mapNodeCount % 10 == 0)
                             //  {
@@ -1633,7 +1634,7 @@ namespace ContinuumNS
                 thisInst.updateThe.MapsTAB();
                 thisInst.updateThe.NetTurbineEstsTAB();
 
-                thisInst.SaveFile(false);
+                thisInst.SaveFile();
             }
 
             Close();
@@ -3387,7 +3388,7 @@ namespace ContinuumNS
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
 
                                     if (tsInd >= numRefHours || tsInd < 0)
-                                        break;
+                                        continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
                                         nodesToPull[n].Data[tsInd].surfPress = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
@@ -3402,7 +3403,7 @@ namespace ContinuumNS
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
 
                                     if (tsInd >= numRefHours || tsInd < 0)
-                                        break;
+                                        continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
                                         nodesToPull[n].Data[tsInd].temperature = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
@@ -3417,7 +3418,7 @@ namespace ContinuumNS
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
 
                                     if (tsInd >= numRefHours || tsInd < 0)
-                                        break;
+                                        continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
                                         nodeEastNorthWS[n].U_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
@@ -3432,7 +3433,7 @@ namespace ContinuumNS
                                     tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
 
                                     if (tsInd >= numRefHours || tsInd < 0)
-                                        break;
+                                        continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
                                         nodeEastNorthWS[n].V_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
@@ -3868,7 +3869,7 @@ namespace ContinuumNS
                 thisInst.updateThe.ColoredButtons();
 
                 if (thisInst.siteSuitability.numXFlicker != 0)
-                    thisInst.SaveFile(false);
+                    thisInst.SaveFile();
             }
 
             Close();
@@ -4465,6 +4466,8 @@ namespace ContinuumNS
         {
             Vars_for_MetTS_Import theArgs = (Vars_for_MetTS_Import)e.Argument;
             Continuum thisInst = theArgs.thisInst;
+            bool isTest = theArgs.isTest;
+            DoWorkDone = false;
             
             DataGridView metTable = new DataGridView();
             
@@ -4582,7 +4585,7 @@ namespace ContinuumNS
                         
             for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(minsToAdd))
             {
-                if (timeInd % 10 == 0)
+                if (timeInd % 10 == 0 && isTest == false)
                 {
                     int prog = Convert.ToInt32(100 * timeInd / numRecs);
                     BackgroundWorker_MetImport.ReportProgress(prog, textForProgBar);
@@ -4594,16 +4597,12 @@ namespace ContinuumNS
 
                 double[] dataForTableRow = new double[totalNumSens + 1]; // Plus one for timestamp  // reset array                               
 
-                dataForTableRow[0] = thisTS.ToOADate();
-
-                if (thisTS.Year == 2009 && thisTS.Month == 3 && thisTS.Day == 13 && thisTS.Hour == 12)
-                    thisTS = thisTS;
+                dataForTableRow[0] = thisTS.ToOADate();                                
 
                 for (int m = 0; m < numMets; m++)
                 {
                     for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
-                    {                       
-
+                    { 
                         int tsIndex = selMets[m].metData.anems[s].GetTS_Index(thisTS);
 
                         if (tsIndex != -999) // Found record at specified TS
@@ -4734,9 +4733,9 @@ namespace ContinuumNS
                 timeInd++;
             }
 
-          //  metTable.Rows.AddRange(rows.ToArray());                       
+            //  metTable.Rows.AddRange(rows.ToArray());                       
 
-            
+            DoWorkDone = true;
             theArgs.cols = cols;
             theArgs.rows = rows;
             e.Result = theArgs;
@@ -4767,6 +4766,7 @@ namespace ContinuumNS
 
         private void BackgroundWorker_MetImport_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            DoWorkDone = true;
             Vars_for_MetTS_Import theArgs = (Vars_for_MetTS_Import)e.Result;
             Continuum thisInst = theArgs.thisInst;
             List<DataGridViewRow> rows = theArgs.rows;
@@ -4790,12 +4790,15 @@ namespace ContinuumNS
 
             thisInst.dataMetTS.Rows.AddRange(rows.ToArray());
 
-            //       thisInst.dataMetTS.Refresh();
+            thisInst.dataMetTS.Refresh();            
             thisInst.dataMetTS.Update();
-            thisInst.updateThe.MetTS_CheckList();
+            thisInst.updateThe.MetTS_CheckList();                        
             thisInst.updateThe.SetMetDataFlagColors();
+            
             thisInst.updateThe.MetDataTS_TableVisibleColumns();
+            thisInst.updateThe.MetDataTS_Dates();
             thisInst.updateThe.MetDataPlots();
+
             Close();
 
         }

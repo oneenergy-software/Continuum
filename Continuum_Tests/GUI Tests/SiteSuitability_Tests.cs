@@ -28,7 +28,7 @@ namespace Continuum_Tests.GUI_Tests
         {
             Continuum thisInst = new Continuum("");
 
-            string fileName = saveFolder + "\\OneMetTABAndGrossNet_1";
+            string fileName = saveFolder + "\\OneMetTABAndGrossNet_123";
 
             thisInst.Open(fileName + ".cfm");
             thisInst.siteSuitability.RunShadowFlickerModel(thisInst);
@@ -47,7 +47,7 @@ namespace Continuum_Tests.GUI_Tests
             thisInst.updateThe.ColoredButtons();
 
             if (thisInst.siteSuitability.numXFlicker != 0)
-                thisInst.SaveFile(false);
+                thisInst.SaveFile();
 
             Assert.AreNotEqual(thisInst.siteSuitability.numXFlicker, 0, "Didn't calculate shadow map");
             Assert.AreNotEqual(thisInst.siteSuitability.zones[0].flickerStats.shadowMins12x24, null, "Didn't calculate shadow at zones");
@@ -62,7 +62,7 @@ namespace Continuum_Tests.GUI_Tests
         {
             Continuum thisInst = new Continuum("");
 
-            string fileName = saveFolder + "\\OneMetTABAndGrossNet_1";
+            string fileName = saveFolder + "\\OneMetTABAndGrossNet_123";
 
             thisInst.Open(fileName + ".cfm");
 
@@ -103,7 +103,7 @@ namespace Continuum_Tests.GUI_Tests
         {
             Continuum thisInst = new Continuum("");
 
-            string fileName = saveFolder + "\\OneMetTABAndGrossNet_1";
+            string fileName = saveFolder + "\\OneMetTABAndGrossNet_123";
 
             thisInst.Open(fileName + ".cfm");
             double turbineSound = thisInst.GetTurbineNoise();

@@ -44,6 +44,7 @@ namespace ContinuumNS
         public Shear_Data[] alphaByAnem = new Shear_Data[0];
         /// <summary>   Simulated (estimated) wind speed, wind direction, and WS SD data. </summary>
         public Sim_TS[] simData = new Sim_TS[0];
+        public bool simDataCalcComplete = false;
         /// <summary>   First date of dataset. </summary>
         public DateTime allStartDate;
         /// <summary>   Last date of dataset. </summary>
@@ -174,13 +175,14 @@ namespace ContinuumNS
                 if (thisDate == targetDate)
                     return tsInd;
 
+                
                 double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
                 double lastTimeDiff = timeDiffMins;
                 int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
-                bool diffGettingSmaller = true;
-                
+                bool diffGettingSmaller = true;                                
+
                 while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
-                {
+                {                    
                     if (timeDiffMins < 0)                    
                         tsInd = tsInd - stepSize;                    
                     else                    
@@ -657,41 +659,7 @@ namespace ContinuumNS
             bestFit
         }
 
-        /// <summary> Returns Color for Background of Met data tab </summary>        
-        public System.Drawing.Color GetColorForBackground(System.Windows.Media.Color thisColor)
-        {
-            return System.Drawing.Color.FromArgb(thisColor.A, thisColor.R, thisColor.G, thisColor.B);
-        }
-
-        /// <summary> Returns color assigned to each filter flag </summary>
-        public System.Drawing.Color GetFilterFlagColor(Filter_Flags thisFlag)
-        {
-            
-            if (thisFlag == Filter_Flags.Valid)
-                return GetColorForBackground(Colors.Transparent);
-
-            if (thisFlag == Filter_Flags.towerEffect)
-                return GetColorForBackground(Colors.LightPink);
-            else if (thisFlag == Filter_Flags.outsideRange)
-                return GetColorForBackground(Colors.LightGray);
-            else if (thisFlag == Filter_Flags.maxAnemRange)
-                return GetColorForBackground(Colors.LightCoral);
-            else if (thisFlag == Filter_Flags.Icing)
-                return GetColorForBackground(Colors.LightCyan);
-            else if (thisFlag == Filter_Flags.maxDeltaWS)
-                return GetColorForBackground(Colors.LightGreen);
-            else if (thisFlag == Filter_Flags.maxAnemSD)
-                return GetColorForBackground(Colors.LightSeaGreen);
-            else if (thisFlag == Filter_Flags.missing)
-                return GetColorForBackground(Colors.LightYellow);
-            else if (thisFlag == Filter_Flags.minWS)
-                return GetColorForBackground(Colors.LightSlateGray);
-            else if (thisFlag == Filter_Flags.minAnemSD)
-                return GetColorForBackground(Colors.LightSalmon);
-
-            return GetColorForBackground(Colors.Transparent);
-
-        }
+       
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
@@ -2127,7 +2095,7 @@ namespace ContinuumNS
             alpha = new Est_Alpha[0];
             alphaByAnem = new Shear_Data[0];
             simData = new Sim_TS[0];
-
+            simDataCalcComplete = false;
             filteringDone = false;            
         }                
         
@@ -2135,13 +2103,14 @@ namespace ContinuumNS
         public void ExtrapolateData(double thisHeight)
         {
                         
-            if (GetHeightsOfAnems().Length <= 1)
+            if (GetHeightsOfAnems().Length == 0)
                 return;
 
             Array.Resize(ref simData, simData.Length + 1);
             simData[simData.Length - 1].height = thisHeight; 
                         
-            int heightInd = GetHeightClosestToHH(thisHeight); 
+            int heightInd = GetHeightClosestToHH(thisHeight);
+            int vaneInd = GetVaneClosestToHH(thisHeight);
 
             // Check to see if thisHeight is same as the closest anemometer.
             bool haveExtrapHeight = false;
@@ -2153,45 +2122,65 @@ namespace ContinuumNS
             if (alphaByAnem.Length == 0)
                 EstimateAlpha();
 
-            if (alphaByAnem.Length == 0)
+            if (alphaByAnem.Length == 0 && haveExtrapHeight == false)
                 return;
 
-            if (alphaByAnem[heightInd].WS_WD_Alpha == null)
-                return;
+            //      if (alphaByAnem[heightInd].WS_WD_Alpha == null)
+            //          return;                        
 
-            Array.Resize(ref simData[simData.Length - 1].WS_WD_data, alphaByAnem[heightInd].WS_WD_Alpha.Length);                                       
+            if (alphaByAnem.Length > 0)
+                Array.Resize(ref simData[simData.Length - 1].WS_WD_data, alphaByAnem[heightInd].WS_WD_Alpha.Length);
+            else // haveExtrapHeight
+                Array.Resize(ref simData[simData.Length - 1].WS_WD_data, anems[0].windData.Length);
 
-            for (int i = 0; i < alphaByAnem[heightInd].WS_WD_Alpha.Length; i++)
+            for (int i = 0; i < simData[simData.Length - 1].WS_WD_data.Length; i++)
             {
-                simData[simData.Length - 1].WS_WD_data[i].timeStamp = alphaByAnem[heightInd].WS_WD_Alpha[i].timeStamp;
-                simData[simData.Length - 1].WS_WD_data[i].WD = alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
-
-                if (alphaByAnem[heightInd].WS_WD_Alpha[i].alpha != -999 && alphaByAnem[heightInd].WS_WD_Alpha[i].WS != -999)
+                if (alphaByAnem.Length == 0)
                 {
-                    if (haveExtrapHeight)
-                        simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS;
-                    else
-                        simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS *
-                            Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha);                                              
+                    // Met data has just one anemometer height so use closest vane and WS at modeled height
+                    simData[simData.Length - 1].WS_WD_data[i].timeStamp = anems[0].windData[i].timeStamp;
 
-                    // SD filter: SD must be less than WS / 3
-                    if (alphaByAnem[heightInd].WS_WD_Alpha[i].SD < alphaByAnem[heightInd].WS_WD_Alpha[i].WS / 3 &&
-                        alphaByAnem[heightInd].WS_WD_Alpha[i].SD != 0)
-                        simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD;
+                    if (vanes[vaneInd].dirData[i].filterFlag == Filter_Flags.Valid)
+                        simData[simData.Length - 1].WS_WD_data[i].WD = vanes[vaneInd].dirData[i].avg;
                     else
-                        simData[simData.Length - 1].WS_WD_data[i].SD = -999;
+                        simData[simData.Length - 1].WS_WD_data[i].WD = -999;
 
-                    simData[simData.Length - 1].WS_WD_data[i].alpha = alphaByAnem[heightInd].WS_WD_Alpha[i].alpha;
+                    double[] avgWS = GetAvgValidByHeight(i, "Avg");
+                    simData[simData.Length - 1].WS_WD_data[i].WS = avgWS[0];
                 }
                 else
-                { 
-                    simData[simData.Length - 1].WS_WD_data[i].WS = -999;
-                    simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD; // Should this just be -999?
-                    simData[simData.Length - 1].WS_WD_data[i].alpha = -999;
+                {
+                    simData[simData.Length - 1].WS_WD_data[i].timeStamp = alphaByAnem[heightInd].WS_WD_Alpha[i].timeStamp;
+                    simData[simData.Length - 1].WS_WD_data[i].WD = alphaByAnem[heightInd].WS_WD_Alpha[i].WD;
+
+                    if (alphaByAnem[heightInd].WS_WD_Alpha[i].alpha != -999 && alphaByAnem[heightInd].WS_WD_Alpha[i].WS != -999)
+                    {
+                        if (haveExtrapHeight)
+                            simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS;
+                        else
+                            simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS *
+                                Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha);
+
+                        // SD filter: SD must be less than WS / 3
+                        if (alphaByAnem[heightInd].WS_WD_Alpha[i].SD < alphaByAnem[heightInd].WS_WD_Alpha[i].WS / 3 &&
+                            alphaByAnem[heightInd].WS_WD_Alpha[i].SD != 0)
+                            simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD;
+                        else
+                            simData[simData.Length - 1].WS_WD_data[i].SD = -999;
+
+                        simData[simData.Length - 1].WS_WD_data[i].alpha = alphaByAnem[heightInd].WS_WD_Alpha[i].alpha;
+                    }
+                    else
+                    {
+                        simData[simData.Length - 1].WS_WD_data[i].WS = -999;
+                        simData[simData.Length - 1].WS_WD_data[i].SD = alphaByAnem[heightInd].WS_WD_Alpha[i].SD; // Should this just be -999?
+                        simData[simData.Length - 1].WS_WD_data[i].alpha = -999;
+                    }
                 }
             }            
 
             SortSimDataByH();
+            simDataCalcComplete = true;
         }
         
         /// <summary> Estimates time series of alpha (power law shear exponent). Using either 1) Calc shear between each pair of heights and find overall average shear exponent 
@@ -2233,6 +2222,12 @@ namespace ContinuumNS
 
             double thisAlpha = 0;
 
+            if (shearSettings.minHeight == 0 && numHeights > 0)
+            {
+                shearSettings.minHeight = anemHeights[0];
+                shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];
+            }
+
             while (thisInd < GetDataLength()) // && anems[0].windData[thisInd].timeStamp <= endDate)
             {
                 // get average WS by height
@@ -2271,7 +2266,8 @@ namespace ContinuumNS
 
                 thisInd++;
             }
-                        
+
+            
         }
         
         /// <summary> Gets average shear exponent alpha calculated between each pair of valid wind speed measurement heights. </summary>
@@ -2353,7 +2349,7 @@ namespace ContinuumNS
                 {
                     if ((Math.Abs(anemHeights[i] - thisAnem.height) <= 2) && thisAnem.windData[dataInd].filterFlag == Filter_Flags.Valid)
                     {
-                        if (avgOrSD == "avg")
+                        if (avgOrSD == "avg" || avgOrSD == "Avg" || avgOrSD == "AVG")
                             avgVal[i] = avgVal[i] + thisAnem.windData[dataInd].avg;
                         else
                             avgVal[i] = avgVal[i] + thisAnem.windData[dataInd].SD;

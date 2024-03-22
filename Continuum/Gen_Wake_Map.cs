@@ -214,7 +214,7 @@ namespace ContinuumNS
                 useTimeSeries = false;
 
             // Get wind flow models            
-            if (thisInst.metList.isTimeSeries == false || thisInst.metList.isMCPd == false || useTimeSeries == false)
+            if (thisInst.metList.isTimeSeries == false || thisInst.metList.allMCPd == false || useTimeSeries == false)
                 models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
             else
                 models = thisInst.modelList.GetAllModels(thisInst, thisInst.metList.GetMetsUsed());               

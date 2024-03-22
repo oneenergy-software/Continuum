@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ContinuumNS;
 using System.IO;
+using System.Threading;
+using System.Windows.Forms.VisualStyles;
 
 namespace Continuum_Tests
 {
@@ -21,10 +23,10 @@ namespace Continuum_Tests
         public void ConvertToMPS_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter New Bremen testing.cfm";
             thisInst.Open(Filename);
-
+            Thread.Sleep(4000);
             Met_Data_Filter thisQC = thisInst.metList.metItem[0].metData;
 
             Assert.AreEqual(thisQC.anems[0].windData[20].avg, 1.56459544, 0.001, "Wind speed not converted to m/s correctly");
@@ -38,9 +40,12 @@ namespace Continuum_Tests
         public void GetAvgAlpha_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
             double[] theseAvgAlphas = thisMet.metData.GetAvgAlpha(0, 24, 1);
@@ -95,9 +100,12 @@ namespace Continuum_Tests
         public void CalcAvgWS_by_WD_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
             Met_Data_Filter.Anem_Data anem = thisMet.metData.anems[0];
@@ -115,9 +123,12 @@ namespace Continuum_Tests
         public void Calc_Wind_Rose_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -135,9 +146,12 @@ namespace Continuum_Tests
         public void Get_WS_Ratio_or_Diff_and_WD_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -179,9 +193,12 @@ namespace Continuum_Tests
         public void Get_WS_Ratio_or_Diff_and_WS_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -223,9 +240,12 @@ namespace Continuum_Tests
         public void Get_Conc_WS_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
             Met_Data_Filter.Anem_Data anemA = new Met_Data_Filter.Anem_Data();
@@ -256,9 +276,12 @@ namespace Continuum_Tests
         public void CalcAvgExtrapolatedWS_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
             string[] filtsToApply = new string[1];
@@ -310,9 +333,12 @@ namespace Continuum_Tests
         public void CalcAvgWS_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -376,9 +402,12 @@ namespace Continuum_Tests
         public void Calc_Anem_Data_Recovery_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+           
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -430,9 +459,12 @@ namespace Continuum_Tests
         public void Calc_Vane_Data_Recovery_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
             double thisRec = 0;
@@ -471,9 +503,12 @@ namespace Continuum_Tests
         public void Calc_Temp_Data_Recovery_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -493,9 +528,12 @@ namespace Continuum_Tests
         public void CalcPercentAnemFiltered_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
             Met_Data_Filter.Anem_Data thisAnem = new Met_Data_Filter.Anem_Data();
@@ -547,9 +585,14 @@ namespace Continuum_Tests
         public void Calc_Percent_Vane_Filtered_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+
+            Thread.Sleep(4000);
+
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
             Met_Data_Filter.Vane_Data This_Vane = new Met_Data_Filter.Vane_Data();
@@ -584,9 +627,12 @@ namespace Continuum_Tests
         public void GetMaxWS_atHeight_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
 
@@ -603,9 +649,12 @@ namespace Continuum_Tests
         public void FilterData_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
@@ -712,9 +761,13 @@ namespace Continuum_Tests
         public void GetClosestWS_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             Met thisMet = thisInst.metList.metItem[0];
 
             double thisWS = thisMet.metData.GetClosestWS(1, 13256);
@@ -725,9 +778,13 @@ namespace Continuum_Tests
         public void IsAffectedByTower_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             Met thisMet = thisInst.metList.metItem[0];
 
             bool Is_Affected = thisMet.metData.IsAffectedByTower(45, 0);
@@ -853,9 +910,13 @@ namespace Continuum_Tests
         public void GetVaneClosestToHH_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             Met thisMet = thisInst.metList.metItem[0];
 
             double HH = 30;
@@ -878,9 +939,13 @@ namespace Continuum_Tests
         public void GetAnemsClosestToHH_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             Met thisMet = thisInst.metList.metItem[0];
 
             int actInd = 0;
@@ -917,9 +982,13 @@ namespace Continuum_Tests
         public void GetHeightClosestToHH_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             Met thisMet = thisInst.metList.metItem[0];
 
             double thisHH = 10;
@@ -937,9 +1006,13 @@ namespace Continuum_Tests
         public void ExtrapolateData_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             Met thisMet = thisInst.metList.metItem[0];
             string[] filtsToApply = new string[1];
             filtsToApply[0] = "All";
@@ -962,9 +1035,13 @@ namespace Continuum_Tests
         public void EstimateAlpha_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             Met thisMet = thisInst.metList.metItem[0];
             string[] filtsToApply = new string[1];
             filtsToApply[0] = "All";
@@ -1008,9 +1085,13 @@ namespace Continuum_Tests
         public void GetMaxWS_AndGust_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             Met thisMet = thisInst.metList.metItem[0];
 
             Met_Data_Filter.Yearly_Maxes thisMax = thisMet.metData.GetMaxWS_AndGust(2008, 10);
@@ -1028,9 +1109,16 @@ namespace Continuum_Tests
         public void Calc_Extrap_Recovery_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
+
+            Thread.Sleep(4000);
+
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
+            bool workDon = thisInst.BW_worker.DoWorkDone;
             Met thisMet = thisInst.metList.metItem[0];
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
             thisMet.metData.startDate = Convert.ToDateTime("8/1/2008 0:00");
@@ -1041,6 +1129,9 @@ namespace Continuum_Tests
             thisMet.metData.EstimateAlpha();
             thisMet.metData.ExtrapolateData(80);
 
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             double thisRec = thisMet.metData.CalcExtrapRecovery(thisMet.metData.simData[0]);
             Assert.AreEqual(thisRec, 0.823225309, 0.001, "Wrong extrapolated data recovery");
 
@@ -1050,6 +1141,10 @@ namespace Continuum_Tests
             thisMet.metData.FilterData(filtsToApply);
             thisMet.metData.EstimateAlpha();
             thisMet.metData.ExtrapolateData(80);
+
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             thisRec = thisMet.metData.CalcExtrapRecovery(thisMet.metData.simData[0]);
             Assert.AreEqual(thisRec, 0.84269323, 0.001, "Wrong extrapolated data recovery");
 
@@ -1060,9 +1155,13 @@ namespace Continuum_Tests
         {
 
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             string Filename = testingFolder + "\\GetTS_Index\\GetTS_Index test.cfm";
             thisInst.Open(Filename);
+            Thread.Sleep(4000);
+            while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
+                Thread.Sleep(1000);
+
             Met thisMet = thisInst.metList.metItem[0];
 
             // Test 1 - 3: Anem_Data

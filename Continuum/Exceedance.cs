@@ -248,7 +248,7 @@ namespace ContinuumNS
             exceedCurves[17].upperBound = 1.0f;
 
             SizeExceedCurveArrays();
-            for (int i = 0; i <= 16; i++)
+            for (int i = 0; i <= 17; i++)
             {
                 CalculateProbDist(ref exceedCurves[i]);
                 Normalize_Dists(ref exceedCurves[i]);

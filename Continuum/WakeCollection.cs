@@ -912,7 +912,7 @@ namespace ContinuumNS
         /// <summary> Calculates and returns waked WS and net energy for time series estimates. Time int is time interval in hours.
         /// Finds distance to all UW turbines and wake widths and calculates wind speed deficit. Combines wind speed deficits of all UW turbines based on combo method. </summary>
         public double[] CalcNetEnergyTimeSeries(WakeLossCoeffs[] wakeCoeffs, double thisX, double thisY, double freeStream,  
-                                         Continuum thisInst, Wake_Model thisWakeModel, double WD, double grossEnergy, int timeInt)        
+                                         Continuum thisInst, Wake_Model thisWakeModel, double WD, double grossEnergy, double timeInt)        
         {
             double[] wakedResults = new double[2]; // 0 = Waked WS, 1 = Net Energy 
             double netEnergy = 0;

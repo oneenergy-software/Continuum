@@ -42,7 +42,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
 
             // Test 1
             thisMCP.numWD = 4;
@@ -74,14 +74,14 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
 
             // Test 1
             thisMCP.ResetMCP("All", thisInst.metList);
             thisMCP.numWD = 16;
             thisMCP.numTODs = 2;
             thisMCP.numSeasons = 4;
-            thisMCP.FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate);
+            thisMCP.FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate, false);
 
             double[] Avg_WS_WD = thisMCP.GetConcAvgsCount(16, Met.TOD.Day, Met.Season.Winter);  // 0: Target WS; 1: Reference WS; 2: Data Count'
 
@@ -111,7 +111,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
 
             thisMCP.numWD = 8;
             thisMCP.numTODs = 2;
@@ -210,7 +210,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0]; 
 
             thisMCP.numWD = 4;
             thisMCP.numTODs = 1;
@@ -246,7 +246,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
 
             thisMCP.WS_BinWidth = 1;
             thisMCP.FindSD_ChangeInWS();
@@ -297,7 +297,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
        //     thisInst.merraList.MERRAfolder = MERRA2Folder;
             Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
@@ -320,7 +320,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
             Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
             thisMCP.numWD = 16;
@@ -344,9 +344,9 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
 
-            thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"));
+            thisMCP.FindConcurrentData(thisMCP.GetStartOrEndDate("Concurrent", "Start"), thisMCP.GetStartOrEndDate("Concurrent", "End"), false);
             Assert.AreEqual(thisMCP.concData.Length, 8500, 0, "Wrong concurrent data length");
             
             double[] Conc_Avgs = thisMCP.GetConcAvgsCount(thisInst.metList.numWD, Met.TOD.All, Met.Season.All);
@@ -365,7 +365,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\MCP testing.cfm";
             thisInst.Open(Filename);
             Met thisMet = thisInst.metList.metItem[0];
-            MCP thisMCP = thisMet.mcp;
+            MCP thisMCP = thisMet.mcpList[0];
 
             thisInst.metList.numWD = 16;
             thisInst.metList.numTOD = 1;

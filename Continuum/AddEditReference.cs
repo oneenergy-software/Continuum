@@ -53,9 +53,11 @@ namespace ContinuumNS
             UpdateDropdownReferenceDownloads();
 
             // Populate list of met sites (used to extract data at closest coordinates)
-            PopulateMetList();
-
-            UpdateForm();
+            if (newOrEditRef == null)
+            {
+                PopulateMetList();
+                UpdateForm();
+            }           
 
         }
 
@@ -96,10 +98,17 @@ namespace ContinuumNS
 
             if (thisRef.isUserDefined)
                 cboTargetMet.SelectedIndex = cboTargetMet.Items.Count - 1;
-
-     //       txtReferenceLat.Text = thisRef.interpData.Coords.latitude.ToString();
-     //       txtReferenceLong.Text = thisRef.interpData.Coords.longitude.ToString();
-
+            else if (thisRef.interpData.Coords.latitude != 0)
+            {
+                Met thisMet = metList.GetMetAtLatLon(thisRef.interpData.Coords.latitude, thisRef.interpData.Coords.longitude, utmConv);
+                for (int m = 0; m < cboTargetMet.Items.Count; m++)
+                    if (cboTargetMet.Items[m].ToString() == thisMet.name)
+                    {
+                        cboTargetMet.SelectedIndex = m;
+                        break;
+                    }
+            }
+     
             dateRefStart.Value = thisRef.startDate;
             dateRefEnd.Value = thisRef.endDate;
 
@@ -113,7 +122,7 @@ namespace ContinuumNS
             for (int m = 0; m < metList.ThisCount; m++)            
                 cboTargetMet.Items.Add(metList.metItem[m].name);
 
-            cboTargetMet.Items.Add("User-defined lat/long");
+            cboTargetMet.Items.Add("User-defined");
             cboTargetMet.SelectedIndex = 0;
             
         }
@@ -134,22 +143,14 @@ namespace ContinuumNS
 
             if (refNodes.Length == 0)
                 return;
-
-            DateTime[] startEndDates = refList.GetDataFileStartEndDate(thisRef.refDataDownload.folderLocation, thisRef.refDataDownload.refType);
+                        
             int offset = utmConv.GetUTC_Offset(refNodes[0].XY_ind.Lat, refNodes[0].XY_ind.Lon);
+                        
+            dateLTRefAvailStart.Value = thisRef.refDataDownload.startDate.AddHours(offset);
+            dateLTRefAvailEnd.Value = thisRef.refDataDownload.endDate.AddHours(offset);                        
 
-            if (startEndDates[0].Year != 1)
-            {
-                dateLTRefAvailStart.Value = startEndDates[0].AddHours(offset);
-                dateLTRefAvailEnd.Value = startEndDates[1].AddHours(offset);
-
-                double completePerc = refList.CalcDownloadedDataCompletion(thisRef.refDataDownload);
-
-                if (completePerc > 100)
-                    completePerc = 100;
-
-                txtRefDataAvail.Text = Math.Round(completePerc, 1).ToString();
-            }            
+            txtRefDataAvail.Text = Math.Round(thisRef.refDataDownload.completion * 100.0, 1).ToString();
+                      
         }               
         
         private void cboNumNodes_SelectedIndexChanged(object sender, EventArgs e)
@@ -164,13 +165,28 @@ namespace ContinuumNS
                 txtReferenceLat.Enabled = true;
                 txtReferenceLong.Enabled = true;
                 thisRef.isUserDefined = true;
+
+                if (thisRef.interpData.Coords.latitude != 0)
+                {
+                    txtReferenceLat.Text = thisRef.interpData.Coords.latitude.ToString();
+                    txtReferenceLong.Text = thisRef.interpData.Coords.longitude.ToString();
+                }
             }
             else
             {
-                Met thisMet = metList.GetMet(cboTargetMet.SelectedItem.ToString());
-                UTM_conversion.Lat_Long thisLL = utmConv.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
-                txtReferenceLat.Text = Math.Round(thisLL.latitude, 3).ToString();
-                txtReferenceLong.Text = Math.Round(thisLL.longitude, 3).ToString();
+                if (thisRef.interpData.Coords.latitude != 0)
+                {
+                    txtReferenceLat.Text = thisRef.interpData.Coords.latitude.ToString();
+                    txtReferenceLong.Text = thisRef.interpData.Coords.longitude.ToString();
+                }
+                else
+                {
+                    Met thisMet = metList.GetMet(cboTargetMet.SelectedItem.ToString());
+                    UTM_conversion.Lat_Long thisLL = utmConv.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+                    txtReferenceLat.Text = Math.Round(thisLL.latitude, 3).ToString();
+                    txtReferenceLong.Text = Math.Round(thisLL.longitude, 3).ToString();
+                }
+                    
                 txtReferenceLat.Enabled = false;
                 txtReferenceLong.Enabled = false;
                 thisRef.isUserDefined = false;                
@@ -209,7 +225,20 @@ namespace ContinuumNS
 
             if (gotCoords == false)
                 return;
-            
+
+            // Compare requested start/end dates to downloaded start/end dates
+            if (thisRef.startDate < thisRef.refDataDownload.startDate.AddHours(thisRef.interpData.UTC_offset))
+            {
+                MessageBox.Show("Requested start date cannot be before the start of the downloaded data range.");
+                return;
+            }
+
+            if (thisRef.endDate > thisRef.refDataDownload.endDate.AddHours(thisRef.interpData.UTC_offset))
+            {
+                MessageBox.Show("Requested end date cannot be after the end of the downloaded data range.");
+                return;
+            }
+
             goodToGo = true;
             Close();
         }
@@ -236,6 +265,7 @@ namespace ContinuumNS
 
         private void cboRefDataDownloads_SelectedIndexChanged_1(object sender, EventArgs e)
         {            
+            
             thisRef.refDataDownload = refList.GetRefDataDownloadByName(cboRefDataDownloads.SelectedItem.ToString());
             UpdateLT_RefNodesAndCompleteness();
             UpdateForm();
@@ -249,6 +279,11 @@ namespace ContinuumNS
         }
 
         private void txtReferenceLat_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void AddEditReference_Load(object sender, EventArgs e)
         {
 
         }

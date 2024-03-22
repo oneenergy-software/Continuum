@@ -226,7 +226,7 @@
             this.txtWS_ScaleFact.Name = "txtWS_ScaleFact";
             this.txtWS_ScaleFact.Size = new System.Drawing.Size(66, 25);
             this.txtWS_ScaleFact.TabIndex = 293;
-            this.txtWS_ScaleFact.Text = "0.85";
+            this.txtWS_ScaleFact.Text = "1";
             this.txtWS_ScaleFact.TextChanged += new System.EventHandler(this.txtWS_ScaleFact_TextChanged);
             // 
             // cboNumNodes
@@ -327,7 +327,7 @@
             this.cboTargetMet.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTargetMet.FormattingEnabled = true;
             this.cboTargetMet.Items.AddRange(new object[] {
-            "User-Defined Lat/Long"});
+            "User-Defined"});
             this.cboTargetMet.Location = new System.Drawing.Point(145, 527);
             this.cboTargetMet.Margin = new System.Windows.Forms.Padding(2);
             this.cboTargetMet.Name = "cboTargetMet";
@@ -444,13 +444,13 @@
             // 
             // txtRefDataFolder
             // 
-            this.txtRefDataFolder.Enabled = false;
             this.txtRefDataFolder.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRefDataFolder.Location = new System.Drawing.Point(31, 139);
             this.txtRefDataFolder.Margin = new System.Windows.Forms.Padding(2);
             this.txtRefDataFolder.Name = "txtRefDataFolder";
             this.txtRefDataFolder.Size = new System.Drawing.Size(445, 25);
             this.txtRefDataFolder.TabIndex = 315;
+            this.txtRefDataFolder.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // btnDownloadHelp
             // 
@@ -503,6 +503,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AddEditReference";
             this.Text = "Add/Edit New Long-Term Reference";
+            this.Load += new System.EventHandler(this.AddEditReference_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataLTRefNodes)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

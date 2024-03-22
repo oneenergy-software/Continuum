@@ -1501,6 +1501,8 @@ namespace ContinuumNS
                         turbineCalcsDone = false;                    
                     else if (turbineEsts[0].avgWS_Est[0].timeSeries == null)
                         turbineCalcsDone = false;
+                    else if (turbineEsts[0].avgWS_Est[0].timeSeries.Length == 0)
+                        turbineCalcsDone = false;
                     else if (turbineEsts[0].avgWS_Est[0].timeSeries[0].freeStreamWS == 0)
                         turbineCalcsDone = false;
                     else

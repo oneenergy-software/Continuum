@@ -315,19 +315,19 @@ namespace Continuum_Tests
         {
             SiteSuitability siteSuitability = new SiteSuitability();
             double thisDegs = siteSuitability.GetDegrees(0);
-            Assert.AreEqual(180, thisDegs, 1, "Wrong blade throw angle Test 1");
+            Assert.AreEqual(0, thisDegs, 1, "Wrong blade throw angle Test 1");
 
             thisDegs = siteSuitability.GetDegrees(0.2);
-            Assert.AreEqual(233, thisDegs, 1, "Wrong blade throw angle Test 2");
+            Assert.AreEqual(73, thisDegs, 1, "Wrong blade throw angle Test 2");
 
             thisDegs = siteSuitability.GetDegrees(0.4);
-            Assert.AreEqual(258, thisDegs, 1, "Wrong blade throw angle Test 3");
+            Assert.AreEqual(147, thisDegs, 1, "Wrong blade throw angle Test 3");
 
             thisDegs = siteSuitability.GetDegrees(0.6);
-            Assert.AreEqual(282, thisDegs, 1, "Wrong blade throw angle Test 4");
+            Assert.AreEqual(220, thisDegs, 1, "Wrong blade throw angle Test 4");
 
             thisDegs = siteSuitability.GetDegrees(0.8);
-            Assert.AreEqual(307, thisDegs, 1, "Wrong blade throw angle Test 5");
+            Assert.AreEqual(294, thisDegs, 1, "Wrong blade throw angle Test 5");
 
             thisDegs = siteSuitability.GetDegrees(1);
             Assert.AreEqual(360, thisDegs, 1, "Wrong blade throw angle Test 6");

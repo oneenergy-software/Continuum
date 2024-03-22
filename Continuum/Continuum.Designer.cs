@@ -30,53 +30,65 @@ namespace ContinuumNS
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode155 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode156 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode157 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode158 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode159 = new System.Windows.Forms.TreeNode("Alpha");
-            System.Windows.Forms.TreeNode treeNode160 = new System.Windows.Forms.TreeNode("Extrap. WS");
-            System.Windows.Forms.TreeNode treeNode161 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
-            treeNode155,
-            treeNode156,
-            treeNode157,
-            treeNode158,
-            treeNode159,
-            treeNode160});
-            System.Windows.Forms.TreeNode treeNode162 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode163 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode164 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode165 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode166 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
-            treeNode162,
-            treeNode163,
-            treeNode164,
-            treeNode165});
-            System.Windows.Forms.TreeNode treeNode167 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode168 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode169 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode170 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode171 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
-            treeNode167,
-            treeNode168,
-            treeNode169,
-            treeNode170});
-            System.Windows.Forms.TreeNode treeNode172 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode173 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode174 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode175 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode176 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
-            treeNode172,
-            treeNode173,
-            treeNode174,
-            treeNode175});
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Alpha");
+            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Extrap. WS");
+            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
+            treeNode23,
+            treeNode24,
+            treeNode25,
+            treeNode26,
+            treeNode27,
+            treeNode28});
+            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode33 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode34 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
+            treeNode30,
+            treeNode31,
+            treeNode32,
+            treeNode33});
+            System.Windows.Forms.TreeNode treeNode35 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode36 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode37 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode38 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode39 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
+            treeNode35,
+            treeNode36,
+            treeNode37,
+            treeNode38});
+            System.Windows.Forms.TreeNode treeNode40 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode41 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode42 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
+            treeNode40,
+            treeNode41,
+            treeNode42,
+            treeNode43});
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
+            this.cboInputLLorDD = new System.Windows.Forms.ComboBox();
+            this.pnlInputMap = new System.Windows.Forms.Panel();
+            this.plotTopo = new OxyPlot.WindowsForms.PlotView();
+            this.pnlInputMapAndLegend = new System.Windows.Forms.Panel();
+            this.lblMetLabels = new System.Windows.Forms.Label();
+            this.cboTopo_Or_Roughness = new System.Windows.Forms.ComboBox();
+            this.chkAllTurbLabels = new System.Windows.Forms.CheckBox();
+            this.chkAllMetLabels = new System.Windows.Forms.CheckBox();
+            this.Label23 = new System.Windows.Forms.Label();
+            this.chkTurbLabels = new System.Windows.Forms.CheckedListBox();
+            this.chkMetLabels = new System.Windows.Forms.CheckedListBox();
+            this.txtTopoSource = new System.Windows.Forms.TextBox();
             this.cboWindOrEnergy = new System.Windows.Forms.ComboBox();
             this.btnEditAirDensity = new System.Windows.Forms.Button();
             this.label222 = new System.Windows.Forms.Label();
@@ -88,7 +100,6 @@ namespace ContinuumNS
             this.label5 = new System.Windows.Forms.Label();
             this.plotDirectionalWS_Ratios = new OxyPlot.WindowsForms.PlotView();
             this.plotInputWindRose = new OxyPlot.WindowsForms.PlotView();
-            this.plotTopo = new OxyPlot.WindowsForms.PlotView();
             this.chkCreateTurbTS = new System.Windows.Forms.CheckBox();
             this.btnEditModHeight = new System.Windows.Forms.Button();
             this.label168 = new System.Windows.Forms.Label();
@@ -100,7 +111,6 @@ namespace ContinuumNS
             this.txt_LC_Key_selected = new System.Windows.Forms.TextBox();
             this.chkUseSR = new System.Windows.Forms.CheckBox();
             this.btnViewModNLCD = new System.Windows.Forms.Button();
-            this.cboTopo_Or_Roughness = new System.Windows.Forms.ComboBox();
             this.txtUTMZone = new System.Windows.Forms.TextBox();
             this.Label57 = new System.Windows.Forms.Label();
             this.txtUTMDatum = new System.Windows.Forms.TextBox();
@@ -111,16 +121,6 @@ namespace ContinuumNS
             this.btnGenTurbEsts = new System.Windows.Forms.Button();
             this.Label30 = new System.Windows.Forms.Label();
             this.Label19 = new System.Windows.Forms.Label();
-            this.chkAllTurbLabels = new System.Windows.Forms.CheckBox();
-            this.chkAllMetLabels = new System.Windows.Forms.CheckBox();
-            this.Label23 = new System.Windows.Forms.Label();
-            this.lblMetLabels = new System.Windows.Forms.Label();
-            this.chkTurbLabels = new System.Windows.Forms.CheckedListBox();
-            this.chkMetLabels = new System.Windows.Forms.CheckedListBox();
-            this.txtMainMax = new System.Windows.Forms.TextBox();
-            this.txtMainMin = new System.Windows.Forms.TextBox();
-            this.Label21 = new System.Windows.Forms.Label();
-            this.Label22 = new System.Windows.Forms.Label();
             this.btnDelTurb = new System.Windows.Forms.Button();
             this.btnEditTurb = new System.Windows.Forms.Button();
             this.btnAddTurb = new System.Windows.Forms.Button();
@@ -128,7 +128,6 @@ namespace ContinuumNS
             this.ColumnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ColumnHeader18 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ColumnHeader19 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.txtTopoSource = new System.Windows.Forms.TextBox();
             this.lblTurbineList = new System.Windows.Forms.Label();
             this.btnDelMet = new System.Windows.Forms.Button();
             this.lstMetTowers = new System.Windows.Forms.ListView();
@@ -172,6 +171,14 @@ namespace ContinuumNS
             this.plotTS_Vanes = new OxyPlot.WindowsForms.PlotView();
             this.plotTS_Anems = new OxyPlot.WindowsForms.PlotView();
             this.pgeMetData = new System.Windows.Forms.TabPage();
+            this.label102 = new System.Windows.Forms.Label();
+            this.label69 = new System.Windows.Forms.Label();
+            this.pnlMetDatQC_WSDiff = new System.Windows.Forms.Panel();
+            this.plotWSDiffByWS = new OxyPlot.WindowsForms.PlotView();
+            this.pnlMetDataQC_Scatter = new System.Windows.Forms.Panel();
+            this.plotAnemScatter = new OxyPlot.WindowsForms.PlotView();
+            this.label70 = new System.Windows.Forms.Label();
+            this.plotWSDiffByWD = new OxyPlot.WindowsForms.PlotView();
             this.txtShearCalcMethod = new System.Windows.Forms.TextBox();
             this.label227 = new System.Windows.Forms.Label();
             this.btnEditShearMethod = new System.Windows.Forms.Button();
@@ -192,9 +199,6 @@ namespace ContinuumNS
             this.label155 = new System.Windows.Forms.Label();
             this.cboAnemA = new System.Windows.Forms.ComboBox();
             this.label20 = new System.Windows.Forms.Label();
-            this.plotWSDiffByWS = new OxyPlot.WindowsForms.PlotView();
-            this.plotWSDiffByWD = new OxyPlot.WindowsForms.PlotView();
-            this.plotAnemScatter = new OxyPlot.WindowsForms.PlotView();
             this.plotAlphaByWD = new OxyPlot.WindowsForms.PlotView();
             this.plotMetQC_WindRose = new OxyPlot.WindowsForms.PlotView();
             this.plotWS_vsHeight = new OxyPlot.WindowsForms.PlotView();
@@ -210,9 +214,6 @@ namespace ContinuumNS
             this.label104 = new System.Windows.Forms.Label();
             this.cboMetQC_SelectedMet = new System.Windows.Forms.ComboBox();
             this.cboFilt_or_Not = new System.Windows.Forms.ComboBox();
-            this.label102 = new System.Windows.Forms.Label();
-            this.label70 = new System.Windows.Forms.Label();
-            this.label69 = new System.Windows.Forms.Label();
             this.lstExtrapolated = new System.Windows.Forms.ListView();
             this.columnHeader82 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader84 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -638,6 +639,7 @@ namespace ContinuumNS
             this.pgeSiteConditions = new System.Windows.Forms.TabPage();
             this.tabSiteConditions = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnExportTerrainComplexSector = new System.Windows.Forms.Button();
             this.cboNumWDComplxTab = new System.Windows.Forms.ComboBox();
             this.label224 = new System.Windows.Forms.Label();
             this.chkForceThruBase = new System.Windows.Forms.CheckBox();
@@ -645,7 +647,6 @@ namespace ContinuumNS
             this.label161 = new System.Windows.Forms.Label();
             this.cboTSIorTVIorP90 = new System.Windows.Forms.ComboBox();
             this.plotComplexHisto = new OxyPlot.WindowsForms.PlotView();
-            this.label150 = new System.Windows.Forms.Label();
             this.btnShowIECThresh = new System.Windows.Forms.Button();
             this.lblIEC_Complexity = new System.Windows.Forms.Label();
             this.label147 = new System.Windows.Forms.Label();
@@ -913,6 +914,8 @@ namespace ContinuumNS
             this.btnDoRRCalcs = new System.Windows.Forms.Button();
             this.Label46 = new System.Windows.Forms.Label();
             this.pgeStepwise = new System.Windows.Forms.TabPage();
+            this.btnImportModel = new System.Windows.Forms.Button();
+            this.btnExportModel = new System.Windows.Forms.Button();
             this.plotDHModel = new OxyPlot.WindowsForms.PlotView();
             this.plotUHModel = new OxyPlot.WindowsForms.PlotView();
             this.plotPathAlongNodes = new OxyPlot.WindowsForms.PlotView();
@@ -942,7 +945,6 @@ namespace ContinuumNS
             this.txtSepCrit = new System.Windows.Forms.TextBox();
             this.Label100 = new System.Windows.Forms.Label();
             this.cboDHplot = new System.Windows.Forms.ComboBox();
-            this.btnImportModel = new System.Windows.Forms.Button();
             this.chkAdvToShow = new System.Windows.Forms.CheckedListBox();
             this.chkWeight_RMS = new System.Windows.Forms.CheckBox();
             this.txtSectRMS = new System.Windows.Forms.TextBox();
@@ -950,7 +952,6 @@ namespace ContinuumNS
             this.txtAdv_LC_used = new System.Windows.Forms.TextBox();
             this.cboExpo_or_Stab = new System.Windows.Forms.ComboBox();
             this.Label82 = new System.Windows.Forms.Label();
-            this.btnExportModel = new System.Windows.Forms.Button();
             this.Label59 = new System.Windows.Forms.Label();
             this.txtUWCrit = new System.Windows.Forms.TextBox();
             this.Label58 = new System.Windows.Forms.Label();
@@ -1110,6 +1111,8 @@ namespace ContinuumNS
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
+            this.pnlInputMap.SuspendLayout();
+            this.pnlInputMapAndLegend.SuspendLayout();
             this.pgeMetDataTS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splContMetTS)).BeginInit();
             this.splContMetTS.Panel1.SuspendLayout();
@@ -1117,6 +1120,8 @@ namespace ContinuumNS
             this.splContMetTS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataMetTS)).BeginInit();
             this.pgeMetData.SuspendLayout();
+            this.pnlMetDatQC_WSDiff.SuspendLayout();
+            this.pnlMetDataQC_Scatter.SuspendLayout();
             this.pgeMERRA.SuspendLayout();
             this.pgeMCP.SuspendLayout();
             this.pgeMetSumm.SuspendLayout();
@@ -1161,15 +1166,19 @@ namespace ContinuumNS
             this.tabContinuum.Controls.Add(this.pgeStepwise);
             this.tabContinuum.Controls.Add(this.pgeSuitability);
             this.tabContinuum.Font = new System.Drawing.Font("Palatino Linotype", 10F);
-            this.tabContinuum.Location = new System.Drawing.Point(15, 33);
+            this.tabContinuum.Location = new System.Drawing.Point(12, 29);
             this.tabContinuum.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabContinuum.Name = "tabContinuum";
             this.tabContinuum.SelectedIndex = 0;
-            this.tabContinuum.Size = new System.Drawing.Size(1634, 887);
+            this.tabContinuum.Size = new System.Drawing.Size(1496, 743);
             this.tabContinuum.TabIndex = 3;
             // 
             // pgeInput
             // 
+            this.pgeInput.AutoScroll = true;
+            this.pgeInput.Controls.Add(this.cboInputLLorDD);
+            this.pgeInput.Controls.Add(this.pnlInputMap);
+            this.pgeInput.Controls.Add(this.pnlInputMapAndLegend);
             this.pgeInput.Controls.Add(this.cboWindOrEnergy);
             this.pgeInput.Controls.Add(this.btnEditAirDensity);
             this.pgeInput.Controls.Add(this.label222);
@@ -1181,7 +1190,6 @@ namespace ContinuumNS
             this.pgeInput.Controls.Add(this.label5);
             this.pgeInput.Controls.Add(this.plotDirectionalWS_Ratios);
             this.pgeInput.Controls.Add(this.plotInputWindRose);
-            this.pgeInput.Controls.Add(this.plotTopo);
             this.pgeInput.Controls.Add(this.chkCreateTurbTS);
             this.pgeInput.Controls.Add(this.btnEditModHeight);
             this.pgeInput.Controls.Add(this.label168);
@@ -1193,7 +1201,6 @@ namespace ContinuumNS
             this.pgeInput.Controls.Add(this.txt_LC_Key_selected);
             this.pgeInput.Controls.Add(this.chkUseSR);
             this.pgeInput.Controls.Add(this.btnViewModNLCD);
-            this.pgeInput.Controls.Add(this.cboTopo_Or_Roughness);
             this.pgeInput.Controls.Add(this.txtUTMZone);
             this.pgeInput.Controls.Add(this.Label57);
             this.pgeInput.Controls.Add(this.txtUTMDatum);
@@ -1204,21 +1211,10 @@ namespace ContinuumNS
             this.pgeInput.Controls.Add(this.btnGenTurbEsts);
             this.pgeInput.Controls.Add(this.Label30);
             this.pgeInput.Controls.Add(this.Label19);
-            this.pgeInput.Controls.Add(this.chkAllTurbLabels);
-            this.pgeInput.Controls.Add(this.chkAllMetLabels);
-            this.pgeInput.Controls.Add(this.Label23);
-            this.pgeInput.Controls.Add(this.lblMetLabels);
-            this.pgeInput.Controls.Add(this.chkTurbLabels);
-            this.pgeInput.Controls.Add(this.chkMetLabels);
-            this.pgeInput.Controls.Add(this.txtMainMax);
-            this.pgeInput.Controls.Add(this.txtMainMin);
-            this.pgeInput.Controls.Add(this.Label21);
-            this.pgeInput.Controls.Add(this.Label22);
             this.pgeInput.Controls.Add(this.btnDelTurb);
             this.pgeInput.Controls.Add(this.btnEditTurb);
             this.pgeInput.Controls.Add(this.btnAddTurb);
             this.pgeInput.Controls.Add(this.lstTurbines);
-            this.pgeInput.Controls.Add(this.txtTopoSource);
             this.pgeInput.Controls.Add(this.lblTurbineList);
             this.pgeInput.Controls.Add(this.btnDelMet);
             this.pgeInput.Controls.Add(this.lstMetTowers);
@@ -1227,21 +1223,189 @@ namespace ContinuumNS
             this.pgeInput.Controls.Add(this.btnLoadXYZ);
             this.pgeInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pgeInput.Location = new System.Drawing.Point(4, 27);
-            this.pgeInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.pgeInput.Margin = new System.Windows.Forms.Padding(0);
             this.pgeInput.Name = "pgeInput";
             this.pgeInput.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeInput.Size = new System.Drawing.Size(1626, 856);
+            this.pgeInput.Size = new System.Drawing.Size(1488, 712);
             this.pgeInput.TabIndex = 0;
             this.pgeInput.Text = "Input";
             this.pgeInput.UseVisualStyleBackColor = true;
             // 
+            // cboInputLLorDD
+            // 
+            this.cboInputLLorDD.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.cboInputLLorDD.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboInputLLorDD.FormattingEnabled = true;
+            this.cboInputLLorDD.Items.AddRange(new object[] {
+            "UTM",
+            "DD"});
+            this.cboInputLLorDD.Location = new System.Drawing.Point(697, 216);
+            this.cboInputLLorDD.Name = "cboInputLLorDD";
+            this.cboInputLLorDD.Size = new System.Drawing.Size(79, 24);
+            this.cboInputLLorDD.TabIndex = 141;
+            this.cboInputLLorDD.SelectedIndexChanged += new System.EventHandler(this.cboInputLLorDD_SelectedIndexChanged);
+            // 
+            // pnlInputMap
+            // 
+            this.pnlInputMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlInputMap.Controls.Add(this.plotTopo);
+            this.pnlInputMap.Location = new System.Drawing.Point(787, 7);
+            this.pnlInputMap.Name = "pnlInputMap";
+            this.pnlInputMap.Size = new System.Drawing.Size(695, 520);
+            this.pnlInputMap.TabIndex = 140;
+            this.pnlInputMap.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint_1);
+            // 
+            // plotTopo
+            // 
+            this.plotTopo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.plotTopo.Location = new System.Drawing.Point(0, 0);
+            this.plotTopo.MaximumSize = new System.Drawing.Size(1000, 700);
+            this.plotTopo.Name = "plotTopo";
+            this.plotTopo.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotTopo.Size = new System.Drawing.Size(695, 520);
+            this.plotTopo.TabIndex = 139;
+            this.plotTopo.Text = "plotTopo";
+            this.plotTopo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotTopo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotTopo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // pnlInputMapAndLegend
+            // 
+            this.pnlInputMapAndLegend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlInputMapAndLegend.Controls.Add(this.lblMetLabels);
+            this.pnlInputMapAndLegend.Controls.Add(this.cboTopo_Or_Roughness);
+            this.pnlInputMapAndLegend.Controls.Add(this.chkAllTurbLabels);
+            this.pnlInputMapAndLegend.Controls.Add(this.chkAllMetLabels);
+            this.pnlInputMapAndLegend.Controls.Add(this.Label23);
+            this.pnlInputMapAndLegend.Controls.Add(this.chkTurbLabels);
+            this.pnlInputMapAndLegend.Controls.Add(this.chkMetLabels);
+            this.pnlInputMapAndLegend.Controls.Add(this.txtTopoSource);
+            this.pnlInputMapAndLegend.Location = new System.Drawing.Point(787, 533);
+            this.pnlInputMapAndLegend.Name = "pnlInputMapAndLegend";
+            this.pnlInputMapAndLegend.Size = new System.Drawing.Size(698, 172);
+            this.pnlInputMapAndLegend.TabIndex = 138;
+            this.pnlInputMapAndLegend.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // lblMetLabels
+            // 
+            this.lblMetLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblMetLabels.AutoSize = true;
+            this.lblMetLabels.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMetLabels.Location = new System.Drawing.Point(10, 17);
+            this.lblMetLabels.Name = "lblMetLabels";
+            this.lblMetLabels.Size = new System.Drawing.Size(91, 23);
+            this.lblMetLabels.TabIndex = 135;
+            this.lblMetLabels.Text = "Met Sites";
+            // 
+            // cboTopo_Or_Roughness
+            // 
+            this.cboTopo_Or_Roughness.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboTopo_Or_Roughness.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboTopo_Or_Roughness.FormattingEnabled = true;
+            this.cboTopo_Or_Roughness.Items.AddRange(new object[] {
+            "Topography",
+            "Land Cover",
+            "Surface Roughness",
+            "Displacement height"});
+            this.cboTopo_Or_Roughness.Location = new System.Drawing.Point(524, 6);
+            this.cboTopo_Or_Roughness.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTopo_Or_Roughness.Name = "cboTopo_Or_Roughness";
+            this.cboTopo_Or_Roughness.Size = new System.Drawing.Size(147, 26);
+            this.cboTopo_Or_Roughness.TabIndex = 133;
+            this.cboTopo_Or_Roughness.Text = "Topography";
+            this.cboTopo_Or_Roughness.SelectedIndexChanged += new System.EventHandler(this.cboTopo_Or_Roughness_SelectedIndexChanged_1);
+            // 
+            // chkAllTurbLabels
+            // 
+            this.chkAllTurbLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkAllTurbLabels.AutoSize = true;
+            this.chkAllTurbLabels.Checked = true;
+            this.chkAllTurbLabels.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAllTurbLabels.Font = new System.Drawing.Font("Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkAllTurbLabels.Location = new System.Drawing.Point(388, 23);
+            this.chkAllTurbLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllTurbLabels.Name = "chkAllTurbLabels";
+            this.chkAllTurbLabels.Size = new System.Drawing.Size(123, 20);
+            this.chkAllTurbLabels.TabIndex = 132;
+            this.chkAllTurbLabels.Text = "Select/Deselect All";
+            this.chkAllTurbLabels.UseVisualStyleBackColor = true;
+            // 
+            // chkAllMetLabels
+            // 
+            this.chkAllMetLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkAllMetLabels.AutoSize = true;
+            this.chkAllMetLabels.Checked = true;
+            this.chkAllMetLabels.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAllMetLabels.Font = new System.Drawing.Font("Palatino Linotype", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkAllMetLabels.Location = new System.Drawing.Point(128, 24);
+            this.chkAllMetLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllMetLabels.Name = "chkAllMetLabels";
+            this.chkAllMetLabels.Size = new System.Drawing.Size(123, 20);
+            this.chkAllMetLabels.TabIndex = 131;
+            this.chkAllMetLabels.Text = "Select/Deselect All";
+            this.chkAllMetLabels.UseVisualStyleBackColor = true;
+            // 
+            // Label23
+            // 
+            this.Label23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.Label23.AutoSize = true;
+            this.Label23.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Label23.Location = new System.Drawing.Point(256, 17);
+            this.Label23.Name = "Label23";
+            this.Label23.Size = new System.Drawing.Size(122, 23);
+            this.Label23.TabIndex = 130;
+            this.Label23.Text = "Turbine Sites";
+            // 
+            // chkTurbLabels
+            // 
+            this.chkTurbLabels.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkTurbLabels.CheckOnClick = true;
+            this.chkTurbLabels.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkTurbLabels.FormattingEnabled = true;
+            this.chkTurbLabels.Location = new System.Drawing.Point(265, 47);
+            this.chkTurbLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkTurbLabels.Name = "chkTurbLabels";
+            this.chkTurbLabels.Size = new System.Drawing.Size(420, 64);
+            this.chkTurbLabels.TabIndex = 129;
+            // 
+            // chkMetLabels
+            // 
+            this.chkMetLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkMetLabels.CheckOnClick = true;
+            this.chkMetLabels.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkMetLabels.FormattingEnabled = true;
+            this.chkMetLabels.Location = new System.Drawing.Point(14, 47);
+            this.chkMetLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkMetLabels.Name = "chkMetLabels";
+            this.chkMetLabels.Size = new System.Drawing.Size(242, 64);
+            this.chkMetLabels.TabIndex = 128;
+            // 
+            // txtTopoSource
+            // 
+            this.txtTopoSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTopoSource.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTopoSource.Location = new System.Drawing.Point(14, 139);
+            this.txtTopoSource.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtTopoSource.Name = "txtTopoSource";
+            this.txtTopoSource.ReadOnly = true;
+            this.txtTopoSource.Size = new System.Drawing.Size(671, 25);
+            this.txtTopoSource.TabIndex = 127;
+            this.txtTopoSource.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // cboWindOrEnergy
             // 
+            this.cboWindOrEnergy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cboWindOrEnergy.FormattingEnabled = true;
             this.cboWindOrEnergy.Items.AddRange(new object[] {
             "Wind Rose",
             "Energy Rose"});
-            this.cboWindOrEnergy.Location = new System.Drawing.Point(272, 503);
+            this.cboWindOrEnergy.Location = new System.Drawing.Point(180, 430);
             this.cboWindOrEnergy.Name = "cboWindOrEnergy";
             this.cboWindOrEnergy.Size = new System.Drawing.Size(121, 21);
             this.cboWindOrEnergy.TabIndex = 137;
@@ -1249,8 +1413,9 @@ namespace ContinuumNS
             // 
             // btnEditAirDensity
             // 
+            this.btnEditAirDensity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnEditAirDensity.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEditAirDensity.Location = new System.Drawing.Point(768, 209);
+            this.btnEditAirDensity.Location = new System.Drawing.Point(679, 642);
             this.btnEditAirDensity.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnEditAirDensity.Name = "btnEditAirDensity";
             this.btnEditAirDensity.Size = new System.Drawing.Size(50, 32);
@@ -1261,21 +1426,22 @@ namespace ContinuumNS
             // 
             // label222
             // 
+            this.label222.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label222.AutoSize = true;
             this.label222.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label222.Location = new System.Drawing.Point(755, 131);
+            this.label222.Location = new System.Drawing.Point(666, 564);
             this.label222.Name = "label222";
             this.label222.Size = new System.Drawing.Size(77, 36);
             this.label222.TabIndex = 135;
             this.label222.Text = "Air Density\r\n[kg/m3]:";
             this.label222.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label222.Click += new System.EventHandler(this.label222_Click);
             // 
             // txtAirDensity
             // 
+            this.txtAirDensity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtAirDensity.Enabled = false;
             this.txtAirDensity.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAirDensity.Location = new System.Drawing.Point(768, 177);
+            this.txtAirDensity.Location = new System.Drawing.Point(679, 610);
             this.txtAirDensity.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAirDensity.Name = "txtAirDensity";
             this.txtAirDensity.Size = new System.Drawing.Size(49, 25);
@@ -1285,8 +1451,9 @@ namespace ContinuumNS
             // 
             // btnEditRotorDiam
             // 
+            this.btnEditRotorDiam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnEditRotorDiam.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEditRotorDiam.Location = new System.Drawing.Point(768, 88);
+            this.btnEditRotorDiam.Location = new System.Drawing.Point(642, 519);
             this.btnEditRotorDiam.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnEditRotorDiam.Name = "btnEditRotorDiam";
             this.btnEditRotorDiam.Size = new System.Drawing.Size(50, 32);
@@ -1297,9 +1464,10 @@ namespace ContinuumNS
             // 
             // label221
             // 
+            this.label221.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label221.AutoSize = true;
             this.label221.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label221.Location = new System.Drawing.Point(758, 10);
+            this.label221.Location = new System.Drawing.Point(632, 441);
             this.label221.Name = "label221";
             this.label221.Size = new System.Drawing.Size(71, 36);
             this.label221.TabIndex = 132;
@@ -1308,9 +1476,10 @@ namespace ContinuumNS
             // 
             // txtRotorDiam
             // 
+            this.txtRotorDiam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtRotorDiam.Enabled = false;
             this.txtRotorDiam.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRotorDiam.Location = new System.Drawing.Point(768, 56);
+            this.txtRotorDiam.Location = new System.Drawing.Point(642, 487);
             this.txtRotorDiam.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtRotorDiam.Name = "txtRotorDiam";
             this.txtRotorDiam.Size = new System.Drawing.Size(49, 25);
@@ -1341,10 +1510,11 @@ namespace ContinuumNS
             // 
             // plotDirectionalWS_Ratios
             // 
-            this.plotDirectionalWS_Ratios.Location = new System.Drawing.Point(405, 527);
+            this.plotDirectionalWS_Ratios.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotDirectionalWS_Ratios.Location = new System.Drawing.Point(318, 450);
             this.plotDirectionalWS_Ratios.Name = "plotDirectionalWS_Ratios";
             this.plotDirectionalWS_Ratios.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotDirectionalWS_Ratios.Size = new System.Drawing.Size(376, 305);
+            this.plotDirectionalWS_Ratios.Size = new System.Drawing.Size(284, 235);
             this.plotDirectionalWS_Ratios.TabIndex = 128;
             this.plotDirectionalWS_Ratios.Text = "plotView2";
             this.plotDirectionalWS_Ratios.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -1353,30 +1523,16 @@ namespace ContinuumNS
             // 
             // plotInputWindRose
             // 
-            this.plotInputWindRose.Location = new System.Drawing.Point(17, 527);
+            this.plotInputWindRose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotInputWindRose.Location = new System.Drawing.Point(17, 450);
             this.plotInputWindRose.Name = "plotInputWindRose";
             this.plotInputWindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotInputWindRose.Size = new System.Drawing.Size(376, 305);
+            this.plotInputWindRose.Size = new System.Drawing.Size(284, 235);
             this.plotInputWindRose.TabIndex = 127;
             this.plotInputWindRose.Text = "plotView1";
             this.plotInputWindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotInputWindRose.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotInputWindRose.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            // 
-            // plotTopo
-            // 
-            this.plotTopo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotTopo.Location = new System.Drawing.Point(835, 26);
-            this.plotTopo.Name = "plotTopo";
-            this.plotTopo.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTopo.Size = new System.Drawing.Size(772, 600);
-            this.plotTopo.TabIndex = 126;
-            this.plotTopo.Text = "plotTopo";
-            this.plotTopo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotTopo.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotTopo.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // chkCreateTurbTS
             // 
@@ -1384,7 +1540,7 @@ namespace ContinuumNS
             this.chkCreateTurbTS.Checked = true;
             this.chkCreateTurbTS.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkCreateTurbTS.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkCreateTurbTS.Location = new System.Drawing.Point(622, 198);
+            this.chkCreateTurbTS.Location = new System.Drawing.Point(591, 186);
             this.chkCreateTurbTS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCreateTurbTS.Name = "chkCreateTurbTS";
             this.chkCreateTurbTS.Size = new System.Drawing.Size(137, 22);
@@ -1395,8 +1551,9 @@ namespace ContinuumNS
             // 
             // btnEditModHeight
             // 
+            this.btnEditModHeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnEditModHeight.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEditModHeight.Location = new System.Drawing.Point(493, 103);
+            this.btnEditModHeight.Location = new System.Drawing.Point(719, 519);
             this.btnEditModHeight.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnEditModHeight.Name = "btnEditModHeight";
             this.btnEditModHeight.Size = new System.Drawing.Size(50, 32);
@@ -1407,9 +1564,10 @@ namespace ContinuumNS
             // 
             // label168
             // 
+            this.label168.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label168.AutoSize = true;
             this.label168.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label168.Location = new System.Drawing.Point(488, 26);
+            this.label168.Location = new System.Drawing.Point(714, 442);
             this.label168.Name = "label168";
             this.label168.Size = new System.Drawing.Size(62, 36);
             this.label168.TabIndex = 123;
@@ -1418,16 +1576,16 @@ namespace ContinuumNS
             // 
             // txtModeledHeight
             // 
+            this.txtModeledHeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtModeledHeight.Enabled = false;
             this.txtModeledHeight.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtModeledHeight.Location = new System.Drawing.Point(493, 71);
+            this.txtModeledHeight.Location = new System.Drawing.Point(719, 487);
             this.txtModeledHeight.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtModeledHeight.Name = "txtModeledHeight";
             this.txtModeledHeight.Size = new System.Drawing.Size(49, 25);
             this.txtModeledHeight.TabIndex = 122;
             this.txtModeledHeight.Text = "80";
             this.txtModeledHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtModeledHeight.TextChanged += new System.EventHandler(this.txtModeledHeight_TextChanged);
             // 
             // btnImportMetTS
             // 
@@ -1516,28 +1674,10 @@ namespace ContinuumNS
             this.btnViewModNLCD.UseVisualStyleBackColor = false;
             this.btnViewModNLCD.Click += new System.EventHandler(this.btnViewModNLCD_Click);
             // 
-            // cboTopo_Or_Roughness
-            // 
-            this.cboTopo_Or_Roughness.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboTopo_Or_Roughness.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboTopo_Or_Roughness.FormattingEnabled = true;
-            this.cboTopo_Or_Roughness.Items.AddRange(new object[] {
-            "Topography",
-            "Land Cover",
-            "Surface Roughness",
-            "Displacement height"});
-            this.cboTopo_Or_Roughness.Location = new System.Drawing.Point(1452, 660);
-            this.cboTopo_Or_Roughness.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboTopo_Or_Roughness.Name = "cboTopo_Or_Roughness";
-            this.cboTopo_Or_Roughness.Size = new System.Drawing.Size(147, 26);
-            this.cboTopo_Or_Roughness.TabIndex = 107;
-            this.cboTopo_Or_Roughness.Text = "Topography";
-            this.cboTopo_Or_Roughness.SelectedIndexChanged += new System.EventHandler(this.cboTopo_Or_Roughness_SelectedIndexChanged);
-            // 
             // txtUTMZone
             // 
             this.txtUTMZone.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUTMZone.Location = new System.Drawing.Point(355, 216);
+            this.txtUTMZone.Location = new System.Drawing.Point(344, 216);
             this.txtUTMZone.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtUTMZone.Name = "txtUTMZone";
             this.txtUTMZone.ReadOnly = true;
@@ -1548,7 +1688,7 @@ namespace ContinuumNS
             // 
             this.Label57.AutoSize = true;
             this.Label57.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label57.Location = new System.Drawing.Point(271, 221);
+            this.Label57.Location = new System.Drawing.Point(260, 221);
             this.Label57.Name = "Label57";
             this.Label57.Size = new System.Drawing.Size(74, 18);
             this.Label57.TabIndex = 104;
@@ -1614,7 +1754,7 @@ namespace ContinuumNS
             // 
             this.btnGenTurbEsts.BackColor = System.Drawing.Color.LightCoral;
             this.btnGenTurbEsts.Font = new System.Drawing.Font("Palatino Linotype", 9.5F);
-            this.btnGenTurbEsts.Location = new System.Drawing.Point(568, 142);
+            this.btnGenTurbEsts.Location = new System.Drawing.Point(568, 132);
             this.btnGenTurbEsts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnGenTurbEsts.Name = "btnGenTurbEsts";
             this.btnGenTurbEsts.Size = new System.Drawing.Size(178, 49);
@@ -1642,127 +1782,6 @@ namespace ContinuumNS
             this.Label19.Size = new System.Drawing.Size(122, 23);
             this.Label19.TabIndex = 77;
             this.Label19.Text = "Turbine Sites";
-            // 
-            // chkAllTurbLabels
-            // 
-            this.chkAllTurbLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkAllTurbLabels.AutoSize = true;
-            this.chkAllTurbLabels.Checked = true;
-            this.chkAllTurbLabels.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllTurbLabels.Location = new System.Drawing.Point(1278, 666);
-            this.chkAllTurbLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkAllTurbLabels.Name = "chkAllTurbLabels";
-            this.chkAllTurbLabels.Size = new System.Drawing.Size(117, 17);
-            this.chkAllTurbLabels.TabIndex = 68;
-            this.chkAllTurbLabels.Text = "Select/Deselect All";
-            this.chkAllTurbLabels.UseVisualStyleBackColor = true;
-            this.chkAllTurbLabels.CheckedChanged += new System.EventHandler(this.chkAllTurbLabels_CheckedChanged);
-            // 
-            // chkAllMetLabels
-            // 
-            this.chkAllMetLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkAllMetLabels.AutoSize = true;
-            this.chkAllMetLabels.Checked = true;
-            this.chkAllMetLabels.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllMetLabels.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAllMetLabels.Location = new System.Drawing.Point(948, 666);
-            this.chkAllMetLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkAllMetLabels.Name = "chkAllMetLabels";
-            this.chkAllMetLabels.Size = new System.Drawing.Size(134, 22);
-            this.chkAllMetLabels.TabIndex = 67;
-            this.chkAllMetLabels.Text = "Select/Deselect All";
-            this.chkAllMetLabels.UseVisualStyleBackColor = true;
-            this.chkAllMetLabels.CheckedChanged += new System.EventHandler(this.chkAllMetLabels_CheckedChanged);
-            // 
-            // Label23
-            // 
-            this.Label23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label23.AutoSize = true;
-            this.Label23.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label23.Location = new System.Drawing.Point(1113, 661);
-            this.Label23.Name = "Label23";
-            this.Label23.Size = new System.Drawing.Size(168, 23);
-            this.Label23.TabIndex = 66;
-            this.Label23.Text = "Turbine Locations";
-            // 
-            // lblMetLabels
-            // 
-            this.lblMetLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblMetLabels.AutoSize = true;
-            this.lblMetLabels.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMetLabels.Location = new System.Drawing.Point(838, 661);
-            this.lblMetLabels.Name = "lblMetLabels";
-            this.lblMetLabels.Size = new System.Drawing.Size(91, 23);
-            this.lblMetLabels.TabIndex = 65;
-            this.lblMetLabels.Text = "Met Sites";
-            // 
-            // chkTurbLabels
-            // 
-            this.chkTurbLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkTurbLabels.CheckOnClick = true;
-            this.chkTurbLabels.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkTurbLabels.FormattingEnabled = true;
-            this.chkTurbLabels.Location = new System.Drawing.Point(1113, 691);
-            this.chkTurbLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkTurbLabels.Name = "chkTurbLabels";
-            this.chkTurbLabels.Size = new System.Drawing.Size(268, 84);
-            this.chkTurbLabels.TabIndex = 64;
-            this.chkTurbLabels.SelectedIndexChanged += new System.EventHandler(this.chkTurbLabels_SelectedIndexChanged);
-            // 
-            // chkMetLabels
-            // 
-            this.chkMetLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkMetLabels.CheckOnClick = true;
-            this.chkMetLabels.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkMetLabels.FormattingEnabled = true;
-            this.chkMetLabels.Location = new System.Drawing.Point(840, 691);
-            this.chkMetLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkMetLabels.Name = "chkMetLabels";
-            this.chkMetLabels.Size = new System.Drawing.Size(264, 84);
-            this.chkMetLabels.TabIndex = 63;
-            this.chkMetLabels.SelectedIndexChanged += new System.EventHandler(this.chkMetLabels_SelectedIndexChanged);
-            // 
-            // txtMainMax
-            // 
-            this.txtMainMax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtMainMax.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMainMax.Location = new System.Drawing.Point(1491, 731);
-            this.txtMainMax.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txtMainMax.Name = "txtMainMax";
-            this.txtMainMax.Size = new System.Drawing.Size(61, 25);
-            this.txtMainMax.TabIndex = 58;
-            // 
-            // txtMainMin
-            // 
-            this.txtMainMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtMainMin.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMainMin.Location = new System.Drawing.Point(1491, 702);
-            this.txtMainMin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txtMainMin.Name = "txtMainMin";
-            this.txtMainMin.Size = new System.Drawing.Size(61, 25);
-            this.txtMainMin.TabIndex = 56;
-            // 
-            // Label21
-            // 
-            this.Label21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label21.AutoSize = true;
-            this.Label21.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label21.Location = new System.Drawing.Point(1447, 735);
-            this.Label21.Name = "Label21";
-            this.Label21.Size = new System.Drawing.Size(37, 18);
-            this.Label21.TabIndex = 57;
-            this.Label21.Text = "Max:";
-            // 
-            // Label22
-            // 
-            this.Label22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Label22.AutoSize = true;
-            this.Label22.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label22.Location = new System.Drawing.Point(1449, 703);
-            this.Label22.Name = "Label22";
-            this.Label22.Size = new System.Drawing.Size(35, 18);
-            this.Label22.TabIndex = 55;
-            this.Label22.Text = "Min:";
             // 
             // btnDelTurb
             // 
@@ -1802,6 +1821,8 @@ namespace ContinuumNS
             // 
             // lstTurbines
             // 
+            this.lstTurbines.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstTurbines.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader17,
             this.ColumnHeader18,
@@ -1812,7 +1833,7 @@ namespace ContinuumNS
             this.lstTurbines.Location = new System.Drawing.Point(489, 248);
             this.lstTurbines.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstTurbines.Name = "lstTurbines";
-            this.lstTurbines.Size = new System.Drawing.Size(292, 246);
+            this.lstTurbines.Size = new System.Drawing.Size(292, 175);
             this.lstTurbines.TabIndex = 27;
             this.lstTurbines.UseCompatibleStateImageBehavior = false;
             this.lstTurbines.View = System.Windows.Forms.View.Details;
@@ -1833,16 +1854,6 @@ namespace ContinuumNS
             this.ColumnHeader19.Text = "UTMY";
             this.ColumnHeader19.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ColumnHeader19.Width = 82;
-            // 
-            // txtTopoSource
-            // 
-            this.txtTopoSource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTopoSource.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTopoSource.Location = new System.Drawing.Point(840, 793);
-            this.txtTopoSource.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txtTopoSource.Name = "txtTopoSource";
-            this.txtTopoSource.Size = new System.Drawing.Size(746, 25);
-            this.txtTopoSource.TabIndex = 12;
             // 
             // lblTurbineList
             // 
@@ -1869,6 +1880,8 @@ namespace ContinuumNS
             // lstMetTowers
             // 
             this.lstMetTowers.AllowColumnReorder = true;
+            this.lstMetTowers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstMetTowers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.metName,
             this.Lats,
@@ -1880,7 +1893,7 @@ namespace ContinuumNS
             this.lstMetTowers.Location = new System.Drawing.Point(17, 248);
             this.lstMetTowers.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstMetTowers.Name = "lstMetTowers";
-            this.lstMetTowers.Size = new System.Drawing.Size(462, 246);
+            this.lstMetTowers.Size = new System.Drawing.Size(462, 175);
             this.lstMetTowers.TabIndex = 17;
             this.lstMetTowers.UseCompatibleStateImageBehavior = false;
             this.lstMetTowers.View = System.Windows.Forms.View.Details;
@@ -1946,7 +1959,7 @@ namespace ContinuumNS
             this.pgeMetDataTS.Controls.Add(this.splContMetTS);
             this.pgeMetDataTS.Location = new System.Drawing.Point(4, 27);
             this.pgeMetDataTS.Name = "pgeMetDataTS";
-            this.pgeMetDataTS.Size = new System.Drawing.Size(1626, 856);
+            this.pgeMetDataTS.Size = new System.Drawing.Size(1488, 712);
             this.pgeMetDataTS.TabIndex = 21;
             this.pgeMetDataTS.Text = "Met Data Time Series";
             this.pgeMetDataTS.UseVisualStyleBackColor = true;
@@ -1996,21 +2009,23 @@ namespace ContinuumNS
             this.splContMetTS.Panel2.Controls.Add(this.plotTS_Temp);
             this.splContMetTS.Panel2.Controls.Add(this.plotTS_Vanes);
             this.splContMetTS.Panel2.Controls.Add(this.plotTS_Anems);
-            this.splContMetTS.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splContMetTS_Panel2_Paint);
-            this.splContMetTS.Size = new System.Drawing.Size(1626, 856);
-            this.splContMetTS.SplitterDistance = 584;
+            this.splContMetTS.Size = new System.Drawing.Size(1488, 712);
+            this.splContMetTS.SplitterDistance = 532;
             this.splContMetTS.SplitterWidth = 10;
             this.splContMetTS.TabIndex = 5;
-            this.splContMetTS.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splContMetTS_SplitterMoved);
             // 
             // dataMetTS
             // 
-            this.dataMetTS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.dataMetTS.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataMetTS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataMetTS.Location = new System.Drawing.Point(10, 242);
+            this.dataMetTS.ColumnHeadersHeight = 29;
+            this.dataMetTS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dataMetTS.Location = new System.Drawing.Point(17, 182);
             this.dataMetTS.Name = "dataMetTS";
-            this.dataMetTS.Size = new System.Drawing.Size(563, 595);
+            this.dataMetTS.RowHeadersWidth = 51;
+            this.dataMetTS.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dataMetTS.Size = new System.Drawing.Size(497, 511);
             this.dataMetTS.TabIndex = 34;
             // 
             // chkTS_Params
@@ -2020,88 +2035,87 @@ namespace ContinuumNS
             this.chkTS_Params.CheckOnClick = true;
             this.chkTS_Params.FormattingEnabled = true;
             this.chkTS_Params.HorizontalScrollbar = true;
-            this.chkTS_Params.Location = new System.Drawing.Point(306, 72);
+            this.chkTS_Params.Location = new System.Drawing.Point(311, 72);
             this.chkTS_Params.Name = "chkTS_Params";
-            this.chkTS_Params.Size = new System.Drawing.Size(267, 164);
+            this.chkTS_Params.Size = new System.Drawing.Size(203, 104);
             this.chkTS_Params.TabIndex = 33;
             this.chkTS_Params.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkTS_Params_ItemCheck);
-            this.chkTS_Params.SelectedIndexChanged += new System.EventHandler(this.chkTS_Params_SelectedIndexChanged);
             // 
             // treeDataParams
             // 
             this.treeDataParams.CheckBoxes = true;
-            this.treeDataParams.Location = new System.Drawing.Point(177, 72);
+            this.treeDataParams.Location = new System.Drawing.Point(184, 72);
             this.treeDataParams.Name = "treeDataParams";
-            treeNode155.Checked = true;
-            treeNode155.Name = "nodeAnemAvg";
-            treeNode155.Text = "Average";
-            treeNode156.Name = "nodeAnemSD";
-            treeNode156.Text = "St. Dev.";
-            treeNode157.Name = "nodeAnemMin";
-            treeNode157.Text = "Minimum";
-            treeNode158.Name = "nodeAnemMax";
-            treeNode158.Text = "Maximum";
-            treeNode159.Name = "nodeAlpha";
-            treeNode159.Text = "Alpha";
-            treeNode160.Name = "nodeExtrapWS";
-            treeNode160.Text = "Extrap. WS";
-            treeNode161.Name = "nodeAnems";
-            treeNode161.Text = "Anems";
-            treeNode162.Name = "nodeVaneAvg";
-            treeNode162.Text = "Average";
-            treeNode163.Name = "nodeVaneSD";
-            treeNode163.Text = "St. Dev.";
-            treeNode164.Name = "nodeVaneMax";
-            treeNode164.Text = "Minimum";
-            treeNode165.Name = "nodeVaneMax";
-            treeNode165.Text = "Maximum";
-            treeNode166.Name = "nodeVanes";
-            treeNode166.Text = "Vanes";
-            treeNode167.Name = "Node0";
-            treeNode167.Text = "Average";
-            treeNode168.Name = "Node1";
-            treeNode168.Text = "St. Dev.";
-            treeNode169.Name = "Node2";
-            treeNode169.Text = "Minimum";
-            treeNode170.Name = "Node3";
-            treeNode170.Text = "Maximum";
-            treeNode171.Name = "nodeTemps";
-            treeNode171.Text = "Temps.";
-            treeNode172.Name = "Node4";
-            treeNode172.Text = "Average";
-            treeNode173.Name = "Node5";
-            treeNode173.Text = "St. Dev.";
-            treeNode174.Name = "Node6";
-            treeNode174.Text = "Minimum";
-            treeNode175.Name = "Node7";
-            treeNode175.Text = "Maximum";
-            treeNode176.Name = "nodeBaros";
-            treeNode176.Text = "Baros.";
+            treeNode23.Checked = true;
+            treeNode23.Name = "nodeAnemAvg";
+            treeNode23.Text = "Average";
+            treeNode24.Name = "nodeAnemSD";
+            treeNode24.Text = "St. Dev.";
+            treeNode25.Name = "nodeAnemMin";
+            treeNode25.Text = "Minimum";
+            treeNode26.Name = "nodeAnemMax";
+            treeNode26.Text = "Maximum";
+            treeNode27.Name = "nodeAlpha";
+            treeNode27.Text = "Alpha";
+            treeNode28.Name = "nodeExtrapWS";
+            treeNode28.Text = "Extrap. WS";
+            treeNode29.Checked = true;
+            treeNode29.Name = "nodeAnems";
+            treeNode29.Text = "Anems";
+            treeNode30.Name = "nodeVaneAvg";
+            treeNode30.Text = "Average";
+            treeNode31.Name = "nodeVaneSD";
+            treeNode31.Text = "St. Dev.";
+            treeNode32.Name = "nodeVaneMax";
+            treeNode32.Text = "Minimum";
+            treeNode33.Name = "nodeVaneMax";
+            treeNode33.Text = "Maximum";
+            treeNode34.Name = "nodeVanes";
+            treeNode34.Text = "Vanes";
+            treeNode35.Name = "Node0";
+            treeNode35.Text = "Average";
+            treeNode36.Name = "Node1";
+            treeNode36.Text = "St. Dev.";
+            treeNode37.Name = "Node2";
+            treeNode37.Text = "Minimum";
+            treeNode38.Name = "Node3";
+            treeNode38.Text = "Maximum";
+            treeNode39.Name = "nodeTemps";
+            treeNode39.Text = "Temps.";
+            treeNode40.Name = "Node4";
+            treeNode40.Text = "Average";
+            treeNode41.Name = "Node5";
+            treeNode41.Text = "St. Dev.";
+            treeNode42.Name = "Node6";
+            treeNode42.Text = "Minimum";
+            treeNode43.Name = "Node7";
+            treeNode43.Text = "Maximum";
+            treeNode44.Name = "nodeBaros";
+            treeNode44.Text = "Baros.";
             this.treeDataParams.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode161,
-            treeNode166,
-            treeNode171,
-            treeNode176});
-            this.treeDataParams.Size = new System.Drawing.Size(121, 164);
+            treeNode29,
+            treeNode34,
+            treeNode39,
+            treeNode44});
+            this.treeDataParams.Size = new System.Drawing.Size(121, 104);
             this.treeDataParams.TabIndex = 32;
             this.treeDataParams.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterCheck);
-            this.treeDataParams.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterSelect_1);
             // 
             // chkMetsTS
             // 
             this.chkMetsTS.CheckOnClick = true;
             this.chkMetsTS.FormattingEnabled = true;
             this.chkMetsTS.HorizontalScrollbar = true;
-            this.chkMetsTS.Location = new System.Drawing.Point(10, 72);
+            this.chkMetsTS.Location = new System.Drawing.Point(17, 72);
             this.chkMetsTS.Name = "chkMetsTS";
-            this.chkMetsTS.Size = new System.Drawing.Size(161, 164);
+            this.chkMetsTS.Size = new System.Drawing.Size(161, 104);
             this.chkMetsTS.TabIndex = 31;
             this.chkMetsTS.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkMetsTS_ItemCheck);
             // 
             // btnShowFilterFlags
             // 
             this.btnShowFilterFlags.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.btnShowFilterFlags.Location = new System.Drawing.Point(505, 12);
+            this.btnShowFilterFlags.Location = new System.Drawing.Point(450, 10);
             this.btnShowFilterFlags.Name = "btnShowFilterFlags";
             this.btnShowFilterFlags.Size = new System.Drawing.Size(66, 43);
             this.btnShowFilterFlags.TabIndex = 8;
@@ -2113,7 +2127,7 @@ namespace ContinuumNS
             // 
             this.label146.AutoSize = true;
             this.label146.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label146.Location = new System.Drawing.Point(8, 15);
+            this.label146.Location = new System.Drawing.Point(12, 16);
             this.label146.Name = "label146";
             this.label146.Size = new System.Drawing.Size(222, 25);
             this.label146.TabIndex = 6;
@@ -2148,10 +2162,10 @@ namespace ContinuumNS
             this.plotTS_Baros.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.plotTS_Baros.BackColor = System.Drawing.Color.Gainsboro;
-            this.plotTS_Baros.Location = new System.Drawing.Point(28, 652);
+            this.plotTS_Baros.Location = new System.Drawing.Point(28, 537);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(869, 185);
+            this.plotTS_Baros.Size = new System.Drawing.Size(900, 155);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2162,7 +2176,7 @@ namespace ContinuumNS
             // 
             this.label213.AutoSize = true;
             this.label213.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label213.Location = new System.Drawing.Point(872, 43);
+            this.label213.Location = new System.Drawing.Point(830, 44);
             this.label213.Name = "label213";
             this.label213.Size = new System.Drawing.Size(19, 18);
             this.label213.TabIndex = 23;
@@ -2177,9 +2191,9 @@ namespace ContinuumNS
             "WD",
             "Temp.",
             "Press."});
-            this.cboPlot4Type.Location = new System.Drawing.Point(895, 39);
+            this.cboPlot4Type.Location = new System.Drawing.Point(855, 40);
             this.cboPlot4Type.Name = "cboPlot4Type";
-            this.cboPlot4Type.Size = new System.Drawing.Size(96, 26);
+            this.cboPlot4Type.Size = new System.Drawing.Size(76, 26);
             this.cboPlot4Type.TabIndex = 22;
             this.cboPlot4Type.SelectedIndexChanged += new System.EventHandler(this.cboPlot4Type_SelectedIndexChanged);
             // 
@@ -2187,7 +2201,7 @@ namespace ContinuumNS
             // 
             this.label212.AutoSize = true;
             this.label212.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label212.Location = new System.Drawing.Point(872, 11);
+            this.label212.Location = new System.Drawing.Point(833, 12);
             this.label212.Name = "label212";
             this.label212.Size = new System.Drawing.Size(19, 18);
             this.label212.TabIndex = 21;
@@ -2202,9 +2216,9 @@ namespace ContinuumNS
             "WD",
             "Temp.",
             "Press."});
-            this.cboPlot3Type.Location = new System.Drawing.Point(895, 7);
+            this.cboPlot3Type.Location = new System.Drawing.Point(854, 8);
             this.cboPlot3Type.Name = "cboPlot3Type";
-            this.cboPlot3Type.Size = new System.Drawing.Size(96, 26);
+            this.cboPlot3Type.Size = new System.Drawing.Size(76, 26);
             this.cboPlot3Type.TabIndex = 20;
             this.cboPlot3Type.SelectedIndexChanged += new System.EventHandler(this.cboPlot3Type_SelectedIndexChanged);
             // 
@@ -2212,7 +2226,7 @@ namespace ContinuumNS
             // 
             this.label211.AutoSize = true;
             this.label211.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label211.Location = new System.Drawing.Point(729, 43);
+            this.label211.Location = new System.Drawing.Point(726, 44);
             this.label211.Name = "label211";
             this.label211.Size = new System.Drawing.Size(19, 18);
             this.label211.TabIndex = 19;
@@ -2227,9 +2241,9 @@ namespace ContinuumNS
             "WD",
             "Temp.",
             "Press."});
-            this.cboPlot2Type.Location = new System.Drawing.Point(752, 39);
+            this.cboPlot2Type.Location = new System.Drawing.Point(749, 40);
             this.cboPlot2Type.Name = "cboPlot2Type";
-            this.cboPlot2Type.Size = new System.Drawing.Size(96, 26);
+            this.cboPlot2Type.Size = new System.Drawing.Size(76, 26);
             this.cboPlot2Type.TabIndex = 18;
             this.cboPlot2Type.SelectedIndexChanged += new System.EventHandler(this.cboPlot2Type_SelectedIndexChanged);
             // 
@@ -2237,7 +2251,7 @@ namespace ContinuumNS
             // 
             this.label210.AutoSize = true;
             this.label210.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label210.Location = new System.Drawing.Point(729, 11);
+            this.label210.Location = new System.Drawing.Point(726, 12);
             this.label210.Name = "label210";
             this.label210.Size = new System.Drawing.Size(19, 18);
             this.label210.TabIndex = 17;
@@ -2252,9 +2266,9 @@ namespace ContinuumNS
             "WD",
             "Temp.",
             "Press."});
-            this.cboPlot1Type.Location = new System.Drawing.Point(752, 7);
+            this.cboPlot1Type.Location = new System.Drawing.Point(749, 8);
             this.cboPlot1Type.Name = "cboPlot1Type";
-            this.cboPlot1Type.Size = new System.Drawing.Size(96, 26);
+            this.cboPlot1Type.Size = new System.Drawing.Size(76, 26);
             this.cboPlot1Type.TabIndex = 16;
             this.cboPlot1Type.SelectedIndexChanged += new System.EventHandler(this.cboPlot1Type_SelectedIndexChanged);
             // 
@@ -2372,10 +2386,10 @@ namespace ContinuumNS
             this.plotTS_Temp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.plotTS_Temp.BackColor = System.Drawing.Color.Gainsboro;
-            this.plotTS_Temp.Location = new System.Drawing.Point(28, 458);
+            this.plotTS_Temp.Location = new System.Drawing.Point(28, 382);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(869, 185);
+            this.plotTS_Temp.Size = new System.Drawing.Size(900, 155);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2387,16 +2401,15 @@ namespace ContinuumNS
             this.plotTS_Vanes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.plotTS_Vanes.BackColor = System.Drawing.Color.Gainsboro;
-            this.plotTS_Vanes.Location = new System.Drawing.Point(28, 264);
+            this.plotTS_Vanes.Location = new System.Drawing.Point(28, 227);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(869, 185);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(900, 155);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Vanes.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotTS_Vanes.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            this.plotTS_Vanes.Click += new System.EventHandler(this.plotTS_Vanes_Click);
             // 
             // plotTS_Anems
             // 
@@ -2406,7 +2419,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(869, 185);
+            this.plotTS_Anems.Size = new System.Drawing.Size(900, 155);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -2414,7 +2427,12 @@ namespace ContinuumNS
             // 
             // pgeMetData
             // 
-            this.pgeMetData.AutoScroll = true;
+            this.pgeMetData.Controls.Add(this.label102);
+            this.pgeMetData.Controls.Add(this.label69);
+            this.pgeMetData.Controls.Add(this.pnlMetDatQC_WSDiff);
+            this.pgeMetData.Controls.Add(this.pnlMetDataQC_Scatter);
+            this.pgeMetData.Controls.Add(this.label70);
+            this.pgeMetData.Controls.Add(this.plotWSDiffByWD);
             this.pgeMetData.Controls.Add(this.txtShearCalcMethod);
             this.pgeMetData.Controls.Add(this.label227);
             this.pgeMetData.Controls.Add(this.btnEditShearMethod);
@@ -2435,9 +2453,6 @@ namespace ContinuumNS
             this.pgeMetData.Controls.Add(this.label155);
             this.pgeMetData.Controls.Add(this.cboAnemA);
             this.pgeMetData.Controls.Add(this.label20);
-            this.pgeMetData.Controls.Add(this.plotWSDiffByWS);
-            this.pgeMetData.Controls.Add(this.plotWSDiffByWD);
-            this.pgeMetData.Controls.Add(this.plotAnemScatter);
             this.pgeMetData.Controls.Add(this.plotAlphaByWD);
             this.pgeMetData.Controls.Add(this.plotMetQC_WindRose);
             this.pgeMetData.Controls.Add(this.plotWS_vsHeight);
@@ -2453,9 +2468,6 @@ namespace ContinuumNS
             this.pgeMetData.Controls.Add(this.label104);
             this.pgeMetData.Controls.Add(this.cboMetQC_SelectedMet);
             this.pgeMetData.Controls.Add(this.cboFilt_or_Not);
-            this.pgeMetData.Controls.Add(this.label102);
-            this.pgeMetData.Controls.Add(this.label70);
-            this.pgeMetData.Controls.Add(this.label69);
             this.pgeMetData.Controls.Add(this.lstExtrapolated);
             this.pgeMetData.Controls.Add(this.label68);
             this.pgeMetData.Controls.Add(this.label67);
@@ -2482,13 +2494,120 @@ namespace ContinuumNS
             this.pgeMetData.Location = new System.Drawing.Point(4, 27);
             this.pgeMetData.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMetData.Name = "pgeMetData";
-            this.pgeMetData.Size = new System.Drawing.Size(1626, 856);
+            this.pgeMetData.Size = new System.Drawing.Size(1488, 712);
             this.pgeMetData.TabIndex = 14;
             this.pgeMetData.Text = "Met Data QC";
             this.pgeMetData.UseVisualStyleBackColor = true;
             // 
+            // label102
+            // 
+            this.label102.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label102.AutoSize = true;
+            this.label102.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label102.Location = new System.Drawing.Point(897, 438);
+            this.label102.Name = "label102";
+            this.label102.Size = new System.Drawing.Size(346, 23);
+            this.label102.TabIndex = 255;
+            this.label102.Text = "Anemometer WS Diff. vs. Wind Speed";
+            // 
+            // label69
+            // 
+            this.label69.AutoSize = true;
+            this.label69.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label69.Location = new System.Drawing.Point(26, 438);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(227, 23);
+            this.label69.TabIndex = 254;
+            this.label69.Text = "Wind Speed Scatterplot";
+            // 
+            // pnlMetDatQC_WSDiff
+            // 
+            this.pnlMetDatQC_WSDiff.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlMetDatQC_WSDiff.AutoSize = true;
+            this.pnlMetDatQC_WSDiff.Controls.Add(this.plotWSDiffByWS);
+            this.pnlMetDatQC_WSDiff.Location = new System.Drawing.Point(886, 466);
+            this.pnlMetDatQC_WSDiff.MaximumSize = new System.Drawing.Size(700, 700);
+            this.pnlMetDatQC_WSDiff.Name = "pnlMetDatQC_WSDiff";
+            this.pnlMetDatQC_WSDiff.Size = new System.Drawing.Size(437, 237);
+            this.pnlMetDatQC_WSDiff.TabIndex = 253;
+            this.pnlMetDatQC_WSDiff.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlMetDatQC_WSDiff_Paint);
+            // 
+            // plotWSDiffByWS
+            // 
+            this.plotWSDiffByWS.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.plotWSDiffByWS.Location = new System.Drawing.Point(0, 0);
+            this.plotWSDiffByWS.Margin = new System.Windows.Forms.Padding(5);
+            this.plotWSDiffByWS.MaximumSize = new System.Drawing.Size(600, 500);
+            this.plotWSDiffByWS.Name = "plotWSDiffByWS";
+            this.plotWSDiffByWS.Padding = new System.Windows.Forms.Padding(1);
+            this.plotWSDiffByWS.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotWSDiffByWS.Size = new System.Drawing.Size(437, 237);
+            this.plotWSDiffByWS.TabIndex = 226;
+            this.plotWSDiffByWS.Text = "plotView2";
+            this.plotWSDiffByWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotWSDiffByWS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotWSDiffByWS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // pnlMetDataQC_Scatter
+            // 
+            this.pnlMetDataQC_Scatter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlMetDataQC_Scatter.AutoSize = true;
+            this.pnlMetDataQC_Scatter.Controls.Add(this.plotAnemScatter);
+            this.pnlMetDataQC_Scatter.Location = new System.Drawing.Point(18, 466);
+            this.pnlMetDataQC_Scatter.MaximumSize = new System.Drawing.Size(600, 700);
+            this.pnlMetDataQC_Scatter.Name = "pnlMetDataQC_Scatter";
+            this.pnlMetDataQC_Scatter.Size = new System.Drawing.Size(433, 242);
+            this.pnlMetDataQC_Scatter.TabIndex = 252;
+            // 
+            // plotAnemScatter
+            // 
+            this.plotAnemScatter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.plotAnemScatter.Location = new System.Drawing.Point(0, 0);
+            this.plotAnemScatter.Margin = new System.Windows.Forms.Padding(5);
+            this.plotAnemScatter.Name = "plotAnemScatter";
+            this.plotAnemScatter.Padding = new System.Windows.Forms.Padding(1);
+            this.plotAnemScatter.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotAnemScatter.Size = new System.Drawing.Size(433, 242);
+            this.plotAnemScatter.TabIndex = 250;
+            this.plotAnemScatter.Text = "plotView1";
+            this.plotAnemScatter.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotAnemScatter.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotAnemScatter.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotAnemScatter.Click += new System.EventHandler(this.plotAnemScatter_Click_1);
+            // 
+            // label70
+            // 
+            this.label70.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label70.AutoSize = true;
+            this.label70.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label70.Location = new System.Drawing.Point(477, 438);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(368, 23);
+            this.label70.TabIndex = 251;
+            this.label70.Text = "Anemometer WS Diff. vs. Wind Direction";
+            // 
+            // plotWSDiffByWD
+            // 
+            this.plotWSDiffByWD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.plotWSDiffByWD.Location = new System.Drawing.Point(456, 466);
+            this.plotWSDiffByWD.Margin = new System.Windows.Forms.Padding(5);
+            this.plotWSDiffByWD.MaximumSize = new System.Drawing.Size(600, 500);
+            this.plotWSDiffByWD.Name = "plotWSDiffByWD";
+            this.plotWSDiffByWD.Padding = new System.Windows.Forms.Padding(1);
+            this.plotWSDiffByWD.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotWSDiffByWD.Size = new System.Drawing.Size(420, 237);
+            this.plotWSDiffByWD.TabIndex = 250;
+            this.plotWSDiffByWD.Text = "plotView1";
+            this.plotWSDiffByWD.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotWSDiffByWD.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotWSDiffByWD.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
             // txtShearCalcMethod
             // 
+            this.txtShearCalcMethod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtShearCalcMethod.Font = new System.Drawing.Font("Palatino Linotype", 9F);
             this.txtShearCalcMethod.Location = new System.Drawing.Point(827, 39);
             this.txtShearCalcMethod.Name = "txtShearCalcMethod";
@@ -2498,6 +2617,7 @@ namespace ContinuumNS
             // 
             // label227
             // 
+            this.label227.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label227.AutoSize = true;
             this.label227.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label227.Location = new System.Drawing.Point(825, 76);
@@ -2508,6 +2628,7 @@ namespace ContinuumNS
             // 
             // btnEditShearMethod
             // 
+            this.btnEditShearMethod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEditShearMethod.Font = new System.Drawing.Font("Palatino Linotype", 9F);
             this.btnEditShearMethod.Location = new System.Drawing.Point(998, 39);
             this.btnEditShearMethod.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -2520,6 +2641,7 @@ namespace ContinuumNS
             // 
             // label226
             // 
+            this.label226.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label226.AutoSize = true;
             this.label226.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label226.Location = new System.Drawing.Point(920, 76);
@@ -2530,6 +2652,7 @@ namespace ContinuumNS
             // 
             // txtShearBestFitMaxHeight
             // 
+            this.txtShearBestFitMaxHeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtShearBestFitMaxHeight.Font = new System.Drawing.Font("Palatino Linotype", 9F);
             this.txtShearBestFitMaxHeight.Location = new System.Drawing.Point(941, 73);
             this.txtShearBestFitMaxHeight.Name = "txtShearBestFitMaxHeight";
@@ -2539,6 +2662,7 @@ namespace ContinuumNS
             // 
             // txtShearBestFitMinHeight
             // 
+            this.txtShearBestFitMinHeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtShearBestFitMinHeight.Font = new System.Drawing.Font("Palatino Linotype", 9F);
             this.txtShearBestFitMinHeight.Location = new System.Drawing.Point(868, 73);
             this.txtShearBestFitMinHeight.Name = "txtShearBestFitMinHeight";
@@ -2548,6 +2672,7 @@ namespace ContinuumNS
             // 
             // label225
             // 
+            this.label225.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label225.AutoSize = true;
             this.label225.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label225.Location = new System.Drawing.Point(825, 15);
@@ -2573,7 +2698,7 @@ namespace ContinuumNS
             this.chkMaxWS_Range.Checked = true;
             this.chkMaxWS_Range.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMaxWS_Range.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkMaxWS_Range.Location = new System.Drawing.Point(705, 431);
+            this.chkMaxWS_Range.Location = new System.Drawing.Point(705, 402);
             this.chkMaxWS_Range.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMaxWS_Range.Name = "chkMaxWS_Range";
             this.chkMaxWS_Range.Size = new System.Drawing.Size(120, 22);
@@ -2588,7 +2713,7 @@ namespace ContinuumNS
             this.chkMaxWS_SD.Checked = true;
             this.chkMaxWS_SD.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMaxWS_SD.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkMaxWS_SD.Location = new System.Drawing.Point(705, 409);
+            this.chkMaxWS_SD.Location = new System.Drawing.Point(705, 380);
             this.chkMaxWS_SD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMaxWS_SD.Name = "chkMaxWS_SD";
             this.chkMaxWS_SD.Size = new System.Drawing.Size(99, 22);
@@ -2603,7 +2728,7 @@ namespace ContinuumNS
             this.chkMinWS_SD.Checked = true;
             this.chkMinWS_SD.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMinWS_SD.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkMinWS_SD.Location = new System.Drawing.Point(705, 388);
+            this.chkMinWS_SD.Location = new System.Drawing.Point(705, 359);
             this.chkMinWS_SD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMinWS_SD.Name = "chkMinWS_SD";
             this.chkMinWS_SD.Size = new System.Drawing.Size(97, 22);
@@ -2618,7 +2743,7 @@ namespace ContinuumNS
             this.chkMinWS.Checked = true;
             this.chkMinWS.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMinWS.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkMinWS.Location = new System.Drawing.Point(705, 366);
+            this.chkMinWS.Location = new System.Drawing.Point(705, 337);
             this.chkMinWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMinWS.Name = "chkMinWS";
             this.chkMinWS.Size = new System.Drawing.Size(78, 22);
@@ -2633,7 +2758,7 @@ namespace ContinuumNS
             this.chkIcing.Checked = true;
             this.chkIcing.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkIcing.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkIcing.Location = new System.Drawing.Point(705, 343);
+            this.chkIcing.Location = new System.Drawing.Point(705, 314);
             this.chkIcing.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkIcing.Name = "chkIcing";
             this.chkIcing.Size = new System.Drawing.Size(56, 22);
@@ -2648,7 +2773,7 @@ namespace ContinuumNS
             this.chkTowerShadow.Checked = true;
             this.chkTowerShadow.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTowerShadow.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkTowerShadow.Location = new System.Drawing.Point(705, 322);
+            this.chkTowerShadow.Location = new System.Drawing.Point(705, 293);
             this.chkTowerShadow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTowerShadow.Name = "chkTowerShadow";
             this.chkTowerShadow.Size = new System.Drawing.Size(118, 22);
@@ -2660,7 +2785,7 @@ namespace ContinuumNS
             // cboSelVane
             // 
             this.cboSelVane.FormattingEnabled = true;
-            this.cboSelVane.Location = new System.Drawing.Point(509, 465);
+            this.cboSelVane.Location = new System.Drawing.Point(400, 392);
             this.cboSelVane.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboSelVane.Name = "cboSelVane";
             this.cboSelVane.Size = new System.Drawing.Size(61, 26);
@@ -2671,7 +2796,7 @@ namespace ContinuumNS
             // 
             this.label184.AutoSize = true;
             this.label184.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label184.Location = new System.Drawing.Point(454, 469);
+            this.label184.Location = new System.Drawing.Point(355, 396);
             this.label184.Name = "label184";
             this.label184.Size = new System.Drawing.Size(38, 18);
             this.label184.TabIndex = 229;
@@ -2680,10 +2805,10 @@ namespace ContinuumNS
             // cboAnemB
             // 
             this.cboAnemB.FormattingEnabled = true;
-            this.cboAnemB.Location = new System.Drawing.Point(367, 466);
+            this.cboAnemB.Location = new System.Drawing.Point(254, 392);
             this.cboAnemB.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboAnemB.Name = "cboAnemB";
-            this.cboAnemB.Size = new System.Drawing.Size(61, 26);
+            this.cboAnemB.Size = new System.Drawing.Size(79, 26);
             this.cboAnemB.TabIndex = 228;
             this.cboAnemB.SelectedIndexChanged += new System.EventHandler(this.cboAnemB_SelectedIndexChanged);
             // 
@@ -2691,7 +2816,7 @@ namespace ContinuumNS
             // 
             this.label155.AutoSize = true;
             this.label155.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label155.Location = new System.Drawing.Point(312, 470);
+            this.label155.Location = new System.Drawing.Point(193, 397);
             this.label155.Name = "label155";
             this.label155.Size = new System.Drawing.Size(55, 18);
             this.label155.TabIndex = 227;
@@ -2700,10 +2825,10 @@ namespace ContinuumNS
             // cboAnemA
             // 
             this.cboAnemA.FormattingEnabled = true;
-            this.cboAnemA.Location = new System.Drawing.Point(233, 467);
+            this.cboAnemA.Location = new System.Drawing.Point(98, 392);
             this.cboAnemA.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboAnemA.Name = "cboAnemA";
-            this.cboAnemA.Size = new System.Drawing.Size(61, 26);
+            this.cboAnemA.Size = new System.Drawing.Size(79, 26);
             this.cboAnemA.TabIndex = 226;
             this.cboAnemA.SelectedIndexChanged += new System.EventHandler(this.cboAnemA_SelectedIndexChanged);
             // 
@@ -2711,68 +2836,35 @@ namespace ContinuumNS
             // 
             this.label20.AutoSize = true;
             this.label20.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label20.Location = new System.Drawing.Point(171, 471);
+            this.label20.Location = new System.Drawing.Point(36, 396);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(57, 18);
             this.label20.TabIndex = 225;
             this.label20.Text = "Anem A";
-            // 
-            // plotWSDiffByWS
-            // 
-            this.plotWSDiffByWS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotWSDiffByWS.Location = new System.Drawing.Point(1079, 529);
-            this.plotWSDiffByWS.Name = "plotWSDiffByWS";
-            this.plotWSDiffByWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotWSDiffByWS.Size = new System.Drawing.Size(510, 313);
-            this.plotWSDiffByWS.TabIndex = 224;
-            this.plotWSDiffByWS.Text = "plotView2";
-            this.plotWSDiffByWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotWSDiffByWS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotWSDiffByWS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            // 
-            // plotWSDiffByWD
-            // 
-            this.plotWSDiffByWD.Location = new System.Drawing.Point(541, 529);
-            this.plotWSDiffByWD.Name = "plotWSDiffByWD";
-            this.plotWSDiffByWD.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotWSDiffByWD.Size = new System.Drawing.Size(510, 313);
-            this.plotWSDiffByWD.TabIndex = 223;
-            this.plotWSDiffByWD.Text = "plotView1";
-            this.plotWSDiffByWD.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotWSDiffByWD.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotWSDiffByWD.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            // 
-            // plotAnemScatter
-            // 
-            this.plotAnemScatter.Location = new System.Drawing.Point(18, 529);
-            this.plotAnemScatter.Name = "plotAnemScatter";
-            this.plotAnemScatter.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotAnemScatter.Size = new System.Drawing.Size(500, 313);
-            this.plotAnemScatter.TabIndex = 222;
-            this.plotAnemScatter.Text = "plotView1";
-            this.plotAnemScatter.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotAnemScatter.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotAnemScatter.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.label20.Click += new System.EventHandler(this.label20_Click);
             // 
             // plotAlphaByWD
             // 
+            this.plotAlphaByWD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.plotAlphaByWD.Location = new System.Drawing.Point(1050, 286);
+            this.plotAlphaByWD.MaximumSize = new System.Drawing.Size(500, 200);
             this.plotAlphaByWD.Name = "plotAlphaByWD";
             this.plotAlphaByWD.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotAlphaByWD.Size = new System.Drawing.Size(406, 207);
+            this.plotAlphaByWD.Size = new System.Drawing.Size(424, 140);
             this.plotAlphaByWD.TabIndex = 221;
             this.plotAlphaByWD.Text = "plotView1";
             this.plotAlphaByWD.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotAlphaByWD.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotAlphaByWD.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotAlphaByWD.Click += new System.EventHandler(this.plotAlphaByWD_Click);
             // 
             // plotMetQC_WindRose
             // 
-            this.plotMetQC_WindRose.Location = new System.Drawing.Point(1348, 39);
+            this.plotMetQC_WindRose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotMetQC_WindRose.Location = new System.Drawing.Point(1249, 39);
             this.plotMetQC_WindRose.Name = "plotMetQC_WindRose";
             this.plotMetQC_WindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMetQC_WindRose.Size = new System.Drawing.Size(269, 212);
+            this.plotMetQC_WindRose.Size = new System.Drawing.Size(229, 212);
             this.plotMetQC_WindRose.TabIndex = 220;
             this.plotMetQC_WindRose.Text = "plotView1";
             this.plotMetQC_WindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2781,10 +2873,11 @@ namespace ContinuumNS
             // 
             // plotWS_vsHeight
             // 
+            this.plotWS_vsHeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.plotWS_vsHeight.Location = new System.Drawing.Point(1050, 39);
             this.plotWS_vsHeight.Name = "plotWS_vsHeight";
             this.plotWS_vsHeight.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotWS_vsHeight.Size = new System.Drawing.Size(292, 212);
+            this.plotWS_vsHeight.Size = new System.Drawing.Size(193, 212);
             this.plotWS_vsHeight.TabIndex = 219;
             this.plotWS_vsHeight.Text = "plotView1";
             this.plotWS_vsHeight.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2797,7 +2890,7 @@ namespace ContinuumNS
             this.chkDisableFilter.Checked = true;
             this.chkDisableFilter.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkDisableFilter.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkDisableFilter.Location = new System.Drawing.Point(717, 456);
+            this.chkDisableFilter.Location = new System.Drawing.Point(608, 389);
             this.chkDisableFilter.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDisableFilter.Name = "chkDisableFilter";
             this.chkDisableFilter.Size = new System.Drawing.Size(78, 40);
@@ -2808,7 +2901,7 @@ namespace ContinuumNS
             // 
             // btnViewFilters
             // 
-            this.btnViewFilters.Location = new System.Drawing.Point(717, 286);
+            this.btnViewFilters.Location = new System.Drawing.Point(717, 257);
             this.btnViewFilters.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnViewFilters.Name = "btnViewFilters";
             this.btnViewFilters.Size = new System.Drawing.Size(92, 28);
@@ -2819,10 +2912,10 @@ namespace ContinuumNS
             // 
             // Export_End
             // 
+            this.Export_End.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Export_End.CustomFormat = "MM/dd/yy HH:mm";
-            this.Export_End.Enabled = false;
             this.Export_End.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.Export_End.Location = new System.Drawing.Point(1465, 329);
+            this.Export_End.Location = new System.Drawing.Point(1329, 494);
             this.Export_End.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Export_End.Name = "Export_End";
             this.Export_End.Size = new System.Drawing.Size(140, 25);
@@ -2830,9 +2923,10 @@ namespace ContinuumNS
             // 
             // label105
             // 
+            this.label105.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label105.AutoSize = true;
             this.label105.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label105.Location = new System.Drawing.Point(1462, 309);
+            this.label105.Location = new System.Drawing.Point(1326, 474);
             this.label105.Name = "label105";
             this.label105.Size = new System.Drawing.Size(77, 18);
             this.label105.TabIndex = 213;
@@ -2840,10 +2934,10 @@ namespace ContinuumNS
             // 
             // Export_Start
             // 
+            this.Export_Start.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Export_Start.CustomFormat = "MM/dd/yy HH:mm";
-            this.Export_Start.Enabled = false;
             this.Export_Start.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.Export_Start.Location = new System.Drawing.Point(1465, 276);
+            this.Export_Start.Location = new System.Drawing.Point(1329, 448);
             this.Export_Start.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Export_Start.Name = "Export_Start";
             this.Export_Start.Size = new System.Drawing.Size(140, 25);
@@ -2851,7 +2945,8 @@ namespace ContinuumNS
             // 
             // btnExportAnnualMax
             // 
-            this.btnExportAnnualMax.Location = new System.Drawing.Point(1465, 486);
+            this.btnExportAnnualMax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportAnnualMax.Location = new System.Drawing.Point(1321, 656);
             this.btnExportAnnualMax.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportAnnualMax.Name = "btnExportAnnualMax";
             this.btnExportAnnualMax.Size = new System.Drawing.Size(153, 38);
@@ -2862,7 +2957,8 @@ namespace ContinuumNS
             // 
             // btnExportExtrap
             // 
-            this.btnExportExtrap.Location = new System.Drawing.Point(1465, 444);
+            this.btnExportExtrap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportExtrap.Location = new System.Drawing.Point(1321, 614);
             this.btnExportExtrap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtrap.Name = "btnExportExtrap";
             this.btnExportExtrap.Size = new System.Drawing.Size(153, 38);
@@ -2873,7 +2969,8 @@ namespace ContinuumNS
             // 
             // btnExportAlpha
             // 
-            this.btnExportAlpha.Location = new System.Drawing.Point(1465, 401);
+            this.btnExportAlpha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportAlpha.Location = new System.Drawing.Point(1321, 571);
             this.btnExportAlpha.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportAlpha.Name = "btnExportAlpha";
             this.btnExportAlpha.Size = new System.Drawing.Size(153, 38);
@@ -2884,7 +2981,8 @@ namespace ContinuumNS
             // 
             // btnExportFlags
             // 
-            this.btnExportFlags.Location = new System.Drawing.Point(1465, 359);
+            this.btnExportFlags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportFlags.Location = new System.Drawing.Point(1321, 529);
             this.btnExportFlags.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportFlags.Name = "btnExportFlags";
             this.btnExportFlags.Size = new System.Drawing.Size(153, 38);
@@ -2895,9 +2993,10 @@ namespace ContinuumNS
             // 
             // label104
             // 
+            this.label104.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label104.AutoSize = true;
             this.label104.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label104.Location = new System.Drawing.Point(1462, 256);
+            this.label104.Location = new System.Drawing.Point(1326, 428);
             this.label104.Name = "label104";
             this.label104.Size = new System.Drawing.Size(84, 18);
             this.label104.TabIndex = 207;
@@ -2919,43 +3018,13 @@ namespace ContinuumNS
             this.cboFilt_or_Not.Items.AddRange(new object[] {
             "Unfiltered",
             "Filtered"});
-            this.cboFilt_or_Not.Location = new System.Drawing.Point(593, 465);
+            this.cboFilt_or_Not.Location = new System.Drawing.Point(484, 398);
             this.cboFilt_or_Not.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboFilt_or_Not.Name = "cboFilt_or_Not";
             this.cboFilt_or_Not.Size = new System.Drawing.Size(101, 26);
             this.cboFilt_or_Not.TabIndex = 205;
             this.cboFilt_or_Not.Text = "Unfiltered";
             this.cboFilt_or_Not.SelectedIndexChanged += new System.EventHandler(this.cboFilt_or_Not_SelectedIndexChanged);
-            // 
-            // label102
-            // 
-            this.label102.AutoSize = true;
-            this.label102.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label102.Location = new System.Drawing.Point(1087, 500);
-            this.label102.Name = "label102";
-            this.label102.Size = new System.Drawing.Size(346, 23);
-            this.label102.TabIndex = 202;
-            this.label102.Text = "Anemometer WS Diff. vs. Wind Speed";
-            // 
-            // label70
-            // 
-            this.label70.AutoSize = true;
-            this.label70.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label70.Location = new System.Drawing.Point(551, 498);
-            this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(368, 23);
-            this.label70.TabIndex = 199;
-            this.label70.Text = "Anemometer WS Diff. vs. Wind Direction";
-            // 
-            // label69
-            // 
-            this.label69.AutoSize = true;
-            this.label69.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label69.Location = new System.Drawing.Point(25, 498);
-            this.label69.Name = "label69";
-            this.label69.Size = new System.Drawing.Size(227, 23);
-            this.label69.TabIndex = 197;
-            this.label69.Text = "Wind Speed Scatterplot";
             // 
             // lstExtrapolated
             // 
@@ -2964,10 +3033,10 @@ namespace ContinuumNS
             this.columnHeader84,
             this.columnHeader83});
             this.lstExtrapolated.HideSelection = false;
-            this.lstExtrapolated.Location = new System.Drawing.Point(474, 315);
+            this.lstExtrapolated.Location = new System.Drawing.Point(474, 286);
             this.lstExtrapolated.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstExtrapolated.Name = "lstExtrapolated";
-            this.lstExtrapolated.Size = new System.Drawing.Size(225, 145);
+            this.lstExtrapolated.Size = new System.Drawing.Size(225, 95);
             this.lstExtrapolated.TabIndex = 196;
             this.lstExtrapolated.UseCompatibleStateImageBehavior = false;
             this.lstExtrapolated.View = System.Windows.Forms.View.Details;
@@ -2993,7 +3062,7 @@ namespace ContinuumNS
             // 
             this.label68.AutoSize = true;
             this.label68.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label68.Location = new System.Drawing.Point(477, 283);
+            this.label68.Location = new System.Drawing.Point(477, 254);
             this.label68.Name = "label68";
             this.label68.Size = new System.Drawing.Size(222, 23);
             this.label68.TabIndex = 195;
@@ -3003,7 +3072,7 @@ namespace ContinuumNS
             // 
             this.label67.AutoSize = true;
             this.label67.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label67.Location = new System.Drawing.Point(323, 286);
+            this.label67.Location = new System.Drawing.Point(323, 257);
             this.label67.Name = "label67";
             this.label67.Size = new System.Drawing.Size(136, 19);
             this.label67.TabIndex = 194;
@@ -3015,10 +3084,10 @@ namespace ContinuumNS
             this.columnHeader80,
             this.columnHeader81});
             this.lstTempSummary.HideSelection = false;
-            this.lstTempSummary.Location = new System.Drawing.Point(325, 315);
+            this.lstTempSummary.Location = new System.Drawing.Point(325, 286);
             this.lstTempSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstTempSummary.Name = "lstTempSummary";
-            this.lstTempSummary.Size = new System.Drawing.Size(133, 145);
+            this.lstTempSummary.Size = new System.Drawing.Size(133, 95);
             this.lstTempSummary.TabIndex = 193;
             this.lstTempSummary.UseCompatibleStateImageBehavior = false;
             this.lstTempSummary.View = System.Windows.Forms.View.Details;
@@ -3037,7 +3106,7 @@ namespace ContinuumNS
             // 
             this.label66.AutoSize = true;
             this.label66.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label66.Location = new System.Drawing.Point(26, 283);
+            this.label66.Location = new System.Drawing.Point(26, 254);
             this.label66.Name = "label66";
             this.label66.Size = new System.Drawing.Size(151, 23);
             this.label66.TabIndex = 192;
@@ -3051,10 +3120,10 @@ namespace ContinuumNS
             this.columnHeader78,
             this.columnHeader79});
             this.lstVaneSummary.HideSelection = false;
-            this.lstVaneSummary.Location = new System.Drawing.Point(29, 314);
+            this.lstVaneSummary.Location = new System.Drawing.Point(29, 285);
             this.lstVaneSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstVaneSummary.Name = "lstVaneSummary";
-            this.lstVaneSummary.Size = new System.Drawing.Size(283, 146);
+            this.lstVaneSummary.Size = new System.Drawing.Size(283, 96);
             this.lstVaneSummary.TabIndex = 191;
             this.lstVaneSummary.UseCompatibleStateImageBehavior = false;
             this.lstVaneSummary.View = System.Windows.Forms.View.Details;
@@ -3081,6 +3150,7 @@ namespace ContinuumNS
             // 
             // label65
             // 
+            this.label65.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label65.AutoSize = true;
             this.label65.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label65.Location = new System.Drawing.Point(1046, 257);
@@ -3091,11 +3161,12 @@ namespace ContinuumNS
             // 
             // cboMetWindRose
             // 
+            this.cboMetWindRose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMetWindRose.FormattingEnabled = true;
             this.cboMetWindRose.Items.AddRange(new object[] {
             "Wind Rose",
             "WS by WD"});
-            this.cboMetWindRose.Location = new System.Drawing.Point(1531, 7);
+            this.cboMetWindRose.Location = new System.Drawing.Point(1392, 7);
             this.cboMetWindRose.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMetWindRose.Name = "cboMetWindRose";
             this.cboMetWindRose.Size = new System.Drawing.Size(86, 26);
@@ -3105,9 +3176,10 @@ namespace ContinuumNS
             // 
             // label64
             // 
+            this.label64.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label64.AutoSize = true;
             this.label64.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label64.Location = new System.Drawing.Point(1384, 9);
+            this.label64.Location = new System.Drawing.Point(1245, 9);
             this.label64.Name = "label64";
             this.label64.Size = new System.Drawing.Size(140, 23);
             this.label64.TabIndex = 178;
@@ -3125,16 +3197,18 @@ namespace ContinuumNS
             // 
             // lstAlphas
             // 
+            this.lstAlphas.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lstAlphas.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader74,
             this.columnHeader86,
             this.columnHeader87,
             this.columnHeader114});
             this.lstAlphas.HideSelection = false;
-            this.lstAlphas.Location = new System.Drawing.Point(825, 142);
+            this.lstAlphas.Location = new System.Drawing.Point(825, 133);
             this.lstAlphas.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.lstAlphas.MaximumSize = new System.Drawing.Size(250, 292);
             this.lstAlphas.Name = "lstAlphas";
-            this.lstAlphas.Size = new System.Drawing.Size(210, 345);
+            this.lstAlphas.Size = new System.Drawing.Size(215, 292);
             this.lstAlphas.TabIndex = 12;
             this.lstAlphas.UseCompatibleStateImageBehavior = false;
             this.lstAlphas.View = System.Windows.Forms.View.Details;
@@ -3158,14 +3232,14 @@ namespace ContinuumNS
             // 
             // label61
             // 
+            this.label61.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label61.AutoSize = true;
             this.label61.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label61.Location = new System.Drawing.Point(821, 113);
+            this.label61.Location = new System.Drawing.Point(821, 104);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(130, 23);
             this.label61.TabIndex = 11;
             this.label61.Text = "Alpha vs. WD";
-            this.label61.Click += new System.EventHandler(this.label61_Click);
             // 
             // label60
             // 
@@ -3254,7 +3328,6 @@ namespace ContinuumNS
             this.All_Start_Time.Name = "All_Start_Time";
             this.All_Start_Time.Size = new System.Drawing.Size(140, 25);
             this.All_Start_Time.TabIndex = 3;
-            this.All_Start_Time.ValueChanged += new System.EventHandler(this.All_Start_Time_ValueChanged);
             // 
             // label24
             // 
@@ -3278,6 +3351,8 @@ namespace ContinuumNS
             // 
             // lstAnemSummary
             // 
+            this.lstAnemSummary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstAnemSummary.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.height,
             this.columnHeader64,
@@ -3294,7 +3369,7 @@ namespace ContinuumNS
             this.lstAnemSummary.Location = new System.Drawing.Point(28, 91);
             this.lstAnemSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstAnemSummary.Name = "lstAnemSummary";
-            this.lstAnemSummary.Size = new System.Drawing.Size(783, 185);
+            this.lstAnemSummary.Size = new System.Drawing.Size(783, 160);
             this.lstAnemSummary.TabIndex = 0;
             this.lstAnemSummary.UseCompatibleStateImageBehavior = false;
             this.lstAnemSummary.View = System.Windows.Forms.View.Details;
@@ -3416,11 +3491,10 @@ namespace ContinuumNS
             this.pgeMERRA.Location = new System.Drawing.Point(4, 27);
             this.pgeMERRA.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMERRA.Name = "pgeMERRA";
-            this.pgeMERRA.Size = new System.Drawing.Size(1626, 856);
+            this.pgeMERRA.Size = new System.Drawing.Size(1488, 712);
             this.pgeMERRA.TabIndex = 16;
             this.pgeMERRA.Text = "LT Reference Data";
             this.pgeMERRA.UseVisualStyleBackColor = true;
-            this.pgeMERRA.Click += new System.EventHandler(this.pgeMERRA_Click);
             // 
             // cboNumWDRefTab
             // 
@@ -3433,7 +3507,7 @@ namespace ContinuumNS
             "12",
             "16",
             "24"});
-            this.cboNumWDRefTab.Location = new System.Drawing.Point(1401, 91);
+            this.cboNumWDRefTab.Location = new System.Drawing.Point(1427, 84);
             this.cboNumWDRefTab.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboNumWDRefTab.Name = "cboNumWDRefTab";
             this.cboNumWDRefTab.Size = new System.Drawing.Size(48, 26);
@@ -3445,7 +3519,7 @@ namespace ContinuumNS
             // 
             this.label223.AutoSize = true;
             this.label223.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label223.Location = new System.Drawing.Point(1292, 95);
+            this.label223.Location = new System.Drawing.Point(1318, 88);
             this.label223.Name = "label223";
             this.label223.Size = new System.Drawing.Size(103, 18);
             this.label223.TabIndex = 270;
@@ -3457,7 +3531,7 @@ namespace ContinuumNS
             this.cboRefWindOrEnergy.Items.AddRange(new object[] {
             "Wind Rose",
             "Energy Rose"});
-            this.cboRefWindOrEnergy.Location = new System.Drawing.Point(1488, 91);
+            this.cboRefWindOrEnergy.Location = new System.Drawing.Point(1247, 117);
             this.cboRefWindOrEnergy.Name = "cboRefWindOrEnergy";
             this.cboRefWindOrEnergy.Size = new System.Drawing.Size(121, 26);
             this.cboRefWindOrEnergy.TabIndex = 269;
@@ -3467,7 +3541,7 @@ namespace ContinuumNS
             // 
             this.label217.AutoSize = true;
             this.label217.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label217.Location = new System.Drawing.Point(388, 414);
+            this.label217.Location = new System.Drawing.Point(361, 339);
             this.label217.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label217.Name = "label217";
             this.label217.Size = new System.Drawing.Size(20, 18);
@@ -3477,7 +3551,7 @@ namespace ContinuumNS
             // txtMaxLong
             // 
             this.txtMaxLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxLong.Location = new System.Drawing.Point(409, 411);
+            this.txtMaxLong.Location = new System.Drawing.Point(382, 336);
             this.txtMaxLong.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxLong.Name = "txtMaxLong";
             this.txtMaxLong.ReadOnly = true;
@@ -3488,7 +3562,7 @@ namespace ContinuumNS
             // 
             this.label218.AutoSize = true;
             this.label218.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label218.Location = new System.Drawing.Point(229, 414);
+            this.label218.Location = new System.Drawing.Point(202, 339);
             this.label218.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label218.Name = "label218";
             this.label218.Size = new System.Drawing.Size(109, 18);
@@ -3498,7 +3572,7 @@ namespace ContinuumNS
             // txtMinLong
             // 
             this.txtMinLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinLong.Location = new System.Drawing.Point(341, 411);
+            this.txtMinLong.Location = new System.Drawing.Point(314, 336);
             this.txtMinLong.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinLong.Name = "txtMinLong";
             this.txtMinLong.ReadOnly = true;
@@ -3509,7 +3583,7 @@ namespace ContinuumNS
             // 
             this.label219.AutoSize = true;
             this.label219.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label219.Location = new System.Drawing.Point(388, 381);
+            this.label219.Location = new System.Drawing.Point(361, 306);
             this.label219.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label219.Name = "label219";
             this.label219.Size = new System.Drawing.Size(20, 18);
@@ -3519,7 +3593,7 @@ namespace ContinuumNS
             // txtMaxLat
             // 
             this.txtMaxLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxLat.Location = new System.Drawing.Point(409, 378);
+            this.txtMaxLat.Location = new System.Drawing.Point(382, 303);
             this.txtMaxLat.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxLat.Name = "txtMaxLat";
             this.txtMaxLat.ReadOnly = true;
@@ -3530,7 +3604,7 @@ namespace ContinuumNS
             // 
             this.label220.AutoSize = true;
             this.label220.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label220.Location = new System.Drawing.Point(237, 381);
+            this.label220.Location = new System.Drawing.Point(210, 306);
             this.label220.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label220.Name = "label220";
             this.label220.Size = new System.Drawing.Size(99, 18);
@@ -3540,7 +3614,7 @@ namespace ContinuumNS
             // txtMinLat
             // 
             this.txtMinLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinLat.Location = new System.Drawing.Point(341, 378);
+            this.txtMinLat.Location = new System.Drawing.Point(314, 303);
             this.txtMinLat.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinLat.Name = "txtMinLat";
             this.txtMinLat.ReadOnly = true;
@@ -3550,7 +3624,7 @@ namespace ContinuumNS
             // txtRefDataDownloadName
             // 
             this.txtRefDataDownloadName.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRefDataDownloadName.Location = new System.Drawing.Point(19, 272);
+            this.txtRefDataDownloadName.Location = new System.Drawing.Point(19, 220);
             this.txtRefDataDownloadName.Margin = new System.Windows.Forms.Padding(2);
             this.txtRefDataDownloadName.Name = "txtRefDataDownloadName";
             this.txtRefDataDownloadName.ReadOnly = true;
@@ -3560,17 +3634,18 @@ namespace ContinuumNS
             // label216
             // 
             this.label216.AutoSize = true;
-            this.label216.Location = new System.Drawing.Point(21, 247);
+            this.label216.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.label216.Location = new System.Drawing.Point(21, 199);
             this.label216.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label216.Name = "label216";
-            this.label216.Size = new System.Drawing.Size(220, 19);
+            this.label216.Size = new System.Drawing.Size(202, 17);
             this.label216.TabIndex = 259;
             this.label216.Text = "Extracted from Reference Dataset:";
             // 
             // txtRefDataDownloadFolder
             // 
             this.txtRefDataDownloadFolder.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRefDataDownloadFolder.Location = new System.Drawing.Point(19, 325);
+            this.txtRefDataDownloadFolder.Location = new System.Drawing.Point(19, 270);
             this.txtRefDataDownloadFolder.Margin = new System.Windows.Forms.Padding(2);
             this.txtRefDataDownloadFolder.Name = "txtRefDataDownloadFolder";
             this.txtRefDataDownloadFolder.ReadOnly = true;
@@ -3580,7 +3655,7 @@ namespace ContinuumNS
             // btnRefDataDownloads
             // 
             this.btnRefDataDownloads.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.btnRefDataDownloads.Location = new System.Drawing.Point(352, 226);
+            this.btnRefDataDownloads.Location = new System.Drawing.Point(352, 174);
             this.btnRefDataDownloads.Name = "btnRefDataDownloads";
             this.btnRefDataDownloads.Size = new System.Drawing.Size(103, 40);
             this.btnRefDataDownloads.TabIndex = 256;
@@ -3647,7 +3722,7 @@ namespace ContinuumNS
             this.label205.AutoSize = true;
             this.label205.Enabled = false;
             this.label205.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label205.Location = new System.Drawing.Point(249, 467);
+            this.label205.Location = new System.Drawing.Point(245, 376);
             this.label205.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label205.Name = "label205";
             this.label205.Size = new System.Drawing.Size(95, 18);
@@ -3657,7 +3732,7 @@ namespace ContinuumNS
             // txtRefDataAvail
             // 
             this.txtRefDataAvail.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRefDataAvail.Location = new System.Drawing.Point(347, 464);
+            this.txtRefDataAvail.Location = new System.Drawing.Point(343, 373);
             this.txtRefDataAvail.Margin = new System.Windows.Forms.Padding(2);
             this.txtRefDataAvail.Name = "txtRefDataAvail";
             this.txtRefDataAvail.ReadOnly = true;
@@ -3669,7 +3744,7 @@ namespace ContinuumNS
             this.label204.AutoSize = true;
             this.label204.Enabled = false;
             this.label204.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label204.Location = new System.Drawing.Point(20, 358);
+            this.label204.Location = new System.Drawing.Point(20, 300);
             this.label204.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label204.Name = "label204";
             this.label204.Size = new System.Drawing.Size(175, 36);
@@ -3684,7 +3759,7 @@ namespace ContinuumNS
             this.dateLTRefAvailEnd.Enabled = false;
             this.dateLTRefAvailEnd.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateLTRefAvailEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateLTRefAvailEnd.Location = new System.Drawing.Point(23, 484);
+            this.dateLTRefAvailEnd.Location = new System.Drawing.Point(23, 410);
             this.dateLTRefAvailEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateLTRefAvailEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
             this.dateLTRefAvailEnd.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
@@ -3700,7 +3775,7 @@ namespace ContinuumNS
             this.dateLTRefAvailStart.Enabled = false;
             this.dateLTRefAvailStart.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateLTRefAvailStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateLTRefAvailStart.Location = new System.Drawing.Point(22, 425);
+            this.dateLTRefAvailStart.Location = new System.Drawing.Point(22, 359);
             this.dateLTRefAvailStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateLTRefAvailStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
             this.dateLTRefAvailStart.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
@@ -3714,7 +3789,7 @@ namespace ContinuumNS
             this.label52.AutoSize = true;
             this.label52.Enabled = false;
             this.label52.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label52.Location = new System.Drawing.Point(20, 464);
+            this.label52.Location = new System.Drawing.Point(20, 390);
             this.label52.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(74, 18);
@@ -3726,7 +3801,7 @@ namespace ContinuumNS
             this.label54.AutoSize = true;
             this.label54.Enabled = false;
             this.label54.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label54.Location = new System.Drawing.Point(21, 405);
+            this.label54.Location = new System.Drawing.Point(21, 339);
             this.label54.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(81, 18);
@@ -3749,10 +3824,10 @@ namespace ContinuumNS
             this.plotMERRA_WindRose.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotMERRA_WindRose.Location = new System.Drawing.Point(1290, 123);
+            this.plotMERRA_WindRose.Location = new System.Drawing.Point(1233, 159);
             this.plotMERRA_WindRose.Name = "plotMERRA_WindRose";
             this.plotMERRA_WindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMERRA_WindRose.Size = new System.Drawing.Size(323, 288);
+            this.plotMERRA_WindRose.Size = new System.Drawing.Size(242, 228);
             this.plotMERRA_WindRose.TabIndex = 226;
             this.plotMERRA_WindRose.Text = "plotView1";
             this.plotMERRA_WindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -3762,25 +3837,28 @@ namespace ContinuumNS
             // 
             // plotMERRA_Monthly
             // 
-            this.plotMERRA_Monthly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotMERRA_Monthly.Location = new System.Drawing.Point(1050, 421);
+            this.plotMERRA_Monthly.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotMERRA_Monthly.Location = new System.Drawing.Point(848, 402);
+            this.plotMERRA_Monthly.MaximumSize = new System.Drawing.Size(680, 400);
             this.plotMERRA_Monthly.Name = "plotMERRA_Monthly";
             this.plotMERRA_Monthly.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMERRA_Monthly.Size = new System.Drawing.Size(563, 405);
+            this.plotMERRA_Monthly.Size = new System.Drawing.Size(620, 284);
             this.plotMERRA_Monthly.TabIndex = 225;
             this.plotMERRA_Monthly.Text = "plotView1";
             this.plotMERRA_Monthly.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotMERRA_Monthly.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotMERRA_Monthly.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotMERRA_Monthly.Click += new System.EventHandler(this.plotMERRA_Monthly_Click);
             // 
             // plotMERRA_Yearly
             // 
-            this.plotMERRA_Yearly.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotMERRA_Yearly.Location = new System.Drawing.Point(474, 421);
+            this.plotMERRA_Yearly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotMERRA_Yearly.Location = new System.Drawing.Point(213, 403);
+            this.plotMERRA_Yearly.MaximumSize = new System.Drawing.Size(680, 400);
             this.plotMERRA_Yearly.Name = "plotMERRA_Yearly";
             this.plotMERRA_Yearly.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMERRA_Yearly.Size = new System.Drawing.Size(560, 405);
+            this.plotMERRA_Yearly.Size = new System.Drawing.Size(620, 285);
             this.plotMERRA_Yearly.TabIndex = 224;
             this.plotMERRA_Yearly.Text = "plotView1";
             this.plotMERRA_Yearly.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -3790,7 +3868,7 @@ namespace ContinuumNS
             // btnImportCRV_MERRA
             // 
             this.btnImportCRV_MERRA.BackColor = System.Drawing.Color.LightCoral;
-            this.btnImportCRV_MERRA.Location = new System.Drawing.Point(999, 6);
+            this.btnImportCRV_MERRA.Location = new System.Drawing.Point(955, 6);
             this.btnImportCRV_MERRA.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnImportCRV_MERRA.Name = "btnImportCRV_MERRA";
             this.btnImportCRV_MERRA.Size = new System.Drawing.Size(160, 36);
@@ -3817,7 +3895,7 @@ namespace ContinuumNS
             // 
             this.label121.AutoSize = true;
             this.label121.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label121.Location = new System.Drawing.Point(1429, 50);
+            this.label121.Location = new System.Drawing.Point(1293, 51);
             this.label121.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label121.Name = "label121";
             this.label121.Size = new System.Drawing.Size(57, 18);
@@ -3842,7 +3920,7 @@ namespace ContinuumNS
             "Oct",
             "Nov",
             "Dec"});
-            this.cboReferenceMonth.Location = new System.Drawing.Point(1490, 47);
+            this.cboReferenceMonth.Location = new System.Drawing.Point(1352, 48);
             this.cboReferenceMonth.Margin = new System.Windows.Forms.Padding(2);
             this.cboReferenceMonth.Name = "cboReferenceMonth";
             this.cboReferenceMonth.Size = new System.Drawing.Size(123, 26);
@@ -3854,7 +3932,7 @@ namespace ContinuumNS
             // 
             this.label120.AutoSize = true;
             this.label120.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label120.Location = new System.Drawing.Point(1244, 50);
+            this.label120.Location = new System.Drawing.Point(1152, 51);
             this.label120.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label120.Name = "label120";
             this.label120.Size = new System.Drawing.Size(44, 18);
@@ -3865,21 +3943,22 @@ namespace ContinuumNS
             // 
             this.cboReferenceYear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboReferenceYear.FormattingEnabled = true;
-            this.cboReferenceYear.Location = new System.Drawing.Point(1291, 47);
+            this.cboReferenceYear.Location = new System.Drawing.Point(1199, 48);
             this.cboReferenceYear.Margin = new System.Windows.Forms.Padding(2);
             this.cboReferenceYear.Name = "cboReferenceYear";
-            this.cboReferenceYear.Size = new System.Drawing.Size(123, 26);
+            this.cboReferenceYear.Size = new System.Drawing.Size(88, 26);
             this.cboReferenceYear.TabIndex = 208;
             this.cboReferenceYear.SelectedIndexChanged += new System.EventHandler(this.cboMERRAYear_SelectedIndexChanged);
             // 
             // chkYearsToDisplay
             // 
             this.chkYearsToDisplay.CheckOnClick = true;
+            this.chkYearsToDisplay.Font = new System.Drawing.Font("Palatino Linotype", 9F);
             this.chkYearsToDisplay.FormattingEnabled = true;
-            this.chkYearsToDisplay.Location = new System.Drawing.Point(1161, 117);
+            this.chkYearsToDisplay.Location = new System.Drawing.Point(1139, 117);
             this.chkYearsToDisplay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkYearsToDisplay.Name = "chkYearsToDisplay";
-            this.chkYearsToDisplay.Size = new System.Drawing.Size(108, 264);
+            this.chkYearsToDisplay.Size = new System.Drawing.Size(88, 270);
             this.chkYearsToDisplay.TabIndex = 207;
             this.chkYearsToDisplay.SelectedIndexChanged += new System.EventHandler(this.chkYearsToDisplay_SelectedIndexChanged);
             // 
@@ -3888,7 +3967,7 @@ namespace ContinuumNS
             this.label162.AutoSize = true;
             this.label162.Enabled = false;
             this.label162.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label162.Location = new System.Drawing.Point(344, 144);
+            this.label162.Location = new System.Drawing.Point(344, 124);
             this.label162.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label162.Name = "label162";
             this.label162.Size = new System.Drawing.Size(109, 18);
@@ -3898,19 +3977,19 @@ namespace ContinuumNS
             // txtMERRA_WS_ScaleFact
             // 
             this.txtMERRA_WS_ScaleFact.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMERRA_WS_ScaleFact.Location = new System.Drawing.Point(358, 164);
+            this.txtMERRA_WS_ScaleFact.Location = new System.Drawing.Point(358, 144);
             this.txtMERRA_WS_ScaleFact.Margin = new System.Windows.Forms.Padding(2);
             this.txtMERRA_WS_ScaleFact.Name = "txtMERRA_WS_ScaleFact";
             this.txtMERRA_WS_ScaleFact.ReadOnly = true;
             this.txtMERRA_WS_ScaleFact.Size = new System.Drawing.Size(66, 25);
             this.txtMERRA_WS_ScaleFact.TabIndex = 205;
-            this.txtMERRA_WS_ScaleFact.Text = "0.85";
+            this.txtMERRA_WS_ScaleFact.Text = "1";
             // 
             // label160
             // 
             this.label160.AutoSize = true;
             this.label160.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label160.Location = new System.Drawing.Point(850, 53);
+            this.label160.Location = new System.Drawing.Point(772, 53);
             this.label160.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label160.Name = "label160";
             this.label160.Size = new System.Drawing.Size(96, 18);
@@ -3921,21 +4000,21 @@ namespace ContinuumNS
             // 
             this.cboMERRA_PowerCurves.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboMERRA_PowerCurves.FormattingEnabled = true;
-            this.cboMERRA_PowerCurves.Location = new System.Drawing.Point(952, 49);
+            this.cboMERRA_PowerCurves.Location = new System.Drawing.Point(874, 49);
             this.cboMERRA_PowerCurves.Margin = new System.Windows.Forms.Padding(2);
             this.cboMERRA_PowerCurves.MaxDropDownItems = 100;
             this.cboMERRA_PowerCurves.Name = "cboMERRA_PowerCurves";
-            this.cboMERRA_PowerCurves.Size = new System.Drawing.Size(279, 26);
+            this.cboMERRA_PowerCurves.Size = new System.Drawing.Size(257, 26);
             this.cboMERRA_PowerCurves.TabIndex = 201;
             this.cboMERRA_PowerCurves.SelectedIndexChanged += new System.EventHandler(this.cboMERRA_PowerCurves_SelectedIndexChanged);
             // 
             // btn_ExportWR
             // 
             this.btn_ExportWR.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_ExportWR.Location = new System.Drawing.Point(32, 738);
+            this.btn_ExportWR.Location = new System.Drawing.Point(19, 628);
             this.btn_ExportWR.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btn_ExportWR.Name = "btn_ExportWR";
-            this.btn_ExportWR.Size = new System.Drawing.Size(128, 59);
+            this.btn_ExportWR.Size = new System.Drawing.Size(128, 48);
             this.btn_ExportWR.TabIndex = 154;
             this.btn_ExportWR.Text = "Export Wind Rose";
             this.btn_ExportWR.UseVisualStyleBackColor = true;
@@ -3944,10 +4023,10 @@ namespace ContinuumNS
             // btn_Export_All_Months_All_Years
             // 
             this.btn_Export_All_Months_All_Years.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Export_All_Months_All_Years.Location = new System.Drawing.Point(32, 661);
+            this.btn_Export_All_Months_All_Years.Location = new System.Drawing.Point(19, 574);
             this.btn_Export_All_Months_All_Years.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Export_All_Months_All_Years.Name = "btn_Export_All_Months_All_Years";
-            this.btn_Export_All_Months_All_Years.Size = new System.Drawing.Size(128, 58);
+            this.btn_Export_All_Months_All_Years.Size = new System.Drawing.Size(128, 48);
             this.btn_Export_All_Months_All_Years.TabIndex = 153;
             this.btn_Export_All_Months_All_Years.Text = "Export All Months && All Years";
             this.btn_Export_All_Months_All_Years.UseVisualStyleBackColor = true;
@@ -3957,7 +4036,7 @@ namespace ContinuumNS
             // 
             this.label159.AutoSize = true;
             this.label159.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label159.Location = new System.Drawing.Point(1305, 17);
+            this.label159.Location = new System.Drawing.Point(1176, 18);
             this.label159.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label159.Name = "label159";
             this.label159.Size = new System.Drawing.Size(273, 20);
@@ -3968,7 +4047,7 @@ namespace ContinuumNS
             // 
             this.label156.AutoSize = true;
             this.label156.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label156.Location = new System.Drawing.Point(544, 55);
+            this.label156.Location = new System.Drawing.Point(510, 58);
             this.label156.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label156.Name = "label156";
             this.label156.Size = new System.Drawing.Size(101, 18);
@@ -3983,10 +4062,10 @@ namespace ContinuumNS
             "CF, %",
             "Energy Prod.",
             "Dev. from LT"});
-            this.cboMERRA_PlotParam.Location = new System.Drawing.Point(657, 50);
+            this.cboMERRA_PlotParam.Location = new System.Drawing.Point(623, 53);
             this.cboMERRA_PlotParam.Margin = new System.Windows.Forms.Padding(2);
             this.cboMERRA_PlotParam.Name = "cboMERRA_PlotParam";
-            this.cboMERRA_PlotParam.Size = new System.Drawing.Size(166, 25);
+            this.cboMERRA_PlotParam.Size = new System.Drawing.Size(134, 25);
             this.cboMERRA_PlotParam.TabIndex = 145;
             this.cboMERRA_PlotParam.Text = "CF (%)";
             this.cboMERRA_PlotParam.SelectedIndexChanged += new System.EventHandler(this.cboMERRA_PlotParam_SelectedIndexChanged);
@@ -4005,7 +4084,7 @@ namespace ContinuumNS
             this.lstMERRAAnnualProd.Location = new System.Drawing.Point(504, 90);
             this.lstMERRAAnnualProd.Margin = new System.Windows.Forms.Padding(2);
             this.lstMERRAAnnualProd.Name = "lstMERRAAnnualProd";
-            this.lstMERRAAnnualProd.Size = new System.Drawing.Size(287, 313);
+            this.lstMERRAAnnualProd.Size = new System.Drawing.Size(287, 302);
             this.lstMERRAAnnualProd.TabIndex = 141;
             this.lstMERRAAnnualProd.UseCompatibleStateImageBehavior = false;
             this.lstMERRAAnnualProd.View = System.Windows.Forms.View.Details;
@@ -4042,7 +4121,7 @@ namespace ContinuumNS
             this.lstMERRA_MonthlyProd.Location = new System.Drawing.Point(800, 90);
             this.lstMERRA_MonthlyProd.Margin = new System.Windows.Forms.Padding(2);
             this.lstMERRA_MonthlyProd.Name = "lstMERRA_MonthlyProd";
-            this.lstMERRA_MonthlyProd.Size = new System.Drawing.Size(331, 313);
+            this.lstMERRA_MonthlyProd.Size = new System.Drawing.Size(331, 302);
             this.lstMERRA_MonthlyProd.TabIndex = 139;
             this.lstMERRA_MonthlyProd.UseCompatibleStateImageBehavior = false;
             this.lstMERRA_MonthlyProd.View = System.Windows.Forms.View.Details;
@@ -4073,10 +4152,10 @@ namespace ContinuumNS
             // btn_Export_Interp
             // 
             this.btn_Export_Interp.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Export_Interp.Location = new System.Drawing.Point(31, 577);
+            this.btn_Export_Interp.Location = new System.Drawing.Point(19, 522);
             this.btn_Export_Interp.Margin = new System.Windows.Forms.Padding(2);
             this.btn_Export_Interp.Name = "btn_Export_Interp";
-            this.btn_Export_Interp.Size = new System.Drawing.Size(129, 62);
+            this.btn_Export_Interp.Size = new System.Drawing.Size(129, 48);
             this.btn_Export_Interp.TabIndex = 138;
             this.btn_Export_Interp.Text = "Export Interpolated Data";
             this.btn_Export_Interp.UseVisualStyleBackColor = true;
@@ -4090,7 +4169,7 @@ namespace ContinuumNS
             this.dateMERRAEnd.Enabled = false;
             this.dateMERRAEnd.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateMERRAEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateMERRAEnd.Location = new System.Drawing.Point(142, 176);
+            this.dateMERRAEnd.Location = new System.Drawing.Point(142, 156);
             this.dateMERRAEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateMERRAEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
             this.dateMERRAEnd.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
@@ -4106,7 +4185,7 @@ namespace ContinuumNS
             this.dateMERRAStart.Enabled = false;
             this.dateMERRAStart.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateMERRAStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateMERRAStart.Location = new System.Drawing.Point(142, 142);
+            this.dateMERRAStart.Location = new System.Drawing.Point(142, 122);
             this.dateMERRAStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateMERRAStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
             this.dateMERRAStart.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
@@ -4120,7 +4199,7 @@ namespace ContinuumNS
             this.label152.AutoSize = true;
             this.label152.Enabled = false;
             this.label152.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label152.Location = new System.Drawing.Point(29, 176);
+            this.label152.Location = new System.Drawing.Point(29, 156);
             this.label152.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label152.Name = "label152";
             this.label152.Size = new System.Drawing.Size(74, 18);
@@ -4132,7 +4211,7 @@ namespace ContinuumNS
             this.label153.AutoSize = true;
             this.label153.Enabled = false;
             this.label153.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label153.Location = new System.Drawing.Point(28, 149);
+            this.label153.Location = new System.Drawing.Point(28, 129);
             this.label153.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label153.Name = "label153";
             this.label153.Size = new System.Drawing.Size(81, 18);
@@ -4143,11 +4222,11 @@ namespace ContinuumNS
             // 
             this.label154.AutoSize = true;
             this.label154.Enabled = false;
-            this.label154.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label154.Location = new System.Drawing.Point(20, 303);
+            this.label154.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label154.Location = new System.Drawing.Point(20, 248);
             this.label154.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label154.Name = "label154";
-            this.label154.Size = new System.Drawing.Size(111, 20);
+            this.label154.Size = new System.Drawing.Size(94, 17);
             this.label154.TabIndex = 109;
             this.label154.Text = "Folder location:";
             // 
@@ -4254,7 +4333,7 @@ namespace ContinuumNS
             this.pgeMCP.Location = new System.Drawing.Point(4, 27);
             this.pgeMCP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMCP.Name = "pgeMCP";
-            this.pgeMCP.Size = new System.Drawing.Size(1626, 856);
+            this.pgeMCP.Size = new System.Drawing.Size(1488, 712);
             this.pgeMCP.TabIndex = 15;
             this.pgeMCP.Text = "MCP";
             this.pgeMCP.UseVisualStyleBackColor = true;
@@ -4263,7 +4342,7 @@ namespace ContinuumNS
             // 
             this.label237.AutoSize = true;
             this.label237.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label237.Location = new System.Drawing.Point(870, 214);
+            this.label237.Location = new System.Drawing.Point(745, 243);
             this.label237.Name = "label237";
             this.label237.Size = new System.Drawing.Size(54, 18);
             this.label237.TabIndex = 302;
@@ -4273,7 +4352,7 @@ namespace ContinuumNS
             // 
             this.cboMCP_Height.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboMCP_Height.FormattingEnabled = true;
-            this.cboMCP_Height.Location = new System.Drawing.Point(870, 240);
+            this.cboMCP_Height.Location = new System.Drawing.Point(745, 261);
             this.cboMCP_Height.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCP_Height.Name = "cboMCP_Height";
             this.cboMCP_Height.Size = new System.Drawing.Size(110, 26);
@@ -4302,10 +4381,12 @@ namespace ContinuumNS
             // 
             // btnExportTarget
             // 
-            this.btnExportTarget.Location = new System.Drawing.Point(979, 766);
+            this.btnExportTarget.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportTarget.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportTarget.Location = new System.Drawing.Point(448, 638);
             this.btnExportTarget.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportTarget.Name = "btnExportTarget";
-            this.btnExportTarget.Size = new System.Drawing.Size(113, 58);
+            this.btnExportTarget.Size = new System.Drawing.Size(101, 64);
             this.btnExportTarget.TabIndex = 298;
             this.btnExportTarget.Text = "Export Hourly Target Data";
             this.btnExportTarget.UseVisualStyleBackColor = true;
@@ -4313,10 +4394,11 @@ namespace ContinuumNS
             // 
             // plotMCP_Uncertainty
             // 
-            this.plotMCP_Uncertainty.Location = new System.Drawing.Point(1008, 400);
+            this.plotMCP_Uncertainty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotMCP_Uncertainty.Location = new System.Drawing.Point(932, 367);
             this.plotMCP_Uncertainty.Name = "plotMCP_Uncertainty";
             this.plotMCP_Uncertainty.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMCP_Uncertainty.Size = new System.Drawing.Size(423, 311);
+            this.plotMCP_Uncertainty.Size = new System.Drawing.Size(349, 264);
             this.plotMCP_Uncertainty.TabIndex = 297;
             this.plotMCP_Uncertainty.Text = "plotView1";
             this.plotMCP_Uncertainty.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -4325,10 +4407,13 @@ namespace ContinuumNS
             // 
             // plotMCP
             // 
-            this.plotMCP.Location = new System.Drawing.Point(304, 286);
+            this.plotMCP.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotMCP.Location = new System.Drawing.Point(300, 295);
             this.plotMCP.Name = "plotMCP";
             this.plotMCP.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMCP.Size = new System.Drawing.Size(678, 425);
+            this.plotMCP.Size = new System.Drawing.Size(579, 326);
             this.plotMCP.TabIndex = 296;
             this.plotMCP.Text = "plotView1";
             this.plotMCP.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -4337,9 +4422,11 @@ namespace ContinuumNS
             // 
             // btnShowMCPRanges
             // 
-            this.btnShowMCPRanges.Location = new System.Drawing.Point(1463, 161);
+            this.btnShowMCPRanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnShowMCPRanges.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnShowMCPRanges.Location = new System.Drawing.Point(1294, 25);
             this.btnShowMCPRanges.Name = "btnShowMCPRanges";
-            this.btnShowMCPRanges.Size = new System.Drawing.Size(138, 56);
+            this.btnShowMCPRanges.Size = new System.Drawing.Size(116, 46);
             this.btnShowMCPRanges.TabIndex = 295;
             this.btnShowMCPRanges.Text = "View MCP Setting Valid Ranges";
             this.btnShowMCPRanges.UseVisualStyleBackColor = true;
@@ -4347,9 +4434,10 @@ namespace ContinuumNS
             // 
             // label51
             // 
+            this.label51.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label51.AutoSize = true;
             this.label51.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label51.Location = new System.Drawing.Point(1260, 191);
+            this.label51.Location = new System.Drawing.Point(1239, 160);
             this.label51.Name = "label51";
             this.label51.Size = new System.Drawing.Size(121, 19);
             this.label51.TabIndex = 294;
@@ -4357,7 +4445,7 @@ namespace ContinuumNS
             // 
             // btnDoMCPAllMets
             // 
-            this.btnDoMCPAllMets.Location = new System.Drawing.Point(666, 25);
+            this.btnDoMCPAllMets.Location = new System.Drawing.Point(747, 41);
             this.btnDoMCPAllMets.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDoMCPAllMets.Name = "btnDoMCPAllMets";
             this.btnDoMCPAllMets.Size = new System.Drawing.Size(148, 46);
@@ -4368,7 +4456,7 @@ namespace ContinuumNS
             // 
             // btnDoMCP
             // 
-            this.btnDoMCP.Location = new System.Drawing.Point(565, 25);
+            this.btnDoMCP.Location = new System.Drawing.Point(646, 41);
             this.btnDoMCP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDoMCP.Name = "btnDoMCP";
             this.btnDoMCP.Size = new System.Drawing.Size(94, 46);
@@ -4379,21 +4467,24 @@ namespace ContinuumNS
             // 
             // btnResetDates
             // 
-            this.btnResetDates.Location = new System.Drawing.Point(539, 725);
+            this.btnResetDates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnResetDates.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.btnResetDates.Location = new System.Drawing.Point(393, 628);
             this.btnResetDates.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnResetDates.Name = "btnResetDates";
-            this.btnResetDates.Size = new System.Drawing.Size(112, 32);
+            this.btnResetDates.Size = new System.Drawing.Size(45, 25);
             this.btnResetDates.TabIndex = 291;
-            this.btnResetDates.Text = "Reset Dates";
+            this.btnResetDates.Text = "Reset";
             this.btnResetDates.UseVisualStyleBackColor = true;
             this.btnResetDates.Click += new System.EventHandler(this.btnResetDates_Click);
             // 
             // dateMCPExportEnd
             // 
+            this.dateMCPExportEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.dateMCPExportEnd.CustomFormat = "MM/dd/yy HH:mm";
             this.dateMCPExportEnd.Enabled = false;
             this.dateMCPExportEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateMCPExportEnd.Location = new System.Drawing.Point(379, 796);
+            this.dateMCPExportEnd.Location = new System.Drawing.Point(261, 683);
             this.dateMCPExportEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateMCPExportEnd.Name = "dateMCPExportEnd";
             this.dateMCPExportEnd.Size = new System.Drawing.Size(140, 25);
@@ -4402,9 +4493,10 @@ namespace ContinuumNS
             // 
             // label145
             // 
+            this.label145.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label145.AutoSize = true;
             this.label145.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label145.Location = new System.Drawing.Point(366, 730);
+            this.label145.Location = new System.Drawing.Point(261, 629);
             this.label145.Name = "label145";
             this.label145.Size = new System.Drawing.Size(132, 17);
             this.label145.TabIndex = 289;
@@ -4412,13 +4504,14 @@ namespace ContinuumNS
             // 
             // dateMCPExportStart
             // 
+            this.dateMCPExportStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.dateMCPExportStart.CustomFormat = "MM/dd/yy HH:mm";
             this.dateMCPExportStart.Enabled = false;
             this.dateMCPExportStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateMCPExportStart.Location = new System.Drawing.Point(379, 762);
+            this.dateMCPExportStart.Location = new System.Drawing.Point(262, 654);
             this.dateMCPExportStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateMCPExportStart.Name = "dateMCPExportStart";
-            this.dateMCPExportStart.Size = new System.Drawing.Size(140, 25);
+            this.dateMCPExportStart.Size = new System.Drawing.Size(139, 25);
             this.dateMCPExportStart.TabIndex = 288;
             this.dateMCPExportStart.ValueChanged += new System.EventHandler(this.dateMCPExportStart_ValueChanged);
             // 
@@ -4427,7 +4520,7 @@ namespace ContinuumNS
             this.dateConcurrentEnd.CustomFormat = "MM/dd/yy HH:mm";
             this.dateConcurrentEnd.Enabled = false;
             this.dateConcurrentEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateConcurrentEnd.Location = new System.Drawing.Point(259, 228);
+            this.dateConcurrentEnd.Location = new System.Drawing.Point(473, 90);
             this.dateConcurrentEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateConcurrentEnd.Name = "dateConcurrentEnd";
             this.dateConcurrentEnd.Size = new System.Drawing.Size(140, 25);
@@ -4437,7 +4530,7 @@ namespace ContinuumNS
             // 
             this.label144.AutoSize = true;
             this.label144.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label144.Location = new System.Drawing.Point(250, 163);
+            this.label144.Location = new System.Drawing.Point(464, 25);
             this.label144.Name = "label144";
             this.label144.Size = new System.Drawing.Size(151, 18);
             this.label144.TabIndex = 286;
@@ -4448,7 +4541,7 @@ namespace ContinuumNS
             this.dateConcurrentStart.CustomFormat = "MM/dd/yy HH:mm";
             this.dateConcurrentStart.Enabled = false;
             this.dateConcurrentStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateConcurrentStart.Location = new System.Drawing.Point(259, 190);
+            this.dateConcurrentStart.Location = new System.Drawing.Point(473, 52);
             this.dateConcurrentStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateConcurrentStart.Name = "dateConcurrentStart";
             this.dateConcurrentStart.Size = new System.Drawing.Size(140, 25);
@@ -4456,8 +4549,9 @@ namespace ContinuumNS
             // 
             // txtTAB_WS_bin
             // 
+            this.txtTAB_WS_bin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtTAB_WS_bin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTAB_WS_bin.Location = new System.Drawing.Point(895, 793);
+            this.txtTAB_WS_bin.Location = new System.Drawing.Point(853, 675);
             this.txtTAB_WS_bin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtTAB_WS_bin.Name = "txtTAB_WS_bin";
             this.txtTAB_WS_bin.Size = new System.Drawing.Size(35, 20);
@@ -4467,9 +4561,10 @@ namespace ContinuumNS
             // 
             // label142
             // 
+            this.label142.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label142.AutoSize = true;
             this.label142.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label142.Location = new System.Drawing.Point(791, 796);
+            this.label142.Location = new System.Drawing.Point(767, 677);
             this.label142.Name = "label142";
             this.label142.Size = new System.Drawing.Size(81, 15);
             this.label142.TabIndex = 283;
@@ -4477,22 +4572,24 @@ namespace ContinuumNS
             // 
             // label143
             // 
+            this.label143.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label143.AutoSize = true;
             this.label143.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label143.Location = new System.Drawing.Point(791, 766);
+            this.label143.Location = new System.Drawing.Point(768, 640);
             this.label143.Name = "label143";
-            this.label143.Size = new System.Drawing.Size(86, 15);
+            this.label143.Size = new System.Drawing.Size(56, 30);
             this.label143.TabIndex = 282;
-            this.label143.Text = "Num WD bins:";
+            this.label143.Text = "Num. \r\nWD bins:";
             // 
             // cboTAB_bins
             // 
+            this.cboTAB_bins.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cboTAB_bins.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTAB_bins.FormattingEnabled = true;
             this.cboTAB_bins.Items.AddRange(new object[] {
             "16",
             "24"});
-            this.cboTAB_bins.Location = new System.Drawing.Point(895, 759);
+            this.cboTAB_bins.Location = new System.Drawing.Point(842, 637);
             this.cboTAB_bins.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTAB_bins.Name = "cboTAB_bins";
             this.cboTAB_bins.Size = new System.Drawing.Size(48, 23);
@@ -4501,9 +4598,10 @@ namespace ContinuumNS
             // 
             // label141
             // 
+            this.label141.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label141.AutoSize = true;
             this.label141.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label141.Location = new System.Drawing.Point(1241, 100);
+            this.label141.Location = new System.Drawing.Point(1220, 100);
             this.label141.Name = "label141";
             this.label141.Size = new System.Drawing.Size(244, 19);
             this.label141.TabIndex = 280;
@@ -4511,9 +4609,10 @@ namespace ContinuumNS
             // 
             // label140
             // 
+            this.label140.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label140.AutoSize = true;
             this.label140.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label140.Location = new System.Drawing.Point(989, 65);
+            this.label140.Location = new System.Drawing.Point(968, 65);
             this.label140.Name = "label140";
             this.label140.Size = new System.Drawing.Size(89, 18);
             this.label140.TabIndex = 279;
@@ -4521,8 +4620,9 @@ namespace ContinuumNS
             // 
             // txtLast_WS_Wgt
             // 
+            this.txtLast_WS_Wgt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLast_WS_Wgt.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLast_WS_Wgt.Location = new System.Drawing.Point(1389, 254);
+            this.txtLast_WS_Wgt.Location = new System.Drawing.Point(1368, 215);
             this.txtLast_WS_Wgt.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtLast_WS_Wgt.Name = "txtLast_WS_Wgt";
             this.txtLast_WS_Wgt.Size = new System.Drawing.Size(35, 25);
@@ -4533,9 +4633,10 @@ namespace ContinuumNS
             // 
             // label134
             // 
+            this.label134.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label134.AutoSize = true;
             this.label134.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label134.Location = new System.Drawing.Point(1274, 261);
+            this.label134.Location = new System.Drawing.Point(1253, 222);
             this.label134.Name = "label134";
             this.label134.Size = new System.Drawing.Size(110, 18);
             this.label134.TabIndex = 277;
@@ -4543,8 +4644,9 @@ namespace ContinuumNS
             // 
             // txtWS_PDF_Wgt
             // 
+            this.txtWS_PDF_Wgt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtWS_PDF_Wgt.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtWS_PDF_Wgt.Location = new System.Drawing.Point(1389, 215);
+            this.txtWS_PDF_Wgt.Location = new System.Drawing.Point(1368, 184);
             this.txtWS_PDF_Wgt.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtWS_PDF_Wgt.Name = "txtWS_PDF_Wgt";
             this.txtWS_PDF_Wgt.Size = new System.Drawing.Size(35, 25);
@@ -4555,9 +4657,10 @@ namespace ContinuumNS
             // 
             // label135
             // 
+            this.label135.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label135.AutoSize = true;
             this.label135.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label135.Location = new System.Drawing.Point(1275, 222);
+            this.label135.Location = new System.Drawing.Point(1254, 191);
             this.label135.Name = "label135";
             this.label135.Size = new System.Drawing.Size(108, 18);
             this.label135.TabIndex = 275;
@@ -4565,12 +4668,13 @@ namespace ContinuumNS
             // 
             // cboMCPNumSeasons
             // 
+            this.cboMCPNumSeasons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMCPNumSeasons.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboMCPNumSeasons.FormattingEnabled = true;
             this.cboMCPNumSeasons.Items.AddRange(new object[] {
             "1",
             "4"});
-            this.cboMCPNumSeasons.Location = new System.Drawing.Point(1116, 201);
+            this.cboMCPNumSeasons.Location = new System.Drawing.Point(1095, 176);
             this.cboMCPNumSeasons.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCPNumSeasons.Name = "cboMCPNumSeasons";
             this.cboMCPNumSeasons.Size = new System.Drawing.Size(48, 26);
@@ -4580,9 +4684,10 @@ namespace ContinuumNS
             // 
             // label136
             // 
+            this.label136.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label136.AutoSize = true;
             this.label136.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label136.Location = new System.Drawing.Point(989, 209);
+            this.label136.Location = new System.Drawing.Point(968, 184);
             this.label136.Name = "label136";
             this.label136.Size = new System.Drawing.Size(121, 18);
             this.label136.TabIndex = 273;
@@ -4590,12 +4695,13 @@ namespace ContinuumNS
             // 
             // cboMCPNumHours
             // 
+            this.cboMCPNumHours.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMCPNumHours.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboMCPNumHours.FormattingEnabled = true;
             this.cboMCPNumHours.Items.AddRange(new object[] {
             "1",
             "2"});
-            this.cboMCPNumHours.Location = new System.Drawing.Point(1146, 153);
+            this.cboMCPNumHours.Location = new System.Drawing.Point(1125, 140);
             this.cboMCPNumHours.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCPNumHours.Name = "cboMCPNumHours";
             this.cboMCPNumHours.Size = new System.Drawing.Size(48, 26);
@@ -4605,9 +4711,10 @@ namespace ContinuumNS
             // 
             // label137
             // 
+            this.label137.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label137.AutoSize = true;
             this.label137.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label137.Location = new System.Drawing.Point(989, 161);
+            this.label137.Location = new System.Drawing.Point(968, 148);
             this.label137.Name = "label137";
             this.label137.Size = new System.Drawing.Size(151, 18);
             this.label137.TabIndex = 271;
@@ -4615,8 +4722,9 @@ namespace ContinuumNS
             // 
             // txtWS_bin_width
             // 
+            this.txtWS_bin_width.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtWS_bin_width.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtWS_bin_width.Location = new System.Drawing.Point(1396, 133);
+            this.txtWS_bin_width.Location = new System.Drawing.Point(1375, 123);
             this.txtWS_bin_width.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtWS_bin_width.Name = "txtWS_bin_width";
             this.txtWS_bin_width.Size = new System.Drawing.Size(35, 25);
@@ -4627,9 +4735,10 @@ namespace ContinuumNS
             // 
             // label138
             // 
+            this.label138.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label138.AutoSize = true;
             this.label138.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label138.Location = new System.Drawing.Point(1259, 136);
+            this.label138.Location = new System.Drawing.Point(1238, 126);
             this.label138.Name = "label138";
             this.label138.Size = new System.Drawing.Size(131, 18);
             this.label138.TabIndex = 269;
@@ -4637,6 +4746,7 @@ namespace ContinuumNS
             // 
             // cboMCPNumWD
             // 
+            this.cboMCPNumWD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMCPNumWD.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboMCPNumWD.FormattingEnabled = true;
             this.cboMCPNumWD.Items.AddRange(new object[] {
@@ -4646,7 +4756,7 @@ namespace ContinuumNS
             "12",
             "16",
             "24"});
-            this.cboMCPNumWD.Location = new System.Drawing.Point(1098, 109);
+            this.cboMCPNumWD.Location = new System.Drawing.Point(1077, 109);
             this.cboMCPNumWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCPNumWD.Name = "cboMCPNumWD";
             this.cboMCPNumWD.Size = new System.Drawing.Size(48, 26);
@@ -4656,9 +4766,10 @@ namespace ContinuumNS
             // 
             // label139
             // 
+            this.label139.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label139.AutoSize = true;
             this.label139.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label139.Location = new System.Drawing.Point(989, 117);
+            this.label139.Location = new System.Drawing.Point(968, 117);
             this.label139.Name = "label139";
             this.label139.Size = new System.Drawing.Size(103, 18);
             this.label139.TabIndex = 267;
@@ -4666,13 +4777,14 @@ namespace ContinuumNS
             // 
             // cboMCP_Type
             // 
+            this.cboMCP_Type.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMCP_Type.FormattingEnabled = true;
             this.cboMCP_Type.Items.AddRange(new object[] {
             "Orth. Regression",
             "Method of Bins",
             "Variance Ratio",
             "Matrix"});
-            this.cboMCP_Type.Location = new System.Drawing.Point(1084, 57);
+            this.cboMCP_Type.Location = new System.Drawing.Point(1063, 57);
             this.cboMCP_Type.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCP_Type.Name = "cboMCP_Type";
             this.cboMCP_Type.Size = new System.Drawing.Size(180, 26);
@@ -4682,9 +4794,10 @@ namespace ContinuumNS
             // 
             // label133
             // 
+            this.label133.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label133.AutoSize = true;
             this.label133.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label133.Location = new System.Drawing.Point(985, 25);
+            this.label133.Location = new System.Drawing.Point(964, 25);
             this.label133.Name = "label133";
             this.label133.Size = new System.Drawing.Size(129, 23);
             this.label133.TabIndex = 265;
@@ -4693,7 +4806,7 @@ namespace ContinuumNS
             // txtNumYrsConc
             // 
             this.txtNumYrsConc.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNumYrsConc.Location = new System.Drawing.Point(128, 293);
+            this.txtNumYrsConc.Location = new System.Drawing.Point(124, 273);
             this.txtNumYrsConc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtNumYrsConc.Name = "txtNumYrsConc";
             this.txtNumYrsConc.ReadOnly = true;
@@ -4704,7 +4817,7 @@ namespace ContinuumNS
             // 
             this.label132.AutoSize = true;
             this.label132.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label132.Location = new System.Drawing.Point(130, 271);
+            this.label132.Location = new System.Drawing.Point(126, 251);
             this.label132.Name = "label132";
             this.label132.Size = new System.Drawing.Size(41, 18);
             this.label132.TabIndex = 263;
@@ -4732,7 +4845,8 @@ namespace ContinuumNS
             // 
             // btnExportBinRatios
             // 
-            this.btnExportBinRatios.Location = new System.Drawing.Point(68, 763);
+            this.btnExportBinRatios.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportBinRatios.Location = new System.Drawing.Point(69, 636);
             this.btnExportBinRatios.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportBinRatios.Name = "btnExportBinRatios";
             this.btnExportBinRatios.Size = new System.Drawing.Size(113, 58);
@@ -4783,9 +4897,10 @@ namespace ContinuumNS
             // 
             // label125
             // 
+            this.label125.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label125.AutoSize = true;
             this.label125.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label125.Location = new System.Drawing.Point(34, 331);
+            this.label125.Location = new System.Drawing.Point(30, 311);
             this.label125.Name = "label125";
             this.label125.Size = new System.Drawing.Size(192, 19);
             this.label125.TabIndex = 248;
@@ -4793,16 +4908,17 @@ namespace ContinuumNS
             // 
             // lstMCP_Bins
             // 
+            this.lstMCP_Bins.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lstMCP_Bins.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.WS,
             this.Mean,
             this.SD,
             this.Count});
             this.lstMCP_Bins.HideSelection = false;
-            this.lstMCP_Bins.Location = new System.Drawing.Point(24, 356);
+            this.lstMCP_Bins.Location = new System.Drawing.Point(20, 336);
             this.lstMCP_Bins.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.lstMCP_Bins.Name = "lstMCP_Bins";
-            this.lstMCP_Bins.Size = new System.Drawing.Size(220, 355);
+            this.lstMCP_Bins.Size = new System.Drawing.Size(220, 295);
             this.lstMCP_Bins.TabIndex = 247;
             this.lstMCP_Bins.UseCompatibleStateImageBehavior = false;
             this.lstMCP_Bins.View = System.Windows.Forms.View.Details;
@@ -4840,7 +4956,7 @@ namespace ContinuumNS
             // txtNumYrsTarg
             // 
             this.txtNumYrsTarg.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNumYrsTarg.Location = new System.Drawing.Point(83, 293);
+            this.txtNumYrsTarg.Location = new System.Drawing.Point(79, 273);
             this.txtNumYrsTarg.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtNumYrsTarg.Name = "txtNumYrsTarg";
             this.txtNumYrsTarg.ReadOnly = true;
@@ -4850,7 +4966,7 @@ namespace ContinuumNS
             // txtNumYrsRef
             // 
             this.txtNumYrsRef.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNumYrsRef.Location = new System.Drawing.Point(37, 293);
+            this.txtNumYrsRef.Location = new System.Drawing.Point(33, 273);
             this.txtNumYrsRef.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtNumYrsRef.Name = "txtNumYrsRef";
             this.txtNumYrsRef.ReadOnly = true;
@@ -4861,7 +4977,7 @@ namespace ContinuumNS
             // 
             this.label127.AutoSize = true;
             this.label127.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label127.Location = new System.Drawing.Point(86, 271);
+            this.label127.Location = new System.Drawing.Point(82, 251);
             this.label127.Name = "label127";
             this.label127.Size = new System.Drawing.Size(38, 18);
             this.label127.TabIndex = 243;
@@ -4871,7 +4987,7 @@ namespace ContinuumNS
             // 
             this.label128.AutoSize = true;
             this.label128.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label128.Location = new System.Drawing.Point(37, 271);
+            this.label128.Location = new System.Drawing.Point(33, 251);
             this.label128.Name = "label128";
             this.label128.Size = new System.Drawing.Size(33, 18);
             this.label128.TabIndex = 242;
@@ -4881,7 +4997,7 @@ namespace ContinuumNS
             // 
             this.label129.AutoSize = true;
             this.label129.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label129.Location = new System.Drawing.Point(42, 250);
+            this.label129.Location = new System.Drawing.Point(38, 230);
             this.label129.Name = "label129";
             this.label129.Size = new System.Drawing.Size(115, 16);
             this.label129.TabIndex = 241;
@@ -4889,10 +5005,12 @@ namespace ContinuumNS
             // 
             // btnExportMCP_TAB
             // 
-            this.btnExportMCP_TAB.Location = new System.Drawing.Point(666, 764);
+            this.btnExportMCP_TAB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportMCP_TAB.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportMCP_TAB.Location = new System.Drawing.Point(657, 638);
             this.btnExportMCP_TAB.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportMCP_TAB.Name = "btnExportMCP_TAB";
-            this.btnExportMCP_TAB.Size = new System.Drawing.Size(113, 66);
+            this.btnExportMCP_TAB.Size = new System.Drawing.Size(104, 64);
             this.btnExportMCP_TAB.TabIndex = 240;
             this.btnExportMCP_TAB.Text = "Export Estimated data as TAB file\r\n";
             this.btnExportMCP_TAB.UseVisualStyleBackColor = true;
@@ -4900,10 +5018,12 @@ namespace ContinuumNS
             // 
             // btnExportMCP_TS
             // 
-            this.btnExportMCP_TS.Location = new System.Drawing.Point(539, 764);
+            this.btnExportMCP_TS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportMCP_TS.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportMCP_TS.Location = new System.Drawing.Point(551, 638);
             this.btnExportMCP_TS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportMCP_TS.Name = "btnExportMCP_TS";
-            this.btnExportMCP_TS.Size = new System.Drawing.Size(113, 66);
+            this.btnExportMCP_TS.Size = new System.Drawing.Size(102, 64);
             this.btnExportMCP_TS.TabIndex = 239;
             this.btnExportMCP_TS.Text = "Export Estimated data as Time Series";
             this.btnExportMCP_TS.UseVisualStyleBackColor = true;
@@ -4911,6 +5031,7 @@ namespace ContinuumNS
             // 
             // cboUncertStep
             // 
+            this.cboUncertStep.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cboUncertStep.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboUncertStep.FormattingEnabled = true;
             this.cboUncertStep.Items.AddRange(new object[] {
@@ -4918,7 +5039,7 @@ namespace ContinuumNS
             "2",
             "3",
             "4"});
-            this.cboUncertStep.Location = new System.Drawing.Point(1148, 340);
+            this.cboUncertStep.Location = new System.Drawing.Point(1138, 311);
             this.cboUncertStep.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboUncertStep.Name = "cboUncertStep";
             this.cboUncertStep.Size = new System.Drawing.Size(48, 26);
@@ -4928,9 +5049,10 @@ namespace ContinuumNS
             // 
             // label119
             // 
+            this.label119.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label119.AutoSize = true;
             this.label119.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label119.Location = new System.Drawing.Point(1004, 332);
+            this.label119.Location = new System.Drawing.Point(965, 313);
             this.label119.Name = "label119";
             this.label119.Size = new System.Drawing.Size(140, 36);
             this.label119.TabIndex = 237;
@@ -4938,15 +5060,16 @@ namespace ContinuumNS
             // 
             // lstMCP_Uncert
             // 
+            this.lstMCP_Uncert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lstMCP_Uncert.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Window,
             this.AVG,
             this.SDU});
             this.lstMCP_Uncert.HideSelection = false;
-            this.lstMCP_Uncert.Location = new System.Drawing.Point(1451, 401);
+            this.lstMCP_Uncert.Location = new System.Drawing.Point(1302, 368);
             this.lstMCP_Uncert.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.lstMCP_Uncert.Name = "lstMCP_Uncert";
-            this.lstMCP_Uncert.Size = new System.Drawing.Size(161, 288);
+            this.lstMCP_Uncert.Size = new System.Drawing.Size(161, 275);
             this.lstMCP_Uncert.TabIndex = 236;
             this.lstMCP_Uncert.UseCompatibleStateImageBehavior = false;
             this.lstMCP_Uncert.View = System.Windows.Forms.View.Details;
@@ -4954,7 +5077,7 @@ namespace ContinuumNS
             // Window
             // 
             this.Window.Text = "Window";
-            this.Window.Width = 51;
+            this.Window.Width = 73;
             // 
             // AVG
             // 
@@ -4968,10 +5091,12 @@ namespace ContinuumNS
             // 
             // btnExportMCPUncert
             // 
-            this.btnExportMCPUncert.Location = new System.Drawing.Point(1479, 721);
+            this.btnExportMCPUncert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportMCPUncert.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportMCPUncert.Location = new System.Drawing.Point(1310, 652);
             this.btnExportMCPUncert.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportMCPUncert.Name = "btnExportMCPUncert";
-            this.btnExportMCPUncert.Size = new System.Drawing.Size(113, 66);
+            this.btnExportMCPUncert.Size = new System.Drawing.Size(134, 46);
             this.btnExportMCPUncert.TabIndex = 235;
             this.btnExportMCPUncert.Text = "Export Uncertainty Analysis\r\n\r\n";
             this.btnExportMCPUncert.UseVisualStyleBackColor = true;
@@ -4979,9 +5104,10 @@ namespace ContinuumNS
             // 
             // label118
             // 
+            this.label118.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label118.AutoSize = true;
             this.label118.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label118.Location = new System.Drawing.Point(988, 286);
+            this.label118.Location = new System.Drawing.Point(959, 267);
             this.label118.Name = "label118";
             this.label118.Size = new System.Drawing.Size(244, 23);
             this.label118.TabIndex = 234;
@@ -4989,7 +5115,8 @@ namespace ContinuumNS
             // 
             // btnMCP_Uncert
             // 
-            this.btnMCP_Uncert.Location = new System.Drawing.Point(1245, 318);
+            this.btnMCP_Uncert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMCP_Uncert.Location = new System.Drawing.Point(1230, 280);
             this.btnMCP_Uncert.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnMCP_Uncert.Name = "btnMCP_Uncert";
             this.btnMCP_Uncert.Size = new System.Drawing.Size(113, 69);
@@ -5002,7 +5129,7 @@ namespace ContinuumNS
             // 
             this.label108.AutoSize = true;
             this.label108.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label108.Location = new System.Drawing.Point(734, 214);
+            this.label108.Location = new System.Drawing.Point(609, 243);
             this.label108.Name = "label108";
             this.label108.Size = new System.Drawing.Size(78, 18);
             this.label108.TabIndex = 232;
@@ -5014,7 +5141,7 @@ namespace ContinuumNS
             this.cboMCP_Season.FormattingEnabled = true;
             this.cboMCP_Season.Items.AddRange(new object[] {
             "All"});
-            this.cboMCP_Season.Location = new System.Drawing.Point(734, 240);
+            this.cboMCP_Season.Location = new System.Drawing.Point(609, 261);
             this.cboMCP_Season.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCP_Season.Name = "cboMCP_Season";
             this.cboMCP_Season.Size = new System.Drawing.Size(110, 26);
@@ -5026,7 +5153,7 @@ namespace ContinuumNS
             // 
             this.label109.AutoSize = true;
             this.label109.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label109.Location = new System.Drawing.Point(453, 214);
+            this.label109.Location = new System.Drawing.Point(328, 243);
             this.label109.Name = "label109";
             this.label109.Size = new System.Drawing.Size(85, 18);
             this.label109.TabIndex = 230;
@@ -5038,7 +5165,7 @@ namespace ContinuumNS
             this.cboMCP_TOD.FormattingEnabled = true;
             this.cboMCP_TOD.Items.AddRange(new object[] {
             "All"});
-            this.cboMCP_TOD.Location = new System.Drawing.Point(450, 241);
+            this.cboMCP_TOD.Location = new System.Drawing.Point(325, 262);
             this.cboMCP_TOD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCP_TOD.Name = "cboMCP_TOD";
             this.cboMCP_TOD.Size = new System.Drawing.Size(115, 26);
@@ -5050,7 +5177,7 @@ namespace ContinuumNS
             // 
             this.label110.AutoSize = true;
             this.label110.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label110.Location = new System.Drawing.Point(461, 100);
+            this.label110.Location = new System.Drawing.Point(380, 132);
             this.label110.Name = "label110";
             this.label110.Size = new System.Drawing.Size(435, 23);
             this.label110.TabIndex = 226;
@@ -5059,7 +5186,7 @@ namespace ContinuumNS
             // txtLTratio
             // 
             this.txtLTratio.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLTratio.Location = new System.Drawing.Point(748, 177);
+            this.txtLTratio.Location = new System.Drawing.Point(667, 206);
             this.txtLTratio.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtLTratio.Name = "txtLTratio";
             this.txtLTratio.ReadOnly = true;
@@ -5069,7 +5196,7 @@ namespace ContinuumNS
             // txtAvgRatio
             // 
             this.txtAvgRatio.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAvgRatio.Location = new System.Drawing.Point(748, 148);
+            this.txtAvgRatio.Location = new System.Drawing.Point(667, 177);
             this.txtAvgRatio.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAvgRatio.Name = "txtAvgRatio";
             this.txtAvgRatio.ReadOnly = true;
@@ -5080,7 +5207,7 @@ namespace ContinuumNS
             // 
             this.label111.AutoSize = true;
             this.label111.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label111.Location = new System.Drawing.Point(749, 126);
+            this.label111.Location = new System.Drawing.Point(668, 155);
             this.label111.Name = "label111";
             this.label111.Size = new System.Drawing.Size(67, 18);
             this.label111.TabIndex = 223;
@@ -5090,7 +5217,7 @@ namespace ContinuumNS
             // 
             this.label112.AutoSize = true;
             this.label112.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label112.Location = new System.Drawing.Point(840, 125);
+            this.label112.Location = new System.Drawing.Point(759, 154);
             this.label112.Name = "label112";
             this.label112.Size = new System.Drawing.Size(45, 18);
             this.label112.TabIndex = 222;
@@ -5099,7 +5226,7 @@ namespace ContinuumNS
             // txtDataCount
             // 
             this.txtDataCount.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDataCount.Location = new System.Drawing.Point(829, 148);
+            this.txtDataCount.Location = new System.Drawing.Point(748, 177);
             this.txtDataCount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtDataCount.Name = "txtDataCount";
             this.txtDataCount.ReadOnly = true;
@@ -5109,7 +5236,7 @@ namespace ContinuumNS
             // txtTarg_LT_WS
             // 
             this.txtTarg_LT_WS.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTarg_LT_WS.Location = new System.Drawing.Point(662, 178);
+            this.txtTarg_LT_WS.Location = new System.Drawing.Point(581, 207);
             this.txtTarg_LT_WS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtTarg_LT_WS.Name = "txtTarg_LT_WS";
             this.txtTarg_LT_WS.ReadOnly = true;
@@ -5119,7 +5246,7 @@ namespace ContinuumNS
             // txtRef_LT_WS
             // 
             this.txtRef_LT_WS.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRef_LT_WS.Location = new System.Drawing.Point(579, 178);
+            this.txtRef_LT_WS.Location = new System.Drawing.Point(498, 207);
             this.txtRef_LT_WS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtRef_LT_WS.Name = "txtRef_LT_WS";
             this.txtRef_LT_WS.ReadOnly = true;
@@ -5130,7 +5257,7 @@ namespace ContinuumNS
             // 
             this.label113.AutoSize = true;
             this.label113.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label113.Location = new System.Drawing.Point(460, 180);
+            this.label113.Location = new System.Drawing.Point(379, 209);
             this.label113.Name = "label113";
             this.label113.Size = new System.Drawing.Size(110, 18);
             this.label113.TabIndex = 218;
@@ -5140,7 +5267,7 @@ namespace ContinuumNS
             // 
             this.label114.AutoSize = true;
             this.label114.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label114.Location = new System.Drawing.Point(588, 214);
+            this.label114.Location = new System.Drawing.Point(463, 243);
             this.label114.Name = "label114";
             this.label114.Size = new System.Drawing.Size(77, 18);
             this.label114.TabIndex = 217;
@@ -5152,7 +5279,7 @@ namespace ContinuumNS
             this.cboMCP_WD.FormattingEnabled = true;
             this.cboMCP_WD.Items.AddRange(new object[] {
             "All"});
-            this.cboMCP_WD.Location = new System.Drawing.Point(592, 240);
+            this.cboMCP_WD.Location = new System.Drawing.Point(467, 261);
             this.cboMCP_WD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMCP_WD.Name = "cboMCP_WD";
             this.cboMCP_WD.Size = new System.Drawing.Size(118, 26);
@@ -5163,7 +5290,7 @@ namespace ContinuumNS
             // txtTargAvgWS
             // 
             this.txtTargAvgWS.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTargAvgWS.Location = new System.Drawing.Point(662, 148);
+            this.txtTargAvgWS.Location = new System.Drawing.Point(581, 177);
             this.txtTargAvgWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtTargAvgWS.Name = "txtTargAvgWS";
             this.txtTargAvgWS.ReadOnly = true;
@@ -5173,7 +5300,7 @@ namespace ContinuumNS
             // txtRefAvgWS
             // 
             this.txtRefAvgWS.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRefAvgWS.Location = new System.Drawing.Point(579, 148);
+            this.txtRefAvgWS.Location = new System.Drawing.Point(498, 177);
             this.txtRefAvgWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtRefAvgWS.Name = "txtRefAvgWS";
             this.txtRefAvgWS.ReadOnly = true;
@@ -5184,7 +5311,7 @@ namespace ContinuumNS
             // 
             this.label115.AutoSize = true;
             this.label115.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label115.Location = new System.Drawing.Point(437, 148);
+            this.label115.Location = new System.Drawing.Point(356, 177);
             this.label115.Name = "label115";
             this.label115.Size = new System.Drawing.Size(128, 18);
             this.label115.TabIndex = 213;
@@ -5194,7 +5321,7 @@ namespace ContinuumNS
             // 
             this.label116.AutoSize = true;
             this.label116.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label116.Location = new System.Drawing.Point(661, 126);
+            this.label116.Location = new System.Drawing.Point(580, 155);
             this.label116.Name = "label116";
             this.label116.Size = new System.Drawing.Size(71, 18);
             this.label116.TabIndex = 212;
@@ -5204,7 +5331,7 @@ namespace ContinuumNS
             // 
             this.label117.AutoSize = true;
             this.label117.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label117.Location = new System.Drawing.Point(586, 126);
+            this.label117.Location = new System.Drawing.Point(505, 155);
             this.label117.Name = "label117";
             this.label117.Size = new System.Drawing.Size(55, 18);
             this.label117.TabIndex = 211;
@@ -5242,6 +5369,7 @@ namespace ContinuumNS
             // 
             // pgeMetSumm
             // 
+            this.pgeMetSumm.AutoScroll = true;
             this.pgeMetSumm.Controls.Add(this.plotDW_DH);
             this.pgeMetSumm.Controls.Add(this.plotUW_DH);
             this.pgeMetSumm.Controls.Add(this.plotDW_SR);
@@ -5272,17 +5400,18 @@ namespace ContinuumNS
             this.pgeMetSumm.Location = new System.Drawing.Point(4, 27);
             this.pgeMetSumm.Margin = new System.Windows.Forms.Padding(1);
             this.pgeMetSumm.Name = "pgeMetSumm";
-            this.pgeMetSumm.Size = new System.Drawing.Size(1626, 856);
+            this.pgeMetSumm.Size = new System.Drawing.Size(1488, 712);
             this.pgeMetSumm.TabIndex = 12;
             this.pgeMetSumm.Text = "Met && Turbine Summary";
             this.pgeMetSumm.UseVisualStyleBackColor = true;
             // 
             // plotDW_DH
             // 
-            this.plotDW_DH.Location = new System.Drawing.Point(1228, 552);
+            this.plotDW_DH.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotDW_DH.Location = new System.Drawing.Point(1114, 484);
             this.plotDW_DH.Name = "plotDW_DH";
             this.plotDW_DH.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotDW_DH.Size = new System.Drawing.Size(387, 258);
+            this.plotDW_DH.Size = new System.Drawing.Size(360, 215);
             this.plotDW_DH.TabIndex = 221;
             this.plotDW_DH.Text = "plotView1";
             this.plotDW_DH.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5291,10 +5420,11 @@ namespace ContinuumNS
             // 
             // plotUW_DH
             // 
-            this.plotUW_DH.Location = new System.Drawing.Point(826, 552);
+            this.plotUW_DH.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotUW_DH.Location = new System.Drawing.Point(745, 484);
             this.plotUW_DH.Name = "plotUW_DH";
             this.plotUW_DH.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotUW_DH.Size = new System.Drawing.Size(387, 258);
+            this.plotUW_DH.Size = new System.Drawing.Size(360, 215);
             this.plotUW_DH.TabIndex = 220;
             this.plotUW_DH.Text = "plotView1";
             this.plotUW_DH.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5303,10 +5433,11 @@ namespace ContinuumNS
             // 
             // plotDW_SR
             // 
-            this.plotDW_SR.Location = new System.Drawing.Point(423, 552);
+            this.plotDW_SR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotDW_SR.Location = new System.Drawing.Point(376, 484);
             this.plotDW_SR.Name = "plotDW_SR";
             this.plotDW_SR.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotDW_SR.Size = new System.Drawing.Size(387, 258);
+            this.plotDW_SR.Size = new System.Drawing.Size(360, 215);
             this.plotDW_SR.TabIndex = 219;
             this.plotDW_SR.Text = "plotView1";
             this.plotDW_SR.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5315,10 +5446,11 @@ namespace ContinuumNS
             // 
             // plotUW_SR
             // 
-            this.plotUW_SR.Location = new System.Drawing.Point(20, 552);
+            this.plotUW_SR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotUW_SR.Location = new System.Drawing.Point(10, 484);
             this.plotUW_SR.Name = "plotUW_SR";
             this.plotUW_SR.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotUW_SR.Size = new System.Drawing.Size(387, 258);
+            this.plotUW_SR.Size = new System.Drawing.Size(360, 215);
             this.plotUW_SR.TabIndex = 218;
             this.plotUW_SR.Text = "plotView1";
             this.plotUW_SR.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5327,10 +5459,11 @@ namespace ContinuumNS
             // 
             // plotElev
             // 
-            this.plotElev.Location = new System.Drawing.Point(1228, 263);
+            this.plotElev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotElev.Location = new System.Drawing.Point(1117, 263);
             this.plotElev.Name = "plotElev";
             this.plotElev.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotElev.Size = new System.Drawing.Size(387, 258);
+            this.plotElev.Size = new System.Drawing.Size(360, 215);
             this.plotElev.TabIndex = 217;
             this.plotElev.Text = "plotView1";
             this.plotElev.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5339,10 +5472,11 @@ namespace ContinuumNS
             // 
             // plotDWUWExpo
             // 
-            this.plotDWUWExpo.Location = new System.Drawing.Point(826, 263);
+            this.plotDWUWExpo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotDWUWExpo.Location = new System.Drawing.Point(748, 263);
             this.plotDWUWExpo.Name = "plotDWUWExpo";
             this.plotDWUWExpo.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotDWUWExpo.Size = new System.Drawing.Size(387, 258);
+            this.plotDWUWExpo.Size = new System.Drawing.Size(360, 215);
             this.plotDWUWExpo.TabIndex = 216;
             this.plotDWUWExpo.Text = "plotView1";
             this.plotDWUWExpo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5351,10 +5485,11 @@ namespace ContinuumNS
             // 
             // plotDWExpo
             // 
-            this.plotDWExpo.Location = new System.Drawing.Point(423, 264);
+            this.plotDWExpo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotDWExpo.Location = new System.Drawing.Point(379, 263);
             this.plotDWExpo.Name = "plotDWExpo";
             this.plotDWExpo.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotDWExpo.Size = new System.Drawing.Size(387, 258);
+            this.plotDWExpo.Size = new System.Drawing.Size(360, 215);
             this.plotDWExpo.TabIndex = 215;
             this.plotDWExpo.Text = "plotView1";
             this.plotDWExpo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5363,10 +5498,11 @@ namespace ContinuumNS
             // 
             // plotUWExpo
             // 
-            this.plotUWExpo.Location = new System.Drawing.Point(20, 264);
+            this.plotUWExpo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotUWExpo.Location = new System.Drawing.Point(10, 263);
             this.plotUWExpo.Name = "plotUWExpo";
             this.plotUWExpo.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotUWExpo.Size = new System.Drawing.Size(387, 258);
+            this.plotUWExpo.Size = new System.Drawing.Size(360, 215);
             this.plotUWExpo.TabIndex = 214;
             this.plotUWExpo.Text = "plotView1";
             this.plotUWExpo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5399,7 +5535,7 @@ namespace ContinuumNS
             // 
             this.Label80.AutoSize = true;
             this.Label80.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label80.Location = new System.Drawing.Point(1308, 10);
+            this.Label80.Location = new System.Drawing.Point(1238, 8);
             this.Label80.Name = "Label80";
             this.Label80.Size = new System.Drawing.Size(242, 19);
             this.Label80.TabIndex = 175;
@@ -5407,6 +5543,8 @@ namespace ContinuumNS
             // 
             // lstTurbStats
             // 
+            this.lstTurbStats.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstTurbStats.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader21,
             this.ColumnHeader34,
@@ -5414,11 +5552,11 @@ namespace ContinuumNS
             this.ColumnHeader22,
             this.ColumnHeader33});
             this.lstTurbStats.HideSelection = false;
-            this.lstTurbStats.Location = new System.Drawing.Point(1312, 38);
+            this.lstTurbStats.Location = new System.Drawing.Point(1242, 36);
             this.lstTurbStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstTurbStats.MultiSelect = false;
             this.lstTurbStats.Name = "lstTurbStats";
-            this.lstTurbStats.Size = new System.Drawing.Size(283, 221);
+            this.lstTurbStats.Size = new System.Drawing.Size(238, 217);
             this.lstTurbStats.TabIndex = 174;
             this.lstTurbStats.UseCompatibleStateImageBehavior = false;
             this.lstTurbStats.View = System.Windows.Forms.View.Details;
@@ -5454,7 +5592,7 @@ namespace ContinuumNS
             this.chkTurbSummAll.Checked = true;
             this.chkTurbSummAll.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTurbSummAll.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkTurbSummAll.Location = new System.Drawing.Point(918, 28);
+            this.chkTurbSummAll.Location = new System.Drawing.Point(894, 28);
             this.chkTurbSummAll.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbSummAll.Name = "chkTurbSummAll";
             this.chkTurbSummAll.Size = new System.Drawing.Size(88, 36);
@@ -5465,13 +5603,15 @@ namespace ContinuumNS
             // 
             // chkTurbSumm
             // 
+            this.chkTurbSumm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.chkTurbSumm.CheckOnClick = true;
             this.chkTurbSumm.FormattingEnabled = true;
             this.chkTurbSumm.HorizontalScrollbar = true;
-            this.chkTurbSumm.Location = new System.Drawing.Point(915, 72);
+            this.chkTurbSumm.Location = new System.Drawing.Point(891, 72);
             this.chkTurbSumm.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbSumm.Name = "chkTurbSumm";
-            this.chkTurbSumm.Size = new System.Drawing.Size(91, 184);
+            this.chkTurbSumm.Size = new System.Drawing.Size(91, 144);
             this.chkTurbSumm.TabIndex = 172;
             this.chkTurbSumm.SelectedIndexChanged += new System.EventHandler(this.chkTurbSumm_SelectedIndexChanged);
             // 
@@ -5479,7 +5619,7 @@ namespace ContinuumNS
             // 
             this.Label78.AutoSize = true;
             this.Label78.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label78.Location = new System.Drawing.Point(910, 7);
+            this.Label78.Location = new System.Drawing.Point(886, 7);
             this.Label78.Name = "Label78";
             this.Label78.Size = new System.Drawing.Size(88, 16);
             this.Label78.TabIndex = 171;
@@ -5491,7 +5631,7 @@ namespace ContinuumNS
             this.chkMetSummAll.Checked = true;
             this.chkMetSummAll.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkMetSummAll.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkMetSummAll.Location = new System.Drawing.Point(813, 28);
+            this.chkMetSummAll.Location = new System.Drawing.Point(789, 28);
             this.chkMetSummAll.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMetSummAll.Name = "chkMetSummAll";
             this.chkMetSummAll.Size = new System.Drawing.Size(88, 36);
@@ -5504,7 +5644,7 @@ namespace ContinuumNS
             // 
             this.Label12.AutoSize = true;
             this.Label12.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label12.Location = new System.Drawing.Point(812, 8);
+            this.Label12.Location = new System.Drawing.Point(788, 8);
             this.Label12.Name = "Label12";
             this.Label12.Size = new System.Drawing.Size(64, 16);
             this.Label12.TabIndex = 169;
@@ -5512,13 +5652,15 @@ namespace ContinuumNS
             // 
             // chkMetSumm
             // 
+            this.chkMetSumm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.chkMetSumm.CheckOnClick = true;
             this.chkMetSumm.FormattingEnabled = true;
             this.chkMetSumm.HorizontalScrollbar = true;
-            this.chkMetSumm.Location = new System.Drawing.Point(803, 73);
+            this.chkMetSumm.Location = new System.Drawing.Point(779, 73);
             this.chkMetSumm.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMetSumm.Name = "chkMetSumm";
-            this.chkMetSumm.Size = new System.Drawing.Size(101, 184);
+            this.chkMetSumm.Size = new System.Drawing.Size(101, 144);
             this.chkMetSumm.TabIndex = 168;
             this.chkMetSumm.SelectedIndexChanged += new System.EventHandler(this.chkMetSumm_SelectedIndexChanged);
             // 
@@ -5526,7 +5668,7 @@ namespace ContinuumNS
             // 
             this.Label76.AutoSize = true;
             this.Label76.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label76.Location = new System.Drawing.Point(1013, 10);
+            this.Label76.Location = new System.Drawing.Point(989, 10);
             this.Label76.Name = "Label76";
             this.Label76.Size = new System.Drawing.Size(213, 19);
             this.Label76.TabIndex = 166;
@@ -5534,6 +5676,8 @@ namespace ContinuumNS
             // 
             // lstMetStats
             // 
+            this.lstMetStats.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstMetStats.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader42,
             this.ColumnHeader91,
@@ -5541,11 +5685,11 @@ namespace ContinuumNS
             this.ColumnHeader92,
             this.ColumnHeader52});
             this.lstMetStats.HideSelection = false;
-            this.lstMetStats.Location = new System.Drawing.Point(1016, 38);
+            this.lstMetStats.Location = new System.Drawing.Point(992, 38);
             this.lstMetStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstMetStats.MultiSelect = false;
             this.lstMetStats.Name = "lstMetStats";
-            this.lstMetStats.Size = new System.Drawing.Size(290, 221);
+            this.lstMetStats.Size = new System.Drawing.Size(237, 217);
             this.lstMetStats.TabIndex = 165;
             this.lstMetStats.UseCompatibleStateImageBehavior = false;
             this.lstMetStats.View = System.Windows.Forms.View.Details;
@@ -5578,12 +5722,12 @@ namespace ContinuumNS
             // btnExportExpoSRDH
             // 
             this.btnExportExpoSRDH.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExportExpoSRDH.Location = new System.Drawing.Point(668, 9);
+            this.btnExportExpoSRDH.Location = new System.Drawing.Point(668, 15);
             this.btnExportExpoSRDH.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExpoSRDH.Name = "btnExportExpoSRDH";
-            this.btnExportExpoSRDH.Size = new System.Drawing.Size(129, 49);
+            this.btnExportExpoSRDH.Size = new System.Drawing.Size(101, 43);
             this.btnExportExpoSRDH.TabIndex = 164;
-            this.btnExportExpoSRDH.Text = "Export Calculated Values";
+            this.btnExportExpoSRDH.Text = "Export Values";
             this.btnExportExpoSRDH.UseVisualStyleBackColor = true;
             this.btnExportExpoSRDH.Click += new System.EventHandler(this.btnExportExpoSRDH_Click);
             // 
@@ -5627,6 +5771,8 @@ namespace ContinuumNS
             // 
             // lstMetSummary
             // 
+            this.lstMetSummary.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstMetSummary.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader37,
             this.ColumnHeader40,
@@ -5644,7 +5790,7 @@ namespace ContinuumNS
             this.lstMetSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstMetSummary.MultiSelect = false;
             this.lstMetSummary.Name = "lstMetSummary";
-            this.lstMetSummary.Size = new System.Drawing.Size(787, 182);
+            this.lstMetSummary.Size = new System.Drawing.Size(759, 178);
             this.lstMetSummary.TabIndex = 31;
             this.lstMetSummary.UseCompatibleStateImageBehavior = false;
             this.lstMetSummary.View = System.Windows.Forms.View.Details;
@@ -5715,6 +5861,7 @@ namespace ContinuumNS
             // 
             // pgeGrossTurbs
             // 
+            this.pgeGrossTurbs.AutoScroll = true;
             this.pgeGrossTurbs.Controls.Add(this.plotGrossHisto);
             this.pgeGrossTurbs.Controls.Add(this.plotGross_PowerCrvs);
             this.pgeGrossTurbs.Controls.Add(this.plotGrossWS_Dist);
@@ -5771,17 +5918,18 @@ namespace ContinuumNS
             this.pgeGrossTurbs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeGrossTurbs.Name = "pgeGrossTurbs";
             this.pgeGrossTurbs.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeGrossTurbs.Size = new System.Drawing.Size(1626, 856);
+            this.pgeGrossTurbs.Size = new System.Drawing.Size(1488, 712);
             this.pgeGrossTurbs.TabIndex = 3;
             this.pgeGrossTurbs.Text = "Gross Turbine Ests.";
             this.pgeGrossTurbs.UseVisualStyleBackColor = true;
             // 
             // plotGrossHisto
             // 
-            this.plotGrossHisto.Location = new System.Drawing.Point(292, 527);
+            this.plotGrossHisto.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotGrossHisto.Location = new System.Drawing.Point(293, 478);
             this.plotGrossHisto.Name = "plotGrossHisto";
             this.plotGrossHisto.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotGrossHisto.Size = new System.Drawing.Size(531, 299);
+            this.plotGrossHisto.Size = new System.Drawing.Size(531, 210);
             this.plotGrossHisto.TabIndex = 219;
             this.plotGrossHisto.Text = "plotView1";
             this.plotGrossHisto.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5790,10 +5938,14 @@ namespace ContinuumNS
             // 
             // plotGross_PowerCrvs
             // 
-            this.plotGross_PowerCrvs.Location = new System.Drawing.Point(1111, 440);
+            this.plotGross_PowerCrvs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotGross_PowerCrvs.Location = new System.Drawing.Point(1087, 355);
+            this.plotGross_PowerCrvs.MaximumSize = new System.Drawing.Size(400, 350);
             this.plotGross_PowerCrvs.Name = "plotGross_PowerCrvs";
             this.plotGross_PowerCrvs.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotGross_PowerCrvs.Size = new System.Drawing.Size(497, 386);
+            this.plotGross_PowerCrvs.Size = new System.Drawing.Size(369, 333);
             this.plotGross_PowerCrvs.TabIndex = 218;
             this.plotGross_PowerCrvs.Text = "plotView1";
             this.plotGross_PowerCrvs.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5802,10 +5954,14 @@ namespace ContinuumNS
             // 
             // plotGrossWS_Dist
             // 
-            this.plotGrossWS_Dist.Location = new System.Drawing.Point(1111, 39);
+            this.plotGrossWS_Dist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotGrossWS_Dist.Location = new System.Drawing.Point(1087, 13);
+            this.plotGrossWS_Dist.MaximumSize = new System.Drawing.Size(400, 350);
             this.plotGrossWS_Dist.Name = "plotGrossWS_Dist";
             this.plotGrossWS_Dist.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotGrossWS_Dist.Size = new System.Drawing.Size(497, 386);
+            this.plotGrossWS_Dist.Size = new System.Drawing.Size(384, 312);
             this.plotGrossWS_Dist.TabIndex = 217;
             this.plotGrossWS_Dist.Text = "plotView1";
             this.plotGrossWS_Dist.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5814,10 +5970,10 @@ namespace ContinuumNS
             // 
             // plotGrossWindRose
             // 
-            this.plotGrossWindRose.Location = new System.Drawing.Point(1111, 39);
+            this.plotGrossWindRose.Location = new System.Drawing.Point(1087, 13);
             this.plotGrossWindRose.Name = "plotGrossWindRose";
             this.plotGrossWindRose.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotGrossWindRose.Size = new System.Drawing.Size(497, 386);
+            this.plotGrossWindRose.Size = new System.Drawing.Size(369, 312);
             this.plotGrossWindRose.TabIndex = 216;
             this.plotGrossWindRose.Text = "plotView1";
             this.plotGrossWindRose.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -5846,7 +6002,7 @@ namespace ContinuumNS
             this.columnHeader194});
             this.lstPowerCurveList.FullRowSelect = true;
             this.lstPowerCurveList.HideSelection = false;
-            this.lstPowerCurveList.Location = new System.Drawing.Point(871, 154);
+            this.lstPowerCurveList.Location = new System.Drawing.Point(871, 140);
             this.lstPowerCurveList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstPowerCurveList.MultiSelect = false;
             this.lstPowerCurveList.Name = "lstPowerCurveList";
@@ -5871,7 +6027,7 @@ namespace ContinuumNS
             // 
             // txtisMCPdGross
             // 
-            this.txtisMCPdGross.Location = new System.Drawing.Point(477, 87);
+            this.txtisMCPdGross.Location = new System.Drawing.Point(477, 74);
             this.txtisMCPdGross.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtisMCPdGross.Name = "txtisMCPdGross";
             this.txtisMCPdGross.ReadOnly = true;
@@ -5904,7 +6060,7 @@ namespace ContinuumNS
             // 
             // txtGross_FlowSepUsed
             // 
-            this.txtGross_FlowSepUsed.Location = new System.Drawing.Point(776, 87);
+            this.txtGross_FlowSepUsed.Location = new System.Drawing.Point(776, 74);
             this.txtGross_FlowSepUsed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtGross_FlowSepUsed.Name = "txtGross_FlowSepUsed";
             this.txtGross_FlowSepUsed.ReadOnly = true;
@@ -5915,7 +6071,7 @@ namespace ContinuumNS
             // 
             this.Label96.AutoSize = true;
             this.Label96.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label96.Location = new System.Drawing.Point(877, 479);
+            this.Label96.Location = new System.Drawing.Point(891, 427);
             this.Label96.Name = "Label96";
             this.Label96.Size = new System.Drawing.Size(131, 18);
             this.Label96.TabIndex = 181;
@@ -5923,15 +6079,17 @@ namespace ContinuumNS
             // 
             // lstGrossHisto
             // 
+            this.lstGrossHisto.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstGrossHisto.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader103,
             this.ColumnHeader104,
             this.ColumnHeader105});
             this.lstGrossHisto.HideSelection = false;
-            this.lstGrossHisto.Location = new System.Drawing.Point(857, 508);
+            this.lstGrossHisto.Location = new System.Drawing.Point(871, 456);
             this.lstGrossHisto.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstGrossHisto.Name = "lstGrossHisto";
-            this.lstGrossHisto.Size = new System.Drawing.Size(182, 318);
+            this.lstGrossHisto.Size = new System.Drawing.Size(182, 232);
             this.lstGrossHisto.TabIndex = 180;
             this.lstGrossHisto.UseCompatibleStateImageBehavior = false;
             this.lstGrossHisto.View = System.Windows.Forms.View.Details;
@@ -5952,7 +6110,7 @@ namespace ContinuumNS
             // 
             // txtGross_LC_used
             // 
-            this.txtGross_LC_used.Location = new System.Drawing.Point(621, 87);
+            this.txtGross_LC_used.Location = new System.Drawing.Point(621, 74);
             this.txtGross_LC_used.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtGross_LC_used.Name = "txtGross_LC_used";
             this.txtGross_LC_used.ReadOnly = true;
@@ -5961,9 +6119,10 @@ namespace ContinuumNS
             // 
             // Label83
             // 
+            this.Label83.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Label83.AutoSize = true;
             this.Label83.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label83.Location = new System.Drawing.Point(42, 527);
+            this.Label83.Location = new System.Drawing.Point(25, 465);
             this.Label83.Name = "Label83";
             this.Label83.Size = new System.Drawing.Size(202, 19);
             this.Label83.TabIndex = 178;
@@ -5984,7 +6143,7 @@ namespace ContinuumNS
             this.chkMetGrossAll.AutoSize = true;
             this.chkMetGrossAll.Checked = true;
             this.chkMetGrossAll.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkMetGrossAll.Location = new System.Drawing.Point(584, 146);
+            this.chkMetGrossAll.Location = new System.Drawing.Point(584, 132);
             this.chkMetGrossAll.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMetGrossAll.Name = "chkMetGrossAll";
             this.chkMetGrossAll.Size = new System.Drawing.Size(139, 23);
@@ -5997,7 +6156,7 @@ namespace ContinuumNS
             // 
             this.Label50.AutoSize = true;
             this.Label50.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label50.Location = new System.Drawing.Point(607, 123);
+            this.Label50.Location = new System.Drawing.Point(607, 109);
             this.Label50.Name = "Label50";
             this.Label50.Size = new System.Drawing.Size(73, 19);
             this.Label50.TabIndex = 172;
@@ -6008,7 +6167,7 @@ namespace ContinuumNS
             this.chkMetGross.CheckOnClick = true;
             this.chkMetGross.FormattingEnabled = true;
             this.chkMetGross.HorizontalScrollbar = true;
-            this.chkMetGross.Location = new System.Drawing.Point(587, 172);
+            this.chkMetGross.Location = new System.Drawing.Point(587, 158);
             this.chkMetGross.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMetGross.Name = "chkMetGross";
             this.chkMetGross.Size = new System.Drawing.Size(131, 164);
@@ -6019,7 +6178,7 @@ namespace ContinuumNS
             // 
             this.Label77.AutoSize = true;
             this.Label77.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label77.Location = new System.Drawing.Point(589, 432);
+            this.Label77.Location = new System.Drawing.Point(589, 408);
             this.Label77.Name = "Label77";
             this.Label77.Size = new System.Drawing.Size(116, 18);
             this.Label77.TabIndex = 161;
@@ -6035,7 +6194,7 @@ namespace ContinuumNS
             "Elevation",
             "Weibull k",
             "Weibull A"});
-            this.cboGrossParam.Location = new System.Drawing.Point(589, 457);
+            this.cboGrossParam.Location = new System.Drawing.Point(589, 434);
             this.cboGrossParam.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboGrossParam.Name = "cboGrossParam";
             this.cboGrossParam.Size = new System.Drawing.Size(126, 26);
@@ -6045,10 +6204,11 @@ namespace ContinuumNS
             // 
             // btnExportDirWSDists
             // 
+            this.btnExportDirWSDists.Font = new System.Drawing.Font("Palatino Linotype", 9F);
             this.btnExportDirWSDists.Location = new System.Drawing.Point(837, 11);
             this.btnExportDirWSDists.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportDirWSDists.Name = "btnExportDirWSDists";
-            this.btnExportDirWSDists.Size = new System.Drawing.Size(101, 68);
+            this.btnExportDirWSDists.Size = new System.Drawing.Size(117, 51);
             this.btnExportDirWSDists.TabIndex = 102;
             this.btnExportDirWSDists.Text = "Export Directional WS Dists";
             this.btnExportDirWSDists.UseVisualStyleBackColor = true;
@@ -6057,7 +6217,7 @@ namespace ContinuumNS
             // Label71
             // 
             this.Label71.AutoSize = true;
-            this.Label71.Location = new System.Drawing.Point(590, 366);
+            this.Label71.Location = new System.Drawing.Point(590, 329);
             this.Label71.Name = "Label71";
             this.Label71.Size = new System.Drawing.Size(79, 19);
             this.Label71.TabIndex = 159;
@@ -6066,7 +6226,7 @@ namespace ContinuumNS
             // cboGrossWD
             // 
             this.cboGrossWD.FormattingEnabled = true;
-            this.cboGrossWD.Location = new System.Drawing.Point(592, 391);
+            this.cboGrossWD.Location = new System.Drawing.Point(592, 354);
             this.cboGrossWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboGrossWD.Name = "cboGrossWD";
             this.cboGrossWD.Size = new System.Drawing.Size(115, 26);
@@ -6075,21 +6235,23 @@ namespace ContinuumNS
             // 
             // btnExportDirWS
             // 
+            this.btnExportDirWS.Font = new System.Drawing.Font("Palatino Linotype", 8F);
             this.btnExportDirWS.Location = new System.Drawing.Point(712, 11);
             this.btnExportDirWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportDirWS.Name = "btnExportDirWS";
-            this.btnExportDirWS.Size = new System.Drawing.Size(111, 68);
+            this.btnExportDirWS.Size = new System.Drawing.Size(111, 51);
             this.btnExportDirWS.TabIndex = 157;
-            this.btnExportDirWS.Text = "Export Directional WS && Weibull";
+            this.btnExportDirWS.Text = "Export Sectorwise WS && Weibull";
             this.btnExportDirWS.UseVisualStyleBackColor = true;
             this.btnExportDirWS.Click += new System.EventHandler(this.btnExportDirWS_Click);
             // 
             // btnExportCRV
             // 
-            this.btnExportCRV.Location = new System.Drawing.Point(886, 359);
+            this.btnExportCRV.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportCRV.Location = new System.Drawing.Point(886, 333);
             this.btnExportCRV.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportCRV.Name = "btnExportCRV";
-            this.btnExportCRV.Size = new System.Drawing.Size(129, 46);
+            this.btnExportCRV.Size = new System.Drawing.Size(140, 34);
             this.btnExportCRV.TabIndex = 153;
             this.btnExportCRV.Text = "Export Power Curve";
             this.btnExportCRV.UseVisualStyleBackColor = true;
@@ -6097,10 +6259,11 @@ namespace ContinuumNS
             // 
             // btnExportWSDists
             // 
+            this.btnExportWSDists.Font = new System.Drawing.Font("Palatino Linotype", 9F);
             this.btnExportWSDists.Location = new System.Drawing.Point(613, 11);
             this.btnExportWSDists.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportWSDists.Name = "btnExportWSDists";
-            this.btnExportWSDists.Size = new System.Drawing.Size(85, 68);
+            this.btnExportWSDists.Size = new System.Drawing.Size(85, 51);
             this.btnExportWSDists.TabIndex = 101;
             this.btnExportWSDists.Text = "Export WS Dists";
             this.btnExportWSDists.UseVisualStyleBackColor = true;
@@ -6108,10 +6271,11 @@ namespace ContinuumNS
             // 
             // btnWS_AEP_Exprt
             // 
+            this.btnWS_AEP_Exprt.Font = new System.Drawing.Font("Palatino Linotype", 9F);
             this.btnWS_AEP_Exprt.Location = new System.Drawing.Point(495, 11);
             this.btnWS_AEP_Exprt.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnWS_AEP_Exprt.Name = "btnWS_AEP_Exprt";
-            this.btnWS_AEP_Exprt.Size = new System.Drawing.Size(104, 68);
+            this.btnWS_AEP_Exprt.Size = new System.Drawing.Size(104, 51);
             this.btnWS_AEP_Exprt.TabIndex = 100;
             this.btnWS_AEP_Exprt.Text = "Export WS, Weibull && AEP";
             this.btnWS_AEP_Exprt.UseVisualStyleBackColor = true;
@@ -6119,8 +6283,9 @@ namespace ContinuumNS
             // 
             // txtAEPMax
             // 
+            this.txtAEPMax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtAEPMax.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAEPMax.Location = new System.Drawing.Point(190, 720);
+            this.txtAEPMax.Location = new System.Drawing.Point(196, 639);
             this.txtAEPMax.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAEPMax.Name = "txtAEPMax";
             this.txtAEPMax.ReadOnly = true;
@@ -6129,8 +6294,9 @@ namespace ContinuumNS
             // 
             // txtAEPMin
             // 
+            this.txtAEPMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtAEPMin.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAEPMin.Location = new System.Drawing.Point(190, 684);
+            this.txtAEPMin.Location = new System.Drawing.Point(196, 603);
             this.txtAEPMin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAEPMin.Name = "txtAEPMin";
             this.txtAEPMin.ReadOnly = true;
@@ -6139,8 +6305,9 @@ namespace ContinuumNS
             // 
             // txtAEPSD
             // 
+            this.txtAEPSD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtAEPSD.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAEPSD.Location = new System.Drawing.Point(190, 646);
+            this.txtAEPSD.Location = new System.Drawing.Point(196, 565);
             this.txtAEPSD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAEPSD.Name = "txtAEPSD";
             this.txtAEPSD.ReadOnly = true;
@@ -6149,8 +6316,9 @@ namespace ContinuumNS
             // 
             // txtAEPAvg
             // 
+            this.txtAEPAvg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtAEPAvg.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAEPAvg.Location = new System.Drawing.Point(190, 609);
+            this.txtAEPAvg.Location = new System.Drawing.Point(196, 528);
             this.txtAEPAvg.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAEPAvg.Name = "txtAEPAvg";
             this.txtAEPAvg.ReadOnly = true;
@@ -6159,9 +6327,10 @@ namespace ContinuumNS
             // 
             // Label35
             // 
+            this.Label35.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Label35.AutoSize = true;
             this.Label35.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label35.Location = new System.Drawing.Point(206, 565);
+            this.Label35.Location = new System.Drawing.Point(212, 484);
             this.Label35.Name = "Label35";
             this.Label35.Size = new System.Drawing.Size(50, 36);
             this.Label35.TabIndex = 94;
@@ -6169,9 +6338,10 @@ namespace ContinuumNS
             // 
             // Label34
             // 
+            this.Label34.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Label34.AutoSize = true;
             this.Label34.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label34.Location = new System.Drawing.Point(104, 565);
+            this.Label34.Location = new System.Drawing.Point(110, 484);
             this.Label34.Name = "Label34";
             this.Label34.Size = new System.Drawing.Size(80, 36);
             this.Label34.TabIndex = 93;
@@ -6182,7 +6352,7 @@ namespace ContinuumNS
             this.chkTurbGrossAll.AutoSize = true;
             this.chkTurbGrossAll.Checked = true;
             this.chkTurbGrossAll.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTurbGrossAll.Location = new System.Drawing.Point(729, 143);
+            this.chkTurbGrossAll.Location = new System.Drawing.Point(729, 129);
             this.chkTurbGrossAll.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbGrossAll.Name = "chkTurbGrossAll";
             this.chkTurbGrossAll.Size = new System.Drawing.Size(139, 23);
@@ -6195,7 +6365,7 @@ namespace ContinuumNS
             // 
             this.Label9.AutoSize = true;
             this.Label9.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label9.Location = new System.Drawing.Point(752, 122);
+            this.Label9.Location = new System.Drawing.Point(752, 108);
             this.Label9.Name = "Label9";
             this.Label9.Size = new System.Drawing.Size(72, 19);
             this.Label9.TabIndex = 90;
@@ -6203,10 +6373,12 @@ namespace ContinuumNS
             // 
             // chkTurbGross
             // 
+            this.chkTurbGross.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.chkTurbGross.CheckOnClick = true;
             this.chkTurbGross.FormattingEnabled = true;
             this.chkTurbGross.HorizontalScrollbar = true;
-            this.chkTurbGross.Location = new System.Drawing.Point(733, 172);
+            this.chkTurbGross.Location = new System.Drawing.Point(733, 158);
             this.chkTurbGross.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbGross.Name = "chkTurbGross";
             this.chkTurbGross.Size = new System.Drawing.Size(116, 284);
@@ -6215,10 +6387,11 @@ namespace ContinuumNS
             // 
             // btnDelPowerCrv
             // 
-            this.btnDelPowerCrv.Location = new System.Drawing.Point(886, 413);
+            this.btnDelPowerCrv.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnDelPowerCrv.Location = new System.Drawing.Point(886, 375);
             this.btnDelPowerCrv.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDelPowerCrv.Name = "btnDelPowerCrv";
-            this.btnDelPowerCrv.Size = new System.Drawing.Size(129, 46);
+            this.btnDelPowerCrv.Size = new System.Drawing.Size(140, 34);
             this.btnDelPowerCrv.TabIndex = 85;
             this.btnDelPowerCrv.Text = "Delete Power Curve";
             this.btnDelPowerCrv.UseVisualStyleBackColor = true;
@@ -6227,10 +6400,11 @@ namespace ContinuumNS
             // btnImportCRV
             // 
             this.btnImportCRV.BackColor = System.Drawing.Color.LightCoral;
-            this.btnImportCRV.Location = new System.Drawing.Point(886, 305);
+            this.btnImportCRV.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnImportCRV.Location = new System.Drawing.Point(886, 291);
             this.btnImportCRV.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnImportCRV.Name = "btnImportCRV";
-            this.btnImportCRV.Size = new System.Drawing.Size(129, 47);
+            this.btnImportCRV.Size = new System.Drawing.Size(140, 34);
             this.btnImportCRV.TabIndex = 34;
             this.btnImportCRV.Text = "Import Power Curve";
             this.btnImportCRV.UseVisualStyleBackColor = false;
@@ -6238,8 +6412,9 @@ namespace ContinuumNS
             // 
             // txtMax
             // 
+            this.txtMax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtMax.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMax.Location = new System.Drawing.Point(102, 720);
+            this.txtMax.Location = new System.Drawing.Point(108, 639);
             this.txtMax.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMax.Name = "txtMax";
             this.txtMax.ReadOnly = true;
@@ -6248,8 +6423,9 @@ namespace ContinuumNS
             // 
             // txtMin
             // 
+            this.txtMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtMin.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMin.Location = new System.Drawing.Point(102, 683);
+            this.txtMin.Location = new System.Drawing.Point(108, 602);
             this.txtMin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMin.Name = "txtMin";
             this.txtMin.ReadOnly = true;
@@ -6258,8 +6434,9 @@ namespace ContinuumNS
             // 
             // txtCount
             // 
+            this.txtCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtCount.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCount.Location = new System.Drawing.Point(102, 756);
+            this.txtCount.Location = new System.Drawing.Point(108, 675);
             this.txtCount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtCount.Name = "txtCount";
             this.txtCount.ReadOnly = true;
@@ -6268,8 +6445,9 @@ namespace ContinuumNS
             // 
             // txtStDev
             // 
+            this.txtStDev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtStDev.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtStDev.Location = new System.Drawing.Point(102, 646);
+            this.txtStDev.Location = new System.Drawing.Point(108, 565);
             this.txtStDev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtStDev.Name = "txtStDev";
             this.txtStDev.ReadOnly = true;
@@ -6278,8 +6456,9 @@ namespace ContinuumNS
             // 
             // txtAvg
             // 
+            this.txtAvg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtAvg.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAvg.Location = new System.Drawing.Point(102, 609);
+            this.txtAvg.Location = new System.Drawing.Point(108, 528);
             this.txtAvg.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAvg.Name = "txtAvg";
             this.txtAvg.ReadOnly = true;
@@ -6288,9 +6467,10 @@ namespace ContinuumNS
             // 
             // lblMax
             // 
+            this.lblMax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblMax.AutoSize = true;
             this.lblMax.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMax.Location = new System.Drawing.Point(20, 719);
+            this.lblMax.Location = new System.Drawing.Point(26, 638);
             this.lblMax.Name = "lblMax";
             this.lblMax.Size = new System.Drawing.Size(76, 18);
             this.lblMax.TabIndex = 12;
@@ -6298,9 +6478,10 @@ namespace ContinuumNS
             // 
             // lblMin
             // 
+            this.lblMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblMin.AutoSize = true;
             this.lblMin.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMin.Location = new System.Drawing.Point(25, 686);
+            this.lblMin.Location = new System.Drawing.Point(31, 605);
             this.lblMin.Name = "lblMin";
             this.lblMin.Size = new System.Drawing.Size(74, 18);
             this.lblMin.TabIndex = 11;
@@ -6308,9 +6489,10 @@ namespace ContinuumNS
             // 
             // lblCount
             // 
+            this.lblCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCount.AutoSize = true;
             this.lblCount.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCount.Location = new System.Drawing.Point(39, 759);
+            this.lblCount.Location = new System.Drawing.Point(45, 678);
             this.lblCount.Name = "lblCount";
             this.lblCount.Size = new System.Drawing.Size(51, 18);
             this.lblCount.TabIndex = 7;
@@ -6318,9 +6500,10 @@ namespace ContinuumNS
             // 
             // lblStdev
             // 
+            this.lblStdev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblStdev.AutoSize = true;
             this.lblStdev.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStdev.Location = new System.Drawing.Point(32, 649);
+            this.lblStdev.Location = new System.Drawing.Point(38, 568);
             this.lblStdev.Name = "lblStdev";
             this.lblStdev.Size = new System.Drawing.Size(58, 18);
             this.lblStdev.TabIndex = 6;
@@ -6328,9 +6511,10 @@ namespace ContinuumNS
             // 
             // lblAvg
             // 
+            this.lblAvg.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblAvg.AutoSize = true;
             this.lblAvg.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAvg.Location = new System.Drawing.Point(26, 612);
+            this.lblAvg.Location = new System.Drawing.Point(32, 531);
             this.lblAvg.Name = "lblAvg";
             this.lblAvg.Size = new System.Drawing.Size(63, 18);
             this.lblAvg.TabIndex = 5;
@@ -6340,7 +6524,7 @@ namespace ContinuumNS
             // 
             this.Label1.AutoSize = true;
             this.Label1.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label1.Location = new System.Drawing.Point(878, 124);
+            this.Label1.Location = new System.Drawing.Point(878, 110);
             this.Label1.Name = "Label1";
             this.Label1.Size = new System.Drawing.Size(116, 19);
             this.Label1.TabIndex = 3;
@@ -6370,6 +6554,8 @@ namespace ContinuumNS
             // 
             // lstGrossTurbEst
             // 
+            this.lstGrossTurbEst.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstGrossTurbEst.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader20,
             this.ColumnHeader23,
@@ -6383,7 +6569,7 @@ namespace ContinuumNS
             this.lstGrossTurbEst.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstGrossTurbEst.MultiSelect = false;
             this.lstGrossTurbEst.Name = "lstGrossTurbEst";
-            this.lstGrossTurbEst.Size = new System.Drawing.Size(549, 379);
+            this.lstGrossTurbEst.Size = new System.Drawing.Size(549, 339);
             this.lstGrossTurbEst.TabIndex = 0;
             this.lstGrossTurbEst.UseCompatibleStateImageBehavior = false;
             this.lstGrossTurbEst.View = System.Windows.Forms.View.Details;
@@ -6424,6 +6610,7 @@ namespace ContinuumNS
             // 
             // pgeExceedance
             // 
+            this.pgeExceedance.AutoScroll = true;
             this.pgeExceedance.Controls.Add(this.plotCompositeExceed);
             this.pgeExceedance.Controls.Add(this.plotExceedCurves);
             this.pgeExceedance.Controls.Add(this.btnImportCurves);
@@ -6449,17 +6636,19 @@ namespace ContinuumNS
             this.pgeExceedance.Location = new System.Drawing.Point(4, 27);
             this.pgeExceedance.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeExceedance.Name = "pgeExceedance";
-            this.pgeExceedance.Size = new System.Drawing.Size(1626, 856);
+            this.pgeExceedance.Size = new System.Drawing.Size(1488, 712);
             this.pgeExceedance.TabIndex = 19;
             this.pgeExceedance.Text = "Exceedance Modeling";
             this.pgeExceedance.UseVisualStyleBackColor = true;
             // 
             // plotCompositeExceed
             // 
-            this.plotCompositeExceed.Location = new System.Drawing.Point(1033, 485);
+            this.plotCompositeExceed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotCompositeExceed.Location = new System.Drawing.Point(1031, 452);
             this.plotCompositeExceed.Name = "plotCompositeExceed";
             this.plotCompositeExceed.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotCompositeExceed.Size = new System.Drawing.Size(567, 343);
+            this.plotCompositeExceed.Size = new System.Drawing.Size(437, 245);
             this.plotCompositeExceed.TabIndex = 237;
             this.plotCompositeExceed.Text = "plotView1";
             this.plotCompositeExceed.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -6468,10 +6657,13 @@ namespace ContinuumNS
             // 
             // plotExceedCurves
             // 
-            this.plotExceedCurves.Location = new System.Drawing.Point(970, 27);
+            this.plotExceedCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotExceedCurves.Location = new System.Drawing.Point(948, 18);
             this.plotExceedCurves.Name = "plotExceedCurves";
             this.plotExceedCurves.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExceedCurves.Size = new System.Drawing.Size(630, 386);
+            this.plotExceedCurves.Size = new System.Drawing.Size(520, 395);
             this.plotExceedCurves.TabIndex = 236;
             this.plotExceedCurves.Text = "plotView1";
             this.plotExceedCurves.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -6480,11 +6672,12 @@ namespace ContinuumNS
             // 
             // btnImportCurves
             // 
-            this.btnImportCurves.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnImportCurves.Location = new System.Drawing.Point(511, 442);
+            this.btnImportCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnImportCurves.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnImportCurves.Location = new System.Drawing.Point(490, 418);
             this.btnImportCurves.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnImportCurves.Name = "btnImportCurves";
-            this.btnImportCurves.Size = new System.Drawing.Size(140, 47);
+            this.btnImportCurves.Size = new System.Drawing.Size(140, 35);
             this.btnImportCurves.TabIndex = 235;
             this.btnImportCurves.Text = "Import Curves";
             this.btnImportCurves.UseVisualStyleBackColor = true;
@@ -6492,11 +6685,12 @@ namespace ContinuumNS
             // 
             // btnGetDefaultExceed
             // 
-            this.btnGetDefaultExceed.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGetDefaultExceed.Location = new System.Drawing.Point(657, 442);
+            this.btnGetDefaultExceed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnGetDefaultExceed.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGetDefaultExceed.Location = new System.Drawing.Point(636, 418);
             this.btnGetDefaultExceed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnGetDefaultExceed.Name = "btnGetDefaultExceed";
-            this.btnGetDefaultExceed.Size = new System.Drawing.Size(140, 47);
+            this.btnGetDefaultExceed.Size = new System.Drawing.Size(140, 35);
             this.btnGetDefaultExceed.TabIndex = 234;
             this.btnGetDefaultExceed.Text = "Set to Default";
             this.btnGetDefaultExceed.UseVisualStyleBackColor = true;
@@ -6504,8 +6698,9 @@ namespace ContinuumNS
             // 
             // cboExceedWake
             // 
+            this.cboExceedWake.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cboExceedWake.FormattingEnabled = true;
-            this.cboExceedWake.Location = new System.Drawing.Point(532, 530);
+            this.cboExceedWake.Location = new System.Drawing.Point(529, 485);
             this.cboExceedWake.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExceedWake.Name = "cboExceedWake";
             this.cboExceedWake.Size = new System.Drawing.Size(312, 26);
@@ -6514,9 +6709,10 @@ namespace ContinuumNS
             // 
             // label185
             // 
+            this.label185.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label185.AutoSize = true;
             this.label185.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label185.Location = new System.Drawing.Point(534, 508);
+            this.label185.Location = new System.Drawing.Point(531, 463);
             this.label185.Name = "label185";
             this.label185.Size = new System.Drawing.Size(128, 18);
             this.label185.TabIndex = 230;
@@ -6524,9 +6720,10 @@ namespace ContinuumNS
             // 
             // label183
             // 
+            this.label183.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label183.AutoSize = true;
             this.label183.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label183.Location = new System.Drawing.Point(377, 508);
+            this.label183.Location = new System.Drawing.Point(374, 463);
             this.label183.Name = "label183";
             this.label183.Size = new System.Drawing.Size(61, 18);
             this.label183.TabIndex = 220;
@@ -6534,9 +6731,10 @@ namespace ContinuumNS
             // 
             // cboExceedTurbine
             // 
+            this.cboExceedTurbine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cboExceedTurbine.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboExceedTurbine.FormattingEnabled = true;
-            this.cboExceedTurbine.Location = new System.Drawing.Point(380, 530);
+            this.cboExceedTurbine.Location = new System.Drawing.Point(377, 485);
             this.cboExceedTurbine.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExceedTurbine.Name = "cboExceedTurbine";
             this.cboExceedTurbine.Size = new System.Drawing.Size(134, 26);
@@ -6545,11 +6743,12 @@ namespace ContinuumNS
             // 
             // btn_AddProj
             // 
-            this.btn_AddProj.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_AddProj.Location = new System.Drawing.Point(50, 442);
+            this.btn_AddProj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btn_AddProj.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_AddProj.Location = new System.Drawing.Point(29, 418);
             this.btn_AddProj.Margin = new System.Windows.Forms.Padding(2);
             this.btn_AddProj.Name = "btn_AddProj";
-            this.btn_AddProj.Size = new System.Drawing.Size(129, 47);
+            this.btn_AddProj.Size = new System.Drawing.Size(129, 35);
             this.btn_AddProj.TabIndex = 44;
             this.btn_AddProj.Text = "Add Curve";
             this.btn_AddProj.UseVisualStyleBackColor = true;
@@ -6557,8 +6756,9 @@ namespace ContinuumNS
             // 
             // btnExportAllPVals
             // 
+            this.btnExportAllPVals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnExportAllPVals.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExportAllPVals.Location = new System.Drawing.Point(878, 698);
+            this.btnExportAllPVals.Location = new System.Drawing.Point(878, 617);
             this.btnExportAllPVals.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportAllPVals.Name = "btnExportAllPVals";
             this.btnExportAllPVals.Size = new System.Drawing.Size(139, 59);
@@ -6569,11 +6769,12 @@ namespace ContinuumNS
             // 
             // btnDeleteExceed
             // 
-            this.btnDeleteExceed.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDeleteExceed.Location = new System.Drawing.Point(352, 442);
+            this.btnDeleteExceed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDeleteExceed.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDeleteExceed.Location = new System.Drawing.Point(331, 418);
             this.btnDeleteExceed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDeleteExceed.Name = "btnDeleteExceed";
-            this.btnDeleteExceed.Size = new System.Drawing.Size(152, 47);
+            this.btnDeleteExceed.Size = new System.Drawing.Size(152, 35);
             this.btnDeleteExceed.TabIndex = 38;
             this.btnDeleteExceed.Text = "Delete Curve(s)";
             this.btnDeleteExceed.UseVisualStyleBackColor = true;
@@ -6581,11 +6782,12 @@ namespace ContinuumNS
             // 
             // btnExportCurves
             // 
-            this.btnExportCurves.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExportCurves.Location = new System.Drawing.Point(804, 442);
+            this.btnExportCurves.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportCurves.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExportCurves.Location = new System.Drawing.Point(782, 419);
             this.btnExportCurves.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportCurves.Name = "btnExportCurves";
-            this.btnExportCurves.Size = new System.Drawing.Size(140, 47);
+            this.btnExportCurves.Size = new System.Drawing.Size(140, 35);
             this.btnExportCurves.TabIndex = 37;
             this.btnExportCurves.Text = "Export Curves";
             this.btnExportCurves.UseVisualStyleBackColor = true;
@@ -6593,8 +6795,9 @@ namespace ContinuumNS
             // 
             // btnExport_P_Vals
             // 
+            this.btnExport_P_Vals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnExport_P_Vals.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExport_P_Vals.Location = new System.Drawing.Point(877, 642);
+            this.btnExport_P_Vals.Location = new System.Drawing.Point(877, 561);
             this.btnExport_P_Vals.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExport_P_Vals.Name = "btnExport_P_Vals";
             this.btnExport_P_Vals.Size = new System.Drawing.Size(139, 38);
@@ -6605,9 +6808,10 @@ namespace ContinuumNS
             // 
             // label180
             // 
+            this.label180.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label180.AutoSize = true;
             this.label180.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label180.Location = new System.Drawing.Point(36, 528);
+            this.label180.Location = new System.Drawing.Point(33, 483);
             this.label180.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label180.Name = "label180";
             this.label180.Size = new System.Drawing.Size(273, 23);
@@ -6616,6 +6820,7 @@ namespace ContinuumNS
             // 
             // lstPvals
             // 
+            this.lstPvals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lstPvals.CheckBoxes = true;
             this.lstPvals.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader160,
@@ -6627,10 +6832,10 @@ namespace ContinuumNS
             this.columnHeader166});
             this.lstPvals.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstPvals.HideSelection = false;
-            this.lstPvals.Location = new System.Drawing.Point(34, 564);
+            this.lstPvals.Location = new System.Drawing.Point(31, 519);
             this.lstPvals.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.lstPvals.Name = "lstPvals";
-            this.lstPvals.Size = new System.Drawing.Size(810, 224);
+            this.lstPvals.Size = new System.Drawing.Size(810, 178);
             this.lstPvals.TabIndex = 32;
             this.lstPvals.UseCompatibleStateImageBehavior = false;
             this.lstPvals.View = System.Windows.Forms.View.Details;
@@ -6672,6 +6877,8 @@ namespace ContinuumNS
             // 
             // chkShowCDFs
             // 
+            this.chkShowCDFs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkShowCDFs.AutoSize = true;
             this.chkShowCDFs.Checked = true;
             this.chkShowCDFs.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -6687,6 +6894,8 @@ namespace ContinuumNS
             // 
             // chkShowPDF
             // 
+            this.chkShowPDF.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.chkShowPDF.AutoSize = true;
             this.chkShowPDF.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkShowPDF.Location = new System.Drawing.Point(1136, 425);
@@ -6700,8 +6909,9 @@ namespace ContinuumNS
             // 
             // btnDoMonteCarlo
             // 
+            this.btnDoMonteCarlo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnDoMonteCarlo.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDoMonteCarlo.Location = new System.Drawing.Point(881, 554);
+            this.btnDoMonteCarlo.Location = new System.Drawing.Point(881, 473);
             this.btnDoMonteCarlo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDoMonteCarlo.Name = "btnDoMonteCarlo";
             this.btnDoMonteCarlo.Size = new System.Drawing.Size(129, 64);
@@ -6714,7 +6924,7 @@ namespace ContinuumNS
             // 
             this.label181.AutoSize = true;
             this.label181.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label181.Location = new System.Drawing.Point(43, 27);
+            this.label181.Location = new System.Drawing.Point(22, 18);
             this.label181.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label181.Name = "label181";
             this.label181.Size = new System.Drawing.Size(243, 25);
@@ -6725,7 +6935,7 @@ namespace ContinuumNS
             // 
             this.label182.AutoSize = true;
             this.label182.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label182.Location = new System.Drawing.Point(43, 64);
+            this.label182.Location = new System.Drawing.Point(22, 55);
             this.label182.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label182.Name = "label182";
             this.label182.Size = new System.Drawing.Size(383, 23);
@@ -6734,6 +6944,8 @@ namespace ContinuumNS
             // 
             // lstDefinedLosses
             // 
+            this.lstDefinedLosses.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstDefinedLosses.CheckBoxes = true;
             this.lstDefinedLosses.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader167,
@@ -6746,10 +6958,10 @@ namespace ContinuumNS
             this.columnHeader174});
             this.lstDefinedLosses.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstDefinedLosses.HideSelection = false;
-            this.lstDefinedLosses.Location = new System.Drawing.Point(48, 91);
+            this.lstDefinedLosses.Location = new System.Drawing.Point(27, 82);
             this.lstDefinedLosses.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.lstDefinedLosses.Name = "lstDefinedLosses";
-            this.lstDefinedLosses.Size = new System.Drawing.Size(886, 339);
+            this.lstDefinedLosses.Size = new System.Drawing.Size(886, 322);
             this.lstDefinedLosses.TabIndex = 26;
             this.lstDefinedLosses.UseCompatibleStateImageBehavior = false;
             this.lstDefinedLosses.View = System.Windows.Forms.View.Details;
@@ -6793,11 +7005,12 @@ namespace ContinuumNS
             // 
             // btn_editloss
             // 
-            this.btn_editloss.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_editloss.Location = new System.Drawing.Point(185, 442);
+            this.btn_editloss.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btn_editloss.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_editloss.Location = new System.Drawing.Point(164, 418);
             this.btn_editloss.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btn_editloss.Name = "btn_editloss";
-            this.btn_editloss.Size = new System.Drawing.Size(160, 47);
+            this.btn_editloss.Size = new System.Drawing.Size(160, 35);
             this.btn_editloss.TabIndex = 25;
             this.btn_editloss.Text = "Edit Curve";
             this.btn_editloss.UseVisualStyleBackColor = true;
@@ -6805,6 +7018,7 @@ namespace ContinuumNS
             // 
             // pgeNetEsts
             // 
+            this.pgeNetEsts.AutoScroll = true;
             this.pgeNetEsts.Controls.Add(this.plotWakeMap);
             this.pgeNetEsts.Controls.Add(this.plotTurbsByString);
             this.pgeNetEsts.Controls.Add(this.plotWakedDists);
@@ -6848,17 +7062,20 @@ namespace ContinuumNS
             this.pgeNetEsts.Location = new System.Drawing.Point(4, 27);
             this.pgeNetEsts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeNetEsts.Name = "pgeNetEsts";
-            this.pgeNetEsts.Size = new System.Drawing.Size(1626, 856);
+            this.pgeNetEsts.Size = new System.Drawing.Size(1488, 712);
             this.pgeNetEsts.TabIndex = 13;
             this.pgeNetEsts.Text = "Net Turbine Ests";
             this.pgeNetEsts.UseVisualStyleBackColor = true;
             // 
             // plotWakeMap
             // 
-            this.plotWakeMap.Location = new System.Drawing.Point(989, 238);
+            this.plotWakeMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotWakeMap.Location = new System.Drawing.Point(983, 202);
             this.plotWakeMap.Name = "plotWakeMap";
             this.plotWakeMap.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotWakeMap.Size = new System.Drawing.Size(610, 499);
+            this.plotWakeMap.Size = new System.Drawing.Size(492, 422);
             this.plotWakeMap.TabIndex = 240;
             this.plotWakeMap.Text = "plotView1";
             this.plotWakeMap.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -6867,10 +7084,11 @@ namespace ContinuumNS
             // 
             // plotTurbsByString
             // 
-            this.plotTurbsByString.Location = new System.Drawing.Point(499, 534);
+            this.plotTurbsByString.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotTurbsByString.Location = new System.Drawing.Point(499, 503);
             this.plotTurbsByString.Name = "plotTurbsByString";
             this.plotTurbsByString.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbsByString.Size = new System.Drawing.Size(445, 296);
+            this.plotTurbsByString.Size = new System.Drawing.Size(445, 195);
             this.plotTurbsByString.TabIndex = 239;
             this.plotTurbsByString.Text = "plotView1";
             this.plotTurbsByString.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -6879,10 +7097,11 @@ namespace ContinuumNS
             // 
             // plotWakedDists
             // 
-            this.plotWakedDists.Location = new System.Drawing.Point(21, 534);
+            this.plotWakedDists.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotWakedDists.Location = new System.Drawing.Point(21, 503);
             this.plotWakedDists.Name = "plotWakedDists";
             this.plotWakedDists.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotWakedDists.Size = new System.Drawing.Size(445, 296);
+            this.plotWakedDists.Size = new System.Drawing.Size(445, 195);
             this.plotWakedDists.TabIndex = 238;
             this.plotWakedDists.Text = "plotView1";
             this.plotWakedDists.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -6928,7 +7147,8 @@ namespace ContinuumNS
             // 
             // btnExportNetDirWSDists
             // 
-            this.btnExportNetDirWSDists.Location = new System.Drawing.Point(134, 464);
+            this.btnExportNetDirWSDists.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportNetDirWSDists.Location = new System.Drawing.Point(134, 446);
             this.btnExportNetDirWSDists.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportNetDirWSDists.Name = "btnExportNetDirWSDists";
             this.btnExportNetDirWSDists.Size = new System.Drawing.Size(138, 49);
@@ -6939,7 +7159,8 @@ namespace ContinuumNS
             // 
             // btnExportNetDirWS
             // 
-            this.btnExportNetDirWS.Location = new System.Drawing.Point(278, 464);
+            this.btnExportNetDirWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportNetDirWS.Location = new System.Drawing.Point(278, 446);
             this.btnExportNetDirWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportNetDirWS.Name = "btnExportNetDirWS";
             this.btnExportNetDirWS.Size = new System.Drawing.Size(142, 50);
@@ -6950,7 +7171,8 @@ namespace ContinuumNS
             // 
             // btnExportNetWSDists
             // 
-            this.btnExportNetWSDists.Location = new System.Drawing.Point(21, 464);
+            this.btnExportNetWSDists.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportNetWSDists.Location = new System.Drawing.Point(21, 446);
             this.btnExportNetWSDists.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportNetWSDists.Name = "btnExportNetWSDists";
             this.btnExportNetWSDists.Size = new System.Drawing.Size(107, 49);
@@ -6961,7 +7183,8 @@ namespace ContinuumNS
             // 
             // btnRefreshWakeMap
             // 
-            this.btnRefreshWakeMap.Location = new System.Drawing.Point(1513, 782);
+            this.btnRefreshWakeMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefreshWakeMap.Location = new System.Drawing.Point(1305, 637);
             this.btnRefreshWakeMap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnRefreshWakeMap.Name = "btnRefreshWakeMap";
             this.btnRefreshWakeMap.Size = new System.Drawing.Size(101, 33);
@@ -6972,10 +7195,11 @@ namespace ContinuumNS
             // 
             // chkWakeAuto
             // 
+            this.chkWakeAuto.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.chkWakeAuto.AutoSize = true;
             this.chkWakeAuto.Checked = true;
             this.chkWakeAuto.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkWakeAuto.Location = new System.Drawing.Point(1331, 791);
+            this.chkWakeAuto.Location = new System.Drawing.Point(1104, 674);
             this.chkWakeAuto.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkWakeAuto.Name = "chkWakeAuto";
             this.chkWakeAuto.Size = new System.Drawing.Size(176, 23);
@@ -6985,7 +7209,8 @@ namespace ContinuumNS
             // 
             // txtWakeInterval
             // 
-            this.txtWakeInterval.Location = new System.Drawing.Point(1263, 788);
+            this.txtWakeInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtWakeInterval.Location = new System.Drawing.Point(1037, 672);
             this.txtWakeInterval.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtWakeInterval.Name = "txtWakeInterval";
             this.txtWakeInterval.Size = new System.Drawing.Size(56, 25);
@@ -6993,7 +7218,8 @@ namespace ContinuumNS
             // 
             // txtWakeMax
             // 
-            this.txtWakeMax.Location = new System.Drawing.Point(1136, 788);
+            this.txtWakeMax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtWakeMax.Location = new System.Drawing.Point(1146, 641);
             this.txtWakeMax.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtWakeMax.Name = "txtWakeMax";
             this.txtWakeMax.Size = new System.Drawing.Size(61, 25);
@@ -7001,7 +7227,8 @@ namespace ContinuumNS
             // 
             // txtWakeMin
             // 
-            this.txtWakeMin.Location = new System.Drawing.Point(1025, 788);
+            this.txtWakeMin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtWakeMin.Location = new System.Drawing.Point(1035, 641);
             this.txtWakeMin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtWakeMin.Name = "txtWakeMin";
             this.txtWakeMin.Size = new System.Drawing.Size(61, 25);
@@ -7009,8 +7236,9 @@ namespace ContinuumNS
             // 
             // Label97
             // 
+            this.Label97.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Label97.AutoSize = true;
-            this.Label97.Location = new System.Drawing.Point(1201, 791);
+            this.Label97.Location = new System.Drawing.Point(974, 674);
             this.Label97.Name = "Label97";
             this.Label97.Size = new System.Drawing.Size(63, 19);
             this.Label97.TabIndex = 185;
@@ -7018,8 +7246,9 @@ namespace ContinuumNS
             // 
             // Label98
             // 
+            this.Label98.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Label98.AutoSize = true;
-            this.Label98.Location = new System.Drawing.Point(1095, 791);
+            this.Label98.Location = new System.Drawing.Point(1099, 639);
             this.Label98.Name = "Label98";
             this.Label98.Size = new System.Drawing.Size(41, 19);
             this.Label98.TabIndex = 183;
@@ -7027,8 +7256,9 @@ namespace ContinuumNS
             // 
             // Label99
             // 
+            this.Label99.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Label99.AutoSize = true;
-            this.Label99.Location = new System.Drawing.Point(985, 792);
+            this.Label99.Location = new System.Drawing.Point(989, 640);
             this.Label99.Name = "Label99";
             this.Label99.Size = new System.Drawing.Size(39, 19);
             this.Label99.TabIndex = 181;
@@ -7045,6 +7275,7 @@ namespace ContinuumNS
             // 
             // btnCreateWakeMap
             // 
+            this.btnCreateWakeMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCreateWakeMap.BackColor = System.Drawing.Color.LightCoral;
             this.btnCreateWakeMap.Location = new System.Drawing.Point(1189, 11);
             this.btnCreateWakeMap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -7079,7 +7310,7 @@ namespace ContinuumNS
             this.chkTurbNet.CheckOnClick = true;
             this.chkTurbNet.FormattingEnabled = true;
             this.chkTurbNet.HorizontalScrollbar = true;
-            this.chkTurbNet.Location = new System.Drawing.Point(661, 400);
+            this.chkTurbNet.Location = new System.Drawing.Point(661, 387);
             this.chkTurbNet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbNet.Name = "chkTurbNet";
             this.chkTurbNet.Size = new System.Drawing.Size(139, 104);
@@ -7091,7 +7322,7 @@ namespace ContinuumNS
             this.chkTurbNetAll.AutoSize = true;
             this.chkTurbNetAll.Checked = true;
             this.chkTurbNetAll.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTurbNetAll.Location = new System.Drawing.Point(661, 373);
+            this.chkTurbNetAll.Location = new System.Drawing.Point(661, 360);
             this.chkTurbNetAll.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbNetAll.Name = "chkTurbNetAll";
             this.chkTurbNetAll.Size = new System.Drawing.Size(117, 23);
@@ -7104,7 +7335,7 @@ namespace ContinuumNS
             // 
             this.Label87.AutoSize = true;
             this.Label87.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label87.Location = new System.Drawing.Point(658, 348);
+            this.Label87.Location = new System.Drawing.Point(658, 335);
             this.Label87.Name = "Label87";
             this.Label87.Size = new System.Drawing.Size(67, 18);
             this.Label87.TabIndex = 17;
@@ -7147,6 +7378,7 @@ namespace ContinuumNS
             // 
             // btnDelWakeModel
             // 
+            this.btnDelWakeModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDelWakeModel.Location = new System.Drawing.Point(1069, 11);
             this.btnDelWakeModel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDelWakeModel.Name = "btnDelWakeModel";
@@ -7158,7 +7390,8 @@ namespace ContinuumNS
             // 
             // btnDelWakeGrid
             // 
-            this.btnDelWakeGrid.Location = new System.Drawing.Point(1486, 14);
+            this.btnDelWakeGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDelWakeGrid.Location = new System.Drawing.Point(1331, 12);
             this.btnDelWakeGrid.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDelWakeGrid.Name = "btnDelWakeGrid";
             this.btnDelWakeGrid.Size = new System.Drawing.Size(113, 48);
@@ -7174,7 +7407,7 @@ namespace ContinuumNS
             "Wind Speed",
             "Wake loss, %",
             "Net Energy"});
-            this.cboWakePlot.Location = new System.Drawing.Point(1331, 38);
+            this.cboWakePlot.Location = new System.Drawing.Point(815, 463);
             this.cboWakePlot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboWakePlot.Name = "cboWakePlot";
             this.cboWakePlot.Size = new System.Drawing.Size(147, 26);
@@ -7186,7 +7419,7 @@ namespace ContinuumNS
             // 
             this.Label85.AutoSize = true;
             this.Label85.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label85.Location = new System.Drawing.Point(1337, 14);
+            this.Label85.Location = new System.Drawing.Point(821, 439);
             this.Label85.Name = "Label85";
             this.Label85.Size = new System.Drawing.Size(130, 18);
             this.Label85.TabIndex = 10;
@@ -7194,7 +7427,8 @@ namespace ContinuumNS
             // 
             // btnExportNetEsts
             // 
-            this.btnExportNetEsts.Location = new System.Drawing.Point(426, 464);
+            this.btnExportNetEsts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportNetEsts.Location = new System.Drawing.Point(426, 446);
             this.btnExportNetEsts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportNetEsts.Name = "btnExportNetEsts";
             this.btnExportNetEsts.Size = new System.Drawing.Size(209, 49);
@@ -7207,7 +7441,7 @@ namespace ContinuumNS
             // 
             this.Label55.AutoSize = true;
             this.Label55.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label55.Location = new System.Drawing.Point(834, 415);
+            this.Label55.Location = new System.Drawing.Point(825, 367);
             this.Label55.Name = "Label55";
             this.Label55.Size = new System.Drawing.Size(124, 19);
             this.Label55.TabIndex = 8;
@@ -7216,7 +7450,7 @@ namespace ContinuumNS
             // cboNetWD
             // 
             this.cboNetWD.FormattingEnabled = true;
-            this.cboNetWD.Location = new System.Drawing.Point(831, 448);
+            this.cboNetWD.Location = new System.Drawing.Point(822, 400);
             this.cboNetWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboNetWD.Name = "cboNetWD";
             this.cboNetWD.Size = new System.Drawing.Size(129, 26);
@@ -7225,6 +7459,7 @@ namespace ContinuumNS
             // 
             // lstWakeModels
             // 
+            this.lstWakeModels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lstWakeModels.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader88,
             this.ColumnHeader106,
@@ -7245,7 +7480,7 @@ namespace ContinuumNS
             this.lstWakeModels.Location = new System.Drawing.Point(663, 73);
             this.lstWakeModels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstWakeModels.Name = "lstWakeModels";
-            this.lstWakeModels.Size = new System.Drawing.Size(951, 122);
+            this.lstWakeModels.Size = new System.Drawing.Size(812, 122);
             this.lstWakeModels.TabIndex = 4;
             this.lstWakeModels.UseCompatibleStateImageBehavior = false;
             this.lstWakeModels.View = System.Windows.Forms.View.Details;
@@ -7314,6 +7549,7 @@ namespace ContinuumNS
             // 
             // btnWakeLossCalc
             // 
+            this.btnWakeLossCalc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnWakeLossCalc.BackColor = System.Drawing.Color.LightCoral;
             this.btnWakeLossCalc.Location = new System.Drawing.Point(822, 9);
             this.btnWakeLossCalc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -7326,6 +7562,7 @@ namespace ContinuumNS
             // 
             // Label53
             // 
+            this.Label53.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Label53.AutoSize = true;
             this.Label53.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label53.Location = new System.Drawing.Point(665, 36);
@@ -7336,6 +7573,8 @@ namespace ContinuumNS
             // 
             // lstWakedTurbs
             // 
+            this.lstWakedTurbs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstWakedTurbs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.SiteName,
             this.StringNum,
@@ -7351,7 +7590,7 @@ namespace ContinuumNS
             this.lstWakedTurbs.Location = new System.Drawing.Point(17, 73);
             this.lstWakedTurbs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstWakedTurbs.Name = "lstWakedTurbs";
-            this.lstWakedTurbs.Size = new System.Drawing.Size(621, 386);
+            this.lstWakedTurbs.Size = new System.Drawing.Size(621, 365);
             this.lstWakedTurbs.TabIndex = 1;
             this.lstWakedTurbs.UseCompatibleStateImageBehavior = false;
             this.lstWakedTurbs.View = System.Windows.Forms.View.Details;
@@ -7407,12 +7646,13 @@ namespace ContinuumNS
             // 
             // pgeSiteConditions
             // 
+            this.pgeSiteConditions.AutoScroll = true;
             this.pgeSiteConditions.Controls.Add(this.tabSiteConditions);
             this.pgeSiteConditions.Controls.Add(this.label92);
             this.pgeSiteConditions.Location = new System.Drawing.Point(4, 27);
             this.pgeSiteConditions.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeSiteConditions.Name = "pgeSiteConditions";
-            this.pgeSiteConditions.Size = new System.Drawing.Size(1626, 856);
+            this.pgeSiteConditions.Size = new System.Drawing.Size(1488, 712);
             this.pgeSiteConditions.TabIndex = 20;
             this.pgeSiteConditions.Text = "Site Conditions";
             this.pgeSiteConditions.UseVisualStyleBackColor = true;
@@ -7429,11 +7669,13 @@ namespace ContinuumNS
             this.tabSiteConditions.Location = new System.Drawing.Point(22, 48);
             this.tabSiteConditions.Name = "tabSiteConditions";
             this.tabSiteConditions.SelectedIndex = 0;
-            this.tabSiteConditions.Size = new System.Drawing.Size(1599, 801);
+            this.tabSiteConditions.Size = new System.Drawing.Size(1461, 657);
             this.tabSiteConditions.TabIndex = 7;
             // 
             // tabPage2
             // 
+            this.tabPage2.AutoScroll = true;
+            this.tabPage2.Controls.Add(this.btnExportTerrainComplexSector);
             this.tabPage2.Controls.Add(this.cboNumWDComplxTab);
             this.tabPage2.Controls.Add(this.label224);
             this.tabPage2.Controls.Add(this.chkForceThruBase);
@@ -7441,7 +7683,6 @@ namespace ContinuumNS
             this.tabPage2.Controls.Add(this.label161);
             this.tabPage2.Controls.Add(this.cboTSIorTVIorP90);
             this.tabPage2.Controls.Add(this.plotComplexHisto);
-            this.tabPage2.Controls.Add(this.label150);
             this.tabPage2.Controls.Add(this.btnShowIECThresh);
             this.tabPage2.Controls.Add(this.lblIEC_Complexity);
             this.tabPage2.Controls.Add(this.label147);
@@ -7462,10 +7703,22 @@ namespace ContinuumNS
             this.tabPage2.Location = new System.Drawing.Point(4, 27);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1591, 770);
+            this.tabPage2.Size = new System.Drawing.Size(1453, 626);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Terrain Complexity";
             this.tabPage2.UseVisualStyleBackColor = true;
+            this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
+            // 
+            // btnExportTerrainComplexSector
+            // 
+            this.btnExportTerrainComplexSector.Location = new System.Drawing.Point(1195, 17);
+            this.btnExportTerrainComplexSector.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnExportTerrainComplexSector.Name = "btnExportTerrainComplexSector";
+            this.btnExportTerrainComplexSector.Size = new System.Drawing.Size(123, 47);
+            this.btnExportTerrainComplexSector.TabIndex = 304;
+            this.btnExportTerrainComplexSector.Text = "Export Values by Sector";
+            this.btnExportTerrainComplexSector.UseVisualStyleBackColor = true;
+            this.btnExportTerrainComplexSector.Click += new System.EventHandler(this.btnExportTerrainComplexSector_Click);
             // 
             // cboNumWDComplxTab
             // 
@@ -7500,7 +7753,7 @@ namespace ContinuumNS
             // 
             this.chkForceThruBase.AutoSize = true;
             this.chkForceThruBase.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.chkForceThruBase.Location = new System.Drawing.Point(592, 40);
+            this.chkForceThruBase.Location = new System.Drawing.Point(526, 51);
             this.chkForceThruBase.Name = "chkForceThruBase";
             this.chkForceThruBase.Size = new System.Drawing.Size(253, 21);
             this.chkForceThruBase.TabIndex = 301;
@@ -7545,7 +7798,7 @@ namespace ContinuumNS
             "20z 30 TVI",
             "P10 UW",
             "P10 DW"});
-            this.cboTSIorTVIorP90.Location = new System.Drawing.Point(401, 53);
+            this.cboTSIorTVIorP90.Location = new System.Drawing.Point(374, 60);
             this.cboTSIorTVIorP90.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTSIorTVIorP90.Name = "cboTSIorTVIorP90";
             this.cboTSIorTVIorP90.Size = new System.Drawing.Size(128, 26);
@@ -7557,25 +7810,15 @@ namespace ContinuumNS
             this.plotComplexHisto.Location = new System.Drawing.Point(40, 92);
             this.plotComplexHisto.Name = "plotComplexHisto";
             this.plotComplexHisto.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotComplexHisto.Size = new System.Drawing.Size(489, 206);
+            this.plotComplexHisto.Size = new System.Drawing.Size(458, 206);
             this.plotComplexHisto.TabIndex = 297;
             this.plotComplexHisto.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotComplexHisto.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotComplexHisto.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
-            // label150
-            // 
-            this.label150.AutoSize = true;
-            this.label150.Font = new System.Drawing.Font("Palatino Linotype", 12F);
-            this.label150.Location = new System.Drawing.Point(548, 12);
-            this.label150.Name = "label150";
-            this.label150.Size = new System.Drawing.Size(219, 22);
-            this.label150.TabIndex = 296;
-            this.label150.Text = "Terrain Complexity by Turbine";
-            // 
             // btnShowIECThresh
             // 
-            this.btnShowIECThresh.Location = new System.Drawing.Point(1472, 14);
+            this.btnShowIECThresh.Location = new System.Drawing.Point(1348, 17);
             this.btnShowIECThresh.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnShowIECThresh.Name = "btnShowIECThresh";
             this.btnShowIECThresh.Size = new System.Drawing.Size(93, 47);
@@ -7589,7 +7832,7 @@ namespace ContinuumNS
             this.lblIEC_Complexity.AutoSize = true;
             this.lblIEC_Complexity.Font = new System.Drawing.Font("Palatino Linotype", 14F, System.Drawing.FontStyle.Bold);
             this.lblIEC_Complexity.ForeColor = System.Drawing.Color.IndianRed;
-            this.lblIEC_Complexity.Location = new System.Drawing.Point(967, 32);
+            this.lblIEC_Complexity.Location = new System.Drawing.Point(835, 32);
             this.lblIEC_Complexity.Name = "lblIEC_Complexity";
             this.lblIEC_Complexity.Size = new System.Drawing.Size(143, 26);
             this.lblIEC_Complexity.TabIndex = 294;
@@ -7598,7 +7841,7 @@ namespace ContinuumNS
             // label147
             // 
             this.label147.AutoSize = true;
-            this.label147.Location = new System.Drawing.Point(911, 11);
+            this.label147.Location = new System.Drawing.Point(779, 11);
             this.label147.Name = "label147";
             this.label147.Size = new System.Drawing.Size(248, 19);
             this.label147.TabIndex = 293;
@@ -7606,6 +7849,9 @@ namespace ContinuumNS
             // 
             // dataTerrainComplex
             // 
+            this.dataTerrainComplex.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataTerrainComplex.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataTerrainComplex.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column3,
@@ -7621,114 +7867,129 @@ namespace ContinuumNS
             this.Column12,
             this.Column13,
             this.Column14});
-            this.dataTerrainComplex.Location = new System.Drawing.Point(552, 72);
+            this.dataTerrainComplex.Location = new System.Drawing.Point(518, 86);
             this.dataTerrainComplex.Name = "dataTerrainComplex";
             this.dataTerrainComplex.ReadOnly = true;
+            this.dataTerrainComplex.RowHeadersWidth = 51;
             this.dataTerrainComplex.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dataTerrainComplex.Size = new System.Drawing.Size(1024, 637);
+            this.dataTerrainComplex.Size = new System.Drawing.Size(929, 533);
             this.dataTerrainComplex.TabIndex = 292;
             // 
             // Column3
             // 
             this.Column3.HeaderText = "Turbine";
+            this.Column3.MinimumWidth = 6;
             this.Column3.Name = "Column3";
             this.Column3.ReadOnly = true;
-            this.Column3.Width = 80;
+            this.Column3.Width = 60;
             // 
             // Column4
             // 
             this.Column4.HeaderText = "Elev. [m]";
+            this.Column4.MinimumWidth = 6;
             this.Column4.Name = "Column4";
             this.Column4.ReadOnly = true;
-            this.Column4.Width = 70;
+            this.Column4.Width = 65;
             // 
             // Column15
             // 
             this.Column15.HeaderText = "Complexity";
+            this.Column15.MinimumWidth = 6;
             this.Column15.Name = "Column15";
             this.Column15.ReadOnly = true;
+            this.Column15.Width = 90;
             // 
             // Column5
             // 
             this.Column5.HeaderText = "5h 360 TSI";
+            this.Column5.MinimumWidth = 6;
             this.Column5.Name = "Column5";
             this.Column5.ReadOnly = true;
-            this.Column5.Width = 80;
+            this.Column5.Width = 65;
             // 
             // Column6
             // 
-            dataGridViewCellStyle29.Format = "P";
-            dataGridViewCellStyle29.NullValue = null;
-            this.Column6.DefaultCellStyle = dataGridViewCellStyle29;
+            dataGridViewCellStyle5.Format = "P";
+            dataGridViewCellStyle5.NullValue = null;
+            this.Column6.DefaultCellStyle = dataGridViewCellStyle5;
             this.Column6.HeaderText = "5h 360 TVI";
+            this.Column6.MinimumWidth = 6;
             this.Column6.Name = "Column6";
             this.Column6.ReadOnly = true;
-            this.Column6.Width = 80;
+            this.Column6.Width = 65;
             // 
             // Column7
             // 
             this.Column7.HeaderText = "5h 30 TSI";
+            this.Column7.MinimumWidth = 6;
             this.Column7.Name = "Column7";
             this.Column7.ReadOnly = true;
-            this.Column7.Width = 80;
+            this.Column7.Width = 65;
             // 
             // Column8
             // 
-            dataGridViewCellStyle30.Format = "P";
-            dataGridViewCellStyle30.NullValue = null;
-            this.Column8.DefaultCellStyle = dataGridViewCellStyle30;
+            dataGridViewCellStyle6.Format = "P";
+            dataGridViewCellStyle6.NullValue = null;
+            this.Column8.DefaultCellStyle = dataGridViewCellStyle6;
             this.Column8.HeaderText = "5h 30 TVI";
+            this.Column8.MinimumWidth = 6;
             this.Column8.Name = "Column8";
             this.Column8.ReadOnly = true;
-            this.Column8.Width = 80;
+            this.Column8.Width = 65;
             // 
             // Column9
             // 
             this.Column9.HeaderText = "10h 30 TSI";
+            this.Column9.MinimumWidth = 6;
             this.Column9.Name = "Column9";
             this.Column9.ReadOnly = true;
-            this.Column9.Width = 80;
+            this.Column9.Width = 65;
             // 
             // Column10
             // 
-            dataGridViewCellStyle31.Format = "P";
-            dataGridViewCellStyle31.NullValue = null;
-            this.Column10.DefaultCellStyle = dataGridViewCellStyle31;
+            dataGridViewCellStyle7.Format = "P";
+            dataGridViewCellStyle7.NullValue = null;
+            this.Column10.DefaultCellStyle = dataGridViewCellStyle7;
             this.Column10.HeaderText = "10h 30 TVI";
+            this.Column10.MinimumWidth = 6;
             this.Column10.Name = "Column10";
             this.Column10.ReadOnly = true;
-            this.Column10.Width = 80;
+            this.Column10.Width = 65;
             // 
             // Column11
             // 
             this.Column11.HeaderText = "20h 30 TSI";
+            this.Column11.MinimumWidth = 6;
             this.Column11.Name = "Column11";
             this.Column11.ReadOnly = true;
-            this.Column11.Width = 80;
+            this.Column11.Width = 65;
             // 
             // Column12
             // 
-            dataGridViewCellStyle32.Format = "P";
-            dataGridViewCellStyle32.NullValue = null;
-            this.Column12.DefaultCellStyle = dataGridViewCellStyle32;
+            dataGridViewCellStyle8.Format = "P";
+            dataGridViewCellStyle8.NullValue = null;
+            this.Column12.DefaultCellStyle = dataGridViewCellStyle8;
             this.Column12.HeaderText = "20h 30 TVI";
+            this.Column12.MinimumWidth = 6;
             this.Column12.Name = "Column12";
             this.Column12.ReadOnly = true;
-            this.Column12.Width = 80;
+            this.Column12.Width = 65;
             // 
             // Column13
             // 
             this.Column13.HeaderText = "P10 UW Expo.";
+            this.Column13.MinimumWidth = 6;
             this.Column13.Name = "Column13";
             this.Column13.ReadOnly = true;
-            this.Column13.Width = 90;
+            this.Column13.Width = 75;
             // 
             // Column14
             // 
             this.Column14.HeaderText = "P10 DW Expo";
+            this.Column14.MinimumWidth = 6;
             this.Column14.Name = "Column14";
             this.Column14.ReadOnly = true;
-            this.Column14.Width = 90;
+            this.Column14.Width = 75;
             // 
             // label199
             // 
@@ -7768,10 +8029,12 @@ namespace ContinuumNS
             // 
             // plotInflowAngle
             // 
-            this.plotInflowAngle.Location = new System.Drawing.Point(58, 415);
+            this.plotInflowAngle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotInflowAngle.Location = new System.Drawing.Point(40, 419);
             this.plotInflowAngle.Name = "plotInflowAngle";
             this.plotInflowAngle.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotInflowAngle.Size = new System.Drawing.Size(444, 294);
+            this.plotInflowAngle.Size = new System.Drawing.Size(462, 195);
             this.plotInflowAngle.TabIndex = 286;
             this.plotInflowAngle.Text = "plotView1";
             this.plotInflowAngle.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -7834,7 +8097,7 @@ namespace ContinuumNS
             // 
             // btnInflowAngles
             // 
-            this.btnInflowAngles.Location = new System.Drawing.Point(1330, 14);
+            this.btnInflowAngles.Location = new System.Drawing.Point(1053, 17);
             this.btnInflowAngles.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnInflowAngles.Name = "btnInflowAngles";
             this.btnInflowAngles.Size = new System.Drawing.Size(119, 47);
@@ -7879,6 +8142,7 @@ namespace ContinuumNS
             // 
             // tabPage1
             // 
+            this.tabPage1.AutoScroll = true;
             this.tabPage1.Controls.Add(this.cboTI_TerrainComplexCorr);
             this.tabPage1.Controls.Add(this.chkApplyTCCtoEffTI);
             this.tabPage1.Controls.Add(this.label215);
@@ -7905,11 +8169,10 @@ namespace ContinuumNS
             this.tabPage1.Controls.Add(this.label93);
             this.tabPage1.Location = new System.Drawing.Point(4, 27);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(1591, 770);
+            this.tabPage1.Size = new System.Drawing.Size(1453, 626);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Turbulence Intensity";
             this.tabPage1.UseVisualStyleBackColor = true;
-            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
             // 
             // cboTI_TerrainComplexCorr
             // 
@@ -7919,7 +8182,7 @@ namespace ContinuumNS
             "1.05 - Low Complex ",
             "1.10 - Moderate Complex ",
             "1.15 - High Complex "});
-            this.cboTI_TerrainComplexCorr.Location = new System.Drawing.Point(268, 586);
+            this.cboTI_TerrainComplexCorr.Location = new System.Drawing.Point(252, 525);
             this.cboTI_TerrainComplexCorr.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTI_TerrainComplexCorr.Name = "cboTI_TerrainComplexCorr";
             this.cboTI_TerrainComplexCorr.Size = new System.Drawing.Size(235, 26);
@@ -7930,7 +8193,7 @@ namespace ContinuumNS
             // 
             this.chkApplyTCCtoEffTI.AutoSize = true;
             this.chkApplyTCCtoEffTI.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.chkApplyTCCtoEffTI.Location = new System.Drawing.Point(266, 558);
+            this.chkApplyTCCtoEffTI.Location = new System.Drawing.Point(250, 497);
             this.chkApplyTCCtoEffTI.Name = "chkApplyTCCtoEffTI";
             this.chkApplyTCCtoEffTI.Size = new System.Drawing.Size(238, 21);
             this.chkApplyTCCtoEffTI.TabIndex = 292;
@@ -7942,7 +8205,7 @@ namespace ContinuumNS
             // 
             this.label215.AutoSize = true;
             this.label215.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label215.Location = new System.Drawing.Point(269, 73);
+            this.label215.Location = new System.Drawing.Point(251, 31);
             this.label215.Name = "label215";
             this.label215.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.label215.Size = new System.Drawing.Size(104, 22);
@@ -7953,7 +8216,7 @@ namespace ContinuumNS
             // 
             this.label214.AutoSize = true;
             this.label214.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label214.Location = new System.Drawing.Point(272, 356);
+            this.label214.Location = new System.Drawing.Point(254, 302);
             this.label214.Name = "label214";
             this.label214.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.label214.Size = new System.Drawing.Size(166, 22);
@@ -7962,10 +8225,13 @@ namespace ContinuumNS
             // 
             // plotTurbInt
             // 
-            this.plotTurbInt.Location = new System.Drawing.Point(523, 79);
+            this.plotTurbInt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotTurbInt.Location = new System.Drawing.Point(507, 49);
             this.plotTurbInt.Name = "plotTurbInt";
             this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(1029, 626);
+            this.plotTurbInt.Size = new System.Drawing.Size(911, 621);
             this.plotTurbInt.TabIndex = 289;
             this.plotTurbInt.Text = "plotView1";
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -7974,10 +8240,10 @@ namespace ContinuumNS
             // 
             // btnExportTI
             // 
-            this.btnExportTI.Location = new System.Drawing.Point(274, 643);
+            this.btnExportTI.Location = new System.Drawing.Point(253, 565);
             this.btnExportTI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportTI.Name = "btnExportTI";
-            this.btnExportTI.Size = new System.Drawing.Size(87, 62);
+            this.btnExportTI.Size = new System.Drawing.Size(87, 42);
             this.btnExportTI.TabIndex = 288;
             this.btnExportTI.Text = "Export TI";
             this.btnExportTI.UseVisualStyleBackColor = true;
@@ -7987,7 +8253,7 @@ namespace ContinuumNS
             // 
             this.label188.AutoSize = true;
             this.label188.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label188.Location = new System.Drawing.Point(266, 395);
+            this.label188.Location = new System.Drawing.Point(250, 334);
             this.label188.Name = "label188";
             this.label188.Size = new System.Drawing.Size(93, 18);
             this.label188.TabIndex = 287;
@@ -7997,7 +8263,7 @@ namespace ContinuumNS
             // 
             this.cboTurbPowerCurve.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTurbPowerCurve.FormattingEnabled = true;
-            this.cboTurbPowerCurve.Location = new System.Drawing.Point(269, 417);
+            this.cboTurbPowerCurve.Location = new System.Drawing.Point(253, 356);
             this.cboTurbPowerCurve.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTurbPowerCurve.Name = "cboTurbPowerCurve";
             this.cboTurbPowerCurve.Size = new System.Drawing.Size(234, 26);
@@ -8008,7 +8274,7 @@ namespace ContinuumNS
             // 
             this.dateTIStart.CustomFormat = "MM/dd/yy";
             this.dateTIStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTIStart.Location = new System.Drawing.Point(321, 283);
+            this.dateTIStart.Location = new System.Drawing.Point(305, 222);
             this.dateTIStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTIStart.Name = "dateTIStart";
             this.dateTIStart.Size = new System.Drawing.Size(76, 25);
@@ -8019,18 +8285,17 @@ namespace ContinuumNS
             // 
             this.label186.AutoSize = true;
             this.label186.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label186.Location = new System.Drawing.Point(281, 322);
+            this.label186.Location = new System.Drawing.Point(265, 261);
             this.label186.Name = "label186";
             this.label186.Size = new System.Drawing.Size(34, 19);
             this.label186.TabIndex = 284;
             this.label186.Text = "To :";
-            this.label186.Click += new System.EventHandler(this.label186_Click);
             // 
             // label187
             // 
             this.label187.AutoSize = true;
             this.label187.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label187.Location = new System.Drawing.Point(264, 286);
+            this.label187.Location = new System.Drawing.Point(248, 225);
             this.label187.Name = "label187";
             this.label187.Size = new System.Drawing.Size(51, 19);
             this.label187.TabIndex = 283;
@@ -8040,7 +8305,7 @@ namespace ContinuumNS
             // 
             this.dateTIEnd.CustomFormat = "MM/dd/yy";
             this.dateTIEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTIEnd.Location = new System.Drawing.Point(321, 319);
+            this.dateTIEnd.Location = new System.Drawing.Point(305, 258);
             this.dateTIEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTIEnd.Name = "dateTIEnd";
             this.dateTIEnd.Size = new System.Drawing.Size(76, 25);
@@ -8054,7 +8319,7 @@ namespace ContinuumNS
             "Average",
             "Representative",
             "Effective"});
-            this.cboTurbineTI.Location = new System.Drawing.Point(269, 480);
+            this.cboTurbineTI.Location = new System.Drawing.Point(253, 419);
             this.cboTurbineTI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTurbineTI.Name = "cboTurbineTI";
             this.cboTurbineTI.Size = new System.Drawing.Size(234, 26);
@@ -8064,7 +8329,7 @@ namespace ContinuumNS
             // label179
             // 
             this.label179.AutoSize = true;
-            this.label179.Location = new System.Drawing.Point(265, 457);
+            this.label179.Location = new System.Drawing.Point(249, 396);
             this.label179.Name = "label179";
             this.label179.Size = new System.Drawing.Size(67, 19);
             this.label179.TabIndex = 280;
@@ -8073,7 +8338,7 @@ namespace ContinuumNS
             // label178
             // 
             this.label178.AutoSize = true;
-            this.label178.Location = new System.Drawing.Point(295, 519);
+            this.label178.Location = new System.Drawing.Point(279, 458);
             this.label178.Name = "label178";
             this.label178.Size = new System.Drawing.Size(147, 19);
             this.label178.TabIndex = 279;
@@ -8085,7 +8350,7 @@ namespace ContinuumNS
             this.cboEffectiveTI_m.Items.AddRange(new object[] {
             "1",
             "10"});
-            this.cboEffectiveTI_m.Location = new System.Drawing.Point(448, 516);
+            this.cboEffectiveTI_m.Location = new System.Drawing.Point(432, 458);
             this.cboEffectiveTI_m.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboEffectiveTI_m.Name = "cboEffectiveTI_m";
             this.cboEffectiveTI_m.Size = new System.Drawing.Size(55, 26);
@@ -8099,7 +8364,7 @@ namespace ContinuumNS
             "Average",
             "Representative",
             "Effective"});
-            this.cboTI_Type.Location = new System.Drawing.Point(269, 196);
+            this.cboTI_Type.Location = new System.Drawing.Point(253, 135);
             this.cboTI_Type.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTI_Type.Name = "cboTI_Type";
             this.cboTI_Type.Size = new System.Drawing.Size(234, 26);
@@ -8109,7 +8374,7 @@ namespace ContinuumNS
             // label177
             // 
             this.label177.AutoSize = true;
-            this.label177.Location = new System.Drawing.Point(265, 173);
+            this.label177.Location = new System.Drawing.Point(249, 112);
             this.label177.Name = "label177";
             this.label177.Size = new System.Drawing.Size(66, 19);
             this.label177.TabIndex = 276;
@@ -8117,6 +8382,8 @@ namespace ContinuumNS
             // 
             // lstTurbulence
             // 
+            this.lstTurbulence.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstTurbulence.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader177,
             this.columnHeader178,
@@ -8124,10 +8391,10 @@ namespace ContinuumNS
             this.lstTurbulence.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstTurbulence.GridLines = true;
             this.lstTurbulence.HideSelection = false;
-            this.lstTurbulence.Location = new System.Drawing.Point(35, 96);
+            this.lstTurbulence.Location = new System.Drawing.Point(19, 66);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 609);
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 628);
             this.lstTurbulence.TabIndex = 275;
             this.lstTurbulence.UseCompatibleStateImageBehavior = false;
             this.lstTurbulence.View = System.Windows.Forms.View.Details;
@@ -8151,7 +8418,7 @@ namespace ContinuumNS
             // label174
             // 
             this.label174.AutoSize = true;
-            this.label174.Location = new System.Drawing.Point(268, 104);
+            this.label174.Location = new System.Drawing.Point(252, 60);
             this.label174.Name = "label174";
             this.label174.Size = new System.Drawing.Size(64, 19);
             this.label174.TabIndex = 274;
@@ -8160,7 +8427,7 @@ namespace ContinuumNS
             // cboTurbMet
             // 
             this.cboTurbMet.FormattingEnabled = true;
-            this.cboTurbMet.Location = new System.Drawing.Point(269, 127);
+            this.cboTurbMet.Location = new System.Drawing.Point(253, 83);
             this.cboTurbMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTurbMet.Name = "cboTurbMet";
             this.cboTurbMet.Size = new System.Drawing.Size(234, 26);
@@ -8170,7 +8437,7 @@ namespace ContinuumNS
             // label172
             // 
             this.label172.AutoSize = true;
-            this.label172.Location = new System.Drawing.Point(265, 244);
+            this.label172.Location = new System.Drawing.Point(249, 183);
             this.label172.Name = "label172";
             this.label172.Size = new System.Drawing.Size(42, 19);
             this.label172.TabIndex = 272;
@@ -8179,7 +8446,7 @@ namespace ContinuumNS
             // cboTurbWD
             // 
             this.cboTurbWD.FormattingEnabled = true;
-            this.cboTurbWD.Location = new System.Drawing.Point(313, 241);
+            this.cboTurbWD.Location = new System.Drawing.Point(297, 180);
             this.cboTurbWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTurbWD.Name = "cboTurbWD";
             this.cboTurbWD.Size = new System.Drawing.Size(84, 26);
@@ -8190,7 +8457,7 @@ namespace ContinuumNS
             // 
             this.label93.AutoSize = true;
             this.label93.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label93.Location = new System.Drawing.Point(42, 48);
+            this.label93.Location = new System.Drawing.Point(26, 18);
             this.label93.Name = "label93";
             this.label93.Size = new System.Drawing.Size(191, 23);
             this.label93.TabIndex = 270;
@@ -8198,6 +8465,7 @@ namespace ContinuumNS
             // 
             // tabPage3
             // 
+            this.tabPage3.AutoScroll = true;
             this.tabPage3.Controls.Add(this.btnEditShearFromSiteConds);
             this.tabPage3.Controls.Add(this.txtShearCalcMethodExtremeTab);
             this.tabPage3.Controls.Add(this.txtMaxHeight);
@@ -8221,7 +8489,7 @@ namespace ContinuumNS
             this.tabPage3.Controls.Add(this.label95);
             this.tabPage3.Location = new System.Drawing.Point(4, 27);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1591, 770);
+            this.tabPage3.Size = new System.Drawing.Size(1453, 626);
             this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Extreme Shear";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -8229,7 +8497,7 @@ namespace ContinuumNS
             // btnEditShearFromSiteConds
             // 
             this.btnEditShearFromSiteConds.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.btnEditShearFromSiteConds.Location = new System.Drawing.Point(405, 178);
+            this.btnEditShearFromSiteConds.Location = new System.Drawing.Point(380, 148);
             this.btnEditShearFromSiteConds.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnEditShearFromSiteConds.Name = "btnEditShearFromSiteConds";
             this.btnEditShearFromSiteConds.Size = new System.Drawing.Size(46, 25);
@@ -8240,7 +8508,7 @@ namespace ContinuumNS
             // 
             // txtShearCalcMethodExtremeTab
             // 
-            this.txtShearCalcMethodExtremeTab.Location = new System.Drawing.Point(63, 178);
+            this.txtShearCalcMethodExtremeTab.Location = new System.Drawing.Point(38, 148);
             this.txtShearCalcMethodExtremeTab.Name = "txtShearCalcMethodExtremeTab";
             this.txtShearCalcMethodExtremeTab.ReadOnly = true;
             this.txtShearCalcMethodExtremeTab.Size = new System.Drawing.Size(327, 25);
@@ -8249,7 +8517,7 @@ namespace ContinuumNS
             // txtMaxHeight
             // 
             this.txtMaxHeight.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxHeight.Location = new System.Drawing.Point(337, 215);
+            this.txtMaxHeight.Location = new System.Drawing.Point(312, 185);
             this.txtMaxHeight.Name = "txtMaxHeight";
             this.txtMaxHeight.ReadOnly = true;
             this.txtMaxHeight.Size = new System.Drawing.Size(53, 23);
@@ -8258,7 +8526,7 @@ namespace ContinuumNS
             // txtMinHeight
             // 
             this.txtMinHeight.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinHeight.Location = new System.Drawing.Point(161, 215);
+            this.txtMinHeight.Location = new System.Drawing.Point(136, 185);
             this.txtMinHeight.Name = "txtMinHeight";
             this.txtMinHeight.ReadOnly = true;
             this.txtMinHeight.Size = new System.Drawing.Size(53, 23);
@@ -8268,7 +8536,7 @@ namespace ContinuumNS
             // 
             this.label228.AutoSize = true;
             this.label228.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label228.Location = new System.Drawing.Point(227, 218);
+            this.label228.Location = new System.Drawing.Point(202, 188);
             this.label228.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label228.Name = "label228";
             this.label228.Size = new System.Drawing.Size(105, 17);
@@ -8279,7 +8547,7 @@ namespace ContinuumNS
             // 
             this.label229.AutoSize = true;
             this.label229.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label229.Location = new System.Drawing.Point(61, 218);
+            this.label229.Location = new System.Drawing.Point(36, 188);
             this.label229.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label229.Name = "label229";
             this.label229.Size = new System.Drawing.Size(102, 17);
@@ -8290,7 +8558,7 @@ namespace ContinuumNS
             // 
             this.label230.AutoSize = true;
             this.label230.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label230.Location = new System.Drawing.Point(63, 156);
+            this.label230.Location = new System.Drawing.Point(38, 126);
             this.label230.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label230.Name = "label230";
             this.label230.Size = new System.Drawing.Size(150, 16);
@@ -8299,10 +8567,10 @@ namespace ContinuumNS
             // 
             // btnExportShearHisto
             // 
-            this.btnExportShearHisto.Location = new System.Drawing.Point(301, 640);
+            this.btnExportShearHisto.Location = new System.Drawing.Point(370, 505);
             this.btnExportShearHisto.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportShearHisto.Name = "btnExportShearHisto";
-            this.btnExportShearHisto.Size = new System.Drawing.Size(101, 66);
+            this.btnExportShearHisto.Size = new System.Drawing.Size(101, 54);
             this.btnExportShearHisto.TabIndex = 293;
             this.btnExportShearHisto.Text = "Export Shear Histogram";
             this.btnExportShearHisto.UseVisualStyleBackColor = true;
@@ -8310,10 +8578,13 @@ namespace ContinuumNS
             // 
             // plotExtremeShear
             // 
-            this.plotExtremeShear.Location = new System.Drawing.Point(513, 74);
+            this.plotExtremeShear.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotExtremeShear.Location = new System.Drawing.Point(502, 31);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeShear.Size = new System.Drawing.Size(1029, 626);
+            this.plotExtremeShear.Size = new System.Drawing.Size(914, 619);
             this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8324,7 +8595,7 @@ namespace ContinuumNS
             // 
             this.dateTimeExtremeShearStart.CustomFormat = "MM/dd/yy";
             this.dateTimeExtremeShearStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimeExtremeShearStart.Location = new System.Drawing.Point(192, 323);
+            this.dateTimeExtremeShearStart.Location = new System.Drawing.Point(167, 293);
             this.dateTimeExtremeShearStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTimeExtremeShearStart.Name = "dateTimeExtremeShearStart";
             this.dateTimeExtremeShearStart.Size = new System.Drawing.Size(76, 25);
@@ -8335,7 +8606,7 @@ namespace ContinuumNS
             // 
             this.label202.AutoSize = true;
             this.label202.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label202.Location = new System.Drawing.Point(148, 363);
+            this.label202.Location = new System.Drawing.Point(123, 333);
             this.label202.Name = "label202";
             this.label202.Size = new System.Drawing.Size(34, 19);
             this.label202.TabIndex = 290;
@@ -8345,7 +8616,7 @@ namespace ContinuumNS
             // 
             this.label203.AutoSize = true;
             this.label203.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label203.Location = new System.Drawing.Point(134, 326);
+            this.label203.Location = new System.Drawing.Point(109, 296);
             this.label203.Name = "label203";
             this.label203.Size = new System.Drawing.Size(51, 19);
             this.label203.TabIndex = 289;
@@ -8355,7 +8626,7 @@ namespace ContinuumNS
             // 
             this.dateTimeExtremeShearEnd.CustomFormat = "MM/dd/yy";
             this.dateTimeExtremeShearEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateTimeExtremeShearEnd.Location = new System.Drawing.Point(192, 360);
+            this.dateTimeExtremeShearEnd.Location = new System.Drawing.Point(167, 330);
             this.dateTimeExtremeShearEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateTimeExtremeShearEnd.Name = "dateTimeExtremeShearEnd";
             this.dateTimeExtremeShearEnd.Size = new System.Drawing.Size(76, 25);
@@ -8366,7 +8637,7 @@ namespace ContinuumNS
             // 
             this.label201.AutoSize = true;
             this.label201.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label201.Location = new System.Drawing.Point(42, 412);
+            this.label201.Location = new System.Drawing.Point(17, 382);
             this.label201.Name = "label201";
             this.label201.Size = new System.Drawing.Size(175, 19);
             this.label201.TabIndex = 287;
@@ -8375,7 +8646,7 @@ namespace ContinuumNS
             // label190
             // 
             this.label190.AutoSize = true;
-            this.label190.Location = new System.Drawing.Point(56, 280);
+            this.label190.Location = new System.Drawing.Point(31, 250);
             this.label190.Name = "label190";
             this.label190.Size = new System.Drawing.Size(135, 19);
             this.label190.TabIndex = 286;
@@ -8389,7 +8660,7 @@ namespace ContinuumNS
             "10 - 15 m/s",
             "15+ m/s",
             "All > Cut-In"});
-            this.cboExtremeShearRange.Location = new System.Drawing.Point(197, 276);
+            this.cboExtremeShearRange.Location = new System.Drawing.Point(172, 246);
             this.cboExtremeShearRange.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeShearRange.Name = "cboExtremeShearRange";
             this.cboExtremeShearRange.Size = new System.Drawing.Size(132, 26);
@@ -8399,7 +8670,7 @@ namespace ContinuumNS
             // label189
             // 
             this.label189.AutoSize = true;
-            this.label189.Location = new System.Drawing.Point(56, 86);
+            this.label189.Location = new System.Drawing.Point(31, 56);
             this.label189.Name = "label189";
             this.label189.Size = new System.Drawing.Size(41, 19);
             this.label189.TabIndex = 284;
@@ -8408,7 +8679,7 @@ namespace ContinuumNS
             // cboExtremeShearMet
             // 
             this.cboExtremeShearMet.FormattingEnabled = true;
-            this.cboExtremeShearMet.Location = new System.Drawing.Point(60, 109);
+            this.cboExtremeShearMet.Location = new System.Drawing.Point(35, 79);
             this.cboExtremeShearMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeShearMet.Name = "cboExtremeShearMet";
             this.cboExtremeShearMet.Size = new System.Drawing.Size(320, 26);
@@ -8417,10 +8688,10 @@ namespace ContinuumNS
             // 
             // btnExportShearStats
             // 
-            this.btnExportShearStats.Location = new System.Drawing.Point(178, 640);
+            this.btnExportShearStats.Location = new System.Drawing.Point(370, 443);
             this.btnExportShearStats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportShearStats.Name = "btnExportShearStats";
-            this.btnExportShearStats.Size = new System.Drawing.Size(101, 66);
+            this.btnExportShearStats.Size = new System.Drawing.Size(101, 54);
             this.btnExportShearStats.TabIndex = 282;
             this.btnExportShearStats.Text = "Export Shear Stats";
             this.btnExportShearStats.UseVisualStyleBackColor = true;
@@ -8437,7 +8708,7 @@ namespace ContinuumNS
             this.lstExtremeShear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstExtremeShear.GridLines = true;
             this.lstExtremeShear.HideSelection = false;
-            this.lstExtremeShear.Location = new System.Drawing.Point(46, 447);
+            this.lstExtremeShear.Location = new System.Drawing.Point(21, 417);
             this.lstExtremeShear.Margin = new System.Windows.Forms.Padding(2);
             this.lstExtremeShear.Name = "lstExtremeShear";
             this.lstExtremeShear.Size = new System.Drawing.Size(334, 142);
@@ -8474,7 +8745,7 @@ namespace ContinuumNS
             // 
             this.label95.AutoSize = true;
             this.label95.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label95.Location = new System.Drawing.Point(42, 48);
+            this.label95.Location = new System.Drawing.Point(17, 18);
             this.label95.Name = "label95";
             this.label95.Size = new System.Drawing.Size(193, 23);
             this.label95.TabIndex = 280;
@@ -8482,6 +8753,7 @@ namespace ContinuumNS
             // 
             // tabPage4
             // 
+            this.tabPage4.AutoScroll = true;
             this.tabPage4.Controls.Add(this.btnExportExtremeWSTable);
             this.tabPage4.Controls.Add(this.txtWMO_Desc);
             this.tabPage4.Controls.Add(this.label242);
@@ -8531,15 +8803,15 @@ namespace ContinuumNS
             this.tabPage4.Controls.Add(this.label170);
             this.tabPage4.Location = new System.Drawing.Point(4, 27);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1591, 770);
+            this.tabPage4.Size = new System.Drawing.Size(1453, 626);
             this.tabPage4.TabIndex = 4;
             this.tabPage4.Text = "Extreme WS";
             this.tabPage4.UseVisualStyleBackColor = true;
-            this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
             // 
             // btnExportExtremeWSTable
             // 
-            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(822, 688);
+            this.btnExportExtremeWSTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(485, 655);
             this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
             this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
@@ -8551,7 +8823,7 @@ namespace ContinuumNS
             // txtWMO_Desc
             // 
             this.txtWMO_Desc.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.txtWMO_Desc.Location = new System.Drawing.Point(179, 276);
+            this.txtWMO_Desc.Location = new System.Drawing.Point(170, 240);
             this.txtWMO_Desc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtWMO_Desc.Name = "txtWMO_Desc";
             this.txtWMO_Desc.ReadOnly = true;
@@ -8562,7 +8834,7 @@ namespace ContinuumNS
             // 
             this.label242.AutoSize = true;
             this.label242.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.label242.Location = new System.Drawing.Point(193, 309);
+            this.label242.Location = new System.Drawing.Point(184, 273);
             this.label242.Name = "label242";
             this.label242.Size = new System.Drawing.Size(75, 16);
             this.label242.TabIndex = 322;
@@ -8571,7 +8843,7 @@ namespace ContinuumNS
             // txtWMO_HourGust
             // 
             this.txtWMO_HourGust.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.txtWMO_HourGust.Location = new System.Drawing.Point(270, 306);
+            this.txtWMO_HourGust.Location = new System.Drawing.Point(261, 270);
             this.txtWMO_HourGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtWMO_HourGust.Name = "txtWMO_HourGust";
             this.txtWMO_HourGust.ReadOnly = true;
@@ -8582,29 +8854,27 @@ namespace ContinuumNS
             // 
             this.label243.AutoSize = true;
             this.label243.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.label243.Location = new System.Drawing.Point(29, 309);
+            this.label243.Location = new System.Drawing.Point(20, 273);
             this.label243.Name = "label243";
             this.label243.Size = new System.Drawing.Size(82, 16);
             this.label243.TabIndex = 320;
             this.label243.Text = "Hour-to-10min:";
-            this.label243.Click += new System.EventHandler(this.label243_Click);
             // 
             // txtWMO_HourTenMin
             // 
             this.txtWMO_HourTenMin.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.txtWMO_HourTenMin.Location = new System.Drawing.Point(114, 306);
+            this.txtWMO_HourTenMin.Location = new System.Drawing.Point(105, 270);
             this.txtWMO_HourTenMin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtWMO_HourTenMin.Name = "txtWMO_HourTenMin";
             this.txtWMO_HourTenMin.ReadOnly = true;
             this.txtWMO_HourTenMin.Size = new System.Drawing.Size(65, 22);
             this.txtWMO_HourTenMin.TabIndex = 319;
-            this.txtWMO_HourTenMin.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // label241
             // 
             this.label241.AutoSize = true;
             this.label241.Font = new System.Drawing.Font("Palatino Linotype", 8F, System.Drawing.FontStyle.Underline);
-            this.label241.Location = new System.Drawing.Point(50, 257);
+            this.label241.Location = new System.Drawing.Point(41, 221);
             this.label241.Name = "label241";
             this.label241.Size = new System.Drawing.Size(147, 16);
             this.label241.TabIndex = 317;
@@ -8614,7 +8884,7 @@ namespace ContinuumNS
             // 
             this.chkUseWMO_TenMin.AutoSize = true;
             this.chkUseWMO_TenMin.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.chkUseWMO_TenMin.Location = new System.Drawing.Point(43, 547);
+            this.chkUseWMO_TenMin.Location = new System.Drawing.Point(34, 496);
             this.chkUseWMO_TenMin.Name = "chkUseWMO_TenMin";
             this.chkUseWMO_TenMin.Size = new System.Drawing.Size(189, 20);
             this.chkUseWMO_TenMin.TabIndex = 316;
@@ -8626,7 +8896,7 @@ namespace ContinuumNS
             // 
             this.label240.AutoSize = true;
             this.label240.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.label240.Location = new System.Drawing.Point(21, 280);
+            this.label240.Location = new System.Drawing.Point(12, 244);
             this.label240.Name = "label240";
             this.label240.Size = new System.Drawing.Size(39, 16);
             this.label240.TabIndex = 315;
@@ -8636,7 +8906,7 @@ namespace ContinuumNS
             // 
             this.cboWMO_Class.Font = new System.Drawing.Font("Palatino Linotype", 8F);
             this.cboWMO_Class.FormattingEnabled = true;
-            this.cboWMO_Class.Location = new System.Drawing.Point(64, 277);
+            this.cboWMO_Class.Location = new System.Drawing.Point(55, 241);
             this.cboWMO_Class.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboWMO_Class.Name = "cboWMO_Class";
             this.cboWMO_Class.Size = new System.Drawing.Size(101, 24);
@@ -8647,7 +8917,7 @@ namespace ContinuumNS
             // 
             this.chkUseWMO_Gust.AutoSize = true;
             this.chkUseWMO_Gust.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.chkUseWMO_Gust.Location = new System.Drawing.Point(43, 375);
+            this.chkUseWMO_Gust.Location = new System.Drawing.Point(34, 335);
             this.chkUseWMO_Gust.Name = "chkUseWMO_Gust";
             this.chkUseWMO_Gust.Size = new System.Drawing.Size(189, 20);
             this.chkUseWMO_Gust.TabIndex = 313;
@@ -8659,7 +8929,7 @@ namespace ContinuumNS
             // 
             this.chkExtremeWS_ShowLegend.AutoSize = true;
             this.chkExtremeWS_ShowLegend.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.chkExtremeWS_ShowLegend.Location = new System.Drawing.Point(1472, 8);
+            this.chkExtremeWS_ShowLegend.Location = new System.Drawing.Point(1335, 8);
             this.chkExtremeWS_ShowLegend.Name = "chkExtremeWS_ShowLegend";
             this.chkExtremeWS_ShowLegend.Size = new System.Drawing.Size(96, 20);
             this.chkExtremeWS_ShowLegend.TabIndex = 312;
@@ -8671,7 +8941,7 @@ namespace ContinuumNS
             // 
             this.label239.AutoSize = true;
             this.label239.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label239.Location = new System.Drawing.Point(176, 113);
+            this.label239.Location = new System.Drawing.Point(167, 88);
             this.label239.Name = "label239";
             this.label239.Size = new System.Drawing.Size(20, 18);
             this.label239.TabIndex = 311;
@@ -8682,7 +8952,7 @@ namespace ContinuumNS
             // 
             this.dateExtremeWS_End.CustomFormat = "MM/dd/yy HH:mm";
             this.dateExtremeWS_End.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateExtremeWS_End.Location = new System.Drawing.Point(199, 110);
+            this.dateExtremeWS_End.Location = new System.Drawing.Point(190, 85);
             this.dateExtremeWS_End.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateExtremeWS_End.Name = "dateExtremeWS_End";
             this.dateExtremeWS_End.Size = new System.Drawing.Size(129, 25);
@@ -8693,7 +8963,7 @@ namespace ContinuumNS
             // 
             this.dateExtremeWS_Start.CustomFormat = "MM/dd/yy HH:mm";
             this.dateExtremeWS_Start.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateExtremeWS_Start.Location = new System.Drawing.Point(43, 110);
+            this.dateExtremeWS_Start.Location = new System.Drawing.Point(34, 85);
             this.dateExtremeWS_Start.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateExtremeWS_Start.Name = "dateExtremeWS_Start";
             this.dateExtremeWS_Start.Size = new System.Drawing.Size(129, 25);
@@ -8705,7 +8975,7 @@ namespace ContinuumNS
             this.lblGustExtremeWSUnavailable.AutoSize = true;
             this.lblGustExtremeWSUnavailable.Font = new System.Drawing.Font("Palatino Linotype", 9F);
             this.lblGustExtremeWSUnavailable.ForeColor = System.Drawing.Color.Red;
-            this.lblGustExtremeWSUnavailable.Location = new System.Drawing.Point(29, 504);
+            this.lblGustExtremeWSUnavailable.Location = new System.Drawing.Point(20, 450);
             this.lblGustExtremeWSUnavailable.Name = "lblGustExtremeWSUnavailable";
             this.lblGustExtremeWSUnavailable.Size = new System.Drawing.Size(314, 17);
             this.lblGustExtremeWSUnavailable.TabIndex = 307;
@@ -8714,7 +8984,7 @@ namespace ContinuumNS
             // label238
             // 
             this.label238.AutoSize = true;
-            this.label238.Location = new System.Drawing.Point(50, 228);
+            this.label238.Location = new System.Drawing.Point(41, 192);
             this.label238.Name = "label238";
             this.label238.Size = new System.Drawing.Size(169, 19);
             this.label238.TabIndex = 306;
@@ -8723,7 +8993,7 @@ namespace ContinuumNS
             // cboExtremeWS_Height
             // 
             this.cboExtremeWS_Height.FormattingEnabled = true;
-            this.cboExtremeWS_Height.Location = new System.Drawing.Point(225, 225);
+            this.cboExtremeWS_Height.Location = new System.Drawing.Point(216, 189);
             this.cboExtremeWS_Height.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeWS_Height.Name = "cboExtremeWS_Height";
             this.cboExtremeWS_Height.Size = new System.Drawing.Size(92, 26);
@@ -8733,7 +9003,7 @@ namespace ContinuumNS
             // label235
             // 
             this.label235.AutoSize = true;
-            this.label235.Location = new System.Drawing.Point(181, 405);
+            this.label235.Location = new System.Drawing.Point(172, 365);
             this.label235.Name = "label235";
             this.label235.Size = new System.Drawing.Size(26, 19);
             this.label235.TabIndex = 304;
@@ -8741,17 +9011,16 @@ namespace ContinuumNS
             // 
             // txtGumbelGustMu
             // 
-            this.txtGumbelGustMu.Location = new System.Drawing.Point(219, 402);
+            this.txtGumbelGustMu.Location = new System.Drawing.Point(210, 362);
             this.txtGumbelGustMu.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtGumbelGustMu.Name = "txtGumbelGustMu";
             this.txtGumbelGustMu.Size = new System.Drawing.Size(83, 25);
             this.txtGumbelGustMu.TabIndex = 303;
-            this.txtGumbelGustMu.TextChanged += new System.EventHandler(this.txtGumbelGustMu_TextChanged);
             // 
             // label236
             // 
             this.label236.AutoSize = true;
-            this.label236.Location = new System.Drawing.Point(50, 405);
+            this.label236.Location = new System.Drawing.Point(41, 365);
             this.label236.Name = "label236";
             this.label236.Size = new System.Drawing.Size(26, 19);
             this.label236.TabIndex = 302;
@@ -8759,7 +9028,7 @@ namespace ContinuumNS
             // 
             // txtGumbelGustBeta
             // 
-            this.txtGumbelGustBeta.Location = new System.Drawing.Point(82, 402);
+            this.txtGumbelGustBeta.Location = new System.Drawing.Point(73, 362);
             this.txtGumbelGustBeta.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtGumbelGustBeta.Name = "txtGumbelGustBeta";
             this.txtGumbelGustBeta.Size = new System.Drawing.Size(83, 25);
@@ -8769,7 +9038,7 @@ namespace ContinuumNS
             // 
             this.label234.AutoSize = true;
             this.label234.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Underline);
-            this.label234.Location = new System.Drawing.Point(51, 523);
+            this.label234.Location = new System.Drawing.Point(42, 472);
             this.label234.Name = "label234";
             this.label234.Size = new System.Drawing.Size(221, 19);
             this.label234.TabIndex = 300;
@@ -8778,7 +9047,7 @@ namespace ContinuumNS
             // label233
             // 
             this.label233.AutoSize = true;
-            this.label233.Location = new System.Drawing.Point(178, 578);
+            this.label233.Location = new System.Drawing.Point(169, 527);
             this.label233.Name = "label233";
             this.label233.Size = new System.Drawing.Size(26, 19);
             this.label233.TabIndex = 299;
@@ -8786,7 +9055,7 @@ namespace ContinuumNS
             // 
             // txtGumbelTenMinMu
             // 
-            this.txtGumbelTenMinMu.Location = new System.Drawing.Point(219, 578);
+            this.txtGumbelTenMinMu.Location = new System.Drawing.Point(210, 527);
             this.txtGumbelTenMinMu.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtGumbelTenMinMu.Name = "txtGumbelTenMinMu";
             this.txtGumbelTenMinMu.Size = new System.Drawing.Size(83, 25);
@@ -8795,7 +9064,7 @@ namespace ContinuumNS
             // label232
             // 
             this.label232.AutoSize = true;
-            this.label232.Location = new System.Drawing.Point(47, 578);
+            this.label232.Location = new System.Drawing.Point(38, 527);
             this.label232.Name = "label232";
             this.label232.Size = new System.Drawing.Size(26, 19);
             this.label232.TabIndex = 297;
@@ -8805,7 +9074,7 @@ namespace ContinuumNS
             // 
             this.label231.AutoSize = true;
             this.label231.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Underline);
-            this.label231.Location = new System.Drawing.Point(47, 348);
+            this.label231.Location = new System.Drawing.Point(38, 308);
             this.label231.Name = "label231";
             this.label231.Size = new System.Drawing.Size(203, 19);
             this.label231.TabIndex = 296;
@@ -8813,18 +9082,17 @@ namespace ContinuumNS
             // 
             // txtGumbelTenMinBeta
             // 
-            this.txtGumbelTenMinBeta.Location = new System.Drawing.Point(82, 578);
+            this.txtGumbelTenMinBeta.Location = new System.Drawing.Point(73, 527);
             this.txtGumbelTenMinBeta.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtGumbelTenMinBeta.Name = "txtGumbelTenMinBeta";
             this.txtGumbelTenMinBeta.Size = new System.Drawing.Size(83, 25);
             this.txtGumbelTenMinBeta.TabIndex = 295;
-            this.txtGumbelTenMinBeta.TextChanged += new System.EventHandler(this.txtGumbelTenMinAlpha_TextChanged);
             // 
             // chkUseSimData
             // 
             this.chkUseSimData.AutoSize = true;
             this.chkUseSimData.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.chkUseSimData.Location = new System.Drawing.Point(55, 147);
+            this.chkUseSimData.Location = new System.Drawing.Point(46, 122);
             this.chkUseSimData.Name = "chkUseSimData";
             this.chkUseSimData.Size = new System.Drawing.Size(288, 20);
             this.chkUseSimData.TabIndex = 294;
@@ -8834,10 +9102,13 @@ namespace ContinuumNS
             // 
             // plotExtremeWS_TS
             // 
-            this.plotExtremeWS_TS.Location = new System.Drawing.Point(957, 34);
+            this.plotExtremeWS_TS.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotExtremeWS_TS.Location = new System.Drawing.Point(921, 34);
             this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
             this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS_TS.Size = new System.Drawing.Size(611, 311);
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 305);
             this.plotExtremeWS_TS.TabIndex = 293;
             this.plotExtremeWS_TS.Text = "plotView1";
             this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8846,6 +9117,8 @@ namespace ContinuumNS
             // 
             // dataExtremeWS
             // 
+            this.dataExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.dataExtremeWS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataExtremeWS.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column17,
@@ -8855,14 +9128,16 @@ namespace ContinuumNS
             this.Column2,
             this.Column19,
             this.Column16});
-            this.dataExtremeWS.Location = new System.Drawing.Point(358, 34);
+            this.dataExtremeWS.Location = new System.Drawing.Point(359, 16);
             this.dataExtremeWS.Name = "dataExtremeWS";
-            this.dataExtremeWS.Size = new System.Drawing.Size(584, 636);
+            this.dataExtremeWS.RowHeadersWidth = 51;
+            this.dataExtremeWS.Size = new System.Drawing.Size(539, 615);
             this.dataExtremeWS.TabIndex = 292;
             // 
             // Column17
             // 
             this.Column17.HeaderText = "Year";
+            this.Column17.MinimumWidth = 6;
             this.Column17.Name = "Column17";
             this.Column17.ReadOnly = true;
             this.Column17.Width = 50;
@@ -8870,46 +9145,52 @@ namespace ContinuumNS
             // Column1
             // 
             this.Column1.HeaderText = "Max. Yearly Ref. Hourly WS [m/s]";
+            this.Column1.MinimumWidth = 6;
             this.Column1.Name = "Column1";
             this.Column1.ReadOnly = true;
-            this.Column1.Width = 80;
+            this.Column1.Width = 70;
             // 
             // Column20
             // 
             this.Column20.HeaderText = "Max. Yearly Ref. Hourly WS Conc. With Met [m/s]";
+            this.Column20.MinimumWidth = 6;
             this.Column20.Name = "Column20";
             this.Column20.Width = 95;
             // 
             // Column18
             // 
             this.Column18.HeaderText = "Max. Yearly Actual 10-min WS [m/s]";
+            this.Column18.MinimumWidth = 6;
             this.Column18.Name = "Column18";
-            this.Column18.Width = 80;
+            this.Column18.Width = 70;
             // 
             // Column2
             // 
             this.Column2.HeaderText = "Max. Yearly Est. 10-min WS [m/s]";
+            this.Column2.MinimumWidth = 6;
             this.Column2.Name = "Column2";
             this.Column2.ReadOnly = true;
-            this.Column2.Width = 80;
+            this.Column2.Width = 70;
             // 
             // Column19
             // 
             this.Column19.HeaderText = "Max. Yearly Actual Gust WS [m/s]";
+            this.Column19.MinimumWidth = 6;
             this.Column19.Name = "Column19";
-            this.Column19.Width = 80;
+            this.Column19.Width = 70;
             // 
             // Column16
             // 
             this.Column16.HeaderText = "Max Yearly Est. Gust WS [m/s]";
+            this.Column16.MinimumWidth = 6;
             this.Column16.Name = "Column16";
             this.Column16.ReadOnly = true;
-            this.Column16.Width = 80;
+            this.Column16.Width = 70;
             // 
             // label195
             // 
             this.label195.AutoSize = true;
-            this.label195.Location = new System.Drawing.Point(47, 48);
+            this.label195.Location = new System.Drawing.Point(13, 49);
             this.label195.Name = "label195";
             this.label195.Size = new System.Drawing.Size(41, 19);
             this.label195.TabIndex = 290;
@@ -8918,7 +9199,7 @@ namespace ContinuumNS
             // label103
             // 
             this.label103.AutoSize = true;
-            this.label103.Location = new System.Drawing.Point(49, 167);
+            this.label103.Location = new System.Drawing.Point(13, 155);
             this.label103.Name = "label103";
             this.label103.Size = new System.Drawing.Size(75, 19);
             this.label103.TabIndex = 289;
@@ -8927,19 +9208,21 @@ namespace ContinuumNS
             // cboExtremeWSRef
             // 
             this.cboExtremeWSRef.FormattingEnabled = true;
-            this.cboExtremeWSRef.Location = new System.Drawing.Point(51, 190);
+            this.cboExtremeWSRef.Location = new System.Drawing.Point(94, 152);
             this.cboExtremeWSRef.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeWSRef.Name = "cboExtremeWSRef";
-            this.cboExtremeWSRef.Size = new System.Drawing.Size(266, 26);
+            this.cboExtremeWSRef.Size = new System.Drawing.Size(232, 26);
             this.cboExtremeWSRef.TabIndex = 288;
             this.cboExtremeWSRef.SelectedIndexChanged += new System.EventHandler(this.cboExtremeWSRef_SelectedIndexChanged);
             // 
             // plotExtremeWS
             // 
-            this.plotExtremeWS.Location = new System.Drawing.Point(957, 359);
+            this.plotExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotExtremeWS.Location = new System.Drawing.Point(921, 335);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(611, 311);
+            this.plotExtremeWS.Size = new System.Drawing.Size(510, 294);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8950,14 +9233,15 @@ namespace ContinuumNS
             // lblExtremeWS
             // 
             this.lblExtremeWS.AutoSize = true;
-            this.lblExtremeWS.Location = new System.Drawing.Point(176, 484);
+            this.lblExtremeWS.Location = new System.Drawing.Point(167, 439);
             this.lblExtremeWS.Name = "lblExtremeWS";
             this.lblExtremeWS.Size = new System.Drawing.Size(0, 19);
             this.lblExtremeWS.TabIndex = 286;
             // 
             // btnExtremeWS
             // 
-            this.btnExtremeWS.Location = new System.Drawing.Point(202, 690);
+            this.btnExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExtremeWS.Location = new System.Drawing.Point(359, 656);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);
@@ -8969,7 +9253,7 @@ namespace ContinuumNS
             // cboExtremeWSMet
             // 
             this.cboExtremeWSMet.FormattingEnabled = true;
-            this.cboExtremeWSMet.Location = new System.Drawing.Point(51, 74);
+            this.cboExtremeWSMet.Location = new System.Drawing.Point(60, 46);
             this.cboExtremeWSMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExtremeWSMet.Name = "cboExtremeWSMet";
             this.cboExtremeWSMet.Size = new System.Drawing.Size(266, 26);
@@ -8978,7 +9262,7 @@ namespace ContinuumNS
             // 
             // txt1yrExtremeGust
             // 
-            this.txt1yrExtremeGust.Location = new System.Drawing.Point(219, 436);
+            this.txt1yrExtremeGust.Location = new System.Drawing.Point(210, 391);
             this.txt1yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt1yrExtremeGust.Name = "txt1yrExtremeGust";
             this.txt1yrExtremeGust.Size = new System.Drawing.Size(83, 25);
@@ -8986,7 +9270,7 @@ namespace ContinuumNS
             // 
             // txt1yrExtreme10min
             // 
-            this.txt1yrExtreme10min.Location = new System.Drawing.Point(219, 611);
+            this.txt1yrExtreme10min.Location = new System.Drawing.Point(212, 561);
             this.txt1yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt1yrExtreme10min.Name = "txt1yrExtreme10min";
             this.txt1yrExtreme10min.Size = new System.Drawing.Size(83, 25);
@@ -8994,7 +9278,7 @@ namespace ContinuumNS
             // 
             // txt50yrExtremeGust
             // 
-            this.txt50yrExtremeGust.Location = new System.Drawing.Point(219, 469);
+            this.txt50yrExtremeGust.Location = new System.Drawing.Point(210, 421);
             this.txt50yrExtremeGust.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt50yrExtremeGust.Name = "txt50yrExtremeGust";
             this.txt50yrExtremeGust.Size = new System.Drawing.Size(83, 25);
@@ -9002,7 +9286,7 @@ namespace ContinuumNS
             // 
             // txt50yrExtreme10min
             // 
-            this.txt50yrExtreme10min.Location = new System.Drawing.Point(219, 643);
+            this.txt50yrExtreme10min.Location = new System.Drawing.Point(212, 591);
             this.txt50yrExtreme10min.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txt50yrExtreme10min.Name = "txt50yrExtreme10min";
             this.txt50yrExtreme10min.Size = new System.Drawing.Size(83, 25);
@@ -9011,17 +9295,16 @@ namespace ContinuumNS
             // label193
             // 
             this.label193.AutoSize = true;
-            this.label193.Location = new System.Drawing.Point(47, 436);
+            this.label193.Location = new System.Drawing.Point(38, 391);
             this.label193.Name = "label193";
             this.label193.Size = new System.Drawing.Size(166, 19);
             this.label193.TabIndex = 279;
             this.label193.Text = "1 yr Extreme (3-sec gust)";
-            this.label193.Click += new System.EventHandler(this.label193_Click);
             // 
             // label194
             // 
             this.label194.AutoSize = true;
-            this.label194.Location = new System.Drawing.Point(34, 613);
+            this.label194.Location = new System.Drawing.Point(27, 563);
             this.label194.Name = "label194";
             this.label194.Size = new System.Drawing.Size(173, 19);
             this.label194.TabIndex = 278;
@@ -9030,7 +9313,7 @@ namespace ContinuumNS
             // label192
             // 
             this.label192.AutoSize = true;
-            this.label192.Location = new System.Drawing.Point(47, 473);
+            this.label192.Location = new System.Drawing.Point(38, 425);
             this.label192.Name = "label192";
             this.label192.Size = new System.Drawing.Size(173, 19);
             this.label192.TabIndex = 277;
@@ -9039,7 +9322,7 @@ namespace ContinuumNS
             // label191
             // 
             this.label191.AutoSize = true;
-            this.label191.Location = new System.Drawing.Point(33, 647);
+            this.label191.Location = new System.Drawing.Point(26, 595);
             this.label191.Name = "label191";
             this.label191.Size = new System.Drawing.Size(180, 19);
             this.label191.TabIndex = 276;
@@ -9049,12 +9332,11 @@ namespace ContinuumNS
             // 
             this.label170.AutoSize = true;
             this.label170.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label170.Location = new System.Drawing.Point(28, 20);
+            this.label170.Location = new System.Drawing.Point(19, 16);
             this.label170.Name = "label170";
             this.label170.Size = new System.Drawing.Size(201, 23);
             this.label170.TabIndex = 275;
             this.label170.Text = "Extreme Wind Speed";
-            this.label170.Click += new System.EventHandler(this.label170_Click);
             // 
             // label92
             // 
@@ -9068,6 +9350,7 @@ namespace ContinuumNS
             // 
             // pgeMonthlyAnalysis
             // 
+            this.pgeMonthlyAnalysis.AutoScroll = true;
             this.pgeMonthlyAnalysis.Controls.Add(this.plotMonthlyTS);
             this.pgeMonthlyAnalysis.Controls.Add(this.plotYearlyTS);
             this.pgeMonthlyAnalysis.Controls.Add(this.label158);
@@ -9091,17 +9374,18 @@ namespace ContinuumNS
             this.pgeMonthlyAnalysis.Location = new System.Drawing.Point(4, 27);
             this.pgeMonthlyAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMonthlyAnalysis.Name = "pgeMonthlyAnalysis";
-            this.pgeMonthlyAnalysis.Size = new System.Drawing.Size(1626, 856);
+            this.pgeMonthlyAnalysis.Size = new System.Drawing.Size(1488, 712);
             this.pgeMonthlyAnalysis.TabIndex = 17;
             this.pgeMonthlyAnalysis.Text = "Time Series Analysis";
             this.pgeMonthlyAnalysis.UseVisualStyleBackColor = true;
             // 
             // plotMonthlyTS
             // 
-            this.plotMonthlyTS.Location = new System.Drawing.Point(820, 437);
+            this.plotMonthlyTS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotMonthlyTS.Location = new System.Drawing.Point(760, 428);
             this.plotMonthlyTS.Name = "plotMonthlyTS";
             this.plotMonthlyTS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMonthlyTS.Size = new System.Drawing.Size(750, 391);
+            this.plotMonthlyTS.Size = new System.Drawing.Size(712, 269);
             this.plotMonthlyTS.TabIndex = 279;
             this.plotMonthlyTS.Text = "plotView2";
             this.plotMonthlyTS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9110,10 +9394,11 @@ namespace ContinuumNS
             // 
             // plotYearlyTS
             // 
-            this.plotYearlyTS.Location = new System.Drawing.Point(15, 437);
+            this.plotYearlyTS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.plotYearlyTS.Location = new System.Drawing.Point(14, 428);
             this.plotYearlyTS.Name = "plotYearlyTS";
             this.plotYearlyTS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotYearlyTS.Size = new System.Drawing.Size(750, 391);
+            this.plotYearlyTS.Size = new System.Drawing.Size(733, 269);
             this.plotYearlyTS.TabIndex = 278;
             this.plotYearlyTS.Text = "plotView1";
             this.plotYearlyTS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9143,34 +9428,37 @@ namespace ContinuumNS
             // 
             // btnExportHourlyTurbineValues
             // 
-            this.btnExportHourlyTurbineValues.Location = new System.Drawing.Point(647, 49);
+            this.btnExportHourlyTurbineValues.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportHourlyTurbineValues.Location = new System.Drawing.Point(648, 318);
             this.btnExportHourlyTurbineValues.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportHourlyTurbineValues.Name = "btnExportHourlyTurbineValues";
-            this.btnExportHourlyTurbineValues.Size = new System.Drawing.Size(100, 70);
+            this.btnExportHourlyTurbineValues.Size = new System.Drawing.Size(105, 30);
             this.btnExportHourlyTurbineValues.TabIndex = 227;
-            this.btnExportHourlyTurbineValues.Text = "Export Hourly Values";
+            this.btnExportHourlyTurbineValues.Text = "Export Hourly";
             this.btnExportHourlyTurbineValues.UseVisualStyleBackColor = true;
             this.btnExportHourlyTurbineValues.Click += new System.EventHandler(this.btnExportHourlyTurbineValues_Click);
             // 
             // btnExportMonthlyTurbineValues
             // 
-            this.btnExportMonthlyTurbineValues.Location = new System.Drawing.Point(647, 127);
+            this.btnExportMonthlyTurbineValues.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportMonthlyTurbineValues.Location = new System.Drawing.Point(648, 352);
             this.btnExportMonthlyTurbineValues.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportMonthlyTurbineValues.Name = "btnExportMonthlyTurbineValues";
-            this.btnExportMonthlyTurbineValues.Size = new System.Drawing.Size(100, 72);
+            this.btnExportMonthlyTurbineValues.Size = new System.Drawing.Size(105, 30);
             this.btnExportMonthlyTurbineValues.TabIndex = 226;
-            this.btnExportMonthlyTurbineValues.Text = "Export Monthly Values";
+            this.btnExportMonthlyTurbineValues.Text = "Export Monthly";
             this.btnExportMonthlyTurbineValues.UseVisualStyleBackColor = true;
             this.btnExportMonthlyTurbineValues.Click += new System.EventHandler(this.btnExportMonthlyTurbineValues_Click);
             // 
             // btnExportYearlyTurbineValues
             // 
-            this.btnExportYearlyTurbineValues.Location = new System.Drawing.Point(647, 207);
+            this.btnExportYearlyTurbineValues.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportYearlyTurbineValues.Location = new System.Drawing.Point(648, 386);
             this.btnExportYearlyTurbineValues.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportYearlyTurbineValues.Name = "btnExportYearlyTurbineValues";
-            this.btnExportYearlyTurbineValues.Size = new System.Drawing.Size(100, 67);
+            this.btnExportYearlyTurbineValues.Size = new System.Drawing.Size(105, 30);
             this.btnExportYearlyTurbineValues.TabIndex = 225;
-            this.btnExportYearlyTurbineValues.Text = "Export Annual Values";
+            this.btnExportYearlyTurbineValues.Text = "Export Annual";
             this.btnExportYearlyTurbineValues.UseVisualStyleBackColor = true;
             this.btnExportYearlyTurbineValues.Click += new System.EventHandler(this.btnExportYearlyTurbineValues_Click);
             // 
@@ -9198,7 +9486,7 @@ namespace ContinuumNS
             // 
             this.label148.AutoSize = true;
             this.label148.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label148.Location = new System.Drawing.Point(646, 293);
+            this.label148.Location = new System.Drawing.Point(649, 203);
             this.label148.Name = "label148";
             this.label148.Size = new System.Drawing.Size(101, 17);
             this.label148.TabIndex = 220;
@@ -9208,7 +9496,7 @@ namespace ContinuumNS
             // 
             this.chkSelectedTurbineParam.CheckOnClick = true;
             this.chkSelectedTurbineParam.FormattingEnabled = true;
-            this.chkSelectedTurbineParam.Location = new System.Drawing.Point(647, 316);
+            this.chkSelectedTurbineParam.Location = new System.Drawing.Point(650, 226);
             this.chkSelectedTurbineParam.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkSelectedTurbineParam.Name = "chkSelectedTurbineParam";
             this.chkSelectedTurbineParam.Size = new System.Drawing.Size(100, 84);
@@ -9262,7 +9550,7 @@ namespace ContinuumNS
             this.chkSelectAllTurbineYears.Checked = true;
             this.chkSelectAllTurbineYears.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkSelectAllTurbineYears.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkSelectAllTurbineYears.Location = new System.Drawing.Point(1515, 47);
+            this.chkSelectAllTurbineYears.Location = new System.Drawing.Point(649, 14);
             this.chkSelectAllTurbineYears.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkSelectAllTurbineYears.Name = "chkSelectAllTurbineYears";
             this.chkSelectAllTurbineYears.Size = new System.Drawing.Size(81, 30);
@@ -9275,15 +9563,17 @@ namespace ContinuumNS
             // 
             this.chkYears_Monthly.CheckOnClick = true;
             this.chkYears_Monthly.FormattingEnabled = true;
-            this.chkYears_Monthly.Location = new System.Drawing.Point(1504, 94);
+            this.chkYears_Monthly.Location = new System.Drawing.Point(649, 49);
             this.chkYears_Monthly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkYears_Monthly.Name = "chkYears_Monthly";
-            this.chkYears_Monthly.Size = new System.Drawing.Size(109, 284);
+            this.chkYears_Monthly.Size = new System.Drawing.Size(98, 144);
             this.chkYears_Monthly.TabIndex = 213;
             this.chkYears_Monthly.SelectedIndexChanged += new System.EventHandler(this.chkYears_Monthly_SelectedIndexChanged);
             // 
             // lstYearlyTurbine
             // 
+            this.lstYearlyTurbine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstYearlyTurbine.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader118,
             this.columnHeader119,
@@ -9339,6 +9629,8 @@ namespace ContinuumNS
             // 
             // lstMonthlyTurbine
             // 
+            this.lstMonthlyTurbine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstMonthlyTurbine.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader123,
             this.columnHeader124,
@@ -9353,7 +9645,7 @@ namespace ContinuumNS
             this.lstMonthlyTurbine.Location = new System.Drawing.Point(765, 47);
             this.lstMonthlyTurbine.Margin = new System.Windows.Forms.Padding(2);
             this.lstMonthlyTurbine.Name = "lstMonthlyTurbine";
-            this.lstMonthlyTurbine.Size = new System.Drawing.Size(719, 377);
+            this.lstMonthlyTurbine.Size = new System.Drawing.Size(695, 377);
             this.lstMonthlyTurbine.TabIndex = 200;
             this.lstMonthlyTurbine.UseCompatibleStateImageBehavior = false;
             this.lstMonthlyTurbine.View = System.Windows.Forms.View.Details;
@@ -9411,6 +9703,7 @@ namespace ContinuumNS
             // 
             // pgeMaps
             // 
+            this.pgeMaps.AutoScroll = true;
             this.pgeMaps.Controls.Add(this.plotGenMap);
             this.pgeMaps.Controls.Add(this.Label72);
             this.pgeMaps.Controls.Add(this.cboMapWD);
@@ -9451,7 +9744,7 @@ namespace ContinuumNS
             this.pgeMaps.Location = new System.Drawing.Point(4, 27);
             this.pgeMaps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeMaps.Name = "pgeMaps";
-            this.pgeMaps.Size = new System.Drawing.Size(1626, 856);
+            this.pgeMaps.Size = new System.Drawing.Size(1488, 712);
             this.pgeMaps.TabIndex = 8;
             this.pgeMaps.Text = "Maps";
             this.pgeMaps.UseVisualStyleBackColor = true;
@@ -9461,10 +9754,10 @@ namespace ContinuumNS
             this.plotGenMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotGenMap.Location = new System.Drawing.Point(646, 32);
+            this.plotGenMap.Location = new System.Drawing.Point(675, 14);
             this.plotGenMap.Name = "plotGenMap";
             this.plotGenMap.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotGenMap.Size = new System.Drawing.Size(961, 800);
+            this.plotGenMap.Size = new System.Drawing.Size(791, 680);
             this.plotGenMap.TabIndex = 280;
             this.plotGenMap.Text = "plotView2";
             this.plotGenMap.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9475,7 +9768,7 @@ namespace ContinuumNS
             // 
             this.Label72.AutoSize = true;
             this.Label72.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label72.Location = new System.Drawing.Point(512, 14);
+            this.Label72.Location = new System.Drawing.Point(541, 14);
             this.Label72.Name = "Label72";
             this.Label72.Size = new System.Drawing.Size(103, 18);
             this.Label72.TabIndex = 194;
@@ -9486,7 +9779,7 @@ namespace ContinuumNS
             // 
             this.cboMapWD.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboMapWD.FormattingEnabled = true;
-            this.cboMapWD.Location = new System.Drawing.Point(503, 38);
+            this.cboMapWD.Location = new System.Drawing.Point(532, 38);
             this.cboMapWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMapWD.Name = "cboMapWD";
             this.cboMapWD.Size = new System.Drawing.Size(115, 24);
@@ -9496,7 +9789,7 @@ namespace ContinuumNS
             // txtMap_MetsUsed
             // 
             this.txtMap_MetsUsed.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMap_MetsUsed.Location = new System.Drawing.Point(120, 434);
+            this.txtMap_MetsUsed.Location = new System.Drawing.Point(114, 409);
             this.txtMap_MetsUsed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMap_MetsUsed.Name = "txtMap_MetsUsed";
             this.txtMap_MetsUsed.ReadOnly = true;
@@ -9507,11 +9800,11 @@ namespace ContinuumNS
             // 
             this.Label63.AutoSize = true;
             this.Label63.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label63.Location = new System.Drawing.Point(24, 439);
+            this.Label63.Location = new System.Drawing.Point(34, 412);
             this.Label63.Name = "Label63";
-            this.Label63.Size = new System.Drawing.Size(80, 18);
+            this.Label63.Size = new System.Drawing.Size(73, 18);
             this.Label63.TabIndex = 93;
-            this.Label63.Text = "Mets Used =";
+            this.Label63.Text = "Mets Used:";
             // 
             // Label4
             // 
@@ -9527,7 +9820,7 @@ namespace ContinuumNS
             // 
             this.Label27.AutoSize = true;
             this.Label27.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label27.Location = new System.Drawing.Point(473, 515);
+            this.Label27.Location = new System.Drawing.Point(489, 456);
             this.Label27.Name = "Label27";
             this.Label27.Size = new System.Drawing.Size(127, 19);
             this.Label27.TabIndex = 85;
@@ -9538,7 +9831,7 @@ namespace ContinuumNS
             this.chkAllTurbs_Maps.AutoSize = true;
             this.chkAllTurbs_Maps.Checked = true;
             this.chkAllTurbs_Maps.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllTurbs_Maps.Location = new System.Drawing.Point(313, 655);
+            this.chkAllTurbs_Maps.Location = new System.Drawing.Point(323, 583);
             this.chkAllTurbs_Maps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllTurbs_Maps.Name = "chkAllTurbs_Maps";
             this.chkAllTurbs_Maps.Size = new System.Drawing.Size(139, 23);
@@ -9552,7 +9845,7 @@ namespace ContinuumNS
             this.chkAllMets_Maps.AutoSize = true;
             this.chkAllMets_Maps.Checked = true;
             this.chkAllMets_Maps.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllMets_Maps.Location = new System.Drawing.Point(311, 486);
+            this.chkAllMets_Maps.Location = new System.Drawing.Point(321, 451);
             this.chkAllMets_Maps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllMets_Maps.Name = "chkAllMets_Maps";
             this.chkAllMets_Maps.Size = new System.Drawing.Size(139, 23);
@@ -9565,7 +9858,7 @@ namespace ContinuumNS
             // 
             this.Label28.AutoSize = true;
             this.Label28.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label28.Location = new System.Drawing.Point(217, 654);
+            this.Label28.Location = new System.Drawing.Point(227, 582);
             this.Label28.Name = "Label28";
             this.Label28.Size = new System.Drawing.Size(72, 19);
             this.Label28.TabIndex = 80;
@@ -9575,7 +9868,7 @@ namespace ContinuumNS
             // 
             this.Label29.AutoSize = true;
             this.Label29.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label29.Location = new System.Drawing.Point(217, 484);
+            this.Label29.Location = new System.Drawing.Point(227, 449);
             this.Label29.Name = "Label29";
             this.Label29.Size = new System.Drawing.Size(73, 19);
             this.Label29.TabIndex = 79;
@@ -9585,10 +9878,10 @@ namespace ContinuumNS
             // 
             this.chkTurbLabels_Maps.CheckOnClick = true;
             this.chkTurbLabels_Maps.FormattingEnabled = true;
-            this.chkTurbLabels_Maps.Location = new System.Drawing.Point(221, 684);
+            this.chkTurbLabels_Maps.Location = new System.Drawing.Point(231, 612);
             this.chkTurbLabels_Maps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbLabels_Maps.Name = "chkTurbLabels_Maps";
-            this.chkTurbLabels_Maps.Size = new System.Drawing.Size(200, 104);
+            this.chkTurbLabels_Maps.Size = new System.Drawing.Size(200, 84);
             this.chkTurbLabels_Maps.TabIndex = 78;
             this.chkTurbLabels_Maps.SelectedIndexChanged += new System.EventHandler(this.chkTurbLabels_Maps_SelectedIndexChanged);
             // 
@@ -9596,20 +9889,20 @@ namespace ContinuumNS
             // 
             this.chkMetLabels_Maps.CheckOnClick = true;
             this.chkMetLabels_Maps.FormattingEnabled = true;
-            this.chkMetLabels_Maps.Location = new System.Drawing.Point(221, 514);
+            this.chkMetLabels_Maps.Location = new System.Drawing.Point(231, 479);
             this.chkMetLabels_Maps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMetLabels_Maps.Name = "chkMetLabels_Maps";
-            this.chkMetLabels_Maps.Size = new System.Drawing.Size(200, 104);
+            this.chkMetLabels_Maps.Size = new System.Drawing.Size(200, 84);
             this.chkMetLabels_Maps.TabIndex = 77;
             this.chkMetLabels_Maps.SelectedIndexChanged += new System.EventHandler(this.chkMetLabels_Maps_SelectedIndexChanged);
             // 
             // btnRefreshMap
             // 
             this.btnRefreshMap.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRefreshMap.Location = new System.Drawing.Point(486, 684);
+            this.btnRefreshMap.Location = new System.Drawing.Point(507, 608);
             this.btnRefreshMap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnRefreshMap.Name = "btnRefreshMap";
-            this.btnRefreshMap.Size = new System.Drawing.Size(97, 70);
+            this.btnRefreshMap.Size = new System.Drawing.Size(97, 38);
             this.btnRefreshMap.TabIndex = 54;
             this.btnRefreshMap.Text = "Refresh Map";
             this.btnRefreshMap.UseVisualStyleBackColor = true;
@@ -9621,7 +9914,7 @@ namespace ContinuumNS
             this.chkAutoMinMax.Checked = true;
             this.chkAutoMinMax.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkAutoMinMax.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkAutoMinMax.Location = new System.Drawing.Point(451, 637);
+            this.chkAutoMinMax.Location = new System.Drawing.Point(467, 578);
             this.chkAutoMinMax.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAutoMinMax.Name = "chkAutoMinMax";
             this.chkAutoMinMax.Size = new System.Drawing.Size(163, 22);
@@ -9632,7 +9925,7 @@ namespace ContinuumNS
             // txtIntLevel
             // 
             this.txtIntLevel.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIntLevel.Location = new System.Drawing.Point(516, 601);
+            this.txtIntLevel.Location = new System.Drawing.Point(532, 542);
             this.txtIntLevel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtIntLevel.Name = "txtIntLevel";
             this.txtIntLevel.Size = new System.Drawing.Size(61, 25);
@@ -9641,7 +9934,7 @@ namespace ContinuumNS
             // txtMaxValue
             // 
             this.txtMaxValue.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxValue.Location = new System.Drawing.Point(516, 571);
+            this.txtMaxValue.Location = new System.Drawing.Point(532, 512);
             this.txtMaxValue.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMaxValue.Name = "txtMaxValue";
             this.txtMaxValue.Size = new System.Drawing.Size(61, 25);
@@ -9650,7 +9943,7 @@ namespace ContinuumNS
             // txtMinValue
             // 
             this.txtMinValue.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinValue.Location = new System.Drawing.Point(516, 542);
+            this.txtMinValue.Location = new System.Drawing.Point(532, 483);
             this.txtMinValue.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMinValue.Name = "txtMinValue";
             this.txtMinValue.Size = new System.Drawing.Size(61, 25);
@@ -9659,7 +9952,7 @@ namespace ContinuumNS
             // txtMapMax
             // 
             this.txtMapMax.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMapMax.Location = new System.Drawing.Point(94, 653);
+            this.txtMapMax.Location = new System.Drawing.Point(104, 626);
             this.txtMapMax.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMapMax.Name = "txtMapMax";
             this.txtMapMax.ReadOnly = true;
@@ -9669,7 +9962,7 @@ namespace ContinuumNS
             // txtMapMin
             // 
             this.txtMapMin.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMapMin.Location = new System.Drawing.Point(94, 609);
+            this.txtMapMin.Location = new System.Drawing.Point(104, 582);
             this.txtMapMin.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMapMin.Name = "txtMapMin";
             this.txtMapMin.ReadOnly = true;
@@ -9679,7 +9972,7 @@ namespace ContinuumNS
             // txtMapCount
             // 
             this.txtMapCount.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMapCount.Location = new System.Drawing.Point(94, 697);
+            this.txtMapCount.Location = new System.Drawing.Point(104, 670);
             this.txtMapCount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMapCount.Name = "txtMapCount";
             this.txtMapCount.ReadOnly = true;
@@ -9689,7 +9982,7 @@ namespace ContinuumNS
             // txtMapStDev
             // 
             this.txtMapStDev.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMapStDev.Location = new System.Drawing.Point(94, 565);
+            this.txtMapStDev.Location = new System.Drawing.Point(104, 538);
             this.txtMapStDev.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMapStDev.Name = "txtMapStDev";
             this.txtMapStDev.ReadOnly = true;
@@ -9699,7 +9992,7 @@ namespace ContinuumNS
             // txtMapAvg
             // 
             this.txtMapAvg.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMapAvg.Location = new System.Drawing.Point(94, 521);
+            this.txtMapAvg.Location = new System.Drawing.Point(104, 494);
             this.txtMapAvg.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMapAvg.Name = "txtMapAvg";
             this.txtMapAvg.ReadOnly = true;
@@ -9710,7 +10003,7 @@ namespace ContinuumNS
             // 
             this.lblInterval.AutoSize = true;
             this.lblInterval.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblInterval.Location = new System.Drawing.Point(455, 606);
+            this.lblInterval.Location = new System.Drawing.Point(471, 547);
             this.lblInterval.Name = "lblInterval";
             this.lblInterval.Size = new System.Drawing.Size(59, 18);
             this.lblInterval.TabIndex = 51;
@@ -9720,7 +10013,7 @@ namespace ContinuumNS
             // 
             this.lblMaxVal.AutoSize = true;
             this.lblMaxVal.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMaxVal.Location = new System.Drawing.Point(474, 574);
+            this.lblMaxVal.Location = new System.Drawing.Point(490, 515);
             this.lblMaxVal.Name = "lblMaxVal";
             this.lblMaxVal.Size = new System.Drawing.Size(37, 18);
             this.lblMaxVal.TabIndex = 49;
@@ -9730,7 +10023,7 @@ namespace ContinuumNS
             // 
             this.lblMinVal.AutoSize = true;
             this.lblMinVal.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMinVal.Location = new System.Drawing.Point(476, 544);
+            this.lblMinVal.Location = new System.Drawing.Point(492, 485);
             this.lblMinVal.Name = "lblMinVal";
             this.lblMinVal.Size = new System.Drawing.Size(35, 18);
             this.lblMinVal.TabIndex = 47;
@@ -9740,7 +10033,7 @@ namespace ContinuumNS
             // 
             this.Label10.AutoSize = true;
             this.Label10.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label10.Location = new System.Drawing.Point(19, 656);
+            this.Label10.Location = new System.Drawing.Point(29, 629);
             this.Label10.Name = "Label10";
             this.Label10.Size = new System.Drawing.Size(76, 18);
             this.Label10.TabIndex = 39;
@@ -9750,7 +10043,7 @@ namespace ContinuumNS
             // 
             this.Label15.AutoSize = true;
             this.Label15.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label15.Location = new System.Drawing.Point(24, 612);
+            this.Label15.Location = new System.Drawing.Point(34, 585);
             this.Label15.Name = "Label15";
             this.Label15.Size = new System.Drawing.Size(74, 18);
             this.Label15.TabIndex = 38;
@@ -9760,7 +10053,7 @@ namespace ContinuumNS
             // 
             this.Label16.AutoSize = true;
             this.Label16.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label16.Location = new System.Drawing.Point(40, 699);
+            this.Label16.Location = new System.Drawing.Point(50, 672);
             this.Label16.Name = "Label16";
             this.Label16.Size = new System.Drawing.Size(51, 18);
             this.Label16.TabIndex = 34;
@@ -9770,7 +10063,7 @@ namespace ContinuumNS
             // 
             this.Label17.AutoSize = true;
             this.Label17.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label17.Location = new System.Drawing.Point(33, 569);
+            this.Label17.Location = new System.Drawing.Point(43, 542);
             this.Label17.Name = "Label17";
             this.Label17.Size = new System.Drawing.Size(58, 18);
             this.Label17.TabIndex = 33;
@@ -9780,7 +10073,7 @@ namespace ContinuumNS
             // 
             this.Label18.AutoSize = true;
             this.Label18.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label18.Location = new System.Drawing.Point(28, 523);
+            this.Label18.Location = new System.Drawing.Point(38, 496);
             this.Label18.Name = "Label18";
             this.Label18.Size = new System.Drawing.Size(63, 18);
             this.Label18.TabIndex = 32;
@@ -9790,7 +10083,7 @@ namespace ContinuumNS
             // 
             this.Label3.AutoSize = true;
             this.Label3.Font = new System.Drawing.Font("Century Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label3.Location = new System.Drawing.Point(19, 486);
+            this.Label3.Location = new System.Drawing.Point(29, 459);
             this.Label3.Name = "Label3";
             this.Label3.Size = new System.Drawing.Size(137, 23);
             this.Label3.TabIndex = 27;
@@ -9798,7 +10091,7 @@ namespace ContinuumNS
             // 
             // btnDelMaps
             // 
-            this.btnDelMaps.Location = new System.Drawing.Point(139, 78);
+            this.btnDelMaps.Location = new System.Drawing.Point(149, 64);
             this.btnDelMaps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDelMaps.Name = "btnDelMaps";
             this.btnDelMaps.Size = new System.Drawing.Size(101, 50);
@@ -9809,7 +10102,7 @@ namespace ContinuumNS
             // 
             // btnMapExportCSV
             // 
-            this.btnMapExportCSV.Location = new System.Drawing.Point(248, 78);
+            this.btnMapExportCSV.Location = new System.Drawing.Point(258, 64);
             this.btnMapExportCSV.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnMapExportCSV.Name = "btnMapExportCSV";
             this.btnMapExportCSV.Size = new System.Drawing.Size(125, 50);
@@ -9820,7 +10113,7 @@ namespace ContinuumNS
             // 
             // btnExportWRG
             // 
-            this.btnExportWRG.Location = new System.Drawing.Point(385, 78);
+            this.btnExportWRG.Location = new System.Drawing.Point(395, 64);
             this.btnExportWRG.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportWRG.Name = "btnExportWRG";
             this.btnExportWRG.Size = new System.Drawing.Size(125, 50);
@@ -9831,7 +10124,7 @@ namespace ContinuumNS
             // 
             // btnGenMap
             // 
-            this.btnGenMap.Location = new System.Drawing.Point(17, 78);
+            this.btnGenMap.Location = new System.Drawing.Point(27, 64);
             this.btnGenMap.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnGenMap.Name = "btnGenMap";
             this.btnGenMap.Size = new System.Drawing.Size(114, 50);
@@ -9854,7 +10147,7 @@ namespace ContinuumNS
             this.columnHeader185});
             this.lstMaps.FullRowSelect = true;
             this.lstMaps.HideSelection = false;
-            this.lstMaps.Location = new System.Drawing.Point(17, 158);
+            this.lstMaps.Location = new System.Drawing.Point(27, 131);
             this.lstMaps.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstMaps.Name = "lstMaps";
             this.lstMaps.Size = new System.Drawing.Size(600, 265);
@@ -9908,6 +10201,7 @@ namespace ContinuumNS
             // 
             // pgeRound
             // 
+            this.pgeRound.AutoScroll = true;
             this.pgeRound.Controls.Add(this.plotTurbUncert);
             this.pgeRound.Controls.Add(this.plotRR_Histo);
             this.pgeRound.Controls.Add(this.plotRRErrorByNumMets);
@@ -9937,17 +10231,20 @@ namespace ContinuumNS
             this.pgeRound.Location = new System.Drawing.Point(4, 27);
             this.pgeRound.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeRound.Name = "pgeRound";
-            this.pgeRound.Size = new System.Drawing.Size(1626, 856);
+            this.pgeRound.Size = new System.Drawing.Size(1488, 712);
             this.pgeRound.TabIndex = 11;
             this.pgeRound.Text = "Uncertainty Analysis";
             this.pgeRound.UseVisualStyleBackColor = true;
             // 
             // plotTurbUncert
             // 
-            this.plotTurbUncert.Location = new System.Drawing.Point(964, 517);
+            this.plotTurbUncert.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotTurbUncert.Location = new System.Drawing.Point(963, 507);
             this.plotTurbUncert.Name = "plotTurbUncert";
             this.plotTurbUncert.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbUncert.Size = new System.Drawing.Size(626, 302);
+            this.plotTurbUncert.Size = new System.Drawing.Size(506, 192);
             this.plotTurbUncert.TabIndex = 282;
             this.plotTurbUncert.Text = "plotView1";
             this.plotTurbUncert.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9956,10 +10253,12 @@ namespace ContinuumNS
             // 
             // plotRR_Histo
             // 
+            this.plotRR_Histo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.plotRR_Histo.Location = new System.Drawing.Point(15, 506);
             this.plotRR_Histo.Name = "plotRR_Histo";
             this.plotRR_Histo.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotRR_Histo.Size = new System.Drawing.Size(427, 313);
+            this.plotRR_Histo.Size = new System.Drawing.Size(421, 193);
             this.plotRR_Histo.TabIndex = 281;
             this.plotRR_Histo.Text = "plotView1";
             this.plotRR_Histo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9971,7 +10270,7 @@ namespace ContinuumNS
             this.plotRRErrorByNumMets.Location = new System.Drawing.Point(15, 95);
             this.plotRRErrorByNumMets.Name = "plotRRErrorByNumMets";
             this.plotRRErrorByNumMets.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotRRErrorByNumMets.Size = new System.Drawing.Size(427, 240);
+            this.plotRRErrorByNumMets.Size = new System.Drawing.Size(421, 240);
             this.plotRRErrorByNumMets.TabIndex = 280;
             this.plotRRErrorByNumMets.Text = "plotView1";
             this.plotRRErrorByNumMets.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9980,20 +10279,20 @@ namespace ContinuumNS
             // 
             // txtisMCPdUncert
             // 
-            this.txtisMCPdUncert.Location = new System.Drawing.Point(464, 82);
+            this.txtisMCPdUncert.Location = new System.Drawing.Point(464, 85);
             this.txtisMCPdUncert.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtisMCPdUncert.Name = "txtisMCPdUncert";
             this.txtisMCPdUncert.ReadOnly = true;
-            this.txtisMCPdUncert.Size = new System.Drawing.Size(180, 25);
+            this.txtisMCPdUncert.Size = new System.Drawing.Size(154, 25);
             this.txtisMCPdUncert.TabIndex = 200;
             // 
             // txtRR_FlowSep_Used
             // 
-            this.txtRR_FlowSep_Used.Location = new System.Drawing.Point(827, 82);
+            this.txtRR_FlowSep_Used.Location = new System.Drawing.Point(784, 85);
             this.txtRR_FlowSep_Used.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtRR_FlowSep_Used.Name = "txtRR_FlowSep_Used";
             this.txtRR_FlowSep_Used.ReadOnly = true;
-            this.txtRR_FlowSep_Used.Size = new System.Drawing.Size(172, 25);
+            this.txtRR_FlowSep_Used.Size = new System.Drawing.Size(154, 25);
             this.txtRR_FlowSep_Used.TabIndex = 175;
             // 
             // cboRR_MinSize
@@ -10017,11 +10316,11 @@ namespace ContinuumNS
             // 
             // txtRR_LC_used
             // 
-            this.txtRR_LC_used.Location = new System.Drawing.Point(652, 82);
+            this.txtRR_LC_used.Location = new System.Drawing.Point(624, 85);
             this.txtRR_LC_used.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtRR_LC_used.Name = "txtRR_LC_used";
             this.txtRR_LC_used.ReadOnly = true;
-            this.txtRR_LC_used.Size = new System.Drawing.Size(168, 25);
+            this.txtRR_LC_used.Size = new System.Drawing.Size(154, 25);
             this.txtRR_LC_used.TabIndex = 171;
             // 
             // Label81
@@ -10036,10 +10335,11 @@ namespace ContinuumNS
             // 
             // btnExportTurbUncert
             // 
-            this.btnExportTurbUncert.Location = new System.Drawing.Point(1434, 20);
+            this.btnExportTurbUncert.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportTurbUncert.Location = new System.Drawing.Point(1359, 20);
             this.btnExportTurbUncert.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportTurbUncert.Name = "btnExportTurbUncert";
-            this.btnExportTurbUncert.Size = new System.Drawing.Size(149, 54);
+            this.btnExportTurbUncert.Size = new System.Drawing.Size(111, 54);
             this.btnExportTurbUncert.TabIndex = 167;
             this.btnExportTurbUncert.Text = "Export Turbine Estimates";
             this.btnExportTurbUncert.UseVisualStyleBackColor = true;
@@ -10093,7 +10393,7 @@ namespace ContinuumNS
             this.cboUncert_WS_AEP.Items.AddRange(new object[] {
             "Wind Speed",
             "Gross AEP"});
-            this.cboUncert_WS_AEP.Location = new System.Drawing.Point(1097, 82);
+            this.cboUncert_WS_AEP.Location = new System.Drawing.Point(1061, 82);
             this.cboUncert_WS_AEP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboUncert_WS_AEP.Name = "cboUncert_WS_AEP";
             this.cboUncert_WS_AEP.Size = new System.Drawing.Size(149, 26);
@@ -10104,7 +10404,7 @@ namespace ContinuumNS
             // 
             this.Label47.AutoSize = true;
             this.Label47.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label47.Location = new System.Drawing.Point(1053, 87);
+            this.Label47.Location = new System.Drawing.Point(1017, 87);
             this.Label47.Name = "Label47";
             this.Label47.Size = new System.Drawing.Size(38, 18);
             this.Label47.TabIndex = 162;
@@ -10114,7 +10414,7 @@ namespace ContinuumNS
             // 
             this.Label45.AutoSize = true;
             this.Label45.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label45.Location = new System.Drawing.Point(990, 50);
+            this.Label45.Location = new System.Drawing.Point(954, 50);
             this.Label45.Name = "Label45";
             this.Label45.Size = new System.Drawing.Size(93, 18);
             this.Label45.TabIndex = 160;
@@ -10123,10 +10423,10 @@ namespace ContinuumNS
             // cboUncertPowerCrv
             // 
             this.cboUncertPowerCrv.FormattingEnabled = true;
-            this.cboUncertPowerCrv.Location = new System.Drawing.Point(1097, 48);
+            this.cboUncertPowerCrv.Location = new System.Drawing.Point(1061, 48);
             this.cboUncertPowerCrv.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboUncertPowerCrv.Name = "cboUncertPowerCrv";
-            this.cboUncertPowerCrv.Size = new System.Drawing.Size(294, 26);
+            this.cboUncertPowerCrv.Size = new System.Drawing.Size(238, 26);
             this.cboUncertPowerCrv.TabIndex = 159;
             this.cboUncertPowerCrv.SelectedIndexChanged += new System.EventHandler(this.cboUncertPowerCrv_SelectedIndexChanged);
             // 
@@ -10142,6 +10442,8 @@ namespace ContinuumNS
             // 
             // lstTurbUncert
             // 
+            this.lstTurbUncert.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstTurbUncert.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader28,
             this.ColumnHeader1,
@@ -10158,7 +10460,7 @@ namespace ContinuumNS
             this.lstTurbUncert.Location = new System.Drawing.Point(960, 117);
             this.lstTurbUncert.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstTurbUncert.Name = "lstTurbUncert";
-            this.lstTurbUncert.Size = new System.Drawing.Size(630, 393);
+            this.lstTurbUncert.Size = new System.Drawing.Size(510, 382);
             this.lstTurbUncert.TabIndex = 157;
             this.lstTurbUncert.UseCompatibleStateImageBehavior = false;
             this.lstTurbUncert.View = System.Windows.Forms.View.Details;
@@ -10230,6 +10532,8 @@ namespace ContinuumNS
             // 
             // lstRR_AllErr
             // 
+            this.lstRR_AllErr.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstRR_AllErr.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader4,
             this.ColumnHeader5,
@@ -10242,7 +10546,7 @@ namespace ContinuumNS
             this.lstRR_AllErr.Location = new System.Drawing.Point(461, 117);
             this.lstRR_AllErr.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstRR_AllErr.Name = "lstRR_AllErr";
-            this.lstRR_AllErr.Size = new System.Drawing.Size(490, 702);
+            this.lstRR_AllErr.Size = new System.Drawing.Size(490, 582);
             this.lstRR_AllErr.TabIndex = 154;
             this.lstRR_AllErr.UseCompatibleStateImageBehavior = false;
             this.lstRR_AllErr.View = System.Windows.Forms.View.Details;
@@ -10304,7 +10608,7 @@ namespace ContinuumNS
             // ColumnHeader38
             // 
             this.ColumnHeader38.Text = "# Mets";
-            this.ColumnHeader38.Width = 84;
+            this.ColumnHeader38.Width = 65;
             // 
             // ColumnHeader39
             // 
@@ -10340,6 +10644,9 @@ namespace ContinuumNS
             // 
             // pgeStepwise
             // 
+            this.pgeStepwise.AutoScroll = true;
+            this.pgeStepwise.Controls.Add(this.btnImportModel);
+            this.pgeStepwise.Controls.Add(this.btnExportModel);
             this.pgeStepwise.Controls.Add(this.plotDHModel);
             this.pgeStepwise.Controls.Add(this.plotUHModel);
             this.pgeStepwise.Controls.Add(this.plotPathAlongNodes);
@@ -10359,7 +10666,6 @@ namespace ContinuumNS
             this.pgeStepwise.Controls.Add(this.txtSepCrit);
             this.pgeStepwise.Controls.Add(this.Label100);
             this.pgeStepwise.Controls.Add(this.cboDHplot);
-            this.pgeStepwise.Controls.Add(this.btnImportModel);
             this.pgeStepwise.Controls.Add(this.chkAdvToShow);
             this.pgeStepwise.Controls.Add(this.chkWeight_RMS);
             this.pgeStepwise.Controls.Add(this.txtSectRMS);
@@ -10367,7 +10673,6 @@ namespace ContinuumNS
             this.pgeStepwise.Controls.Add(this.txtAdv_LC_used);
             this.pgeStepwise.Controls.Add(this.cboExpo_or_Stab);
             this.pgeStepwise.Controls.Add(this.Label82);
-            this.pgeStepwise.Controls.Add(this.btnExportModel);
             this.pgeStepwise.Controls.Add(this.Label59);
             this.pgeStepwise.Controls.Add(this.txtUWCrit);
             this.pgeStepwise.Controls.Add(this.Label58);
@@ -10398,17 +10703,44 @@ namespace ContinuumNS
             this.pgeStepwise.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeStepwise.Name = "pgeStepwise";
             this.pgeStepwise.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.pgeStepwise.Size = new System.Drawing.Size(1626, 856);
+            this.pgeStepwise.Size = new System.Drawing.Size(1488, 712);
             this.pgeStepwise.TabIndex = 10;
             this.pgeStepwise.Text = "Advanced";
             this.pgeStepwise.UseVisualStyleBackColor = true;
             // 
+            // btnImportModel
+            // 
+            this.btnImportModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnImportModel.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnImportModel.Location = new System.Drawing.Point(1232, 10);
+            this.btnImportModel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnImportModel.Name = "btnImportModel";
+            this.btnImportModel.Size = new System.Drawing.Size(114, 45);
+            this.btnImportModel.TabIndex = 288;
+            this.btnImportModel.Text = "Import Model Parameters";
+            this.btnImportModel.UseVisualStyleBackColor = true;
+            this.btnImportModel.Click += new System.EventHandler(this.btnImportModel_Click_1);
+            // 
+            // btnExportModel
+            // 
+            this.btnExportModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportModel.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportModel.Location = new System.Drawing.Point(1348, 10);
+            this.btnExportModel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnExportModel.Name = "btnExportModel";
+            this.btnExportModel.Size = new System.Drawing.Size(114, 45);
+            this.btnExportModel.TabIndex = 287;
+            this.btnExportModel.Text = "Export Model Parameters";
+            this.btnExportModel.UseVisualStyleBackColor = true;
+            // 
             // plotDHModel
             // 
-            this.plotDHModel.Location = new System.Drawing.Point(1060, 559);
+            this.plotDHModel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotDHModel.Location = new System.Drawing.Point(976, 503);
             this.plotDHModel.Name = "plotDHModel";
             this.plotDHModel.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotDHModel.Size = new System.Drawing.Size(429, 279);
+            this.plotDHModel.Size = new System.Drawing.Size(352, 195);
             this.plotDHModel.TabIndex = 286;
             this.plotDHModel.Text = "plotView1";
             this.plotDHModel.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -10417,10 +10749,12 @@ namespace ContinuumNS
             // 
             // plotUHModel
             // 
-            this.plotUHModel.Location = new System.Drawing.Point(484, 554);
+            this.plotUHModel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotUHModel.Location = new System.Drawing.Point(489, 503);
             this.plotUHModel.Name = "plotUHModel";
             this.plotUHModel.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotUHModel.Size = new System.Drawing.Size(429, 279);
+            this.plotUHModel.Size = new System.Drawing.Size(355, 200);
             this.plotUHModel.TabIndex = 285;
             this.plotUHModel.Text = "plotView1";
             this.plotUHModel.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -10429,10 +10763,11 @@ namespace ContinuumNS
             // 
             // plotPathAlongNodes
             // 
-            this.plotPathAlongNodes.Location = new System.Drawing.Point(484, 250);
+            this.plotPathAlongNodes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotPathAlongNodes.Location = new System.Drawing.Point(490, 295);
             this.plotPathAlongNodes.Name = "plotPathAlongNodes";
             this.plotPathAlongNodes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotPathAlongNodes.Size = new System.Drawing.Size(846, 292);
+            this.plotPathAlongNodes.Size = new System.Drawing.Size(710, 200);
             this.plotPathAlongNodes.TabIndex = 284;
             this.plotPathAlongNodes.Text = "plotView1";
             this.plotPathAlongNodes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -10441,10 +10776,13 @@ namespace ContinuumNS
             // 
             // plotAdvTopo
             // 
-            this.plotAdvTopo.Location = new System.Drawing.Point(25, 51);
+            this.plotAdvTopo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotAdvTopo.Location = new System.Drawing.Point(25, 41);
             this.plotAdvTopo.Name = "plotAdvTopo";
             this.plotAdvTopo.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotAdvTopo.Size = new System.Drawing.Size(438, 397);
+            this.plotAdvTopo.Size = new System.Drawing.Size(430, 356);
             this.plotAdvTopo.TabIndex = 283;
             this.plotAdvTopo.Text = "plotView1";
             this.plotAdvTopo.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -10456,7 +10794,7 @@ namespace ContinuumNS
             this.lblTurbineTSNoAdvanced.AutoSize = true;
             this.lblTurbineTSNoAdvanced.BackColor = System.Drawing.Color.White;
             this.lblTurbineTSNoAdvanced.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTurbineTSNoAdvanced.Location = new System.Drawing.Point(501, 114);
+            this.lblTurbineTSNoAdvanced.Location = new System.Drawing.Point(489, 201);
             this.lblTurbineTSNoAdvanced.Name = "lblTurbineTSNoAdvanced";
             this.lblTurbineTSNoAdvanced.Size = new System.Drawing.Size(45, 18);
             this.lblTurbineTSNoAdvanced.TabIndex = 213;
@@ -10464,7 +10802,8 @@ namespace ContinuumNS
             // 
             // txtisMCPdAdv
             // 
-            this.txtisMCPdAdv.Location = new System.Drawing.Point(810, 43);
+            this.txtisMCPdAdv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtisMCPdAdv.Location = new System.Drawing.Point(741, 48);
             this.txtisMCPdAdv.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtisMCPdAdv.Name = "txtisMCPdAdv";
             this.txtisMCPdAdv.ReadOnly = true;
@@ -10473,8 +10812,9 @@ namespace ContinuumNS
             // 
             // cboSeasonAdvanced
             // 
+            this.cboSeasonAdvanced.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSeasonAdvanced.FormattingEnabled = true;
-            this.cboSeasonAdvanced.Location = new System.Drawing.Point(1218, 41);
+            this.cboSeasonAdvanced.Location = new System.Drawing.Point(937, 51);
             this.cboSeasonAdvanced.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboSeasonAdvanced.Name = "cboSeasonAdvanced";
             this.cboSeasonAdvanced.Size = new System.Drawing.Size(91, 26);
@@ -10484,8 +10824,9 @@ namespace ContinuumNS
             // 
             // cboTODAdvanced
             // 
+            this.cboTODAdvanced.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboTODAdvanced.FormattingEnabled = true;
-            this.cboTODAdvanced.Location = new System.Drawing.Point(1218, 7);
+            this.cboTODAdvanced.Location = new System.Drawing.Point(937, 17);
             this.cboTODAdvanced.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTODAdvanced.Name = "cboTODAdvanced";
             this.cboTODAdvanced.Size = new System.Drawing.Size(91, 26);
@@ -10495,9 +10836,10 @@ namespace ContinuumNS
             // 
             // Label39
             // 
+            this.Label39.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Label39.AutoSize = true;
             this.Label39.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label39.Location = new System.Drawing.Point(1369, 51);
+            this.Label39.Location = new System.Drawing.Point(1232, 110);
             this.Label39.Name = "Label39";
             this.Label39.Size = new System.Drawing.Size(203, 19);
             this.Label39.TabIndex = 202;
@@ -10505,6 +10847,7 @@ namespace ContinuumNS
             // 
             // lstPathNodes_DW
             // 
+            this.lstPathNodes_DW.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPathNodes_DW.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader15,
             this.ColumnHeader110,
@@ -10514,10 +10857,10 @@ namespace ContinuumNS
             this.lstPathNodes_DW.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstPathNodes_DW.FullRowSelect = true;
             this.lstPathNodes_DW.HideSelection = false;
-            this.lstPathNodes_DW.Location = new System.Drawing.Point(1305, 75);
+            this.lstPathNodes_DW.Location = new System.Drawing.Point(1194, 133);
             this.lstPathNodes_DW.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstPathNodes_DW.Name = "lstPathNodes_DW";
-            this.lstPathNodes_DW.Size = new System.Drawing.Size(322, 160);
+            this.lstPathNodes_DW.Size = new System.Drawing.Size(270, 147);
             this.lstPathNodes_DW.TabIndex = 201;
             this.lstPathNodes_DW.UseCompatibleStateImageBehavior = false;
             this.lstPathNodes_DW.View = System.Windows.Forms.View.Details;
@@ -10549,9 +10892,10 @@ namespace ContinuumNS
             // 
             // Label8
             // 
+            this.Label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Label8.AutoSize = true;
             this.Label8.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label8.Location = new System.Drawing.Point(1030, 53);
+            this.Label8.Location = new System.Drawing.Point(959, 110);
             this.Label8.Name = "Label8";
             this.Label8.Size = new System.Drawing.Size(180, 19);
             this.Label8.TabIndex = 200;
@@ -10559,6 +10903,7 @@ namespace ContinuumNS
             // 
             // lstPathNodes_UW
             // 
+            this.lstPathNodes_UW.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPathNodes_UW.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader14,
             this.ColumnHeader121,
@@ -10568,10 +10913,10 @@ namespace ContinuumNS
             this.lstPathNodes_UW.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstPathNodes_UW.FullRowSelect = true;
             this.lstPathNodes_UW.HideSelection = false;
-            this.lstPathNodes_UW.Location = new System.Drawing.Point(966, 75);
+            this.lstPathNodes_UW.Location = new System.Drawing.Point(913, 133);
             this.lstPathNodes_UW.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstPathNodes_UW.Name = "lstPathNodes_UW";
-            this.lstPathNodes_UW.Size = new System.Drawing.Size(322, 160);
+            this.lstPathNodes_UW.Size = new System.Drawing.Size(270, 147);
             this.lstPathNodes_UW.TabIndex = 199;
             this.lstPathNodes_UW.UseCompatibleStateImageBehavior = false;
             this.lstPathNodes_UW.View = System.Windows.Forms.View.Details;
@@ -10603,7 +10948,8 @@ namespace ContinuumNS
             // 
             // txtAdv_FlowSep_Used
             // 
-            this.txtAdv_FlowSep_Used.Location = new System.Drawing.Point(999, 11);
+            this.txtAdv_FlowSep_Used.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtAdv_FlowSep_Used.Location = new System.Drawing.Point(741, 78);
             this.txtAdv_FlowSep_Used.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAdv_FlowSep_Used.Name = "txtAdv_FlowSep_Used";
             this.txtAdv_FlowSep_Used.ReadOnly = true;
@@ -10612,8 +10958,10 @@ namespace ContinuumNS
             // 
             // Label101
             // 
+            this.Label101.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Label101.AutoSize = true;
-            this.Label101.Location = new System.Drawing.Point(932, 643);
+            this.Label101.Location = new System.Drawing.Point(848, 546);
             this.Label101.Name = "Label101";
             this.Label101.Size = new System.Drawing.Size(122, 19);
             this.Label101.TabIndex = 197;
@@ -10621,7 +10969,9 @@ namespace ContinuumNS
             // 
             // txtSepCritWS
             // 
-            this.txtSepCritWS.Location = new System.Drawing.Point(946, 665);
+            this.txtSepCritWS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSepCritWS.Location = new System.Drawing.Point(862, 568);
             this.txtSepCritWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtSepCritWS.Name = "txtSepCritWS";
             this.txtSepCritWS.ReadOnly = true;
@@ -10630,8 +10980,10 @@ namespace ContinuumNS
             // 
             // Label13
             // 
+            this.Label13.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Label13.AutoSize = true;
-            this.Label13.Location = new System.Drawing.Point(942, 695);
+            this.Label13.Location = new System.Drawing.Point(858, 598);
             this.Label13.Name = "Label13";
             this.Label13.Size = new System.Drawing.Size(96, 19);
             this.Label13.TabIndex = 195;
@@ -10639,7 +10991,9 @@ namespace ContinuumNS
             // 
             // txtSepCrit
             // 
-            this.txtSepCrit.Location = new System.Drawing.Point(946, 715);
+            this.txtSepCrit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSepCrit.Location = new System.Drawing.Point(862, 618);
             this.txtSepCrit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtSepCrit.Name = "txtSepCrit";
             this.txtSepCrit.ReadOnly = true;
@@ -10648,8 +11002,10 @@ namespace ContinuumNS
             // 
             // Label100
             // 
+            this.Label100.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Label100.AutoSize = true;
-            this.Label100.Location = new System.Drawing.Point(932, 752);
+            this.Label100.Location = new System.Drawing.Point(848, 655);
             this.Label100.Name = "Label100";
             this.Label100.Size = new System.Drawing.Size(117, 19);
             this.Label100.TabIndex = 193;
@@ -10657,31 +11013,23 @@ namespace ContinuumNS
             // 
             // cboDHplot
             // 
+            this.cboDHplot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cboDHplot.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboDHplot.FormattingEnabled = true;
             this.cboDHplot.Items.AddRange(new object[] {
             "Attached flow",
             "Separated flow"});
-            this.cboDHplot.Location = new System.Drawing.Point(935, 776);
+            this.cboDHplot.Location = new System.Drawing.Point(851, 679);
             this.cboDHplot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboDHplot.Name = "cboDHplot";
             this.cboDHplot.Size = new System.Drawing.Size(110, 26);
             this.cboDHplot.TabIndex = 192;
             this.cboDHplot.SelectedIndexChanged += new System.EventHandler(this.cboDHplot_SelectedIndexChanged);
             // 
-            // btnImportModel
-            // 
-            this.btnImportModel.Location = new System.Drawing.Point(1507, 718);
-            this.btnImportModel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnImportModel.Name = "btnImportModel";
-            this.btnImportModel.Size = new System.Drawing.Size(114, 50);
-            this.btnImportModel.TabIndex = 191;
-            this.btnImportModel.Text = "Import Model Parameters";
-            this.btnImportModel.UseVisualStyleBackColor = true;
-            this.btnImportModel.Click += new System.EventHandler(this.btnImportModel_Click);
-            // 
             // chkAdvToShow
             // 
+            this.chkAdvToShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkAdvToShow.CheckOnClick = true;
             this.chkAdvToShow.ColumnWidth = 120;
             this.chkAdvToShow.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -10705,20 +11053,21 @@ namespace ContinuumNS
             "WS Est.",
             "Equiv WS",
             "Actual WS"});
-            this.chkAdvToShow.Location = new System.Drawing.Point(1358, 340);
+            this.chkAdvToShow.Location = new System.Drawing.Point(1207, 368);
             this.chkAdvToShow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAdvToShow.MultiColumn = true;
             this.chkAdvToShow.Name = "chkAdvToShow";
-            this.chkAdvToShow.Size = new System.Drawing.Size(254, 164);
+            this.chkAdvToShow.Size = new System.Drawing.Size(254, 104);
             this.chkAdvToShow.TabIndex = 187;
             this.chkAdvToShow.SelectedIndexChanged += new System.EventHandler(this.chkAdvToShow_SelectedIndexChanged);
             // 
             // chkWeight_RMS
             // 
+            this.chkWeight_RMS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkWeight_RMS.AutoSize = true;
             this.chkWeight_RMS.Checked = true;
             this.chkWeight_RMS.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkWeight_RMS.Location = new System.Drawing.Point(1429, 310);
+            this.chkWeight_RMS.Location = new System.Drawing.Point(1254, 344);
             this.chkWeight_RMS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkWeight_RMS.Name = "chkWeight_RMS";
             this.chkWeight_RMS.Size = new System.Drawing.Size(181, 23);
@@ -10729,7 +11078,8 @@ namespace ContinuumNS
             // 
             // txtSectRMS
             // 
-            this.txtSectRMS.Location = new System.Drawing.Point(1527, 282);
+            this.txtSectRMS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSectRMS.Location = new System.Drawing.Point(1352, 316);
             this.txtSectRMS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtSectRMS.Name = "txtSectRMS";
             this.txtSectRMS.Size = new System.Drawing.Size(69, 25);
@@ -10737,8 +11087,9 @@ namespace ContinuumNS
             // 
             // Label48
             // 
+            this.Label48.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Label48.AutoSize = true;
-            this.Label48.Location = new System.Drawing.Point(1403, 286);
+            this.Label48.Location = new System.Drawing.Point(1228, 320);
             this.Label48.Name = "Label48";
             this.Label48.Size = new System.Drawing.Size(120, 19);
             this.Label48.TabIndex = 184;
@@ -10746,7 +11097,8 @@ namespace ContinuumNS
             // 
             // txtAdv_LC_used
             // 
-            this.txtAdv_LC_used.Location = new System.Drawing.Point(810, 12);
+            this.txtAdv_LC_used.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtAdv_LC_used.Location = new System.Drawing.Point(741, 17);
             this.txtAdv_LC_used.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAdv_LC_used.Name = "txtAdv_LC_used";
             this.txtAdv_LC_used.ReadOnly = true;
@@ -10755,12 +11107,14 @@ namespace ContinuumNS
             // 
             // cboExpo_or_Stab
             // 
+            this.cboExpo_or_Stab.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cboExpo_or_Stab.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboExpo_or_Stab.FormattingEnabled = true;
             this.cboExpo_or_Stab.Items.AddRange(new object[] {
             "Exposure",
             "Roughness"});
-            this.cboExpo_or_Stab.Location = new System.Drawing.Point(1510, 581);
+            this.cboExpo_or_Stab.Location = new System.Drawing.Point(1350, 569);
             this.cboExpo_or_Stab.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboExpo_or_Stab.Name = "cboExpo_or_Stab";
             this.cboExpo_or_Stab.Size = new System.Drawing.Size(101, 21);
@@ -10769,28 +11123,21 @@ namespace ContinuumNS
             // 
             // Label82
             // 
+            this.Label82.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Label82.AutoSize = true;
-            this.Label82.Location = new System.Drawing.Point(1511, 561);
+            this.Label82.Location = new System.Drawing.Point(1351, 549);
             this.Label82.Name = "Label82";
             this.Label82.Size = new System.Drawing.Size(95, 19);
             this.Label82.TabIndex = 181;
             this.Label82.Text = "Plot to show:";
             // 
-            // btnExportModel
-            // 
-            this.btnExportModel.Location = new System.Drawing.Point(1507, 773);
-            this.btnExportModel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnExportModel.Name = "btnExportModel";
-            this.btnExportModel.Size = new System.Drawing.Size(114, 50);
-            this.btnExportModel.TabIndex = 180;
-            this.btnExportModel.Text = "Export Model Parameters";
-            this.btnExportModel.UseVisualStyleBackColor = true;
-            this.btnExportModel.Click += new System.EventHandler(this.btnExportModel_Click);
-            // 
             // Label59
             // 
+            this.Label59.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Label59.AutoSize = true;
-            this.Label59.Location = new System.Drawing.Point(1521, 612);
+            this.Label59.Location = new System.Drawing.Point(1361, 600);
             this.Label59.Name = "Label59";
             this.Label59.Size = new System.Drawing.Size(80, 19);
             this.Label59.TabIndex = 174;
@@ -10798,7 +11145,9 @@ namespace ContinuumNS
             // 
             // txtUWCrit
             // 
-            this.txtUWCrit.Location = new System.Drawing.Point(1511, 631);
+            this.txtUWCrit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtUWCrit.Location = new System.Drawing.Point(1351, 619);
             this.txtUWCrit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtUWCrit.Name = "txtUWCrit";
             this.txtUWCrit.ReadOnly = true;
@@ -10807,8 +11156,10 @@ namespace ContinuumNS
             // 
             // Label58
             // 
+            this.Label58.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Label58.AutoSize = true;
-            this.Label58.Location = new System.Drawing.Point(1504, 668);
+            this.Label58.Location = new System.Drawing.Point(1344, 656);
             this.Label58.Name = "Label58";
             this.Label58.Size = new System.Drawing.Size(117, 19);
             this.Label58.TabIndex = 172;
@@ -10816,12 +11167,14 @@ namespace ContinuumNS
             // 
             // cboUphill_to_show
             // 
+            this.cboUphill_to_show.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cboUphill_to_show.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboUphill_to_show.FormattingEnabled = true;
             this.cboUphill_to_show.Items.AddRange(new object[] {
             "UW > UW crit",
             "UW < UW crit"});
-            this.cboUphill_to_show.Location = new System.Drawing.Point(1508, 688);
+            this.cboUphill_to_show.Location = new System.Drawing.Point(1348, 676);
             this.cboUphill_to_show.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboUphill_to_show.Name = "cboUphill_to_show";
             this.cboUphill_to_show.Size = new System.Drawing.Size(110, 21);
@@ -10830,8 +11183,9 @@ namespace ContinuumNS
             // 
             // cboAdvancedWD
             // 
+            this.cboAdvancedWD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboAdvancedWD.FormattingEnabled = true;
-            this.cboAdvancedWD.Location = new System.Drawing.Point(1541, 16);
+            this.cboAdvancedWD.Location = new System.Drawing.Point(1097, 51);
             this.cboAdvancedWD.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboAdvancedWD.Name = "cboAdvancedWD";
             this.cboAdvancedWD.Size = new System.Drawing.Size(81, 26);
@@ -10840,8 +11194,9 @@ namespace ContinuumNS
             // 
             // Label56
             // 
+            this.Label56.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Label56.AutoSize = true;
-            this.Label56.Location = new System.Drawing.Point(1503, 18);
+            this.Label56.Location = new System.Drawing.Point(1059, 53);
             this.Label56.Name = "Label56";
             this.Label56.Size = new System.Drawing.Size(38, 19);
             this.Label56.TabIndex = 167;
@@ -10849,7 +11204,8 @@ namespace ContinuumNS
             // 
             // btnExportCrossPreds
             // 
-            this.btnExportCrossPreds.Location = new System.Drawing.Point(295, 579);
+            this.btnExportCrossPreds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportCrossPreds.Location = new System.Drawing.Point(295, 503);
             this.btnExportCrossPreds.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportCrossPreds.Name = "btnExportCrossPreds";
             this.btnExportCrossPreds.Size = new System.Drawing.Size(160, 48);
@@ -10860,8 +11216,9 @@ namespace ContinuumNS
             // 
             // Label14
             // 
+            this.Label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Label14.AutoSize = true;
-            this.Label14.Location = new System.Drawing.Point(1325, 18);
+            this.Label14.Location = new System.Drawing.Point(1041, 19);
             this.Label14.Name = "Label14";
             this.Label14.Size = new System.Drawing.Size(56, 19);
             this.Label14.TabIndex = 150;
@@ -10869,8 +11226,9 @@ namespace ContinuumNS
             // 
             // cboAdvancedRad
             // 
+            this.cboAdvancedRad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboAdvancedRad.FormattingEnabled = true;
-            this.cboAdvancedRad.Location = new System.Drawing.Point(1381, 16);
+            this.cboAdvancedRad.Location = new System.Drawing.Point(1097, 17);
             this.cboAdvancedRad.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboAdvancedRad.Name = "cboAdvancedRad";
             this.cboAdvancedRad.Size = new System.Drawing.Size(115, 26);
@@ -10879,7 +11237,8 @@ namespace ContinuumNS
             // 
             // txtUWDWRMS
             // 
-            this.txtUWDWRMS.Location = new System.Drawing.Point(1527, 250);
+            this.txtUWDWRMS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtUWDWRMS.Location = new System.Drawing.Point(1352, 284);
             this.txtUWDWRMS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtUWDWRMS.Name = "txtUWDWRMS";
             this.txtUWDWRMS.Size = new System.Drawing.Size(69, 25);
@@ -10887,8 +11246,9 @@ namespace ContinuumNS
             // 
             // Label44
             // 
+            this.Label44.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Label44.AutoSize = true;
-            this.Label44.Location = new System.Drawing.Point(1407, 255);
+            this.Label44.Location = new System.Drawing.Point(1232, 289);
             this.Label44.Name = "Label44";
             this.Label44.Size = new System.Drawing.Size(103, 19);
             this.Label44.TabIndex = 137;
@@ -10896,10 +11256,11 @@ namespace ContinuumNS
             // 
             // chkAllTurbsStep
             // 
+            this.chkAllTurbsStep.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkAllTurbsStep.AutoSize = true;
             this.chkAllTurbsStep.Checked = true;
             this.chkAllTurbsStep.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllTurbsStep.Location = new System.Drawing.Point(346, 474);
+            this.chkAllTurbsStep.Location = new System.Drawing.Point(346, 407);
             this.chkAllTurbsStep.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllTurbsStep.Name = "chkAllTurbsStep";
             this.chkAllTurbsStep.Size = new System.Drawing.Size(139, 23);
@@ -10910,9 +11271,10 @@ namespace ContinuumNS
             // 
             // Label38
             // 
+            this.Label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Label38.AutoSize = true;
             this.Label38.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label38.Location = new System.Drawing.Point(243, 474);
+            this.Label38.Location = new System.Drawing.Point(243, 407);
             this.Label38.Name = "Label38";
             this.Label38.Size = new System.Drawing.Size(97, 18);
             this.Label38.TabIndex = 123;
@@ -10920,9 +11282,10 @@ namespace ContinuumNS
             // 
             // chkTurbLabelStep
             // 
+            this.chkTurbLabelStep.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkTurbLabelStep.CheckOnClick = true;
             this.chkTurbLabelStep.FormattingEnabled = true;
-            this.chkTurbLabelStep.Location = new System.Drawing.Point(246, 498);
+            this.chkTurbLabelStep.Location = new System.Drawing.Point(246, 431);
             this.chkTurbLabelStep.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTurbLabelStep.Name = "chkTurbLabelStep";
             this.chkTurbLabelStep.Size = new System.Drawing.Size(217, 64);
@@ -10931,10 +11294,11 @@ namespace ContinuumNS
             // 
             // chkAllMetLabelsStep
             // 
+            this.chkAllMetLabelsStep.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkAllMetLabelsStep.AutoSize = true;
             this.chkAllMetLabelsStep.Checked = true;
             this.chkAllMetLabelsStep.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllMetLabelsStep.Location = new System.Drawing.Point(103, 474);
+            this.chkAllMetLabelsStep.Location = new System.Drawing.Point(103, 407);
             this.chkAllMetLabelsStep.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllMetLabelsStep.Name = "chkAllMetLabelsStep";
             this.chkAllMetLabelsStep.Size = new System.Drawing.Size(139, 23);
@@ -10945,9 +11309,10 @@ namespace ContinuumNS
             // 
             // Label37
             // 
+            this.Label37.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Label37.AutoSize = true;
             this.Label37.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label37.Location = new System.Drawing.Point(19, 474);
+            this.Label37.Location = new System.Drawing.Point(19, 407);
             this.Label37.Name = "Label37";
             this.Label37.Size = new System.Drawing.Size(72, 18);
             this.Label37.TabIndex = 120;
@@ -10955,9 +11320,10 @@ namespace ContinuumNS
             // 
             // chkMetlabelsStep
             // 
+            this.chkMetlabelsStep.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkMetlabelsStep.CheckOnClick = true;
             this.chkMetlabelsStep.FormattingEnabled = true;
-            this.chkMetlabelsStep.Location = new System.Drawing.Point(17, 498);
+            this.chkMetlabelsStep.Location = new System.Drawing.Point(17, 431);
             this.chkMetlabelsStep.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkMetlabelsStep.Name = "chkMetlabelsStep";
             this.chkMetlabelsStep.Size = new System.Drawing.Size(217, 64);
@@ -10966,8 +11332,9 @@ namespace ContinuumNS
             // 
             // Label33
             // 
+            this.Label33.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Label33.AutoSize = true;
-            this.Label33.Location = new System.Drawing.Point(574, 14);
+            this.Label33.Location = new System.Drawing.Point(530, 20);
             this.Label33.Name = "Label33";
             this.Label33.Size = new System.Drawing.Size(75, 19);
             this.Label33.TabIndex = 107;
@@ -10975,8 +11342,9 @@ namespace ContinuumNS
             // 
             // cboStartMet
             // 
+            this.cboStartMet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboStartMet.FormattingEnabled = true;
-            this.cboStartMet.Location = new System.Drawing.Point(654, 10);
+            this.cboStartMet.Location = new System.Drawing.Point(610, 16);
             this.cboStartMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboStartMet.Name = "cboStartMet";
             this.cboStartMet.Size = new System.Drawing.Size(125, 26);
@@ -10985,8 +11353,9 @@ namespace ContinuumNS
             // 
             // Label32
             // 
+            this.Label32.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Label32.AutoSize = true;
-            this.Label32.Location = new System.Drawing.Point(521, 44);
+            this.Label32.Location = new System.Drawing.Point(477, 50);
             this.Label32.Name = "Label32";
             this.Label32.Size = new System.Drawing.Size(130, 19);
             this.Label32.TabIndex = 105;
@@ -10994,8 +11363,9 @@ namespace ContinuumNS
             // 
             // cboEndMet
             // 
+            this.cboEndMet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cboEndMet.FormattingEnabled = true;
-            this.cboEndMet.Location = new System.Drawing.Point(654, 41);
+            this.cboEndMet.Location = new System.Drawing.Point(610, 47);
             this.cboEndMet.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboEndMet.Name = "cboEndMet";
             this.cboEndMet.Size = new System.Drawing.Size(125, 26);
@@ -11004,6 +11374,7 @@ namespace ContinuumNS
             // 
             // lstPathNodes
             // 
+            this.lstPathNodes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lstPathNodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Site,
             this.UTMX,
@@ -11021,10 +11392,10 @@ namespace ContinuumNS
             this.lstPathNodes.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstPathNodes.FullRowSelect = true;
             this.lstPathNodes.HideSelection = false;
-            this.lstPathNodes.Location = new System.Drawing.Point(484, 75);
+            this.lstPathNodes.Location = new System.Drawing.Point(487, 133);
             this.lstPathNodes.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstPathNodes.Name = "lstPathNodes";
-            this.lstPathNodes.Size = new System.Drawing.Size(474, 160);
+            this.lstPathNodes.Size = new System.Drawing.Size(415, 147);
             this.lstPathNodes.TabIndex = 102;
             this.lstPathNodes.UseCompatibleStateImageBehavior = false;
             this.lstPathNodes.View = System.Windows.Forms.View.Details;
@@ -11089,10 +11460,12 @@ namespace ContinuumNS
             // 
             // btnExportStepwise
             // 
-            this.btnExportStepwise.Location = new System.Drawing.Point(934, 559);
+            this.btnExportStepwise.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportStepwise.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportStepwise.Location = new System.Drawing.Point(1336, 61);
             this.btnExportStepwise.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportStepwise.Name = "btnExportStepwise";
-            this.btnExportStepwise.Size = new System.Drawing.Size(111, 66);
+            this.btnExportStepwise.Size = new System.Drawing.Size(122, 45);
             this.btnExportStepwise.TabIndex = 101;
             this.btnExportStepwise.Text = "Export Nodes and WS Estimates";
             this.btnExportStepwise.UseVisualStyleBackColor = true;
@@ -11100,6 +11473,7 @@ namespace ContinuumNS
             // 
             // lstModCrossPred
             // 
+            this.lstModCrossPred.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lstModCrossPred.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnHeader16,
             this.ColumnHeader26,
@@ -11108,10 +11482,10 @@ namespace ContinuumNS
             this.lstModCrossPred.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstModCrossPred.FullRowSelect = true;
             this.lstModCrossPred.HideSelection = false;
-            this.lstModCrossPred.Location = new System.Drawing.Point(17, 636);
+            this.lstModCrossPred.Location = new System.Drawing.Point(22, 559);
             this.lstModCrossPred.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstModCrossPred.Name = "lstModCrossPred";
-            this.lstModCrossPred.Size = new System.Drawing.Size(446, 175);
+            this.lstModCrossPred.Size = new System.Drawing.Size(446, 138);
             this.lstModCrossPred.TabIndex = 91;
             this.lstModCrossPred.UseCompatibleStateImageBehavior = false;
             this.lstModCrossPred.View = System.Windows.Forms.View.Details;
@@ -11139,9 +11513,10 @@ namespace ContinuumNS
             // 
             // Label11
             // 
+            this.Label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Label11.AutoSize = true;
             this.Label11.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label11.Location = new System.Drawing.Point(30, 586);
+            this.Label11.Location = new System.Drawing.Point(30, 510);
             this.Label11.Name = "Label11";
             this.Label11.Size = new System.Drawing.Size(175, 38);
             this.Label11.TabIndex = 87;
@@ -11212,14 +11587,15 @@ namespace ContinuumNS
             this.pgeSuitability.Location = new System.Drawing.Point(4, 27);
             this.pgeSuitability.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pgeSuitability.Name = "pgeSuitability";
-            this.pgeSuitability.Size = new System.Drawing.Size(1626, 856);
+            this.pgeSuitability.Size = new System.Drawing.Size(1488, 712);
             this.pgeSuitability.TabIndex = 18;
             this.pgeSuitability.Text = "Site Suitability";
             this.pgeSuitability.UseVisualStyleBackColor = true;
             // 
             // btnZoneFileFormatHelp
             // 
-            this.btnZoneFileFormatHelp.Location = new System.Drawing.Point(150, 714);
+            this.btnZoneFileFormatHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnZoneFileFormatHelp.Location = new System.Drawing.Point(152, 643);
             this.btnZoneFileFormatHelp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnZoneFileFormatHelp.Name = "btnZoneFileFormatHelp";
             this.btnZoneFileFormatHelp.Size = new System.Drawing.Size(34, 31);
@@ -11230,45 +11606,54 @@ namespace ContinuumNS
             // 
             // plotIceVsDist
             // 
-            this.plotIceVsDist.Location = new System.Drawing.Point(985, 443);
+            this.plotIceVsDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotIceVsDist.Location = new System.Drawing.Point(902, 407);
             this.plotIceVsDist.Name = "plotIceVsDist";
             this.plotIceVsDist.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotIceVsDist.Size = new System.Drawing.Size(619, 371);
+            this.plotIceVsDist.Size = new System.Drawing.Size(571, 284);
             this.plotIceVsDist.TabIndex = 285;
             this.plotIceVsDist.Text = "plotView1";
             this.plotIceVsDist.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotIceVsDist.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotIceVsDist.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotIceVsDist.Click += new System.EventHandler(this.plotIceVsDist_Click);
             // 
             // plotIceShadowSound
             // 
-            this.plotIceShadowSound.Location = new System.Drawing.Point(345, 171);
+            this.plotIceShadowSound.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.plotIceShadowSound.Location = new System.Drawing.Point(344, 171);
             this.plotIceShadowSound.Name = "plotIceShadowSound";
             this.plotIceShadowSound.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotIceShadowSound.Size = new System.Drawing.Size(623, 564);
+            this.plotIceShadowSound.Size = new System.Drawing.Size(520, 449);
             this.plotIceShadowSound.TabIndex = 284;
             this.plotIceShadowSound.Text = "plotView1";
             this.plotIceShadowSound.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotIceShadowSound.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotIceShadowSound.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotIceShadowSound.Click += new System.EventHandler(this.plotIceShadowSound_Click);
             // 
             // lblIceDistOrHisto
             // 
+            this.lblIceDistOrHisto.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblIceDistOrHisto.AutoSize = true;
             this.lblIceDistOrHisto.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblIceDistOrHisto.Location = new System.Drawing.Point(1168, 401);
+            this.lblIceDistOrHisto.Location = new System.Drawing.Point(1056, 365);
             this.lblIceDistOrHisto.Name = "lblIceDistOrHisto";
             this.lblIceDistOrHisto.Size = new System.Drawing.Size(75, 18);
             this.lblIceDistOrHisto.TabIndex = 278;
             this.lblIceDistOrHisto.Text = "Select Plot :";
+            this.lblIceDistOrHisto.Click += new System.EventHandler(this.lblIceDistOrHisto_Click);
             // 
             // cboIceDistORIceHisto
             // 
+            this.cboIceDistORIceHisto.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cboIceDistORIceHisto.FormattingEnabled = true;
             this.cboIceDistORIceHisto.Items.AddRange(new object[] {
             "Ice Hit vs. Distance",
             "Yearly Ice Hit Histogram"});
-            this.cboIceDistORIceHisto.Location = new System.Drawing.Point(1249, 399);
+            this.cboIceDistORIceHisto.Location = new System.Drawing.Point(1137, 363);
             this.cboIceDistORIceHisto.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboIceDistORIceHisto.Name = "cboIceDistORIceHisto";
             this.cboIceDistORIceHisto.Size = new System.Drawing.Size(258, 26);
@@ -11279,7 +11664,7 @@ namespace ContinuumNS
             // 
             this.label91.AutoSize = true;
             this.label91.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label91.Location = new System.Drawing.Point(369, 97);
+            this.label91.Location = new System.Drawing.Point(369, 101);
             this.label91.Name = "label91";
             this.label91.Size = new System.Drawing.Size(110, 18);
             this.label91.TabIndex = 276;
@@ -11288,7 +11673,7 @@ namespace ContinuumNS
             // txtNumIceThrowsPerDay
             // 
             this.txtNumIceThrowsPerDay.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNumIceThrowsPerDay.Location = new System.Drawing.Point(499, 69);
+            this.txtNumIceThrowsPerDay.Location = new System.Drawing.Point(499, 73);
             this.txtNumIceThrowsPerDay.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtNumIceThrowsPerDay.Name = "txtNumIceThrowsPerDay";
             this.txtNumIceThrowsPerDay.Size = new System.Drawing.Size(44, 25);
@@ -11297,44 +11682,52 @@ namespace ContinuumNS
             // 
             // txtMaxFlickerHours
             // 
+            this.txtMaxFlickerHours.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtMaxFlickerHours.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxFlickerHours.Location = new System.Drawing.Point(1526, 399);
+            this.txtMaxFlickerHours.Location = new System.Drawing.Point(1387, 363);
             this.txtMaxFlickerHours.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMaxFlickerHours.Name = "txtMaxFlickerHours";
             this.txtMaxFlickerHours.ReadOnly = true;
             this.txtMaxFlickerHours.Size = new System.Drawing.Size(65, 25);
             this.txtMaxFlickerHours.TabIndex = 274;
+            this.txtMaxFlickerHours.TextChanged += new System.EventHandler(this.txtMaxFlickerHours_TextChanged);
             // 
             // dateMaxFlicker
             // 
+            this.dateMaxFlicker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.dateMaxFlicker.CustomFormat = "MM/dd/yy";
             this.dateMaxFlicker.Enabled = false;
             this.dateMaxFlicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateMaxFlicker.Location = new System.Drawing.Point(1501, 367);
+            this.dateMaxFlicker.Location = new System.Drawing.Point(1373, 331);
             this.dateMaxFlicker.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.dateMaxFlicker.Name = "dateMaxFlicker";
             this.dateMaxFlicker.Size = new System.Drawing.Size(108, 25);
             this.dateMaxFlicker.TabIndex = 273;
+            this.dateMaxFlicker.ValueChanged += new System.EventHandler(this.dateMaxFlicker_ValueChanged);
             // 
             // lblMaxFlickerHours
             // 
+            this.lblMaxFlickerHours.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMaxFlickerHours.AutoSize = true;
             this.lblMaxFlickerHours.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMaxFlickerHours.Location = new System.Drawing.Point(1394, 402);
+            this.lblMaxFlickerHours.Location = new System.Drawing.Point(1255, 366);
             this.lblMaxFlickerHours.Name = "lblMaxFlickerHours";
             this.lblMaxFlickerHours.Size = new System.Drawing.Size(108, 18);
             this.lblMaxFlickerHours.TabIndex = 272;
             this.lblMaxFlickerHours.Text = "# of Flicker Mins:";
+            this.lblMaxFlickerHours.Click += new System.EventHandler(this.lblMaxFlickerHours_Click);
             // 
             // lblMaxFlickerDay
             // 
+            this.lblMaxFlickerDay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMaxFlickerDay.AutoSize = true;
             this.lblMaxFlickerDay.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMaxFlickerDay.Location = new System.Drawing.Point(1388, 370);
+            this.lblMaxFlickerDay.Location = new System.Drawing.Point(1260, 334);
             this.lblMaxFlickerDay.Name = "lblMaxFlickerDay";
             this.lblMaxFlickerDay.Size = new System.Drawing.Size(113, 18);
             this.lblMaxFlickerDay.TabIndex = 271;
             this.lblMaxFlickerDay.Text = "Max. Flicker Day :";
+            this.lblMaxFlickerDay.Click += new System.EventHandler(this.lblMaxFlickerDay_Click);
             // 
             // txtTurbineNoise
             // 
@@ -11358,7 +11751,7 @@ namespace ContinuumNS
             // txtNumIceDays
             // 
             this.txtNumIceDays.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNumIceDays.Location = new System.Drawing.Point(499, 97);
+            this.txtNumIceDays.Location = new System.Drawing.Point(499, 101);
             this.txtNumIceDays.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtNumIceDays.Name = "txtNumIceDays";
             this.txtNumIceDays.Size = new System.Drawing.Size(44, 25);
@@ -11369,7 +11762,7 @@ namespace ContinuumNS
             // 
             this.label89.AutoSize = true;
             this.label89.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label89.Location = new System.Drawing.Point(369, 70);
+            this.label89.Location = new System.Drawing.Point(369, 74);
             this.label89.Name = "label89";
             this.label89.Size = new System.Drawing.Size(124, 18);
             this.label89.TabIndex = 267;
@@ -11377,10 +11770,12 @@ namespace ContinuumNS
             // 
             // btnExportIceVsDist
             // 
-            this.btnExportIceVsDist.Location = new System.Drawing.Point(526, 760);
+            this.btnExportIceVsDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportIceVsDist.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportIceVsDist.Location = new System.Drawing.Point(488, 633);
             this.btnExportIceVsDist.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportIceVsDist.Name = "btnExportIceVsDist";
-            this.btnExportIceVsDist.Size = new System.Drawing.Size(122, 68);
+            this.btnExportIceVsDist.Size = new System.Drawing.Size(122, 50);
             this.btnExportIceVsDist.TabIndex = 266;
             this.btnExportIceVsDist.Text = "Export Ice Throw vs. Distance";
             this.btnExportIceVsDist.UseVisualStyleBackColor = true;
@@ -11388,10 +11783,12 @@ namespace ContinuumNS
             // 
             // btnExportSoundSummary
             // 
-            this.btnExportSoundSummary.Location = new System.Drawing.Point(796, 760);
+            this.btnExportSoundSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportSoundSummary.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportSoundSummary.Location = new System.Drawing.Point(758, 633);
             this.btnExportSoundSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportSoundSummary.Name = "btnExportSoundSummary";
-            this.btnExportSoundSummary.Size = new System.Drawing.Size(122, 68);
+            this.btnExportSoundSummary.Size = new System.Drawing.Size(122, 50);
             this.btnExportSoundSummary.TabIndex = 264;
             this.btnExportSoundSummary.Text = "Export Sound Model Summary";
             this.btnExportSoundSummary.UseVisualStyleBackColor = true;
@@ -11399,10 +11796,12 @@ namespace ContinuumNS
             // 
             // btnExportShadowFlicker
             // 
-            this.btnExportShadowFlicker.Location = new System.Drawing.Point(661, 760);
+            this.btnExportShadowFlicker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportShadowFlicker.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportShadowFlicker.Location = new System.Drawing.Point(623, 633);
             this.btnExportShadowFlicker.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportShadowFlicker.Name = "btnExportShadowFlicker";
-            this.btnExportShadowFlicker.Size = new System.Drawing.Size(122, 68);
+            this.btnExportShadowFlicker.Size = new System.Drawing.Size(122, 50);
             this.btnExportShadowFlicker.TabIndex = 263;
             this.btnExportShadowFlicker.Text = "Export Shadow Flicker Summary";
             this.btnExportShadowFlicker.UseVisualStyleBackColor = true;
@@ -11410,10 +11809,12 @@ namespace ContinuumNS
             // 
             // btnExportIceSummary
             // 
-            this.btnExportIceSummary.Location = new System.Drawing.Point(391, 760);
+            this.btnExportIceSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportIceSummary.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportIceSummary.Location = new System.Drawing.Point(353, 633);
             this.btnExportIceSummary.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportIceSummary.Name = "btnExportIceSummary";
-            this.btnExportIceSummary.Size = new System.Drawing.Size(122, 68);
+            this.btnExportIceSummary.Size = new System.Drawing.Size(122, 50);
             this.btnExportIceSummary.TabIndex = 262;
             this.btnExportIceSummary.Text = "Export Ice Throw Summary";
             this.btnExportIceSummary.UseVisualStyleBackColor = true;
@@ -11421,9 +11822,10 @@ namespace ContinuumNS
             // 
             // label176
             // 
+            this.label176.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label176.AutoSize = true;
             this.label176.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label176.Location = new System.Drawing.Point(1466, 27);
+            this.label176.Location = new System.Drawing.Point(1320, 38);
             this.label176.Name = "label176";
             this.label176.Size = new System.Drawing.Size(156, 19);
             this.label176.TabIndex = 261;
@@ -11431,16 +11833,17 @@ namespace ContinuumNS
             // 
             // lstZoneSound
             // 
+            this.lstZoneSound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lstZoneSound.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader158,
             this.columnHeader159});
             this.lstZoneSound.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstZoneSound.GridLines = true;
             this.lstZoneSound.HideSelection = false;
-            this.lstZoneSound.Location = new System.Drawing.Point(1461, 59);
+            this.lstZoneSound.Location = new System.Drawing.Point(1333, 70);
             this.lstZoneSound.Margin = new System.Windows.Forms.Padding(2);
             this.lstZoneSound.Name = "lstZoneSound";
-            this.lstZoneSound.Size = new System.Drawing.Size(147, 290);
+            this.lstZoneSound.Size = new System.Drawing.Size(147, 256);
             this.lstZoneSound.TabIndex = 260;
             this.lstZoneSound.UseCompatibleStateImageBehavior = false;
             this.lstZoneSound.View = System.Windows.Forms.View.Details;
@@ -11458,9 +11861,10 @@ namespace ContinuumNS
             // 
             // label175
             // 
+            this.label175.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label175.AutoSize = true;
             this.label175.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label175.Location = new System.Drawing.Point(1158, 26);
+            this.label175.Location = new System.Drawing.Point(1027, 37);
             this.label175.Name = "label175";
             this.label175.Size = new System.Drawing.Size(62, 19);
             this.label175.TabIndex = 259;
@@ -11468,16 +11872,19 @@ namespace ContinuumNS
             // 
             // lblShadowByMonthOrIceByDist
             // 
+            this.lblShadowByMonthOrIceByDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblShadowByMonthOrIceByDist.AutoSize = true;
             this.lblShadowByMonthOrIceByDist.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblShadowByMonthOrIceByDist.Location = new System.Drawing.Point(1000, 367);
+            this.lblShadowByMonthOrIceByDist.Location = new System.Drawing.Point(917, 331);
             this.lblShadowByMonthOrIceByDist.Name = "lblShadowByMonthOrIceByDist";
             this.lblShadowByMonthOrIceByDist.Size = new System.Drawing.Size(325, 19);
             this.lblShadowByMonthOrIceByDist.TabIndex = 258;
             this.lblShadowByMonthOrIceByDist.Text = "Hours of Shadow Flicker by Month / Hour :";
+            this.lblShadowByMonthOrIceByDist.Click += new System.EventHandler(this.lblShadowByMonthOrIceByDist_Click);
             // 
             // lstZoneIceHits
             // 
+            this.lstZoneIceHits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lstZoneIceHits.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader154,
             this.columnHeader155,
@@ -11488,10 +11895,10 @@ namespace ContinuumNS
             this.lstZoneIceHits.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstZoneIceHits.GridLines = true;
             this.lstZoneIceHits.HideSelection = false;
-            this.lstZoneIceHits.Location = new System.Drawing.Point(1158, 59);
+            this.lstZoneIceHits.Location = new System.Drawing.Point(1027, 70);
             this.lstZoneIceHits.Margin = new System.Windows.Forms.Padding(2);
             this.lstZoneIceHits.Name = "lstZoneIceHits";
-            this.lstZoneIceHits.Size = new System.Drawing.Size(298, 290);
+            this.lstZoneIceHits.Size = new System.Drawing.Size(298, 256);
             this.lstZoneIceHits.TabIndex = 257;
             this.lstZoneIceHits.UseCompatibleStateImageBehavior = false;
             this.lstZoneIceHits.View = System.Windows.Forms.View.Details;
@@ -11530,7 +11937,7 @@ namespace ContinuumNS
             // 
             this.label173.AutoSize = true;
             this.label173.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label173.Location = new System.Drawing.Point(839, 79);
+            this.label173.Location = new System.Drawing.Point(769, 113);
             this.label173.Name = "label173";
             this.label173.Size = new System.Drawing.Size(41, 18);
             this.label173.TabIndex = 256;
@@ -11539,26 +11946,27 @@ namespace ContinuumNS
             // cboIcingYear
             // 
             this.cboIcingYear.FormattingEnabled = true;
-            this.cboIcingYear.Location = new System.Drawing.Point(894, 75);
+            this.cboIcingYear.Location = new System.Drawing.Point(810, 109);
             this.cboIcingYear.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboIcingYear.Name = "cboIcingYear";
-            this.cboIcingYear.Size = new System.Drawing.Size(74, 26);
+            this.cboIcingYear.Size = new System.Drawing.Size(54, 26);
             this.cboIcingYear.TabIndex = 255;
             this.cboIcingYear.Text = "1";
             this.cboIcingYear.SelectedIndexChanged += new System.EventHandler(this.cboIcingYear_SelectedIndexChanged);
             // 
             // lstShadowZoneSummary
             // 
+            this.lstShadowZoneSummary.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lstShadowZoneSummary.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader152,
             this.columnHeader153});
             this.lstShadowZoneSummary.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstShadowZoneSummary.GridLines = true;
             this.lstShadowZoneSummary.HideSelection = false;
-            this.lstShadowZoneSummary.Location = new System.Drawing.Point(993, 59);
+            this.lstShadowZoneSummary.Location = new System.Drawing.Point(872, 70);
             this.lstShadowZoneSummary.Margin = new System.Windows.Forms.Padding(2);
             this.lstShadowZoneSummary.Name = "lstShadowZoneSummary";
-            this.lstShadowZoneSummary.Size = new System.Drawing.Size(147, 290);
+            this.lstShadowZoneSummary.Size = new System.Drawing.Size(147, 256);
             this.lstShadowZoneSummary.TabIndex = 254;
             this.lstShadowZoneSummary.UseCompatibleStateImageBehavior = false;
             this.lstShadowZoneSummary.View = System.Windows.Forms.View.Details;
@@ -11576,29 +11984,34 @@ namespace ContinuumNS
             // 
             // txtTotalShadow
             // 
+            this.txtTotalShadow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTotalShadow.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTotalShadow.Location = new System.Drawing.Point(1314, 399);
+            this.txtTotalShadow.Location = new System.Drawing.Point(1175, 363);
             this.txtTotalShadow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtTotalShadow.Name = "txtTotalShadow";
             this.txtTotalShadow.ReadOnly = true;
             this.txtTotalShadow.Size = new System.Drawing.Size(65, 25);
             this.txtTotalShadow.TabIndex = 253;
+            this.txtTotalShadow.TextChanged += new System.EventHandler(this.txtTotalShadow_TextChanged);
             // 
             // lblTotalHoursPerYear
             // 
+            this.lblTotalHoursPerYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTotalHoursPerYear.AutoSize = true;
             this.lblTotalHoursPerYear.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotalHoursPerYear.Location = new System.Drawing.Point(1176, 402);
+            this.lblTotalHoursPerYear.Location = new System.Drawing.Point(1037, 366);
             this.lblTotalHoursPerYear.Name = "lblTotalHoursPerYear";
             this.lblTotalHoursPerYear.Size = new System.Drawing.Size(138, 18);
             this.lblTotalHoursPerYear.TabIndex = 224;
             this.lblTotalHoursPerYear.Text = "Total Hours Per Year :";
+            this.lblTotalHoursPerYear.Click += new System.EventHandler(this.lblTotalHoursPerYear_Click);
             // 
             // lblShadowOrIceByDist
             // 
+            this.lblShadowOrIceByDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblShadowOrIceByDist.AutoSize = true;
             this.lblShadowOrIceByDist.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblShadowOrIceByDist.Location = new System.Drawing.Point(991, 28);
+            this.lblShadowOrIceByDist.Location = new System.Drawing.Point(870, 39);
             this.lblShadowOrIceByDist.Name = "lblShadowOrIceByDist";
             this.lblShadowOrIceByDist.Size = new System.Drawing.Size(126, 19);
             this.lblShadowOrIceByDist.TabIndex = 223;
@@ -11606,18 +12019,21 @@ namespace ContinuumNS
             // 
             // lblZoneOrDirection
             // 
+            this.lblZoneOrDirection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblZoneOrDirection.AutoSize = true;
             this.lblZoneOrDirection.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblZoneOrDirection.Location = new System.Drawing.Point(1009, 405);
+            this.lblZoneOrDirection.Location = new System.Drawing.Point(902, 369);
             this.lblZoneOrDirection.Name = "lblZoneOrDirection";
             this.lblZoneOrDirection.Size = new System.Drawing.Size(44, 18);
             this.lblZoneOrDirection.TabIndex = 222;
             this.lblZoneOrDirection.Text = "Zone :";
+            this.lblZoneOrDirection.Click += new System.EventHandler(this.lblZoneOrDirection_Click);
             // 
             // cboZoneList
             // 
+            this.cboZoneList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cboZoneList.FormattingEnabled = true;
-            this.cboZoneList.Location = new System.Drawing.Point(1066, 398);
+            this.cboZoneList.Location = new System.Drawing.Point(945, 363);
             this.cboZoneList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboZoneList.Name = "cboZoneList";
             this.cboZoneList.Size = new System.Drawing.Size(74, 26);
@@ -11626,6 +12042,7 @@ namespace ContinuumNS
             // 
             // lstShadow12x24
             // 
+            this.lstShadow12x24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lstShadow12x24.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader138,
             this.columnHeader139,
@@ -11644,13 +12061,14 @@ namespace ContinuumNS
             this.lstShadow12x24.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstShadow12x24.GridLines = true;
             this.lstShadow12x24.HideSelection = false;
-            this.lstShadow12x24.Location = new System.Drawing.Point(1003, 443);
+            this.lstShadow12x24.Location = new System.Drawing.Point(918, 405);
             this.lstShadow12x24.Margin = new System.Windows.Forms.Padding(2);
             this.lstShadow12x24.Name = "lstShadow12x24";
-            this.lstShadow12x24.Size = new System.Drawing.Size(619, 371);
+            this.lstShadow12x24.Size = new System.Drawing.Size(555, 260);
             this.lstShadow12x24.TabIndex = 219;
             this.lstShadow12x24.UseCompatibleStateImageBehavior = false;
             this.lstShadow12x24.View = System.Windows.Forms.View.Details;
+            this.lstShadow12x24.SelectedIndexChanged += new System.EventHandler(this.lstShadow12x24_SelectedIndexChanged);
             // 
             // columnHeader138
             // 
@@ -11739,7 +12157,7 @@ namespace ContinuumNS
             // 
             this.label169.AutoSize = true;
             this.label169.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label169.Location = new System.Drawing.Point(836, 18);
+            this.label169.Location = new System.Drawing.Point(638, 109);
             this.label169.Name = "label169";
             this.label169.Size = new System.Drawing.Size(45, 18);
             this.label169.TabIndex = 218;
@@ -11769,7 +12187,7 @@ namespace ContinuumNS
             "8 pm",
             "9 pm",
             "10 pm"});
-            this.cboSiteSuitHour.Location = new System.Drawing.Point(894, 11);
+            this.cboSiteSuitHour.Location = new System.Drawing.Point(687, 106);
             this.cboSiteSuitHour.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboSiteSuitHour.Name = "cboSiteSuitHour";
             this.cboSiteSuitHour.Size = new System.Drawing.Size(74, 26);
@@ -11781,7 +12199,7 @@ namespace ContinuumNS
             // 
             this.label165.AutoSize = true;
             this.label165.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label165.Location = new System.Drawing.Point(836, 49);
+            this.label165.Location = new System.Drawing.Point(629, 145);
             this.label165.Name = "label165";
             this.label165.Size = new System.Drawing.Size(54, 18);
             this.label165.TabIndex = 216;
@@ -11804,7 +12222,7 @@ namespace ContinuumNS
             "Oct",
             "Nov",
             "Dec"});
-            this.cboSiteSuitMonth.Location = new System.Drawing.Point(894, 42);
+            this.cboSiteSuitMonth.Location = new System.Drawing.Point(687, 138);
             this.cboSiteSuitMonth.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboSiteSuitMonth.Name = "cboSiteSuitMonth";
             this.cboSiteSuitMonth.Size = new System.Drawing.Size(74, 26);
@@ -11815,10 +12233,11 @@ namespace ContinuumNS
             // btnSiteSuitImportCRV
             // 
             this.btnSiteSuitImportCRV.BackColor = System.Drawing.Color.LightCoral;
-            this.btnSiteSuitImportCRV.Location = new System.Drawing.Point(171, 62);
+            this.btnSiteSuitImportCRV.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnSiteSuitImportCRV.Location = new System.Drawing.Point(223, 49);
             this.btnSiteSuitImportCRV.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnSiteSuitImportCRV.Name = "btnSiteSuitImportCRV";
-            this.btnSiteSuitImportCRV.Size = new System.Drawing.Size(129, 55);
+            this.btnSiteSuitImportCRV.Size = new System.Drawing.Size(140, 32);
             this.btnSiteSuitImportCRV.TabIndex = 214;
             this.btnSiteSuitImportCRV.Text = "Import Power Curve";
             this.btnSiteSuitImportCRV.UseVisualStyleBackColor = false;
@@ -11826,7 +12245,8 @@ namespace ContinuumNS
             // 
             // btnDelZones
             // 
-            this.btnDelZones.Location = new System.Drawing.Point(197, 711);
+            this.btnDelZones.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDelZones.Location = new System.Drawing.Point(199, 640);
             this.btnDelZones.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDelZones.Name = "btnDelZones";
             this.btnDelZones.Size = new System.Drawing.Size(122, 53);
@@ -11839,24 +12259,26 @@ namespace ContinuumNS
             // 
             this.label164.AutoSize = true;
             this.label164.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label164.Location = new System.Drawing.Point(420, 135);
+            this.label164.Location = new System.Drawing.Point(342, 138);
             this.label164.Name = "label164";
-            this.label164.Size = new System.Drawing.Size(143, 18);
+            this.label164.Size = new System.Drawing.Size(51, 18);
             this.label164.TabIndex = 200;
-            this.label164.Text = "Site Suitability Model :";
+            this.label164.Text = "Model :";
             // 
             // cboSiteSuitabilitySelectPlot
             // 
             this.cboSiteSuitabilitySelectPlot.FormattingEnabled = true;
-            this.cboSiteSuitabilitySelectPlot.Location = new System.Drawing.Point(566, 131);
+            this.cboSiteSuitabilitySelectPlot.Location = new System.Drawing.Point(393, 134);
             this.cboSiteSuitabilitySelectPlot.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboSiteSuitabilitySelectPlot.Name = "cboSiteSuitabilitySelectPlot";
-            this.cboSiteSuitabilitySelectPlot.Size = new System.Drawing.Size(243, 26);
+            this.cboSiteSuitabilitySelectPlot.Size = new System.Drawing.Size(226, 26);
             this.cboSiteSuitabilitySelectPlot.TabIndex = 199;
             this.cboSiteSuitabilitySelectPlot.SelectedIndexChanged += new System.EventHandler(this.cboSiteSuitabilitySelectPlot_SelectedIndexChanged);
             // 
             // lstZones
             // 
+            this.lstZones.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstZones.CheckBoxes = true;
             this.lstZones.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader133,
@@ -11866,10 +12288,10 @@ namespace ContinuumNS
             this.columnHeader137});
             this.lstZones.FullRowSelect = true;
             this.lstZones.HideSelection = false;
-            this.lstZones.Location = new System.Drawing.Point(14, 171);
+            this.lstZones.Location = new System.Drawing.Point(14, 144);
             this.lstZones.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstZones.Name = "lstZones";
-            this.lstZones.Size = new System.Drawing.Size(307, 522);
+            this.lstZones.Size = new System.Drawing.Size(307, 476);
             this.lstZones.TabIndex = 167;
             this.lstZones.UseCompatibleStateImageBehavior = false;
             this.lstZones.View = System.Windows.Forms.View.Details;
@@ -11914,7 +12336,7 @@ namespace ContinuumNS
             // 
             // btnRunShadowFlicker
             // 
-            this.btnRunShadowFlicker.Location = new System.Drawing.Point(548, 10);
+            this.btnRunShadowFlicker.Location = new System.Drawing.Point(540, 10);
             this.btnRunShadowFlicker.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnRunShadowFlicker.Name = "btnRunShadowFlicker";
             this.btnRunShadowFlicker.Size = new System.Drawing.Size(122, 53);
@@ -11948,7 +12370,7 @@ namespace ContinuumNS
             // 
             this.label166.AutoSize = true;
             this.label166.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label166.Location = new System.Drawing.Point(10, 135);
+            this.label166.Location = new System.Drawing.Point(11, 92);
             this.label166.Name = "label166";
             this.label166.Size = new System.Drawing.Size(93, 18);
             this.label166.TabIndex = 162;
@@ -11957,15 +12379,16 @@ namespace ContinuumNS
             // cboSiteSuitPowerCurve
             // 
             this.cboSiteSuitPowerCurve.FormattingEnabled = true;
-            this.cboSiteSuitPowerCurve.Location = new System.Drawing.Point(104, 132);
+            this.cboSiteSuitPowerCurve.Location = new System.Drawing.Point(110, 89);
             this.cboSiteSuitPowerCurve.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboSiteSuitPowerCurve.Name = "cboSiteSuitPowerCurve";
-            this.cboSiteSuitPowerCurve.Size = new System.Drawing.Size(294, 26);
+            this.cboSiteSuitPowerCurve.Size = new System.Drawing.Size(253, 26);
             this.cboSiteSuitPowerCurve.TabIndex = 161;
             // 
             // btnImportZones
             // 
-            this.btnImportZones.Location = new System.Drawing.Point(18, 711);
+            this.btnImportZones.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnImportZones.Location = new System.Drawing.Point(20, 640);
             this.btnImportZones.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnImportZones.Name = "btnImportZones";
             this.btnImportZones.Size = new System.Drawing.Size(122, 53);
@@ -11986,7 +12409,7 @@ namespace ContinuumNS
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1661, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(1520, 25);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -12196,24 +12619,25 @@ namespace ContinuumNS
             // 
             // Continuum
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1661, 921);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(1520, 785);
             this.Controls.Add(this.tabContinuum);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Palatino Linotype", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.MinimumSize = new System.Drawing.Size(1677, 960);
             this.Name = "Continuum";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Continuum Wind Flow Model";
+            this.Load += new System.EventHandler(this.Continuum_Load);
             this.tabContinuum.ResumeLayout(false);
             this.pgeInput.ResumeLayout(false);
             this.pgeInput.PerformLayout();
+            this.pnlInputMap.ResumeLayout(false);
+            this.pnlInputMapAndLegend.ResumeLayout(false);
+            this.pnlInputMapAndLegend.PerformLayout();
             this.pgeMetDataTS.ResumeLayout(false);
             this.splContMetTS.Panel1.ResumeLayout(false);
             this.splContMetTS.Panel1.PerformLayout();
@@ -12224,6 +12648,8 @@ namespace ContinuumNS
             ((System.ComponentModel.ISupportInitialize)(this.dataMetTS)).EndInit();
             this.pgeMetData.ResumeLayout(false);
             this.pgeMetData.PerformLayout();
+            this.pnlMetDatQC_WSDiff.ResumeLayout(false);
+            this.pnlMetDataQC_Scatter.ResumeLayout(false);
             this.pgeMERRA.ResumeLayout(false);
             this.pgeMERRA.PerformLayout();
             this.pgeMCP.ResumeLayout(false);
@@ -12272,7 +12698,6 @@ namespace ContinuumNS
         internal System.Windows.Forms.Label Label84;
         internal System.Windows.Forms.TextBox txt_LC_Key_selected;
         internal System.Windows.Forms.Button btnViewModNLCD;
-        internal System.Windows.Forms.ComboBox cboTopo_Or_Roughness;
         internal System.Windows.Forms.TextBox txtUTMZone;
         internal System.Windows.Forms.Label Label57;
         internal System.Windows.Forms.TextBox txtUTMDatum;
@@ -12282,23 +12707,12 @@ namespace ContinuumNS
         internal System.Windows.Forms.Button btnGenTurbEsts;
         internal System.Windows.Forms.Label Label30;
         internal System.Windows.Forms.Label Label19;
-        internal System.Windows.Forms.CheckBox chkAllTurbLabels;
-        internal System.Windows.Forms.CheckBox chkAllMetLabels;
-        internal System.Windows.Forms.Label Label23;
-        internal System.Windows.Forms.Label lblMetLabels;
-        internal System.Windows.Forms.CheckedListBox chkTurbLabels;
-        internal System.Windows.Forms.CheckedListBox chkMetLabels;
-        internal System.Windows.Forms.TextBox txtMainMax;
-        internal System.Windows.Forms.TextBox txtMainMin;
-        internal System.Windows.Forms.Label Label21;
-        internal System.Windows.Forms.Label Label22;
         internal System.Windows.Forms.Button btnDelTurb;
         internal System.Windows.Forms.Button btnEditTurb;
         internal System.Windows.Forms.Button btnAddTurb;
         internal System.Windows.Forms.ColumnHeader ColumnHeader17;
         internal System.Windows.Forms.ColumnHeader ColumnHeader18;
         internal System.Windows.Forms.ColumnHeader ColumnHeader19;
-        internal System.Windows.Forms.TextBox txtTopoSource;
         internal System.Windows.Forms.Label lblTurbineList;
         internal System.Windows.Forms.Button btnDelMet;
         public System.Windows.Forms.ListView lstMetTowers;
@@ -12568,7 +12982,6 @@ namespace ContinuumNS
         internal System.Windows.Forms.TextBox txtSepCrit;
         internal System.Windows.Forms.Label Label100;
         internal System.Windows.Forms.ComboBox cboDHplot;
-        internal System.Windows.Forms.Button btnImportModel;
         internal System.Windows.Forms.CheckedListBox chkAdvToShow;
         internal System.Windows.Forms.CheckBox chkWeight_RMS;
         internal System.Windows.Forms.TextBox txtSectRMS;
@@ -12576,7 +12989,6 @@ namespace ContinuumNS
         internal System.Windows.Forms.TextBox txtAdv_LC_used;
         internal System.Windows.Forms.ComboBox cboExpo_or_Stab;
         internal System.Windows.Forms.Label Label82;
-        internal System.Windows.Forms.Button btnExportModel;
         internal System.Windows.Forms.Label Label59;
         internal System.Windows.Forms.TextBox txtUWCrit;
         internal System.Windows.Forms.Label Label58;
@@ -12647,9 +13059,6 @@ namespace ContinuumNS
         internal System.Windows.Forms.Button btnImportMetTS;
         private System.Windows.Forms.TabPage pgeMetData;
         internal System.Windows.Forms.ComboBox cboFilt_or_Not;
-        private System.Windows.Forms.Label label102;
-        private System.Windows.Forms.Label label70;
-        private System.Windows.Forms.Label label69;
         private System.Windows.Forms.ColumnHeader columnHeader82;
         private System.Windows.Forms.ColumnHeader columnHeader84;
         private System.Windows.Forms.ColumnHeader columnHeader83;
@@ -13009,7 +13418,6 @@ namespace ContinuumNS
         public System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         public System.Windows.Forms.TabControl tabContinuum;
         public MatplotlibCS.Figure matPlotTopo;
-        public OxyPlot.WindowsForms.PlotView plotTopo;
         public OxyPlot.WindowsForms.PlotView plotUWExpo;
         public OxyPlot.WindowsForms.PlotView plotDirectionalWS_Ratios;
         public OxyPlot.WindowsForms.PlotView plotInputWindRose;
@@ -13017,9 +13425,6 @@ namespace ContinuumNS
         private System.Windows.Forms.Label label62;
         public OxyPlot.WindowsForms.PlotView plotMetQC_WindRose;
         public OxyPlot.WindowsForms.PlotView plotAlphaByWD;
-        public OxyPlot.WindowsForms.PlotView plotAnemScatter;
-        public OxyPlot.WindowsForms.PlotView plotWSDiffByWS;
-        public OxyPlot.WindowsForms.PlotView plotWSDiffByWD;
         public OxyPlot.WindowsForms.PlotView plotMERRA_Monthly;
         public OxyPlot.WindowsForms.PlotView plotMERRA_Yearly;
         public OxyPlot.WindowsForms.PlotView plotMERRA_WindRose;
@@ -13163,25 +13568,11 @@ namespace ContinuumNS
         private System.Windows.Forms.Label label147;
         private System.Windows.Forms.Button btnShowIECThresh;
         public OxyPlot.WindowsForms.PlotView plotComplexHisto;
-        private System.Windows.Forms.Label label150;
         private System.Windows.Forms.Label label161;
         public System.Windows.Forms.DataGridView dataTerrainComplex;
         public System.Windows.Forms.ComboBox cboTSIorTVIorP90;
         public System.Windows.Forms.Label lblIEC_Complexity;
         internal System.Windows.Forms.Button btnCalcTerrainComplexity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column15;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column11;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column13;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column14;
         private System.Windows.Forms.TabPage pgeMetDataTS;
         private System.Windows.Forms.SplitContainer splContMetTS;
         private System.Windows.Forms.Label label146;
@@ -13208,7 +13599,6 @@ namespace ContinuumNS
         public System.Windows.Forms.ComboBox cboPlot3Type;
         public System.Windows.Forms.TextBox txtNumDaysTS;
         private System.Windows.Forms.Label label214;
-        private System.Windows.Forms.Label label215;
         public System.Windows.Forms.CheckBox chkShowLegenMetDataTS;
         public System.Windows.Forms.CheckBox chkShowFilteredData;
         private System.Windows.Forms.Button btnRefDataDownloads;
@@ -13294,6 +13684,20 @@ namespace ContinuumNS
         public TextBox txtWMO_HourGust;
         public TextBox txtWMO_Desc;
         private Button btnExportExtremeWSTable;
+        private DataGridViewTextBoxColumn Column3;
+        private DataGridViewTextBoxColumn Column4;
+        private DataGridViewTextBoxColumn Column15;
+        private DataGridViewTextBoxColumn Column5;
+        private DataGridViewTextBoxColumn Column6;
+        private DataGridViewTextBoxColumn Column7;
+        private DataGridViewTextBoxColumn Column8;
+        private DataGridViewTextBoxColumn Column9;
+        private DataGridViewTextBoxColumn Column10;
+        private DataGridViewTextBoxColumn Column11;
+        private DataGridViewTextBoxColumn Column12;
+        private DataGridViewTextBoxColumn Column13;
+        private DataGridViewTextBoxColumn Column14;
+        private Label label215;
         private DataGridViewTextBoxColumn Column17;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn Column20;
@@ -13301,6 +13705,29 @@ namespace ContinuumNS
         private DataGridViewTextBoxColumn Column2;
         private DataGridViewTextBoxColumn Column19;
         private DataGridViewTextBoxColumn Column16;
+        internal Button btnImportModel;
+        internal Button btnExportModel;
+        private Panel pnlInputMapAndLegend;
+        internal Label lblMetLabels;
+        internal ComboBox cboTopo_Or_Roughness;
+        internal CheckBox chkAllTurbLabels;
+        internal CheckBox chkAllMetLabels;
+        internal Label Label23;
+        internal CheckedListBox chkTurbLabels;
+        internal CheckedListBox chkMetLabels;
+        internal TextBox txtTopoSource;
+        private Panel pnlInputMap;
+        public OxyPlot.WindowsForms.PlotView plotTopo;
+        private Label label70;
+        public OxyPlot.WindowsForms.PlotView plotWSDiffByWD;
+        private Panel pnlMetDataQC_Scatter;
+        public OxyPlot.WindowsForms.PlotView plotAnemScatter;
+        private Panel pnlMetDatQC_WSDiff;
+        public OxyPlot.WindowsForms.PlotView plotWSDiffByWS;
+        private Label label102;
+        private Label label69;
+        private Button btnExportTerrainComplexSector;
+        public ComboBox cboInputLLorDD;
     }
 }
 

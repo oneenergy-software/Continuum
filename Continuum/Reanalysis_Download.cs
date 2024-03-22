@@ -91,10 +91,7 @@ namespace ContinuumNS
                 }
 
                 // Check to see if new files need to be downloaded
-                DateTime[] currentStartEnd = thisInst.refList.GetDataFileStartEndDate(dataToDownload.folderLocation, dataToDownload.refType);
-                if (currentStartEnd[0] != dataToDownload.startDate || currentStartEnd[1] != dataToDownload.endDate)
-                    needToDownload = true;
-                else if (Convert.ToInt16(txtPercComplete.Text) < 100)
+                if (dataToDownload.completion < 1.0)
                     needToDownload = true;
 
                 // Make sure that the lat/long range includes at least one node, min < max, and show message displaying number of nodes and time range selected to download (give chance to cancel)
@@ -214,12 +211,10 @@ namespace ContinuumNS
             else
             {
                 // Check to see if new files need to be downloaded
-                DateTime[] currentStartEnd = thisInst.refList.GetDataFileStartEndDate(dataToDownload.folderLocation, dataToDownload.refType);
-                if (currentStartEnd[0] != dataToDownload.startDate || currentStartEnd[1] != dataToDownload.endDate)
+                
+                if (dataToDownload.completion < 1.0)
                     needToDownload = true;
-                else if (Convert.ToInt16(Math.Round(Convert.ToDouble(txtPercComplete.Text),0)) < 100)
-                    needToDownload = true;
-
+                
                 if (dataToDownload.refType == "MERRA2" && (dataToDownload.userName == null || dataToDownload.userPassword == null))
                 {
                     // See if user credentials are saved in another MERRA2 object
@@ -305,8 +300,8 @@ namespace ContinuumNS
 
                 cboReanalysisType.SelectedItem = dataToDownload.refType;
 
-                double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
-                txtPercComplete.Text = Math.Round(percCompl, 1).ToString();
+                dataToDownload.completion = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
+                txtPercComplete.Text = Math.Round(dataToDownload.completion, 1).ToString();
 
                 btnDownloadMERRA2.BackColor = Color.MediumSeaGreen;
             }
@@ -354,8 +349,8 @@ namespace ContinuumNS
                     dataToDownload.endDate = dateReferenceEnd.Value.AddHours(-offset);
                 }
 
-                double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
-                txtPercComplete.Text = Math.Round(percCompl, 1).ToString();
+                dataToDownload.completion = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
+                txtPercComplete.Text = Math.Round(dataToDownload.completion * 100.0, 4).ToString();
 
                 btnDownloadMERRA2.BackColor = Color.MediumSeaGreen;
             }
@@ -384,9 +379,10 @@ namespace ContinuumNS
                     dataToDownload.refType = cboReanalysisType.SelectedItem.ToString();
                 else
                 {
-                    DateTime[] startEnd = thisInst.refList.GetDataFileStartEndDate(dataToDownload.folderLocation, dataToDownload.refType);
-                    dataToDownload.startDate = startEnd[0];
-                    dataToDownload.endDate = startEnd[1];
+                    ReferenceCollection.DateRangeAndCompletion refdataRangeAndComplete = thisInst.refList.GetDataFileStartEndDateAndCompletion(dataToDownload.folderLocation, dataToDownload.refType);
+                    dataToDownload.startDate = refdataRangeAndComplete.startEnd[0];
+                    dataToDownload.endDate = refdataRangeAndComplete.startEnd[1];
+                    dataToDownload.completion = refdataRangeAndComplete.completion;
                 }
 
                 if (thisInst.refList.HaveThisRefDataDownload(dataToDownload) == false && dataToDownload.minLat != 0)
@@ -417,7 +413,7 @@ namespace ContinuumNS
         }
 
         private void cboRefDataDownloads_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        {           
             UpdateForm();
         }
 

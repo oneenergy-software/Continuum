@@ -81,8 +81,7 @@ namespace Continuum_Tests
             int offset = thisInst.UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
             Reference thisMERRA = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
-            thisInst.metList.isMCPd = true;
-
+           
             // Test 1
             Met.WSWD_Dist thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.All, thisInst, thisMet.mcpList[0]);
 
@@ -96,8 +95,7 @@ namespace Continuum_Tests
             thisInst.ResetTimeSeries();
             thisInst.metList.numTOD = 2;
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
-            thisInst.metList.isMCPd = true;
-
+            
             thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Day, Met.Season.All, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 6.296237, 0.01, "Wrong overall WS Test 2");
@@ -119,8 +117,7 @@ namespace Continuum_Tests
             thisInst.metList.numTOD = 1;
             thisInst.metList.numSeason = 4;
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
-            thisInst.metList.isMCPd = true;
-
+            
             thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.All, Met.Season.Winter, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 7.413855, 0.01, "Wrong overall WS Test 4");
@@ -156,8 +153,7 @@ namespace Continuum_Tests
             thisInst.metList.numSeason = 4;
             thisInst.metList.numWD = 24;
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
-            thisInst.metList.isMCPd = true;
-
+            
             thisDist = thisMet.CalcLT_WSWD_Dists(80, Met.TOD.Night, Met.Season.Summer, thisInst, thisMet.mcpList[0]);
 
             Assert.AreEqual(thisDist.WS, 5.76306, 0.01, "Wrong overall WS Test 9");
@@ -305,7 +301,7 @@ namespace Continuum_Tests
             string WS_Range = "All > Cut-In";
 
             // Test 1: All > Cut-In
-            double[] alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            double[] alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
 
             int thisDelta = Convert.ToInt16(3 * 0.01);
             Assert.AreEqual(alphaHisto[0], 3, thisDelta, "Wrong Alpha Histo Test 1");
@@ -327,7 +323,7 @@ namespace Continuum_Tests
 
             // Test 2: 5 - 10 m/s
             WS_Range = "5 - 10 m/s";
-            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
 
             thisDelta = Convert.ToInt16(0 * 0.01);
             Assert.AreEqual(alphaHisto[3], 0, thisDelta, "Wrong Alpha Histo Test 2");
@@ -346,7 +342,7 @@ namespace Continuum_Tests
 
             // Test 3: 10 - 15 m/s
             WS_Range = "10 - 15 m/s";
-            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
 
             thisDelta = Convert.ToInt16(423 * 0.01);
             Assert.AreEqual(alphaHisto[34], 423, thisDelta, "Wrong Alpha Histo Test 3");
@@ -356,7 +352,7 @@ namespace Continuum_Tests
 
             // Test 4: 15+ m/s
             WS_Range = "15+ m/s";
-            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            alphaHisto = thisMet.GetAlphaHistogram(WS_Range, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
 
             thisDelta = Convert.ToInt16(46 * 0.01);
             Assert.AreEqual(alphaHisto[29], 46, thisDelta, "Wrong Alpha Histo Test 3");
@@ -377,16 +373,16 @@ namespace Continuum_Tests
 
             Met thisMet = thisInst.metList.metItem[0];
 
-            double[] thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            double[] thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
             Assert.AreEqual(thisAlphaVal[0], 0.6537, 0.001, "Wrong Alpha P Value Test 1");
 
-            thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 50, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 50, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
             Assert.AreEqual(thisAlphaVal[0], 0.276, 0.001, "Wrong Alpha P Value Test 2");
 
-            thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 90, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 90, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
             Assert.AreEqual(thisAlphaVal[0], 0.0791, 0.001, "Wrong Alpha P Value Test 3");
 
-            thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 99, thisInst, thisMet.metData.allStartDate, thisMet.metData.allEndDate);
+            thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 99, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
             Assert.AreEqual(thisAlphaVal[0], -0.0082, 0.001, "Wrong Alpha P Value Test 4");
 
             thisInst.Close();
@@ -427,8 +423,8 @@ namespace Continuum_Tests
 
             Assert.AreEqual(maxWS.gust1yr, 27.0, 0.1, "Wrong Gust 1-year WS");
             Assert.AreEqual(maxWS.tenMin1yr, 16.87, 0.1, "Wrong Ten-Min 1yrear WS");
-            Assert.AreEqual(maxWS.gust50yr, 32.0, 0.1, "Wrong Gust 50-year WS");
-            Assert.AreEqual(maxWS.tenMin50yr, 20.0, 0.1, "Wrong Ten-Min 50-year WS");
+            Assert.AreEqual(maxWS.gust50yr, 32.1, 0.1, "Wrong Gust 50-year WS");
+            Assert.AreEqual(maxWS.tenMin50yr, 20.1, 0.1, "Wrong Ten-Min 50-year WS");
 
             thisInst.Close();
         }

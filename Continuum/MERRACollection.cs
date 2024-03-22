@@ -268,16 +268,16 @@ namespace ContinuumNS
                                                     
             DialogResult doMCP = DialogResult.No;
 
-            if (thisMet.name != null && isTest == false && (thisInst.metList.ThisCount == 1 || thisInst.metList.isMCPd == false))
+            if (thisMet.name != null && isTest == false && (thisInst.metList.ThisCount == 1 || thisMet.isMCPd == false))
                 doMCP = MessageBox.Show("Do you want to conduct MCP at selected met?", "Continuum 3.0", MessageBoxButtons.YesNo);
-            else if (thisMet.name != "" && isTest == false && thisInst.metList.ThisCount > 1 && thisInst.metList.isMCPd == true)
+            else if (thisMet.name != "" && isTest == false && thisInst.metList.ThisCount > 1 && thisMet.isMCPd == true)
                 doMCP = DialogResult.Yes;
             else if (isTest == true)
                 doMCP = DialogResult.No;
 
             if (doMCP == DialogResult.Yes)
-            {                
-                thisInst.metList.isMCPd = true;
+            {
+                thisMet.isMCPd = true;
                 thisInst.modelList.ClearAllExceptImported();
                 thisInst.turbineList.ClearAllWSEsts();
                 thisInst.turbineList.ClearAllGrossEsts();

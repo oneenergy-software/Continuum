@@ -34,6 +34,8 @@ namespace ContinuumNS
         public MCP mcp;
         /// <summary> List of MCP (Measure-Correlate-Predict) long-term estimates </summary>
         public MCP[] mcpList;
+        /// <summary> True if MCP has been conducted at this met </summary>
+        public bool isMCPd; 
         /// <summary> Measured turbulence intensity (from time series data) </summary>
         public Turbulence turbulence;
                 
@@ -550,9 +552,17 @@ namespace ContinuumNS
 
             int allCount = 0; // Count of all WSWD used for overall WS, wind speed distribution, and wind rose
             double sumPower = 0;
-            int[] secCount = new int[thisInst.metList.numWD]; // Sectorwise count used for sectorwise wind speed ratios and sectorwise wind speed distributions                
+            int[] secCount = new int[thisInst.metList.numWD]; // Sectorwise count used for sectorwise wind speed ratios and sectorwise wind speed distributions
 
-            for (int i = 0; i < extrapData.WS_WD_data.Length; i++)
+            int startInd = 0;
+            while (extrapData.WS_WD_data[startInd].timeStamp < metData.startDate && startInd < extrapData.WS_WD_data.Length - 1)
+                startInd++;
+
+            int endInd = extrapData.WS_WD_data.Length - 1;
+            while (extrapData.WS_WD_data[endInd].timeStamp > metData.endDate && endInd > 0)
+                endInd--;
+
+            for (int i = startInd; i <= endInd; i++)
             {
                 TOD siteDataTOD = thisInst.metList.GetTOD(extrapData.WS_WD_data[i].timeStamp);
                 Season siteDataSeason = thisInst.metList.GetSeason(extrapData.WS_WD_data[i].timeStamp);
@@ -787,6 +797,9 @@ namespace ContinuumNS
             Met_Data_Filter.Sim_TS extrapData = metData.GetSimulatedTimeSeries(height);    
             int timeInd = 0;
 
+            if (extrapData.WS_WD_data == null)
+                return;
+
             while (extrapData.WS_WD_data[timeInd].timeStamp < startTime)
                 timeInd++;
 
@@ -850,7 +863,10 @@ namespace ContinuumNS
                 DateTime startTime = thisInst.dateTIStart.Value;
                 DateTime endTime = thisInst.dateTIEnd.Value;
                 CalcTurbulenceIntensity(startTime, endTime, thisInst.modeledHeight, thisInst);
-            }                       
+            }
+
+            if (turbulence.count == null)
+                return overallTI;
 
             for (int WS_Ind = 0; WS_Ind < thisInst.metList.numWS; WS_Ind++)
             {                
@@ -1047,12 +1063,13 @@ namespace ContinuumNS
                         maxYearlyWinds[yearInd].thisYear = lastYear;
                         maxYearlyWinds[yearInd].startTime = firstTSInThisYear;
                         maxYearlyWinds[yearInd].endTime = lastTSInThisYear;
+                        yearInd++;
                     }
                                         
                     maxWS = thisSimTS.WS_WD_data[i].WS;
                     lastYear = thisYear;
                     firstTS_IndexThisYear = i;
-                    yearInd++;
+                    
                 }
             }
 
@@ -1149,6 +1166,7 @@ namespace ContinuumNS
                         maxYearlyWinds[yearInd].thisYear = lastYear;
                         maxYearlyWinds[yearInd].startTime = firstTSInThisYear;
                         maxYearlyWinds[yearInd].endTime = lastTSInThisYear;
+                        yearInd++;
                     }
 
                     if (tenMinOrGust == "10-min")
@@ -1168,7 +1186,7 @@ namespace ContinuumNS
 
                     lastYear = thisYear;
                     firstTS_IndexThisYear = i;
-                    yearInd++;
+                    
                 }
             }
 

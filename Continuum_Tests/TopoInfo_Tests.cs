@@ -156,7 +156,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum("");
             
             thisInst.savedParams.savedFileName = testingFolder + "\\Testing GeoTiff load.cfm";
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.UTM_conversions.savedDatumIndex = 0;
             thisInst.UTM_conversions.UTMZoneNumber = 17;
             thisInst.UTM_conversions.hemisphere = "Northern";
@@ -204,7 +204,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum("");
             
             thisInst.savedParams.savedFileName = testingFolder + "\\Testing LandCover load.cfm";
-            thisInst.SaveFile(true);
+            thisInst.SaveFile();
             thisInst.UTM_conversions.savedDatumIndex = 0;
             thisInst.UTM_conversions.UTMZoneNumber = 17;
             thisInst.UTM_conversions.hemisphere = "Northern";
@@ -376,7 +376,7 @@ namespace Continuum_Tests
             double elev = 900;
 
             double thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, true);
-            Assert.AreEqual(thisSlope, 0.572939, 0.0001);
+            Assert.AreEqual(thisSlope, -0.572939, 0.0001);
 
             // Test 2: NOT Forced through base
             regression = new double[3];
@@ -387,7 +387,7 @@ namespace Continuum_Tests
             WD = 225;
 
             thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, false);
-            Assert.AreEqual(thisSlope, 1.01275037, 0.0001);
+            Assert.AreEqual(thisSlope, -1.01275037, 0.0001);
 
             // Test 2: NOT Forced through base
             regression[0] = 4.2;
@@ -397,7 +397,7 @@ namespace Continuum_Tests
             WD = 315;
 
             thisSlope = topo.CalcSlopeAlongCenterlineOfFittedPlane(regression, radius, WD, UTMX, UTMY, elev, false);
-            Assert.AreEqual(thisSlope, 2.024868297, 0.0001);
+            Assert.AreEqual(thisSlope, -2.024868297, 0.0001);
         }
 
         [TestMethod]

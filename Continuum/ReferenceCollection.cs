@@ -45,7 +45,9 @@ namespace ContinuumNS
             public DateTime startDate;
             /// <summary> Specified end date of reference data (UTC-0) </summary>
             public DateTime endDate;
-            /// <summary> Min latitude of downloaded nodes in files </summary>
+            /// <summary> Download completion percent </summary>
+            public double completion;
+            /// <summary> Min latitude of downloaded nodes in files </summary>     
             public double minLat;
             /// <summary> Max latitude of downloaded nodes in files </summary>
             public double maxLat;
@@ -1037,29 +1039,58 @@ namespace ContinuumNS
             return areSame;
         }
 
-        /// <summary> Calculates % completion of downloaded data files </summary>
+        /// <summary> Calculates % completion of downloaded data files </summary> 
         public double CalcDownloadedDataCompletion(RefDataDownload thisRefData)
         {
             double complete = 0;
-            
-            DateTime[] startEndDates = GetDataFileStartEndDate(thisRefData.folderLocation, thisRefData.refType);
-            int numTotalDays = (int)Math.Round(thisRefData.endDate.Subtract(thisRefData.startDate).TotalDays,0);
+            int numTotalDays = (int)Math.Round(thisRefData.endDate.Subtract(thisRefData.startDate).TotalDays,0);                                    
             int daysWithData = 0;
 
-            for (DateTime thisDate = startEndDates[0]; thisDate <= startEndDates[1]; thisDate = thisDate.AddDays(1))
+            for (DateTime thisDate = thisRefData.startDate; thisDate <= thisRefData.endDate; thisDate = thisDate.AddDays(1))
             {
                 if (ReferenceFileExists(thisDate, thisRefData))
                     daysWithData++;
             }
 
-            if (numTotalDays > 0)
-                complete = 100.0 * daysWithData / numTotalDays;
+            // If ERA5 data, figure out if folder has daily files or one big file
+            if (thisRefData.refType == "ERA5" && daysWithData == 0)
+            {
+                string[] refDataFiles = Directory.GetFiles(thisRefData.folderLocation, "*.nc");
+                DateTime baseTime = new DateTime(1900, 01, 01, 0, 0, 0); //time that all the ERA5 'time' variable values are relative to
 
-            if (complete > 100)
-                complete = 100;
+                if (refDataFiles != null)
+                {
+                    try
+                    {                       
+                        for (int r = 0; r < refDataFiles.Length; r++)
+                        {
+                            DataSet thisERA5Data = DataSet.Open(refDataFiles[r]);
+                            Variable[] allVars = thisERA5Data.Variables.ToArray();
+
+                            Int32[] allTime = thisERA5Data.GetData<Int32[]>("time");
+
+                            DateTime firstDate = baseTime.AddHours(allTime[0]);
+                            DateTime lastDate = baseTime.AddHours(allTime[allTime.Length - 1]);
+
+                            daysWithData = daysWithData + Convert.ToInt32(lastDate.Subtract(firstDate).TotalDays);
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error opening ERA5 data file.");                        
+                    }
+                }
+            }
+            
+            if (numTotalDays > 0)
+                complete = (double)daysWithData / numTotalDays;
+
+            if (complete > 1.0)
+                complete = 1.0;
 
             return complete;
         }
+  
 
         /// <summary> Opens reference data file and finds min/max lat/long and start/end date  </summary>
         public RefDataDownload ReadFileAndDefineRefDataDownload(string refDataFolder)
@@ -1238,19 +1269,26 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Finds and returns the start and end date of the downloaded reference data files. </summary>
-        public DateTime[] GetDataFileStartEndDate(string refDataFolder, string refType)
+        public struct DateRangeAndCompletion
         {
-            DateTime[] startEndDates = new DateTime[2];
+            public DateTime[] startEnd;
+            public double completion;
+        }
+
+        /// <summary> Finds and returns the start and end date of the downloaded reference data files. </summary>
+        public DateRangeAndCompletion GetDataFileStartEndDateAndCompletion(string refDataFolder, string refType)
+        {
+            DateRangeAndCompletion dateRangeAndCount = new DateRangeAndCompletion();
+            dateRangeAndCount.startEnd = new DateTime[2];
 
             bool folderExists = Directory.Exists(refDataFolder);
             if (folderExists == false)
-                return startEndDates;
+                return dateRangeAndCount;
 
             if (refType == "MERRA2")
             {
                 string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii");
-
+                
                 for (int f = 0; f < MERRAfiles.Length; f++)
                 {
                     // Get date from filename
@@ -1262,12 +1300,19 @@ namespace ContinuumNS
 
                     DateTime thisDate = new DateTime(thisYear, thisMonth, thisDay);
 
-                    if (thisDate < startEndDates[0] || startEndDates[0].Year == 1)
-                        startEndDates[0] = thisDate;
+                    if (thisDate < dateRangeAndCount.startEnd[0] || dateRangeAndCount.startEnd[0].Year == 1)
+                        dateRangeAndCount.startEnd[0] = thisDate;
 
-                    if (thisDate > startEndDates[1])
-                        startEndDates[1] = thisDate.AddHours(23); // End of day
+                    if (thisDate > dateRangeAndCount.startEnd[1])
+                        dateRangeAndCount.startEnd[1] = thisDate.AddHours(23); // End of day
                 }
+
+                // Now figure out data download completion
+                int numDays = Convert.ToInt32(dateRangeAndCount.startEnd[1].Subtract(dateRangeAndCount.startEnd[0]).TotalDays);
+
+                if (numDays > 0)
+                    dateRangeAndCount.completion = (double)MERRAfiles.Length / numDays;
+                
             }
             else if (refType == "ERA5")
             {
@@ -1278,11 +1323,13 @@ namespace ContinuumNS
                 if (refDataFiles == null)
                 {
                     MessageBox.Show("Could not find netCDF file. Check specified folder path and try again.");
-                    return startEndDates;
+                    return dateRangeAndCount;
                 }
 
                 try
                 {
+                    double numDays = 0;
+
                     for (int r = 0; r < refDataFiles.Length; r++)
                     {
                         DataSet thisERA5Data = DataSet.Open(refDataFiles[r]);
@@ -1293,21 +1340,28 @@ namespace ContinuumNS
                         DateTime firstDate = baseTime.AddHours(allTime[0]);
                         DateTime lastDate = baseTime.AddHours(allTime[allTime.Length - 1]);
 
-                        if (firstDate < startEndDates[0] || startEndDates[0].Year == 1)
-                            startEndDates[0] = firstDate;
+                        if (firstDate < dateRangeAndCount.startEnd[0] || dateRangeAndCount.startEnd[0].Year == 1)
+                            dateRangeAndCount.startEnd[0] = firstDate;
 
-                        if (lastDate > startEndDates[1])
-                            startEndDates[1] = lastDate;
+                        if (lastDate > dateRangeAndCount.startEnd[1])
+                            dateRangeAndCount.startEnd[1] = lastDate;
+
+                        numDays = numDays + lastDate.Subtract(firstDate).TotalDays + 1.0 / 24;
                     }
+
+                    int totalNumDays = Convert.ToInt32(dateRangeAndCount.startEnd[1].Subtract(dateRangeAndCount.startEnd[0]).TotalDays);
+
+                    if (totalNumDays > 0)
+                        dateRangeAndCount.completion = (double)numDays / totalNumDays;
                 }
                 catch
                 {
                     MessageBox.Show("Error opening ERA5 data file.");
-                    return startEndDates;
+                    return dateRangeAndCount;
                 }
             }
 
-            return startEndDates;
+            return dateRangeAndCount;
         }
 
         /// <summary> Creates filename for exported MERRA2 data. </summary>

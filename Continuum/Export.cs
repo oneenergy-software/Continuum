@@ -2860,7 +2860,7 @@ namespace ContinuumNS
             if (thisInst.cboReferenceMonth.SelectedItem.ToString() == "All Months")
                 Month_str = "All";
             else
-                Month_str = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(thisInst.cboReferenceMonth.SelectedIndex + 1);
+                Month_str = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(thisInst.cboReferenceMonth.SelectedIndex);
 
             string Year_str = thisInst.cboReferenceYear.SelectedItem.ToString();
 
@@ -4070,6 +4070,63 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Exports either the terrain slope or standard deviation of terrain variation for specified radius of investigation in each wind direction sector </summary>
+        /// <param name="thisInst"></param>
+        public void ExportTerrainSlopeOrVariationBySector(Continuum thisInst, string slopeOrVariation, string radiusOfInterest, bool forceThruBase)
+        {
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
+
+                if (slopeOrVariation == "Slope")
+                    sw.WriteLine("Terrain Slope by Turbine Site");
+                else
+                    sw.WriteLine("Terrain Variation by Turbine Site");
+
+                sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+                sw.WriteLine();
+
+                if (thisInst.siteSuitability.forceThruTurbBase)
+                    sw.WriteLine("Fitted planes forced through turbine base elevation");
+                else
+                    sw.WriteLine("Fitted planes NOT forced through turbine base elevation");
+
+                sw.WriteLine();
+
+                int numWD = thisInst.metList.numWD;
+
+                double radius = 0;
+                if (radiusOfInterest == "5z")
+                    radius = thisInst.modeledHeight * 5;
+                if (radiusOfInterest == "10z")
+                    radius = thisInst.modeledHeight * 10;
+                if (radiusOfInterest == "20z")
+                    radius = thisInst.modeledHeight * 20;
+
+                sw.Write("Turbine,");
+
+                for (int d = 0; d < numWD; d++)
+                    sw.Write("WD sect " + (d + 1).ToString() + ",");
+                sw.WriteLine();
+
+                for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
+                {
+                    Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                    sw.Write(thisTurb.name + ",");
+
+                    double[] slopesOrVars = thisInst.siteSuitability.CalcTerrainSlopeOrVariationBySector(radius, slopeOrVariation, thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, true, 
+                        forceThruBase, numWD, thisInst.topo);
+
+                    for (int d = 0; d < numWD; d++)
+                        sw.Write(Math.Round(slopesOrVars[d], 5).ToString() + ",");
+
+                    sw.WriteLine();
+                }
+
+                sw.Close();
+            }
+        }
+
         /// <summary> Exports terrain complexity values at each turbine site </summary>
         public void ExportTerrainComplexityAtTurbines(Continuum thisInst)
         {
@@ -4088,6 +4145,7 @@ namespace ContinuumNS
                 sw.WriteLine("Turbine, Elev. [m], Complexity, 5h 360 TSI, 5h 360 TVI, 5h 30 TSI, 5h 30 TVI, 10h 30 TSI, 10h 30 TVI, 20h 30 TSI, 20h 30 TVI, P10 UW, P10 DW");
 
                 double hubH = thisInst.modeledHeight;
+                int numWD = thisInst.metList.numWD;
                 double[] energyRose = thisInst.metList.GetAvgEnergyRose(hubH, Met.TOD.All, Met.Season.All, thisInst.metList.numWD);
 
                 if (energyRose == null)
@@ -4098,18 +4156,18 @@ namespace ContinuumNS
                     Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
                     sw.Write(thisTurb.name + "," + thisTurb.elev + ",");
 
-                    sw.Write(thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo, thisInst.modeledHeight, energyRose, "WTG", thisTurb) + ",");
+                    sw.Write(thisInst.siteSuitability.CalcTerrainComplexityPerIEC(thisInst.turbineList, thisInst.topo, thisInst.modeledHeight, energyRose, "WTG", numWD, thisTurb) + ",");
 
-                    double[] terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 5 * hubH, thisInst.topo);
+                    double[] terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, numWD);
                     sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
 
-                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, energyRose);
+                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, numWD, energyRose);
                     sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
 
-                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 10 * hubH, thisInst.topo, energyRose);
+                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 10 * hubH, thisInst.topo, numWD, energyRose);
                     sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
 
-                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 20 * hubH, thisInst.topo, energyRose);
+                    terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 20 * hubH, thisInst.topo, numWD, energyRose);
                     sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
 
                     double thisUW_P10 = thisTurb.gridStats.GetOverallP10(energyRose, 1, "UW");

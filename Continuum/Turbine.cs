@@ -1361,28 +1361,38 @@ namespace ContinuumNS
 
             // Figure out time interval (in hours)
             TimeSpan timeSpan = thisTS[1].dateTime - thisTS[0].dateTime;
-            int timeInt = timeSpan.Hours;
+            double timeInt = timeSpan.TotalMinutes / 60.0;
 
             // Start on first hour on first of month
             int TS_Ind = 0;
             int thisDay = thisTS[TS_Ind].dateTime.Day;
             int thisHour = thisTS[TS_Ind].dateTime.Hour;
-            MERRA merra = new MERRA(); // Using some functions from this class (i.e. Get_Num_Days_in_Month)
+            bool atFirstDay = false;
+            if (thisDay == 1 && thisHour == 0)
+                atFirstDay = true;
 
-            while (thisDay != 1 && thisHour != 0)
+            while (atFirstDay == false && TS_Ind < thisTS.Length - 1)
             {
                 TS_Ind++;
                 thisDay = thisTS[TS_Ind].dateTime.Day;
                 thisHour = thisTS[TS_Ind].dateTime.Hour;
+
+                if (thisDay == 1 && thisHour == 0)
+                    atFirstDay = true;
             }
+
+            if (atFirstDay == false)
+                return monthlyWS_Vals;
 
             int lastMonth = thisTS[TS_Ind].dateTime.Month;
             int lastYear = thisTS[TS_Ind].dateTime.Year;
 
             double avgWS = 0;
             int WS_count = 0;
+
+            MERRA merra = new MERRA(); // Using some functions from this class (i.e. Get_Num_Days_in_Month)
             int numDaysInMonth = merra.Get_Num_Days_in_Month(lastMonth, lastYear);
-            int numMonthlyInts = numDaysInMonth * timeInt * 24;
+            int numMonthlyInts = Convert.ToInt32(Math.Round(numDaysInMonth / timeInt * 24, 0));
             ModelCollection.TimeSeries[] monthlyTS = new ModelCollection.TimeSeries[numMonthlyInts];
             int monthlyInd = 0;
             int Ind = 0;
@@ -1391,7 +1401,7 @@ namespace ContinuumNS
             {
                 int month = thisTS[t].dateTime.Month;
                 int year = thisTS[t].dateTime.Year;
-
+                
                 if (month == lastMonth && year == lastYear)
                 {
                     double thisWS = 0;
@@ -1405,15 +1415,25 @@ namespace ContinuumNS
                         MessageBox.Show("Invalid flag in CalcMonthlyWS_Values");
                         return monthlyWS_Vals;
                     }
-                    
-                    avgWS = avgWS + thisWS;
-                    WS_count++;
+
+                    if (thisWS != -999)
+                    {
+                        avgWS = avgWS + thisWS;
+                        WS_count++;
+                    }
+                    else
+                        avgWS = avgWS;
+                   
+
                     monthlyTS[Ind].dateTime = thisTS[t].dateTime;
 
-                    if (wakedOrFreestream == "Waked")
-                        monthlyTS[Ind].wakedWS = thisWS;
-                    else
-                        monthlyTS[Ind].freeStreamWS = thisWS;
+                    if (thisWS != -999)
+                    {
+                        if (wakedOrFreestream == "Waked")
+                            monthlyTS[Ind].wakedWS = thisWS;
+                        else
+                            monthlyTS[Ind].freeStreamWS = thisWS;
+                    }
 
                     monthlyTS[Ind].WD = thisTS[t].WD;
                     Ind++;
@@ -1435,39 +1455,69 @@ namespace ContinuumNS
                     monthlyInd++;
 
                     numDaysInMonth = merra.Get_Num_Days_in_Month(month, year);
-                    numMonthlyInts = numDaysInMonth * timeInt * 24;
+                    numMonthlyInts = Convert.ToInt32(Math.Round(numDaysInMonth / timeInt * 24, 0));
                     Array.Clear(monthlyTS, 0, monthlyTS.Length);
                     Array.Resize(ref monthlyTS, numMonthlyInts);
+
+                    /////
                     Ind = 0;
                     avgWS = 0;
                     WS_count = 0;
-                    monthlyTS[Ind].dateTime = thisTS[t].dateTime;
+
+                    double thisWS = 0;
 
                     if (wakedOrFreestream == "Waked")
-                        monthlyTS[Ind].wakedWS = thisTS[t].wakedWS;
+                        thisWS = thisTS[t].wakedWS;
+                    else if (wakedOrFreestream == "Freestream")
+                        thisWS = thisTS[t].freeStreamWS;
                     else
-                        monthlyTS[Ind].freeStreamWS = thisTS[t].freeStreamWS;
+                    {
+                        MessageBox.Show("Invalid flag in CalcMonthlyWS_Values");
+                        return monthlyWS_Vals;
+                    }
+
+                    if (thisWS != -999)
+                    {
+                        avgWS = avgWS + thisWS;
+                        WS_count++;
+                    }
+                   
+                    monthlyTS[Ind].dateTime = thisTS[t].dateTime;
+
+                    if (thisWS != -999)
+                    {
+                        if (wakedOrFreestream == "Waked")
+                            monthlyTS[Ind].wakedWS = thisWS;
+                        else
+                            monthlyTS[Ind].freeStreamWS = thisWS;
+                    }
 
                     monthlyTS[Ind].WD = thisTS[t].WD;
+                    Ind++;                                      
+
                     lastMonth = month;
-                    lastYear = year;
-                    Ind++;
+                    lastYear = year;                    
                 }
 
             }
 
             // Resize Monthly time series in case have some empty  entries
             Array.Resize(ref monthlyTS, Ind);
-            // Calculate WSWD distribution for month
-            Array.Resize(ref monthlyWS_Vals, monthlyInd + 1);
 
-            if (WS_count > 0)
-                avgWS = avgWS / WS_count;
+            // If last month of data is complete (i.e. if next time step is first of month) then resize array and calculate WSWD distribution for month
+            DateTime nextTS = thisTS[thisTS.Length - 1].dateTime.AddHours(timeInt);
+            if (nextTS.Day == 1 && nextTS.Hour == 0)
+            {
+                Array.Resize(ref monthlyWS_Vals, monthlyInd + 1);
 
-            monthlyWS_Vals[monthlyInd].year = lastYear;
-            monthlyWS_Vals[monthlyInd].month = lastMonth;
-            monthlyWS_Vals[monthlyInd].avgWS = avgWS;
-            monthlyWS_Vals[monthlyInd].WS_Dist = thisInst.modelList.CalcWSWD_Dist(monthlyTS, thisInst, wakedOrFreestream);
+                if (WS_count > 0)
+                    avgWS = avgWS / WS_count;
+
+                monthlyWS_Vals[monthlyInd].year = lastYear;
+                monthlyWS_Vals[monthlyInd].month = lastMonth;
+                monthlyWS_Vals[monthlyInd].avgWS = avgWS;
+                monthlyWS_Vals[monthlyInd].WS_Dist = thisInst.modelList.CalcWSWD_Dist(monthlyTS, thisInst, wakedOrFreestream);
+            }
             
             return monthlyWS_Vals;
 

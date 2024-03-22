@@ -23,8 +23,8 @@ namespace ContinuumNS
         public bool isTimeSeries;
    //     /// <summary> True if met data QC filters are applied to time series data.  </summary>
   //      public bool filteringEnabled; // MOVED TO MET CLASS
-        /// <summary> True if MERRA2 data is uploaded and MCP is conducted  </summary>
-        public bool isMCPd;
+  //      /// <summary> True if MERRA2 data is uploaded and MCP is conducted  </summary>
+  //      public bool isMCPd; // MOVED TO MET CLASS
         /// <summary> True if MCP has been conducted at all met sites (time series only). Models and estimates are not created unless this is true.  </summary>
         public bool allMCPd;
         /// <summary> Upper bound of first wind speed bin (to be consistent with TAB file format)  </summary>
@@ -1014,24 +1014,57 @@ namespace ContinuumNS
             return theseMets;
         }
 
-        /// <summary>  Finds and returns start and end date of all met datasets  </summary>
-        public DateTime[] GetMetStartEndDates()
+        /// <summary>  Finds and returns start and end date of all met datasets (based on either entire date range (All) or using the analysis start/end  </summary>
+        public DateTime[] GetMetStartEndDates(string allOrAnalysis)
         {
             DateTime[] startEnd = new DateTime[2];
             startEnd[0] = new DateTime();
-            startEnd[1] = new DateTime(2050,1,1);
+            startEnd[1] = new DateTime(2050, 1, 1);
 
             for (int m = 0; m < ThisCount; m++)
             {
-                if (metItem[m].metData.startDate > startEnd[0])
-                    startEnd[0] = metItem[m].metData.startDate;
+                if (allOrAnalysis == "All")
+                {
+                    if (metItem[m].metData.startDate > startEnd[0])
+                        startEnd[0] = metItem[m].metData.startDate;
 
-                if (metItem[m].metData.endDate < startEnd[1])
-                    startEnd[1] = metItem[m].metData.endDate;
+                    if (metItem[m].metData.endDate < startEnd[1])
+                        startEnd[1] = metItem[m].metData.endDate;
+                }
+                else
+                {
+                    if (metItem[m].metData.startDate > startEnd[0])
+                        startEnd[0] = metItem[m].metData.allStartDate;
+
+                    if (metItem[m].metData.endDate < startEnd[1])
+                        startEnd[1] = metItem[m].metData.allEndDate;
+                }
             }
 
             return startEnd;
         }
+
+        /// <summary>  Finds and returns min. start and max. end date of all met datasets. Used when generating time series estimates using met data that has
+        ///  not been estimated over long-term range. </summary>
+        public DateTime[] GetMetMinStartMaxEndDates()
+        {
+            DateTime[] startEnd = new DateTime[2];
+            startEnd[0] = new DateTime(2050, 1, 1);
+            startEnd[1] = new DateTime();
+
+            for (int m = 0; m < ThisCount; m++)
+            {   
+                if (metItem[m].metData.startDate < startEnd[0])
+                    startEnd[0] = metItem[m].metData.allStartDate;
+
+                if (metItem[m].metData.endDate > startEnd[1])
+                    startEnd[1] = metItem[m].metData.allEndDate;                
+            }
+
+            return startEnd;
+        }
+
+
 
         /// <summary> Returns Met object with specified name. </summary>  
         public Met GetMet(string metName)
@@ -1888,6 +1921,7 @@ namespace ContinuumNS
         {
             double[] measHeights = thisMet.metData.GetHeightsOfAnems();
             thisMet.mcpList = new MCP[1 + measHeights.Length]; // Generate MCP estimates at all measured heights
+            bool showMsg = true;
 
             for (int m = 0; m < 1 + measHeights.Length; m++)
             {
@@ -1896,6 +1930,7 @@ namespace ContinuumNS
                 if (m > 0) // one of measured heights
                     thisHeight = measHeights[m - 1];
 
+                thisMet.isMCPd = true;
                 thisMet.mcpList[m] = new MCP();
                 thisMet.mcpList[m].New_MCP(true, true, thisInst); // reads the MCP settings from MCP tab
                 thisMet.mcpList[m].height = thisHeight;
@@ -1907,7 +1942,10 @@ namespace ContinuumNS
                 // Get extrapolated met dat as the target data
                 thisMet.mcpList[m].targetData = thisMet.mcpList[m].GetTargetData(thisHeight, thisMet);
 
-                thisMet.mcpList[m].FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate);
+                thisMet.mcpList[m].FindConcurrentData(thisMet.metData.startDate, thisMet.metData.endDate, showMsg);
+
+                if (thisMet.mcpList[m].concData.Length == 0)
+                    showMsg = false;
 
                 if (thisMet.mcpList[m].concData.Length > 0)
                     thisMet.mcpList[m].DoMCP(thisMet.mcpList[m].GetStartOrEndDate("Concurrent", "Start"), thisMet.mcpList[m].GetStartOrEndDate("Concurrent", "End"), true, MCP_method, thisInst, thisMet);
@@ -2062,11 +2100,17 @@ namespace ContinuumNS
 
             for (int m = 0; m < ThisCount; m++)
                 for (int a = 0; a < metItem[m].metData.GetNumAnems(); a++)
+                {
                     if (metItem[m].metData.anems[a].windData != null)
                     {
-                        haveTS = true;
-                        break;
+                        haveTS = true;                        
                     }
+                    else
+                    {
+                        haveTS = false;
+                        return haveTS;
+                    }
+                }
 
             return haveTS;
         }
@@ -2103,11 +2147,13 @@ namespace ContinuumNS
             return dataInt;
         }
 
-        /// <summary> Returns array of MCP.Site_data (which contains timestamp, WS, and WD) for specified met site for time period concurrent with all met sites  </summary>
+        /// <summary> Returns array of MCP.Site_data (which contains timestamp, WS, and WD) for specified met site for time period covering all met sites
+        ///  (i.e. minimum allStart and maximum allEnd date)  If thisMet has no data for specified timestamp, leave as a zero and then is ignored when 
+        ///  generating estimated time series at target node </summary>
         
-        public MCP.Site_data[] GetConcurrentMetDataTS(string metName, double height)
+        public MCP.Site_data[] GetMetDataTSOverEntireRange(string metName, double height)
         {           
-            DateTime[] startEnd = GetMetStartEndDates();
+            DateTime[] startEnd = GetMetMinStartMaxEndDates();
             string dataInt = GetMetDataInterval();
             int numData = Convert.ToInt32(Math.Round(startEnd[1].Subtract(startEnd[0]).TotalMinutes, 0));
 
@@ -2115,6 +2161,8 @@ namespace ContinuumNS
                 numData = numData / 10;
             else if (dataInt == "60-min")
                 numData = numData / 60;
+
+            numData++; // Add one for last timestamp
 
             MCP.Site_data[] concData = new MCP.Site_data[numData];
 
@@ -2127,32 +2175,29 @@ namespace ContinuumNS
             if (anemHeights[closestAnemInd] == height)
             {
                 // Have measured height so use that as concurrent data
-                int heightInd = thisMet.metData.GetHeightClosestToHH(height);
-                
-                int startInd = 0;
-                int endInd = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha.Length - 1;
-
-                while (thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[startInd].timeStamp < startEnd[0])
-                    startInd++;
-
-                while (thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[endInd].timeStamp > startEnd[1])
-                    endInd--;
+                int heightInd = thisMet.metData.GetHeightClosestToHH(height);                       
 
                 DateTime thisTS = startEnd[0];
-                int anemInd = startInd;
-
+          
                 for (int d = 0; d < numData; d++)
                 {
                     concData[d].thisDate = thisTS;
+                    int anemInd = thisMet.metData.anems[0].GetTS_Index(thisTS);
+
+                    if (anemInd == -999)
+                    {
+                        if (dataInt == "10-min")
+                            thisTS = thisTS.AddMinutes(10);
+                        else if (dataInt == "60-min")
+                            thisTS = thisTS.AddMinutes(60);
+
+                        continue;
+                    }
 
                     if (thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].timeStamp == thisTS)
                     {
                         concData[d].thisWS = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WS;
-                        concData[d].thisWD = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WD;
-                        anemInd++;
-
-                        if (anemInd >= thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha.Length)
-                            break;
+                        concData[d].thisWD = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WD;                        
                     }
 
                     if (dataInt == "10-min")
@@ -2165,30 +2210,27 @@ namespace ContinuumNS
             {
                 // Use extrapolated data
                 Met_Data_Filter.Sim_TS extrapData = thisMet.metData.GetSimulatedTimeSeries(height);
-                int startInd = 0;
-                int endInd = extrapData.WS_WD_data.Length - 1;
-
-                while (extrapData.WS_WD_data[startInd].timeStamp < startEnd[0])
-                    startInd++;
-
-                while (extrapData.WS_WD_data[endInd].timeStamp > startEnd[1])
-                    endInd--;
-
-                DateTime thisTS = startEnd[0];
-                int extrapInd = startInd;
+                DateTime thisTS = startEnd[0];               
 
                 for (int d = 0; d < numData; d++)
                 {
                     concData[d].thisDate = thisTS;
+                    int extrapInd = extrapData.GetTS_Index(thisTS);
+
+                    if (extrapInd == -999)
+                    {
+                        if (dataInt == "10-min")
+                            thisTS = thisTS.AddMinutes(10);
+                        else if (dataInt == "60-min")
+                            thisTS = thisTS.AddMinutes(60);
+
+                        continue;
+                    }
 
                     if (extrapData.WS_WD_data[extrapInd].timeStamp == thisTS)
                     {
                         concData[d].thisWS = extrapData.WS_WD_data[extrapInd].WS;
-                        concData[d].thisWD = extrapData.WS_WD_data[extrapInd].WD;
-                        extrapInd++;
-
-                        if (extrapInd >= extrapData.WS_WD_data.Length)
-                            break;
+                        concData[d].thisWD = extrapData.WS_WD_data[extrapInd].WD;                        
                     }
 
                     if (dataInt == "10-min")
@@ -2196,9 +2238,7 @@ namespace ContinuumNS
                     else if (dataInt == "60-min")
                         thisTS = thisTS.AddMinutes(60);
                 }
-            }
-
-            
+            }                       
 
             return concData;
         }
