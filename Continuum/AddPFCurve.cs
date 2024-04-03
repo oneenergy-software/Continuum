@@ -34,48 +34,50 @@ namespace ContinuumNS
             cboCurves.Items.Clear();
             string exceedStr = "";
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 21; i++)
             {
                 if (i == 0)
-                    exceedStr = "Turbine Availability - Owner/Operator";
+                    exceedStr = "Annual Wind Variability";
                 else if (i == 1)
-                    exceedStr = "Turbine Availability - OEM";
+                    exceedStr = "Balance of Plant";
                 else if (i == 2)
-                    exceedStr = "Power Curve";
+                    exceedStr = "Catastrophic Event";
                 else if (i == 3)
-                    exceedStr = "Power Curve Degradation";
+                    exceedStr = "Data Measurement";
                 else if (i == 4)
                     exceedStr = "Electrical";
                 else if (i == 5)
-                    exceedStr = "Wind Rose Sensitivity";
-                else if (i == 6)
-                    exceedStr = "Data Measurement";
-                else if (i == 7)
-                    exceedStr = "Balance of Plant";
-                else if (i == 8)
-                    exceedStr = "Annual Wind Variability";
-                else if (i == 9)
-                    exceedStr = "Extreme Wind";
-                else if (i == 10)
                     exceedStr = "Extreme Temperatures";
-                else if (i == 11)
-                    exceedStr = "Icing";
-                else if (i == 12)
-                    exceedStr = "Legal/Curtailment";
-                else if (i == 13)
+                else if (i == 6)
+                    exceedStr = "Extreme Wind";
+                else if (i == 7)
                     exceedStr = "Grid";
+                else if (i == 8)
+                    exceedStr = "Icing";
+                else if (i == 9)
+                    exceedStr = "Legal/Curtailment";
+                else if (i == 10)
+                    exceedStr = "MCP Correlation";
+                else if (i == 11)
+                    exceedStr = "Parasitic";
+                else if (i == 12)
+                    exceedStr = "Power Curve Degradation";
+                else if (i == 13)
+                    exceedStr = "Power Curve";
                 else if (i == 14)
-                    exceedStr = "Catastrophic Event";
+                    exceedStr = "Shear Extrapolation";
                 else if (i == 15)
                     exceedStr = "Short-Term MCP";
                 else if (i == 16)
-                    exceedStr = "MCP Correlation";
+                    exceedStr = "Turbine Availability - OEM";
                 else if (i == 17)
-                    exceedStr = "Shear Extrapolation";
+                    exceedStr = "Turbine Availability - Owner/Operator";
                 else if (i == 18)
-                    exceedStr = "Wind Flow Model";
-                else if (i == 19)
                     exceedStr = "Wake Loss Model";
+                else if (i == 19)
+                    exceedStr = "Wind Flow Model";
+                else if (i == 20)
+                    exceedStr = "Wind Rose Sensitivity";
 
                 bool isDefined = CurveIsDefined(exceedanceCurves, exceedStr);
 

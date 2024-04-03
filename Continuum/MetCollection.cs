@@ -1018,26 +1018,26 @@ namespace ContinuumNS
         public DateTime[] GetMetStartEndDates(string allOrAnalysis)
         {
             DateTime[] startEnd = new DateTime[2];
-            startEnd[0] = new DateTime();
-            startEnd[1] = new DateTime(2050, 1, 1);
+            startEnd[0] = new DateTime(2050,1, 1);
+            startEnd[1] = new DateTime();
 
             for (int m = 0; m < ThisCount; m++)
             {
                 if (allOrAnalysis == "All")
                 {
-                    if (metItem[m].metData.startDate > startEnd[0])
-                        startEnd[0] = metItem[m].metData.startDate;
+                    if (metItem[m].metData.allStartDate < startEnd[0])
+                        startEnd[0] = metItem[m].metData.allStartDate;
 
-                    if (metItem[m].metData.endDate < startEnd[1])
-                        startEnd[1] = metItem[m].metData.endDate;
+                    if (metItem[m].metData.allEndDate > startEnd[1])
+                        startEnd[1] = metItem[m].metData.allEndDate;
                 }
                 else
                 {
-                    if (metItem[m].metData.startDate > startEnd[0])
-                        startEnd[0] = metItem[m].metData.allStartDate;
+                    if (metItem[m].metData.startDate < startEnd[0])
+                        startEnd[0] = metItem[m].metData.startDate;
 
-                    if (metItem[m].metData.endDate < startEnd[1])
-                        startEnd[1] = metItem[m].metData.allEndDate;
+                    if (metItem[m].metData.endDate > startEnd[1])
+                        startEnd[1] = metItem[m].metData.endDate;
                 }
             }
 

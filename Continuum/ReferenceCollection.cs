@@ -1046,10 +1046,13 @@ namespace ContinuumNS
             int numTotalDays = (int)Math.Round(thisRefData.endDate.Subtract(thisRefData.startDate).TotalDays,0);                                    
             int daysWithData = 0;
 
-            for (DateTime thisDate = thisRefData.startDate; thisDate <= thisRefData.endDate; thisDate = thisDate.AddDays(1))
+            if (Directory.GetFiles(thisRefData.folderLocation).Count() > 0)
             {
-                if (ReferenceFileExists(thisDate, thisRefData))
-                    daysWithData++;
+                for (DateTime thisDate = thisRefData.startDate; thisDate <= thisRefData.endDate; thisDate = thisDate.AddDays(1))
+                {
+                    if (ReferenceFileExists(thisDate, thisRefData))
+                        daysWithData++;
+                }
             }
 
             // If ERA5 data, figure out if folder has daily files or one big file

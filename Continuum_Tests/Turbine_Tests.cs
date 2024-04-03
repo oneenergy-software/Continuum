@@ -21,7 +21,7 @@ namespace Continuum_Tests
         public void DoWS_EstAlongNodes_Test()
         {
             Continuum thisInst = new Continuum("");
-
+            thisInst.isTest = true;
             double thisUTMX = 823500;
             double thisUTMY = 4500400;
             int numWD = 16;
@@ -212,7 +212,8 @@ namespace Continuum_Tests
         [TestMethod]
         public void GenerateAvgWSTimeSeries_Test()
         {
-            Continuum thisInst = new Continuum("");            
+            Continuum thisInst = new Continuum("");
+            thisInst.isTest = true;
             string fileName = testingFolder + "\\Turbine TS testing.cfm";
             thisInst.Open(fileName);
 
@@ -238,7 +239,7 @@ namespace Continuum_Tests
         public void CalcMonthlyWS_Values_Test()
         {
             Continuum thisInst = new Continuum("");
-            
+            thisInst.isTest = true;
             string fileName = testingFolder + "\\Turbine TS testing.cfm";
             thisInst.Open(fileName);
 
@@ -291,6 +292,7 @@ namespace Continuum_Tests
         public void CalcLT_MonthlyValue_Test()
         {
             Continuum thisInst = new Continuum("");
+            thisInst.isTest = true;
             
             string fileName = testingFolder + "\\Turbine TS testing.cfm";
             thisInst.Open(fileName);

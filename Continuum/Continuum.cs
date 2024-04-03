@@ -1181,6 +1181,9 @@ namespace ContinuumNS
             if (fileName == "")
                 return;     
 
+            if (fileName != "")
+                savedParams.savedFileName = fileName;
+
             FileStream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             BinaryFormatter bin = new BinaryFormatter();
 
@@ -1389,12 +1392,14 @@ namespace ContinuumNS
         //    if (metList.ThisCount > 0) 
         //        updateThe.WindRose(this);
 
-            // Set shear settings min/max height (if not set)
+            // Get sensor data from database and set shear settings min/max height (if not set)
             for (int m = 0; m < metList.ThisCount; m++)
             {
                 if (metList.metItem[m].metData == null)
                     continue;
-                
+
+                metList.metItem[m].metData.GetSensorDataFromDB(this, metList.metItem[m].name);
+
                 double[] anemHeights = metList.metItem[m].metData.GetHeightsOfAnems();
                 Array.Sort(anemHeights);
 
@@ -1567,7 +1572,8 @@ namespace ContinuumNS
             catch
             {
                 // MessageBox.Show("Error reading in MERRA2 data in Continuum file.", "Continuum 3");
-                fstream.Close();
+                fstream.Close();                                
+
                 OpenFileWithOldMERRA(Filename);
                 return;
             }                        
@@ -1583,6 +1589,12 @@ namespace ContinuumNS
             }
 
             fstream.Close();
+
+            if (modelList.rotorDiam == 0)
+                modelList.rotorDiam = 100;
+
+            if (modelList.airDens == 0)
+                modelList.airDens = 1.225;
 
             okToUpdate = false; // Changing the checkboxes triggers an update.AllTABs which is done at the end of this function 
             if (topo.useSR == true || (topo.gotSR == true && metList.ThisCount == 0)) {
@@ -1902,6 +1914,12 @@ namespace ContinuumNS
                 updateThe.NewProject();
                 return;
             }
+
+            if (modelList.rotorDiam == 0)
+                modelList.rotorDiam = 100;
+
+            if (modelList.airDens == 0)
+                modelList.airDens = 1.225;
 
             // check for database
             NodeCollection nodeList = new NodeCollection();

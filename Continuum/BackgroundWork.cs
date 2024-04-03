@@ -4458,9 +4458,9 @@ namespace ContinuumNS
             DataGridViewColumn newCol = new DataGridViewColumn();
             newCol.CellTemplate = new DataGridViewTextBoxCell();
             newCol.Name = colName;
-            newCol.HeaderText = colText;            
+            newCol.HeaderText = colText;
             cols.Add(newCol);
-        }        
+        }
 
         private void BackgroundWorker_MetImport_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -4468,9 +4468,9 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             bool isTest = theArgs.isTest;
             DoWorkDone = false;
-            
+
             DataGridView metTable = new DataGridView();
-            
+
             // Get selected met sites
             int numMets = thisInst.metList.ThisCount;
             Met[] selMets = thisInst.metList.metItem;
@@ -4495,7 +4495,7 @@ namespace ContinuumNS
             }
 
             List<DataGridViewColumn> cols = new List<DataGridViewColumn>();
-            AddColToList(ref cols, "colTS", "Timestamp");                               
+            AddColToList(ref cols, "colTS", "Timestamp");
 
             // Now create columns for each sensor and metric
             int totalNumSens = 0;
@@ -4526,7 +4526,7 @@ namespace ContinuumNS
                     AddColToList(ref cols, "colTS_ParamSD" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " SD");
                     AddColToList(ref cols, "colTS_ParamMin" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " Min");
                     AddColToList(ref cols, "colTS_ParamMax" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetAnemName(selMets[m].metData.anems[s], true) + " Max");
-                                        
+
                     totalNumSens = totalNumSens + 4;
                 }
 
@@ -4538,43 +4538,43 @@ namespace ContinuumNS
                         AddColToList(ref cols, "colTS_Extrap" + (m + s + 1).ToString(), selMets[m].name + " Extrap WS " + selMets[m].metData.simData[s].height);
 
                     totalNumSens = totalNumSens + 1 + selMets[m].metData.GetNumSimData();
-                }                
+                }
 
                 for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
                 {
-                    AddColToList(ref cols,"colTS_ParamAvg" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " Avg");
-                    AddColToList(ref cols,"colTS_ParamSD" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " SD");
-                    AddColToList(ref cols,"colTS_ParamMin" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " Min");
-                    AddColToList(ref cols,"colTS_ParamMax" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " Max");
+                    AddColToList(ref cols, "colTS_ParamAvg" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " Avg");
+                    AddColToList(ref cols, "colTS_ParamSD" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " SD");
+                    AddColToList(ref cols, "colTS_ParamMin" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " Min");
+                    AddColToList(ref cols, "colTS_ParamMax" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetVaneName(selMets[m].metData.vanes[s], true) + " Max");
                     totalNumSens = totalNumSens + 4;
                 }
 
                 for (int s = 0; s < selMets[m].metData.GetNumTemps(); s++)
                 {
-                    AddColToList(ref cols,"colTS_ParamAvg" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " Avg");
-                    AddColToList(ref cols,"colTS_ParamSD" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " SD");
-                    AddColToList(ref cols,"colTS_ParamMin" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " Min");
-                    AddColToList(ref cols,"colTS_ParamMax" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " Max");
+                    AddColToList(ref cols, "colTS_ParamAvg" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " Avg");
+                    AddColToList(ref cols, "colTS_ParamSD" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " SD");
+                    AddColToList(ref cols, "colTS_ParamMin" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " Min");
+                    AddColToList(ref cols, "colTS_ParamMax" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetTempName(selMets[m].metData.temps[s], true) + " Max");
                     totalNumSens = totalNumSens + 4;
                 }
 
                 for (int s = 0; s < selMets[m].metData.GetNumBaros(); s++)
                 {
-                    AddColToList(ref cols,"colTS_ParamAvg" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " Avg");
-                    AddColToList(ref cols,"colTS_ParamSD" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " SD");
-                    AddColToList(ref cols,"colTS_ParamMin" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " Min");
-                    AddColToList(ref cols,"colTS_ParamMax" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " Max");
+                    AddColToList(ref cols, "colTS_ParamAvg" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " Avg");
+                    AddColToList(ref cols, "colTS_ParamSD" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " SD");
+                    AddColToList(ref cols, "colTS_ParamMin" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " Min");
+                    AddColToList(ref cols, "colTS_ParamMax" + (s + 1).ToString(), selMets[m].name + " " + selMets[m].metData.GetPressName(selMets[m].metData.baros[s], true) + " Max");
                     totalNumSens = totalNumSens + 4;
                 }
             }
 
             for (int c = 0; c < cols.Count; c++)
                 metTable.Columns.Add(cols[c]);
-            
+
             int numRecs = Convert.ToInt32(endTime.Subtract(startTime).TotalMinutes / 10.0);
             int timeInd = 0;
             List<DataGridViewRow> rows = new List<DataGridViewRow>();
-                        
+
             if (thisInst.metList.HaveTimeSeriesData() == false)
                 thisInst.metList.GetTimeSeriesData(thisInst);
 
@@ -4582,7 +4582,7 @@ namespace ContinuumNS
             int minsToAdd = 10;
             if (dataInterval == "60-min")
                 minsToAdd = 60;
-                        
+
             for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(minsToAdd))
             {
                 if (timeInd % 10 == 0 && isTest == false)
@@ -4590,19 +4590,19 @@ namespace ContinuumNS
                     int prog = Convert.ToInt32(100 * timeInd / numRecs);
                     BackgroundWorker_MetImport.ReportProgress(prog, textForProgBar);
                 }
-                                
+
                 int colInd = 1;
                 DataGridViewRow strDataForTableRow = new DataGridViewRow();
                 strDataForTableRow.CreateCells(metTable);
 
                 double[] dataForTableRow = new double[totalNumSens + 1]; // Plus one for timestamp  // reset array                               
 
-                dataForTableRow[0] = thisTS.ToOADate();                                
+                dataForTableRow[0] = thisTS.ToOADate();
 
                 for (int m = 0; m < numMets; m++)
                 {
                     for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
-                    { 
+                    {
                         int tsIndex = selMets[m].metData.anems[s].GetTS_Index(thisTS);
 
                         if (tsIndex != -999) // Found record at specified TS
@@ -4613,7 +4613,7 @@ namespace ContinuumNS
                             dataForTableRow[colInd + 3] = selMets[m].metData.anems[s].windData[tsIndex].max;
                         }
                         else
-                        {                            
+                        {
                             dataForTableRow[colInd] = -999;
                             dataForTableRow[colInd + 1] = -999;
                             dataForTableRow[colInd + 2] = -999;
@@ -4728,9 +4728,15 @@ namespace ContinuumNS
                         strDataForTableRow.Cells[d].Value = Math.Round(dataForTableRow[d], 2).ToString();
                 }
 
-                rows.Add(strDataForTableRow);               
+                rows.Add(strDataForTableRow);
 
                 timeInd++;
+            }
+
+            for (int m = 0; m < numMets; m++)
+            {
+                thisInst.metList.metItem[m].WSWD_Dists = new Met.WSWD_Dist[0];
+                thisInst.metList.metItem[m].CalcAllMeas_WSWD_Dists(thisInst, selMets[m].metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
             }
 
             //  metTable.Rows.AddRange(rows.ToArray());                       
@@ -4798,6 +4804,8 @@ namespace ContinuumNS
             thisInst.updateThe.MetDataTS_TableVisibleColumns();
             thisInst.updateThe.MetDataTS_Dates();
             thisInst.updateThe.MetDataPlots();
+
+            thisInst.updateThe.TerrainComplexityTab();
 
             Close();
 

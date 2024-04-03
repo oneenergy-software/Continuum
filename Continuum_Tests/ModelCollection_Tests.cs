@@ -632,7 +632,8 @@ namespace Continuum_Tests
         public void ExportP10Values()
         {
             Continuum thisInst = new Continuum("");
-            
+            thisInst.isTest = true;
+
             string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
             thisInst.Open(Filename);                      
 
@@ -765,6 +766,7 @@ namespace Continuum_Tests
         {
             // Exports values needed for DoWS_Estimate_Test
             Continuum thisInst = new Continuum("");
+            thisInst.isTest = true;
             
             string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
             thisInst.Open(Filename);
@@ -1245,6 +1247,7 @@ namespace Continuum_Tests
         public void CalcWSWD_Dist_Test()
         {
             Continuum thisInst = new Continuum("");
+            thisInst.isTest = true;
             
             string fileName = testingFolder + "\\ModelCollection testing.cfm";
             thisInst.Open(fileName);

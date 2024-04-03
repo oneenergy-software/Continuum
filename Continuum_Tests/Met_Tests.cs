@@ -169,6 +169,7 @@ namespace Continuum_Tests
         public void CalcMeas_WSWD_Dists_Test()
         {
             Continuum thisInst = new Continuum("");
+            thisInst.isTest = true;
             
             string fileName = testingFolder + "\\Met testing.cfm";
             thisInst.Open(fileName);

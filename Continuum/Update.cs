@@ -1037,10 +1037,13 @@ namespace ContinuumNS
                     thisMet = thisInst.metList.metItem[j];
                     Met.WSWD_Dist thisDist = thisMet.GetWS_WD_Dist(thisInst.modeledHeight, Met.TOD.All, Met.Season.All);
                     Met.WSWD_Dist measDist = new WSWD_Dist();
-                    
-                    if (thisInst.metList.isTimeSeries)
-                        measDist = thisMet.CalcMeas_WSWD_Dists(thisInst.modeledHeight, Met.TOD.All, Met.Season.All, thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
 
+                    if (thisInst.metList.isTimeSeries)
+                    {
+                        if (thisMet.metData.GetNumAnems() > 0)
+                            if (thisMet.metData.anems[0].windData != null)
+                                 measDist = thisMet.CalcMeas_WSWD_Dists(thisInst.modeledHeight, Met.TOD.All, Met.Season.All, thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+                    }
                     ListViewItem objListItem = thisInst.lstMetTowers.Items.Add(thisMet.name);
 
                     if (DDorLL == "UTM")
@@ -12479,8 +12482,10 @@ namespace ContinuumNS
             double[] refEnergyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);            
 
             if (energyRose == null)
-                energyRose = refEnergyRose;  
-            
+                energyRose = refEnergyRose;
+
+            if (refEnergyRose != null && energyRose[0] == 0 && energyRose[energyRose.Length - 1] == 0)
+                energyRose = refEnergyRose;            
 
             for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
             {
@@ -13442,8 +13447,11 @@ namespace ContinuumNS
                 for (int m = 0; m < selMets.Length; m++)
                 {
                     Met thisMet = selMets[m];
+
+                    if (thisMet.metData.allEndDate < startTime || thisMet.metData.allStartDate > endTime)
+                        continue;
                    
-                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
+                    for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)                        
                         AddAnemDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
 
                     if (thisMet.metData.GetNumSimData() > 0)
@@ -13480,6 +13488,9 @@ namespace ContinuumNS
                 {
                     Met thisMet = selMets[m];
 
+                    if (thisMet.metData.allEndDate < startTime || thisMet.metData.allStartDate > endTime)
+                        continue;
+
                     for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
                         AddVaneDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
                 }
@@ -13513,6 +13524,9 @@ namespace ContinuumNS
                 {
                     Met thisMet = selMets[m];
 
+                    if (thisMet.metData.allEndDate < startTime || thisMet.metData.allStartDate > endTime)
+                        continue;
+
                     for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
                         AddTempDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
                 }
@@ -13545,6 +13559,9 @@ namespace ContinuumNS
                 for (int m = 0; m < selMets.Length; m++)
                 {
                     Met thisMet = selMets[m];
+
+                    if (thisMet.metData.allEndDate < startTime || thisMet.metData.allStartDate > endTime)
+                        continue;
 
                     for (int c = 0; c < thisInst.chkTS_Params.CheckedItems.Count; c++)
                         AddPressDataToTS_Plot(thisInst.chkTS_Params.CheckedItems[c].ToString(), thisMet, startTime, endTime);
