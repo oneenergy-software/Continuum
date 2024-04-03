@@ -4134,25 +4134,30 @@ namespace ContinuumNS
         {
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
             {
+                double hubH = thisInst.modeledHeight;
+                int numWD = thisInst.metList.numWD;
+                double[] energyRose = thisInst.metList.GetAvgEnergyRose(hubH, Met.TOD.All, Met.Season.All, thisInst.metList.numWD);
+                string energyRoseStr = "Avg Met Energy Rose";
+
+                if (energyRose == null)
+                {
+                    energyRoseStr = "Reference Site Avg Energy Rose";
+                    energyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, thisInst.metList.numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);
+                }
+                
                 StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
 
                 sw.WriteLine("Terrain Complexity Values by Turbine Site");
-                sw.WriteLine();
+                sw.WriteLine("Energy Rose Used in Weighting: " + energyRoseStr);
 
                 if (thisInst.siteSuitability.forceThruTurbBase)
                     sw.WriteLine("Fitted planes forced through turbine base elevation");
                 else
                     sw.WriteLine("Fitted planes NOT forced through turbine base elevation");
-                
+
+                sw.WriteLine("Reference: ");
                 sw.WriteLine("Turbine, Elev. [m], Complexity, 5h 360 TSI, 5h 360 TVI, 5h 30 TSI, 5h 30 TVI, 10h 30 TSI, 10h 30 TVI, 20h 30 TSI, 20h 30 TVI, P10 UW, P10 DW");
-
-                double hubH = thisInst.modeledHeight;
-                int numWD = thisInst.metList.numWD;
-                double[] energyRose = thisInst.metList.GetAvgEnergyRose(hubH, Met.TOD.All, Met.Season.All, thisInst.metList.numWD);
-
-                if (energyRose == null)
-                    energyRose = thisInst.refList.CalcAvgEnergyRose(thisInst.UTM_conversions, thisInst.metList.numWD, thisInst.modelList.airDens, thisInst.modelList.rotorDiam);
-
+                 
                 for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
                 {
                     Turbine thisTurb = thisInst.turbineList.turbineEsts[t];

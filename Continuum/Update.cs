@@ -12512,22 +12512,22 @@ namespace ContinuumNS
                 // 5 hub heights - 360 degs TSI and TVI
                 double[] slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, numWD);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[3].Value = Math.Round(slopeAndVarInds[0], 3);
-                thisInst.dataTerrainComplex.Rows[rowInd].Cells[4].Value = Math.Round(slopeAndVarInds[1], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[4].Value = Math.Round(slopeAndVarInds[1], 5);
                 
                 // 5 hub heights - 30 degs TSI and TVI
                 slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 5 * hubH, thisInst.topo, numWD, energyRose);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[5].Value = Math.Round(slopeAndVarInds[0], 3);
-                thisInst.dataTerrainComplex.Rows[rowInd].Cells[6].Value = Math.Round(slopeAndVarInds[1], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[6].Value = Math.Round(slopeAndVarInds[1], 5);
 
                 // 10 hub heights - 30 degs TSI and TVI
                 slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 10 * hubH, thisInst.topo, numWD, energyRose);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[7].Value = Math.Round(slopeAndVarInds[0], 3);
-                thisInst.dataTerrainComplex.Rows[rowInd].Cells[8].Value = Math.Round(slopeAndVarInds[1], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[8].Value = Math.Round(slopeAndVarInds[1], 5);
 
                 // 20 hub heights - 30 degs TSI and TVI
                 slopeAndVarInds = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(UTMX, UTMY, thisTurb.elev, 20 * hubH, thisInst.topo, numWD, energyRose);
                 thisInst.dataTerrainComplex.Rows[rowInd].Cells[9].Value = Math.Round(slopeAndVarInds[0], 3);
-                thisInst.dataTerrainComplex.Rows[rowInd].Cells[10].Value = Math.Round(slopeAndVarInds[1], 3);
+                thisInst.dataTerrainComplex.Rows[rowInd].Cells[10].Value = Math.Round(slopeAndVarInds[1], 5);
 
                 // P10 UW & DW Exposure R = 6000
                 double thisUWP10 = thisTurb.gridStats.GetOverallP10(energyRose, 2, "UW");
