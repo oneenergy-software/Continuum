@@ -4177,8 +4177,9 @@ namespace ContinuumNS
                     terrainComplex = thisInst.siteSuitability.CalcTerrainSlopeAndVariationIndexPerIEC(thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, 20 * hubH, thisInst.topo, numWD, energyRose);
                     sw.Write(Math.Round(terrainComplex[0], 2) + "," + Math.Round(terrainComplex[1], 4) + ",");
 
-                    double thisUW_P10 = thisTurb.gridStats.GetOverallP10(energyRose, 1, "UW");
-                    double thisDW_P10 = thisTurb.gridStats.GetOverallP10(energyRose, 1, "DW");
+                    // P10 UW & DW Exposure R = 6000
+                    double thisUW_P10 = thisTurb.gridStats.GetOverallP10(energyRose, 2, "UW");
+                    double thisDW_P10 = thisTurb.gridStats.GetOverallP10(energyRose, 2, "DW");
                     sw.WriteLine(Math.Round(thisUW_P10, 2) + "," + Math.Round(thisDW_P10, 2) + ",");
                 }
 
