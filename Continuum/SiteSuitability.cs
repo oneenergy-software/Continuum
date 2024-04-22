@@ -5,10 +5,8 @@ using System.IO;
 using System.Security.Policy;
 using System.Windows.Forms;
 using static ContinuumNS.SiteSuitability;
-using static IronPython.Modules._ast;
 using System.Xml.Linq;
 using MathNet.Numerics.Random;
-using MatplotlibCS.PlotItems;
 using Microsoft.Research.Science.Data;
 using System.Net.Mail;
 using System.Numerics;
@@ -1046,7 +1044,7 @@ namespace ContinuumNS
 
                 double maxSlope = -999;
 
-                double[] slopes = CalcTerrainSlopeOrVariationBySector(radius, "Slope", UTMX, UTMY, elev, false, forceThruTurbBase, numWD, topo);
+                double[] slopes = CalcTerrainSlopeOrVariationBySector(radius, "Slope", UTMX, UTMY, elev, false, true, forceThruTurbBase, numWD, topo);
 
                 for (int d = 0; d < slopes.Length; d++)
                     if (Math.Abs(slopes[d]) > maxSlope)
@@ -1055,7 +1053,7 @@ namespace ContinuumNS
                 avgSlopeAndVar[0] = maxSlope;
 
                 // Calculate variation of elevation from fitted plane
-                double[] terVar_SD = CalcTerrainSlopeOrVariationBySector(radius, "DTV", UTMX, UTMY, elev, false, forceThruTurbBase, 1, topo);
+                double[] terVar_SD = CalcTerrainSlopeOrVariationBySector(radius, "DTV", UTMX, UTMY, elev, false, true, forceThruTurbBase, 1, topo);
                 avgSlopeAndVar[1] = terVar_SD[0];
 
                 //      avgSlopeAndVar = topo.CalcSlopeAndVariation(allXVals, allYVals);
@@ -1068,10 +1066,10 @@ namespace ContinuumNS
                 // Average TSI as average of sectorwise slope weighted by energy rose
                
                 // Calculate slope along centerline based on slopes of fitted plane (i.e. along X and Y axes) 
-                double[] sectorSlopes = CalcTerrainSlopeOrVariationBySector(radius, "Slope", UTMX, UTMY, elev, true, forceThruTurbBase, numWD, topo); 
+                double[] sectorSlopes = CalcTerrainSlopeOrVariationBySector(radius, "Slope", UTMX, UTMY, elev, true, false, forceThruTurbBase, numWD, topo); 
 
                 // Calculate variation of elevation from fitted plane
-                double[] sectorVars = CalcTerrainSlopeOrVariationBySector(radius, "DTV", UTMX, UTMY, elev, true, forceThruTurbBase, numWD, topo);                                                  
+                double[] sectorVars = CalcTerrainSlopeOrVariationBySector(radius, "DTV", UTMX, UTMY, elev, true, false, forceThruTurbBase, numWD, topo);                                                  
 
                 // Combine sectorwise slopes (absolute values?) with energy rose
       //          StreamWriter sw = new StreamWriter("C:\\Users\\OEE2021_03\\OneDrive - One Energy LLC\\Documents - Analytics\\General\\Renewable Energy Services\\R&D\\Terrain Complexity\\IEC Complexity calcs\\5h30 Slopes and Vars.csv");
@@ -1103,40 +1101,41 @@ namespace ContinuumNS
         /// <param name="forceThruTurbBase"> If true, fitted plane is forced through turbine base </param>        
         /// <returns> Array of double containing terrain slope or standard deviation of terrain variability </returns>
         public double[] CalcTerrainSlopeOrVariationBySector(double radius, string slopeOrDTV, double UTMX, double UTMY, double elev,
-            bool UW_Only, bool forceThruTurbBase, int numWD, TopoInfo topo)
+            bool UW_Only, bool fullPlane, bool forceThruTurbBase, int numWD, TopoInfo topo, double topoRes = 0)
         {
+            if (topoRes == 0)
+                topoRes = Math.Min(topo.topoNumXY.X.calcs.reso, topo.topoNumXY.Y.calcs.reso);
 
-            double topoRes = Math.Min(topo.topoNumXY.X.calcs.reso, topo.topoNumXY.Y.calcs.reso);
             bool inclIntercept = true;
 
             if (forceThruTurbBase)
                 inclIntercept = false;
             
             double[] slopesOrDTVs = new double[numWD];
-            int numDataPoints = Convert.ToInt32(360 * radius / topoRes / numWD); // Estimates approx number of total points so array resizing is reduced           
-            
-            //      Tuple<double, double>[] utmXandYs = new Tuple<double, double>[numDataPoints];
-            
+            int numDataPoints = Convert.ToInt32(360 * radius / topoRes / numWD); // Estimates approx number of total points so array resizing is reduced
+                                                                                 // 
+            if (UW_Only == false)
+                numDataPoints = numDataPoints * 2;
 
-            //      StreamWriter sw = new StreamWriter("C:\\Users\\OEE2021_03\\OneDrive - One Energy LLC\\Documents - Analytics\\General\\Renewable Energy Services\\R&D\\Terrain Complexity\\IEC Complexity calcs\\Full Grid output");
+            //      Tuple<double, double>[] utmXandYs = new Tuple<double, double>[numDataPoints];
+
+
+      //      StreamWriter sw = new StreamWriter("C:\\Users\\OEE2021_03\\OneDrive - One Energy LLC\\Documents - Analytics\\General\\Renewable Energy Services\\R&D\\Terrain Complexity\\Debugging\\T128 WD315 UW_Only.csv");
 
             double binSize = 360.0 / numWD;
 
-            if (UW_Only == false)
+            if (fullPlane) // 360 deg calcs: Get all elevation data in 360 deg circle then calc slope in each sector using fitted plane over 360 degs
             {
                 binSize = 180.0; // Only going to 180 since elevation profile is NOT just UW of POI, it goes to +/- specified radius (UW_only set to false if numWD = 1)
-                numDataPoints = Convert.ToInt32(360 * radius / topoRes);
-            }
-
-            if (UW_Only == false) // 360 deg calcs: Get all elevation data in 360 deg circle then calc slope in each sector using fitted plane over 360 degs
-            { 
+                numDataPoints = Convert.ToInt32(360 * radius / topoRes);         
+                            
                 int valInd = 0;
                 double[][] utmXandYs = new double[numDataPoints][];
                 double[] elevData = new double[numDataPoints];
 
-                for (double d = 0; d < 180; d++)
+                for (double d = 0; d < binSize; d++)
                 {                    
-                    TopoInfo.TopoGrid[] elevProfData = topo.GetElevationProfile(UTMX, UTMY, d, (int)radius, (int)topoRes, UW_Only);
+                    TopoInfo.TopoGrid[] elevProfData = topo.GetElevationProfile(UTMX, UTMY, d, (int)radius, (int)topoRes);
 
                     for (int p = 0; p < elevProfData.Length; p++)
                     {
@@ -1168,8 +1167,10 @@ namespace ContinuumNS
 
                 for (int i = 0; i < numWD; i++)
                 {
+                    double WDbinSize = 360.0 / numWD;
+
                     if (slopeOrDTV == "Slope")
-                        slopesOrDTVs[i] = topo.CalcSlopeAlongCenterlineOfFittedPlane(regressionResults, radius, i * 30.0, UTMX, UTMY, elev, forceThruTurbBase);
+                        slopesOrDTVs[i] = topo.CalcSlopeAlongCenterlineOfFittedPlane(regressionResults, radius, i * WDbinSize, UTMX, UTMY, elev, forceThruTurbBase);
                     else
                         slopesOrDTVs[i] = topo.CalcElevVariationInFittedPlane(regressionResults, utmXandYs, elevData, elev, forceThruTurbBase);
                 }
@@ -1211,13 +1212,13 @@ namespace ContinuumNS
                             utmXandYs[valInd][0] = elevProfData[p].UTMX - UTMX;
                             utmXandYs[valInd][1] = elevProfData[p].UTMY - UTMY;
                             elevData[valInd] = elevProfData[p].elev - elev;
-                            //              sw.WriteLine(utmXandYs[valInd][0] + "," + utmXandYs[valInd][1] + "," + elevData[valInd]);
+                     //       sw.WriteLine(utmXandYs[valInd][0] + "," + utmXandYs[valInd][1] + "," + elevData[valInd]);
                             valInd++;
 
                         }
                     }
 
-                    //      sw.Close();
+             //       sw.Close();
 
                     // Find avg slope and standard deviation of elevation deviations across 360 degree plane. Multiply slope by 5/3 and divide st. dev. of 
                     // elevation deviations by 3 and by radius
@@ -1227,7 +1228,7 @@ namespace ContinuumNS
 
                     // Calculate slope along centerline of each 30 deg sector based on slopes of fitted plane (i.e. along X and Y axes) and assign maximum (absolute) slope 
                     if (slopeOrDTV == "Slope")
-                        slopesOrDTVs[i] = topo.CalcSlopeAlongCenterlineOfFittedPlane(regressionResults, radius, i * 30.0, UTMX, UTMY, elev, forceThruTurbBase);
+                        slopesOrDTVs[i] = topo.CalcSlopeAlongCenterlineOfFittedPlane(regressionResults, radius, i * binSize, UTMX, UTMY, elev, forceThruTurbBase);
                     else
                         slopesOrDTVs[i] = topo.CalcElevVariationInFittedPlane(regressionResults, utmXandYs, elevData, elev, forceThruTurbBase);
                 }

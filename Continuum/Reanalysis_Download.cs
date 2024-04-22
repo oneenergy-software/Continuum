@@ -10,12 +10,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using Microsoft.Scripting.Hosting;
-using IronPython.Hosting;
 using System.Net;
 using System.Net.Sockets;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Runtime.CompilerServices;
-using static IronPython.Modules._ast;
 using static ContinuumNS.ReferenceCollection;
 using System.Threading;
 

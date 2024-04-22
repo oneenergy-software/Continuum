@@ -43,9 +43,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="MatplotlibCS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MatplotlibCS.1.0.63\lib\netstandard2.0\MatplotlibCS.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -101,16 +98,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="MatplotlibCS\annotations.py" />
-    <None Include="MatplotlibCS\arc.py" />
-    <None Include="MatplotlibCS\helpers.py" />
-    <None Include="MatplotlibCS\histogram.py" />
-    <None Include="MatplotlibCS\hline.py" />
-    <None Include="MatplotlibCS\line_2d.py" />
-    <None Include="MatplotlibCS\matplotlib_cs.py" />
-    <None Include="MatplotlibCS\subplot.py" />
-    <None Include="MatplotlibCS\task.py" />
-    <None Include="MatplotlibCS\vline.py" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -15,6 +15,8 @@ using Python;
 using Python.Runtime;
 using Microsoft.VisualBasic;
 using System.Threading;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Controls;
 
 namespace ContinuumNS
 {
@@ -1786,6 +1788,10 @@ namespace ContinuumNS
 
                 CopyTempDataToNewDB(oldConnString, newConnString);
 
+                CopyPressDataToNewDB(oldConnString, newConnString);
+
+                CopyERA5DataToNewDB(oldConnString, newConnString);
+
             }
             else
             {
@@ -1813,76 +1819,25 @@ namespace ContinuumNS
             DoWorkDone = true;
         }
 
-        /// <summary> Copy Pressure data from old to new database </summary>        
-        public void CopyPressDataToNewDB(string oldConnString, string newConnString)
-        {
-            int numBaros = 0;
-            try
-            {
-                using (var ctx = new Continuum_EDMContainer(oldConnString))
-                {
-                    numBaros = ctx.Baro_table.Count();
-                    ctx.Database.Connection.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.InnerException.ToString());
-                return;
-            }
-
-            string textForProgBar = "Saving pressure data...";
-
-            for (int t = 0; t < numBaros; t++)
-            {
-                Baro_table press_Table = new Baro_table();
-                int prog = (int)(100 * (double)(t + 1) / numBaros);
-                BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
-
-                try
-                {
-                    using (var ctx = new Continuum_EDMContainer(oldConnString))
-                    {
-                        var baro_exist_db = from N in ctx.Baro_table where N.Id == (t + 1) select N;
-
-                        foreach (var N in baro_exist_db)
-                        {
-                            press_Table.Id = N.Id;
-                            press_Table.height = N.height;
-                            press_Table.metName = N.metName;
-                            press_Table.baro = N.baro;
-                        }
-
-                        ctx.Database.Connection.Close();
-                    }
-
-                    using (var ctx = new Continuum_EDMContainer(newConnString))
-                    {
-                        ctx.Baro_table.Add(press_Table);
-                        ctx.SaveChanges();
-                        ctx.Database.Connection.Close();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.InnerException.ToString());
-                    return;
-                }
-            }
-        }
+        
 
         /// <summary> Copy Temperature data from old to new database </summary>        
         public void CopyTempDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
         {
             int numTemps = 0;
+            bool connectedToOld = false;
+            string oldVersion = "";
+
             try
             {
                 if (fromOldToNew)
                 {
-                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                     {
                         numTemps = ctx.Temp_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
+                        oldVersion = "v1_1";
                     }
                 }
                 else
@@ -1897,8 +1852,30 @@ namespace ContinuumNS
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.InnerException.ToString());
-                return;
+      //          MessageBox.Show(ex.InnerException.ToString());
+      //          return;
+            }
+
+            if (connectedToOld == false) // Try using v1_2 datastructure
+            {
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                        {
+                            numTemps = ctx.Temp_table.Count();
+                            ctx.Database.Connection.Close();
+                            connectedToOld = true;
+                            oldVersion = "v1_2";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                    return;
+                }
             }
 
             string textForProgBar = "Saving temperature data...";
@@ -1914,9 +1891,26 @@ namespace ContinuumNS
 
                 try
                 {
-                    if (fromOldToNew)
+                    if (fromOldToNew && oldVersion == "v1_1")
                     {
-                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
+                        {
+                            var temp_exist_db = from N in ctx.Temp_table where N.Id == (t + 1) select N;
+
+                            foreach (var N in temp_exist_db)
+                            {
+                                temp_Table.Id = N.Id;
+                                temp_Table.height = N.height;
+                                temp_Table.metName = N.metName;
+                                temp_Table.temp = N.temp;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else if (fromOldToNew && oldVersion == "v1_2")
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
                             var temp_exist_db = from N in ctx.Temp_table where N.Id == (t + 1) select N;
 
@@ -1964,18 +1958,127 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary> Copy Vane data from old to new database </summary>        
-        public void CopyVaneDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        /// <summary> Copy Pressure data from old to new database.  Pressure data table added in v1_2 </summary>        
+        public void CopyPressDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
         {
-            int numVanes = 0;
+            int numBaros = 0;
+            bool connectedToOld = false;
+            string oldVersion = "";
+
             try
             {
                 if (fromOldToNew)
                 {
-                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                    {
+                        numBaros = ctx.Baro_table.Count();
+                        ctx.Database.Connection.Close();
+                        connectedToOld = true;
+                        oldVersion = "v1_2";
+                    }
+                }
+                else
+                {
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numBaros = ctx.Temp_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //          MessageBox.Show(ex.InnerException.ToString());
+                //          return;
+            }
+
+            if (connectedToOld == false && fromOldToNew) // Did not connect to a database.  Trying to convert fromOldToNew. Must be a v1_1 database (i.e. no pressure table) so return.
+            {
+                oldVersion = "v1_1";
+                return;
+            }
+
+            string textForProgBar = "Saving pressure data...";
+
+            for (int b = 0; b < numBaros; b++)
+            {
+                Baro_table baro_Table = new Baro_table();
+                int prog = (int)(100 * (double)(b + 1) / numBaros);
+                if (fromOldToNew)
+                    BackgroundWorker_DBUpdate.ReportProgress(prog, textForProgBar);
+                else
+                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+
+                try
+                {
+                    if (fromOldToNew && oldVersion == "v1_2")
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                        {
+                            var baro_exist_db = from N in ctx.Baro_table where N.Id == (b + 1) select N;
+
+                            foreach (var N in baro_exist_db)
+                            {
+                                baro_Table.Id = N.Id;
+                                baro_Table.height = N.height;
+                                baro_Table.metName = N.metName;
+                                baro_Table.baro = N.baro;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else
+                    {
+                        using (var ctx = new Continuum_EDMContainer(oldConnString))
+                        {
+                            var baro_exist_db = from N in ctx.Baro_table where N.Id == (b + 1) select N;
+
+                            foreach (var N in baro_exist_db)
+                            {
+                                baro_Table.Id = N.Id;
+                                baro_Table.height = N.height;
+                                baro_Table.metName = N.metName;
+                                baro_Table.baro = N.baro;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.Baro_table.Add(baro_Table);
+                        ctx.SaveChanges();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+            }
+        }
+
+        /// <summary> Copy Vane data from old to new database </summary>        
+        public void CopyVaneDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        {
+            int numVanes = 0;
+            bool connectedToOld = false;
+            string oldVersion = "";
+
+            try
+            {
+                if (fromOldToNew)
+                {
+                    using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                     {
                         numVanes = ctx.Vane_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
+                        oldVersion = "v1_1";
                     }
                 }
                 else
@@ -1990,8 +2093,30 @@ namespace ContinuumNS
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.InnerException.ToString());
-                return;
+      //          MessageBox.Show(ex.InnerException.ToString());
+      //          return;
+            }
+
+            if (connectedToOld == false) // Try using v1_2 datastructure
+            {
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                        {
+                            numVanes = ctx.Vane_table.Count();
+                            ctx.Database.Connection.Close();
+                            connectedToOld = true;
+                            oldVersion = "v1_2";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                    return;
+                }
             }
 
             string textForProgBar = "Saving vane data...";
@@ -2007,9 +2132,26 @@ namespace ContinuumNS
 
                 try
                 {
-                    if (fromOldToNew)
+                    if (fromOldToNew && oldVersion == "v1_1")
                     {
-                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
+                        {
+                            var vane_exist_db = from N in ctx.Vane_table where N.Id == (v + 1) select N;
+
+                            foreach (var N in vane_exist_db)
+                            {
+                                vane_Table.Id = N.Id;
+                                vane_Table.height = N.height;
+                                vane_Table.metName = N.metName;
+                                vane_Table.dirData = N.dirData;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else if (fromOldToNew && oldVersion == "v1_2")
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
                             var vane_exist_db = from N in ctx.Vane_table where N.Id == (v + 1) select N;
 
@@ -2061,14 +2203,19 @@ namespace ContinuumNS
         public void CopyAnemDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
         {
             int numAnems = 0;
+            bool connectedToOld = false;
+            string oldVersion = "";
+
             try
             {
                 if (fromOldToNew)
                 {
-                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                     {
                         numAnems = ctx.Anem_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
+                        oldVersion = "v1_1";
                     }
                 }
                 else
@@ -2077,14 +2224,37 @@ namespace ContinuumNS
                     {
                         numAnems = ctx.Anem_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
                     }
                 }
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.InnerException.ToString());
-                return;
+      //          MessageBox.Show(ex.InnerException.ToString());
+      //          return;
+            }
+
+            if (connectedToOld == false) // Try using v1_2 datastructure
+            {
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                        {
+                            numAnems = ctx.Anem_table.Count();
+                            ctx.Database.Connection.Close();
+                            connectedToOld = true;
+                            oldVersion = "v1_2";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                    return;
+                }
             }
 
             string textForProgBar = "Saving anemometer data...";
@@ -2100,9 +2270,27 @@ namespace ContinuumNS
 
                 try
                 {
-                    if (fromOldToNew)
+                    if (fromOldToNew && oldVersion == "v1_1")
                     {
-                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
+                        {
+                            var anem_exist_db = from N in ctx.Anem_table where N.Id == (a + 1) select N;
+
+                            foreach (var N in anem_exist_db)
+                            {
+                                anem_Table.Id = N.Id;
+                                anem_Table.height = N.height;
+                                anem_Table.metName = N.metName;
+                                anem_Table.sensorChar = N.sensorChar;
+                                anem_Table.windData = N.windData;
+                            }
+
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else if (fromOldToNew && oldVersion == "v1_2")
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
                             var anem_exist_db = from N in ctx.Anem_table where N.Id == (a + 1) select N;
 
@@ -2157,14 +2345,19 @@ namespace ContinuumNS
         public void CopyMERRA2DataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
         {
             int numMERRA2Nodes = 0;
+            bool connectedToOld = false;
+            string oldVersion = "";
+
             try
             {
                 if (fromOldToNew)
                 {
-                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                     {
                         numMERRA2Nodes = ctx.MERRA_Node_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
+                        oldVersion = "v1_1";
                     }
                 }
                 else
@@ -2179,8 +2372,30 @@ namespace ContinuumNS
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.InnerException.ToString());
-                return;
+      //          MessageBox.Show(ex.InnerException.ToString());
+      //          return;
+            }
+
+            if (connectedToOld == false) // Try using v1_2 datastructure
+            {
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                        {
+                            numMERRA2Nodes = ctx.MERRA_Node_table.Count();
+                            ctx.Database.Connection.Close();
+                            connectedToOld = true;
+                            oldVersion = "v1_2";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                    return;
+                }
             }
 
             int minId = 1;
@@ -2209,9 +2424,26 @@ namespace ContinuumNS
 
                 try
                 {
-                    if (fromOldToNew)
+                    if (fromOldToNew && oldVersion == "v1_1")
                     {
-                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
+                        {
+                            var merra_exist_db = from N in ctx.MERRA_Node_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in merra_exist_db)
+                            {
+                                merraDB[dataInd] = new MERRA_Node_table();
+                                merraDB[dataInd].latitude = N.latitude;
+                                merraDB[dataInd].longitude = N.longitude;
+                                merraDB[dataInd].merraData = N.merraData;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else if (fromOldToNew && oldVersion == "v1_2")
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
                             var merra_exist_db = from N in ctx.MERRA_Node_table where N.Id >= minId && N.Id <= maxId select N;
 
@@ -2244,8 +2476,6 @@ namespace ContinuumNS
                         }
                     }
 
-
-
                     using (var ctx = new Continuum_EDMContainer(newConnString))
                     {
                         ctx.MERRA_Node_table.AddRange(merraDB);
@@ -2275,18 +2505,154 @@ namespace ContinuumNS
             }
         }
 
-        /// <summary> Copies land cover data from old to new database </summary>        
-        public void CopyLandCoverDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        /// <summary> Copy ERA5 data from old to new database. ERA5 data table added in v1_2 </summary>        
+        public void CopyERA5DataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
         {
-            int numLC = 0;
+            int numERA5Nodes = 0;
+            bool connectedToOld = false;
+            string oldVersion = "";
+
             try
             {
                 if (fromOldToNew)
                 {
-                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                    {
+                        numERA5Nodes = ctx.ERA_Node_table.Count();
+                        ctx.Database.Connection.Close();
+                        connectedToOld = true;
+                        oldVersion = "v1_2";
+                    }
+                }
+                else
+                {
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        numERA5Nodes = ctx.MERRA_Node_table.Count();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //          MessageBox.Show(ex.InnerException.ToString());
+                //          return;
+            }
+
+            if (connectedToOld == false && fromOldToNew) // Did not connect to a database.  Trying to convert fromOldToNew. Must be a v1_1 database (i.e. no ERA5 table) so return.
+            {
+                oldVersion = "v1_1";
+                return;
+            }
+
+            int minId = 1;
+            int maxId = 1;
+            ERA_Node_table[] eraDB = new ERA_Node_table[20000];
+            if (numERA5Nodes > 20000)
+                maxId = minId + 19999;
+            else
+            {
+                maxId = numERA5Nodes;
+                eraDB = new ERA_Node_table[numERA5Nodes];
+            }
+
+            bool gotThemAll = false;
+
+            while (numERA5Nodes > 0 && gotThemAll == false)
+            {
+                string textForProgBar = "Saving ERA5 data...";
+                int prog = (int)(100 * (double)maxId / numERA5Nodes);
+                if (fromOldToNew)
+                    BackgroundWorker_DBUpdate.ReportProgress(prog, textForProgBar);
+                else
+                    BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+                int dataInd = 0;
+                // Copy up to 20000 entries from old DB
+
+                try
+                {
+                    if (fromOldToNew && oldVersion == "v1_2")
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                        {
+                            var era_exist_db = from N in ctx.ERA_Node_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in era_exist_db)
+                            {
+                                eraDB[dataInd] = new ERA_Node_table();
+                                eraDB[dataInd].latitude = N.latitude;
+                                eraDB[dataInd].longitude = N.longitude;
+                                eraDB[dataInd].eraData = N.eraData;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }                    
+                    else
+                    {
+                        using (var ctx = new Continuum_EDMContainer(oldConnString))
+                        {
+                            var era_exist_db = from N in ctx.ERA_Node_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in era_exist_db)
+                            {
+                                eraDB[dataInd] = new ERA_Node_table();
+                                eraDB[dataInd].latitude = N.latitude;
+                                eraDB[dataInd].longitude = N.longitude;
+                                eraDB[dataInd].eraData = N.eraData;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.ERA_Node_table.AddRange(eraDB);
+                        ctx.SaveChanges();
+                        dataInd = 0;
+                        eraDB = new ERA_Node_table[20000];
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+
+                if (maxId == numERA5Nodes)
+                    gotThemAll = true;
+
+                minId = maxId + 1;
+                maxId = maxId + 20000;
+
+                if (maxId > numERA5Nodes)
+                {
+                    maxId = numERA5Nodes;
+                    eraDB = new ERA_Node_table[maxId - minId + 1];
+                }
+            }
+        }
+
+        /// <summary> Copies land cover data from old to new database </summary>        
+        public void CopyLandCoverDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
+        {
+            int numLC = 0;
+            bool connectedToOld = false;
+            string oldVersion = "";
+
+            try
+            {
+                if (fromOldToNew)
+                {
+                    using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                     {
                         numLC = ctx.LandCover_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
+                        oldVersion = "v1_1";
                     }
                 }
                 else
@@ -2295,14 +2661,37 @@ namespace ContinuumNS
                     {
                         numLC = ctx.LandCover_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
                     }
                 }
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.InnerException.ToString());
-                return;
+      //          MessageBox.Show(ex.InnerException.ToString());
+      //          return;
+            }
+
+            if (connectedToOld == false) // Try using v1_2 datastructure
+            {
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                        {
+                            numLC = ctx.LandCover_table.Count();
+                            ctx.Database.Connection.Close();
+                            connectedToOld = true;
+                            oldVersion = "v1_2";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                    return;
+                }
             }
 
             int minId = 1;
@@ -2331,9 +2720,24 @@ namespace ContinuumNS
 
                 try
                 {
-                    if (fromOldToNew)
+                    if (fromOldToNew && oldVersion == "v1_1")
                     {
-                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
+                        {
+                            var lc_exist_db = from N in ctx.LandCover_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in lc_exist_db)
+                            {
+                                landCoverDB[dataInd] = new LandCover_table();
+                                landCoverDB[dataInd].LandCover = N.LandCover;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else if (fromOldToNew && oldVersion == "v1_2")
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
                             var lc_exist_db = from N in ctx.LandCover_table where N.Id >= minId && N.Id <= maxId select N;
 
@@ -2395,14 +2799,19 @@ namespace ContinuumNS
         public void CopyTopoDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
         {
             int numTopo = 0;
+            bool connectedToOld = false;
+            string oldVersion = "";
+
             try
             {
                 if (fromOldToNew)
                 {
-                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                     {
                         numTopo = ctx.Topo_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
+                        oldVersion = "v1_1";
                     }
                 }
                 else
@@ -2411,13 +2820,36 @@ namespace ContinuumNS
                     {
                         numTopo = ctx.Topo_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.InnerException.ToString());
-                return;
+     //           MessageBox.Show(ex.InnerException.ToString());
+     //           return;
+            }
+
+            if (connectedToOld == false) // Try using v1_2 datastructure
+            {
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                        {
+                            numTopo = ctx.Topo_table.Count();
+                            ctx.Database.Connection.Close();
+                            connectedToOld = true;
+                            oldVersion = "v1_2";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                    return;
+                }
             }
 
             int minId = 1;
@@ -2446,9 +2878,24 @@ namespace ContinuumNS
 
                 try
                 {
-                    if (fromOldToNew)
+                    if (fromOldToNew && oldVersion == "v1_1")
                     {
-                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
+                        {
+                            var topo_exist_db = from N in ctx.Topo_table where N.Id >= minId && N.Id <= maxId select N;
+
+                            foreach (var N in topo_exist_db)
+                            {
+                                topoDB[dataInd] = new Topo_table();
+                                topoDB[dataInd].Elevs = N.Elevs;
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else if (fromOldToNew && oldVersion == "v1_2")
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
                             var topo_exist_db = from N in ctx.Topo_table where N.Id >= minId && N.Id <= maxId select N;
 
@@ -2511,15 +2958,19 @@ namespace ContinuumNS
         {
             string textForProgBar = "";
             int numNodes = 0;
+            bool connectedToOld = false;
+            string oldVersion = "";
 
             try
             {
                 if (fromOldToNew)
                 {
-                    using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                    using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                     {
                         numNodes = ctx.Node_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
+                        oldVersion = "v1_1";
                     }
                 }
                 else
@@ -2528,14 +2979,37 @@ namespace ContinuumNS
                     {
                         numNodes = ctx.Node_table.Count();
                         ctx.Database.Connection.Close();
+                        connectedToOld = true;
                     }
                 }
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message.ToString());
-                return;
+      //          MessageBox.Show(ex.Message.ToString());
+      //          return;
+            }
+
+            if (connectedToOld == false) // Try using v1_2 datastructure
+            {
+                try
+                {
+                    if (fromOldToNew)
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
+                        {
+                            numNodes = ctx.Node_table.Count();
+                            ctx.Database.Connection.Close();
+                            connectedToOld = true;
+                            oldVersion = "v1_2";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                    return;
+                }
             }
 
             int minId = 1;
@@ -2565,9 +3039,61 @@ namespace ContinuumNS
                 // Copy 20000 entries from old DB
                 try
                 {
-                    if (fromOldToNew)
+                    if (fromOldToNew && oldVersion == "v1_1")
                     {
-                        using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                        using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
+                        {
+                            for (int This_Id = minId; This_Id <= maxId; This_Id++)
+                            {
+                                var node_expo_db = from N in ctx.Node_table.Include("expo") where N.Id == This_Id select N;
+
+                                foreach (var N in node_expo_db)
+                                {
+                                    nodeDB[dataInd] = new Node_table();
+                                    nodeDB[dataInd].UTMX = N.UTMX;
+                                    nodeDB[dataInd].UTMY = N.UTMY;
+                                    nodeDB[dataInd].elev = N.elev;
+
+                                    int numExpos = N.expo.Count();
+
+                                    for (int expInd = 0; expInd < numExpos; expInd++)
+                                    {
+                                        Expo_table newExpo = new Expo_table();
+                                        newExpo.Expo_Array = N.expo.ElementAt(expInd).Expo_Array;
+                                        newExpo.ExpoDist_Array = N.expo.ElementAt(expInd).ExpoDist_Array;
+                                        newExpo.radius = N.expo.ElementAt(expInd).radius;
+                                        newExpo.exponent = N.expo.ElementAt(expInd).exponent;
+                                        newExpo.UW_Cross_Grade = N.expo.ElementAt(expInd).UW_Cross_Grade;
+                                        newExpo.UW_ParallelGrade = N.expo.ElementAt(expInd).UW_ParallelGrade;
+                                        newExpo.SR_Array = N.expo.ElementAt(expInd).SR_Array;
+                                        newExpo.DH_Array = N.expo.ElementAt(expInd).DH_Array;
+                                        nodeDB[dataInd].expo.Add(newExpo);
+                                    }
+                                }
+
+                                var node_gridstat_db = from N in ctx.Node_table.Include("GridStats") where N.Id == This_Id select N;
+
+                                foreach (var N in node_gridstat_db)
+                                {
+                                    int numGridStats = N.GridStats.Count();
+                                    for (int gridStatInd = 0; gridStatInd <= numGridStats - 1; gridStatInd++)
+                                    {
+                                        GridStat_table newGridStat = new GridStat_table();
+                                        newGridStat.radius = N.GridStats.ElementAt(gridStatInd).radius;
+                                        newGridStat.P10_UW = N.GridStats.ElementAt(gridStatInd).P10_UW;
+                                        newGridStat.P10_DW = N.GridStats.ElementAt(gridStatInd).P10_DW;
+                                        nodeDB[dataInd].GridStats.Add(newGridStat);
+                                    }
+                                }
+
+                                dataInd++;
+                            }
+                            ctx.Database.Connection.Close();
+                        }
+                    }
+                    else if (fromOldToNew && oldVersion == "v1_2")
+                    {
+                        using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
                             for (int This_Id = minId; This_Id <= maxId; This_Id++)
                             {
@@ -4361,7 +4887,7 @@ namespace ContinuumNS
                 CopyTempDataToNewDB(oldConnString, newConnString, true);
 
                 // Now delete old DB and rename new one to same name
-                using (var ctx = new Continuum_EDMContainerOLD(oldConnString))
+                using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                 {
                     if (ctx.Database.Exists())
                         ctx.Database.Delete();
@@ -4503,13 +5029,10 @@ namespace ContinuumNS
             for (int m = 0; m < numMets; m++)
             {
                 if (selMets[m].metData.GetNumAnems() > 0)
-                {
-                    for (int a = 0; a < selMets[m].metData.GetNumAnems(); a++)
-                    {
-                        if (selMets[m].metData.anems[a].windData == null)
-                            selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
-                    }
-
+                {                    
+                    if (selMets[m].metData.anems[0].windData == null)
+                        selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
+                    
                     if (selMets[m].metData.GetNumSimData() == 0)
                     {
                         selMets[m].metData.EstimateAlpha();
@@ -4574,15 +5097,26 @@ namespace ContinuumNS
             int numRecs = Convert.ToInt32(endTime.Subtract(startTime).TotalMinutes / 10.0);
             int timeInd = 0;
             List<DataGridViewRow> rows = new List<DataGridViewRow>();
-
+            
             if (thisInst.metList.HaveTimeSeriesData() == false)
                 thisInst.metList.GetTimeSeriesData(thisInst);
 
+            thisInst.metList.SetMetDataInterval();
             string dataInterval = thisInst.metList.GetMetDataInterval();
             int minsToAdd = 10;
             if (dataInterval == "60-min")
                 minsToAdd = 60;
 
+            //          DataGridViewRowCollection rowCollection = new DataGridViewRowCollection(metTable);
+            //         DataGridViewRow sharedRow = new DataGridViewRow();
+
+            //          sharedRow.CreateCells(metTable);
+            //          rowCollection.
+            //          rowCol.Add(sharedRow);
+            int numRows = Convert.ToInt32(endTime.Subtract(startTime).TotalMinutes / minsToAdd + 1);
+            int rowInd = 0;
+            DataGridViewRow[] strDataForTableRow = new DataGridViewRow[numRows];
+            
             for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(minsToAdd))
             {
                 if (timeInd % 10 == 0 && isTest == false)
@@ -4592,146 +5126,213 @@ namespace ContinuumNS
                 }
 
                 int colInd = 1;
-                DataGridViewRow strDataForTableRow = new DataGridViewRow();
-                strDataForTableRow.CreateCells(metTable);
+                strDataForTableRow[rowInd] = new DataGridViewRow();
+                strDataForTableRow[rowInd].CreateCells(metTable);
+                //          DataGridViewRow clonedRow = (DataGridViewRow)strDataForTableRow.Clone();
 
+                //          strDataForTableRow.CreateCells(metTable);
+                //          DataGridViewRow thisSharedRow = rowCol.SharedRow(0);
+                //          DataGridViewRow clonedRow = (DataGridViewRow)thisSharedRow.Clone();
+                //
                 double[] dataForTableRow = new double[totalNumSens + 1]; // Plus one for timestamp  // reset array                               
 
                 dataForTableRow[0] = thisTS.ToOADate();
 
                 for (int m = 0; m < numMets; m++)
                 {
-                    for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
-                    {
-                        int tsIndex = selMets[m].metData.anems[s].GetTS_Index(thisTS);
+                    if (selMets[m].metData.allStartDate <= thisTS && selMets[m].metData.allEndDate >= thisTS)
+                    { 
 
-                        if (tsIndex != -999) // Found record at specified TS
+                        int tsIndex = -999;
+
+                        if (selMets[m].metData.GetNumAnems() > 0)
+                            tsIndex = selMets[m].metData.anems[0].GetTS_Index(thisTS);
+                        else if (selMets[m].metData.GetNumVanes() > 0)
+                            tsIndex = selMets[m].metData.vanes[0].GetTS_Index(thisTS);
+                        else if (selMets[m].metData.GetNumTemps() > 0)
+                            tsIndex = selMets[m].metData.temps[0].GetTS_Index(thisTS);
+                        else if (selMets[m].metData.GetNumBaros() > 0)
+                            tsIndex = selMets[m].metData.baros[0].GetTS_Index(thisTS);
+
+                        for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
                         {
-                            dataForTableRow[colInd] = selMets[m].metData.anems[s].windData[tsIndex].avg;
-                            dataForTableRow[colInd + 1] = selMets[m].metData.anems[s].windData[tsIndex].SD;
-                            dataForTableRow[colInd + 2] = selMets[m].metData.anems[s].windData[tsIndex].min;
-                            dataForTableRow[colInd + 3] = selMets[m].metData.anems[s].windData[tsIndex].max;
-                        }
-                        else
-                        {
-                            dataForTableRow[colInd] = -999;
-                            dataForTableRow[colInd + 1] = -999;
-                            dataForTableRow[colInd + 2] = -999;
-                            dataForTableRow[colInd + 3] = -999;
+
+                            if (tsIndex != -999) // Found record at specified TS
+                            {
+                                dataForTableRow[colInd] = selMets[m].metData.anems[s].windData[tsIndex].avg;
+                                dataForTableRow[colInd + 1] = selMets[m].metData.anems[s].windData[tsIndex].SD;
+                                dataForTableRow[colInd + 2] = selMets[m].metData.anems[s].windData[tsIndex].min;
+                                dataForTableRow[colInd + 3] = selMets[m].metData.anems[s].windData[tsIndex].max;
+                            }
+                            else
+                            {
+                                dataForTableRow[colInd] = -999;
+                                dataForTableRow[colInd + 1] = -999;
+                                dataForTableRow[colInd + 2] = -999;
+                                dataForTableRow[colInd + 3] = -999;
+                            }
+
+                            colInd = colInd + 4;
                         }
 
-                        colInd = colInd + 4;
+                        if (selMets[m].metData.GetNumSimData() > 0)
+                        {
+                            int simTS_Index = selMets[m].metData.simData[0].GetTS_Index(thisTS);
+                            if (simTS_Index != -999)
+                            {
+                                dataForTableRow[colInd] = Math.Round(selMets[m].metData.simData[0].WS_WD_data[simTS_Index].alpha, 3);
+
+                                for (int h = 0; h < selMets[m].metData.GetNumSimData(); h++)
+                                    dataForTableRow[colInd + 1 + h] = Math.Round(selMets[m].metData.simData[h].WS_WD_data[simTS_Index].WS, 3);
+                            }
+                            else
+                            {
+                                dataForTableRow[colInd] = -999;
+
+                                for (int h = 0; h < selMets[m].metData.GetNumSimData(); h++)
+                                    dataForTableRow[colInd + 1 + h] = -999;
+                            }
+
+                            colInd = colInd + 1 + selMets[m].metData.GetNumSimData();
+                        }
+
+                        for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
+                        {
+                            if (selMets[m].metData.vanes[s].dirData == null)
+                                selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
+
+                            //      int tsIndex = selMets[m].metData.vanes[s].GetTS_Index(thisTS);
+
+                            if (tsIndex != -999) // Found record at specified TS
+                            {
+                                dataForTableRow[colInd] = selMets[m].metData.vanes[s].dirData[tsIndex].avg;
+                                dataForTableRow[colInd + 1] = selMets[m].metData.vanes[s].dirData[tsIndex].SD;
+                                dataForTableRow[colInd + 2] = selMets[m].metData.vanes[s].dirData[tsIndex].min;
+                                dataForTableRow[colInd + 3] = selMets[m].metData.vanes[s].dirData[tsIndex].max;
+                            }
+                            else
+                            {
+                                dataForTableRow[colInd] = -999;
+                                dataForTableRow[colInd + 1] = -999;
+                                dataForTableRow[colInd + 2] = -999;
+                                dataForTableRow[colInd + 3] = -999;
+                            }
+
+                            colInd = colInd + 4;
+                        }
+
+                        for (int s = 0; s < selMets[m].metData.GetNumTemps(); s++)
+                        {
+                            if (selMets[m].metData.temps[s].temp == null)
+                                selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
+
+                            //          int tsIndex = selMets[m].metData.temps[s].GetTS_Index(thisTS);
+
+                            if (tsIndex != -999) // Found record at specified TS
+                            {
+                                dataForTableRow[colInd] = selMets[m].metData.temps[s].temp[tsIndex].avg;
+                                dataForTableRow[colInd + 1] = selMets[m].metData.temps[s].temp[tsIndex].SD;
+                                dataForTableRow[colInd + 2] = selMets[m].metData.temps[s].temp[tsIndex].min;
+                                dataForTableRow[colInd + 3] = selMets[m].metData.temps[s].temp[tsIndex].max;
+                            }
+                            else
+                            {
+                                dataForTableRow[colInd] = -999;
+                                dataForTableRow[colInd + 1] = -999;
+                                dataForTableRow[colInd + 2] = -999;
+                                dataForTableRow[colInd + 3] = -999;
+                            }
+
+                            colInd = colInd + 4;
+                        }
+
+                        for (int s = 0; s < selMets[m].metData.GetNumBaros(); s++)
+                        {
+                            if (selMets[m].metData.baros[s].pressure == null)
+                                selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
+
+                            //          int tsIndex = selMets[m].metData.baros[s].GetTS_Index(thisTS);
+
+                            if (tsIndex != -999) // Found record at specified TS
+                            {
+                                dataForTableRow[colInd] = selMets[m].metData.baros[s].pressure[tsIndex].avg;
+                                dataForTableRow[colInd + 1] = selMets[m].metData.baros[s].pressure[tsIndex].SD;
+                                dataForTableRow[colInd + 2] = selMets[m].metData.baros[s].pressure[tsIndex].min;
+                                dataForTableRow[colInd + 3] = selMets[m].metData.baros[s].pressure[tsIndex].max;
+                            }
+                            else
+                            {
+                                dataForTableRow[colInd] = -999;
+                                dataForTableRow[colInd + 1] = -999;
+                                dataForTableRow[colInd + 2] = -999;
+                                dataForTableRow[colInd + 3] = -999;
+                            }
+
+                            colInd = colInd + 4;
+                        }
                     }
-
-                    if (selMets[m].metData.GetNumSimData() > 0)
+                    else
                     {
-                        int tsIndex = selMets[m].metData.simData[0].GetTS_Index(thisTS);
-                        if (tsIndex != -999)
+                        for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
                         {
-                            dataForTableRow[colInd] = Math.Round(selMets[m].metData.simData[0].WS_WD_data[tsIndex].alpha, 3);
+                            for (int i  = 0; i <= 3; i++)
+                                dataForTableRow[colInd + i] = -9999; // Outside met tower range                                                          
+
+                            colInd = colInd + 4;
+                        }
+
+                        if (selMets[m].metData.GetNumSimData() > 0)
+                        {                            
+                            dataForTableRow[colInd] = -9999;
 
                             for (int h = 0; h < selMets[m].metData.GetNumSimData(); h++)
-                                dataForTableRow[colInd + 1 + h] = Math.Round(selMets[m].metData.simData[h].WS_WD_data[tsIndex].WS, 3);
+                                dataForTableRow[colInd + 1 + h] = -9999;                            
+
+                            colInd = colInd + 1 + selMets[m].metData.GetNumSimData();
                         }
-                        else
+
+                        for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
                         {
-                            dataForTableRow[colInd] = -999;
+                            for (int i = 0; i <= 3; i++)
+                                dataForTableRow[colInd + i] = -9999;                                                        
 
-                            for (int h = 0; h < selMets[m].metData.GetNumSimData(); h++)
-                                dataForTableRow[colInd + 1 + h] = -999;
+                            colInd = colInd + 4;
                         }
 
-                        colInd = colInd + 1 + selMets[m].metData.GetNumSimData();
-                    }
-
-                    for (int s = 0; s < selMets[m].metData.GetNumVanes(); s++)
-                    {
-                        if (selMets[m].metData.vanes[s].dirData == null)
-                            selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
-
-                        int tsIndex = selMets[m].metData.vanes[s].GetTS_Index(thisTS);
-
-                        if (tsIndex != -999) // Found record at specified TS
+                        for (int s = 0; s < selMets[m].metData.GetNumTemps(); s++)
                         {
-                            dataForTableRow[colInd] = selMets[m].metData.vanes[s].dirData[tsIndex].avg;
-                            dataForTableRow[colInd + 1] = selMets[m].metData.vanes[s].dirData[tsIndex].SD;
-                            dataForTableRow[colInd + 2] = selMets[m].metData.vanes[s].dirData[tsIndex].min;
-                            dataForTableRow[colInd + 3] = selMets[m].metData.vanes[s].dirData[tsIndex].max;
+                            for (int i = 0; i <= 3; i++)
+                                dataForTableRow[colInd + i] = -9999;                                                      
+
+                            colInd = colInd + 4;
                         }
-                        else
+
+                        for (int s = 0; s < selMets[m].metData.GetNumBaros(); s++)
                         {
-                            dataForTableRow[colInd] = -999;
-                            dataForTableRow[colInd + 1] = -999;
-                            dataForTableRow[colInd + 2] = -999;
-                            dataForTableRow[colInd + 3] = -999;
+                            for (int i = 0; i <= 3; i++)
+                                dataForTableRow[colInd + i] = -9999;                                                      
+
+                            colInd = colInd + 4;
                         }
-
-                        colInd = colInd + 4;
-                    }
-
-                    for (int s = 0; s < selMets[m].metData.GetNumTemps(); s++)
-                    {
-                        if (selMets[m].metData.temps[s].temp == null)
-                            selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
-
-                        int tsIndex = selMets[m].metData.temps[s].GetTS_Index(thisTS);
-
-                        if (tsIndex != -999) // Found record at specified TS
-                        {
-                            dataForTableRow[colInd] = selMets[m].metData.temps[s].temp[tsIndex].avg;
-                            dataForTableRow[colInd + 1] = selMets[m].metData.temps[s].temp[tsIndex].SD;
-                            dataForTableRow[colInd + 2] = selMets[m].metData.temps[s].temp[tsIndex].min;
-                            dataForTableRow[colInd + 3] = selMets[m].metData.temps[s].temp[tsIndex].max;
-                        }
-                        else
-                        {
-                            dataForTableRow[colInd] = -999;
-                            dataForTableRow[colInd + 1] = -999;
-                            dataForTableRow[colInd + 2] = -999;
-                            dataForTableRow[colInd + 3] = -999;
-                        }
-
-                        colInd = colInd + 4;
-                    }
-
-                    for (int s = 0; s < selMets[m].metData.GetNumBaros(); s++)
-                    {
-                        if (selMets[m].metData.baros[s].pressure == null)
-                            selMets[m].metData.GetSensorDataFromDB(thisInst, selMets[m].name);
-
-                        int tsIndex = selMets[m].metData.baros[s].GetTS_Index(thisTS);
-
-                        if (tsIndex != -999) // Found record at specified TS
-                        {
-                            dataForTableRow[colInd] = selMets[m].metData.baros[s].pressure[tsIndex].avg;
-                            dataForTableRow[colInd + 1] = selMets[m].metData.baros[s].pressure[tsIndex].SD;
-                            dataForTableRow[colInd + 2] = selMets[m].metData.baros[s].pressure[tsIndex].min;
-                            dataForTableRow[colInd + 3] = selMets[m].metData.baros[s].pressure[tsIndex].max;
-                        }
-                        else
-                        {
-                            dataForTableRow[colInd] = -999;
-                            dataForTableRow[colInd + 1] = -999;
-                            dataForTableRow[colInd + 2] = -999;
-                            dataForTableRow[colInd + 3] = -999;
-                        }
-
-                        colInd = colInd + 4;
                     }
                 }
 
                 for (int d = 0; d < totalNumSens + 1; d++)
                 {
                     if (d == 0)
-                        strDataForTableRow.Cells[0].Value = DateTime.FromOADate(dataForTableRow[d]).ToString("yyyy-MM-dd HH:mm");
+                        strDataForTableRow[rowInd].Cells[0].Value = DateTime.FromOADate(dataForTableRow[d]).ToString("yyyy-MM-dd HH:mm");
                     else
-                        strDataForTableRow.Cells[d].Value = Math.Round(dataForTableRow[d], 2).ToString();
+                    {
+                        if (dataForTableRow[d] != -9999)
+                            strDataForTableRow[rowInd].Cells[d].Value = Math.Round(dataForTableRow[d], 2).ToString();                        
+                    }                        
                 }
 
-                rows.Add(strDataForTableRow);
-
+                rowInd++;
                 timeInd++;
             }
+
+            rows.AddRange(strDataForTableRow);
 
             for (int m = 0; m < numMets; m++)
             {
@@ -4786,20 +5387,25 @@ namespace ContinuumNS
                 newCol.HeaderText = theArgs.cols[c].HeaderText;
                 newCol.CellTemplate = theArgs.cols[c].CellTemplate;
                 cols.Add(newCol);
-            }               
+            }
 
-            thisInst.dataMetTS.Rows.Clear();
+      //      thisInst.dataMetTS = new DataGridView();                 
+      
+           
+            thisInst.dataMetTS.Rows.Clear();            
             thisInst.dataMetTS.Columns.Clear();
 
             for (int c = 0; c < cols.Count; c++)
                 thisInst.dataMetTS.Columns.Add(cols[c]);
-
+           
             thisInst.dataMetTS.Rows.AddRange(rows.ToArray());
 
             thisInst.dataMetTS.Refresh();            
             thisInst.dataMetTS.Update();
             thisInst.updateThe.MetTS_CheckList();                        
             thisInst.updateThe.SetMetDataFlagColors();
+                                   
+      //      thisInst.metList.AddAllSensorDataToDBAndClear(thisInst); // Don't save to DB until user saves it
             
             thisInst.updateThe.MetDataTS_TableVisibleColumns();
             thisInst.updateThe.MetDataTS_Dates();

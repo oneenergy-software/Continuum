@@ -976,6 +976,7 @@ namespace ContinuumNS
             {
                 metData.EstimateAlpha();
                 metData.ExtrapolateData(thisInst.modeledHeight);
+       //         metData.ClearSensorData();
             }
 
             Met_Data_Filter.Sim_TS extrapData = metData.GetSimulatedTimeSeries(thisInst.modeledHeight);

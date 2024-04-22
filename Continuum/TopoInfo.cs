@@ -4131,7 +4131,7 @@ namespace ContinuumNS
         }
 
         
-        /// <summary> Calculates and erturns the distance between two points. </summary>        
+        /// <summary> Calculates and returns the distance between two points. </summary>        
         public double CalcDistanceBetweenPoints(double X_1, double Y_1, double X_2, double Y_2)
         {            
             double thisDist = Math.Sqrt((X_1 - X_2) * (X_1 - X_2) + (Y_1 - Y_2) * (Y_1 - Y_2));

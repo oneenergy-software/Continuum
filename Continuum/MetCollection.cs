@@ -21,10 +21,13 @@ namespace ContinuumNS
         public bool SRDH_IsCalc;
         /// <summary> True if met data is time series data </summary>
         public bool isTimeSeries;
-   //     /// <summary> True if met data QC filters are applied to time series data.  </summary>
-  //      public bool filteringEnabled; // MOVED TO MET CLASS
-  //      /// <summary> True if MERRA2 data is uploaded and MCP is conducted  </summary>
-  //      public bool isMCPd; // MOVED TO MET CLASS
+
+        public string dataInterval; // Data interval string: "10-min", "Hourly"
+
+        //     /// <summary> True if met data QC filters are applied to time series data.  </summary>
+        //      public bool filteringEnabled; // MOVED TO MET CLASS
+        //      /// <summary> True if MERRA2 data is uploaded and MCP is conducted  </summary>
+        //      public bool isMCPd; // MOVED TO MET CLASS
         /// <summary> True if MCP has been conducted at all met sites (time series only). Models and estimates are not created unless this is true.  </summary>
         public bool allMCPd;
         /// <summary> Upper bound of first wind speed bin (to be consistent with TAB file format)  </summary>
@@ -230,18 +233,24 @@ namespace ContinuumNS
         public void FilterExtrapolateAddMetTimeSeries(string metName, double UTMX, double UTMY, Met_Data_Filter metData, Continuum thisInst, bool applyFilters)
         {
             int newCount = ThisCount;
-            Array.Resize(ref metItem, newCount + 1);
+            Array.Resize(ref metItem, newCount + 1);                      
 
             metItem[newCount] = new Met();
             metItem[newCount].name = metName;
             metItem[newCount].UTMX = UTMX;
             metItem[newCount].UTMY = UTMY;
             metItem[newCount].metData = metData;
+
+            if (dataInterval == null)
+                SetMetDataInterval();
+
             metItem[newCount].metData.filteringEnabled = applyFilters;
             if (applyFilters)                
                 metItem[newCount].metData.FilterData(thisInst.GetFiltersToApply(metItem[newCount]));            
             metItem[newCount].metData.EstimateAlpha();
             metItem[newCount].metData.ExtrapolateData(thisInst.modeledHeight);
+
+            
                         
         }               
 
@@ -649,7 +658,12 @@ namespace ContinuumNS
         /// uses the met with either the highest or lowest WS and adjusts WS dist until avgWS is reached. </summary>
         public double[] CalcWS_DistForTurbOrMap(string[] metsUsed, double avgWS, int WD_Ind, Met.TOD thisTOD, Met.Season thisSeason, double thisHeight)
         {           
-            if (metsUsed == null || avgWS == 0) return null;
+            if (metsUsed == null || avgWS == 0) 
+                return null;
+
+            if (avgWS == double.NaN)
+                return null;
+
             double[] WS_Dist = new double[numWS];
 
             int numMetsUsed = metsUsed.Length;
@@ -1422,6 +1436,16 @@ namespace ContinuumNS
             
         }
 
+        /// <summary> Adds all sensor data to database and then clears objects </summary>
+        /// <param name="thisInst"></param>
+        public void AddAllSensorDataToDBAndClear(Continuum thisInst)
+        {
+            for (int m = 0; m < ThisCount; m++)
+                metItem[m].metData.AddSensorDatatoDBAndClear(thisInst, metItem[m].name);
+        }
+
+       
+
         /// <summary> Clears all calculated exposures, SRDH, and grid stats. </summary>
         public void ClearAllExposuresAndGridStats()
         {             
@@ -2125,8 +2149,13 @@ namespace ContinuumNS
 
         /// <summary> Returns time interval of met data  </summary>        
         public string GetMetDataInterval()
+        {           
+            return dataInterval;
+        }
+
+        public void SetMetDataInterval()
         {
-            string dataInt = "10-min";
+            dataInterval = "10-min";
             TimeSpan timeInt = new TimeSpan();
 
             for (int m = 0; m < ThisCount; m++)
@@ -2140,11 +2169,9 @@ namespace ContinuumNS
                 }
 
             if (Math.Round(timeInt.TotalMinutes, 0) == 10)
-                dataInt = "10-min";
+                dataInterval = "10-min";
             else if (Math.Round(timeInt.TotalMinutes, 0) == 60)
-                dataInt = "60-min";
-
-            return dataInt;
+                dataInterval = "60-min";            
         }
 
         /// <summary> Returns array of MCP.Site_data (which contains timestamp, WS, and WD) for specified met site for time period covering all met sites

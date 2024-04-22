@@ -1175,14 +1175,22 @@ namespace ContinuumNS
         /// from the database. </summary>        
         public void SaveFile(string fileName = "")
         {
-            if (fileName == "")
-                fileName = savedParams.savedFileName;
-            
-            if (fileName == "")
-                return;     
+            if (fileName != "" && fileName != savedParams.savedFileName)
+            {
+                // Save As.  Need to copy database with new filename.
+                BW_worker = new BackgroundWork();
+                BackgroundWork.Vars_for_Save_As argsForBW = new BackgroundWork.Vars_for_Save_As();
+                argsForBW.oldFilename = savedParams.savedFileName;
+                argsForBW.newFilename = fileName;
+                BW_worker.Call_BW_SaveAs(argsForBW);
 
-            if (fileName != "")
+                //      while (BW_worker.IsBusy())
+                //          Thread.Sleep(100);
+
                 savedParams.savedFileName = fileName;
+            }
+            else
+                fileName = savedParams.savedFileName;
 
             FileStream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             BinaryFormatter bin = new BinaryFormatter();
@@ -1220,7 +1228,7 @@ namespace ContinuumNS
             refList.ClearReferenceData();
 
             // Copy all turbine time series data into dummy holder
-            Turbine[] dummyTurbs = new Turbine[turbineList.TurbineCount];
+     /*       Turbine[] dummyTurbs = new Turbine[turbineList.TurbineCount];
             for (int t = 0; t < turbineList.TurbineCount; t++)
             {
                 Turbine thisTurb = turbineList.turbineEsts[t];
@@ -1234,6 +1242,10 @@ namespace ContinuumNS
                         dummyTurbs[t].avgWS_Est[a] = thisTurb.avgWS_Est[a];
                 }
             }
+     */
+
+            // Save turbine time series data to DB
+            turbineList.SaveTurbineTS_EstsToDB(this);
 
             // Clear turbine time series data
             turbineList.ClearTimeSeries();
@@ -1265,8 +1277,8 @@ namespace ContinuumNS
                     metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
                     metList.metItem[i].metData.EstimateAlpha();
                     metList.metItem[i].metData.ExtrapolateData(modeledHeight);
+           //         metList.metItem[i].metData.ClearSensorData();
                 }
-
 
             // Populate MCP estimates with LT estimates 
             for (int m = 0; m < metList.ThisCount; m++)
@@ -1286,14 +1298,18 @@ namespace ContinuumNS
                 Reference thisRef = refList.reference[r];                
                 thisRef.GetReferenceDataFromDB(this);
                 thisRef.GetInterpData(UTM_conversions);                
-            }                       
+            }
+
+            // Get all turbine time series estimates from DB
+            for (int t = 0; t < turbineList.TurbineCount; t++)
+                turbineList.turbineEsts[t].GetTimeSeriesDataFomDB(this);
 
             // Populate turbine time series estimates 
-            for (int t = 0; t < turbineList.TurbineCount; t++)
-            {
-                for (int a = 0; a < turbineList.turbineEsts[t].AvgWSEst_Count; a++)
-                    turbineList.turbineEsts[t].avgWS_Est[a].timeSeries = dummyTurbs[t].avgWS_Est[a].timeSeries;
-            }
+      //      for (int t = 0; t < turbineList.TurbineCount; t++)
+      //      {
+      //          for (int a = 0; a < turbineList.turbineEsts[t].AvgWSEst_Count; a++)
+      //              turbineList.turbineEsts[t].avgWS_Est[a].timeSeries = dummyTurbs[t].avgWS_Est[a].timeSeries;
+      //      }
 
         }
 
@@ -1352,6 +1368,31 @@ namespace ContinuumNS
             BinaryFormatter bin = new BinaryFormatter();
             bin.AssemblyFormat = FormatterAssemblyStyle.Simple;
 
+            // check database to see if need to update to new context
+            bool dbNeedsUpdate = CheckForDB_Update();
+
+            if (dbNeedsUpdate)
+            {
+                DialogResult okToCreateNew = MessageBox.Show("This file was created in a previous version of Continuum with a different database structure.  Do you want " +
+                    "to update the database structure and continue?  If you do, this file will no longer be compatible with the previous version of Continuum.", "Continuum 3",
+                    MessageBoxButtons.YesNo);
+
+                if (okToCreateNew == DialogResult.No)
+                {
+                    fstream.Close();
+                    return;
+                }
+
+                BackgroundWork.Vars_for_Save_As argsForBW = new BackgroundWork.Vars_for_Save_As();
+                argsForBW.oldFilename = savedParams.savedFileName;
+
+                BW_worker = new BackgroundWork();
+                BW_worker.Call_BW_UpdateDB(argsForBW);
+
+                while (BW_worker.DoWorkDone == false)
+                    Thread.Sleep(10);
+            }
+
             try {
                 topo = (TopoInfo)bin.Deserialize(fstream);                
             }
@@ -1407,7 +1448,10 @@ namespace ContinuumNS
                     metList.metItem[m].metData.shearSettings.minHeight =  anemHeights[0];
 
                 if (metList.metItem[m].metData.shearSettings.maxHeight == 0)
-                    metList.metItem[m].metData.shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];                    
+                    metList.metItem[m].metData.shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];
+
+                metList.metItem[m].metData.EstimateAlpha();
+                metList.metItem[m].metData.ExtrapolateData(this.modeledHeight);
             }
 
            
@@ -1477,31 +1521,7 @@ namespace ContinuumNS
             if (modelList.rotorDiam == 0)
                 modelList.rotorDiam = 100;
 
-            // check database to see if need to update to new context
-
-            bool dbNeedsUpdate = CheckForDB_Update();
-
-            if (dbNeedsUpdate)
-            {
-                DialogResult okToCreateNew = MessageBox.Show("This file was created in a previous version of Continuum with a different database structure.  Do you want " +
-                    "to update the database structure and continue?  If you do, this file will no longer be compatible with the previous version of Continuum.", "Continuum 3",
-                    MessageBoxButtons.YesNo);
-
-                if (okToCreateNew == DialogResult.No)
-                {
-                    fstream.Close();
-                    return;
-                }
-
-                BackgroundWork.Vars_for_Save_As argsForBW = new BackgroundWork.Vars_for_Save_As();
-                argsForBW.oldFilename = savedParams.savedFileName;                                
-                
-                BW_worker = new BackgroundWork();
-                BW_worker.Call_BW_UpdateDB(argsForBW);
-
-                while (BW_worker.DoWorkDone == false)
-                    Thread.Sleep(10);
-            }
+            
 
             NodeCollection nodeList = new NodeCollection();
             string connString = nodeList.GetDB_ConnectionString(savedParams.savedFileName);
@@ -1666,39 +1686,43 @@ namespace ContinuumNS
             //   merraList.SetMERRA2LatLong(this);
 
             if (turbineList.genTimeSeries)
-            {
-                
-
+            {                
                 for (int t = 0; t < turbineList.TurbineCount; t++)
                 {
-                    Turbine thisTurb = turbineList.turbineEsts[t];
-                    Nodes targetNode = nodeList.GetTurbNode(thisTurb);
+                    bool gotDataFromDB = turbineList.turbineEsts[t].GetTimeSeriesDataFomDB(this);
 
-                    for (int a = 0; a < thisTurb.AvgWSEst_Count; a++)
+                    if (gotDataFromDB == false) // Time series data not saved (older version) so need to regenerate
                     {
-                        Wake_Model thisWakeModel = thisTurb.avgWS_Est[a].wakeModel;
+                        Turbine thisTurb = turbineList.turbineEsts[t];
+                        Nodes targetNode = nodeList.GetTurbNode(thisTurb);
 
-                        if (thisWakeModel != null)
+                        for (int a = 0; a < thisTurb.AvgWSEst_Count; a++)
                         {
-                            // Find wake loss coeffs                    
-                            int minDistance = 10000000;
-                            int maxDistance = 0;
+                            Wake_Model thisWakeModel = thisTurb.avgWS_Est[a].wakeModel;
 
-                            int[] Min_Max_Dist = turbineList.CalcMinMaxDistanceToTurbines(thisTurb.UTMX, thisTurb.UTMY);
-                            if (Min_Max_Dist[0] < minDistance) minDistance = Min_Max_Dist[0]; // this is min distance to turbine but when WD is at a different angle (not in line with turbines) the X dist is less than this value so making this always equal to 2*RD
-                            if (Min_Max_Dist[1] > maxDistance) maxDistance = Min_Max_Dist[1];
+                            if (thisWakeModel != null)
+                            {
+                                // Find wake loss coeffs                    
+                                int minDistance = 10000000;
+                                int maxDistance = 0;
 
-                            minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
-                            if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
-                            WakeCollection.WakeLossCoeffs[] wakeCoeffs = wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, metList);
+                                int[] Min_Max_Dist = turbineList.CalcMinMaxDistanceToTurbines(thisTurb.UTMX, thisTurb.UTMY);
+                                if (Min_Max_Dist[0] < minDistance) minDistance = Min_Max_Dist[0]; // this is min distance to turbine but when WD is at a different angle (not in line with turbines) the X dist is less than this value so making this always equal to 2*RD
+                                if (Min_Max_Dist[1] > maxDistance) maxDistance = Min_Max_Dist[1];
 
-                            thisTurb.avgWS_Est[a].timeSeries = modelList.GenerateTimeSeries(this, metList.GetMetsUsed(), targetNode, thisTurb.avgWS_Est[a].powerCurve, thisWakeModel, wakeCoeffs, 
-                                metList.GetMCP_MethodUsed());
+                                minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
+                                if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
+                                WakeCollection.WakeLossCoeffs[] wakeCoeffs = wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, metList);
+
+                                thisTurb.avgWS_Est[a].timeSeries = modelList.GenerateTimeSeries(this, metList.GetMetsUsed(), targetNode, thisTurb.avgWS_Est[a].powerCurve, thisWakeModel, wakeCoeffs,
+                                    metList.GetMCP_MethodUsed());
+                            }
+                            else
+                                thisTurb.avgWS_Est[a].timeSeries = modelList.GenerateTimeSeries(this, metList.GetMetsUsed(), targetNode, thisTurb.avgWS_Est[a].powerCurve, null, null,
+                                    metList.GetMCP_MethodUsed());
                         }
-                        else
-                            thisTurb.avgWS_Est[a].timeSeries = modelList.GenerateTimeSeries(this, metList.GetMetsUsed(), targetNode, thisTurb.avgWS_Est[a].powerCurve, null, null, 
-                                metList.GetMCP_MethodUsed());
                     }
+             
                 }
             }
 
@@ -2510,48 +2534,12 @@ namespace ContinuumNS
         }
         private void chkAllMetLabels_CheckedChanged(object sender, EventArgs e)
         {
-            // Selects or deselects all met sites in list (on Input tab) updates the labels on the topo map and directional WS ratio plot (to do: update windRose plot) 
-            if (okToUpdate == true)
-            {
-                if (chkMetLabels.Items.Count > 0)
-                {
-                    if (chkAllMetLabels.CheckState == CheckState.Checked)
-                    {
-                        for (int i = 0; i < chkMetLabels.Items.Count; i++)
-                            chkMetLabels.SetItemChecked(i, true);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < chkMetLabels.Items.Count; i++)
-                            chkMetLabels.SetItemChecked(i, false);
-                    }
-                }                          
-                
-                updateThe.InputTAB();
-            }
+            
         }
 
         private void chkAllTurbLabels_CheckedChanged(object sender, EventArgs e)
         {
-            // Selects or deselects all turbines and updates labels on map (Input tab)
-            if (okToUpdate == true)
-            {
-                if (chkTurbLabels.Items.Count > 0)
-                {
-                    if (chkAllTurbLabels.CheckState == CheckState.Checked)
-                    {
-                        for (int i = 0; i < chkTurbLabels.Items.Count; i++)
-                            chkTurbLabels.SetItemChecked(i, true);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < chkTurbLabels.Items.Count; i++)
-                            chkTurbLabels.SetItemChecked(i, false);
-                    }
-                }
-
-                updateThe.InputTAB();
-            }
+            
         }
 
         private void chkMetLabels_Maps_SelectedIndexChanged(object sender, EventArgs e)
@@ -4321,14 +4309,15 @@ namespace ContinuumNS
                     return;
                 }
 
-                Good_to_go = MessageBox.Show("The MCP settings are " + Get_MCP_Method() + " Num WD bins: " + metList.numWD.ToString() + ", Num TOD bins: " +
+      /*          Good_to_go = MessageBox.Show("The MCP settings are " + Get_MCP_Method() + " Num WD bins: " + metList.numWD.ToString() + ", Num TOD bins: " +
                     metList.numTOD.ToString() + ", Num Seasonal bins: " + metList.numSeason.ToString() + ". Do you want to continue?", "Continuum 3.0", MessageBoxButtons.YesNo);
 
                 if (Good_to_go == DialogResult.No)
                 {
                     tabContinuum.SelectedIndex = 3;
                     return;
-                }                
+                }   
+      */
             }
             
             if (Good_to_go == DialogResult.Yes)
@@ -4379,8 +4368,9 @@ namespace ContinuumNS
                         metList.numWS = 30;
 
                         string metName = metList.metItem[metList.ThisCount - 1].name;
-                        Met thisMet = metList.GetMet(metName);
+                        Met thisMet = metList.GetMet(metName);                        
                         thisMet.metData.FindStartEndDatesWithMaxRecovery();
+                        thisMet.metData.AddSensorDatatoDBAndClear(this, thisMet.name);
                         // Check that WS_First and WS_int_size were initialized                                            
 
                         // Taking out this since users can now specify multiple reference sites.  Simpler than having it automated
@@ -4452,7 +4442,7 @@ namespace ContinuumNS
                             updateThe.AllTABs(this);
                             ChangesMade();
                         */
-                        
+
                         thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));
                         
                         updateThe.AllTABs();
@@ -4709,6 +4699,7 @@ namespace ContinuumNS
                     turbineList.ClearAllCalcs();
                     NodeCollection nodeList = new NodeCollection();
                     nodeList.ClearExposGridStatsFromDB(this);
+                    ChangesMade();
                     updateThe.AllTABs();
                 }
                 else
@@ -4730,6 +4721,7 @@ namespace ContinuumNS
                 else if (tabName == "Terrain Complexity")
                     metList.numWD = Convert.ToInt16(cboNumWDComplxTab.SelectedItem.ToString());
 
+                ChangesMade();
                 updateThe.AllTABs();
             }            
         }
@@ -5950,6 +5942,12 @@ namespace ContinuumNS
                 }
             }
 
+            if (lstDefinedLosses.Items.Count == 0)
+            {
+                MessageBox.Show("At least one exceedance curve is needed");
+                return;
+            }
+
             BackgroundWork.Vars_for_BW varsForBW = new BackgroundWork.Vars_for_BW();
             varsForBW.thisInst = this;
             BW_worker = new BackgroundWork();
@@ -6526,8 +6524,18 @@ namespace ContinuumNS
             if (thisMet.metData == null)
                 return;
 
+      //      if (thisMet.metData.alpha == null)  // Taking this out.  Alpha should never be null at this point
+      //          thisMet.metData.EstimateAlpha();
+
             if (thisMet.metData.alpha == null)
-                thisMet.metData.EstimateAlpha();
+            {
+                if (thisMet.metData.GetNumAnems() == 0)
+                    MessageBox.Show("Estimated shear exponents not available.  Anemometer data is required to calculate shear");
+                else if (thisMet.metData.GetNumAnems() == 1 || thisMet.metData.GetHeightsOfAnems().Length == 1)
+                    MessageBox.Show("Estimated shear exponents not available.  Anemometer data at a minimum of two heights are required to calculate shear");
+
+                return;
+            }
 
             export.ExportShearData(this, thisMet.metData, thisMet.name);
         }                
@@ -6764,8 +6772,10 @@ namespace ContinuumNS
                 if (selMet.metData.filteringEnabled)
                     selMet.metData.FilterData(GetFiltersToApply(selMet));
 
+         //       selMet.metData.GetSensorDataFromDB(this, selMet.name);
                 selMet.metData.EstimateAlpha();
                 selMet.metData.ExtrapolateData(modeledHeight);
+          //      selMet.metData.ClearSensorData();
                 selMet.WSWD_Dists = null;
 
                 selMet.isMCPd = false; // Clear MCP if user changes filter settings
@@ -6783,7 +6793,9 @@ namespace ContinuumNS
                 }
                 else
           */
-                    selMet.CalcAllMeas_WSWD_Dists(this, selMet.metData.GetSimulatedTimeSeries(modeledHeight));                  
+                    
+                selMet.CalcAllMeas_WSWD_Dists(this, selMet.metData.GetSimulatedTimeSeries(modeledHeight));
+                ChangesMade();
                 
                 updateThe.InputTAB();
                 updateThe.MetList();
@@ -7475,6 +7487,9 @@ namespace ContinuumNS
 
         private void btnInflowAngles_Click_1(object sender, EventArgs e)
         {
+            if (topo.elevsForCalcs == null)
+                topo.GetElevsAndSRDH_ForCalcs(this, null, false);
+
             Export export = new Export();
             export.ExportTerrainComplexityAtTurbines(this);
         }
@@ -8567,5 +8582,89 @@ namespace ContinuumNS
                 updateThe.TurbineList();
             }
         }
+
+        private void btnExportElevProfile_Click(object sender, EventArgs e)
+        {
+            // Exports elevation profile
+            export.ExportElevationProfile(this);
+        }
+
+        private void chkAllTurbLabels_CheckedChanged_1(object sender, EventArgs e)
+        {
+            // Selects or deselects all turbines and updates labels on map (Input tab)
+            if (okToUpdate == true)
+            {
+                if (chkTurbLabels.Items.Count > 0)
+                {
+                    if (chkAllTurbLabels.CheckState == CheckState.Checked)
+                    {
+                        for (int i = 0; i < chkTurbLabels.Items.Count; i++)
+                            chkTurbLabels.SetItemChecked(i, true);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < chkTurbLabels.Items.Count; i++)
+                            chkTurbLabels.SetItemChecked(i, false);
+                    }
+                }
+
+                updateThe.InputTAB();
+            }
+        }
+
+        private void chkAllMetLabels_CheckedChanged_1(object sender, EventArgs e)
+        {
+            // Selects or deselects all met sites in list (on Input tab) updates the labels on the topo map and directional WS ratio plot (to do: update windRose plot) 
+            if (okToUpdate == true)
+            {
+                if (chkMetLabels.Items.Count > 0)
+                {
+                    if (chkAllMetLabels.CheckState == CheckState.Checked)
+                    {
+                        for (int i = 0; i < chkMetLabels.Items.Count; i++)
+                            chkMetLabels.SetItemChecked(i, true);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < chkMetLabels.Items.Count; i++)
+                            chkMetLabels.SetItemChecked(i, false);
+                    }
+                }
+
+                updateThe.InputTAB();
+            }
+        }
+
+        private void chkTurbLabels_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        public void chkTurbLabels_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            
+            if (this.IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.InputTAB()));
+            }            
+        }
+
+        public void chkMetLabels_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (this.IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.InputTAB()));
+            }
+        }
+
+        private void chkTerrainSlope_UWOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.InflowAnglePlotAndTable();
+        }
+
+        
     }
 }

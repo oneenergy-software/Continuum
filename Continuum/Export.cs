@@ -3081,7 +3081,7 @@ namespace ContinuumNS
                     if (thisInst.lstYearlyTurbine.Items[0].SubItems[1].Text != "")
                         haveGross = true;
 
-                    if (thisInst.lstYearlyTurbine.Items[0].SubItems[2].Text != "")
+                    if (thisInst.lstYearlyTurbine.Items[0].SubItems[3].Text != "")
                         haveNet = true;
                 }
                 catch
@@ -3135,7 +3135,7 @@ namespace ContinuumNS
                     if (thisInst.lstMonthlyTurbine.Items[0].SubItems[2].Text != "")
                         haveGross = true;
 
-                    if (thisInst.lstMonthlyTurbine.Items[0].SubItems[3].Text != "")
+                    if (thisInst.lstMonthlyTurbine.Items[0].SubItems[4].Text != "")
                         haveNet = true;
                 }
                 catch
@@ -3961,6 +3961,80 @@ namespace ContinuumNS
 
         }
 
+        /// <summary>  Exports average inflow angle for each WD sector. </summary>
+        public void ExportElevationProfile(Continuum thisInst)
+        {
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+                if (thisInst.cboInflowRadius.SelectedItem == null)
+                    thisInst.cboInflowRadius.SelectedIndex = 0;
+
+                int radius = Convert.ToInt16(thisInst.cboInflowRadius.SelectedItem.ToString());
+
+                if (thisInst.cboInflowReso.SelectedItem == null)
+                    thisInst.cboInflowReso.SelectedIndex = 0;
+
+                int reso = Convert.ToInt16(thisInst.cboInflowReso.SelectedItem.ToString());
+
+                double selWD = Convert.ToDouble(thisInst.cboInflowWD.SelectedItem.ToString());
+
+                Turbine thisTurb = thisInst.GetSelectedTurbine("Inflow Angle");
+                if (thisTurb.elev == 0)
+                    return;
+
+                StreamWriter file = new StreamWriter(thisInst.sfd60mWS.FileName);
+
+                file.WriteLine(thisInst.savedParams.savedFileName);
+                file.WriteLine("Elevation Profile at Turbine " + thisTurb.name + " along WD = " + selWD.ToString());
+                file.WriteLine("Using radius: " + radius.ToString() + "m and resolution: " + reso.ToString() + "m");
+                file.WriteLine();
+
+                bool uwOnly = thisInst.chkTerrainSlope_UWOnly.Checked;
+                double binSize = 360.0 / thisInst.metList.numWD;
+                int numDataPoints = Convert.ToInt32(360 * radius / reso / thisInst.metList.numWD); // Estimates approx number of total points so array resizing is reduced
+
+                if (uwOnly == false)
+                    numDataPoints = numDataPoints * 2;
+
+                TopoInfo.TopoGrid[] elevProfile = new TopoInfo.TopoGrid[numDataPoints];
+                int valInd = 0;
+
+                double minWD = selWD - binSize / 2;
+
+                if (minWD < 0)
+                    minWD = minWD + 360;
+
+                for (double i = 0; i < binSize; i++)
+                {
+                    double d = minWD + i;
+                    TopoInfo.TopoGrid[] elevProfData = thisInst.topo.GetElevationProfile(thisTurb.UTMX, thisTurb.UTMY, d, (int)radius, (int)reso, uwOnly);
+
+                    for (int p = 0; p < elevProfData.Length; p++)
+                    {
+                        if (valInd >= numDataPoints)
+                        {
+                            numDataPoints++;
+                            Array.Resize(ref elevProfile, numDataPoints);
+                        }
+
+                        elevProfile[valInd] = new TopoInfo.TopoGrid();
+                        elevProfile[valInd].UTMX = elevProfData[p].UTMX;
+                        elevProfile[valInd].UTMY = elevProfData[p].UTMY;
+                        elevProfile[valInd].elev = elevProfData[p].elev;
+                        valInd++;
+                    }
+                }
+               
+                file.WriteLine("UTMX [m], UTMY [m], Elev [m]");
+
+                for (int i = 0; i < elevProfile.Length; i++)
+                    file.WriteLine(elevProfile[i].UTMX + "," + elevProfile[i].UTMY + "," + elevProfile[i].elev);
+                
+                file.Close();
+            }
+
+        }
+
         /// <summary>  Exports maximum 10-minute and maximum gust for every year of met selected on Met Data QC tab. </summary>
         public void ExportAnnualMax(Continuum thisInst)
         {
@@ -4116,7 +4190,7 @@ namespace ContinuumNS
                     Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
                     sw.Write(thisTurb.name + ",");
 
-                    double[] slopesOrVars = thisInst.siteSuitability.CalcTerrainSlopeOrVariationBySector(radius, slopeOrVariation, thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, true, 
+                    double[] slopesOrVars = thisInst.siteSuitability.CalcTerrainSlopeOrVariationBySector(radius, slopeOrVariation, thisTurb.UTMX, thisTurb.UTMY, thisTurb.elev, true, false,
                         forceThruBase, numWD, thisInst.topo);
 
                     for (int d = 0; d < numWD; d++)

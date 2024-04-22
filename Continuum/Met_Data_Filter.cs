@@ -54,6 +54,8 @@ namespace ContinuumNS
         /// <summary>   End date defining end of period to use in analysis. </summary>
         public DateTime endDate;
 
+        
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // Met data filtering settings. 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +160,10 @@ namespace ContinuumNS
 
             /// <summary> Returns index with specified timestamp </summary>            
             public int GetTS_Index(DateTime targetDate)
-            {   
+            {
+                if (targetDate < windData[0].timeStamp  || targetDate > windData[windData.Length - 1].timeStamp)
+                    return -999;
+
                 int indMid = windData.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(windData[indMid].timeStamp.Subtract(windData[indMid - 1].timeStamp).TotalMinutes, 0));
 
@@ -250,6 +255,9 @@ namespace ContinuumNS
             /// <summary> Returns index with specified timestamp </summary>            
             public int GetTS_Index(DateTime targetDate)
             {
+                if (targetDate < dirData[0].timeStamp || targetDate > dirData[dirData.Length - 1].timeStamp)
+                    return -999;
+
                 int indMid = dirData.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(dirData[indMid].timeStamp.Subtract(dirData[indMid - 1].timeStamp).TotalMinutes, 0));
 
@@ -328,6 +336,9 @@ namespace ContinuumNS
             /// <summary> Returns index with specified timestamp </summary>            
             public int GetTS_Index(DateTime targetDate)
             {
+                if (targetDate < temp[0].timeStamp || targetDate > temp[temp.Length - 1].timeStamp)
+                    return -999;
+
                 int indMid = temp.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(temp[indMid].timeStamp.Subtract(temp[indMid - 1].timeStamp).TotalMinutes, 0));
 
@@ -407,6 +418,9 @@ namespace ContinuumNS
             /// <summary> Returns index with specified timestamp </summary>            
             public int GetTS_Index(DateTime targetDate)
             {
+                if (targetDate < pressure[0].timeStamp || targetDate > pressure[pressure.Length - 1].timeStamp)
+                    return -999;
+
                 int indMid = pressure.Length / 2;
                 int dataIntMins = Convert.ToInt32(Math.Round(pressure[indMid].timeStamp.Subtract(pressure[indMid - 1].timeStamp).TotalMinutes, 0));
 
@@ -498,6 +512,9 @@ namespace ContinuumNS
             /// <summary> Returns index with specified timestamp </summary>            
             public int GetTS_Index(DateTime targetDate)
             {
+                if (targetDate < WS_WD_data[0].timeStamp || targetDate > WS_WD_data[WS_WD_data.Length - 1].timeStamp)
+                    return -999;
+
                 int indMid = WS_WD_data.Length / 2;
                 DateTime dateTime1 = WS_WD_data[indMid].timeStamp;
                 DateTime dateTime2 = WS_WD_data[indMid - 1].timeStamp;
@@ -755,8 +772,8 @@ namespace ContinuumNS
             double[] avgAlpha = new double[numWD];
             int[] Count_Alpha = new int[numWD];
 
-            if (alpha.Length == 0)
-                EstimateAlpha();
+      //      if (alpha.Length == 0) // This should never happen.  Alpha will be calculated at this point (if possible)
+      //          EstimateAlpha();
 
             if (alpha.Length == 0)
                 return avgAlpha;
@@ -2097,7 +2114,23 @@ namespace ContinuumNS
             simData = new Sim_TS[0];
             simDataCalcComplete = false;
             filteringDone = false;            
-        }                
+        }  
+        
+        /// <summary> Clears all sensor data (to free up RAM) </summary>
+        public void ClearSensorData()
+        {
+            for (int a = 0; a < GetNumAnems(); a++)
+                anems[a].windData = null;
+
+            for (int v = 0; v < GetNumVanes(); v++)
+                vanes[v].dirData = null;
+
+            for (int t = 0; t < GetNumTemps(); t++)
+                temps[t].temp = null;
+
+            for (int p = 0; p < GetNumBaros(); p++)
+                baros[p].pressure = null;
+        }
         
         /// <summary> Creates simulated time series of extrapolated data at specified height. </summary>
         public void ExtrapolateData(double thisHeight)
@@ -2119,8 +2152,8 @@ namespace ContinuumNS
                 if (anems[i].height == thisHeight)                
                     haveExtrapHeight = true;
 
-            if (alphaByAnem.Length == 0)
-                EstimateAlpha();
+     //       if (alphaByAnem.Length == 0) // This should never happen.  Estimate alpha is always called before ExtrapolateData
+     //           EstimateAlpha();
 
             if (alphaByAnem.Length == 0 && haveExtrapHeight == false)
                 return;
@@ -2186,8 +2219,7 @@ namespace ContinuumNS
         /// <summary> Estimates time series of alpha (power law shear exponent). Using either 1) Calc shear between each pair of heights and find overall average shear exponent 
         /// or 2) Calc best-fit shear between specified min/max heights. </summary>
         public void EstimateAlpha()
-        {
-            
+        {            
             // find heights of anemometers
             double[] anemHeights = GetHeightsOfAnems();
             int numHeights = anemHeights.Length;
@@ -2200,7 +2232,7 @@ namespace ContinuumNS
             int thisInd = 0;
             
             if (GetNumAnems() == 0)
-                return;
+                return;                        
             
       //      while (anems[0].windData[thisInd].timeStamp < startDate) // 2/12/2024 taking out so alpha is calculated over the entire duration
       //          thisInd++;
@@ -2500,7 +2532,7 @@ namespace ContinuumNS
                 if (simData[i].height == extrapHeight)                
                     thisSim = simData[i];                               
             
-            if (thisSim.WS_WD_data == null)
+     /*       if (thisSim.WS_WD_data == null) // Thinking about taking this out.  Simulated data (if it can be generated) should be available
             {                
                 EstimateAlpha();
                 ExtrapolateData(extrapHeight);
@@ -2509,6 +2541,7 @@ namespace ContinuumNS
                     if (simData[i].height == extrapHeight)
                     thisSim = simData[i];
             }
+     */
 
             return thisSim;
         }
@@ -2621,7 +2654,7 @@ namespace ContinuumNS
             
         }
 
-        /// <summary> Adds anemometer, vane, and temperature data to database and then clears it from Met_Data_Filter object  </summary>  
+        /// <summary> Adds anemometer, vane, temperature, and pressure data to database and then clears it from Met_Data_Filter object  </summary>  
         public void AddSensorDatatoDBAndClear(Continuum thisInst, string metName)
         {            
             NodeCollection nodeList = new NodeCollection();
@@ -2633,6 +2666,9 @@ namespace ContinuumNS
             {
                 double thisHeight = anems[i].height;
                 string thisSensorChar = anems[i].ID.ToString();
+
+                if (anems[i].windData == null)
+                    continue;
 
                 // Check to see if it's already in database
                 using (var context = new Continuum_EDMContainer(connString))
@@ -2673,7 +2709,10 @@ namespace ContinuumNS
             for (int i = 0; i < GetNumVanes(); i++)
             {
                 double thisHeight = vanes[i].height;
-                
+
+                if (vanes[i].dirData == null)
+                    continue;
+
                 // Check to see if it's already in database
                 using (var context = new Continuum_EDMContainer(connString))
                 {
@@ -2713,6 +2752,9 @@ namespace ContinuumNS
             {
                 double thisHeight = temps[i].height;
 
+                if (temps[i].temp == null)
+                    continue;
+
                 // Check to see if it's already in database
                 using (var context = new Continuum_EDMContainer(connString))
                 {
@@ -2751,6 +2793,8 @@ namespace ContinuumNS
             for (int i = 0; i < GetNumBaros(); i++)
             {
                 double thisHeight = baros[i].height;
+                if (baros[i].pressure == null)
+                    continue;
 
                 // Check to see if it's already in database
                 using (var context = new Continuum_EDMContainer(connString))
@@ -2802,7 +2846,7 @@ namespace ContinuumNS
                 {
                     double thisHeight = anems[i].height;
                     string thisID = anems[i].ID.ToString();
-
+                   
                     var sensorData = from N in context.Anem_table where N.metName == metName && N.height == thisHeight && N.sensorChar == thisID select N;
 
                     foreach (var N in sensorData)

@@ -11,11 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Research.Science.Data.Imperative;
-using static ContinuumNS.ReferenceCollection;
-using System.Runtime.CompilerServices;
-using static IronPython.Modules._ast;
-using System.Xml;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace ContinuumNS
 {

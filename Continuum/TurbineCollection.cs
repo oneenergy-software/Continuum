@@ -1771,6 +1771,13 @@ namespace ContinuumNS
                 for (int j = 0; j < turbineEsts[i].AvgWSEst_Count; j++)
                     turbineEsts[i].avgWS_Est[j].timeSeries = new ModelCollection.TimeSeries[0];
         }
+
+        /// <summary> Saves estimated turbine time series data to local DB </summary>        
+        public void SaveTurbineTS_EstsToDB(Continuum thisInst)
+        {
+            for (int t = 0; t < TurbineCount; t++)
+                turbineEsts[t].SaveTimeSeriesToDB(thisInst);
+        }
     }
 }
     
