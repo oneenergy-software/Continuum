@@ -6779,13 +6779,7 @@ namespace ContinuumNS
             thisInst.plotAdvTopo.Model = new PlotModel();
             var model = thisInst.plotAdvTopo.Model;
             model.IsLegendVisible = false;
-
-            if (thisInst.turbineList.genTimeSeries == true)
-            {
-                thisInst.plotAdvTopo.Refresh();
-                return;
-            }
-
+                        
             if (thisInst.topo.gotTopo == true)
             {
                 TopoInfo topo = thisInst.topo;
@@ -6880,7 +6874,7 @@ namespace ContinuumNS
                         if (thisNode.UTMY > maxY) maxY = thisNode.UTMY;
                     }
                 }
-                else if (thisInst.turbineList.TurbineCount > 0 && thisInst.turbineList.turbineCalcsDone)
+                else if (thisInst.turbineList.TurbineCount > 0 && thisInst.turbineList.turbineCalcsDone && thisInst.turbineList.genTimeSeries == false)
                 { // goes to a turbine
 
                     int turbCount = thisInst.turbineList.TurbineCount;
@@ -9761,7 +9755,7 @@ namespace ContinuumNS
             thisInst.dateMERRAEnd.Value = thisRef.endDate;  
         }
 
-        /// <summary> Updates LT Reference wind rose plot on LT Reference tab. </summary> 
+        /// <summary> Updates LT Reference wind or energy rose plot on LT Reference tab. </summary> 
         public void LT_ReferenceWindRosePlot()
         {
             if (thisInst.cboRefWindOrEnergy.SelectedItem == null)
@@ -12607,8 +12601,8 @@ namespace ContinuumNS
         {
             thisInst.dataTerrainComplex.Rows.Clear();
 
-      //      if (thisInst.turbineList.turbineCalcsDone == false)
-      //          return;
+            if (thisInst.turbineList.expoCalcsDone == false)
+                return;
 
             double hubH = thisInst.modeledHeight;
             int numWD = thisInst.metList.numWD;
@@ -12978,7 +12972,7 @@ namespace ContinuumNS
                 return;
 
             if (thisInst.dataMetTS.Columns.Count == 0 && thisInst.metList.ThisCount > 0)
-                MetDataTS_DataTableALL();
+                MetDataTS_DataTableALL("Importing met data...");
             else
             {
                 thisInst.dataMetTS.Update();
@@ -13007,12 +13001,13 @@ namespace ContinuumNS
         }
 
 
-        public void MetDataTS_DataTableALL()
+        public void MetDataTS_DataTableALL(string progBarStr)
         {
             
             BackgroundWork.Vars_for_MetTS_Import varsForUpdate = new BackgroundWork.Vars_for_MetTS_Import();
             varsForUpdate.thisInst = thisInst;
             varsForUpdate.isTest = thisInst.isTest;
+            varsForUpdate.progBarString = progBarStr;
 
             BackgroundWork BW_worker = new BackgroundWork();
             BW_worker.Call_BW_MetImport(varsForUpdate);          

@@ -205,6 +205,7 @@ namespace ContinuumNS
             }
 
             turbineCalcsDone = false;
+            expoCalcsDone = false;
 
         }
 

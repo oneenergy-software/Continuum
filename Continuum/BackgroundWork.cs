@@ -75,6 +75,8 @@ namespace ContinuumNS
         /// <summary> Struct containing new/old filename used in 'Save As' </summary>
         public struct Vars_for_Save_As
         {
+            /// <summary> Continuum instance </summary>
+            public Continuum thisInst;
             /// <summary> Old Continuum filename </summary>
             public string oldFilename;
             /// <summary> New Continuum filename </summary>
@@ -155,6 +157,7 @@ namespace ContinuumNS
             public Continuum thisInst;
             public List<DataGridViewColumn> cols;
             public List<DataGridViewRow> rows;
+            public string progBarString;
             public bool isTest;
         }
 
@@ -1747,6 +1750,7 @@ namespace ContinuumNS
             Vars_for_Save_As The_args = (Vars_for_Save_As)e.Argument;
             string newFilename = The_args.newFilename;
             string oldFilename = The_args.oldFilename;
+            Continuum thisInst = The_args.thisInst;
 
             string newConnString = nodeList.GetDB_ConnectionString(newFilename);
             string oldConnString = nodeList.GetDB_ConnectionString(oldFilename);
@@ -1792,6 +1796,8 @@ namespace ContinuumNS
 
                 CopyERA5DataToNewDB(oldConnString, newConnString);
 
+                CopyTurbineEstDataToNewDB(oldConnString, newConnString);
+
             }
             else
             {
@@ -1816,7 +1822,9 @@ namespace ContinuumNS
                 }
             }
 
+            thisInst.SaveContinuum(newFilename);
             DoWorkDone = true;
+            e.Result = thisInst;
         }
 
         
@@ -2199,6 +2207,67 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Copy Turbine estimate data from old to new database </summary>        
+        public void CopyTurbineEstDataToNewDB(string oldConnString, string newConnString)
+        {
+            int numTS_Ests = 0;
+            
+            try
+            {               
+                using (var ctx = new Continuum_EDMContainer(oldConnString))
+                {
+                    numTS_Ests = ctx.Turb_TS_table.Count();
+                    ctx.Database.Connection.Close();
+                } 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.InnerException.ToString());
+                return;
+            }        
+
+            string textForProgBar = "Saving turbine estimate data...";
+
+            for (int t = 0; t < numTS_Ests; t++)
+            {
+                Turbine_TS_Ests_table turbEst_Table = new Turbine_TS_Ests_table();
+                int prog = (int)(100 * (double)(t + 1) / numTS_Ests);
+                
+                BackgroundWorker_SaveAs.ReportProgress(prog, textForProgBar);
+
+                try
+                {                    
+                    using (var ctx = new Continuum_EDMContainer(oldConnString))
+                    {
+                        var turbEst_exist_db = from N in ctx.Turb_TS_table where N.Id == (t + 1) select N;
+
+                        foreach (var N in turbEst_exist_db)
+                        {
+                            turbEst_Table.Id = N.Id;
+                            turbEst_Table.turbName = N.turbName;
+                            turbEst_Table.powerCurve = N.powerCurve;
+                            turbEst_Table.tsData = N.tsData;
+                            turbEst_Table.wakeModel = N.wakeModel;                            
+                        }
+
+                        ctx.Database.Connection.Close();
+                    }
+                    
+                    using (var ctx = new Continuum_EDMContainer(newConnString))
+                    {
+                        ctx.Turb_TS_table.Add(turbEst_Table);
+                        ctx.SaveChanges();
+                        ctx.Database.Connection.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());
+                    return;
+                }
+            }
+        }
+
         /// <summary> Copy Anem data from old to new database. If fromOldToNew is true, it grabs data from old DB context </summary>        
         public void CopyAnemDataToNewDB(string oldConnString, string newConnString, bool fromOldToNew = false)
         {
@@ -2528,7 +2597,7 @@ namespace ContinuumNS
                 {
                     using (var ctx = new Continuum_EDMContainer(oldConnString))
                     {
-                        numERA5Nodes = ctx.MERRA_Node_table.Count();
+                        numERA5Nodes = ctx.ERA_Node_table.Count();
                         ctx.Database.Connection.Close();
                     }
                 }
@@ -3251,6 +3320,9 @@ namespace ContinuumNS
 
         private void BackgroundWorker_SaveAs_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            Continuum thisInst = (Continuum)e.Result;
+            thisInst.Text = thisInst.savedParams.savedFileName;
+            
             Close();
         }
 
@@ -4994,6 +5066,7 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             bool isTest = theArgs.isTest;
             DoWorkDone = false;
+            string progBarStr = theArgs.progBarString;
 
             DataGridView metTable = new DataGridView();
 
@@ -5008,7 +5081,7 @@ namespace ContinuumNS
             DateTime startTime = DateTime.Now;
             DateTime endTime = new DateTime(); // Initializes to year 1
 
-            string textForProgBar = "Importing met data...";
+            string textForProgBar = progBarStr;
             BackgroundWorker_MetImport.ReportProgress(0, textForProgBar);
 
             for (int m = 0; m < numMets; m++)

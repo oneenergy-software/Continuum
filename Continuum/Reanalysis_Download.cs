@@ -299,7 +299,7 @@ namespace ContinuumNS
                 cboReanalysisType.SelectedItem = dataToDownload.refType;
 
                 dataToDownload.completion = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
-                txtPercComplete.Text = Math.Round(dataToDownload.completion, 1).ToString();
+                txtPercComplete.Text = Math.Round(dataToDownload.completion * 100.0, 1).ToString();
 
                 btnDownloadMERRA2.BackColor = Color.MediumSeaGreen;
             }
@@ -441,7 +441,7 @@ namespace ContinuumNS
             dataToDownload.startDate = dateReferenceStart.Value.AddHours(-offset);
                         
             double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
-            txtPercComplete.Text = Math.Round(percCompl, 1).ToString();
+            txtPercComplete.Text = Math.Round(percCompl * 100.0, 1).ToString();
         }
 
         private void dateReferenceEnd_ValueChanged(object sender, EventArgs e)
@@ -452,7 +452,7 @@ namespace ContinuumNS
             dataToDownload.endDate = dateReferenceEnd.Value.AddHours(-offset);
 
             double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
-            txtPercComplete.Text = Math.Round(percCompl, 1).ToString();
+            txtPercComplete.Text = Math.Round(percCompl * 100.0, 1).ToString();
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -462,6 +462,11 @@ namespace ContinuumNS
             RefDataDownload selRefDataDown = thisInst.refList.GetRefDataDownloadByName(selRefData);
             thisInst.refList.DeleteRefDataDownload(selRefDataDown);
             UpdateListOfRefDataDownloads();
+        }
+
+        private void cboReanalysisType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

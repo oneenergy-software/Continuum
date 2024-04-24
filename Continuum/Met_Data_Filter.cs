@@ -17,7 +17,7 @@ namespace ContinuumNS
     public partial class Met_Data_Filter
     {
         /// <summary>   One Energy WRA filtering Methodology version used in this tool. </summary>
-        public string WRA_Methodology = "2019.0";
+        public string WRA_Methodology = "2023.1";
         /// <summary>   Filename of the raw input datafile. </summary>
         public string rawFilename = "";
         /// <summary>   List of anemometer datasets. </summary>
@@ -2134,8 +2134,7 @@ namespace ContinuumNS
         
         /// <summary> Creates simulated time series of extrapolated data at specified height. </summary>
         public void ExtrapolateData(double thisHeight)
-        {
-                        
+        {                        
             if (GetHeightsOfAnems().Length == 0)
                 return;
 
@@ -2655,7 +2654,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Adds anemometer, vane, temperature, and pressure data to database and then clears it from Met_Data_Filter object  </summary>  
-        public void AddSensorDatatoDBAndClear(Continuum thisInst, string metName)
+        public void AddSensorDatatoDB(Continuum thisInst, string metName)
         {            
             NodeCollection nodeList = new NodeCollection();
             BinaryFormatter bin = new BinaryFormatter();
@@ -2699,9 +2698,7 @@ namespace ContinuumNS
                         return;
                     }                   
                     
-                }
-                // Clear anem data
-                anems[i].windData = null;
+                }                
 
             }
 
@@ -2742,9 +2739,7 @@ namespace ContinuumNS
                     }                    
                     
                 }
-                // Clear vane data
-                vanes[i].dirData = null;
-
+               
             }
 
             // Save temperature data
@@ -2784,9 +2779,7 @@ namespace ContinuumNS
                     }                    
                     
                 }
-                // Clear temperature data
-                temps[i].temp = null;
-
+               
             }
 
             // Save pressure data
@@ -2825,9 +2818,7 @@ namespace ContinuumNS
                     }
 
                 }
-                // Clear pressure data
-                baros[i].pressure = null;
-
+                
             }
 
         }
@@ -2847,7 +2838,7 @@ namespace ContinuumNS
                     double thisHeight = anems[i].height;
                     string thisID = anems[i].ID.ToString();
                    
-                    var sensorData = from N in context.Anem_table where N.metName == metName && N.height == thisHeight && N.sensorChar == thisID select N;
+                    var sensorData = from N in context.Anem_table where N.metName == metName && N.height == thisHeight  && N.sensorChar == thisID select N;
 
                     foreach (var N in sensorData)
                     {

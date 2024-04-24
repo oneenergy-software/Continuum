@@ -1,14 +1,13 @@
-﻿using System;
-using System.Windows.Forms;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization.Formatters;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Diagnostics;
-using Microsoft.VisualBasic;
-using System.Threading;
+using System.IO;
 using System.Net;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using static ContinuumNS.TurbineCollection;
+using System.Threading;
+using System.Windows.Forms;
 
 
 namespace ContinuumNS
@@ -1082,94 +1081,7 @@ namespace ContinuumNS
             if (sfdCFMfile.ShowDialog() == DialogResult.OK)            
                 SaveFile(sfdCFMfile.FileName);            
         }
-
-        /// <summary> Prompts user for file location and saves .CFM file and local SQL database. Returns true if saved successfully. </summary>        
- /*       public bool SaveAs()
-        {
-            DialogResult goodToGo = DialogResult.Yes;
-            if (metList.isTimeSeries && turbineList.TurbineCount > 0)
-            {
-                if (turbineList.turbineEsts[0].AvgWSEst_Count > 0)
-                    if (turbineList.turbineEsts[0].avgWS_Est[0].timeSeries != null)
-                        if (turbineList.turbineEsts[0].avgWS_Est[0].timeSeries.Length != 0)
-                            goodToGo = MessageBox.Show("Hourly turbine estimates will be cleared when saving the CFM file. Do you want to continue with save?", "Continuum 3", MessageBoxButtons.YesNo);
-            }
-
-            if (goodToGo == DialogResult.No)
-                return false;                                  
-
-            if (sfdCFMfile.ShowDialog() == DialogResult.OK) {
-                string wholePath = sfdCFMfile.FileName;
-                SetDefaultFolderLocations(wholePath);
-
-                // Get all met data from DB
-                if (metList.isTimeSeries)
-                    for (int i = 0; i < metList.ThisCount; i++)
-                        metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
-
-                // Save mdf file to new location, update connection string
-                // create database in new location
-                BackgroundWork.Vars_for_Save_As argsForBW = new BackgroundWork.Vars_for_Save_As();
-                argsForBW.oldFilename = savedParams.savedFileName;
-                argsForBW.newFilename = sfdCFMfile.FileName;
-                savedParams.savedFileName = sfdCFMfile.FileName;
-                BW_worker = new BackgroundWork();
-                BW_worker.Call_BW_SaveAs(argsForBW);
-
-                FileStream fStream = new FileStream(sfdCFMfile.FileName, FileMode.Create, FileAccess.Write);
-                BinaryFormatter bin = new BinaryFormatter();
-
-                topo.elevsForCalcs = null;
-                topo.DH_ForCalcs = null;
-                topo.SR_ForCalcs = null;
-
-                // Save all anem, vane, and temperature data to database and clear from metItem            
-                metList.AddAllMetDataToDBAndClear(this);
-
-                // Clear all MCP reference, target, and concurrent data
-                metList.ClearMCPRefTargetConcLTEstData();
-
-                // Clear all reference interp data and node data
-                refList.ClearReferenceData();
-
-                // Clear turbine time series data
-                turbineList.ClearTimeSeries();
-
-                bin.Serialize(fStream, topo);
-                bin.Serialize(fStream, radiiList);
-                bin.Serialize(fStream, metList);
-                bin.Serialize(fStream, turbineList);
-                bin.Serialize(fStream, savedParams);
-                bin.Serialize(fStream, mapList);
-                bin.Serialize(fStream, metPairList);
-                bin.Serialize(fStream, modelList);
-                bin.Serialize(fStream, UTM_conversions);
-                bin.Serialize(fStream, wakeModelList);                
-                bin.Serialize(fStream, modeledHeight);
-                bin.Serialize(fStream, refList);
-                bin.Serialize(fStream, siteSuitability);
-
-                fStream.Close();
-                
-                Text = savedParams.savedFileName;
-
-                fileChanged = false;
-                saveToolStripMenuItem.Enabled = true;
-
-                // Get met sensor data from DB
-                if (metList.isTimeSeries)
-                    for (int i = 0; i < metList.ThisCount; i++)
-                        metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
-            }
-
-            bool wasSaved = false;
-            if (sfdCFMfile.FileName != "")
-                wasSaved = true;
-
-            return wasSaved;
-        }
- */
-
+  
         /// <summary> Saves file using stored filename and path. Several parameters are cleared prior to saving the .cfm file in order to minimize the 
         /// saved file size.  The parameters cleared prior to the save are either stored in dummy variables and are repopulated or they are retrieved 
         /// from the database. </summary>        
@@ -1181,17 +1093,23 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
                 BackgroundWork.Vars_for_Save_As argsForBW = new BackgroundWork.Vars_for_Save_As();
                 argsForBW.oldFilename = savedParams.savedFileName;
-                argsForBW.newFilename = fileName;
-                BW_worker.Call_BW_SaveAs(argsForBW);
-
-                //      while (BW_worker.IsBusy())
-                //          Thread.Sleep(100);
 
                 savedParams.savedFileName = fileName;
-            }
-            else
-                fileName = savedParams.savedFileName;
+                argsForBW.thisInst = this;
+                argsForBW.newFilename = fileName;
 
+                BW_worker.Call_BW_SaveAs(argsForBW);
+            }
+            else if (savedParams.savedFileName != null)
+            {
+                SaveContinuum(savedParams.savedFileName);
+                Text = savedParams.savedFileName;
+            }
+                                     
+        }
+
+        public void SaveContinuum(string fileName)
+        {
             FileStream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             BinaryFormatter bin = new BinaryFormatter();
 
@@ -1200,8 +1118,8 @@ namespace ContinuumNS
             topo.DH_ForCalcs = null;
             topo.SR_ForCalcs = null;
 
-            // Save all anem, vane, and temperature data to database and clears sensor data, extrapolated data and alpha from metItem            
-            metList.AddAllMetDataToDBAndClear(this);
+            // Clears sensor data, extrapolated data and alpha from metItem            
+            metList.ClearAllMetAlphaAndSimEsts(this);
 
             // Copy all MCP estimated data to dummy metList
             MetCollection dummyMetList = new MetCollection();
@@ -1227,23 +1145,6 @@ namespace ContinuumNS
             // Clear all reference interp data and node data
             refList.ClearReferenceData();
 
-            // Copy all turbine time series data into dummy holder
-     /*       Turbine[] dummyTurbs = new Turbine[turbineList.TurbineCount];
-            for (int t = 0; t < turbineList.TurbineCount; t++)
-            {
-                Turbine thisTurb = turbineList.turbineEsts[t];
-                dummyTurbs[t] = new Turbine();
-
-                if (thisTurb.AvgWSEst_Count > 0)
-                {
-                    dummyTurbs[t].avgWS_Est = new Turbine.Avg_Est[thisTurb.AvgWSEst_Count];
-
-                    for (int a = 0; a < thisTurb.AvgWSEst_Count; a++)
-                        dummyTurbs[t].avgWS_Est[a] = thisTurb.avgWS_Est[a];
-                }
-            }
-     */
-
             // Save turbine time series data to DB
             turbineList.SaveTurbineTS_EstsToDB(this);
 
@@ -1259,15 +1160,14 @@ namespace ContinuumNS
             bin.Serialize(fStream, metPairList);
             bin.Serialize(fStream, modelList);
             bin.Serialize(fStream, UTM_conversions);
-            bin.Serialize(fStream, wakeModelList);           
+            bin.Serialize(fStream, wakeModelList);
             bin.Serialize(fStream, modeledHeight);
             bin.Serialize(fStream, refList);
             bin.Serialize(fStream, siteSuitability);
 
             fStream.Close();
             fileChanged = false;
-            Text = savedParams.savedFileName;
-
+            
             // Now repopoulate the parameters that were cleared (except topo data, that is retrieved the next time that it is needed for any calc)                                
 
             // Get met sensor data from DB and generated shear and extrapolated data
@@ -1277,7 +1177,6 @@ namespace ContinuumNS
                     metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
                     metList.metItem[i].metData.EstimateAlpha();
                     metList.metItem[i].metData.ExtrapolateData(modeledHeight);
-           //         metList.metItem[i].metData.ClearSensorData();
                 }
 
             // Populate MCP estimates with LT estimates 
@@ -1295,22 +1194,14 @@ namespace ContinuumNS
             // Get reference data at nodes from DB and calculated interpolated data
             for (int r = 0; r < refList.numReferences; r++)
             {
-                Reference thisRef = refList.reference[r];                
+                Reference thisRef = refList.reference[r];
                 thisRef.GetReferenceDataFromDB(this);
-                thisRef.GetInterpData(UTM_conversions);                
+                thisRef.GetInterpData(UTM_conversions);
             }
 
             // Get all turbine time series estimates from DB
             for (int t = 0; t < turbineList.TurbineCount; t++)
                 turbineList.turbineEsts[t].GetTimeSeriesDataFomDB(this);
-
-            // Populate turbine time series estimates 
-      //      for (int t = 0; t < turbineList.TurbineCount; t++)
-      //      {
-      //          for (int a = 0; a < turbineList.turbineEsts[t].AvgWSEst_Count; a++)
-      //              turbineList.turbineEsts[t].avgWS_Est[a].timeSeries = dummyTurbs[t].avgWS_Est[a].timeSeries;
-      //      }
-
         }
 
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1428,40 +1319,7 @@ namespace ContinuumNS
                 fstream.Close();
                 updateThe.NewProject();
                 return;
-            }
-
-        //    if (metList.ThisCount > 0) 
-        //        updateThe.WindRose(this);
-
-            // Get sensor data from database and set shear settings min/max height (if not set)
-            for (int m = 0; m < metList.ThisCount; m++)
-            {
-                if (metList.metItem[m].metData == null)
-                    continue;
-
-                metList.metItem[m].metData.GetSensorDataFromDB(this, metList.metItem[m].name);
-
-                double[] anemHeights = metList.metItem[m].metData.GetHeightsOfAnems();
-                Array.Sort(anemHeights);
-
-                if (metList.metItem[m].metData.shearSettings.minHeight == 0)
-                    metList.metItem[m].metData.shearSettings.minHeight =  anemHeights[0];
-
-                if (metList.metItem[m].metData.shearSettings.maxHeight == 0)
-                    metList.metItem[m].metData.shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];
-
-                metList.metItem[m].metData.EstimateAlpha();
-                metList.metItem[m].metData.ExtrapolateData(this.modeledHeight);
-            }
-
-           
-
-     //       okToUpdate = false;
-     //       if (metList.filteringEnabled)
-     //           chkDisableFilter.CheckState = CheckState.Checked;
-     //       else
-     //           chkDisableFilter.CheckState = CheckState.Unchecked;
-     //       okToUpdate = true;
+            }       
 
             try {
                 turbineList = (TurbineCollection)bin.Deserialize(fstream);
@@ -1519,9 +1377,7 @@ namespace ContinuumNS
             if (modelList.airDens == 0)
                 modelList.airDens = 1.225;
             if (modelList.rotorDiam == 0)
-                modelList.rotorDiam = 100;
-
-            
+                modelList.rotorDiam = 100;                       
 
             NodeCollection nodeList = new NodeCollection();
             string connString = nodeList.GetDB_ConnectionString(savedParams.savedFileName);
@@ -1571,6 +1427,27 @@ namespace ContinuumNS
                 MessageBox.Show("Error reading in modeled height in Continuum file.", "Continuum 3");
                 fstream.Close();
                 return;
+            }
+
+            // Get sensor data from database and set shear settings min/max height (if not set)
+            for (int m = 0; m < metList.ThisCount; m++)
+            {
+                if (metList.metItem[m].metData == null)
+                    continue;
+
+                metList.metItem[m].metData.GetSensorDataFromDB(this, metList.metItem[m].name);
+
+                double[] anemHeights = metList.metItem[m].metData.GetHeightsOfAnems();
+                Array.Sort(anemHeights);
+
+                if (metList.metItem[m].metData.shearSettings.minHeight == 0)
+                    metList.metItem[m].metData.shearSettings.minHeight = anemHeights[0];
+
+                if (metList.metItem[m].metData.shearSettings.maxHeight == 0)
+                    metList.metItem[m].metData.shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];
+
+                metList.metItem[m].metData.EstimateAlpha();
+                metList.metItem[m].metData.ExtrapolateData(modeledHeight);
             }
 
             // Check that models have a modeled height and if not set it to met data height, if available, otherwise set it to 80
@@ -4370,79 +4247,7 @@ namespace ContinuumNS
                         string metName = metList.metItem[metList.ThisCount - 1].name;
                         Met thisMet = metList.GetMet(metName);                        
                         thisMet.metData.FindStartEndDatesWithMaxRecovery();
-                        thisMet.metData.AddSensorDatatoDBAndClear(this, thisMet.name);
-                        // Check that WS_First and WS_int_size were initialized                                            
-
-                        // Taking out this since users can now specify multiple reference sites.  Simpler than having it automated
-                        // Check to see if user wants to load MERRA2 data
-                        /*
-                        DialogResult getMERRA = DialogResult.No;
-
-                        if (metList.ThisCount == 1)
-                            getMERRA = MessageBox.Show("Do you want to import MERRA2 data and conduct MCP?", "Continuum 3.0", MessageBoxButtons.YesNo);
-                        else if (metList.ThisCount > 1 & metList.isMCPd == true)
-                            getMERRA = DialogResult.Yes;
-
-                        if (getMERRA == DialogResult.Yes)
-                        {
-                            // To do: Specify which reference is used in MCP (ERA5 vs MERRA2)
-
-                            metList.isMCPd = true;
-                            // check to see if MERRA2 data has been loaded for this met
-                            UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(metList.metItem[metList.ThisCount - 1].UTMX, metList.metItem[metList.ThisCount - 1].UTMY);
-                            int UTC_offset = UTM_conversions.GetUTC_Offset(theseLL.latitude, theseLL.longitude);
-
-                            // Adds new MERRA object to list, figures out if new MERRA nodes are needed, runs MCP
-                            int numNodes = Convert.ToInt32(cboNumMERRA_Nodes.SelectedItem.ToString());
-                            refList.AddReference_GetDataFromTextFiles(cboLTRefType.SelectedItem.ToString(), theseLL.latitude, theseLL.longitude, numNodes, dateMERRAStart.Value,
-                                dateMERRAEnd.Value, UTC_offset, this, metList.metItem[metList.ThisCount - 1], false);
-
-                            Reference thisMERRA = refList.GetReference(cboLTRefType.SelectedItem.ToString(), theseLL.latitude, theseLL.longitude, numNodes);
-
-                            if (BW_worker.IsBusy() == false && thisMERRA.interpData.TS_Data != null) // found existing MERRA2 data so let's MCP!
-                            {                                
-                                string MCP_Method = Get_MCP_Method();
-
-                                metList.RunMCP(ref thisMet, thisMERRA, this, MCP_Method); // Runs MCP and generates LT WS estimates                                                                                 
-
-                                thisMet.CalcAllLT_WSWD_Dists(this, thisMet.mcp.LT_WS_Ests); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
-
-                                if (topo.gotTopo == false)
-                                {
-                                    updateThe.AllTABs(this);
-                                    return;
-                                }
-
-                                if (chkUseSR.Checked == true && topo.gotSR == true)
-                                    topo.useSR = true;
-                                else
-                                    topo.useSR = false;
-
-                                if (chk_Use_Sep.Checked == true)
-                                    topo.useSepMod = true;
-                                else
-                                    topo.useSepMod = false;                                                            
-
-                                ChangesMade();
-                                updateThe.AllTABs(this);
-                            }
-
-                        }
-                        else
-                        {
-                            metList.isMCPd = false;                            
-                            thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));
-
-                            updateThe.AllTABs(this);
-                            ChangesMade();
-                        }
-
-                        thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));
-
-                            updateThe.AllTABs(this);
-                            ChangesMade();
-                        */
-
+                        thisMet.metData.AddSensorDatatoDB(this, thisMet.name);                       
                         thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));
                         
                         updateThe.AllTABs();
@@ -4695,7 +4500,8 @@ namespace ContinuumNS
                     updateThe.WindDirectionToDisplay();
 
                     metList.ResetMetParams();
-                    ResetTimeSeries();
+                    ResetTimeSeries("All");                    
+
                     turbineList.ClearAllCalcs();
                     NodeCollection nodeList = new NodeCollection();
                     nodeList.ClearExposGridStatsFromDB(this);
@@ -4765,7 +4571,7 @@ namespace ContinuumNS
                 
                 if (result == DialogResult.Yes)
                 {
-                    ResetTimeSeries();
+                    ResetTimeSeries("All"); 
                     updateThe.AllTABs();
                 }
                 else
@@ -4840,13 +4646,8 @@ namespace ContinuumNS
 
             if (result == DialogResult.Yes)
             {
-                for (int m = 0; m < metList.ThisCount; m++)
-                    if (metList.metItem[m].isMCPd)
-                    {
-                        ResetTimeSeries();
-                        break;
-                    }
-                
+                ResetTimeSeries("All");
+                                
                 try
                 {
                     metList.mcpWS_BinWidth = Convert.ToSingle(txtWS_bin_width.Text);
@@ -4913,7 +4714,7 @@ namespace ContinuumNS
                 if (result == DialogResult.Yes)
                 {
                     metList.numTOD = Convert.ToInt16(cboMCPNumHours.SelectedItem.ToString());
-                    ResetTimeSeries();                    
+                    ResetTimeSeries("All"); 
                     updateThe.AllTABs();
                 }
                 else
@@ -4958,8 +4759,7 @@ namespace ContinuumNS
                 if (result == DialogResult.Yes)
                 {
                     metList.numSeason = Convert.ToInt16(cboMCPNumSeasons.SelectedItem.ToString());
-
-                    ResetTimeSeries();
+                    ResetTimeSeries("All"); 
                     updateThe.AllTABs();
                 }
                 else
@@ -5038,7 +4838,7 @@ namespace ContinuumNS
 
                     if (result == DialogResult.Yes)
                     {
-                        ResetTimeSeries();                        
+                        ResetTimeSeries("All");                        
                     }
                     else
                     {
@@ -5094,7 +4894,7 @@ namespace ContinuumNS
 
                     if (result == DialogResult.Yes)
                     {
-                        ResetTimeSeries();                        
+                        ResetTimeSeries("All");                         
                     }
                     else
                     {
@@ -5519,37 +5319,51 @@ namespace ContinuumNS
                 updateThe.MetWS_DiffvsWD(thisMet);
                 updateThe.MetWS_DiffvsWindSpeed(thisMet);
             }
-        }
-
-        
+        }               
 
         /// <summary> Resets all time series estimates </summary>
-        public void ResetTimeSeries()
+        public void ResetTimeSeries(string allMetsOrMetName)
         {             
-            metList.DeleteAllTimeSeriesEsts(this);
+            if (allMetsOrMetName == "All")
+            {
+                metList.DeleteAllTimeSeriesEsts(this);
+                                
+                for (int m = 0; m < metList.ThisCount; m++)
+                {
+                    metList.metItem[m].metData.EstimateAlpha();
+                    metList.metItem[m].metData.ExtrapolateData(modeledHeight);
+                    metList.metItem[m].CalcAllMeas_WSWD_Dists(this, metList.metItem[m].metData.GetSimulatedTimeSeries(modeledHeight));
+                }
+            }
+            else
+            {
+                Met thisMet = metList.GetMet(allMetsOrMetName);
+                
+                thisMet.WSWD_Dists = new Met.WSWD_Dist[0];
+                thisMet.mcpList = null;
+                thisMet.isMCPd = false;                
+                thisMet.metData.ClearAlphaAndSimulatedEstimates();
+
+                thisMet.metData.EstimateAlpha();
+                thisMet.metData.ExtrapolateData(modeledHeight);
+                thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));
+            }
+
             metList.allMCPd = false;
 
-            for (int i = 0; i < metList.ThisCount; i++)
-            {
-                metList.metItem[i].mcpList = null;
-                metList.metItem[i].isMCPd = false;
-
-                if (metList.metItem[i].metData.GetNumAnems() > 0)
-                    if (metList.metItem[i].metData.anems[0].windData == null)
-                        metList.metItem[i].metData.GetSensorDataFromDB(this, metList.metItem[i].name);
-
-                metList.metItem[i].CalcAllMeas_WSWD_Dists(this, metList.metItem[i].metData.GetSimulatedTimeSeries(modeledHeight));
-            }               
-
+            // Clear Turbine time series estimates 
             turbineList.ClearAllWSEsts();
             turbineList.ClearAllGrossEsts();
             turbineList.ClearAllNetEsts();
 
+            // Clear map estimates
             mapList.ClearAllMaps();
             wakeModelList.ClearWakeMaps();
 
+            // Clear model and met cross-predictions
             metPairList.ClearAll();
             modelList.ClearAll();
+
         }                               
 
         private void cboMERRA_PowerCurves_SelectedIndexChanged(object sender, EventArgs e)
@@ -6354,7 +6168,7 @@ namespace ContinuumNS
 
             thisMet.isMCPd = true;
             metList.AreAllMetsMCPd();
-
+            ChangesMade();
             updateThe.AllTABs();
         }
 
@@ -6387,8 +6201,8 @@ namespace ContinuumNS
                 if (goodToGo == DialogResult.Yes)
                 {
                     thisMet.metData.startDate = Start_Time.Value;
-                    ResetTimeSeries();
-                    updateThe.TimeSeries_TAB();
+                    ResetTimeSeries(thisMet.name);
+                    updateThe.AllTABs();
                 }
                 else
                 {
@@ -6399,18 +6213,14 @@ namespace ContinuumNS
             else if (metList.isTimeSeries)
             {
                 thisMet.metData.startDate = Start_Time.Value;
-                ResetTimeSeries();                
-                updateThe.TimeSeries_TAB();
+                ResetTimeSeries(thisMet.name);                
+                updateThe.AllTABs();
             }
             else
             {
                 thisMet.metData.startDate = Start_Time.Value;
                 thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(this.modeledHeight));
-                updateThe.MetTurbSummaryAndStatsTable();
-                updateThe.MetDataQC_TAB();
-                updateThe.MCP_TAB();
-                updateThe.SiteConditionsMetDates("TI");
-                updateThe.SiteConditionsMetDates("Extreme Shear");
+                updateThe.AllTABs();
             }
         }
 
@@ -6443,8 +6253,8 @@ namespace ContinuumNS
                 if (goodToGo == DialogResult.Yes)
                 {
                     thisMet.metData.endDate = End_Time.Value;
-                    ResetTimeSeries();
-                    updateThe.TimeSeries_TAB();
+                    ResetTimeSeries(thisMet.name);
+                    updateThe.AllTABs();
                 }
                 else
                 {
@@ -6455,18 +6265,14 @@ namespace ContinuumNS
             else if (metList.isTimeSeries)
             {
                 thisMet.metData.endDate = End_Time.Value;
-                ResetTimeSeries();
-                updateThe.TimeSeries_TAB();
+                ResetTimeSeries(thisMet.name);
+                updateThe.AllTABs();
             }
             else
             {
                 thisMet.metData.endDate = End_Time.Value;
                 thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(this.modeledHeight));
-                updateThe.MetTurbSummaryAndStatsTable();
-                updateThe.MetDataQC_TAB();
-                updateThe.MCP_TAB();
-                updateThe.SiteConditionsMetDates("TI");
-                updateThe.SiteConditionsMetDates("Extreme Shear");
+                updateThe.AllTABs();                
             }
         }    
         
@@ -6676,23 +6482,20 @@ namespace ContinuumNS
                     return;
                 else
                 {
-                    modelList.ClearAll();
-                    ResetTimeSeries();
+                    txtModeledHeight.Text = newHeight.ToString();
+                    modeledHeight = newHeight;
+                                        
+                    ResetTimeSeries("All");
+                    updateThe.MetDataTS_DataTableALL("Refreshing met data time series table...");
                 }
             }
-
-            txtModeledHeight.Text = newHeight.ToString();
-            modeledHeight = newHeight;
-
-            // Extrapolate all met data to new height and run MCP if isMCPd and have reference data
-            for (int i = 0; i < metList.ThisCount; i++)
+            else
             {
-                Met thisMet = metList.metItem[i];                
-                thisMet.metData.ExtrapolateData(modeledHeight);
-                thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));                               
+                txtModeledHeight.Text = newHeight.ToString();
+                modeledHeight = newHeight;
             }
 
-            metList.AreAllMetsMCPd(); // sets allMCPd flag
+            ChangesMade();
             updateThe.AllTABs();
         }
 
@@ -6758,58 +6561,20 @@ namespace ContinuumNS
                 okToUpdate = true;
             }
             else
-            {
-                ResetTimeSeries();
-
+            { 
                 if (checkState == CheckState.Checked && chkChanged == "Enable")
                     selMet.metData.filteringEnabled = true;
                 else if (chkChanged == "Enable")
                     selMet.metData.filteringEnabled = false;
-                                
-                selMet.metData.ClearAlphaAndSimulatedEstimates();
+                                       
                 selMet.metData.ClearFilterFlagsAndEstimatedData();
 
                 if (selMet.metData.filteringEnabled)
                     selMet.metData.FilterData(GetFiltersToApply(selMet));
 
-         //       selMet.metData.GetSensorDataFromDB(this, selMet.name);
-                selMet.metData.EstimateAlpha();
-                selMet.metData.ExtrapolateData(modeledHeight);
-          //      selMet.metData.ClearSensorData();
-                selMet.WSWD_Dists = null;
-
-                selMet.isMCPd = false; // Clear MCP if user changes filter settings
-
-          /*      if (selMet.isMCPd)
-                {
-                    UTM_conversion.Lat_Long theseLL = UTM_conversions.UTMtoLL(selMet.UTMX, selMet.UTMY);
-                    string MCP_Method = Get_MCP_Method();
-                    Reference[] theRefs = refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude);
-
-                    for (int r = 0; r < theRefs.Length; r++)
-                        metList.RunMCP(ref selMet, theRefs[r], this, MCP_Method); // Runs MCP and generates LT WS estimates                                                                        
-
-                    selMet.CalcAllLT_WSWD_Dists(this); // Calculates LT wind speed / wind direction distributions for using all day and using each season and each time of day (Day vs. Night)
-                }
-                else
-          */
-                    
-                selMet.CalcAllMeas_WSWD_Dists(this, selMet.metData.GetSimulatedTimeSeries(modeledHeight));
-                ChangesMade();
-                
-                updateThe.InputTAB();
-                updateThe.MetList();
-                updateThe.MetDataQC_TAB();
-                updateThe.Met_Turbine_Summary_TAB();
-                updateThe.GrossTurbineEstsTAB();
-                updateThe.NetTurbineEstsTAB();
-                updateThe.MapsTAB();
-                updateThe.Uncertainty_TAB_Round_Robin();
-                updateThe.Uncertainty_TAB_Turbine_Ests();
-                updateThe.AdvancedTAB();
-
-                updateThe.ShearAndExtrapWSInTable(selMet);
-                updateThe.SetMetDataFlagColors();
+                ResetTimeSeries(selMet.name);               
+                ChangesMade();                
+                updateThe.AllTABs();
             }
         }
 
@@ -8161,10 +7926,16 @@ namespace ContinuumNS
             modelList.rotorDiam = newRotorDiam;
             txtRotorDiam.Text = newRotorDiam.ToString();
 
-            // TO DO Check to see if any energy roses need to be updated
+            // Check to see if any energy roses need to be updated
             for (int m = 0; m < metList.ThisCount; m++)
             {
                 Met thisMet = metList.metItem[m]; 
+
+                if (cboWindOrEnergy.SelectedItem.ToString() == "Energy Rose")
+                    updateThe.WindOrEnergyRose();
+
+                if (cboRefWindOrEnergy.SelectedItem.ToString() == "Energy Rose")
+                    updateThe.LT_ReferenceWindRosePlot();
                 
             }                
 
@@ -8665,6 +8436,20 @@ namespace ContinuumNS
                 updateThe.InflowAnglePlotAndTable();
         }
 
-        
+        private void btnClearMCP_Click(object sender, EventArgs e)
+        {
+            DialogResult goodtoGo = MessageBox.Show("Do you want to clear the MCP estimate?", "Continuum 3", MessageBoxButtons.YesNo);
+
+            if (goodtoGo == DialogResult.Yes)
+            {
+                ResetTimeSeries(GetSelectedMet("MCP").name);
+                updateThe.AllTABs();
+            }
+        }
+
+        private void chkTurbLabels_SelectedIndexChanged_2(object sender, EventArgs e)
+        {
+
+        }
     }
 }

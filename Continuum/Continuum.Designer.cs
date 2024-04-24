@@ -326,6 +326,7 @@ namespace ContinuumNS
             this.label154 = new System.Windows.Forms.Label();
             this.label151 = new System.Windows.Forms.Label();
             this.pgeMCP = new System.Windows.Forms.TabPage();
+            this.btnClearMCP = new System.Windows.Forms.Button();
             this.label237 = new System.Windows.Forms.Label();
             this.cboMCP_Height = new System.Windows.Forms.ComboBox();
             this.label206 = new System.Windows.Forms.Label();
@@ -1089,6 +1090,7 @@ namespace ContinuumNS
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateHeadersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadReanalysisDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mongoDBTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ofdXYZfile = new System.Windows.Forms.OpenFileDialog();
             this.ofdPowerCurve = new System.Windows.Forms.OpenFileDialog();
             this.sfdrsf = new System.Windows.Forms.SaveFileDialog();
@@ -1111,7 +1113,6 @@ namespace ContinuumNS
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
-            this.mongoDBTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pnlInputMap.SuspendLayout();
@@ -1374,10 +1375,12 @@ namespace ContinuumNS
             this.chkTurbLabels.FormattingEnabled = true;
             this.chkTurbLabels.Location = new System.Drawing.Point(265, 47);
             this.chkTurbLabels.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkTurbLabels.MultiColumn = true;
             this.chkTurbLabels.Name = "chkTurbLabels";
             this.chkTurbLabels.Size = new System.Drawing.Size(420, 64);
             this.chkTurbLabels.TabIndex = 129;
             this.chkTurbLabels.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkTurbLabels_ItemCheck);
+            this.chkTurbLabels.SelectedIndexChanged += new System.EventHandler(this.chkTurbLabels_SelectedIndexChanged_2);
             // 
             // chkMetLabels
             // 
@@ -2039,9 +2042,11 @@ namespace ContinuumNS
             this.chkTS_Params.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkTS_Params.CheckOnClick = true;
+            this.chkTS_Params.ColumnWidth = 200;
             this.chkTS_Params.FormattingEnabled = true;
             this.chkTS_Params.HorizontalScrollbar = true;
             this.chkTS_Params.Location = new System.Drawing.Point(311, 72);
+            this.chkTS_Params.MultiColumn = true;
             this.chkTS_Params.Name = "chkTS_Params";
             this.chkTS_Params.Size = new System.Drawing.Size(203, 104);
             this.chkTS_Params.TabIndex = 33;
@@ -2171,7 +2176,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 537);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(834, 155);
+            this.plotTS_Baros.Size = new System.Drawing.Size(810, 155);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2395,7 +2400,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 382);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(834, 155);
+            this.plotTS_Temp.Size = new System.Drawing.Size(810, 155);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2410,7 +2415,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 227);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(834, 155);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(810, 155);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2425,7 +2430,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(834, 155);
+            this.plotTS_Anems.Size = new System.Drawing.Size(810, 155);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -4250,6 +4255,7 @@ namespace ContinuumNS
             // pgeMCP
             // 
             this.pgeMCP.AutoScroll = true;
+            this.pgeMCP.Controls.Add(this.btnClearMCP);
             this.pgeMCP.Controls.Add(this.label237);
             this.pgeMCP.Controls.Add(this.cboMCP_Height);
             this.pgeMCP.Controls.Add(this.label206);
@@ -4343,6 +4349,17 @@ namespace ContinuumNS
             this.pgeMCP.TabIndex = 15;
             this.pgeMCP.Text = "MCP";
             this.pgeMCP.UseVisualStyleBackColor = true;
+            // 
+            // btnClearMCP
+            // 
+            this.btnClearMCP.Location = new System.Drawing.Point(646, 89);
+            this.btnClearMCP.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnClearMCP.Name = "btnClearMCP";
+            this.btnClearMCP.Size = new System.Drawing.Size(94, 30);
+            this.btnClearMCP.TabIndex = 303;
+            this.btnClearMCP.Text = "Clear MCP";
+            this.btnClearMCP.UseVisualStyleBackColor = true;
+            this.btnClearMCP.Click += new System.EventHandler(this.btnClearMCP_Click);
             // 
             // label237
             // 
@@ -8264,7 +8281,7 @@ namespace ContinuumNS
             this.plotTurbInt.Location = new System.Drawing.Point(513, 24);
             this.plotTurbInt.Name = "plotTurbInt";
             this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(911, 618);
+            this.plotTurbInt.Size = new System.Drawing.Size(911, 638);
             this.plotTurbInt.TabIndex = 289;
             this.plotTurbInt.Text = "plotView1";
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8427,7 +8444,7 @@ namespace ContinuumNS
             this.lstTurbulence.Location = new System.Drawing.Point(13, 51);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 591);
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 611);
             this.lstTurbulence.TabIndex = 275;
             this.lstTurbulence.UseCompatibleStateImageBehavior = false;
             this.lstTurbulence.View = System.Windows.Forms.View.Details;
@@ -8617,7 +8634,7 @@ namespace ContinuumNS
             this.plotExtremeShear.Location = new System.Drawing.Point(502, 31);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeShear.Size = new System.Drawing.Size(914, 608);
+            this.plotExtremeShear.Size = new System.Drawing.Size(914, 628);
             this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8844,7 +8861,7 @@ namespace ContinuumNS
             // btnExportExtremeWSTable
             // 
             this.btnExportExtremeWSTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1056, 585);
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1056, 605);
             this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
             this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
@@ -9141,7 +9158,7 @@ namespace ContinuumNS
             this.plotExtremeWS_TS.Location = new System.Drawing.Point(921, 24);
             this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
             this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 276);
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 296);
             this.plotExtremeWS_TS.TabIndex = 293;
             this.plotExtremeWS_TS.Text = "plotView1";
             this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9164,7 +9181,7 @@ namespace ContinuumNS
             this.dataExtremeWS.Location = new System.Drawing.Point(359, 17);
             this.dataExtremeWS.Name = "dataExtremeWS";
             this.dataExtremeWS.RowHeadersWidth = 51;
-            this.dataExtremeWS.Size = new System.Drawing.Size(548, 632);
+            this.dataExtremeWS.Size = new System.Drawing.Size(548, 652);
             this.dataExtremeWS.TabIndex = 292;
             // 
             // Column17
@@ -9255,7 +9272,7 @@ namespace ContinuumNS
             this.plotExtremeWS.Location = new System.Drawing.Point(921, 280);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(510, 283);
+            this.plotExtremeWS.Size = new System.Drawing.Size(510, 303);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9274,7 +9291,7 @@ namespace ContinuumNS
             // btnExtremeWS
             // 
             this.btnExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExtremeWS.Location = new System.Drawing.Point(921, 585);
+            this.btnExtremeWS.Location = new System.Drawing.Point(921, 605);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);
@@ -12545,6 +12562,11 @@ namespace ContinuumNS
             this.downloadReanalysisDataToolStripMenuItem.Text = "Download Reanalysis Data";
             this.downloadReanalysisDataToolStripMenuItem.Click += new System.EventHandler(this.downloadMERRA2DataToolStripMenuItem_Click);
             // 
+            // mongoDBTestToolStripMenuItem
+            // 
+            this.mongoDBTestToolStripMenuItem.Name = "mongoDBTestToolStripMenuItem";
+            this.mongoDBTestToolStripMenuItem.Size = new System.Drawing.Size(12, 21);
+            // 
             // ofdXYZfile
             // 
             this.ofdXYZfile.Filter = "GeoTIFF file|*.TIF|ADF file|*.ADF";
@@ -12649,7 +12671,7 @@ namespace ContinuumNS
             // 
             this.ofdExceedCurves.Filter = "CSV file|*.CSV";
             this.ofdExceedCurves.InitialDirectory = "C:\\";
-            this.ofdExceedCurves.Title = "Import Turbine Coords from a file";            
+            this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
             // Continuum
             // 
@@ -13764,6 +13786,7 @@ namespace ContinuumNS
         internal Button btnExportElevProfile;
         public CheckBox chkTerrainSlope_UWOnly;
         private ToolStripMenuItem mongoDBTestToolStripMenuItem;
+        public Button btnClearMCP;
     }
 }
 

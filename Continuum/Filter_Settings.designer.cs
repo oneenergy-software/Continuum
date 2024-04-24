@@ -257,12 +257,12 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(408, 23);
             this.label4.TabIndex = 98;
-            this.label4.Text = "Met Filter Settings (OE 2019.1 Methodology)";
+            this.label4.Text = "Met Filter Settings (OE 2023.1 Methodology)";
             // 
             // btnClose
             // 
             this.btnClose.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(330, 597);
+            this.btnClose.Location = new System.Drawing.Point(330, 629);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 41);
             this.btnClose.TabIndex = 115;
@@ -350,7 +350,7 @@
             // txtMaxWSForMinWSFilt
             // 
             this.txtMaxWSForMinWSFilt.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxWSForMinWSFilt.Location = new System.Drawing.Point(171, 606);
+            this.txtMaxWSForMinWSFilt.Location = new System.Drawing.Point(171, 638);
             this.txtMaxWSForMinWSFilt.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxWSForMinWSFilt.Name = "txtMaxWSForMinWSFilt";
             this.txtMaxWSForMinWSFilt.ReadOnly = true;
@@ -362,7 +362,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(47, 609);
+            this.label12.Location = new System.Drawing.Point(47, 641);
             this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(119, 18);
@@ -373,7 +373,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(29, 579);
+            this.label13.Location = new System.Drawing.Point(29, 611);
             this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(135, 18);
@@ -384,7 +384,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(48, 633);
+            this.label17.Location = new System.Drawing.Point(48, 665);
             this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(162, 18);
@@ -394,7 +394,7 @@
             // txtMinClosestWS
             // 
             this.txtMinClosestWS.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinClosestWS.Location = new System.Drawing.Point(219, 630);
+            this.txtMinClosestWS.Location = new System.Drawing.Point(219, 662);
             this.txtMinClosestWS.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinClosestWS.Name = "txtMinClosestWS";
             this.txtMinClosestWS.ReadOnly = true;
@@ -457,9 +457,10 @@
             this.columnHeader3,
             this.columnHeader4});
             this.lstTowerShadow.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstTowerShadow.HideSelection = false;
             this.lstTowerShadow.Location = new System.Drawing.Point(12, 460);
             this.lstTowerShadow.Name = "lstTowerShadow";
-            this.lstTowerShadow.Size = new System.Drawing.Size(393, 111);
+            this.lstTowerShadow.Size = new System.Drawing.Size(393, 140);
             this.lstTowerShadow.TabIndex = 133;
             this.lstTowerShadow.UseCompatibleStateImageBehavior = false;
             this.lstTowerShadow.View = System.Windows.Forms.View.Details;
@@ -498,7 +499,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(423, 662);
+            this.ClientSize = new System.Drawing.Size(423, 694);
             this.Controls.Add(this.lstTowerShadow);
             this.Controls.Add(this.txtShadow_Width);
             this.Controls.Add(this.label20);

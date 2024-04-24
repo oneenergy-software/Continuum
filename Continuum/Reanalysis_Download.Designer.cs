@@ -258,6 +258,7 @@
             this.cboReanalysisType.Name = "cboReanalysisType";
             this.cboReanalysisType.Size = new System.Drawing.Size(121, 26);
             this.cboReanalysisType.TabIndex = 254;
+            this.cboReanalysisType.SelectedIndexChanged += new System.EventHandler(this.cboReanalysisType_SelectedIndexChanged);
             // 
             // label1
             // 

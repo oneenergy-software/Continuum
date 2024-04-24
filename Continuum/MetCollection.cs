@@ -363,10 +363,9 @@ namespace ContinuumNS
         public void DeleteAllTimeSeriesEsts(Continuum thisInst)
         {                        
             for (int i = 0; i < ThisCount; i++)
-            {
-                for (int m = 0; m < metItem[i].GetNumMCP(); m++)                
-                    if (metItem[i].mcpList[m] != null)                    
-                        metItem[i].mcpList[m].New_MCP(true, false, thisInst);                  
+            {               
+                metItem[i].mcpList = null;
+                metItem[i].isMCPd = false;
 
                 metItem[i].WSWD_Dists = new Met.WSWD_Dist[0];
                 metItem[i].metData.ClearAlphaAndSimulatedEstimates();                
@@ -1424,6 +1423,7 @@ namespace ContinuumNS
                         context.Database.ExecuteSqlCommand("TRUNCATE TABLE Anem_table");
                         context.Database.ExecuteSqlCommand("TRUNCATE TABLE Vane_table");
                         context.Database.ExecuteSqlCommand("TRUNCATE TABLE Temp_table");
+                        context.Database.ExecuteSqlCommand("TRUNCATE TABLE Baro_table");
                         context.SaveChanges();                        
                     }
                 }
@@ -1434,17 +1434,7 @@ namespace ContinuumNS
                 }
             }
             
-        }
-
-        /// <summary> Adds all sensor data to database and then clears objects </summary>
-        /// <param name="thisInst"></param>
-        public void AddAllSensorDataToDBAndClear(Continuum thisInst)
-        {
-            for (int m = 0; m < ThisCount; m++)
-                metItem[m].metData.AddSensorDatatoDBAndClear(thisInst, metItem[m].name);
-        }
-
-       
+        }                      
 
         /// <summary> Clears all calculated exposures, SRDH, and grid stats. </summary>
         public void ClearAllExposuresAndGridStats()
@@ -1977,14 +1967,14 @@ namespace ContinuumNS
         }
 
         /// <summary> Adds met time series data to database and clears data from object. </summary>       
-        public void AddAllMetDataToDBAndClear(Continuum thisInst)
+        public void ClearAllMetAlphaAndSimEsts(Continuum thisInst)
         {
             if (thisInst.metList.isTimeSeries == false)
                 return;
-
+                        
             for (int i = 0; i < ThisCount; i++)
             {
-                metItem[i].metData.AddSensorDatatoDBAndClear(thisInst, metItem[i].name);
+                metItem[i].metData.ClearSensorData();
                 metItem[i].metData.ClearAlphaAndSimulatedEstimates();
             }               
 
