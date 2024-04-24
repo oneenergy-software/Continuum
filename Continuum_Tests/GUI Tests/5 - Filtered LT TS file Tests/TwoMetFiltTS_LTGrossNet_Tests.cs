@@ -116,15 +116,15 @@ public void TwoMetFiltTS_LTGrossNet_384()
 		
 	metTSFile = testingFolder + "\\Met TS files\\NW Ohio\\OH - New Bremen Formatted - 20180709.csv";
 	thisInst.metList.ImportFilterExtrapMetData(metTSFile, thisInst, true);
-	
-	thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
+            
+    thisInst.metList.numWD = Convert.ToInt16(thisInst.cboMCPNumWD.SelectedItem);
 	thisInst.metList.numWS = 30;
 
 	metName = thisInst.metList.metItem[thisInst.metList.ThisCount - 1].name;
 	thisMet = thisInst.metList.GetMet(metName);
 	thisMet.isMCPd = false;
-		
-	thisMet.metData.FindStartEndDatesWithMaxRecovery();
+    thisMet.metData.AddSensorDatatoDB(thisInst, thisMet.name);
+    thisMet.metData.FindStartEndDatesWithMaxRecovery();
 	
 	thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
 
@@ -143,8 +143,8 @@ public void TwoMetFiltTS_LTGrossNet_384()
 	metName = thisInst.metList.metItem[thisInst.metList.ThisCount - 1].name;
 	thisMet = thisInst.metList.GetMet(metName);
 	thisMet.isMCPd = false;
-		
-	thisMet.metData.FindStartEndDatesWithMaxRecovery();
+    thisMet.metData.AddSensorDatatoDB(thisInst, thisMet.name);
+    thisMet.metData.FindStartEndDatesWithMaxRecovery();
 	
 	thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
 

@@ -74,7 +74,7 @@ namespace Continuum_Tests
             thisInst.metList.numWD = 16;
             thisInst.metList.numTOD = 1;
             thisInst.metList.numSeason = 1;
-            thisInst.ResetTimeSeries();
+            thisInst.ResetTimeSeries("All");
 
             string MCP_Method = "Orth. Regression";
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
@@ -92,7 +92,7 @@ namespace Continuum_Tests
             Assert.AreEqual(thisDist.sectorWS_Ratio[15] * thisDist.WS, 5.627835, 0.01, "Wrong WS in WD 15 Test 1");
 
             // Test 2 - 3
-            thisInst.ResetTimeSeries();
+            thisInst.ResetTimeSeries("All");
             thisInst.metList.numTOD = 2;
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
             
@@ -113,7 +113,7 @@ namespace Continuum_Tests
             Assert.AreEqual(thisDist.sectorWS_Ratio[15] * thisDist.WS, 5.916732, 0.01, "Wrong WS in WD 15 Test 3");
 
             // Test 4 - 7
-            thisInst.ResetTimeSeries();
+            thisInst.ResetTimeSeries("All");
             thisInst.metList.numTOD = 1;
             thisInst.metList.numSeason = 4;
             thisInst.metList.RunMCP(ref thisMet, thisMERRA, thisInst, MCP_Method);
@@ -148,7 +148,7 @@ namespace Continuum_Tests
             Assert.AreEqual(thisDist.sectorWS_Ratio[9] * thisDist.WS, 8.097313, 0.01, "Wrong WS in WD 9 Test 7");
 
             // Test 9
-            thisInst.ResetTimeSeries();
+            thisInst.ResetTimeSeries("All");
             thisInst.metList.numTOD = 2;
             thisInst.metList.numSeason = 4;
             thisInst.metList.numWD = 24;

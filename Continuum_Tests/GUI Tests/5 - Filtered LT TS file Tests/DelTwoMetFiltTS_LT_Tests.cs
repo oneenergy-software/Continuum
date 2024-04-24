@@ -44,8 +44,11 @@ string fileName = saveFolder + "\\TwoMetFiltTS_LTGrossNet_384.cfm";
 	thisInst.Open(fileName);
 	thisInst.metList.GetTimeSeriesData(thisInst);
 	string newFileName = fileName.Substring(0, fileName.LastIndexOf('.') - 1) + "DelTest.cfm";
-	thisInst.savedParams.savedFileName = newFileName;
-	thisInst.SaveFile();
+//	thisInst.savedParams.savedFileName = newFileName;
+	thisInst.SaveFile(newFileName);
+
+			while (thisInst.BW_worker.DoWorkDone == false)
+				Thread.Sleep(1000);
 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Delete Turbines
