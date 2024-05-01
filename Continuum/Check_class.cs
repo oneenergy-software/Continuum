@@ -22,12 +22,13 @@ namespace ContinuumNS
 
         }
 
-        /// <summary> Compares turbine name to met site names to ensure there are no duplicate names. </summary>        
+        /// <summary> Compares turbine name to met site names and to other turbine names to ensure there are no duplicate names. </summary>        
         /// <returns> Returns false if a turbine with same name exists </returns>
-        public bool CheckTurbName(string turbineName, MetCollection metList)
+        public bool CheckTurbName(string turbineName, MetCollection metList, TurbineCollection turbList)
         {              
             bool inputTurbine = true;
             int numMets = metList.ThisCount;
+            int numTurbs = turbList.TurbineCount;
 
             for (int i = 0; i < numMets; i++) { 
                 if (metList.metItem[i].name == turbineName) {
@@ -37,20 +38,41 @@ namespace ContinuumNS
                 }
             }
 
+            for (int i = 0; i < numTurbs; i++)
+            {
+                if (turbList.turbineEsts[i].name == turbineName)
+                {
+                    inputTurbine = false;
+                    MessageBox.Show("There is a turbine with the same name as turbine site: " + turbineName + ".  There cannot be duplicate turbine names.", "Continuum 3");
+                    break;
+                }
+            }
+
             return inputTurbine;
         }
 
         /// <summary> Compares met name to turbine names to ensure there are no duplicate names. </summary>        
         /// <returns> Returns false if a met with the same name exists </returns>
-        public bool CheckMetName(string metName, TurbineCollection turbineList)
+        public bool CheckMetName(string metName, MetCollection metList, TurbineCollection turbineList)
         { 
             bool inputMet = true;
             int numTurbines = turbineList.TurbineCount;
+            int numMets = metList.ThisCount;
 
             for (int i = 0; i < numTurbines; i++) { 
                 if (turbineList.turbineEsts[i].name == metName) {
                     inputMet = false;
                     MessageBox.Show("There is a turbine with the same name as met site: " + metName + ".  There cannot be a turbine and met site with the same name.", "Continuum 3");
+                    break;
+                }
+            }
+
+            for (int i = 0; i < numMets; i++)
+            {
+                if (metList.metItem[i].name == metName)
+                {
+                    inputMet = false;
+                    MessageBox.Show("There is already a met with the same name: " + metName + ".  There cannot be duplicate met site names.", "Continuum 3");
                     break;
                 }
             }

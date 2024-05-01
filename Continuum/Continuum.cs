@@ -671,7 +671,7 @@ namespace ContinuumNS
                     for (int j = 0; j < WS_Int - 1; j++)
                         thisDist.sectorWS_Dist[i, j] = thisDist.sectorWS_Dist[i, j] / 1000;
 
-                inputMet = check.CheckMetName(metName, turbineList);
+                inputMet = check.CheckMetName(metName, metList, turbineList);
 
                 if (inputMet == false)
                     return false;
@@ -889,7 +889,7 @@ namespace ContinuumNS
                     Check_class check = new Check_class();
                     inputTurbine = check.NewTurbOrMet(topo, turbineName, UTMX, UTMY, showMsg);
                     if (inputTurbine == true)
-                        inputTurbine = check.CheckTurbName(turbineName, metList);
+                        inputTurbine = check.CheckTurbName(turbineName, metList, turbineList);
                     else
                     {
                  //       if (showMsg == true) // Message appears in check.NewTurbOrMet if it returns a false
@@ -1633,7 +1633,7 @@ namespace ContinuumNS
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+       //         MessageBox.Show(ex.Message);
             }
      /*       try
             {
@@ -2811,8 +2811,17 @@ namespace ContinuumNS
             if (ofdPowerCurve.ShowDialog() != DialogResult.OK)
                 return;
 
-            double RD = Convert.ToSingle(Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum 3"));
-            double RPM = Convert.ToSingle(Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum 3"));
+            string RD_Str = Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum 3");
+            double RD = 0;
+            double.TryParse(RD_Str, out RD);
+            if (RD == 0)
+                return;
+
+            string RPM_Str = Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum 3");
+            double RPM = 0;
+            double.TryParse(RPM_Str, out RPM);
+            if (RPM == 0)
+                return;
 
             turbineList.ImportPowerCurve(this, RD, RPM);
         }
@@ -5282,6 +5291,21 @@ namespace ContinuumNS
                         break;
                     }
             }
+            else
+            {
+                UTM_conversion.Lat_Long metLatLong = UTM_conversions.UTMtoLL(selMet.UTMX, selMet.UTMY);
+
+                // Look through list of references to see if there is one defined at selMet's coordinates
+                for (int r = 0; r < refList.numReferences; r++)
+                {
+                    if (refList.reference[r].interpData.Coords.latitude == Math.Round(metLatLong.latitude, 3) && 
+                        refList.reference[r].interpData.Coords.longitude == Math.Round(metLatLong.longitude, 3))
+                    {
+                        cboMCP_Ref.SelectedIndex = r;
+                        break;
+                    }
+                }
+            }
 
             double[] anemHeights = selMet.metData.GetHeightsOfAnems();
             int numHeights = anemHeights.Length;
@@ -7122,8 +7146,8 @@ namespace ContinuumNS
             // Opens form for user to define new reference site, only if user has already downloaded data
             if (refList.numRefDataDownloads == 0)
             {
-                MessageBox.Show("Reference data files are needed. Click 'Tools -> Download Reanalysis Data' to download data or to link to folders " +
-                    "with previously-downloaded data.");
+                MessageBox.Show("Reference data files are needed. Click button 'View/Edit Ref. Data. Downloads' or click on Top Menu bar 'Tools -> Download Reanalysis Data' " +
+                    "to download data or to link to folders with previously-downloaded data.");
                 return;
             }
 
@@ -7158,8 +7182,8 @@ namespace ContinuumNS
                     {
                         newReference.thisRef.GetReferenceDataFromDB(this);
                         newReference.thisRef.GetInterpData(UTM_conversions);
-                    }                    
-
+                    }         
+                                        
                     refList.AddReference(newReference.thisRef);
 
                     if (dBhasTheData == false)

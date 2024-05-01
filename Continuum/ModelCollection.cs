@@ -2487,6 +2487,8 @@ namespace ContinuumNS
             int numMets = metsUsed.Length;
             MetLTEsts[] metLT_Ests = new MetLTEsts[numMets];
             int TS_Length = 0;
+            DateTime tsStart = new DateTime();
+            DateTime tsEnd = DateTime.Now;
 
             if (metsUsed == null)
                 return thisTS;
@@ -2499,16 +2501,18 @@ namespace ContinuumNS
 
             if (MCP_Method != null && MCP_Method != "")
             {
-                // Size time series array to same length at met's long-term estimates
-                Reference thisRef = thisInst.metList.GetReferenceUsedInMCP(metsUsed);
-
-                if (thisRef.interpData.TS_Data.Length == 0)
+                // Size time series array to same length as mets' long-term estimates.  Need to size all met to the same (even if different start/end dates used)
+                Reference[] theRefs = thisInst.metList.GetReferencesUsedInMCP(metsUsed);
+                               
+                for (int r = 0; r < theRefs.Length; r++)
                 {
-                    thisRef.GetReferenceDataFromDB(thisInst);
-                    thisRef.GetInterpData(thisInst.UTM_conversions);
+                    if (theRefs[r].startDate > tsStart)
+                        tsStart = theRefs[r].startDate;
+                    if (theRefs[r].endDate < tsEnd)
+                        tsEnd = theRefs[r].endDate;
                 }
 
-                TS_Length = thisRef.interpData.TS_Data.Length;
+                TS_Length = Convert.ToInt16(tsEnd.Subtract(tsStart).TotalHours + 1);
                 Array.Resize(ref thisTS, TS_Length);
 
                 // Get LT Estimates at each met used in model. Save in MetLTEsts struct which holds an array of MCP.Site_Data struct           
@@ -2622,6 +2626,7 @@ namespace ContinuumNS
 
             TimeSpan timeSpan = metLT_Ests[0].estWS[1].thisDate - metLT_Ests[0].estWS[0].thisDate;
             timeInt = timeSpan.TotalHours;
+            DateTime dateTime = tsStart;
             Met_Data_Filter metDataFilter = new Met_Data_Filter();
 
             // For each time interval and for each predicting met and each model (radius), get path of nodes and do wind speed estimate along nodes
@@ -2629,11 +2634,7 @@ namespace ContinuumNS
 
             List<int> integerList = Enumerable.Range(0, TS_Length).ToList();
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
-            {
-
-       //     for (int i = 0; i < TS_Length; i++)
-        //    {               
-                DateTime dateTime = metLT_Ests[0].estWS[i].thisDate;
+            {   
                 Met.TOD thisTOD = thisInst.metList.GetTOD(dateTime);
                 Met.Season season = thisInst.metList.GetSeason(dateTime);
                 double thisAvg = 0;
@@ -2719,6 +2720,8 @@ namespace ContinuumNS
                         }
                     }
                 }
+
+                dateTime = dateTime.Add(timeSpan);
 
             });
           //  }

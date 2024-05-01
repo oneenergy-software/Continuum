@@ -37,9 +37,19 @@ namespace ContinuumNS
 
                 int offset = utmConv.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
 
-                thisRef.startDate = thisRef.refDataDownload.startDate; // Make default starttime same as RefDataDownload start .AddHours(offset);                 
-                thisRef.endDate = thisRef.refDataDownload.endDate; //.AddHours(offset); // Set end date to last day of month
-                dateRefEnd.Value = thisRef.endDate;
+                if (refList.numReferences > 0)
+                {
+                    // Set start and end dates to same as other references
+                    thisRef.startDate = refList.reference[0].startDate;
+                    thisRef.endDate = refList.reference[0].endDate;
+                    dateRefEnd.Value = thisRef.endDate;
+                }
+                else
+                {
+                    thisRef.startDate = thisRef.refDataDownload.startDate; // Make default starttime same as RefDataDownload start .AddHours(offset);                 
+                    thisRef.endDate = thisRef.refDataDownload.endDate; //.AddHours(offset); // Set end date to last day of month
+                    dateRefEnd.Value = thisRef.endDate;
+                }
 
                 thisRef.isUserDefined = true; // Default to user-specified lat/lon
 
@@ -202,8 +212,18 @@ namespace ContinuumNS
         {
             // Get entered coordinates and make sure that they are within the RefDataDown area
 
-            double thisLat = Convert.ToDouble(txtReferenceLat.Text);
-            double thisLon = Convert.ToDouble(txtReferenceLong.Text);
+            double thisLat = 0;
+            double thisLon = 0;
+
+            double.TryParse(txtReferenceLat.Text, out thisLat);
+            double.TryParse(txtReferenceLong.Text, out thisLon);
+
+            if (thisLat == 0 || thisLon == 0)
+            {
+                goodToGo = false;
+                MessageBox.Show("Enter a latitude and longitude for the reference site");
+                return;
+            }
 
             if (thisLat < thisRef.refDataDownload.minLat || thisLat > thisRef.refDataDownload.maxLat)
             {
@@ -237,6 +257,31 @@ namespace ContinuumNS
             {
                 MessageBox.Show("Requested end date cannot be after the end of the downloaded data range.");
                 return;
+            }
+
+            // Compare requested start/end dates to others in list
+            bool sameLength = refList.IsSameLengthAsOtherRefs(thisRef);
+            if (sameLength == false)
+            {
+                int diffRefInd = 0;
+
+                for (int r = 0; r < refList.numReferences; r++)
+                {
+                    if (refList.reference[r].startDate != thisRef.startDate)
+                    {
+                        diffRefInd = r;
+                        break;
+                    }
+                }
+
+                DialogResult diffsAreOk = MessageBox.Show("The requested start/end dates are not the same as the other long-term references in the list which are " +
+                    refList.reference[diffRefInd].startDate.ToString() + " - " + refList.reference[diffRefInd].endDate.ToString() + ".  Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+
+                if (diffsAreOk == DialogResult.No)
+                {
+                    goodToGo = false;
+                    return;
+                }
             }
 
             goodToGo = true;

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Research.Science.Data.Imperative;
+using System.Runtime.CompilerServices;
 
 namespace ContinuumNS
 {
@@ -1062,20 +1063,29 @@ namespace ContinuumNS
                     {                       
                         for (int r = 0; r < refDataFiles.Length; r++)
                         {
-                            DataSet thisERA5Data = DataSet.Open(refDataFiles[r]);
-                            Variable[] allVars = thisERA5Data.Variables.ToArray();
+                            DateTime thisContERA5 = IsThisAContinuumERA5File(refDataFiles[r]);
 
-                            Int32[] allTime = thisERA5Data.GetData<Int32[]>("time");
+                            if (thisContERA5.Year != 1) // Daily file downloaded by Continuum                            
+                                daysWithData++;                            
+                            else
+                            {
+                                DataSet thisERA5Data = DataSet.Open(refDataFiles[r]);
+                                Variable[] allVars = thisERA5Data.Variables.ToArray();
 
-                            DateTime firstDate = baseTime.AddHours(allTime[0]);
-                            DateTime lastDate = baseTime.AddHours(allTime[allTime.Length - 1]);
+                                Int32[] allTime = thisERA5Data.GetData<Int32[]>("time");
 
-                            daysWithData = daysWithData + Convert.ToInt32(lastDate.Subtract(firstDate).TotalDays);
+                                DateTime firstDate = baseTime.AddHours(allTime[0]);
+                                DateTime lastDate = baseTime.AddHours(allTime[allTime.Length - 1]);
+
+                                daysWithData = daysWithData + Convert.ToInt32(lastDate.Subtract(firstDate).TotalDays);
+                                thisERA5Data.Dispose();
+                            }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Error opening ERA5 data file.");                        
+                        MessageBox.Show(ex.Message);
+                 //       MessageBox.Show("Error opening ERA5 data file.");                        
                     }
                 }
             }
@@ -1314,15 +1324,17 @@ namespace ContinuumNS
             }
             else if (refType == "ERA5")
             {
-                // Read netCDF to get start and end dates
+                // Either use file names to get start/end date or, if not downloaded through Continuum, read all netCDFs to get start and end dates 
                 string[] refDataFiles = Directory.GetFiles(refDataFolder, "*.nc");
                 DateTime baseTime = new DateTime(1900, 01, 01, 0, 0, 0); //time that all the ERA5 'time' variable values are relative to
-
+                              
                 if (refDataFiles == null)
                 {
                     MessageBox.Show("Could not find netCDF file. Check specified folder path and try again.");
                     return dateRangeAndCount;
                 }
+
+                                             
 
                 try
                 {
@@ -1330,21 +1342,37 @@ namespace ContinuumNS
 
                     for (int r = 0; r < refDataFiles.Length; r++)
                     {
-                        DataSet thisERA5Data = DataSet.Open(refDataFiles[r]);
-                        Variable[] allVars = thisERA5Data.Variables.ToArray();
+                        DateTime isContERA5 = IsThisAContinuumERA5File(refDataFiles[r]);
 
-                        Int32[] allTime = thisERA5Data.GetData<Int32[]>("time");
+                        if (isContERA5.Year != 1)                                
+                        {
+                            if (isContERA5 < dateRangeAndCount.startEnd[0] || dateRangeAndCount.startEnd[0].Year == 1)
+                                dateRangeAndCount.startEnd[0] = isContERA5;
 
-                        DateTime firstDate = baseTime.AddHours(allTime[0]);
-                        DateTime lastDate = baseTime.AddHours(allTime[allTime.Length - 1]);
+                            if (isContERA5 > dateRangeAndCount.startEnd[1])
+                                dateRangeAndCount.startEnd[1] = isContERA5.AddHours(23); // Make date end of day (i.e. 11 pm)
 
-                        if (firstDate < dateRangeAndCount.startEnd[0] || dateRangeAndCount.startEnd[0].Year == 1)
-                            dateRangeAndCount.startEnd[0] = firstDate;
+                            numDays++;
+                        }
+                        else //  Need to read netCDF files to figure out dates
+                        {
+                            DataSet thisERA5Data = DataSet.Open(refDataFiles[r]);
+                            Variable[] allVars = thisERA5Data.Variables.ToArray();
 
-                        if (lastDate > dateRangeAndCount.startEnd[1])
-                            dateRangeAndCount.startEnd[1] = lastDate;
+                            Int32[] allTime = thisERA5Data.GetData<Int32[]>("time");
 
-                        numDays = numDays + lastDate.Subtract(firstDate).TotalDays + 1.0 / 24;
+                            DateTime firstDate = baseTime.AddHours(allTime[0]);
+                            DateTime lastDate = baseTime.AddHours(allTime[allTime.Length - 1]);
+
+                            if (firstDate < dateRangeAndCount.startEnd[0] || dateRangeAndCount.startEnd[0].Year == 1)
+                                dateRangeAndCount.startEnd[0] = firstDate;
+
+                            if (lastDate > dateRangeAndCount.startEnd[1])
+                                dateRangeAndCount.startEnd[1] = lastDate;
+
+                            numDays = numDays + lastDate.Subtract(firstDate).TotalDays + 1.0 / 24;
+                            thisERA5Data.Dispose();
+                        } 
                     }
 
                     int totalNumDays = Convert.ToInt32(dateRangeAndCount.startEnd[1].Subtract(dateRangeAndCount.startEnd[0]).TotalDays);
@@ -1352,9 +1380,10 @@ namespace ContinuumNS
                     if (totalNumDays > 0)
                         dateRangeAndCount.completion = (double)numDays / totalNumDays;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Error opening ERA5 data file.");
+                    MessageBox.Show(ex.Message);
+              //      MessageBox.Show("Error opening ERA5 data file.");
                     return dateRangeAndCount;
                 }
             }
@@ -1362,15 +1391,86 @@ namespace ContinuumNS
             return dateRangeAndCount;
         }
 
-        /// <summary> Creates filename for exported MERRA2 data. </summary>
-        public string CreateReferenceDatafilename(DateTime thisDate, RefDataDownload refData)
+    
+        /// <summary> Returns true if file at specfied path is an ERA5 file that was downloaded by Continuum </summary>    
+        public DateTime IsThisAContinuumERA5File(string refDataFile)
+        {
+            bool formattedFileName = false;
+            int numUnderExpect = 9; // If the ERA5 datafile was downloaded through Continuum, it will have 9 underscores
+                                
+            int fileYear = 1;
+            int fileMonth = 1;
+            int fileDay = 1;
+            DateTime fileDate = new DateTime(fileYear, fileMonth, fileDay);
+
+            string justFileName = refDataFile.Substring(refDataFile.LastIndexOf('\\') + 1, refDataFile.Length - refDataFile.LastIndexOf('\\') - 1);
+            int numUnderAct = justFileName.Count(t => t == '_');
+
+            if (numUnderAct == numUnderExpect)
+                formattedFileName = true;
+
+            if (formattedFileName) // It has 9 underscores, now check to see if it contains the timestamp
+            {
+                int dateLength = 10;
+
+                string dateStr = justFileName.Substring(justFileName.Length - dateLength - 3, dateLength);            
+                int.TryParse(dateStr.Substring(0, 4), out fileYear);            
+                int.TryParse(dateStr.Substring(5, 2), out fileMonth);            
+                int.TryParse(dateStr.Substring(8, 2), out fileDay);
+                fileDate = new DateTime(fileYear, fileMonth, fileDay);
+
+                if (fileDate.Year == 1)
+                    formattedFileName = false;
+            }
+                    
+            return fileDate;      
+    
+        }
+
+        /// <summary> Creates and returns the string format to use for specified coordinate (i.e. formatted depending on number of sig digs.) </summary>
+        public string GetStringFormatForReferenceDataFilename(double thisCoord)
+        {
+            string strFormat = "#.0";
+            int numDigs = 1;
+
+            string[] latSplit = thisCoord.ToString().Split('.');
+
+            if (latSplit.Length > 1)
+                numDigs = latSplit[1].Length;
+            
+            if (numDigs == 2)
+                strFormat = "#.00";
+            else if (numDigs == 3)
+                strFormat = "#.000";
+            
+            return strFormat;
+        }
+
+        /// <summary> Creates filename for exported MERRA2 or ERA5 data. </summary>
+        public string CreateReferenceDatafilename(RefDataDownload refData, DateTime thisDate = new DateTime())
         {
             string fileName = "";            
 
             if (refData.refType == "ERA5")
             {
-                fileName = "ERA5_N" + refData.minLat.ToString("#.0") + "_to_" + refData.maxLat.ToString("#.0") + "_W" + refData.minLon.ToString("#.0")
-                + "_to_" + refData.maxLon.ToString("#.0") + "_" + thisDate.ToString("yyyy_MM_dd") + ".nc";
+                double minLat = Math.Round(refData.minLat / GetLatRes(refData), 0) * GetLatRes(refData);
+                string minLatForm = GetStringFormatForReferenceDataFilename(refData.minLat);
+
+                double maxLat = Math.Round(refData.maxLat / GetLatRes(refData), 0) * GetLatRes(refData);
+                string maxLatForm = GetStringFormatForReferenceDataFilename(refData.maxLat);
+
+                double minLon = Math.Round(refData.minLon / GetLongRes(refData)) * GetLongRes(refData);
+                string minLonForm = GetStringFormatForReferenceDataFilename(refData.minLon);
+
+                double maxLon = Math.Round(refData.maxLon / GetLongRes(refData)) * GetLongRes(refData);
+                string maxLonForm = GetStringFormatForReferenceDataFilename(refData.maxLon);
+
+                if (thisDate.Year != 1)
+                    fileName = "ERA5_N" + minLat.ToString(minLatForm) + "_to_" + maxLat.ToString(maxLatForm) + "_W" + minLon.ToString(minLonForm)
+                        + "_to_" + maxLon.ToString(maxLonForm) + "_" + thisDate.ToString("yyyy_MM_dd") + ".nc";
+                else
+                    fileName = "ERA5_N" + minLat.ToString(minLatForm) + "_to_" + maxLat.ToString(maxLatForm) + "_W" + minLon.ToString(minLonForm)
+                        + "_to_" + maxLon.ToString(maxLonForm) + ".nc";
             }
             else if (refData.refType == "MERRA2")
             {
@@ -1402,7 +1502,7 @@ namespace ContinuumNS
         public bool ReferenceFileExists(DateTime thisDate, RefDataDownload refDataDown)
         {
             bool fileExists = false;
-            string fileName = CreateReferenceDatafilename(thisDate, refDataDown);
+            string fileName = CreateReferenceDatafilename(refDataDown, thisDate);
 
             try
             {
@@ -1426,7 +1526,7 @@ namespace ContinuumNS
             // Now access the data            
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
-            string MERRA2filename = CreateReferenceDatafilename(thisDate, refDataDown);
+            string MERRA2filename = CreateReferenceDatafilename(refDataDown, thisDate);
             StreamWriter writer = new StreamWriter(refDataDown.folderLocation + "\\" + MERRA2filename);
 
             bool isDataset = false;
@@ -1470,6 +1570,22 @@ namespace ContinuumNS
             return beingUsed;
         }
 
+        /// <summary> Returns true if start/end dates are the same as the other references in the list </summary>        
+        public bool IsSameLengthAsOtherRefs(Reference thisRef)
+        {
+            bool isSame = true;
+
+            for (int r = 0; r < numReferences; r++)
+            {
+                if (thisRef.startDate != reference[r].startDate || thisRef.endDate != reference[r].endDate)
+                {
+                    isSame = false;
+                    break;
+                }
+            }
+
+            return isSame;
+        }
 
     }
 }

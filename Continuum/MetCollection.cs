@@ -1482,7 +1482,7 @@ namespace ContinuumNS
                     line = file.ReadLine();
                     string thisName = line.Trim(',');
 
-                    bool inputMet = check.CheckMetName(thisName, thisInst.turbineList);
+                    bool inputMet = check.CheckMetName(thisName, this, thisInst.turbineList);
 
                     if (inputMet == false)
                         return false;
@@ -2080,9 +2080,10 @@ namespace ContinuumNS
         }
 
         /// <summary> Get Reference used to generate MCP estimates at met sites </summary>
-        public Reference GetReferenceUsedInMCP(string[] metsUsed)
+        public Reference[] GetReferencesUsedInMCP(string[] metsUsed)
         {
-            Reference thisRef = new Reference();
+            Reference[] theseRefs = new Reference[0];
+            int numRefs = 0;
 
             for (int m = 0; m < ThisCount; m++)
             {
@@ -2092,18 +2093,15 @@ namespace ContinuumNS
                     {
                         if (metItem[m].GetNumMCP() > 0)
                         {
-                            thisRef = metItem[m].mcpList[0].reference;
-                            break;
-                        }
-                        else
-                        {                            
-                            break;
-                        }                        
+                            numRefs++;
+                            Array.Resize(ref theseRefs, numRefs);
+                            theseRefs[numRefs - 1] = metItem[m].mcpList[0].reference;                            
+                        }                                               
                     }
                 }
             }
 
-            return thisRef;
+            return theseRefs;
 
         }
 

@@ -3837,7 +3837,7 @@ namespace ContinuumNS
                     TimeSpan Num_Days_Total = endTime.Subtract(startTime);
                     double Prog = 100 * Num_Days_Processed.TotalDays / Num_Days_Total.TotalDays;
 
-                    if (counter % 50 == 0)
+                    if (counter % 50 == 0 && Prog > 0)
                         BackgroundWorker_RefDataExtract.ReportProgress((int)Prog, "Importing MERRA2 data");
 
                     if (BackgroundWorker_RefDataExtract.CancellationPending == true)
@@ -3956,14 +3956,33 @@ namespace ContinuumNS
 
                 for (int f = 0; f < refDataFiles.Length; f++)
                 {
+                    
                     DataSet thisDataFile = DataSet.Open(refDataFiles[f]);
                     Variable[] allVars = thisDataFile.Variables.ToArray();
 
                     Single[] allLats = thisDataFile.GetData<Single[]>("latitude");
                     Single[] allLong = thisDataFile.GetData<Single[]>("longitude");
                     int[] allTime = thisDataFile.GetData<int[]>("time");
-                    DateTime thisDate = baseTime.AddHours(allTime[0]);
+                    DateTime thisDate = baseTime.AddHours(allTime[0]);                                       
+
                     int tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
+
+                    TimeSpan Num_Days_Processed = thisDate.Subtract(startTime);
+                    TimeSpan Num_Days_Total = endTime.Subtract(startTime);
+                    double Prog = 100 * Num_Days_Processed.TotalDays / Num_Days_Total.TotalDays;                                       
+
+                    if (counter % 50 == 0 && Prog > 0)
+                        BackgroundWorker_RefDataExtract.ReportProgress((int)Prog, "Importing ERA5 data");
+
+                    if (BackgroundWorker_RefDataExtract.CancellationPending == true)
+                    {
+                        //      if (thisMet != null) // Met data calcs should be unrelated to reference data pulls
+                        //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+                        thisDataFile.Dispose();
+                        e.Result = thisInst;
+                        DoWorkDone = true;
+                        return;
+                    }
 
                     for (int v = 0; v < allVars.Length; v++)
                     {
