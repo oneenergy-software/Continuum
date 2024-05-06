@@ -75,8 +75,8 @@ public void OneMetFiltTS_LTGrossNet_117()
 	thisMet.isMCPd = false;
 		
 	thisMet.metData.FindStartEndDatesWithMaxRecovery();
-	
-	thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+            thisMet.metData.AddSensorDatatoDB(thisInst, thisMet.name);
+            thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
 
 	thisInst.updateThe.AllTABs();
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

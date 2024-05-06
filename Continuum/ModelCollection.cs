@@ -2512,7 +2512,8 @@ namespace ContinuumNS
                         tsEnd = theRefs[r].endDate;
                 }
 
-                TS_Length = Convert.ToInt16(tsEnd.Subtract(tsStart).TotalHours + 1);
+                double totalH = tsEnd.Subtract(tsStart).TotalHours;
+                TS_Length = Convert.ToInt32(totalH + 1);
                 Array.Resize(ref thisTS, TS_Length);
 
                 // Get LT Estimates at each met used in model. Save in MetLTEsts struct which holds an array of MCP.Site_Data struct           

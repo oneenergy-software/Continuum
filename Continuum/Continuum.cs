@@ -5296,6 +5296,9 @@ namespace ContinuumNS
                 UTM_conversion.Lat_Long metLatLong = UTM_conversions.UTMtoLL(selMet.UTMX, selMet.UTMY);
 
                 // Look through list of references to see if there is one defined at selMet's coordinates
+                if (refList.numReferences > 0 && cboMCP_Ref.Items.Count == 0)
+                    updateThe.LT_ReferenceDropdowns();
+
                 for (int r = 0; r < refList.numReferences; r++)
                 {
                     if (refList.reference[r].interpData.Coords.latitude == Math.Round(metLatLong.latitude, 3) && 
