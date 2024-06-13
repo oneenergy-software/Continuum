@@ -1045,9 +1045,10 @@ namespace ContinuumNS
                     for (int l = 0; l < singlons.Length; l++)
                         longs[l] = Convert.ToDouble(singlons[l]);
                 }
-                catch
+                catch (Exception ex)
                 {
                     MessageBox.Show("Error opening ERA5 data file.");
+                    MessageBox.Show(ex.Message);
                     return gotAllIndices;
                 }   
             }
@@ -1969,9 +1970,10 @@ namespace ContinuumNS
                         longs[l] = Convert.ToDouble(singlons[l]);
                     
                 }
-                catch
+                catch (Exception ex) 
                 {
                     MessageBox.Show("Error opening ERA5 data file.");
+                    MessageBox.Show(ex.Message);
                     return allRefnodes;
                 }
             }

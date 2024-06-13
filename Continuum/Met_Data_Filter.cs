@@ -662,7 +662,7 @@ namespace ContinuumNS
             towerEffect = 5,
             /// <summary>   Maximum wind speed difference (at same height) flag (not currently implemented). </summary>
             maxDeltaWS = 6,
-            /// <summary>   Minimum wind speed flag (not currently implemented). </summary>
+            /// <summary>   Minimum wind speed flag. </summary>
             minWS = 7
             
         }   

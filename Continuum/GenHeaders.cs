@@ -255,11 +255,11 @@ namespace ContinuumNS
                     sm.WriteLine("WS Units," + cboWindSpeedUnits.Text + ",Lat," + txtLat.Text + ",Long," + txtLong.Text + ",");
                     sm.Write("Date & Time Stamp,");
 
-                    // Converts the text in the anemometor, vane, and temperature text boxes into string arrays
+                    // Converts the text in the anemometor, vane, temperature, and pressure text boxes into string arrays
                     string[] AnemString = CreateArrayAnem();
                     string[] VaneString = CreateArrayVane();
                     string[] TempString = CreateArrayTemp();
-                    string[] baroString = CreateArrayTemp();
+                    string[] baroString = CreateArrayBaro();
 
                     // For loop that loops through the anemometor data and adds the correct suffixes based on what data the user is including in the .csv file
                     for (int i = 0; i < AnemString.Length; i++)
@@ -359,6 +359,20 @@ namespace ContinuumNS
             // Formats string array for Continuum 
             for (int i = 0; i < listTempsHeight.Items.Count; i++)            
                 ArrayHeight[i] = "Temp_" + listTempsHeight.Items[i].ToString();            
+
+            return ArrayHeight;
+
+        }
+
+        /// <summary> Creates a string array from pressure data </summary>        
+        public string[] CreateArrayBaro()
+        {
+            // Makes new string length of data entered into pressure box
+            string[] ArrayHeight = new string[listBaroHeight.Items.Count];
+
+            // Formats string array for Continuum 
+            for (int i = 0; i < listBaroHeight.Items.Count; i++)
+                ArrayHeight[i] = "Baro_" + listBaroHeight.Items[i].ToString();
 
             return ArrayHeight;
 

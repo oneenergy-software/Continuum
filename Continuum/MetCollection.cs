@@ -1451,7 +1451,7 @@ namespace ContinuumNS
 
         /// <summary> Reads in formatted .csv file with anem, vane, and temp data. Adds the new met to metList. Filters (using all filters) and 
         /// extrapolates to modeled height (specified on Input tab) Returns true if met data successfully read in. </summary>
-        public bool ImportFilterExtrapMetData(string filename, Continuum thisInst, bool applyFilters)
+        public bool ImportFilterExtrapMetData(string filename, Continuum thisInst, bool applyFilters, bool inLocalTime)
         {           
             Met_Data_Filter thisMetData = new Met_Data_Filter();
             string[] header;
@@ -1516,7 +1516,9 @@ namespace ContinuumNS
                         thisInst.UTM_conversions.savedDatumIndex = thisDatum.cbo_Datums.SelectedIndex;
                         thisInst.UTM_conversions.hemisphere = thisDatum.cboNorthOrSouth.SelectedItem.ToString();
                     }
-                                                
+                             
+                    int thisOffset = thisInst.UTM_conversions.GetUTC_Offset(thisLat, thisLong);
+
                     UTM_conversion.UTM_coords theseUTMs = thisInst.UTM_conversions.LLtoUTM(thisLat, thisLong);
                     double thisUTMX = theseUTMs.UTMEasting;
                     double thisUTMY = theseUTMs.UTMNorthing;
@@ -1741,6 +1743,10 @@ namespace ContinuumNS
                                 break;                                               
 
                         DateTime thisTimeStamp = Convert.ToDateTime(data[0]);
+
+                        if (inLocalTime == false) // Need to convert to local time
+                            thisTimeStamp = thisTimeStamp.AddHours(thisOffset);
+
                         dataCount++;                                                
 
                         for (int i = 0; i < thisMetData.GetNumAnems(); i++)

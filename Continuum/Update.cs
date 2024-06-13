@@ -8,7 +8,7 @@ using OxyPlot.Series;
 using OxyPlot.Axes;
 using static ContinuumNS.Met;
 using static ContinuumNS.Met_Data_Filter;
-using Microsoft.VisualBasic;
+
 
 //using System.Windows.Media;
 
@@ -762,6 +762,19 @@ namespace ContinuumNS
                 });
 
                 WakeMapLabels();
+
+                LinearAxis xAxis = new LinearAxis();
+                xAxis.Position = AxisPosition.Bottom;
+                xAxis.Title = "UTMX [m]";
+                xAxis.LabelFormatter = GetUTMAsString;
+
+                LinearAxis yAxis = new LinearAxis();
+                yAxis.Position = AxisPosition.Left;
+                yAxis.Title = "UTMY [m]";
+                yAxis.LabelFormatter = GetUTMAsString;
+
+                model.Axes.Add(xAxis);
+                model.Axes.Add(yAxis);
             }
 
             thisInst.plotWakeMap.Refresh();
@@ -982,6 +995,9 @@ namespace ContinuumNS
         {
             thisInst.okToUpdate = false;
             thisInst.lstMetTowers.Items.Clear(); // First clear table
+            thisInst.lstMetTowers.Columns.Clear(); // and clear columns
+            thisInst.lstMetTowers.Columns.Add("Met Name", 90);
+
             thisInst.chkMetLabels.Items.Clear(); // Clear met label table
             thisInst.chkMetlabelsStep.Items.Clear(); // Clear met label table for stepwise tab
             thisInst.chkMetLabels_Maps.Items.Clear();            
@@ -999,21 +1015,24 @@ namespace ContinuumNS
 
             if (DDorLL == "DD")
             {
-                thisInst.lstMetTowers.Columns[1].Text = "Lat. [degs]";
-                thisInst.lstMetTowers.Columns[2].Text = "Long. [degs]";
+                thisInst.lstMetTowers.Columns.Add("Lat. [degs]", 80);
+                thisInst.lstMetTowers.Columns.Add("Long. [degs]", 80);
             }
             else
             {
-                thisInst.lstMetTowers.Columns[1].Text = "Easting [m]";
-                thisInst.lstMetTowers.Columns[2].Text = "Northing [m]";
+                thisInst.lstMetTowers.Columns.Add("Easting [m]", 80);
+                thisInst.lstMetTowers.Columns.Add("Northing [m]", 80);
             }
 
             int numMets = thisInst.metList.ThisCount;
 
             if (numMets > 0)
             {
+                if (thisInst.metList.isTimeSeries)                
+                    thisInst.lstMetTowers.Columns.Add("UTC Offset [h]", 80);
+                
                 Met thisMet = thisInst.metList.metItem[0];
-                thisInst.lstMetTowers.Columns[3].Text = thisInst.modeledHeight + " m WS [m/s]";
+                thisInst.lstMetTowers.Columns.Add(thisInst.modeledHeight + " m WS [m/s]", 90);
 
                 // If long-term WS estimated at 1 or more mets, then add column 'LT Est. Wind Speed'
                 bool oneHasLT = false;
@@ -1024,11 +1043,9 @@ namespace ContinuumNS
                         break;
                     }
 
-                if (oneHasLT && thisInst.lstMetTowers.Columns.Count < 5)
-                    thisInst.lstMetTowers.Columns.Add("LT Est. WS [m/s]");
-                else if (oneHasLT == false && thisInst.lstMetTowers.Columns.Count == 5)
-                    thisInst.lstMetTowers.Columns.Remove(thisInst.lstMetTowers.Columns[4]);
-
+                if (oneHasLT)
+                    thisInst.lstMetTowers.Columns.Add("LT Est. WS [m/s]", 90);
+                
                 for (int j = 0; j < numMets; j++) // Now repopulate it with met towers
                 {
                     thisMet = thisInst.metList.metItem[j];
@@ -1042,7 +1059,7 @@ namespace ContinuumNS
                                  measDist = thisMet.CalcMeas_WSWD_Dists(thisInst.modeledHeight, Met.TOD.All, Met.Season.All, thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                     }
                     ListViewItem objListItem = thisInst.lstMetTowers.Items.Add(thisMet.name);
-
+                    
                     if (DDorLL == "UTM")
                     {
                         objListItem.SubItems.Add(Math.Round(thisMet.UTMX, 0).ToString());
@@ -1053,6 +1070,13 @@ namespace ContinuumNS
                         UTM_conversion.Lat_Long thisLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
                         objListItem.SubItems.Add(Math.Round(thisLL.latitude, 4).ToString());
                         objListItem.SubItems.Add(Math.Round(thisLL.longitude, 4).ToString());
+                    }
+
+                    if (thisInst.metList.isTimeSeries)
+                    {
+                        UTM_conversion.Lat_Long thisLL = thisInst.UTM_conversions.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
+                        int thisOffset = thisInst.UTM_conversions.GetUTC_Offset(thisLL.latitude, thisLL.longitude);
+                        objListItem.SubItems.Add(thisOffset.ToString());
                     }
                     
                     if (measDist.WS != 0)
@@ -6760,12 +6784,24 @@ namespace ContinuumNS
                     LowColor = OxyColors.Gray,
                     Minimum = thisInst.topo.GetMin(paramToPlot, true),
                     Maximum = thisInst.topo.GetMax(paramToPlot)
-                });                                         
+                });
+
+                LinearAxis xAxis = new LinearAxis();
+                xAxis.Position = AxisPosition.Bottom;
+                xAxis.Title = "UTMX [m]";
+                xAxis.LabelFormatter = GetUTMAsString;
+
+                LinearAxis yAxis = new LinearAxis();
+                yAxis.Position = AxisPosition.Left;
+                yAxis.Title = "UTMY [m]";
+                yAxis.LabelFormatter = GetUTMAsString;
+
+                model.Axes.Add(xAxis);
+                model.Axes.Add(yAxis);
 
                 thisInst.plotTopo.Model.Series.Add(cs);
+                Labels();                               
 
-                Labels();                                
-                
                 // Refresh plot
                 thisInst.plotTopo.Refresh();
 
@@ -7527,6 +7563,19 @@ namespace ContinuumNS
                     Maximum = thisMax
                 });
 
+                LinearAxis xAxis = new LinearAxis();
+                xAxis.Position = AxisPosition.Bottom;
+                xAxis.Title = "UTMX [m]";
+                xAxis.LabelFormatter = GetUTMAsString;
+               
+                LinearAxis yAxis = new LinearAxis();
+                yAxis.Position = AxisPosition.Left;
+                yAxis.Title = "UTMY [m]";
+                yAxis.LabelFormatter = GetUTMAsString;
+
+                model.Axes.Add(xAxis);
+                model.Axes.Add(yAxis);
+
                 int numX = thisMap.numX;
                 int numY = thisMap.numY;
 
@@ -7565,6 +7614,11 @@ namespace ContinuumNS
 
             thisInst.plotGenMap.Refresh();
             
+        }
+
+        public string GetUTMAsString(double utmVal)
+        {
+            return utmVal.ToString();
         }
 
         /// <summary> Updates textboxes on Map tab showing statistics of selected map. </summary>
@@ -9007,6 +9061,7 @@ namespace ContinuumNS
             {
                 // Create label series
                 var MCP_DataSeries = new ScatterSeries();
+                MCP_DataSeries.Title = "Hourly Concurrent Wind Speed";
                 MCP_DataSeries.MarkerSize = 3;
                 model.Series.Add(MCP_DataSeries);
 
@@ -9105,6 +9160,7 @@ namespace ContinuumNS
                 else if ((thisMCP.MCP_Bins.binAvgSD_Cnt != null) && (thisInst.Get_MCP_Method() == "Method of Bins"))
                 {
                     var binSeries = new ScatterSeries();
+                    binSeries.Title = "Avg. Bin Ratio";
                     model.Series.Add(binSeries);
 
                     for (int i = 0; i < thisMCP.MCP_Bins.binAvgSD_Cnt.GetUpperBound(0); i++)
@@ -9113,6 +9169,10 @@ namespace ContinuumNS
                             binSeries.Points.Add(new ScatterPoint(i * thisMCP.Get_WS_width_for_MCP(), thisMCP.MCP_Bins.binAvgSD_Cnt[i, WD_Ind].avgWS_Ratio));
                     }
                 }
+
+                thisInst.plotMCP.Model.IsLegendVisible = true;
+                thisInst.plotMCP.Model.LegendPlacement = LegendPlacement.Outside;
+                thisInst.plotMCP.Model.LegendPosition = LegendPosition.BottomCenter;
 
                 MCP_TextBoxes();
                 thisInst.plotMCP.Refresh();
@@ -13197,7 +13257,7 @@ namespace ContinuumNS
             else if (thisFlag == Filter_Flags.missing)
                 return Color.LightYellow;
             else if (thisFlag == Filter_Flags.minWS)
-                return Color.LightSlateGray;
+                return Color.LightBlue;
             else if (thisFlag == Filter_Flags.minAnemSD)
                 return Color.LightSalmon;
 

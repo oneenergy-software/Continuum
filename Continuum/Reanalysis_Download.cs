@@ -54,9 +54,18 @@ namespace ContinuumNS
                     MessageBox.Show("ERA5 data is downloaded using Python however Python is not installed on this PC.  Go to 'https://www.python.org/downloads/' to download.");
                     return;
                 }
-                                
-                bool cdsapiInstall = thisInst.IsCDSAPI_Installed();
 
+                bool gotNetCDF = thisInst.IsNetCDF_Installed();
+
+                if (gotNetCDF== false)
+                {
+                    MessageBox.Show("Continuum reads in ERA5 data as netCDF (.nc) files however the NetCDF libraries were not found on this PC. Please go to " +
+                        "continuumwind.com and click 'Download Software' to access the installation file for NetCDF.");
+                    return;
+                }
+
+                bool cdsapiInstall = thisInst.IsCDSAPI_Installed();
+                
                 if (cdsapiInstall == false)
                 {
                     MessageBox.Show("To download ERA5 data, you must register with Climate Data Store (CDS) and install the CDS API.  Go to 'https://cds.climate.copernicus.eu/api-how-to' for more details");
@@ -441,6 +450,7 @@ namespace ContinuumNS
             dataToDownload.startDate = dateReferenceStart.Value.AddHours(-offset);
                         
             double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
+            dataToDownload.completion = percCompl;
             txtPercComplete.Text = Math.Round(percCompl * 100.0, 1).ToString();
         }
 
@@ -452,6 +462,7 @@ namespace ContinuumNS
             dataToDownload.endDate = dateReferenceEnd.Value.AddHours(-offset);
 
             double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
+            dataToDownload.completion = percCompl;
             txtPercComplete.Text = Math.Round(percCompl * 100.0, 1).ToString();
         }
 

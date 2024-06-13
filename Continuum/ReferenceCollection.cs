@@ -1244,9 +1244,10 @@ namespace ContinuumNS
                         Array.Sort(lats);
                         Array.Sort(longs);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         MessageBox.Show("Error opening ERA5 data file.");
+                        MessageBox.Show(ex.Message);
                         return refDataDownload;
                     }
                 }

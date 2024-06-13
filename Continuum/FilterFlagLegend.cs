@@ -22,6 +22,7 @@ namespace ContinuumNS
             txtMinAnemSD.BackColor = thisInst.updateThe.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.minAnemSD);
             txtMaxAnemSD.BackColor = thisInst.updateThe.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.maxAnemSD);
             txtAnemMaxRange.BackColor = thisInst.updateThe.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.maxAnemRange);
+            txtAnemWSTooLow.BackColor = thisInst.updateThe.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.minWS);
             txtIcing.BackColor = thisInst.updateThe.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.Icing);
             txtTowerShadow.BackColor = thisInst.updateThe.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.towerEffect);
         }        
@@ -32,6 +33,16 @@ namespace ContinuumNS
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtTowerShadow_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtIcing_TextChanged(object sender, EventArgs e)
         {
 
         }

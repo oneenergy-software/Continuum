@@ -8,7 +8,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-
+using Microsoft.Win32;
+using System.Data;
 
 namespace ContinuumNS
 {
@@ -72,24 +73,34 @@ namespace ContinuumNS
                  
             
             InitializeComponent();
-            
 
-    //        MessageBox.Show("" workingWidth.Width.ToString() + " x " + workingWidth.Height.ToString());
-     //       MessageBox.Show(workingScreen.Width.ToString() + " x " + workingScreen.Height.ToString());
-     //       MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
 
-     //       if (workingScreen.Width < Size.Width || workingScreen.Height < Size.Height)
-     //       {
-     //           double widthScaling = workingScreen.Width / Size.Width;
-      //          double heightScaling = workingScreen.Height / Size.Height;
-      //          Size = new System.Drawing.Size(workingScreen.Width, workingScreen.Height);
-      //          tabContinuum.Width = Convert.ToInt16(tabContinuum.Width * widthScaling);
-      //          tabContinuum.Height = Convert.ToInt16(tabContinuum.Height * heightScaling);
-      //      }
+            //        MessageBox.Show("" workingWidth.Width.ToString() + " x " + workingWidth.Height.ToString());
+            //       MessageBox.Show(workingScreen.Width.ToString() + " x " + workingScreen.Height.ToString());
+            //       MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
 
-      //      MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
-      //      MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
+            //       if (workingScreen.Width < Size.Width || workingScreen.Height < Size.Height)
+            //       {
+            //           double widthScaling = workingScreen.Width / Size.Width;
+            //          double heightScaling = workingScreen.Height / Size.Height;
+            //          Size = new System.Drawing.Size(workingScreen.Width, workingScreen.Height);
+            //          tabContinuum.Width = Convert.ToInt16(tabContinuum.Width * widthScaling);
+            //          tabContinuum.Height = Convert.ToInt16(tabContinuum.Height * heightScaling);
+            //      }
 
+            //      MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
+            //      MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
+
+            // Check for required programs: Local SQl DB and NetCDF
+            bool gotLocalDB = IsLocalSQL_Installed();
+
+            if (gotLocalDB == false)
+            {
+                MessageBox.Show("SQL LocalDB is a software that allows for the creation of a local database which is required by Continuum however it is " +
+                    "not installed on this PC.  Please visit continuumwind.com and go to 'Download Software' to access the SQL LocalDB installation file.");
+                return;
+            }
+           
             updateThe = new Update(this);
             radiiList.New(); // populates with R = 4000, 6000, 8000, 10000 and invserse distance exponent = 1
             metList.NewList(); // sets MCP settings and day/night hours
@@ -4205,6 +4216,11 @@ namespace ContinuumNS
                 }   
       */
             }
+
+            DialogResult isLocalTimeAnswer = MessageBox.Show("Are the met data timestamps shown in local time?", "", MessageBoxButtons.YesNo);
+            bool isLocal = true;
+            if (isLocalTimeAnswer == DialogResult.No)
+                isLocal = false;
             
             if (Good_to_go == DialogResult.Yes)
             {               
@@ -4245,7 +4261,7 @@ namespace ContinuumNS
                         okToUpdate = true;
                     }
                                         
-                    bool gotIt = metList.ImportFilterExtrapMetData(filename, this, applyFilters); // Reads in formatted .csv file, filters and extrapolates to modeled height
+                    bool gotIt = metList.ImportFilterExtrapMetData(filename, this, applyFilters, isLocal); // Reads in formatted .csv file, filters and extrapolates to modeled height
                     
                     if (gotIt == true)
                     {
@@ -5298,6 +5314,9 @@ namespace ContinuumNS
                 // Look through list of references to see if there is one defined at selMet's coordinates
                 if (refList.numReferences > 0 && cboMCP_Ref.Items.Count == 0)
                     updateThe.LT_ReferenceDropdowns();
+
+                if (refList.numReferences > 0 && cboMCP_Ref.Items.Count == 0)
+                    return;
 
                 for (int r = 0; r < refList.numReferences; r++)
                 {
@@ -6599,7 +6618,8 @@ namespace ContinuumNS
                 if (selMet.metData.filteringEnabled)
                     selMet.metData.FilterData(GetFiltersToApply(selMet));
 
-                ResetTimeSeries(selMet.name);               
+                ResetTimeSeries(selMet.name);
+                updateThe.SetMetDataFlagColors();
                 ChangesMade();                
                 updateThe.AllTABs();
             }
@@ -6668,9 +6688,7 @@ namespace ContinuumNS
                 chkMaxWS_SD.Enabled = false;
                 chkMaxWS_Range.Enabled = false;
                 chkTowerShadow.Enabled = false;
-            }
-
-            
+            }          
                         
         }
 
@@ -7849,11 +7867,13 @@ namespace ContinuumNS
                 start.RedirectStandardOutput = true;
                 start.ErrorDialog = true;
                 start.CreateNoWindow = true;
-
+                
                 Process process = Process.Start(start);
 
                 process.WaitForExit();
+                
                 int exitCode = process.ExitCode;
+          //      MessageBox.Show("Exit Code =" + exitCode.ToString());
 
                 if (exitCode == 0)
                     gotCDSAPI = true;
@@ -7867,7 +7887,47 @@ namespace ContinuumNS
             }
             
             return gotCDSAPI;
-        }                
+        }         
+        
+        /// <summary> Returns true if LocalDB SQL is installed.  This is used to create/use/remove local databases that store topo, LT Reference, Met, and Turbine info </summary>
+        public bool IsLocalSQL_Installed()
+        {
+            bool gotLocalDB = false;                        
+                       
+            string localDBKeyName = @"SOFTWARE\\Microsoft\\Microsoft SQL Server Local DB";
+
+            RegistryKey registrykey = Registry.LocalMachine.OpenSubKey(localDBKeyName);
+
+            if (registrykey != null)
+                gotLocalDB = true;
+
+            registrykey = Registry.CurrentUser.OpenSubKey(localDBKeyName);
+
+            if (registrykey != null)
+                gotLocalDB = true;
+
+            return gotLocalDB;
+        }
+
+        /// <summary> Returns true if NetCDF is installed.  This is used to open NetCDF files (i.e. ERA5 data format) </summary>
+        public bool IsNetCDF_Installed()
+        {
+            bool gotNetCDF = false;
+
+            string netcdfKeyName = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\CDF\v4.0";
+
+            RegistryKey registrykey = Registry.LocalMachine.OpenSubKey(netcdfKeyName);
+
+            if (registrykey != null)
+                gotNetCDF = true;
+
+            registrykey = Registry.CurrentUser.OpenSubKey(netcdfKeyName);
+
+            if (registrykey != null)
+                gotNetCDF = true;
+
+            return gotNetCDF;
+        }
 
         private void chkApplyTCCtoEffTI_CheckedChanged(object sender, EventArgs e)
         {
@@ -8477,6 +8537,17 @@ namespace ContinuumNS
         private void chkTurbLabels_SelectedIndexChanged_2(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnShowMCP_Info_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("MCP is conducted using hourly data.  If the target met site data is 10-minute data, Continuum automatically converts it to hourly average data.");
+        }
+
+        private void btnShowMetTS_Info_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Met data timestamps may be in local or UTC-0 time.  Continuum determines the UTC offset from the met site lat/long coordinates in the datafile " +
+                "and adjusts the data accordingly.");
         }
     }
 }
