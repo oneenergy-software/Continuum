@@ -4164,7 +4164,12 @@ namespace ContinuumNS
             // Updates the reference data import progress bar
             BringToFront();
             string textForLabel = e.UserState.ToString();
-            progbar.Value = e.ProgressPercentage;
+            int progBarVal = e.ProgressPercentage;
+
+            if (progBarVal > 100)
+                progBarVal = 100;
+
+            progbar.Value = progBarVal;
             Text = "Continuum 3";
             lblprogbar.Text = textForLabel;
             Refresh();
