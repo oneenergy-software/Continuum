@@ -1761,13 +1761,15 @@ namespace ContinuumNS
                         for (int i = 0; i < thisMetData.GetNumBaros(); i++)
                             thisMetData.baros[i].pressure[dataCount - 1].timeStamp = thisTimeStamp;
 
-                        for (int i = 1; i < data.Length; i++)
+                        for (int i = 1; i < header.Length; i++)
                         {
                             string thisHeader = header[i];
                             string sensorType = thisHeader.Substring(0, 4);
                             double thisData = -999;
 
-                            if (data[i] != "") thisData = Convert.ToDouble(data[i]);
+                            if (data.Length > i)
+                                if (data[i] != "") 
+                                    thisData = Convert.ToDouble(data[i]);
 
                             if (sensorType == "Anem")
                             {
@@ -2165,7 +2167,9 @@ namespace ContinuumNS
             if (Math.Round(timeInt.TotalMinutes, 0) == 10)
                 dataInterval = "10-min";
             else if (Math.Round(timeInt.TotalMinutes, 0) == 60)
-                dataInterval = "60-min";            
+                dataInterval = "60-min";
+            else if (Math.Round(timeInt.TotalMinutes, 0) == 15)
+                dataInterval = "15-min";
         }
 
         /// <summary> Returns array of MCP.Site_data (which contains timestamp, WS, and WD) for specified met site for time period covering all met sites
@@ -2182,6 +2186,8 @@ namespace ContinuumNS
                 numData = numData / 10;
             else if (dataInt == "60-min")
                 numData = numData / 60;
+            else if (dataInt == "15-min")
+                numData = numData / 15;
 
             numData++; // Add one for last timestamp
 
@@ -2215,10 +2221,19 @@ namespace ContinuumNS
                         continue;
                     }
 
-                    if (thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].timeStamp == thisTS)
+                    if (thisMet.metData.alphaByAnem.Length > heightInd)
                     {
-                        concData[d].thisWS = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WS;
-                        concData[d].thisWD = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WD;                        
+                        if (thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].timeStamp == thisTS)
+                        {
+                            concData[d].thisWS = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WS;
+                            concData[d].thisWD = thisMet.metData.alphaByAnem[heightInd].WS_WD_Alpha[anemInd].WD;
+                        }
+                    }
+                    else 
+                    {
+                        // No shear data (only one height of data)
+                        concData[d].thisWS = thisMet.metData.anems[0].windData[anemInd].avg;
+                        concData[d].thisWD = thisMet.metData.vanes[0].dirData[anemInd].avg;                                                
                     }
 
                     if (dataInt == "10-min")

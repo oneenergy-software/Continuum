@@ -13092,6 +13092,8 @@ namespace ContinuumNS
             string dataIntStr = thisInst.metList.GetMetDataInterval();
             if (dataIntStr == "60-min")
                 dataInt = 60;
+            else if (dataIntStr == "15-min")
+                dataInt = 15;
 
             for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(dataInt))
             {
@@ -13493,6 +13495,8 @@ namespace ContinuumNS
             int numMinsPerInt = 10;
             if (dataInt == "60-min")
                 numMinsPerInt = 60;
+            else if (dataInt == "15-min")
+                numMinsPerInt = 15;
 
             int startRow = Convert.ToInt32(selStart.Subtract(tableStart).TotalMinutes / numMinsPerInt);
 

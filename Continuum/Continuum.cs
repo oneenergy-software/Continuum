@@ -945,6 +945,8 @@ namespace ContinuumNS
                 {
                     wakeModelList.ClearAll();
                     turbineList.ClearAllNetEsts();
+                    turbineList.expoCalcsDone = false;
+                    turbineList.turbineCalcsDone = false;
                     mapList.ClearAllWakedMaps();
                 }
                 else                

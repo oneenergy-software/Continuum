@@ -1120,7 +1120,10 @@ namespace ContinuumNS
             //      Tuple<double, double>[] utmXandYs = new Tuple<double, double>[numDataPoints];
 
 
-      //      StreamWriter sw = new StreamWriter("C:\\Users\\OEE2021_03\\OneDrive - One Energy LLC\\Documents - Analytics\\General\\Renewable Energy Services\\R&D\\Terrain Complexity\\Debugging\\T128 WD315 UW_Only.csv");
+      //      StreamWriter sw = new StreamWriter("C:\\Users\\OEE2021_03\\OEE Dropbox\\Liz Walls\\Due Diligence - Working\\Continuum 3\\C3 Comparison 2022\\Site Conditions\\Terrain Complexity\\C3 outputs\\Regression coeffs force thru.csv", true);
+            
+      //      if (fullPlane && slopeOrDTV == "Slope")
+      //          sw.WriteLine("Multiple Regression results. Force thru turbine: " + forceThruTurbBase.ToString());
 
             double binSize = 360.0 / numWD;
 
@@ -1163,6 +1166,13 @@ namespace ContinuumNS
                 // Find fitted plane by fitting a linear regression using UTM X and Ys and elevation data.  
                 double[] regressionResults = MathNet.Numerics.LinearRegression.MultipleRegression.NormalEquations(utmXandYs, elevData, inclIntercept);
 
+          /*      if (slopeOrDTV == "Slope")
+                {
+                    sw.WriteLine("5h360");
+                    sw.WriteLine(regressionResults[0] + "," + regressionResults[1]);
+                    sw.WriteLine();
+                }
+          */
                 // Calculate slope along centerline of each 30 deg sector based on slopes of fitted plane (i.e. along X and Y axes) and assign maximum (absolute) slope 
 
                 for (int i = 0; i < numWD; i++)
@@ -1226,6 +1236,18 @@ namespace ContinuumNS
                     // Find fitted plane by fitting a linear regression using UTM X and Ys and elevation data.  
                     double[] regressionResults = MathNet.Numerics.LinearRegression.MultipleRegression.NormalEquations(utmXandYs, elevData, inclIntercept);
 
+          /*          if (slopeOrDTV == "Slope")
+                    {
+                        if (i == 0 && radius == 400)
+                            sw.WriteLine("5h30");
+                        else if (i == 0 && radius == 800)
+                            sw.WriteLine("10h30");
+                        else if (i == 0 && radius == 1600)
+                            sw.WriteLine("20h30");
+
+                        sw.WriteLine(regressionResults[1] + "," + regressionResults[0]);                                               
+                    }
+          */
                     // Calculate slope along centerline of each 30 deg sector based on slopes of fitted plane (i.e. along X and Y axes) and assign maximum (absolute) slope 
                     if (slopeOrDTV == "Slope")
                         slopesOrDTVs[i] = topo.CalcSlopeAlongCenterlineOfFittedPlane(regressionResults, radius, i * binSize, UTMX, UTMY, elev, forceThruTurbBase);
@@ -1233,6 +1255,8 @@ namespace ContinuumNS
                         slopesOrDTVs[i] = topo.CalcElevVariationInFittedPlane(regressionResults, utmXandYs, elevData, elev, forceThruTurbBase);
                 }
             }
+
+      //      sw.Close();
 
             return slopesOrDTVs;
         }

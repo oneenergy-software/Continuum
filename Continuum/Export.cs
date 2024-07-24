@@ -113,11 +113,11 @@ namespace ContinuumNS
         public void ExportNodesAndWS(Continuum thisInst)
         { 
             int numPairs = thisInst.metPairList.PairCount;
-            if (numPairs == 0)
-            {
-                MessageBox.Show("Need to create met pairs and cross-predict first.  Click button on top left.", "Continuum 3");
-                return;
-            }
+     //       if (numPairs == 0)
+      //      {
+      //          MessageBox.Show("Need to create met pairs and cross-predict first.  Click button on top left.", "Continuum 3");
+      //          return;
+      //      }
 
             Pair_Of_Mets thisPair = null;            
             int numWD = thisInst.GetNumWD();

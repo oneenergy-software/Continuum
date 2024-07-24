@@ -2497,7 +2497,7 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                         {
-                            var merra_exist_db = from N in ctx.MERRA_Node_table where N.Id >= minId && N.Id <= maxId select N;
+                            var merra_exist_db = from N in ctx.MERRA_Node_table select N;
 
                             foreach (var N in merra_exist_db)
                             {
@@ -5203,6 +5203,8 @@ namespace ContinuumNS
             int minsToAdd = 10;
             if (dataInterval == "60-min")
                 minsToAdd = 60;
+            else if (dataInterval == "15-min")
+                minsToAdd = 15;
 
             //          DataGridViewRowCollection rowCollection = new DataGridViewRowCollection(metTable);
             //         DataGridViewRow sharedRow = new DataGridViewRow();
@@ -5429,7 +5431,12 @@ namespace ContinuumNS
                 timeInd++;
             }
 
-            rows.AddRange(strDataForTableRow);
+            
+
+            if (strDataForTableRow != null)
+                rows.AddRange(strDataForTableRow);
+            else
+                strDataForTableRow = strDataForTableRow;
 
             for (int m = 0; m < numMets; m++)
             {

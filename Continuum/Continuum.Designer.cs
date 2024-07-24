@@ -30,51 +30,51 @@ namespace ContinuumNS
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Alpha");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Extrap. WS");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode6});
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11});
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
-            treeNode13,
-            treeNode14,
-            treeNode15,
-            treeNode16});
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
-            treeNode18,
-            treeNode19,
-            treeNode20,
-            treeNode21});
+            System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode49 = new System.Windows.Forms.TreeNode("Alpha");
+            System.Windows.Forms.TreeNode treeNode50 = new System.Windows.Forms.TreeNode("Extrap. WS");
+            System.Windows.Forms.TreeNode treeNode51 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
+            treeNode45,
+            treeNode46,
+            treeNode47,
+            treeNode48,
+            treeNode49,
+            treeNode50});
+            System.Windows.Forms.TreeNode treeNode52 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode53 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode54 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode55 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode56 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
+            treeNode52,
+            treeNode53,
+            treeNode54,
+            treeNode55});
+            System.Windows.Forms.TreeNode treeNode57 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode58 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode59 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode60 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode61 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
+            treeNode57,
+            treeNode58,
+            treeNode59,
+            treeNode60});
+            System.Windows.Forms.TreeNode treeNode62 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode63 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode64 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode65 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode66 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
+            treeNode62,
+            treeNode63,
+            treeNode64,
+            treeNode65});
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
             this.btnShowMetTS_Info = new System.Windows.Forms.Button();
@@ -2065,57 +2065,57 @@ namespace ContinuumNS
             this.treeDataParams.CheckBoxes = true;
             this.treeDataParams.Location = new System.Drawing.Point(184, 72);
             this.treeDataParams.Name = "treeDataParams";
-            treeNode1.Checked = true;
-            treeNode1.Name = "nodeAnemAvg";
-            treeNode1.Text = "Average";
-            treeNode2.Name = "nodeAnemSD";
-            treeNode2.Text = "St. Dev.";
-            treeNode3.Name = "nodeAnemMin";
-            treeNode3.Text = "Minimum";
-            treeNode4.Name = "nodeAnemMax";
-            treeNode4.Text = "Maximum";
-            treeNode5.Name = "nodeAlpha";
-            treeNode5.Text = "Alpha";
-            treeNode6.Name = "nodeExtrapWS";
-            treeNode6.Text = "Extrap. WS";
-            treeNode7.Checked = true;
-            treeNode7.Name = "nodeAnems";
-            treeNode7.Text = "Anems";
-            treeNode8.Name = "nodeVaneAvg";
-            treeNode8.Text = "Average";
-            treeNode9.Name = "nodeVaneSD";
-            treeNode9.Text = "St. Dev.";
-            treeNode10.Name = "nodeVaneMax";
-            treeNode10.Text = "Minimum";
-            treeNode11.Name = "nodeVaneMax";
-            treeNode11.Text = "Maximum";
-            treeNode12.Name = "nodeVanes";
-            treeNode12.Text = "Vanes";
-            treeNode13.Name = "Node0";
-            treeNode13.Text = "Average";
-            treeNode14.Name = "Node1";
-            treeNode14.Text = "St. Dev.";
-            treeNode15.Name = "Node2";
-            treeNode15.Text = "Minimum";
-            treeNode16.Name = "Node3";
-            treeNode16.Text = "Maximum";
-            treeNode17.Name = "nodeTemps";
-            treeNode17.Text = "Temps.";
-            treeNode18.Name = "Node4";
-            treeNode18.Text = "Average";
-            treeNode19.Name = "Node5";
-            treeNode19.Text = "St. Dev.";
-            treeNode20.Name = "Node6";
-            treeNode20.Text = "Minimum";
-            treeNode21.Name = "Node7";
-            treeNode21.Text = "Maximum";
-            treeNode22.Name = "nodeBaros";
-            treeNode22.Text = "Baros.";
+            treeNode45.Checked = true;
+            treeNode45.Name = "nodeAnemAvg";
+            treeNode45.Text = "Average";
+            treeNode46.Name = "nodeAnemSD";
+            treeNode46.Text = "St. Dev.";
+            treeNode47.Name = "nodeAnemMin";
+            treeNode47.Text = "Minimum";
+            treeNode48.Name = "nodeAnemMax";
+            treeNode48.Text = "Maximum";
+            treeNode49.Name = "nodeAlpha";
+            treeNode49.Text = "Alpha";
+            treeNode50.Name = "nodeExtrapWS";
+            treeNode50.Text = "Extrap. WS";
+            treeNode51.Checked = true;
+            treeNode51.Name = "nodeAnems";
+            treeNode51.Text = "Anems";
+            treeNode52.Name = "nodeVaneAvg";
+            treeNode52.Text = "Average";
+            treeNode53.Name = "nodeVaneSD";
+            treeNode53.Text = "St. Dev.";
+            treeNode54.Name = "nodeVaneMax";
+            treeNode54.Text = "Minimum";
+            treeNode55.Name = "nodeVaneMax";
+            treeNode55.Text = "Maximum";
+            treeNode56.Name = "nodeVanes";
+            treeNode56.Text = "Vanes";
+            treeNode57.Name = "Node0";
+            treeNode57.Text = "Average";
+            treeNode58.Name = "Node1";
+            treeNode58.Text = "St. Dev.";
+            treeNode59.Name = "Node2";
+            treeNode59.Text = "Minimum";
+            treeNode60.Name = "Node3";
+            treeNode60.Text = "Maximum";
+            treeNode61.Name = "nodeTemps";
+            treeNode61.Text = "Temps.";
+            treeNode62.Name = "Node4";
+            treeNode62.Text = "Average";
+            treeNode63.Name = "Node5";
+            treeNode63.Text = "St. Dev.";
+            treeNode64.Name = "Node6";
+            treeNode64.Text = "Minimum";
+            treeNode65.Name = "Node7";
+            treeNode65.Text = "Maximum";
+            treeNode66.Name = "nodeBaros";
+            treeNode66.Text = "Baros.";
             this.treeDataParams.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode7,
-            treeNode12,
-            treeNode17,
-            treeNode22});
+            treeNode51,
+            treeNode56,
+            treeNode61,
+            treeNode66});
             this.treeDataParams.Size = new System.Drawing.Size(121, 104);
             this.treeDataParams.TabIndex = 32;
             this.treeDataParams.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterCheck);
@@ -2184,7 +2184,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 537);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(780, 155);
+            this.plotTS_Baros.Size = new System.Drawing.Size(774, 155);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2408,7 +2408,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 382);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(780, 155);
+            this.plotTS_Temp.Size = new System.Drawing.Size(774, 155);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2423,7 +2423,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 227);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(780, 155);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(774, 155);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2438,7 +2438,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(780, 155);
+            this.plotTS_Anems.Size = new System.Drawing.Size(774, 155);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -7979,9 +7979,9 @@ namespace ContinuumNS
             // 
             // Column6
             // 
-            dataGridViewCellStyle1.Format = "P";
-            dataGridViewCellStyle1.NullValue = null;
-            this.Column6.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle9.Format = "P";
+            dataGridViewCellStyle9.NullValue = null;
+            this.Column6.DefaultCellStyle = dataGridViewCellStyle9;
             this.Column6.HeaderText = "5h 360 TVI";
             this.Column6.MinimumWidth = 6;
             this.Column6.Name = "Column6";
@@ -7998,9 +7998,9 @@ namespace ContinuumNS
             // 
             // Column8
             // 
-            dataGridViewCellStyle2.Format = "P";
-            dataGridViewCellStyle2.NullValue = null;
-            this.Column8.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle10.Format = "P";
+            dataGridViewCellStyle10.NullValue = null;
+            this.Column8.DefaultCellStyle = dataGridViewCellStyle10;
             this.Column8.HeaderText = "5h 30 TVI";
             this.Column8.MinimumWidth = 6;
             this.Column8.Name = "Column8";
@@ -8017,9 +8017,9 @@ namespace ContinuumNS
             // 
             // Column10
             // 
-            dataGridViewCellStyle3.Format = "P";
-            dataGridViewCellStyle3.NullValue = null;
-            this.Column10.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle11.Format = "P";
+            dataGridViewCellStyle11.NullValue = null;
+            this.Column10.DefaultCellStyle = dataGridViewCellStyle11;
             this.Column10.HeaderText = "10h 30 TVI";
             this.Column10.MinimumWidth = 6;
             this.Column10.Name = "Column10";
@@ -8036,9 +8036,9 @@ namespace ContinuumNS
             // 
             // Column12
             // 
-            dataGridViewCellStyle4.Format = "P";
-            dataGridViewCellStyle4.NullValue = null;
-            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle12.Format = "P";
+            dataGridViewCellStyle12.NullValue = null;
+            this.Column12.DefaultCellStyle = dataGridViewCellStyle12;
             this.Column12.HeaderText = "20h 30 TVI";
             this.Column12.MinimumWidth = 6;
             this.Column12.Name = "Column12";
@@ -8298,15 +8298,16 @@ namespace ContinuumNS
             this.plotTurbInt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotTurbInt.Location = new System.Drawing.Point(513, 24);
+            this.plotTurbInt.Location = new System.Drawing.Point(520, 18);
             this.plotTurbInt.Name = "plotTurbInt";
             this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(911, 663);
+            this.plotTurbInt.Size = new System.Drawing.Size(911, 589);
             this.plotTurbInt.TabIndex = 289;
             this.plotTurbInt.Text = "plotView1";
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTurbInt.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotTurbInt.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotTurbInt.Click += new System.EventHandler(this.plotTurbInt_Click);
             // 
             // btnExportTI
             // 
@@ -8464,7 +8465,7 @@ namespace ContinuumNS
             this.lstTurbulence.Location = new System.Drawing.Point(13, 51);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 636);
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 641);
             this.lstTurbulence.TabIndex = 275;
             this.lstTurbulence.UseCompatibleStateImageBehavior = false;
             this.lstTurbulence.View = System.Windows.Forms.View.Details;
@@ -8651,15 +8652,16 @@ namespace ContinuumNS
             this.plotExtremeShear.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotExtremeShear.Location = new System.Drawing.Point(502, 31);
+            this.plotExtremeShear.Location = new System.Drawing.Point(501, 18);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeShear.Size = new System.Drawing.Size(914, 653);
+            this.plotExtremeShear.Size = new System.Drawing.Size(914, 590);
             this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotExtremeShear.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotExtremeShear.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.plotExtremeShear.Click += new System.EventHandler(this.plotExtremeShear_Click);
             // 
             // dateTimeExtremeShearStart
             // 
@@ -8881,7 +8883,7 @@ namespace ContinuumNS
             // btnExportExtremeWSTable
             // 
             this.btnExportExtremeWSTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1047, 590);
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 568);
             this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
             this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
@@ -9178,7 +9180,7 @@ namespace ContinuumNS
             this.plotExtremeWS_TS.Location = new System.Drawing.Point(921, 24);
             this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
             this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 288);
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 254);
             this.plotExtremeWS_TS.TabIndex = 293;
             this.plotExtremeWS_TS.Text = "plotView1";
             this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9201,7 +9203,7 @@ namespace ContinuumNS
             this.dataExtremeWS.Location = new System.Drawing.Point(359, 17);
             this.dataExtremeWS.Name = "dataExtremeWS";
             this.dataExtremeWS.RowHeadersWidth = 51;
-            this.dataExtremeWS.Size = new System.Drawing.Size(548, 617);
+            this.dataExtremeWS.Size = new System.Drawing.Size(548, 597);
             this.dataExtremeWS.TabIndex = 292;
             // 
             // Column17
@@ -9289,10 +9291,10 @@ namespace ContinuumNS
             // 
             this.plotExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotExtremeWS.Location = new System.Drawing.Point(921, 298);
+            this.plotExtremeWS.Location = new System.Drawing.Point(921, 284);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(510, 285);
+            this.plotExtremeWS.Size = new System.Drawing.Size(510, 277);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9311,7 +9313,7 @@ namespace ContinuumNS
             // btnExtremeWS
             // 
             this.btnExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExtremeWS.Location = new System.Drawing.Point(921, 590);
+            this.btnExtremeWS.Location = new System.Drawing.Point(916, 568);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);

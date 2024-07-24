@@ -1399,7 +1399,7 @@ namespace ContinuumNS
                 else
                     hourlyToGust = avgGust / avgHourly;
 
-                // Convert hourly max WS to 10-min estimated max WS
+                // Convert hourly max WS to estimated gust max WS
                 extremeWinds.maxEstGust = new MaxYearlyWind[extremeWinds.maxHourlyRefWS.Length];
 
                 for (int i = 0; i < extremeWinds.maxHourlyRefWS.Length; i++)
