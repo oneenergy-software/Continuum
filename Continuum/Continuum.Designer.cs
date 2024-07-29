@@ -8307,7 +8307,6 @@ namespace ContinuumNS
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTurbInt.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotTurbInt.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            this.plotTurbInt.Click += new System.EventHandler(this.plotTurbInt_Click);
             // 
             // btnExportTI
             // 
@@ -8660,8 +8659,7 @@ namespace ContinuumNS
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotExtremeShear.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotExtremeShear.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
-            this.plotExtremeShear.Click += new System.EventHandler(this.plotExtremeShear_Click);
+            this.plotExtremeShear.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;            
             // 
             // dateTimeExtremeShearStart
             // 
