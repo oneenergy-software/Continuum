@@ -1660,48 +1660,62 @@ namespace ContinuumNS
             string MCP_Method = theArgs.MCP_Method;
             MetCollection metList = thisInst.metList;
             MetPairCollection metPairList = thisInst.metPairList;
+            string[] metsUsed = metList.GetMetsUsed();
 
             int minRR_Size = theArgs.Min_RR_Size;
-            string[] metsUsed = metList.GetMetsUsed();
+            int firstRR_Size = minRR_Size;
+            int lastRR_Size = minRR_Size;
+
+            if (minRR_Size == 999)
+            {
+                // Do Round Robin for all met subset sizes
+                firstRR_Size = 1;
+                lastRR_Size = metsUsed.Length - 1;
+            }                     
 
             int numMets = metsUsed.Length;
             MetPairCollection.RR_funct_obj[] RR_obj_coll = new MetPairCollection.RR_funct_obj[1];
 
             string textForProgBar = "Preparing for Round Robin Analysis";
             BackgroundWorker_RoundRobin.ReportProgress(0, textForProgBar);
-
-            for (int n = metsUsed.Length - minRR_Size; n <= numMets - minRR_Size; n++)
+                        
+            for (int r = firstRR_Size; r <= lastRR_Size; r++)
             {
-                int numMetsInModel = metsUsed.Length - n;
-                bool RR_Done = metPairList.RR_DoneAlready(metsUsed, numMetsInModel, metList);
-
-                if (RR_Done == false)
+                minRR_Size = r;
+                
+                for (int n = metsUsed.Length - minRR_Size; n <= numMets - minRR_Size; n++)
                 {
-                    int numModels = metPairList.GetNumModelsForRoundRobin(numMets, numMetsInModel);
-                    string[,] metsForModels = metPairList.GetAllCombos(metsUsed, numMets, numMetsInModel, numModels);
+                    int numMetsInModel = metsUsed.Length - n;
+                    bool RR_Done = metPairList.RR_DoneAlready(metsUsed, numMetsInModel, metList);
 
-                    for (int i = 0; i <= numModels - 1; i++)
+                    if (RR_Done == false)
                     {
-                        string[] metsForThisModel = new string[numMetsInModel];
+                        int numModels = metPairList.GetNumModelsForRoundRobin(numMets, numMetsInModel);
+                        string[,] metsForModels = metPairList.GetAllCombos(metsUsed, numMets, numMetsInModel, numModels);
 
-                        for (int j = 0; j <= numMetsInModel - 1; j++)
-                            metsForThisModel[j] = metsForModels[j, i];
-
-                        textForProgBar = "Calculating model error using " + (metsUsed.Length - n).ToString() + " met sites : " + i + "/" + numModels;
-                        BackgroundWorker_RoundRobin.ReportProgress(100 * i / numModels, textForProgBar);
-
-                        MetPairCollection.RR_funct_obj thisRR_obj = metPairList.DoRR_Calc(metsForThisModel, thisInst, metsUsed, MCP_Method);
-                        Array.Resize(ref RR_obj_coll, i + 1);
-                        RR_obj_coll[i] = thisRR_obj;
-
-                        if (BackgroundWorker_RoundRobin.CancellationPending == true)
+                        for (int i = 0; i <= numModels - 1; i++)
                         {
-                            e.Result = thisInst;
-                            return;
-                        }
-                    }
+                            string[] metsForThisModel = new string[numMetsInModel];
 
-                    metPairList.AddRoundRobinEst(RR_obj_coll, metsUsed, numMetsInModel, metsForModels);
+                            for (int j = 0; j <= numMetsInModel - 1; j++)
+                                metsForThisModel[j] = metsForModels[j, i];
+
+                            textForProgBar = "Calculating model error using " + (metsUsed.Length - n).ToString() + " met sites : " + i + "/" + numModels;
+                            BackgroundWorker_RoundRobin.ReportProgress(100 * i / numModels, textForProgBar);
+
+                            MetPairCollection.RR_funct_obj thisRR_obj = metPairList.DoRR_Calc(metsForThisModel, thisInst, metsUsed, MCP_Method);
+                            Array.Resize(ref RR_obj_coll, i + 1);
+                            RR_obj_coll[i] = thisRR_obj;
+
+                            if (BackgroundWorker_RoundRobin.CancellationPending == true)
+                            {
+                                e.Result = thisInst;
+                                return;
+                            }
+                        }
+
+                        metPairList.AddRoundRobinEst(RR_obj_coll, metsUsed, numMetsInModel, metsForModels);
+                    }
                 }
             }
 

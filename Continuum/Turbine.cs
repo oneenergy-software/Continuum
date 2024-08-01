@@ -1105,7 +1105,15 @@ namespace ContinuumNS
                         Nodes targetNode = nodeList.GetTurbNode(this);
                         Nodes startNode = nodeList.GetMetNode(thisMet);
 
-                        WS_Estimate[WS_Est_ind].pathOfNodes = nodeList.FindPathOfNodes(startNode, targetNode, models[m], thisInst);
+                        if (thisInst.metList.GetMetAtUTMXY(UTMX, UTMY) != null)
+                        {
+                            Pair_Of_Mets thisPair = thisInst.metPairList.GetPair_Of_Mets(thisInst.metList.GetMetAtUTMXY(UTMX, UTMY), thisMet);
+                            WS_Estimate[WS_Est_ind].pathOfNodes = thisPair.GetPathOfNodes(models[m].radius);
+                        }
+                        
+                        if (WS_Estimate[WS_Est_ind].pathOfNodes == null)
+                            WS_Estimate[WS_Est_ind].pathOfNodes = nodeList.FindPathOfNodes(startNode, targetNode, models[m], thisInst);
+
 
                         WS_Ests thisEst = DoWS_EstAlongNodes(thisMet, models[m], WS_Estimate[WS_Est_ind].pathOfNodes, thisInst, windRose);
                         WS_Estimate[WS_Est_ind].sectorWS = thisEst.sectorWS;

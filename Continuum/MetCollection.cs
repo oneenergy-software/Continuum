@@ -2087,6 +2087,23 @@ namespace ContinuumNS
             return thisMet;
         }
 
+        /// <summary> Get met tower with specified latitude and longitude </summary>
+        public Met GetMetAtUTMXY(double thisUTMX, double thisUTMY)
+        {
+            Met thisMet = null;
+
+            for (int m = 0; m < ThisCount; m++)
+            {                
+                if (Math.Abs(metItem[m].UTMX - thisUTMX) < 1 && Math.Abs(metItem[m].UTMY - thisUTMY) < 1)
+                {
+                    thisMet = metItem[m];
+                    break;
+                }
+            }
+
+            return thisMet;
+        }
+
         /// <summary> Get Reference used to generate MCP estimates at met sites </summary>
         public Reference[] GetReferencesUsedInMCP(string[] metsUsed)
         {

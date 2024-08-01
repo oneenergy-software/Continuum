@@ -448,6 +448,12 @@
     <Compile Include="Stats.cs" />
     <Compile Include="Baro_table.cs" />
     <Compile Include="Temp_table.cs" />
+    <Compile Include="TopoDataDownload.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TopoDataDownload.Designer.cs">
+      <DependentUpon>TopoDataDownload.cs</DependentUpon>
+    </Compile>
     <Compile Include="TopoInfo.cs" />
     <Compile Include="Topo_Load_UTM_Datum_Zone.cs">
       <SubType>Form</SubType>
@@ -576,6 +582,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SplashScreen.resx">
       <DependentUpon>SplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TopoDataDownload.resx">
+      <DependentUpon>TopoDataDownload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Topo_Load_UTM_Datum_Zone.resx">
       <DependentUpon>Topo_Load_UTM_Datum_Zone.cs</DependentUpon>

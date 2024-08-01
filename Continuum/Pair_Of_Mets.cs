@@ -312,6 +312,22 @@ namespace ContinuumNS
             WS_Pred = null;
         }
 
+        public Nodes[] GetPathOfNodes(int thisRadius)
+        {
+            // If have WS_CrossPreds already created for specified radius, return path of nodes otherwise return null
+            Nodes[] thisPath = null;
+
+            if (WS_PredCount > 0)
+                for (int r = 0; r <= WS_Pred.GetUpperBound(1); r++)
+                    if (thisRadius == WS_Pred[0, r].model.radius)
+                    {
+                        thisPath = WS_Pred[0, r].nodePath;
+                        break;
+                    }
+
+            return thisPath;
+        }
+
         
     }
 }

@@ -35,6 +35,10 @@ namespace ContinuumNS
         public bool useSR;
         /// <summary> If true then flow separation model is used in wind speed estimates. </summary>
         public bool useSepMod;
+
+        /// <summary> If true then elevation model is used in wind speed estimates </summary>
+        public bool useElev;
+
         /// <summary> True when topo data has been loaded. </summary>
         public bool gotTopo;
 

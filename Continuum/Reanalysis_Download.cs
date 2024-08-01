@@ -411,6 +411,7 @@ namespace ContinuumNS
         public void UpdateListOfRefDataDownloads()
         {
             cboRefDataDownloads.Items.Clear();
+            cboRefDataDownloads.Text = "";
 
             for (int r = 0; r < thisInst.refList.numRefDataDownloads; r++)            
                 cboRefDataDownloads.Items.Add(thisInst.refList.refDataDownloads[r].GetName());

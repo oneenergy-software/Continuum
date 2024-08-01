@@ -401,6 +401,9 @@ namespace ContinuumNS
             if (ModelCount == 0 || createIfNeeded)
             {
                 CreateModel(metsUsed, thisInst, thisTOD, thisSeason, thisHeight);
+                thisModel = new Model[RadiiCount]; // This was added for cases where 'Analyze Mets' has not been called so there are no models and radiiCount = 0.  Once 'Create Model'
+                                                   // is called, models are created and RadiiCount is set so need to re-initialize thisModel array
+
                 for (int i = 0; i < ModelCount; i++)
                 {
                     sameMets = thisInst.metList.sameMets(metsUsed, models[i, 0].metsUsed);
@@ -756,7 +759,11 @@ namespace ContinuumNS
                         Nodes met1Node = nodeList.GetMetNode(thisInst.metPairList.metPairs[j].met1);
                         Nodes met2Node = nodeList.GetMetNode(thisInst.metPairList.metPairs[j].met2);
 
-                        Nodes[] pathOfNodes = nodeList.FindPathOfNodes(met1Node, met2Node, models[i], thisInst);                        
+                        Nodes[] pathOfNodes = thisInst.metPairList.metPairs[j].GetPathOfNodes(thisInst.radiiList.investItem[i].radius);
+                        
+                        if (pathOfNodes == null)
+                            pathOfNodes = nodeList.FindPathOfNodes(met1Node, met2Node, models[i], thisInst);   
+                        
                         thisInst.metPairList.metPairs[j].AddNodesToWS_Pred(models, pathOfNodes, models[i].radius, this);
                     }
 
@@ -1167,6 +1174,9 @@ namespace ContinuumNS
             double DW_Stab_Corr_1 = 0;
             double DW_Stab_Corr_2 = 0;
 
+            double deltaWS_Elev = 0; // Change in WS due to changes in elevation
+            double elevDiff = 0;
+
             NodeCollection nodeList = new NodeCollection();
             Nodes thisNode;
             Nodes node1;
@@ -1198,7 +1208,8 @@ namespace ContinuumNS
                 nodeUTM2.UTMX = thisNode.UTMX;
                 nodeUTM2.UTMY = thisNode.UTMY;
                 WS_Equiv = GetWS_Equiv(startMetDist.windRose, nodeWindRose, sectorWS);
-
+                elevDiff = thisNode.elev - startMet.elev;
+                                
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                 {
                     // Met to first node                    
@@ -1248,9 +1259,12 @@ namespace ContinuumNS
                         deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
+                    if (thisInst.topo.useElev)
+                        deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
                     // Avg WS Estimate at first node
                     if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                        WS_Est_Return.sectorWS_AtNodes[0, WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                        WS_Est_Return.sectorWS_AtNodes[0, WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev;
                     else
                         WS_Est_Return.sectorWS_AtNodes[0, WD_Ind] = 0.05f; // no negative wind speed estimates!                    
                 }
@@ -1273,6 +1287,7 @@ namespace ContinuumNS
                         sectorWS[WD_Ind] = WS_Est_Return.sectorWS_AtNodes[nodeInd, WD_Ind];
 
                     WS_Equiv = GetWS_Equiv(node1WindRose, node2WindRose, sectorWS);
+                    elevDiff = node2.elev - node1.elev;
 
                     for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                     {
@@ -1323,8 +1338,11 @@ namespace ContinuumNS
                             deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                         }
 
+                        if (thisInst.topo.useElev)
+                            deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
                         if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                            WS_Est_Return.sectorWS_AtNodes[nodeInd + 1, WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                            WS_Est_Return.sectorWS_AtNodes[nodeInd + 1, WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev;
                         else
                             WS_Est_Return.sectorWS_AtNodes[nodeInd + 1, WD_Ind] = 0.05f; // no negative wind speed estimates!
 
@@ -1347,7 +1365,7 @@ namespace ContinuumNS
                 double[] endNodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, endNode.UTMX, endNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
 
                 WS_Equiv = GetWS_Equiv(nodeWindRose, endNodeWindRose, sectorWS);
-                               
+                elevDiff = endNode.elev - thisNode.elev;
 
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                 {
@@ -1399,8 +1417,11 @@ namespace ContinuumNS
                         deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
+                    if (thisInst.topo.useElev)
+                        deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
                     if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                        WS_Est_Return.sectorWS[WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                        WS_Est_Return.sectorWS[WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev;
                     else
                         WS_Est_Return.sectorWS[WD_Ind] = 0.05f;
 
@@ -1414,6 +1435,7 @@ namespace ContinuumNS
                 WS_Equiv = GetWS_Equiv(startWindRose, endNodeWindRose, sectorWS);
                 nodeUTM2.UTMX = endNode.UTMX;
                 nodeUTM2.UTMY = endNode.UTMY;
+                elevDiff = endNode.elev - startMet.elev;
 
                 for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                 {
@@ -1463,8 +1485,11 @@ namespace ContinuumNS
                         deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
+                    if (thisInst.topo.useElev)
+                        deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
                     if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                        WS_Est_Return.sectorWS[WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                        WS_Est_Return.sectorWS[WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev;
                     else
                         WS_Est_Return.sectorWS[WD_Ind] = 0.05f;
 

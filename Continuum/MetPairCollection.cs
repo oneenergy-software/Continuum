@@ -93,6 +93,8 @@ namespace ContinuumNS
         /// <summary> Continuum adjusted model coefficients for each flow type (downhill, uphill, induced speed-up, and flow separation). </summary>
         public struct Model_Adj
         {
+            /// <summary> Elevation model coefficient multiplier by direction sector </summary>
+            public double[] elev_Adj;
             /// <summary> Downhill model parameter, A, multiplier by direction sector </summary>
             public double[] DH_A_Adj;
             /// <summary> Downhill model parameter, B, multiplier by direction sector </summary>
@@ -415,6 +417,10 @@ namespace ContinuumNS
 
             for (double thisVal = minVal; thisVal <= maxVal; thisVal = Math.Round(thisVal + valInt,3))
             {
+                if (iterType == "Elevation")
+                {
+                    adjModel.elev_Adj[WD_Ind] = thisVal;
+                }
                 if (iterType == "Downhill A")
                 {
                     adjModel.DH_A_Adj[WD_Ind] = thisVal * theseInit.DH / origModel.downhill_A[WD_Ind] / (Math.Pow(avgP10ExpoWD[WD_Ind], (origModel.downhill_B[WD_Ind] * adjModel.DH_B_Adj[WD_Ind])));
@@ -540,6 +546,9 @@ namespace ContinuumNS
 
                 if (RMS_Err < minError)
                 {
+                    if (iterType == "Elevation")
+                        val1MinRMS = adjModel.elev_Adj[WD_Ind];
+
                     if (iterType == "Downhill A")
                         val1MinRMS = adjModel.DH_A_Adj[WD_Ind];
                     else if (iterType == "Downhill B")
@@ -598,6 +607,8 @@ namespace ContinuumNS
                 val2MinRMS = midVal2;
             }
             
+            if (iterType == "Elevation")
+                adjModel.elev_Adj[WD_Ind] = val1MinRMS;
             if (iterType == "UW Critical")
                 adjModel.UW_Crit[WD_Ind] = val1MinRMS;
             else if (iterType == "Flow Sep Critical")
@@ -662,7 +673,8 @@ namespace ContinuumNS
 
         /// <summary> Sizes arrays in modified wind flow model </summary>    
         public void SizeAdjModel(ref Model_Adj thisAdjModel, int numWD)
-        {            
+        {    
+            thisAdjModel.elev_Adj = new double[numWD];
             thisAdjModel.DH_A_Adj = new double[numWD];
             thisAdjModel.DH_B_Adj = new double[numWD];
             thisAdjModel.UH_A_Adj = new double[numWD];
@@ -819,6 +831,10 @@ namespace ContinuumNS
                               theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
                 }
 
+                // Elevation
+                if (thisInst.topo.useElev)
+                    Sweep_a_Param(thisInst, 0.0f, 2.0f, 0.2f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
                 // 3) Downhill flow
                 Sweep_a_Param(thisInst, 0.65f, 1.5, 0.2f, WD_Ind, "Downhill A", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
@@ -898,6 +914,12 @@ namespace ContinuumNS
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
+                // Elevation
+                lowLim = 0.7f * thisAdjModel.elev_Adj[WD_Ind];
+                upperLim = 1.3f * thisAdjModel.elev_Adj[WD_Ind];
+                if (thisInst.topo.useElev)
+                    Sweep_a_Param(thisInst, 0.0f, 2.0f, 0.2f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
                 // 1) Sweep UW Crit
 
                 lowLim = 0.7f * thisAdjModel.UW_Crit[WD_Ind];
@@ -1007,6 +1029,7 @@ namespace ContinuumNS
         {
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
+                thisAdjModel.elev_Adj[WD_Ind] = 1;
                 thisAdjModel.DH_A_Adj[WD_Ind] = theseInitParams.DH / thisModel.downhill_A[0];
                 thisAdjModel.DH_B_Adj[WD_Ind] = 0;
                 thisAdjModel.UH_A_Adj[WD_Ind] = Math.Abs(theseInitParams.UH) / thisModel.uphill_A[0];
@@ -1108,6 +1131,8 @@ namespace ContinuumNS
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
+                thisModel.elevCoeff[WD_Ind] = origModel.elevCoeff[WD_Ind] * thisAdjModel.elev_Adj[WD_Ind];
+
                 thisModel.downhill_A[WD_Ind] = origModel.downhill_A[WD_Ind] * thisAdjModel.DH_A_Adj[WD_Ind];
                 thisModel.downhill_B[WD_Ind] = origModel.downhill_B[WD_Ind] * thisAdjModel.DH_B_Adj[WD_Ind];
 
@@ -1289,6 +1314,8 @@ namespace ContinuumNS
 
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
+                model.elevCoeff[WD_Ind] = defaultModel.elevCoeff[WD_Ind] * adjModel.elev_Adj[WD_Ind];
+
                 model.downhill_A[WD_Ind] = defaultModel.downhill_A[WD_Ind] * adjModel.DH_A_Adj[WD_Ind];
                 model.downhill_B[WD_Ind] = defaultModel.downhill_B[WD_Ind] * adjModel.DH_B_Adj[WD_Ind];
                 model.uphill_A[WD_Ind] = defaultModel.uphill_A[WD_Ind] * adjModel.UH_A_Adj[WD_Ind];

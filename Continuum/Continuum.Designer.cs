@@ -30,53 +30,54 @@ namespace ContinuumNS
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode49 = new System.Windows.Forms.TreeNode("Alpha");
-            System.Windows.Forms.TreeNode treeNode50 = new System.Windows.Forms.TreeNode("Extrap. WS");
-            System.Windows.Forms.TreeNode treeNode51 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
-            treeNode45,
-            treeNode46,
-            treeNode47,
-            treeNode48,
-            treeNode49,
-            treeNode50});
-            System.Windows.Forms.TreeNode treeNode52 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode53 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode54 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode55 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode56 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
-            treeNode52,
-            treeNode53,
-            treeNode54,
-            treeNode55});
-            System.Windows.Forms.TreeNode treeNode57 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode58 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode59 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode60 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode61 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
-            treeNode57,
-            treeNode58,
-            treeNode59,
-            treeNode60});
-            System.Windows.Forms.TreeNode treeNode62 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode63 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode64 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode65 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode66 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
-            treeNode62,
-            treeNode63,
-            treeNode64,
-            treeNode65});
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Alpha");
+            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Extrap. WS");
+            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
+            treeNode23,
+            treeNode24,
+            treeNode25,
+            treeNode26,
+            treeNode27,
+            treeNode28});
+            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode33 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode34 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
+            treeNode30,
+            treeNode31,
+            treeNode32,
+            treeNode33});
+            System.Windows.Forms.TreeNode treeNode35 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode36 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode37 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode38 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode39 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
+            treeNode35,
+            treeNode36,
+            treeNode37,
+            treeNode38});
+            System.Windows.Forms.TreeNode treeNode40 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode41 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode42 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
+            treeNode40,
+            treeNode41,
+            treeNode42,
+            treeNode43});
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
+            this.chkUseElevModel = new System.Windows.Forms.CheckBox();
             this.btnShowMetTS_Info = new System.Windows.Forms.Button();
             this.cboInputLLorDD = new System.Windows.Forms.ComboBox();
             this.pnlInputMap = new System.Windows.Forms.Panel();
@@ -1091,6 +1092,7 @@ namespace ContinuumNS
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateHeadersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadReanalysisDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.downloadTopographyDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mongoDBTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ofdXYZfile = new System.Windows.Forms.OpenFileDialog();
             this.ofdPowerCurve = new System.Windows.Forms.OpenFileDialog();
@@ -1114,6 +1116,7 @@ namespace ContinuumNS
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
+            this.btnDoAllRRs = new System.Windows.Forms.Button();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pnlInputMap.SuspendLayout();
@@ -1181,6 +1184,7 @@ namespace ContinuumNS
             // pgeInput
             // 
             this.pgeInput.AutoScroll = true;
+            this.pgeInput.Controls.Add(this.chkUseElevModel);
             this.pgeInput.Controls.Add(this.btnShowMetTS_Info);
             this.pgeInput.Controls.Add(this.cboInputLLorDD);
             this.pgeInput.Controls.Add(this.pnlInputMap);
@@ -1236,6 +1240,19 @@ namespace ContinuumNS
             this.pgeInput.TabIndex = 0;
             this.pgeInput.Text = "Input";
             this.pgeInput.UseVisualStyleBackColor = true;
+            // 
+            // chkUseElevModel
+            // 
+            this.chkUseElevModel.AutoSize = true;
+            this.chkUseElevModel.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkUseElevModel.Location = new System.Drawing.Point(330, 213);
+            this.chkUseElevModel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUseElevModel.Name = "chkUseElevModel";
+            this.chkUseElevModel.Size = new System.Drawing.Size(158, 21);
+            this.chkUseElevModel.TabIndex = 143;
+            this.chkUseElevModel.Text = "Enable Elevation Model";
+            this.chkUseElevModel.UseVisualStyleBackColor = true;
+            this.chkUseElevModel.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // btnShowMetTS_Info
             // 
@@ -1701,7 +1718,7 @@ namespace ContinuumNS
             // txtUTMZone
             // 
             this.txtUTMZone.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUTMZone.Location = new System.Drawing.Point(299, 216);
+            this.txtUTMZone.Location = new System.Drawing.Point(230, 217);
             this.txtUTMZone.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtUTMZone.Name = "txtUTMZone";
             this.txtUTMZone.ReadOnly = true;
@@ -1712,7 +1729,7 @@ namespace ContinuumNS
             // 
             this.Label57.AutoSize = true;
             this.Label57.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label57.Location = new System.Drawing.Point(222, 221);
+            this.Label57.Location = new System.Drawing.Point(223, 195);
             this.Label57.Name = "Label57";
             this.Label57.Size = new System.Drawing.Size(74, 18);
             this.Label57.TabIndex = 104;
@@ -2065,57 +2082,57 @@ namespace ContinuumNS
             this.treeDataParams.CheckBoxes = true;
             this.treeDataParams.Location = new System.Drawing.Point(184, 72);
             this.treeDataParams.Name = "treeDataParams";
-            treeNode45.Checked = true;
-            treeNode45.Name = "nodeAnemAvg";
-            treeNode45.Text = "Average";
-            treeNode46.Name = "nodeAnemSD";
-            treeNode46.Text = "St. Dev.";
-            treeNode47.Name = "nodeAnemMin";
-            treeNode47.Text = "Minimum";
-            treeNode48.Name = "nodeAnemMax";
-            treeNode48.Text = "Maximum";
-            treeNode49.Name = "nodeAlpha";
-            treeNode49.Text = "Alpha";
-            treeNode50.Name = "nodeExtrapWS";
-            treeNode50.Text = "Extrap. WS";
-            treeNode51.Checked = true;
-            treeNode51.Name = "nodeAnems";
-            treeNode51.Text = "Anems";
-            treeNode52.Name = "nodeVaneAvg";
-            treeNode52.Text = "Average";
-            treeNode53.Name = "nodeVaneSD";
-            treeNode53.Text = "St. Dev.";
-            treeNode54.Name = "nodeVaneMax";
-            treeNode54.Text = "Minimum";
-            treeNode55.Name = "nodeVaneMax";
-            treeNode55.Text = "Maximum";
-            treeNode56.Name = "nodeVanes";
-            treeNode56.Text = "Vanes";
-            treeNode57.Name = "Node0";
-            treeNode57.Text = "Average";
-            treeNode58.Name = "Node1";
-            treeNode58.Text = "St. Dev.";
-            treeNode59.Name = "Node2";
-            treeNode59.Text = "Minimum";
-            treeNode60.Name = "Node3";
-            treeNode60.Text = "Maximum";
-            treeNode61.Name = "nodeTemps";
-            treeNode61.Text = "Temps.";
-            treeNode62.Name = "Node4";
-            treeNode62.Text = "Average";
-            treeNode63.Name = "Node5";
-            treeNode63.Text = "St. Dev.";
-            treeNode64.Name = "Node6";
-            treeNode64.Text = "Minimum";
-            treeNode65.Name = "Node7";
-            treeNode65.Text = "Maximum";
-            treeNode66.Name = "nodeBaros";
-            treeNode66.Text = "Baros.";
+            treeNode23.Checked = true;
+            treeNode23.Name = "nodeAnemAvg";
+            treeNode23.Text = "Average";
+            treeNode24.Name = "nodeAnemSD";
+            treeNode24.Text = "St. Dev.";
+            treeNode25.Name = "nodeAnemMin";
+            treeNode25.Text = "Minimum";
+            treeNode26.Name = "nodeAnemMax";
+            treeNode26.Text = "Maximum";
+            treeNode27.Name = "nodeAlpha";
+            treeNode27.Text = "Alpha";
+            treeNode28.Name = "nodeExtrapWS";
+            treeNode28.Text = "Extrap. WS";
+            treeNode29.Checked = true;
+            treeNode29.Name = "nodeAnems";
+            treeNode29.Text = "Anems";
+            treeNode30.Name = "nodeVaneAvg";
+            treeNode30.Text = "Average";
+            treeNode31.Name = "nodeVaneSD";
+            treeNode31.Text = "St. Dev.";
+            treeNode32.Name = "nodeVaneMax";
+            treeNode32.Text = "Minimum";
+            treeNode33.Name = "nodeVaneMax";
+            treeNode33.Text = "Maximum";
+            treeNode34.Name = "nodeVanes";
+            treeNode34.Text = "Vanes";
+            treeNode35.Name = "Node0";
+            treeNode35.Text = "Average";
+            treeNode36.Name = "Node1";
+            treeNode36.Text = "St. Dev.";
+            treeNode37.Name = "Node2";
+            treeNode37.Text = "Minimum";
+            treeNode38.Name = "Node3";
+            treeNode38.Text = "Maximum";
+            treeNode39.Name = "nodeTemps";
+            treeNode39.Text = "Temps.";
+            treeNode40.Name = "Node4";
+            treeNode40.Text = "Average";
+            treeNode41.Name = "Node5";
+            treeNode41.Text = "St. Dev.";
+            treeNode42.Name = "Node6";
+            treeNode42.Text = "Minimum";
+            treeNode43.Name = "Node7";
+            treeNode43.Text = "Maximum";
+            treeNode44.Name = "nodeBaros";
+            treeNode44.Text = "Baros.";
             this.treeDataParams.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode51,
-            treeNode56,
-            treeNode61,
-            treeNode66});
+            treeNode29,
+            treeNode34,
+            treeNode39,
+            treeNode44});
             this.treeDataParams.Size = new System.Drawing.Size(121, 104);
             this.treeDataParams.TabIndex = 32;
             this.treeDataParams.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterCheck);
@@ -2184,7 +2201,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 537);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(774, 155);
+            this.plotTS_Baros.Size = new System.Drawing.Size(738, 155);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2408,7 +2425,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 382);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(774, 155);
+            this.plotTS_Temp.Size = new System.Drawing.Size(738, 155);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2423,7 +2440,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 227);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(774, 155);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(738, 155);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2438,7 +2455,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(774, 155);
+            this.plotTS_Anems.Size = new System.Drawing.Size(738, 155);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -7979,9 +7996,9 @@ namespace ContinuumNS
             // 
             // Column6
             // 
-            dataGridViewCellStyle9.Format = "P";
-            dataGridViewCellStyle9.NullValue = null;
-            this.Column6.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle5.Format = "P";
+            dataGridViewCellStyle5.NullValue = null;
+            this.Column6.DefaultCellStyle = dataGridViewCellStyle5;
             this.Column6.HeaderText = "5h 360 TVI";
             this.Column6.MinimumWidth = 6;
             this.Column6.Name = "Column6";
@@ -7998,9 +8015,9 @@ namespace ContinuumNS
             // 
             // Column8
             // 
-            dataGridViewCellStyle10.Format = "P";
-            dataGridViewCellStyle10.NullValue = null;
-            this.Column8.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle6.Format = "P";
+            dataGridViewCellStyle6.NullValue = null;
+            this.Column8.DefaultCellStyle = dataGridViewCellStyle6;
             this.Column8.HeaderText = "5h 30 TVI";
             this.Column8.MinimumWidth = 6;
             this.Column8.Name = "Column8";
@@ -8017,9 +8034,9 @@ namespace ContinuumNS
             // 
             // Column10
             // 
-            dataGridViewCellStyle11.Format = "P";
-            dataGridViewCellStyle11.NullValue = null;
-            this.Column10.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle7.Format = "P";
+            dataGridViewCellStyle7.NullValue = null;
+            this.Column10.DefaultCellStyle = dataGridViewCellStyle7;
             this.Column10.HeaderText = "10h 30 TVI";
             this.Column10.MinimumWidth = 6;
             this.Column10.Name = "Column10";
@@ -8036,9 +8053,9 @@ namespace ContinuumNS
             // 
             // Column12
             // 
-            dataGridViewCellStyle12.Format = "P";
-            dataGridViewCellStyle12.NullValue = null;
-            this.Column12.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle8.Format = "P";
+            dataGridViewCellStyle8.NullValue = null;
+            this.Column12.DefaultCellStyle = dataGridViewCellStyle8;
             this.Column12.HeaderText = "20h 30 TVI";
             this.Column12.MinimumWidth = 6;
             this.Column12.Name = "Column12";
@@ -8301,7 +8318,7 @@ namespace ContinuumNS
             this.plotTurbInt.Location = new System.Drawing.Point(520, 18);
             this.plotTurbInt.Name = "plotTurbInt";
             this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(911, 589);
+            this.plotTurbInt.Size = new System.Drawing.Size(911, 619);
             this.plotTurbInt.TabIndex = 289;
             this.plotTurbInt.Text = "plotView1";
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8464,7 +8481,7 @@ namespace ContinuumNS
             this.lstTurbulence.Location = new System.Drawing.Point(13, 51);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 641);
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 671);
             this.lstTurbulence.TabIndex = 275;
             this.lstTurbulence.UseCompatibleStateImageBehavior = false;
             this.lstTurbulence.View = System.Windows.Forms.View.Details;
@@ -8654,12 +8671,12 @@ namespace ContinuumNS
             this.plotExtremeShear.Location = new System.Drawing.Point(501, 18);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeShear.Size = new System.Drawing.Size(914, 590);
+            this.plotExtremeShear.Size = new System.Drawing.Size(914, 620);
             this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotExtremeShear.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotExtremeShear.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;            
+            this.plotExtremeShear.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // dateTimeExtremeShearStart
             // 
@@ -8881,7 +8898,7 @@ namespace ContinuumNS
             // btnExportExtremeWSTable
             // 
             this.btnExportExtremeWSTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 568);
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 582);
             this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
             this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
@@ -9178,7 +9195,7 @@ namespace ContinuumNS
             this.plotExtremeWS_TS.Location = new System.Drawing.Point(921, 24);
             this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
             this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 254);
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 283);
             this.plotExtremeWS_TS.TabIndex = 293;
             this.plotExtremeWS_TS.Text = "plotView1";
             this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9201,7 +9218,7 @@ namespace ContinuumNS
             this.dataExtremeWS.Location = new System.Drawing.Point(359, 17);
             this.dataExtremeWS.Name = "dataExtremeWS";
             this.dataExtremeWS.RowHeadersWidth = 51;
-            this.dataExtremeWS.Size = new System.Drawing.Size(548, 597);
+            this.dataExtremeWS.Size = new System.Drawing.Size(548, 614);
             this.dataExtremeWS.TabIndex = 292;
             // 
             // Column17
@@ -9289,7 +9306,7 @@ namespace ContinuumNS
             // 
             this.plotExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotExtremeWS.Location = new System.Drawing.Point(921, 284);
+            this.plotExtremeWS.Location = new System.Drawing.Point(921, 298);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
             this.plotExtremeWS.Size = new System.Drawing.Size(510, 277);
@@ -9311,7 +9328,7 @@ namespace ContinuumNS
             // btnExtremeWS
             // 
             this.btnExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExtremeWS.Location = new System.Drawing.Point(916, 568);
+            this.btnExtremeWS.Location = new System.Drawing.Point(916, 582);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);
@@ -10272,6 +10289,7 @@ namespace ContinuumNS
             // pgeRound
             // 
             this.pgeRound.AutoScroll = true;
+            this.pgeRound.Controls.Add(this.btnDoAllRRs);
             this.pgeRound.Controls.Add(this.plotTurbUncert);
             this.pgeRound.Controls.Add(this.plotRR_Histo);
             this.pgeRound.Controls.Add(this.plotRRErrorByNumMets);
@@ -10368,7 +10386,7 @@ namespace ContinuumNS
             // cboRR_MinSize
             // 
             this.cboRR_MinSize.FormattingEnabled = true;
-            this.cboRR_MinSize.Location = new System.Drawing.Point(159, 406);
+            this.cboRR_MinSize.Location = new System.Drawing.Point(159, 377);
             this.cboRR_MinSize.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboRR_MinSize.Name = "cboRR_MinSize";
             this.cboRR_MinSize.Size = new System.Drawing.Size(70, 26);
@@ -10377,7 +10395,7 @@ namespace ContinuumNS
             // Label31
             // 
             this.Label31.AutoSize = true;
-            this.Label31.Location = new System.Drawing.Point(154, 364);
+            this.Label31.Location = new System.Drawing.Point(154, 335);
             this.Label31.Name = "Label31";
             this.Label31.Size = new System.Drawing.Size(80, 38);
             this.Label31.TabIndex = 173;
@@ -10591,7 +10609,7 @@ namespace ContinuumNS
             // 
             // btnExportRR
             // 
-            this.btnExportRR.Location = new System.Drawing.Point(15, 416);
+            this.btnExportRR.Location = new System.Drawing.Point(15, 435);
             this.btnExportRR.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportRR.Name = "btnExportRR";
             this.btnExportRR.Size = new System.Drawing.Size(127, 65);
@@ -10693,7 +10711,7 @@ namespace ContinuumNS
             // btnDoRRCalcs
             // 
             this.btnDoRRCalcs.BackColor = System.Drawing.Color.LightCoral;
-            this.btnDoRRCalcs.Location = new System.Drawing.Point(15, 361);
+            this.btnDoRRCalcs.Location = new System.Drawing.Point(15, 342);
             this.btnDoRRCalcs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDoRRCalcs.Name = "btnDoRRCalcs";
             this.btnDoRRCalcs.Size = new System.Drawing.Size(127, 48);
@@ -11116,6 +11134,7 @@ namespace ContinuumNS
             "DW Roughness",
             "UW Disp H",
             "DW Disp H",
+            "dWS Elev",
             "dWS UW Expo",
             "dWS DW Expo",
             "dWS UW SRDH",
@@ -12563,7 +12582,8 @@ namespace ContinuumNS
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.generateHeadersToolStripMenuItem,
-            this.downloadReanalysisDataToolStripMenuItem});
+            this.downloadReanalysisDataToolStripMenuItem,
+            this.downloadTopographyDataToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(50, 21);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -12571,16 +12591,23 @@ namespace ContinuumNS
             // generateHeadersToolStripMenuItem
             // 
             this.generateHeadersToolStripMenuItem.Name = "generateHeadersToolStripMenuItem";
-            this.generateHeadersToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.generateHeadersToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             this.generateHeadersToolStripMenuItem.Text = "Generate Headers";
             this.generateHeadersToolStripMenuItem.Click += new System.EventHandler(this.generateHeadersToolStripMenuItem_Click);
             // 
             // downloadReanalysisDataToolStripMenuItem
             // 
             this.downloadReanalysisDataToolStripMenuItem.Name = "downloadReanalysisDataToolStripMenuItem";
-            this.downloadReanalysisDataToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.downloadReanalysisDataToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             this.downloadReanalysisDataToolStripMenuItem.Text = "Download Reanalysis Data";
             this.downloadReanalysisDataToolStripMenuItem.Click += new System.EventHandler(this.downloadMERRA2DataToolStripMenuItem_Click);
+            // 
+            // downloadTopographyDataToolStripMenuItem
+            // 
+            this.downloadTopographyDataToolStripMenuItem.Name = "downloadTopographyDataToolStripMenuItem";
+            this.downloadTopographyDataToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.downloadTopographyDataToolStripMenuItem.Text = "Download Topography Data";
+            this.downloadTopographyDataToolStripMenuItem.Click += new System.EventHandler(this.downloadTopographyDataToolStripMenuItem_Click);
             // 
             // mongoDBTestToolStripMenuItem
             // 
@@ -12692,6 +12719,18 @@ namespace ContinuumNS
             this.ofdExceedCurves.Filter = "CSV file|*.CSV";
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
+            // 
+            // btnDoAllRRs
+            // 
+            this.btnDoAllRRs.BackColor = System.Drawing.Color.LightCoral;
+            this.btnDoAllRRs.Location = new System.Drawing.Point(15, 398);
+            this.btnDoAllRRs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnDoAllRRs.Name = "btnDoAllRRs";
+            this.btnDoAllRRs.Size = new System.Drawing.Size(127, 29);
+            this.btnDoAllRRs.TabIndex = 283;
+            this.btnDoAllRRs.Text = "Do All RRs";
+            this.btnDoAllRRs.UseVisualStyleBackColor = false;
+            this.btnDoAllRRs.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // Continuum
             // 
@@ -13808,6 +13847,9 @@ namespace ContinuumNS
         public Button btnClearMCP;
         public Button btnShowMCP_Info;
         internal Button btnShowMetTS_Info;
+        private ToolStripMenuItem downloadTopographyDataToolStripMenuItem;
+        public CheckBox chkUseElevModel;
+        internal Button btnDoAllRRs;
     }
 }
 

@@ -12,6 +12,10 @@ namespace ContinuumNS
         public Met.Season season;
         /// <summary> Modeled height. </summary>
         public double height;
+
+        /// <summary> Elevation model coefficient in each WD sector </summary>
+        public double[] elevCoeff;
+
         /// <summary> 'A' model coefficient for Downhill flow in each WD sector (m = A*P10Expo^B) </summary>
         public double[] downhill_A;
         /// <summary> 'B' model coefficient for Downhill flow in each WD sector (m = A*P10Expo^B)</summary>
@@ -318,6 +322,8 @@ namespace ContinuumNS
         {            
             for (int i = 0; i < numWD; i++)
             {
+                elevCoeff[i] = 0.005;
+
                 downhill_A[i] = 0.1432f; // old DW_A = 0.2551
                 downhill_B[i] = -0.6537f; // old DW_B = -0.774
 
@@ -353,7 +359,8 @@ namespace ContinuumNS
 
         /// <summary> Sizes model coefficient arrays </summary> 
         public void SizeArrays(int numWD)
-        {            
+        {     
+            elevCoeff = new double[numWD];
             downhill_A = new double[numWD];
             downhill_B = new double[numWD];
             uphill_A = new double[numWD];

@@ -339,6 +339,7 @@ namespace ContinuumNS
 
             dataMetTS.Columns.Clear();
             updateThe.MetTS_CheckList();
+            updateThe.LT_ReferenceTAB();
             modelList.ClearAllExceptImported();            
             mapList.DeleteMapsUsingDeletedMets(metNames);                      
 
@@ -1518,6 +1519,11 @@ namespace ContinuumNS
                 chk_Use_Sep.Checked = true;
             else
                 chk_Use_Sep.Checked = false;
+
+            if (topo.useElev == true)
+                chkUseElevModel.Checked = true;
+            else
+                chkUseElevModel.Checked = false;
 
             if (turbineList.genTimeSeries)
                 chkCreateTurbTS.Checked = true;
@@ -7174,6 +7180,13 @@ namespace ContinuumNS
                 return;
             }
 
+            if (savedParams.savedFileName == "" || savedParams.savedFileName == null)
+            {
+                MessageBox.Show("Before extracting reference data, you need to save the .CFM file.  Click: File -> Save As on top menu bar.  Continuum will create a local " +
+                    "database file to store the extracted long-term reference data and it needs to know where to save it.");
+                return;
+            }
+
             AddEditReference newReference = new AddEditReference(metList, refList, UTM_conversions);
 
             newReference.ShowDialog();
@@ -7692,7 +7705,14 @@ namespace ContinuumNS
 
         private void btnExportTI_Click(object sender, EventArgs e)
         {
-            // Exports selected turbulence intensity (on Site Conditions tab)            
+            // Exports selected turbulence intensity (on Site Conditions tab)
+            
+            if (metList.isTimeSeries == false)
+            {
+                MessageBox.Show("Turbulence Intensity can only be calculated if met time series data is imported.");
+                return;
+            }
+
             export.ExportTurbulenceIntensity(this);
         }
 
@@ -7746,7 +7766,13 @@ namespace ContinuumNS
 
         private void btnExtremeWS_Click(object sender, EventArgs e)
         {
-            // Exports estimate of extreme wind speed at selected met on Site Conditions tab            
+            // Exports estimate of extreme wind speed at selected met on Site Conditions tab
+            if (metList.isTimeSeries == false)
+            {
+                MessageBox.Show("Extreme WS analysis may only be conducted with met time series data.");
+                return;
+            }
+
             export.ExportExtremeWS(this);
         }               
 
@@ -8550,6 +8576,83 @@ namespace ContinuumNS
         {
             MessageBox.Show("Met data timestamps may be in local or UTC-0 time.  Continuum determines the UTC offset from the met site lat/long coordinates in the datafile " +
                 "and adjusts the data accordingly.");
+        }
+
+        private void downloadTopographyDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TopoDataDownload topoDownload = new TopoDataDownload(this);
+            topoDownload.Show();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            // Recreates site-calibrated model with/without the elevation model based on whether 'Enable Elevation Model' checkbox is checked or not
+            if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
+                BW_worker = new BackgroundWork();
+
+            if (Created && metList.ThisCount > 0 && modelList.ModelCount > 0 && BW_worker.IsBusy() == false)
+            {
+                if ((chkUseElevModel.Checked == false && topo.useElev == false) || (chkUseElevModel.Checked == true && topo.useElev == true))
+                    return;
+                
+                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+
+                if (yes_or_no == DialogResult.Yes)
+                {
+
+                    modelList.ClearAllExceptImported();
+                    metPairList.ClearAll();
+                    turbineList.ClearAllWSEsts();
+                    turbineList.ClearAllGrossEsts();
+                    turbineList.ClearAllNetEsts();
+                    mapList.ClearAllMaps();
+                    wakeModelList.ClearWakeMaps();
+
+                    if (chkUseElevModel.Checked == true)
+                        topo.useElev = true;
+                    else
+                        topo.useElev = false;
+
+                    // Call background worker to run calculations
+                    BW_worker = new BackgroundWork();
+                    BackgroundWork.Vars_for_BW theArgs = new BackgroundWork.Vars_for_BW();
+                    theArgs.thisInst = this;
+                    BW_worker.Call_BW_MetCalcs(theArgs);
+                    ChangesMade();
+                }
+            }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            // if there are enough mets for a Round Robin analysis, creates struct for Round Robin calculations and calls background worker to conduct analysis
+            if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
+                BW_worker = new BackgroundWork();
+
+            if (BW_worker.IsBusy())
+            {
+                MessageBox.Show("Cannot conduct Round Robin analysis while other calculations are under way.", "Continuum 3");
+                return;
+            }
+
+            if (metList.expoIsCalc == false)
+            {
+                MessageBox.Show("Met sites have not been analyzed yet. Conducting calculations now.");
+                Analyze_Mets();
+                return;
+            }                      
+
+            string[] metsUsed = metList.GetMetsUsed();                        
+            
+
+            BackgroundWork.Vars_for_RoundRobin argsForBW = new BackgroundWork.Vars_for_RoundRobin();
+            argsForBW.thisInst = this;
+            argsForBW.Min_RR_Size = 999;
+            argsForBW.MCP_Method = Get_MCP_Method();
+
+            // Call background worker to run calculations
+            BW_worker = new BackgroundWork();
+            BW_worker.Call_BW_RoundRobin(argsForBW);
         }
     }
 }

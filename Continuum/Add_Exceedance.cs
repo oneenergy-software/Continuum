@@ -86,6 +86,8 @@ namespace ContinuumNS
                 thisExceed.modes[editInd].SD = formMode.SD / 100;
                 thisExceed.modes[editInd].weight = formMode.weight / 100;
             }
+            else if (formMode.okAdd == false)
+                return;
 
             Update_Mode_List();
             thisExceed.lowerBound = Convert.ToSingle(txt_LowerBound.Text) / 100;
