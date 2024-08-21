@@ -39,6 +39,9 @@ namespace ContinuumNS
         /// <summary> If true then elevation model is used in wind speed estimates </summary>
         public bool useElev;
 
+        /// <summary> If true then valley flow model is used in wind speed estimates </summary>
+        public bool useValley; 
+
         /// <summary> True when topo data has been loaded. </summary>
         public bool gotTopo;
 

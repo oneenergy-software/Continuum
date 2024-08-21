@@ -221,12 +221,12 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates and returns stability correction factor used in surface roughness model </summary> 
-        public double GetStabilityCorrection(double UW_Expo, double DW_Expo, int WD_Ind, double SR, bool useFlowSep, string UW_or_DW)
+        public double GetStabilityCorrection(double UW_Expo, double DW_Expo, int WD_Ind, double SR, bool useFlowSep, string UW_or_DW, bool useValley)
         {             
             double Stab_corr = 0;
             NodeCollection.Sep_Nodes[] Flow_Sep_Node = null;
 
-            string flowType = GetFlowType(UW_Expo, DW_Expo, WD_Ind, UW_or_DW, Flow_Sep_Node, 0, useFlowSep, 0);
+            string flowType = GetFlowType(UW_Expo, DW_Expo, WD_Ind, UW_or_DW, Flow_Sep_Node, 0, useFlowSep, 0, useValley);
 
             if (flowType == "Downhill")  // Downhill
                 Stab_corr = Math.Pow(10, DH_Stab_A[WD_Ind]);
@@ -241,7 +241,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Determines and returns flow type upwind or downwind of site: Downhill, Uphill, Induced Speed-up, Valley or Turbulent </summary>        
-        public string GetFlowType(double thisUW, double thisDW, int WD_sec, string UW_or_DW, NodeCollection.Sep_Nodes[] flowSepNodes, double thisWS, bool useFlowSep, int radiusInd)
+        public string GetFlowType(double thisUW, double thisDW, int WD_sec, string UW_or_DW, NodeCollection.Sep_Nodes[] flowSepNodes, double thisWS, bool useFlowSep, int radiusInd, bool useValley)
         {             
             string flowType = "";
             bool isTurbulent = false;
@@ -288,8 +288,9 @@ namespace ContinuumNS
                     flowType = "Uphill";
                 else if (thisUW >= 0 && thisUW <= UW_crit[WD_sec] && UW_or_DW == "UW")
                     flowType = "SpdUp";
-                else if (thisUW < 0 && thisDW < 0)
-                    // flowType = "Valley"
+                else if (thisUW < 0 && thisDW <= 0 && useValley)
+                    flowType = "Valley";
+                else if (thisUW < 0 && thisDW <= 0)
                     flowType = "Downhill";
             }
             else

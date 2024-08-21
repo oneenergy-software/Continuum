@@ -385,11 +385,12 @@ namespace ContinuumNS
         {            
             Model[] thisModel = new Model[RadiiCount];
             bool sameMets = false;
+            bool foundIt = false;
             
             for (int i = 0; i < ModelCount; i++)
             {
                 sameMets = thisInst.metList.sameMets(metsUsed, models[i, 0].metsUsed);
-                if (sameMets == true && thisTOD == models[i, 0].timeOfDay & thisSeason == models[i, 0].season & thisHeight == models[i, 0].height)
+                if ((sameMets == true && thisTOD == models[i, 0].timeOfDay & thisSeason == models[i, 0].season & thisHeight == models[i, 0].height) || models[i, 0].isImported)
                 {
                     for (int j = 0; j < RadiiCount; j++)
                         thisModel[j] = models[i, j];
@@ -398,7 +399,7 @@ namespace ContinuumNS
                 }
             }
 
-            if (ModelCount == 0 || createIfNeeded)
+            if (ModelCount == 0 || (foundIt == false && createIfNeeded))
             {
                 CreateModel(metsUsed, thisInst, thisTOD, thisSeason, thisHeight);
                 thisModel = new Model[RadiiCount]; // This was added for cases where 'Analyze Mets' has not been called so there are no models and radiiCount = 0.  Once 'Create Model'
@@ -418,6 +419,20 @@ namespace ContinuumNS
             }                            
 
             return thisModel;
+        }
+
+        /// <summary> Returns true if model coefficients have been imported </summary>
+        /// <returns></returns>
+        public bool IsImported()
+        {
+            bool isImported = false;
+
+            if (ModelCount > 0)
+                if (models[0, 0].isImported)
+                    isImported = true;
+
+            return isImported;
+
         }
 
         /// <summary> Returns true if two models are identical </summary> 
@@ -573,8 +588,14 @@ namespace ContinuumNS
 
                     int firstParanth = thisString.IndexOf("(");
                     int lastParenth = thisString.IndexOf(")");
-                    string[] theseMets = thisString.Substring(firstParanth + 1, lastParenth - firstParanth - 1).Split(Convert.ToChar(" "));
 
+                    string[] theseMets = null;
+                    
+                    if (firstParanth != -1 && lastParenth != -1)
+                        theseMets = thisString.Substring(firstParanth + 1, lastParenth - firstParanth - 1).Split(Convert.ToChar(" "));
+                    else                    
+                        theseMets = thisInst.metList.GetMetsUsed(); // If imported model coeff file does not specify mets then use all
+                     
                     Model defaultModel = new Model();
                     defaultModel.SizeArrays(15); // it's okay that we're hardcoding numWD = 15 here since we're just doing this to set the default coefficients.The array is resized.
                     defaultModel.SetDefaultModelCoeffs(15);
@@ -583,16 +604,18 @@ namespace ContinuumNS
                     {
                         importModel[i] = new Model();
                         importModel[i].radius = thisInst.radiiList.investItem[i].radius;
-                        importModel[i].isImported = true;                        
+                        importModel[i].isImported = true;
+                        importModel[i].season = Met.Season.All;
+                        importModel[i].timeOfDay = Met.TOD.All;
                         importModel[i].SetDefaultLimits(); // max diff in expo and elev
                         importModel[i].metsUsed = theseMets;
 
                         thisString = sr.ReadLine(); // radius
                         thisString = sr.ReadLine(); // RMS heading
 
-                        thisString = sr.ReadLine(); // RMS error
-                        string thisStr = thisString.Substring(0, thisString.Length - 1);
-                        importModel[i].RMS_WS_Est = Convert.ToSingle(thisString.Substring(0, thisString.Length - 1)) / 100;
+                        thisString = sr.ReadLine().Split(',')[0]; // RMS error
+                  //      string thisStr = thisString.Substring(0, thisString.Length - 1);
+                        importModel[i].RMS_WS_Est = Convert.ToSingle(thisString.Substring(0, thisString.Length - 1));
 
                         thisString = sr.ReadLine(); // Model Headings
 
@@ -607,82 +630,98 @@ namespace ContinuumNS
                         }
 
                         int WD_Ind = 0;
+                        bool doneWithThisRadius = false;
 
-                        while (thisString != "")
+                        while (thisString != "" && doneWithThisRadius == false)
                         {
                             thisString = sr.ReadLine();
+
+                            if (thisString == null)
+                            {
+                                WD_Ind++;
+                                break;
+                            }
+
                             theseParams = thisString.Split(Convert.ToChar(","));
 
                             if (thisString != "")
                             {
-                                Array.Resize(ref importModel[i].RMS_Sect_WS_Est, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].downhill_A, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].downhill_B, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].uphill_A, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].uphill_B, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].UW_crit, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].spdUp_A, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].spdUp_B, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].DH_Stab_A, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].UH_Stab_A, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].SU_Stab_A, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].stabB, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].sep_A_DW, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].sep_B_DW, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].turbWS_Fact, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].sepCrit, WD_Ind + 1);
-                                Array.Resize(ref importModel[i].Sep_crit_WS, WD_Ind + 1);
+                                if (theseParams[0] != "")
+                                {
+                                    Array.Resize(ref importModel[i].RMS_Sect_WS_Est, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].downhill_A, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].downhill_B, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].uphill_A, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].uphill_B, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].UW_crit, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].spdUp_A, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].spdUp_B, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].DH_Stab_A, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].UH_Stab_A, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].SU_Stab_A, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].stabB, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].sep_A_DW, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].sep_B_DW, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].turbWS_Fact, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].sepCrit, WD_Ind + 1);
+                                    Array.Resize(ref importModel[i].Sep_crit_WS, WD_Ind + 1);
 
-                                importModel[i].RMS_Sect_WS_Est[WD_Ind] = Convert.ToSingle(theseParams[1].Substring(0, theseParams[1].Length - 1)) / 100;
-                                importModel[i].downhill_A[WD_Ind] = Convert.ToSingle(theseParams[2]);
-                                importModel[i].downhill_B[WD_Ind] = Convert.ToSingle(theseParams[3]);
-                                importModel[i].uphill_A[WD_Ind] = Convert.ToSingle(theseParams[4]);
-                                importModel[i].uphill_B[WD_Ind] = Convert.ToSingle(theseParams[5]);
-                                importModel[i].UW_crit[WD_Ind] = Convert.ToSingle(theseParams[6]);
-                                importModel[i].spdUp_A[WD_Ind] = Convert.ToSingle(theseParams[7]);
-                                importModel[i].spdUp_B[WD_Ind] = Convert.ToSingle(theseParams[8]);
+                                    importModel[i].RMS_Sect_WS_Est[WD_Ind] = Convert.ToSingle(theseParams[1]);
+                                    importModel[i].downhill_A[WD_Ind] = Convert.ToSingle(theseParams[2]);
+                                    importModel[i].downhill_B[WD_Ind] = Convert.ToSingle(theseParams[3]);
+                                    importModel[i].uphill_A[WD_Ind] = Convert.ToSingle(theseParams[4]);
+                                    importModel[i].uphill_B[WD_Ind] = Convert.ToSingle(theseParams[5]);
+                                    importModel[i].UW_crit[WD_Ind] = Convert.ToSingle(theseParams[6]);
+                                    importModel[i].spdUp_A[WD_Ind] = Convert.ToSingle(theseParams[7]);
+                                    importModel[i].spdUp_B[WD_Ind] = Convert.ToSingle(theseParams[8]);
 
-                                if (useSR == true && usesFlowSep == false) {
-                                    importModel[i].DH_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[9]);
-                                    importModel[i].UH_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[10]);
-                                    importModel[i].SU_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[11]);
-                                    importModel[i].sep_A_DW[WD_Ind] = defaultModel.sep_A_DW[0];
-                                    importModel[i].sep_B_DW[WD_Ind] = defaultModel.sep_B_DW[0];
-                                    importModel[i].turbWS_Fact[WD_Ind] = defaultModel.turbWS_Fact[0];
-                                    importModel[i].sepCrit[WD_Ind] = defaultModel.sepCrit[0];
-                                    importModel[i].Sep_crit_WS[WD_Ind] = defaultModel.Sep_crit_WS[0];
+                                    if (useSR == true && usesFlowSep == false)
+                                    {
+                                        importModel[i].DH_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[9]);
+                                        importModel[i].UH_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[10]);
+                                        importModel[i].SU_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[11]);
+                                        importModel[i].sep_A_DW[WD_Ind] = defaultModel.sep_A_DW[0];
+                                        importModel[i].sep_B_DW[WD_Ind] = defaultModel.sep_B_DW[0];
+                                        importModel[i].turbWS_Fact[WD_Ind] = defaultModel.turbWS_Fact[0];
+                                        importModel[i].sepCrit[WD_Ind] = defaultModel.sepCrit[0];
+                                        importModel[i].Sep_crit_WS[WD_Ind] = defaultModel.Sep_crit_WS[0];
+                                    }
+                                    else if (useSR == false && usesFlowSep == true)
+                                    {
+                                        importModel[i].DH_Stab_A[WD_Ind] = defaultModel.DH_Stab_A[0];
+                                        importModel[i].UH_Stab_A[WD_Ind] = defaultModel.UH_Stab_A[0];
+                                        importModel[i].SU_Stab_A[WD_Ind] = defaultModel.SU_Stab_A[0];
+                                        importModel[i].sep_A_DW[WD_Ind] = Convert.ToSingle(theseParams[9]);
+                                        importModel[i].sep_B_DW[WD_Ind] = Convert.ToSingle(theseParams[10]);
+                                        importModel[i].turbWS_Fact[WD_Ind] = Convert.ToSingle(theseParams[11]);
+                                        importModel[i].sepCrit[WD_Ind] = Convert.ToSingle(theseParams[12]);
+                                        importModel[i].Sep_crit_WS[WD_Ind] = Convert.ToSingle(theseParams[13]);
+                                    }
+                                    else if (useSR == true && usesFlowSep == true)
+                                    {
+                                        importModel[i].DH_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[9]);
+                                        importModel[i].UH_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[10]);
+                                        importModel[i].SU_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[11]);
+                                        importModel[i].sep_A_DW[WD_Ind] = Convert.ToSingle(theseParams[12]);
+                                        importModel[i].sep_B_DW[WD_Ind] = Convert.ToSingle(theseParams[13]);
+                                        importModel[i].turbWS_Fact[WD_Ind] = Convert.ToSingle(theseParams[14]);
+                                        importModel[i].sepCrit[WD_Ind] = Convert.ToSingle(theseParams[15]);
+                                        importModel[i].Sep_crit_WS[WD_Ind] = Convert.ToSingle(theseParams[16]);
+                                    }
+                                    else
+                                    {
+                                        importModel[i].DH_Stab_A[WD_Ind] = defaultModel.DH_Stab_A[0];
+                                        importModel[i].UH_Stab_A[WD_Ind] = defaultModel.UH_Stab_A[0];
+                                        importModel[i].SU_Stab_A[WD_Ind] = defaultModel.SU_Stab_A[0];
+                                        importModel[i].sep_A_DW[WD_Ind] = defaultModel.sep_A_DW[0];
+                                        importModel[i].sep_B_DW[WD_Ind] = defaultModel.sep_B_DW[0];
+                                        importModel[i].turbWS_Fact[WD_Ind] = defaultModel.turbWS_Fact[0];
+                                        importModel[i].sepCrit[WD_Ind] = defaultModel.sepCrit[0];
+                                        importModel[i].Sep_crit_WS[WD_Ind] = defaultModel.Sep_crit_WS[0];
+                                    }
                                 }
-                                else if (useSR == false && usesFlowSep == true) {
-                                    importModel[i].DH_Stab_A[WD_Ind] = defaultModel.DH_Stab_A[0];
-                                    importModel[i].UH_Stab_A[WD_Ind] = defaultModel.UH_Stab_A[0];
-                                    importModel[i].SU_Stab_A[WD_Ind] = defaultModel.SU_Stab_A[0];
-                                    importModel[i].sep_A_DW[WD_Ind] = Convert.ToSingle(theseParams[9]);
-                                    importModel[i].sep_B_DW[WD_Ind] = Convert.ToSingle(theseParams[10]);
-                                    importModel[i].turbWS_Fact[WD_Ind] = Convert.ToSingle(theseParams[11]);
-                                    importModel[i].sepCrit[WD_Ind] = Convert.ToSingle(theseParams[12]);
-                                    importModel[i].Sep_crit_WS[WD_Ind] = Convert.ToSingle(theseParams[13]);
-                                }
-                                else if (useSR == true && usesFlowSep == true) {
-                                    importModel[i].DH_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[9]);
-                                    importModel[i].UH_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[10]);
-                                    importModel[i].SU_Stab_A[WD_Ind] = Convert.ToSingle(theseParams[11]);
-                                    importModel[i].sep_A_DW[WD_Ind] = Convert.ToSingle(theseParams[12]);
-                                    importModel[i].sep_B_DW[WD_Ind] = Convert.ToSingle(theseParams[13]);
-                                    importModel[i].turbWS_Fact[WD_Ind] = Convert.ToSingle(theseParams[14]);
-                                    importModel[i].sepCrit[WD_Ind] = Convert.ToSingle(theseParams[15]);
-                                    importModel[i].Sep_crit_WS[WD_Ind] = Convert.ToSingle(theseParams[16]);
-                                }
-                                else {
-                                    importModel[i].DH_Stab_A[WD_Ind] = defaultModel.DH_Stab_A[0];
-                                    importModel[i].UH_Stab_A[WD_Ind] = defaultModel.UH_Stab_A[0];
-                                    importModel[i].SU_Stab_A[WD_Ind] = defaultModel.SU_Stab_A[0];
-                                    importModel[i].sep_A_DW[WD_Ind] = defaultModel.sep_A_DW[0];
-                                    importModel[i].sep_B_DW[WD_Ind] = defaultModel.sep_B_DW[0];
-                                    importModel[i].turbWS_Fact[WD_Ind] = defaultModel.turbWS_Fact[0];
-                                    importModel[i].sepCrit[WD_Ind] = defaultModel.sepCrit[0];
-                                    importModel[i].Sep_crit_WS[WD_Ind] = defaultModel.Sep_crit_WS[0];
-                                }
-
+                                else
+                                    doneWithThisRadius = true;
 
                             }
                             WD_Ind++;
@@ -864,6 +903,7 @@ namespace ContinuumNS
                 numNodes = pathOfNodes.Length;                     
                                             
             double sectorWS = startWS;
+            bool useValley = thisInst.topo.useValley;
 
             if (numNodes > 0)
             {
@@ -907,19 +947,19 @@ namespace ContinuumNS
                 avgDW = (DW_1 + DW_2) / 2;                                
 
                 coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes,
-                                                        thisNode.flowSepNodes, WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                                                        thisNode.flowSepNodes, WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                 deltaWS_UWExpo = GetTotalWS(coeffsDelta);
-                coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod, useValley);
                 deltaWS_DWExpo = GetTotalWS(coeffsDelta);
 
                 if (thisInst.topo.useSR == true)
                 {
-                    UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
-                    UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                    UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW", useValley);
+                    UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW", useValley);
                     deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
-                    DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
-                    DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                    DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW", useValley);
+                    DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW", useValley);
                     deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                 }
 
@@ -976,19 +1016,19 @@ namespace ContinuumNS
                     avgDW = (DW_1 + DW_2) / 2;
                                         
                     coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, node1.flowSepNodes, node2.flowSepNodes,
-                                                        WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                                                        WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                     deltaWS_UWExpo = GetTotalWS(coeffsDelta);
-                    coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                    coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod, useValley);
                     deltaWS_DWExpo = GetTotalWS(coeffsDelta);
 
                     if (thisInst.topo.useSR == true)
                     {
-                        UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
-                        UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                        UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW", useValley);
+                        UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW", useValley);
                         deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
-                        DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
-                        DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                        DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW", useValley);
+                        DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW", useValley);
                         deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
@@ -1042,19 +1082,19 @@ namespace ContinuumNS
                 avgDW = (DW_1 + DW_2) / 2;
                                 
                 coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, thisNode.flowSepNodes, endNode.flowSepNodes,
-                                                    WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                                                    WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                 deltaWS_UWExpo = GetTotalWS(coeffsDelta);
-                coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod, useValley);
                 deltaWS_DWExpo = GetTotalWS(coeffsDelta);
 
                 if (thisInst.topo.useSR == true)
                 {
-                    UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
-                    UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                    UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW", useValley);
+                    UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW", useValley);
                     deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
-                    DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
-                    DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                    DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW", useValley);
+                    DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW", useValley);
                     deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                 }
 
@@ -1104,19 +1144,19 @@ namespace ContinuumNS
                 avgDW = (DW_1 + DW_2) / 2;
                                 
                 coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes, endNode.flowSepNodes,
-                                                    WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                                                    WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                 deltaWS_UWExpo = GetTotalWS(coeffsDelta);
-                coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod, useValley);
                 deltaWS_DWExpo = GetTotalWS(coeffsDelta);
 
                 if (thisInst.topo.useSR == true)
                 {
-                    UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
-                    UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                    UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW", useValley);
+                    UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW", useValley);
                     deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
-                    DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
-                    DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                    DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW", useValley);
+                    DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW", useValley);
                     deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                 }
 
@@ -1137,9 +1177,10 @@ namespace ContinuumNS
 
             // Calculates wind speed from Met 1 to Met 2 along path of nodes 
             int numNodes = 0;
-                 
-          //  double UW_CW_Grade = 0;
-          //  double UW_PL_Grade = 0;
+
+            //  double UW_CW_Grade = 0;
+            //  double UW_PL_Grade = 0;
+            bool useValley = thisInst.topo.useValley;
 
             double avgUW = 0;
             double avgDW = 0;
@@ -1244,18 +1285,18 @@ namespace ContinuumNS
                     avgDW = (DW_1 + DW_2) / 2;                    
 
                     coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes,
-                                                           thisNode.flowSepNodes, WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                                                           thisNode.flowSepNodes, WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                     deltaWS_UWExpo = GetTotalWS(coeffsDelta);
-                    coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                    coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod, useValley);
                     deltaWS_DWExpo = GetTotalWS(coeffsDelta);
 
                     if (thisInst.topo.useSR == true) {
-                        UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
-                        UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                        UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW", useValley);
+                        UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW", useValley);
                         deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
-                        DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
-                        DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                        DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW", useValley);
+                        DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW", useValley);
                         deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
@@ -1323,18 +1364,18 @@ namespace ContinuumNS
                         avgDW = (DW_1 + DW_2) / 2;                                                
 
                         coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, node1.flowSepNodes, node2.flowSepNodes,
-                                                            WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                                                            WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                         deltaWS_UWExpo = GetTotalWS(coeffsDelta);
-                        coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                        coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod, useValley);
                         deltaWS_DWExpo = GetTotalWS(coeffsDelta);
 
                         if (thisInst.topo.useSR == true) {
-                            UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
-                            UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                            UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW", useValley);
+                            UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW", useValley);
                             deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
-                            DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
-                            DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                            DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW", useValley);
+                            DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW", useValley);
                             deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, startMetDist.height, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                         }
 
@@ -1401,19 +1442,19 @@ namespace ContinuumNS
                     avgDW = (DW_1 + DW_2) / 2;                    
 
                     coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, thisNode.flowSepNodes, endNode.flowSepNodes,
-                                                        WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                                                        WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                     deltaWS_UWExpo = GetTotalWS(coeffsDelta);
-                    coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                    coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod, useValley);
                     deltaWS_DWExpo = GetTotalWS(coeffsDelta);
 
                     if (thisInst.topo.useSR == true)
                     {
-                        UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
-                        UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                        UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW", useValley);
+                        UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW", useValley);
                         deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
-                        DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
-                        DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                        DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW", useValley);
+                        DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW", useValley);
                         deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
@@ -1469,19 +1510,19 @@ namespace ContinuumNS
                     avgDW = (DW_1 + DW_2) / 2;                    
 
                     coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes, endNode.flowSepNodes, 
-                                                        WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2);
+                                                        WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                     deltaWS_UWExpo = GetTotalWS(coeffsDelta);
-                    coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod);
+                    coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod, useValley);
                     deltaWS_DWExpo = GetTotalWS(coeffsDelta);
 
                     if (thisInst.topo.useSR == true)
                     {
-                        UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW");
-                        UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW");
+                        UW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_1, thisInst.topo.useSepMod, "UW", useValley);
+                        UW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, UW_SR_2, thisInst.topo.useSepMod, "UW", useValley);
                         deltaWS_UW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, UW_SR_1, UW_SR_2, UW_DH_1, UW_DH_2, UW_Stab_Corr_1, UW_Stab_Corr_2);
 
-                        DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW");
-                        DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW");
+                        DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW", useValley);
+                        DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW", useValley);
                         deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
@@ -1593,7 +1634,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates and returns the coefficients and change in wind speed due to changes in downwind exposure. </summary>        
-        public Coeff_Delta_WS[] Get_DeltaWS_DW_Expo(double WS1, double UW1, double UW2, double DW1, double DW2, double P10_UW, double P10_DW, Model thisModel, int WD_Ind, bool useSepModel)
+        public Coeff_Delta_WS[] Get_DeltaWS_DW_Expo(double WS1, double UW1, double UW2, double DW1, double DW2, double P10_UW, double P10_DW, Model thisModel, int WD_Ind, bool useSepModel, bool useValley)
         {            
             Coeff_Delta_WS[] coeffsDelta = null;
             double deltaDH = 0;
@@ -1603,34 +1644,16 @@ namespace ContinuumNS
             
             double coeff = 0;
 
-            InvestCollection radiiList = new InvestCollection();
+            InvestCollection radiiList = new InvestCollection(); 
             radiiList.New();
-            int radiusIndex = 0;
-            for (int i = 0; i < radiiList.ThisCount; i++)
-                if (radiiList.investItem[i].radius == thisModel.radius)                
-                    radiusIndex = i;                    
-                
-            string flow1 = thisModel.GetFlowType(UW1, DW1, WD_Ind, "DW", null, WS1, useSepModel, radiusIndex);
-            string flow2 = thisModel.GetFlowType(UW2, DW2, WD_Ind, "DW", null, WS1, useSepModel, radiusIndex);
+            int radiusIndex = radiiList.GetRadiusInd(thisModel.radius);
+                                        
+            string flow1 = thisModel.GetFlowType(UW1, DW1, WD_Ind, "DW", null, WS1, useSepModel, radiusIndex, useValley);
+            string flow2 = thisModel.GetFlowType(UW2, DW2, WD_Ind, "DW", null, WS1, useSepModel, radiusIndex, useValley);
 
             double avgUW = (UW1 + UW2) / 2;
-            double avgDW = (DW1 + DW2) / 2;            
-
-       /*     if (useSepModel == true && DW1 > 0 && UW1 > 0 && DW1 + UW1 > thisModel.sepCrit[WD_Ind] && WS1 > thisModel.Sep_crit_WS[WD_Ind])
-                flow1 = "Turbulent";
-            else if (DW1 > 0)
-                flow1 = "Downhill";
-            else
-                flow1 = "Uphill";
-
-            if (useSepModel = true && DW2 > 0 && UW2 > 0 && DW2 + UW2 > thisModel.sepCrit[WD_Ind] && WS1 > thisModel.Sep_crit_WS[WD_Ind])
-                flow2 = "Turbulent";
-            else if (DW2 > 0)
-                flow2 = "Downhill";
-            else
-                flow2 = "Uphill";
-                */
-
+            double avgDW = (DW1 + DW2) / 2;           
+                  
             if (flow1 == flow2) // 1
             {
                 coeff = thisModel.CalcDW_Coeff(P10_DW, P10_UW, WD_Ind, flow1);
@@ -1646,7 +1669,6 @@ namespace ContinuumNS
                 coeff = thisModel.CalcDW_Coeff(P10_DW, P10_UW, WD_Ind, flow2);
                 deltaUH = coeff * (DW2 - 0);
                 AddCoeffDeltaWS(ref coeffsDelta, coeff, deltaUH, flow2, "Expo");
-
 
                 deltaWS = deltaDH + deltaUH;
                 AddCoeffDeltaWS(ref coeffsDelta, coeff, deltaWS, "Total", "Expo");
@@ -1833,7 +1855,7 @@ namespace ContinuumNS
 
         /// <summary> Calculates and returns the coeffs and change in wind speed for each flow type based on change in upwind exposure </summary>        
         public Coeff_Delta_WS[] Get_DeltaWS_UW_Expo(double UW1, double UW2, double DW1, double DW2, double P10_UW, double P10_DW, Model thisModel, int WD_Ind, int radiusIndex, NodeCollection.Sep_Nodes[] sepNodes1,
-                                            NodeCollection.Sep_Nodes[] sepNodes2, double WS, bool useFlowSep, NodeCollection.Node_UTMs node1Coords, NodeCollection.Node_UTMs node2Coords)
+                            NodeCollection.Sep_Nodes[] sepNodes2, double WS, bool useFlowSep, NodeCollection.Node_UTMs node1Coords, NodeCollection.Node_UTMs node2Coords, bool useValley)
         
         { 
             
@@ -1849,8 +1871,8 @@ namespace ContinuumNS
             NodeCollection.Sep_Nodes flowSepNode1 = GetFlowSepNodes(sepNodes1, WD_Ind);
             NodeCollection.Sep_Nodes flowSepNode2 = GetFlowSepNodes(sepNodes2, WD_Ind); ;
 
-            string flow1 = thisModel.GetFlowType(UW1, DW1, WD_Ind, "UW", sepNodes1, WS, useFlowSep, radiusIndex);
-            string flow2 = thisModel.GetFlowType(UW2, DW2, WD_Ind, "UW", sepNodes2, WS, useFlowSep, radiusIndex);
+            string flow1 = thisModel.GetFlowType(UW1, DW1, WD_Ind, "UW", sepNodes1, WS, useFlowSep, radiusIndex, useValley);
+            string flow2 = thisModel.GetFlowType(UW2, DW2, WD_Ind, "UW", sepNodes2, WS, useFlowSep, radiusIndex, useValley);
 
             if (flow1 == "Turbulent" && flow2 == "Turbulent")
             { // Scenario 1             
@@ -2144,6 +2166,7 @@ namespace ContinuumNS
                 deltaVL = coeff * (0 - UW1);
                 AddCoeffDeltaWS(ref coeffsDelta, coeff, deltaVL, flow1, "Expo");
 
+                // Flat - Speed up over hill
                 coeff = thisModel.CalcUW_Coeff(P10_UW, P10_DW, WD_Ind, flow2);
                 deltaSU = coeff * (UW2 - 0);
                 AddCoeffDeltaWS(ref coeffsDelta, coeff, deltaSU, flow2, "Expo");
@@ -2839,6 +2862,8 @@ namespace ContinuumNS
             if (thisTS == null)
                 return thisDist;
 
+            int distCount = 0;
+
             for (int i = 0; i < thisTS.Length; i++)
             {
                 double thisWS = 0;
@@ -2864,11 +2889,12 @@ namespace ContinuumNS
                 thisDist.windRose[WD_ind]++;
                 thisDist.WS_Dist[WS_ind]++;
                 thisDist.sectorWS_Dist[WD_ind, WS_ind]++;
+                distCount++;
             }
 
-            if (thisTS.Length > 0)
+            if (distCount > 0)
                 for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                    thisDist.WS_Dist[WS_ind] = thisDist.WS_Dist[WS_ind] / thisTS.Length;
+                    thisDist.WS_Dist[WS_ind] = thisDist.WS_Dist[WS_ind] / distCount;
 
             // Calculate wind speed overall and sectorwise distributions
             double sumWD = 0;
@@ -2894,12 +2920,14 @@ namespace ContinuumNS
             // Calculate sectorwise and overall wind speeds
             for (int i = 0; i < thisInst.metList.numWS; i++)
             {
-                thisDist.WS = thisDist.WS + thisDist.WS_Dist[i] * (WS_FirstInt + i * WS_IntSize - WS_IntSize / 2);
+          //      thisDist.WS = thisDist.WS + thisDist.WS_Dist[i] * (WS_FirstInt + i * WS_IntSize - WS_IntSize / 2);
+                thisDist.WS = thisDist.WS + thisDist.WS_Dist[i] * i * WS_IntSize;
                 sumDist = sumDist + thisDist.WS_Dist[i];
 
                 for (int j = 0; j < thisInst.metList.numWD; j++)
                 {
-                    thisDist.sectorWS_Ratio[j] = thisDist.sectorWS_Ratio[j] + thisDist.sectorWS_Dist[j, i] * (WS_FirstInt + i * WS_IntSize - WS_IntSize / 2);
+              //      thisDist.sectorWS_Ratio[j] = thisDist.sectorWS_Ratio[j] + thisDist.sectorWS_Dist[j, i] * (WS_FirstInt + i * WS_IntSize - WS_IntSize / 2);
+                    thisDist.sectorWS_Ratio[j] = thisDist.sectorWS_Ratio[j] + thisDist.sectorWS_Dist[j, i] * i * WS_IntSize;
                     sumSectorDist[j] = sumSectorDist[j] + thisDist.sectorWS_Dist[j, i];
                 }
             }
@@ -3223,7 +3251,7 @@ namespace ContinuumNS
             if (metList.numTOD == 1 && metList.numSeason == 1)
             {                
                 for (int i = 0; i < ModelCount; i++)
-                    if (models[i, 0].season == Met.Season.All && models[i, 0].timeOfDay == Met.TOD.All && sameMets(metList.GetMetsUsed(), models[i, 0].metsUsed))
+                    if ((models[i, 0].season == Met.Season.All && models[i, 0].timeOfDay == Met.TOD.All && sameMets(metList.GetMetsUsed(), models[i, 0].metsUsed)) || models[i, 0].isImported)
                         haveModels = true;
 
             }

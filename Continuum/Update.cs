@@ -1714,6 +1714,7 @@ namespace ContinuumNS
 
             bool gotSR = thisInst.topo.gotSR;
             bool useFlowSep = thisInst.topo.useSepMod;
+            bool useValley = thisInst.topo.useValley;
 
             objListItem = thisInst.lstPathNodes.Items.Add(startMetStr);
 
@@ -1932,13 +1933,13 @@ namespace ContinuumNS
                     for (int WD = 0; WD < numWD; WD++)
                     {
                         UW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_UW_Expo(UWExpo_1_All[WD], UWExpo_2_All[WD], DWExpo_1_All[WD], DWExpo_2_All[WD], P10_UW_All[WD], P10_DW_All[WD], thisModel,
-                                                                WD, radiusIndex, node1.flowSepNodes, node2.flowSepNodes, WS_Equiv[WD], useFlowSep, node1Coords, node2Coords);
+                                                                WD, radiusIndex, node1.flowSepNodes, node2.flowSepNodes, WS_Equiv[WD], useFlowSep, node1Coords, node2Coords, useValley);
 
                         if (UW_CoeffsDeltas != null)
                             numUW_CoeffsDeltas = UW_CoeffsDeltas.Length;
 
                         DW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_DW_Expo(WS_Equiv[WD], UWExpo_1_All[WD], UWExpo_2_All[WD], DWExpo_1_All[WD], DWExpo_2_All[WD], P10_UW_All[WD],
-                            P10_DW_All[WD], thisModel, WD, useFlowSep);
+                            P10_DW_All[WD], thisModel, WD, useFlowSep, useValley);
 
                         if (DW_CoeffsDeltas != null)
                             numDW_CoeffsDeltas = DW_CoeffsDeltas.Length;
@@ -1950,7 +1951,7 @@ namespace ContinuumNS
                 else
                 {
                     UW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_UW_Expo(UWExpo_1, UWExpo_2, DWExpo_1, DWExpo_2, (P10_UW_1 + P10_UW_2) / 2, (P10_DW_1 + P10_DW_2) / 2, thisModel, WD_Ind,
-                        radiusIndex, node1.flowSepNodes, node2.flowSepNodes, WS_1, useFlowSep, node1Coords, node2Coords);
+                        radiusIndex, node1.flowSepNodes, node2.flowSepNodes, WS_1, useFlowSep, node1Coords, node2Coords, useValley);
 
                     if (UW_CoeffsDeltas != null)
                         numUW_CoeffsDeltas = UW_CoeffsDeltas.Length;
@@ -1970,7 +1971,7 @@ namespace ContinuumNS
                         }
                     }
 
-                    DW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_DW_Expo(WS_1, UWExpo_1, UWExpo_2, DWExpo_1, DWExpo_2, (P10_UW_1 + P10_UW_2) / 2, (P10_DW_1 + P10_DW_2) / 2, thisModel, WD_Ind, useFlowSep);
+                    DW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_DW_Expo(WS_1, UWExpo_1, UWExpo_2, DWExpo_1, DWExpo_2, (P10_UW_1 + P10_UW_2) / 2, (P10_DW_1 + P10_DW_2) / 2, thisModel, WD_Ind, useFlowSep, useValley);
 
                     if (DW_CoeffsDeltas != null)
                         numDW_CoeffsDeltas = DW_CoeffsDeltas.Length;
@@ -2006,15 +2007,15 @@ namespace ContinuumNS
 
                     for (int WD = 0; WD < numWD; WD++)
                     {
-                        UW_Stab_Corr_1[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, UW_SR_All_1[WD], useFlowSep, "UW");
+                        UW_Stab_Corr_1[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, UW_SR_All_1[WD], useFlowSep, "UW", useValley);
                         UW_SR_All_2[WD] = node2.expo[radiusIndex].GetWgtAvg(node2WindRose, WD, "UW", "SR");
                         UW_DH_All_2[WD] = node2.expo[radiusIndex].GetWgtAvg(node2WindRose, WD, "UW", "DH");
-                        UW_Stab_Corr_2[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, UW_SR_All_2[WD], useFlowSep, "UW");
+                        UW_Stab_Corr_2[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, UW_SR_All_2[WD], useFlowSep, "UW", useValley);
 
-                        DW_Stab_Corr_1[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, DW_SR_All_1[WD], useFlowSep, "DW");
+                        DW_Stab_Corr_1[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, DW_SR_All_1[WD], useFlowSep, "DW", useValley);
                         DW_SR_All_2[WD] = node2.expo[radiusIndex].GetWgtAvg(node2WindRose, WD, "DW", "SR");
                         DW_DH_All_2[WD] = node2.expo[radiusIndex].GetWgtAvg(node2WindRose, WD, "DW", "DH");
-                        DW_Stab_Corr_2[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, DW_SR_All_2[WD], useFlowSep, "DW");
+                        DW_Stab_Corr_2[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, DW_SR_All_2[WD], useFlowSep, "DW", useValley);
                     }
 
                     if (WD_Ind != numWD)
@@ -2161,12 +2162,12 @@ namespace ContinuumNS
                 for (int WD = 0; WD < numWD; WD++)
                 {
                     UW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_UW_Expo(UWExpo_1_All[WD], UWExpo_2_All[WD], DWExpo_1_All[WD], DWExpo_2_All[WD], P10_UW_All[WD], P10_DW_All[WD], thisModel,
-                                                            WD, radiusIndex, node1.flowSepNodes, endNode.flowSepNodes, WS_Equiv[WD], useFlowSep, node1Coords, node2Coords);
+                                                            WD, radiusIndex, node1.flowSepNodes, endNode.flowSepNodes, WS_Equiv[WD], useFlowSep, node1Coords, node2Coords, useValley);
 
                     if (UW_CoeffsDeltas != null)
                         numUW_CoeffsDeltas = UW_CoeffsDeltas.Length;
 
-                    DW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_DW_Expo(sectWS_1[WD], UWExpo_1_All[WD], UWExpo_2_All[WD], DWExpo_1_All[WD], DWExpo_2_All[WD], P10_UW_All[WD], P10_DW_All[WD], thisModel, WD, useFlowSep);
+                    DW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_DW_Expo(sectWS_1[WD], UWExpo_1_All[WD], UWExpo_2_All[WD], DWExpo_1_All[WD], DWExpo_2_All[WD], P10_UW_All[WD], P10_DW_All[WD], thisModel, WD, useFlowSep, useValley);
 
                     if (DW_CoeffsDeltas != null)
                         numDW_CoeffsDeltas = DW_CoeffsDeltas.Length;
@@ -2180,7 +2181,7 @@ namespace ContinuumNS
             {
                 WS_1 = WS_Equiv[WD_Ind];
                 UW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_UW_Expo(UWExpo_1, UWExpo_2, DWExpo_1, DWExpo_2, (P10_UW_1 + P10_UW_2) / 2, (P10_DW_1 + P10_DW_2) / 2, thisModel,
-                                                            WD_Ind, radiusIndex, node1.flowSepNodes, node2.flowSepNodes, WS_1, useFlowSep, node1Coords, node2Coords);
+                                                            WD_Ind, radiusIndex, node1.flowSepNodes, node2.flowSepNodes, WS_1, useFlowSep, node1Coords, node2Coords, useValley);
 
                 if (UW_CoeffsDeltas != null)
                     numUW_CoeffsDeltas = UW_CoeffsDeltas.Length;
@@ -2200,7 +2201,7 @@ namespace ContinuumNS
                     }
                 }
 
-                DW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_DW_Expo(WS_1, UWExpo_1, UWExpo_2, DWExpo_1, DWExpo_2, (P10_UW_1 + P10_UW_2) / 2, (P10_DW_1 + P10_DW_2) / 2, thisModel, WD_Ind, useFlowSep);
+                DW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_DW_Expo(WS_1, UWExpo_1, UWExpo_2, DWExpo_1, DWExpo_2, (P10_UW_1 + P10_UW_2) / 2, (P10_DW_1 + P10_DW_2) / 2, thisModel, WD_Ind, useFlowSep, useValley);
 
                 if (DW_CoeffsDeltas != null)
                     numDW_CoeffsDeltas = DW_CoeffsDeltas.Length;
@@ -2237,10 +2238,10 @@ namespace ContinuumNS
                 {
                     for (int WD = 0; WD < numWD; WD++)
                     {
-                        UW_Stab_Corr_1[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, UW_SR_All_1[WD], useFlowSep, "UW");
+                        UW_Stab_Corr_1[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, UW_SR_All_1[WD], useFlowSep, "UW", useValley);
                         UW_SR_All_2[WD] = endNode.expo[radiusIndex].GetWgtAvg(endNodeWindRose, WD, "UW", "SR");
                         UW_DH_All_2[WD] = endNode.expo[radiusIndex].GetWgtAvg(endNodeWindRose, WD, "UW", "DH");
-                        UW_Stab_Corr_2[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, UW_SR_All_2[WD], useFlowSep, "UW");
+                        UW_Stab_Corr_2[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, UW_SR_All_2[WD], useFlowSep, "UW", useValley);
 
                         deltaWS_UW_SRDH = deltaWS_UW_SRDH + thisInst.modelList.GetDeltaWS_SRDH(sectWS_1[WD], HH, UW_SR_All_1[WD], UW_SR_All_2[WD], UW_DH_All_1[WD],
                             UW_DH_All_2[WD], UW_Stab_Corr_1[WD], UW_Stab_Corr_2[WD]) * endNodeWindRose[WD];
@@ -2248,8 +2249,8 @@ namespace ContinuumNS
                         DW_SR_All_2[WD] = endNode.expo[radiusIndex].GetWgtAvg(endNodeWindRose, WD, "DW", "SR");
                         DW_DH_All_2[WD] = endNode.expo[radiusIndex].GetWgtAvg(endNodeWindRose, WD, "DW", "DH");
 
-                        DW_Stab_Corr_1[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, DW_SR_All_1[WD], useFlowSep, "UW");
-                        DW_Stab_Corr_2[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, DW_SR_All_2[WD], useFlowSep, "UW");
+                        DW_Stab_Corr_1[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, DW_SR_All_1[WD], useFlowSep, "UW", useValley);
+                        DW_Stab_Corr_2[WD] = thisModel.GetStabilityCorrection(avgUW[WD], avgDW[WD], WD, DW_SR_All_2[WD], useFlowSep, "UW", useValley);
 
                         deltaWS_DW_SRDH = deltaWS_DW_SRDH + thisInst.modelList.GetDeltaWS_SRDH(sectWS_1[WD], HH, DW_SR_All_1[WD], DW_SR_All_2[WD], DW_DH_All_1[WD],
                             DW_DH_All_2[WD], DW_Stab_Corr_1[WD], DW_Stab_Corr_2[WD]) * endNodeWindRose[WD];
@@ -2257,10 +2258,10 @@ namespace ContinuumNS
                 }
                 else
                 {
-                    UW_Stab_Corr_1[WD_Ind] = thisModel.GetStabilityCorrection(avgUW[WD_Ind], avgDW[WD_Ind], WD_Ind, UW_SR_All_1[WD_Ind], useFlowSep, "UW");
+                    UW_Stab_Corr_1[WD_Ind] = thisModel.GetStabilityCorrection(avgUW[WD_Ind], avgDW[WD_Ind], WD_Ind, UW_SR_All_1[WD_Ind], useFlowSep, "UW", useValley);
                     UW_SR_All_2[WD_Ind] = endNode.expo[radiusIndex].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "SR");
                     UW_DH_All_2[WD_Ind] = endNode.expo[radiusIndex].GetWgtAvg(endNodeWindRose, WD_Ind, "UW", "DH");
-                    UW_Stab_Corr_2[WD_Ind] = thisModel.GetStabilityCorrection(avgUW[WD_Ind], avgDW[WD_Ind], WD_Ind, UW_SR_All_2[WD_Ind], useFlowSep, "UW");
+                    UW_Stab_Corr_2[WD_Ind] = thisModel.GetStabilityCorrection(avgUW[WD_Ind], avgDW[WD_Ind], WD_Ind, UW_SR_All_2[WD_Ind], useFlowSep, "UW", useValley);
 
                     deltaWS_UW_SRDH = thisInst.modelList.GetDeltaWS_SRDH(sectWS_1[WD_Ind], HH, UW_SR_All_1[WD_Ind], UW_SR_All_2[WD_Ind], UW_DH_All_1[WD_Ind],
                         UW_DH_All_2[WD_Ind], UW_Stab_Corr_1[WD_Ind], UW_Stab_Corr_2[WD_Ind]);
@@ -2268,8 +2269,8 @@ namespace ContinuumNS
                     DW_SR_All_2[WD_Ind] = endNode.expo[radiusIndex].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "SR");
                     DW_DH_All_2[WD_Ind] = endNode.expo[radiusIndex].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "DH");
 
-                    DW_Stab_Corr_1[WD_Ind] = thisModel.GetStabilityCorrection(avgUW[WD_Ind], avgDW[WD_Ind], WD_Ind, DW_SR_All_1[WD_Ind], useFlowSep, "DW");
-                    DW_Stab_Corr_2[WD_Ind] = thisModel.GetStabilityCorrection(avgUW[WD_Ind], avgDW[WD_Ind], WD_Ind, DW_SR_All_2[WD_Ind], useFlowSep, "DW");
+                    DW_Stab_Corr_1[WD_Ind] = thisModel.GetStabilityCorrection(avgUW[WD_Ind], avgDW[WD_Ind], WD_Ind, DW_SR_All_1[WD_Ind], useFlowSep, "DW", useValley);
+                    DW_Stab_Corr_2[WD_Ind] = thisModel.GetStabilityCorrection(avgUW[WD_Ind], avgDW[WD_Ind], WD_Ind, DW_SR_All_2[WD_Ind], useFlowSep, "DW", useValley);
 
                     deltaWS_DW_SRDH = thisInst.modelList.GetDeltaWS_SRDH(sectWS_1[WD_Ind], HH, DW_SR_All_1[WD_Ind], DW_SR_All_2[WD_Ind], DW_DH_All_1[WD_Ind], DW_DH_All_2[WD_Ind],
                                                                 DW_Stab_Corr_1[WD_Ind], DW_Stab_Corr_2[WD_Ind]);
@@ -3453,6 +3454,17 @@ namespace ContinuumNS
 
                 thisInst.txtisMCPdAdv.Text = "Meas. Met data used";
                 thisInst.txtisMCPdAdv.BackColor = Color.LightCoral;
+            }
+
+            if (thisInst.modelList.IsImported())
+            {
+                thisInst.txtImportedModel.Text = "Imported Model";
+                thisInst.txtImportedModel.BackColor = Color.Aquamarine;
+            }
+            else
+            {
+                thisInst.txtImportedModel.Text = "Site-Calibrated Model";
+                thisInst.txtImportedModel.BackColor = Color.Gray;
             }
 
         }
@@ -12729,6 +12741,9 @@ namespace ContinuumNS
         /// <summary> Updates Terrain Complexity tab on Site Conditions tab </summary>
         public void TerrainComplexityTab()
         {
+            if (thisInst.Created == false)
+                return;
+
             if (thisInst.turbineList.expoCalcsDone == true)
             {
                 if (thisInst.topo.elevsForCalcs == null)

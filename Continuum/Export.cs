@@ -49,61 +49,79 @@ namespace ContinuumNS
 
                 sw.WriteLine(headerString);
 
+                if (thisInst.topo.useElev == true)
+                    headerString = "Elevation model USED";
+                else
+                    headerString = "Elevation model NOT USED";
+
+                sw.WriteLine(headerString);
+
+                if (thisInst.topo.useValley == true)
+                    headerString = "Valley flow model USED";
+                else
+                    headerString = "Valley flow model NOT USED";
+
+                sw.WriteLine(headerString);
+
                 if (thisInst.topo.useSepMod == true)
                     headerString = "Flow Separation model USED";
                 else
                     headerString = "Flow Separation model NOT USED";
 
                 sw.WriteLine(headerString);
-
-                int radiusIndex = thisInst.GetRadiusInd("Advanced");
-                int radius = thisInst.radiiList.investItem[radiusIndex].radius;
-
-                sw.Write("Radius = " + radius.ToString());
                 sw.WriteLine();
 
-                int WD_Ind = thisInst.GetWD_ind("Advanced");
-                int numWD = thisInst.GetNumWD();
+                for (int r = 0; r < thisInst.radiiList.ThisCount; r++)
+                {                    
+                    int radius = thisInst.radiiList.investItem[r].radius;
 
-                if (WD_Ind == numWD)
-                    sw.Write("Overall WD");
-                else
-                    sw.Write("WD sector =" + (WD_Ind * (double)360 / numWD).ToString());
+                    sw.Write("Radius = " + radius.ToString());
+                    sw.WriteLine();
 
-                sw.WriteLine();
-
-                // Data_String = new string[3];
-                sw.Write("Predictor, ");
-                sw.Write("Target, ");
-                sw.Write("% Error");
-
-                sw.WriteLine();
-
-                for (int j = 0; j < numPairs; j++)
-                {
-                    Pair_Of_Mets thisPair = thisInst.metPairList.metPairs[j];
-
-                    sw.Write(thisPair.met1.name + ",");
-                    sw.Write(thisPair.met2.name + ",");
-                    int WS_PredInd = thisPair.GetWS_PredInd(theseModels, thisInst.modelList);
+                    int WD_Ind = thisInst.GetWD_ind("Advanced");
+                    int numWD = thisInst.GetNumWD();
 
                     if (WD_Ind == numWD)
-                        sw.Write(Math.Round(thisPair.WS_Pred[WS_PredInd, radiusIndex].percErr[0], 4).ToString("P"));
+                        sw.Write("Overall WD");
                     else
-                        sw.Write(Math.Round(thisPair.WS_Pred[WS_PredInd, radiusIndex].percErrSector[0, WD_Ind], 4).ToString("P"));
+                        sw.Write("WD sector =" + (WD_Ind * (double)360 / numWD).ToString());
 
                     sw.WriteLine();
 
-                    sw.Write(thisPair.met2.name + ",");
-                    sw.Write(thisPair.met1.name + ",");
-                    if (WD_Ind == numWD)
-                        sw.Write(Math.Round(thisPair.WS_Pred[WS_PredInd, radiusIndex].percErr[1], 4).ToString("P"));
-                    else
-                        sw.Write(Math.Round(thisPair.WS_Pred[WS_PredInd, radiusIndex].percErrSector[1, WD_Ind], 4).ToString("P"));
+                    // Data_String = new string[3];
+                    sw.Write("Predictor, ");
+                    sw.Write("Target, ");
+                    sw.Write("% Error");
 
                     sw.WriteLine();
 
+                    for (int j = 0; j < numPairs; j++)
+                    {
+                        Pair_Of_Mets thisPair = thisInst.metPairList.metPairs[j];
+
+                        sw.Write(thisPair.met1.name + ",");
+                        sw.Write(thisPair.met2.name + ",");
+                        int WS_PredInd = thisPair.GetWS_PredInd(theseModels, thisInst.modelList);
+
+                        if (WD_Ind == numWD)
+                            sw.Write(Math.Round(thisPair.WS_Pred[WS_PredInd, r].percErr[0], 4).ToString("P"));
+                        else
+                            sw.Write(Math.Round(thisPair.WS_Pred[WS_PredInd, r].percErrSector[0, WD_Ind], 4).ToString("P"));
+
+                        sw.WriteLine();
+
+                        sw.Write(thisPair.met2.name + ",");
+                        sw.Write(thisPair.met1.name + ",");
+                        if (WD_Ind == numWD)
+                            sw.Write(Math.Round(thisPair.WS_Pred[WS_PredInd, r].percErr[1], 4).ToString("P"));
+                        else
+                            sw.Write(Math.Round(thisPair.WS_Pred[WS_PredInd, r].percErrSector[1, WD_Ind], 4).ToString("P"));
+
+                        sw.WriteLine();
+
+                    }
                 }
+
                 sw.Close();
             }
 
@@ -637,6 +655,14 @@ namespace ContinuumNS
             if (thisInst.topo.useSepMod == true)
                 useFlowSep = true;
 
+            bool useValley = false;
+            if (thisInst.topo.useValley == true)
+                useValley = true;
+
+            bool useElev = false;
+            if (thisInst.topo.useElev == true)
+                useElev = true;
+
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
             {
                 StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
@@ -669,6 +695,10 @@ namespace ContinuumNS
 
                     sw.Write("WD sect,");
                     sw.Write("RMS Sect. WS Ests,");
+
+                    if (useElev)
+                        sw.Write("Elevation coeff.,");
+
                     sw.Write("downhill_A,");
                     sw.Write("downhill_B,");
                     sw.Write("uphill_A,");
@@ -698,7 +728,15 @@ namespace ContinuumNS
                     for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
                     {
                         sw.Write(Math.Round((WD_Ind * (double)360 / numWD), 1).ToString() + ",");
-                        sw.Write(Math.Round(thisModel.RMS_Sect_WS_Est[WD_Ind], 5).ToString("P") + ",");
+
+                        if (thisModel.RMS_Sect_WS_Est != null)
+                            sw.Write(Math.Round(thisModel.RMS_Sect_WS_Est[WD_Ind], 5).ToString("P") + ",");
+                        else
+                            sw.Write("0.0,");
+
+                        if (useElev)
+                            sw.Write(Math.Round(thisModel.elevCoeff[WD_Ind], 5).ToString() + ",");
+
                         sw.Write(Math.Round(thisModel.downhill_A[WD_Ind], 5).ToString() + ",");
                         sw.Write(Math.Round(thisModel.downhill_B[WD_Ind], 5).ToString() + ",");
                         sw.Write(Math.Round(thisModel.uphill_A[WD_Ind], 5).ToString() + ",");
@@ -4289,6 +4327,61 @@ namespace ContinuumNS
 
                 for (int h = 0; h < thisHisto.Length; h++)
                     sw.WriteLine(-0.5 + h * 0.02 + "," + thisHisto[h]);
+
+                sw.Close();
+
+            }
+        }
+
+        /// <summary> Exports summary of all models' RMS errors (overall and sectorwise) </summary>
+        /// <param name="thisInst"></param>
+        public void ExportModelRMS_Errors(Continuum thisInst)
+        {
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
+
+                sw.WriteLine("Continuum Model RMS Error Summary");
+                sw.WriteLine();
+
+                sw.WriteLine("Mets used: " + thisInst.metList.CreateMetString(thisInst.metList.GetMetsUsed(), true));
+
+                if (thisInst.topo.useSR == true)
+                    sw.WriteLine("Surface roughness model used");
+                else
+                    sw.WriteLine("Surface roughness model NOT used");
+
+                if (thisInst.topo.useSepMod == true)
+                    sw.WriteLine("Flow separation model used");
+
+                if (thisInst.topo.useElev == true)
+                    sw.WriteLine("Elevation model used");
+                else
+                    sw.WriteLine("Elevation model NOT used");
+
+                if (thisInst.topo.useValley == true)
+                    sw.WriteLine("Valley flow model used");
+                else
+                    sw.WriteLine("Valley flow model NOT used");
+
+                sw.WriteLine();
+
+                Met.TOD thisTOD = thisInst.GetSelectedTOD("Advanced");
+                Met.Season thisSeason = thisInst.GetSelectedSeason("Advanced");
+                Model[] theseModels = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), thisTOD, thisSeason, thisInst.modeledHeight, false);
+
+                for (int r = 0; r < thisInst.radiiList.ThisCount; r++)
+                {
+                    Model thisModel = theseModels[r];
+                    sw.WriteLine("Radius of investigation:," + thisInst.radiiList.investItem[r].ToString());
+                    sw.WriteLine("RMS Overall Error [%]," + thisModel.RMS_WS_Est.ToString());
+                    sw.WriteLine("WD, RMS Error");
+
+                    for (int d = 0; d < thisModel.RMS_Sect_WS_Est.Length; d++)
+                        sw.WriteLine(Math.Round(d * 360.0 / thisInst.metList.numWD, 2).ToString() + "," + thisModel.RMS_Sect_WS_Est[d].ToString());
+
+                    sw.WriteLine();
+                }
 
                 sw.Close();
 

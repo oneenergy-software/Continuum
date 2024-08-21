@@ -91,6 +91,22 @@ namespace ContinuumNS
             if (fbdTopoFile.ShowDialog() != DialogResult.OK)
                 return;
 
+            // If filename is still default, ask user if they want to specify
+            if (txtTopoDownloadName.Text == "Topo Data Download")
+            {
+                DialogResult yesOrNo = MessageBox.Show("Do you want to use the default file name 'Topo Data Download'?", "", MessageBoxButtons.YesNo);
+
+                if (yesOrNo == DialogResult.No)
+                    return;
+            }
+
+            string fileName = txtTopoDownloadName.Text;
+            if (fileName == "")
+            {
+                MessageBox.Show("Enter a filename for downloaded topography data");
+                return;
+            }
+
             openTopoAPI_Key = txtOpenTopoAPI.Text;
             if (openTopoAPI_Key.Length == 0)
             { 
@@ -129,9 +145,9 @@ namespace ContinuumNS
 
             string dataType = cboOpenTopoData.SelectedItem.ToString();
            
-      //      string apiURL = "https://portal.opentopography.org/API/globaldem";
-            string apiURL = "https://portal.opentopography.org/API/usgsdem";
-            dataType = "USGS10m";
+            string apiURL = "https://portal.opentopography.org/API/globaldem";
+      //      string apiURL = "https://portal.opentopography.org/API/usgsdem";
+      //      dataType = "USGS10m";
             string outputFormat = "GTiff";
             string queryUrl = $"{apiURL}?demtype={dataType}&south={minLat}&north={maxLat}&west={minLon}&east={maxLon}&outputFormat={outputFormat}&API_Key={openTopoAPI_Key}";
 
@@ -150,11 +166,10 @@ namespace ContinuumNS
                         // Check if response has a filename header
                         if (response.Content.Headers.ContentDisposition?.FileName != null)
                         {
-                            string fileName = response.Content.Headers.ContentDisposition.FileName;
-                            string filePath = System.IO.Path.Combine(fbdTopoFile.SelectedPath, fileName);
+                      //      string downloadedFileName = response.Content.Headers.ContentDisposition.FileName;
+                            string filePath = System.IO.Path.Combine(fbdTopoFile.SelectedPath, fileName + ".tif");
                             System.IO.File.WriteAllBytes(filePath, fileBytes);
-                            MessageBox.Show($"File downloaded and saved to: {filePath}");
-                            
+                            MessageBox.Show($"File downloaded and saved to: {filePath}");                          
                             
 
                         }
@@ -275,6 +290,14 @@ namespace ContinuumNS
 
         }
 
-        
+        private void TopoDataDownload_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

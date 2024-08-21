@@ -1289,10 +1289,10 @@ namespace ContinuumNS
 
                 if (bothMetsUsed == true)
                 {                    
-                    Pair_Of_Mets.WS_CrossPreds thisCrossPred = metPairs[i].GetWS_CrossPred(model);                                      
+                    Pair_Of_Mets.WS_CrossPreds thisCrossPred = metPairs[i].GetWS_CrossPred(model);
 
-                    RMS_Err = RMS_Err + Math.Pow(thisCrossPred.percErrSector[0, WD_Ind], 2);
-                    RMS_Err = RMS_Err + Math.Pow(thisCrossPred.percErrSector[1, WD_Ind], 2);
+                    RMS_Err = RMS_Err + thisCrossPred.percErrSector[0, WD_Ind] * thisCrossPred.percErrSector[0, WD_Ind]; // Math.Pow(thisCrossPred.percErrSector[0, WD_Ind], 2);
+                    RMS_Err = RMS_Err + thisCrossPred.percErrSector[1, WD_Ind] * thisCrossPred.percErrSector[1, WD_Ind]; // Math.Pow(thisCrossPred.percErrSector[1, WD_Ind], 2);
                     RMS_Count = RMS_Count + 2;                   
                 }
             }
@@ -1359,12 +1359,13 @@ namespace ContinuumNS
                     if (WS_PredInd == -1)                                            
                         return RMS_Err;
 
-                    metPairs[i].DoMetCrossPred(WS_PredInd, radiusIndex, thisInst);                                      
+                    metPairs[i].DoMetCrossPred(WS_PredInd, radiusIndex, thisInst);
 
-                    RMS_Err = RMS_Err + Math.Pow(metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0], 2);
-                    RMS_Count++;                                      
-                    
-                    RMS_Err = RMS_Err + Math.Pow(metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1], 2);
+                    RMS_Err = RMS_Err + metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0] * metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0]; // + Math.Pow(metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0], 2);
+                    RMS_Count++;
+
+                    RMS_Err = RMS_Err + metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1] * metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1];
+              //      RMS_Err = RMS_Err + Math.Pow(metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1], 2);
                     RMS_Count++;
                 }
             }
@@ -1401,6 +1402,7 @@ namespace ContinuumNS
             
             string flow1;
             string flow2;
+            bool useValley = thisInst.topo.useValley;
             
             for (int i = 0; i < PairCount; i++)
             {
@@ -1454,12 +1456,12 @@ namespace ContinuumNS
 
                             if (UW_or_DW == "UW")
                             {
-                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "UW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "UW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                             }
                             else {
-                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "DW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "DW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                             }
 
                             if ((flow1 == flowType) || (flow2 == flowType))
@@ -1497,12 +1499,12 @@ namespace ContinuumNS
 
                                 if (UW_or_DW == "UW")
                                 {
-                                    flow1 = model.GetFlowType(UW1, DW1, WD_sec, "UW", thisWS_Est.nodePath[n - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                    flow2 = model.GetFlowType(UW2, DW2, WD_sec, "UW", thisWS_Est.nodePath[n].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                    flow1 = model.GetFlowType(UW1, DW1, WD_sec, "UW", thisWS_Est.nodePath[n - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                    flow2 = model.GetFlowType(UW2, DW2, WD_sec, "UW", thisWS_Est.nodePath[n].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                 }
                                 else {
-                                    flow1 = model.GetFlowType(UW1, DW1, WD_sec, "DW", thisWS_Est.nodePath[n - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                    flow2 = model.GetFlowType(UW2, DW2, WD_sec, "DW", thisWS_Est.nodePath[n].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                    flow1 = model.GetFlowType(UW1, DW1, WD_sec, "DW", thisWS_Est.nodePath[n - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                    flow2 = model.GetFlowType(UW2, DW2, WD_sec, "DW", thisWS_Est.nodePath[n].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                 }
 
                                 if ((flow1 == flowType) || (flow2 == flowType))
@@ -1537,12 +1539,12 @@ namespace ContinuumNS
 
                             if (thisInst.topo.useSepMod == true) flowSep = nodeList.GetSepNodes1and2(metPairs[i].met2.flowSepNodes, thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WD_sec);
                             if (UW_or_DW == "UW") {
-                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "UW", thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "UW", thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                             }
                             else {
-                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "DW", thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "DW", thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                             }
 
                             if ((flow1 == flowType) || (flow2 == flowType))
@@ -1577,12 +1579,12 @@ namespace ContinuumNS
 
                             if (thisInst.topo.useSepMod == true) flowSep = nodeList.GetSepNodes1and2(metPairs[i].met1.flowSepNodes, metPairs[i].met2.flowSepNodes, WD_sec);
                             if (UW_or_DW == "UW") {
-                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "UW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "UW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                             }
                             else {
-                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "DW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                flow1 = model.GetFlowType(UW1, DW1, WD_sec, "DW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                flow2 = model.GetFlowType(UW2, DW2, WD_sec, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                             }
 
                             if ((flow1 == flowType) || (flow2 == flowType))
@@ -1623,12 +1625,12 @@ namespace ContinuumNS
                                 if (thisInst.topo.useSepMod == true) flowSep = nodeList.GetSepNodes1and2(metPairs[i].met1.flowSepNodes, thisWS_Est.nodePath[0].flowSepNodes, WD);
                                 if (UW_or_DW == "UW")
                                 {
-                                    flow1 = model.GetFlowType(UW1, DW1, WD, "UW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                    flow2 = model.GetFlowType(UW2, DW2, WD, "UW", thisWS_Est.nodePath[0].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                    flow1 = model.GetFlowType(UW1, DW1, WD, "UW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                    flow2 = model.GetFlowType(UW2, DW2, WD, "UW", thisWS_Est.nodePath[0].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                 }
                                 else {
-                                    flow1 = model.GetFlowType(UW1, DW1, WD, "DW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                    flow2 = model.GetFlowType(UW2, DW2, WD, "DW", thisWS_Est.nodePath[0].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                    flow1 = model.GetFlowType(UW1, DW1, WD, "DW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                    flow2 = model.GetFlowType(UW2, DW2, WD, "DW", thisWS_Est.nodePath[0].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                 }
 
 
@@ -1666,12 +1668,12 @@ namespace ContinuumNS
 
                                     if (UW_or_DW == "UW")
                                     {
-                                        flow1 = model.GetFlowType(UW1, DW1, WD, "UW", thisWS_Est.nodePath[n - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                        flow2 = model.GetFlowType(UW2, DW2, WD, "UW", thisWS_Est.nodePath[n].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                        flow1 = model.GetFlowType(UW1, DW1, WD, "UW", thisWS_Est.nodePath[n - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                        flow2 = model.GetFlowType(UW2, DW2, WD, "UW", thisWS_Est.nodePath[n].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                     }
                                     else {
-                                        flow1 = model.GetFlowType(UW1, DW1, WD, "DW", thisWS_Est.nodePath[n - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                        flow2 = model.GetFlowType(UW2, DW2, WD, "DW", thisWS_Est.nodePath[n].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                        flow1 = model.GetFlowType(UW1, DW1, WD, "DW", thisWS_Est.nodePath[n - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                        flow2 = model.GetFlowType(UW2, DW2, WD, "DW", thisWS_Est.nodePath[n].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                     }
 
 
@@ -1710,12 +1712,12 @@ namespace ContinuumNS
                                 if (thisInst.topo.useSepMod == true) flowSep = nodeList.GetSepNodes1and2(metPairs[i].met2.flowSepNodes, thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WD);
 
                                 if (UW_or_DW == "UW") {
-                                    flow1 = model.GetFlowType(UW1, DW1, WD, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                    flow2 = model.GetFlowType(UW2, DW2, WD, "UW", thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                    flow1 = model.GetFlowType(UW1, DW1, WD, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                    flow2 = model.GetFlowType(UW2, DW2, WD, "UW", thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                 }
                                 else {
-                                    flow1 = model.GetFlowType(UW1, DW1, WD, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                    flow2 = model.GetFlowType(UW2, DW2, WD, "DW", thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                    flow1 = model.GetFlowType(UW1, DW1, WD, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                    flow2 = model.GetFlowType(UW2, DW2, WD, "DW", thisWS_Est.nodePath[thisWS_Est.nodePath.Length - 1].flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                 }
                                 
                                 if ((flow1 == flowType) || (flow2 == flowType))
@@ -1732,9 +1734,7 @@ namespace ContinuumNS
 
                                     coeffCount++;
                                 }
-
                             }
-
                             else {
                                 thisP10DW = (Math.Abs(metPairs[i].met1.gridStats.stats[radiusIndex].P10_DW[WD]) + Math.Abs(metPairs[i].met2.gridStats.stats[radiusIndex].P10_DW[WD])) / 2;
                                 thisP10UW = (Math.Abs(metPairs[i].met1.gridStats.stats[radiusIndex].P10_UW[WD]) + Math.Abs(metPairs[i].met2.gridStats.stats[radiusIndex].P10_UW[WD])) / 2;
@@ -1754,14 +1754,13 @@ namespace ContinuumNS
 
                                 if (UW_or_DW == "UW")
                                 {
-                                    flow1 = model.GetFlowType(UW1, DW1, WD, "UW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                    flow2 = model.GetFlowType(UW2, DW2, WD, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                    flow1 = model.GetFlowType(UW1, DW1, WD, "UW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                    flow2 = model.GetFlowType(UW2, DW2, WD, "UW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                 }
                                 else {
-                                    flow1 = model.GetFlowType(UW1, DW1, WD, "DW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
-                                    flow2 = model.GetFlowType(UW2, DW2, WD, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex);
+                                    flow1 = model.GetFlowType(UW1, DW1, WD, "DW", metPairs[i].met1.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
+                                    flow2 = model.GetFlowType(UW2, DW2, WD, "DW", metPairs[i].met2.flowSepNodes, WS1, thisInst.topo.useSepMod, radiusIndex, useValley);
                                 }
-
 
                                 if ((flow1 == flowType) || (flow2 == flowType))
                                 {

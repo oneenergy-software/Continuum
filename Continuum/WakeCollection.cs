@@ -747,7 +747,10 @@ namespace ContinuumNS
             else if (thisWakeModel.wakeModelType == 2)
                 wakeString = "Jensen, ";
 
-            wakeString = wakeString + thisWakeModel.powerCurve.name.Substring(0, 10).Trim();
+            if (thisWakeModel.powerCurve.name.Length > 9)
+                wakeString = wakeString + thisWakeModel.powerCurve.name.Substring(0, 10).Trim();
+            else
+                wakeString = wakeString + thisWakeModel.powerCurve.name.Trim();
 
             wakeString = wakeString + ", Exp.: " + Math.Round(thisWakeModel.horizWakeExp, 1) + " degs,";
             wakeString = wakeString + " TI: " + Math.Round(thisWakeModel.ambTI, 1) + " %, ";

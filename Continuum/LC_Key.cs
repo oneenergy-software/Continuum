@@ -44,8 +44,16 @@ namespace ContinuumNS
             Mod_LC_Key thisMod = new Mod_LC_Key(thisInst, this);
 
             thisMod.txtCode.Text = thisLC.code.ToString();
-            thisMod.txtDesc.Text = thisLC.desc;
-            thisMod.txtSR.Text = Math.Round(thisLC.SR,3).ToString();
+            thisMod.txtDesc.Text = thisLC.desc;                       
+                
+            // Get scientific notation exponent (to figure out rounding digits)
+            int sciExp = (int)Math.Floor(Math.Log10(thisLC.SR));
+            int numDigs = 2;
+
+            if (sciExp < 0)
+                numDigs = (int)Math.Abs(sciExp) + 1;
+
+            thisMod.txtSR.Text = Math.Round(thisLC.SR, numDigs).ToString();
             thisMod.txtDH.Text = Math.Round(thisLC.DH, 1).ToString();
 
             if (cboLC_Key.SelectedIndex == 0)
@@ -88,6 +96,14 @@ namespace ContinuumNS
                             newLC_Key[LC_Count].desc = fileRow[1];
                             newLC_Key[LC_Count].SR = Convert.ToSingle(fileRow[2]);
                             newLC_Key[LC_Count].DH = Convert.ToSingle(fileRow[3]);
+
+                            if (newLC_Key[LC_Count].SR == 0)
+                            {
+                                MessageBox.Show("Error reading land cover key for " + newLC_Key[LC_Count].desc + ". The surface roughness may not be 0.  Please enter a value above 0 such as 0.0001 m");
+                                sr.Close();
+                                return;
+                            }
+
                         }
                         catch {
                             MessageBox.Show("Error reading land cover key. Format of file should be: Code, Description, Surface roughness, Displacement height.", "Continuum 3");
@@ -183,7 +199,15 @@ namespace ContinuumNS
             {
                 ListViewItem objListItem = lstLC_SR_DH.Items.Add(LC_Key_New[i].code.ToString());
                 objListItem.SubItems.Add(LC_Key_New[i].desc);
-                objListItem.SubItems.Add(Math.Round(LC_Key_New[i].SR, 2).ToString());
+
+                // Get scientific notation exponent (to figure out rounding digits)
+                int sciExp = (int)Math.Floor(Math.Log10(LC_Key_New[i].SR));
+                int numDigs = 2;
+
+                if (sciExp < 0)
+                    numDigs = (int)Math.Abs(sciExp) + 1;
+                                
+                objListItem.SubItems.Add(Math.Round(LC_Key_New[i].SR, numDigs).ToString());
                 objListItem.SubItems.Add(Math.Round(LC_Key_New[i].DH, 2).ToString());
             }
             

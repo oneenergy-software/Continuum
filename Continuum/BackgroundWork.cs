@@ -1917,14 +1917,19 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                         {
-                            var temp_exist_db = from N in ctx.Temp_table where N.Id == (t + 1) select N;
+                            var temp_exist_db = from N in ctx.Temp_table select N;
+                            int tempInd = 0;
 
                             foreach (var N in temp_exist_db)
                             {
-                                temp_Table.Id = N.Id;
-                                temp_Table.height = N.height;
-                                temp_Table.metName = N.metName;
-                                temp_Table.temp = N.temp;
+                                if (tempInd == t)
+                                {
+                                    temp_Table.Id = N.Id;
+                                    temp_Table.height = N.height;
+                                    temp_Table.metName = N.metName;
+                                    temp_Table.temp = N.temp;
+                                }
+                                tempInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -1934,14 +1939,19 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
-                            var temp_exist_db = from N in ctx.Temp_table where N.Id == (t + 1) select N;
+                            var temp_exist_db = from N in ctx.Temp_table select N;
+                            int tempInd = 0;
 
                             foreach (var N in temp_exist_db)
                             {
-                                temp_Table.Id = N.Id;
-                                temp_Table.height = N.height;
-                                temp_Table.metName = N.metName;
-                                temp_Table.temp = N.temp;
+                                if (tempInd == t)
+                                {
+                                    temp_Table.Id = N.Id;
+                                    temp_Table.height = N.height;
+                                    temp_Table.metName = N.metName;
+                                    temp_Table.temp = N.temp;
+                                }
+                                tempInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -1951,14 +1961,19 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer(oldConnString))
                         {
-                            var temp_exist_db = from N in ctx.Temp_table where N.Id == (t + 1) select N;
+                            var temp_exist_db = from N in ctx.Temp_table select N;
+                            int tempInd = 0;
 
                             foreach (var N in temp_exist_db)
                             {
-                                temp_Table.Id = N.Id;
-                                temp_Table.height = N.height;
-                                temp_Table.metName = N.metName;
-                                temp_Table.temp = N.temp;
+                                if (tempInd == t)
+                                {
+                                    temp_Table.Id = N.Id;
+                                    temp_Table.height = N.height;
+                                    temp_Table.metName = N.metName;
+                                    temp_Table.temp = N.temp;
+                                }
+                                tempInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -2038,14 +2053,19 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
-                            var baro_exist_db = from N in ctx.Baro_table where N.Id == (b + 1) select N;
+                            var baro_exist_db = from N in ctx.Baro_table select N;
+                            int baroInd = 0;
 
                             foreach (var N in baro_exist_db)
                             {
-                                baro_Table.Id = N.Id;
-                                baro_Table.height = N.height;
-                                baro_Table.metName = N.metName;
-                                baro_Table.baro = N.baro;
+                                if (baroInd == b)
+                                {
+                                    baro_Table.Id = N.Id;
+                                    baro_Table.height = N.height;
+                                    baro_Table.metName = N.metName;
+                                    baro_Table.baro = N.baro;
+                                }
+                                baroInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -2055,14 +2075,19 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer(oldConnString))
                         {
-                            var baro_exist_db = from N in ctx.Baro_table where N.Id == (b + 1) select N;
+                            var baro_exist_db = from N in ctx.Baro_table select N;
+                            int baroInd = 0;
 
                             foreach (var N in baro_exist_db)
                             {
-                                baro_Table.Id = N.Id;
-                                baro_Table.height = N.height;
-                                baro_Table.metName = N.metName;
-                                baro_Table.baro = N.baro;
+                                if (baroInd == b)
+                                {
+                                    baro_Table.Id = N.Id;
+                                    baro_Table.height = N.height;
+                                    baro_Table.metName = N.metName;
+                                    baro_Table.baro = N.baro;
+                                }
+                                baroInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -2158,14 +2183,19 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
                         {
-                            var vane_exist_db = from N in ctx.Vane_table where N.Id == (v + 1) select N;
+                            var vane_exist_db = from N in ctx.Vane_table select N;
+                            int vaneInd = 0;
 
                             foreach (var N in vane_exist_db)
                             {
-                                vane_Table.Id = N.Id;
-                                vane_Table.height = N.height;
-                                vane_Table.metName = N.metName;
-                                vane_Table.dirData = N.dirData;
+                                if (vaneInd == v)
+                                {
+                                    vane_Table.Id = N.Id;
+                                    vane_Table.height = N.height;
+                                    vane_Table.metName = N.metName;
+                                    vane_Table.dirData = N.dirData;
+                                }
+                                vaneInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -2175,14 +2205,19 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
-                            var vane_exist_db = from N in ctx.Vane_table where N.Id == (v + 1) select N;
+                            var vane_exist_db = from N in ctx.Vane_table select N;
+                            int vaneInd = 0;
 
                             foreach (var N in vane_exist_db)
                             {
-                                vane_Table.Id = N.Id;
-                                vane_Table.height = N.height;
-                                vane_Table.metName = N.metName;
-                                vane_Table.dirData = N.dirData;
+                                if (vaneInd == v)
+                                {
+                                    vane_Table.Id = N.Id;
+                                    vane_Table.height = N.height;
+                                    vane_Table.metName = N.metName;
+                                    vane_Table.dirData = N.dirData;
+                                }
+                                vaneInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -2192,14 +2227,19 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer(oldConnString))
                         {
-                            var vane_exist_db = from N in ctx.Vane_table where N.Id == (v + 1) select N;
+                            var vane_exist_db = from N in ctx.Vane_table select N;
+                            int vaneInd = 0;
 
                             foreach (var N in vane_exist_db)
                             {
-                                vane_Table.Id = N.Id;
-                                vane_Table.height = N.height;
-                                vane_Table.metName = N.metName;
-                                vane_Table.dirData = N.dirData;
+                                if (vaneInd == v)
+                                {
+                                    vane_Table.Id = N.Id;
+                                    vane_Table.height = N.height;
+                                    vane_Table.metName = N.metName;
+                                    vane_Table.dirData = N.dirData;
+                                }
+                                vaneInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -2253,15 +2293,21 @@ namespace ContinuumNS
                 {                    
                     using (var ctx = new Continuum_EDMContainer(oldConnString))
                     {
-                        var turbEst_exist_db = from N in ctx.Turb_TS_table where N.Id == (t + 1) select N;
+                        var turbEst_exist_db = from N in ctx.Turb_TS_table select N;
+                        int turbInd = 0;
 
                         foreach (var N in turbEst_exist_db)
                         {
-                            turbEst_Table.Id = N.Id;
-                            turbEst_Table.turbName = N.turbName;
-                            turbEst_Table.powerCurve = N.powerCurve;
-                            turbEst_Table.tsData = N.tsData;
-                            turbEst_Table.wakeModel = N.wakeModel;                            
+                            if (turbInd == t)
+                            {
+                                turbEst_Table.Id = N.Id;
+                                turbEst_Table.turbName = N.turbName;
+                                turbEst_Table.powerCurve = N.powerCurve;
+                                turbEst_Table.tsData = N.tsData;
+                                turbEst_Table.wakeModel = N.wakeModel;
+                                break;
+                            }
+                            turbInd++;
                         }
 
                         ctx.Database.Connection.Close();
@@ -2356,16 +2402,22 @@ namespace ContinuumNS
                     if (fromOldToNew && oldVersion == "v1_1")
                     {
                         using (var ctx = new Continuum_EDMContainer_v1_1(oldConnString))
-                        {
-                            var anem_exist_db = from N in ctx.Anem_table where N.Id == (a + 1) select N;
+                        {                      
+                            var anem_exist_db = from N in ctx.Anem_table select N;
+                            int anemInd = 0;
 
                             foreach (var N in anem_exist_db)
                             {
-                                anem_Table.Id = N.Id;
-                                anem_Table.height = N.height;
-                                anem_Table.metName = N.metName;
-                                anem_Table.sensorChar = N.sensorChar;
-                                anem_Table.windData = N.windData;
+                                if (a == anemInd)
+                                {
+                                    anem_Table.Id = N.Id;
+                                    anem_Table.height = N.height;
+                                    anem_Table.metName = N.metName;
+                                    anem_Table.sensorChar = N.sensorChar;
+                                    anem_Table.windData = N.windData;
+                                }
+
+                                anemInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -2375,15 +2427,21 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer_v1_2(oldConnString))
                         {
-                            var anem_exist_db = from N in ctx.Anem_table where N.Id == (a + 1) select N;
+                            var anem_exist_db = from N in ctx.Anem_table select N;
+                            int anemInd = 0;
 
                             foreach (var N in anem_exist_db)
                             {
-                                anem_Table.Id = N.Id;
-                                anem_Table.height = N.height;
-                                anem_Table.metName = N.metName;
-                                anem_Table.sensorChar = N.sensorChar;
-                                anem_Table.windData = N.windData;
+                                if (a == anemInd)
+                                {
+                                    anem_Table.Id = N.Id;
+                                    anem_Table.height = N.height;
+                                    anem_Table.metName = N.metName;
+                                    anem_Table.sensorChar = N.sensorChar;
+                                    anem_Table.windData = N.windData;
+                                }
+
+                                anemInd++;
                             }
 
                             ctx.Database.Connection.Close();
@@ -2393,21 +2451,26 @@ namespace ContinuumNS
                     {
                         using (var ctx = new Continuum_EDMContainer(oldConnString))
                         {
-                            var anem_exist_db = from N in ctx.Anem_table where N.Id == (a + 1) select N;
+                            var anem_exist_db = from N in ctx.Anem_table select N;
+                            int anemInd = 0;
 
                             foreach (var N in anem_exist_db)
                             {
-                                anem_Table.Id = N.Id;
-                                anem_Table.height = N.height;
-                                anem_Table.metName = N.metName;
-                                anem_Table.sensorChar = N.sensorChar;
-                                anem_Table.windData = N.windData;
+                                if (a == anemInd)
+                                {
+                                    anem_Table.Id = N.Id;
+                                    anem_Table.height = N.height;
+                                    anem_Table.metName = N.metName;
+                                    anem_Table.sensorChar = N.sensorChar;
+                                    anem_Table.windData = N.windData;
+                                }
+
+                                anemInd++;
                             }
 
                             ctx.Database.Connection.Close();
                         }
                     }
-
 
                     using (var ctx = new Continuum_EDMContainer(newConnString))
                     {
@@ -4004,6 +4067,7 @@ namespace ContinuumNS
 
                         if (thisType == "Int16")
                         {
+                            
                             Int16[,,] currentVar = thisDataFile.GetData<Int16[,,]>(allVars[v].ID);
                             var metaData = allVars[v].Metadata;
 

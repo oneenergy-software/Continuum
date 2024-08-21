@@ -595,7 +595,7 @@ namespace ContinuumNS
             double[] thisWR = null; 
             TopoInfo topo = new TopoInfo();
 
-            if (ThisCount > 0)
+            if (ThisCount > 0 && metsUsed != null)
             {                
                 thisWR = new double[numWD];
                 double[] wgts = new double[numWD];
@@ -619,6 +619,30 @@ namespace ContinuumNS
                             break;
                         }
                     }
+                }
+
+                for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++)
+                    thisWR[WD_Ind] = thisWR[WD_Ind] / wgts[WD_Ind];
+            }
+            else
+            { // Imported model so metsUsed is null so get interpolated wind rose using all mets in list
+                thisWR = new double[numWD];
+                double[] wgts = new double[numWD];
+
+                for (int i = 0; i < ThisCount; i++)
+                {                    
+                    double thisDistance = topo.CalcDistanceBetweenPoints(UTMX, UTMY, metItem[i].UTMX, metItem[i].UTMY);
+
+                    if (thisDistance == 0) thisDistance = 1;
+
+                    for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++)
+                    {
+                        Met.WSWD_Dist thisDist = metItem[i].GetWS_WD_Dist(thisHeight, thisTOD, thisSeason);
+                        thisWR[WD_Ind] = thisWR[WD_Ind] + thisDist.windRose[WD_Ind] * 1 / thisDistance;
+                        wgts[WD_Ind] = wgts[WD_Ind] + 1 / thisDistance;
+                    }
+                    break;                       
+                    
                 }
 
                 for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++)
@@ -984,7 +1008,8 @@ namespace ContinuumNS
             Met[] theseMets = null;
             int numToExcl;
 
-            if (metNames == null) return theseMets;
+            if (metNames == null) 
+                return metItem; // Imported model will not have met names to return the whole list
             
             if (exceptMets == null) 
                 numToExcl = 0;

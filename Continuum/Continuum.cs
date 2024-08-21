@@ -61,7 +61,7 @@ namespace ContinuumNS
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         /// <summary> Continuum class initializer </summary>
-        public Continuum(string fileName)
+        public Continuum(string fileName, bool updateAll = true)
         {
             SplashScreen Splash = new SplashScreen();
             Splash.ShowDialog();
@@ -127,7 +127,7 @@ namespace ContinuumNS
             updateThe.MCP_Settings();
 
             if (fileName != "")
-                Open(fileName);
+                Open(fileName, updateAll);
                         
             
         }               
@@ -347,10 +347,13 @@ namespace ContinuumNS
             turbineList.ClearAllGrossEsts();
             turbineList.ClearAllNetEsts();
 
-            metPairList.ClearAll();                          
+            metPairList.ClearAll();
 
             if (metList.ThisCount == 0)
+            {
                 metList.expoIsCalc = false;
+                metList.NewList(); // Resets the metList settings (eg if TAB file had first WS = 1 m/s then WS_FirstInt would be updated to this value.  
+            }
 
             if (metList.isTimeSeries == false)
                 ChangesMade();
@@ -1182,7 +1185,7 @@ namespace ContinuumNS
             fStream.Close();
             fileChanged = false;
             
-            // Now repopoulate the parameters that were cleared (except topo data, that is retrieved the next time that it is needed for any calc)                                
+            // Now repopulate the parameters that were cleared (except topo data, that is retrieved the next time that it is needed for any calc)                                
 
             // Get met sensor data from DB and generated shear and extrapolated data
             if (metList.isTimeSeries)
@@ -1254,7 +1257,7 @@ namespace ContinuumNS
         }
 
         /// <summary>  Opens CFM file and updates GUI </summary>        
-        public void Open(string Filename)
+        public void Open(string Filename, bool updateAll = true)
         {            
             string wholePath = "";
             
@@ -1525,6 +1528,11 @@ namespace ContinuumNS
             else
                 chkUseElevModel.Checked = false;
 
+            if (topo.useValley == true)
+                chkUseValleyFlow.Checked = true;
+            else
+                chkUseValleyFlow.Checked = false;
+
             if (turbineList.genTimeSeries)
                 chkCreateTurbTS.Checked = true;
             else
@@ -1625,6 +1633,9 @@ namespace ContinuumNS
             turbineList.AreExpoCalcsDone();
             turbineList.AreTurbCalcsDone(this);
 
+            if (updateAll == false)
+                return;
+
             updateThe.AllTABs();
                        
             Text = savedParams.savedFileName;
@@ -1654,52 +1665,7 @@ namespace ContinuumNS
             {
        //         MessageBox.Show(ex.Message);
             }
-     /*       try
-            {
-                if (metList.isTimeSeries)
-                {                    
-                    using (var context = new Continuum_EDMContainer(connString))
-                    {
-                        var sensorData = from N in context.Anem_table where N.Id == 1 select N;
-                    }
-                }
-                else if (topo.gotTopo)
-                    using (var context = new Continuum_EDMContainer(connString))
-                    {
-                        if (context.Database.CompatibleWithModel(true) == false)
-                            dbNeedsUpdating = true;
-
-                        var elevData = from N in context.Topo_table where N.Id == 1 select N;
-                    }
-                else
-                {
-                    using (var context = new Continuum_EDMContainer(connString))
-                    {
-                        var merraData = from N in context.MERRA_Node_table where N.Id == 1 select N;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Check to see if database file locked up
-                try
-                {
-                    string filePath = savedParams.pathName;
-                    filePath.Replace(".cfm", ".mdf");
-
-                    using (FileStream fileStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
-                    {
-                        dbNeedsUpdating = true;
-                    }
-                }
-                catch
-                {
-                    MessageBox.Show("The database file is locked by another process. Check Task Manager and end SQL Server instance");
-                }
-                
-            }
-     */
-
+     
             return dbNeedsUpdating;
         }
 
@@ -6855,23 +6821,13 @@ namespace ContinuumNS
          
         private void showHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Opens user manual
-            string filePath = "C:\\Program Files\\One Energy Enterprises LLC\\Continuum 3.0\\Documentation\\Continuum 3.0 Quick User Guide.pdf";
-
-            if (File.Exists(filePath))
+            // Opens web browser with tutorials
+            string tutorialURL = "https://www.continuumwind.com/tutorials";
+            Process.Start(new ProcessStartInfo
             {
-                try {
-                    Process.Start(filePath);
-                            }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-            }
-            else
-            {
-                MessageBox.Show("User's guide cannot be found.", "Continuum 3");
-            }
+                FileName = tutorialURL,
+                UseShellExecute = true
+            });
 
         }
 
@@ -8529,7 +8485,7 @@ namespace ContinuumNS
         public void chkTurbLabels_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             
-            if (this.IsHandleCreated)
+            if (this.IsHandleCreated && okToUpdate)
             {
                 this.BeginInvoke((MethodInvoker)(
                         () => updateThe.InputTAB()));
@@ -8538,7 +8494,7 @@ namespace ContinuumNS
 
         public void chkMetLabels_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (this.IsHandleCreated)
+            if (this.IsHandleCreated && okToUpdate)
             {
                 this.BeginInvoke((MethodInvoker)(
                         () => updateThe.InputTAB()));
@@ -8621,6 +8577,13 @@ namespace ContinuumNS
                     ChangesMade();
                 }
             }
+            else
+            {
+                if (chkUseElevModel.Checked == true)
+                    topo.useElev = true;
+                else
+                    topo.useElev = false;
+            }
         }
 
         private void button1_Click_1(object sender, EventArgs e)
@@ -8653,6 +8616,63 @@ namespace ContinuumNS
             // Call background worker to run calculations
             BW_worker = new BackgroundWork();
             BW_worker.Call_BW_RoundRobin(argsForBW);
+        }
+
+        private void pgeStepwise_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnExportRMS_Errors_Click(object sender, EventArgs e)
+        {
+            // Exports summary of all models RMS error (overall and sectorwise)
+            Export export = new Export();
+            export.ExportModelRMS_Errors(this);
+            
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chkUseValleyFlow_CheckedChanged(object sender, EventArgs e)
+        {
+            // Recreates site-calibrated model with/without the valley flow model based on whether 'Enable Valley Flow' checkbox is checked or not
+            if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
+                BW_worker = new BackgroundWork();
+
+            if (Created && metList.ThisCount > 0 && modelList.ModelCount > 0 && BW_worker.IsBusy() == false)
+            {
+                if ((chkUseValleyFlow.Checked == false && topo.useValley == false) || (chkUseValleyFlow.Checked == true && topo.useValley == true))
+                    return;
+                
+                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+
+                if (yes_or_no == DialogResult.Yes)
+                {
+
+                    modelList.ClearAllExceptImported();
+                    metPairList.ClearAll();
+                    turbineList.ClearAllWSEsts();
+                    turbineList.ClearAllGrossEsts();
+                    turbineList.ClearAllNetEsts();
+                    mapList.ClearAllMaps();
+                    wakeModelList.ClearWakeMaps();
+
+                    if (chkUseValleyFlow.Checked == true)
+                        topo.useValley = true;
+                    else
+                        topo.useValley = false;
+
+                    // Call background worker to run calculations
+                    BW_worker = new BackgroundWork();
+                    BackgroundWork.Vars_for_BW theArgs = new BackgroundWork.Vars_for_BW();
+                    theArgs.thisInst = this;
+                    BW_worker.Call_BW_MetCalcs(theArgs);
+                    ChangesMade();
+                }
+            }
         }
     }
 }

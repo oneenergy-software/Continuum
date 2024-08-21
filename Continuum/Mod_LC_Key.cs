@@ -59,6 +59,12 @@ namespace ContinuumNS
                 return;
             }
 
+            if (newSR == 0.0)
+            {
+                MessageBox.Show("Surface roughness of zero is not allowed.  Please enter a value other than 0.", "Continuum 3");
+                return;
+            }
+
             try
             {
                 newDH = Convert.ToSingle(txtDH.Text);
