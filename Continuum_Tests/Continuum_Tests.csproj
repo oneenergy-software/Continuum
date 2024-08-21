@@ -211,30 +211,7 @@
     <Compile Include="GUI Tests\1 - TAB file Tests\DelTwoMetTABs_Tests.cs" />
     <Compile Include="GUI Tests\1 - TAB file Tests\ThreeMetTABAndGrossNet_Tests.cs" />
     <Compile Include="GUI Tests\1 - TAB file Tests\TwoMetTABAndGrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\2 - Raw TS file Tests\DelOneMetTS_Tests.cs" />
-    <Compile Include="GUI Tests\2 - Raw TS file Tests\DelThreeMetTS_Tests.cs" />
-    <Compile Include="GUI Tests\2 - Raw TS file Tests\DelTwoMetTS_Tests.cs" />
-    <Compile Include="GUI Tests\2 - Raw TS file Tests\OneMetRawTS_GrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\2 - Raw TS file Tests\ThreeMetRawTS_GrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\2 - Raw TS file Tests\TwoMetRawTS_GrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\3 - Raw LT TS file Tests\DelOneMetTS_LT_Tests.cs" />
-    <Compile Include="GUI Tests\3 - Raw LT TS file Tests\DelThreeMetTS_LT_Tests.cs" />
-    <Compile Include="GUI Tests\3 - Raw LT TS file Tests\DelTwoMetTS_LT_Tests.cs" />
-    <Compile Include="GUI Tests\3 - Raw LT TS file Tests\OneMetRawTS_LTGrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\3 - Raw LT TS file Tests\ThreeMetRawTS_LTGrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\3 - Raw LT TS file Tests\TwoMetRawTS_LTGrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\4 - Filtered TS file Tests\DelOneMetFiltTS_Tests.cs" />
-    <Compile Include="GUI Tests\4 - Filtered TS file Tests\DelThreeMetFiltTS_Tests.cs" />
-    <Compile Include="GUI Tests\4 - Filtered TS file Tests\DelTwoMetFiltTS_Tests.cs" />
-    <Compile Include="GUI Tests\4 - Filtered TS file Tests\OneMetFiltTS_GrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\4 - Filtered TS file Tests\ThreeMetFiltTS_GrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\4 - Filtered TS file Tests\TwoMetFiltTS_GrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\5 - Filtered LT TS file Tests\DelOneMetFiltTS_LT_Tests.cs" />
-    <Compile Include="GUI Tests\5 - Filtered LT TS file Tests\DelThreeMetFiltTS_LT_Tests.cs" />
-    <Compile Include="GUI Tests\5 - Filtered LT TS file Tests\DelTwoMetFiltTS_LT_Tests.cs" />
-    <Compile Include="GUI Tests\5 - Filtered LT TS file Tests\OneMetFiltTS_LTGrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\5 - Filtered LT TS file Tests\ThreeMetFiltTS_LTGrossNet_Tests.cs" />
-    <Compile Include="GUI Tests\5 - Filtered LT TS file Tests\TwoMetFiltTS_LTGrossNet_Tests.cs" />
+    <Compile Include="GUI Tests\2 - Raw TS file Tests\OneMetRawTS_Tests.cs" />
     <Compile Include="GUI Tests\Map_tests.cs" />
     <Compile Include="GUI Tests\MCP_Tests.cs" />
     <Compile Include="GUI Tests\SiteSuitability_Tests.cs" />
@@ -274,7 +251,11 @@
       <Name>Continuum</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="GUI Tests\3 - Raw LT TS file Tests\" />
+    <Folder Include="GUI Tests\4 - Filtered TS file Tests\" />
+    <Folder Include="GUI Tests\5 - Filtered LT TS file Tests\" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets" Condition="Exists('..\packages\GDAL.Native.2.4.2\build\net40\GDAL.Native.targets')" />

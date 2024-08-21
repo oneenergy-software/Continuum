@@ -875,6 +875,7 @@ namespace ContinuumNS
             this.ColumnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader185 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pgeRound = new System.Windows.Forms.TabPage();
+            this.btnDoAllRRs = new System.Windows.Forms.Button();
             this.plotTurbUncert = new OxyPlot.WindowsForms.PlotView();
             this.plotRR_Histo = new OxyPlot.WindowsForms.PlotView();
             this.plotRRErrorByNumMets = new OxyPlot.WindowsForms.PlotView();
@@ -919,6 +920,8 @@ namespace ContinuumNS
             this.btnDoRRCalcs = new System.Windows.Forms.Button();
             this.Label46 = new System.Windows.Forms.Label();
             this.pgeStepwise = new System.Windows.Forms.TabPage();
+            this.btnExportRMS_Errors = new System.Windows.Forms.Button();
+            this.txtImportedModel = new System.Windows.Forms.TextBox();
             this.btnImportModel = new System.Windows.Forms.Button();
             this.btnExportModel = new System.Windows.Forms.Button();
             this.plotDHModel = new OxyPlot.WindowsForms.PlotView();
@@ -1116,7 +1119,7 @@ namespace ContinuumNS
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
-            this.btnDoAllRRs = new System.Windows.Forms.Button();
+            this.chkUseValleyFlow = new System.Windows.Forms.CheckBox();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pnlInputMap.SuspendLayout();
@@ -1184,6 +1187,7 @@ namespace ContinuumNS
             // pgeInput
             // 
             this.pgeInput.AutoScroll = true;
+            this.pgeInput.Controls.Add(this.chkUseValleyFlow);
             this.pgeInput.Controls.Add(this.chkUseElevModel);
             this.pgeInput.Controls.Add(this.btnShowMetTS_Info);
             this.pgeInput.Controls.Add(this.cboInputLLorDD);
@@ -1930,10 +1934,10 @@ namespace ContinuumNS
             this.lstMetTowers.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstMetTowers.FullRowSelect = true;
             this.lstMetTowers.HideSelection = false;
-            this.lstMetTowers.Location = new System.Drawing.Point(17, 248);
+            this.lstMetTowers.Location = new System.Drawing.Point(17, 264);
             this.lstMetTowers.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.lstMetTowers.Name = "lstMetTowers";
-            this.lstMetTowers.Size = new System.Drawing.Size(462, 175);
+            this.lstMetTowers.Size = new System.Drawing.Size(462, 159);
             this.lstMetTowers.TabIndex = 17;
             this.lstMetTowers.UseCompatibleStateImageBehavior = false;
             this.lstMetTowers.View = System.Windows.Forms.View.Details;
@@ -2201,7 +2205,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 537);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(738, 155);
+            this.plotTS_Baros.Size = new System.Drawing.Size(702, 155);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2425,7 +2429,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 382);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(738, 155);
+            this.plotTS_Temp.Size = new System.Drawing.Size(702, 155);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2440,7 +2444,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 227);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(738, 155);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(702, 155);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2455,7 +2459,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(738, 155);
+            this.plotTS_Anems.Size = new System.Drawing.Size(702, 155);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -8318,7 +8322,7 @@ namespace ContinuumNS
             this.plotTurbInt.Location = new System.Drawing.Point(520, 18);
             this.plotTurbInt.Name = "plotTurbInt";
             this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(911, 619);
+            this.plotTurbInt.Size = new System.Drawing.Size(911, 649);
             this.plotTurbInt.TabIndex = 289;
             this.plotTurbInt.Text = "plotView1";
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8481,7 +8485,7 @@ namespace ContinuumNS
             this.lstTurbulence.Location = new System.Drawing.Point(13, 51);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 671);
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 701);
             this.lstTurbulence.TabIndex = 275;
             this.lstTurbulence.UseCompatibleStateImageBehavior = false;
             this.lstTurbulence.View = System.Windows.Forms.View.Details;
@@ -8671,7 +8675,7 @@ namespace ContinuumNS
             this.plotExtremeShear.Location = new System.Drawing.Point(501, 18);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeShear.Size = new System.Drawing.Size(914, 620);
+            this.plotExtremeShear.Size = new System.Drawing.Size(914, 650);
             this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8898,7 +8902,7 @@ namespace ContinuumNS
             // btnExportExtremeWSTable
             // 
             this.btnExportExtremeWSTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 582);
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 612);
             this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
             this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
@@ -9195,7 +9199,7 @@ namespace ContinuumNS
             this.plotExtremeWS_TS.Location = new System.Drawing.Point(921, 24);
             this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
             this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 283);
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 313);
             this.plotExtremeWS_TS.TabIndex = 293;
             this.plotExtremeWS_TS.Text = "plotView1";
             this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9218,7 +9222,7 @@ namespace ContinuumNS
             this.dataExtremeWS.Location = new System.Drawing.Point(359, 17);
             this.dataExtremeWS.Name = "dataExtremeWS";
             this.dataExtremeWS.RowHeadersWidth = 51;
-            this.dataExtremeWS.Size = new System.Drawing.Size(548, 614);
+            this.dataExtremeWS.Size = new System.Drawing.Size(548, 644);
             this.dataExtremeWS.TabIndex = 292;
             // 
             // Column17
@@ -9309,7 +9313,7 @@ namespace ContinuumNS
             this.plotExtremeWS.Location = new System.Drawing.Point(921, 298);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(510, 277);
+            this.plotExtremeWS.Size = new System.Drawing.Size(510, 307);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9328,7 +9332,7 @@ namespace ContinuumNS
             // btnExtremeWS
             // 
             this.btnExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExtremeWS.Location = new System.Drawing.Point(916, 582);
+            this.btnExtremeWS.Location = new System.Drawing.Point(916, 612);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);
@@ -10324,6 +10328,18 @@ namespace ContinuumNS
             this.pgeRound.Text = "Uncertainty Analysis";
             this.pgeRound.UseVisualStyleBackColor = true;
             // 
+            // btnDoAllRRs
+            // 
+            this.btnDoAllRRs.BackColor = System.Drawing.Color.LightCoral;
+            this.btnDoAllRRs.Location = new System.Drawing.Point(15, 398);
+            this.btnDoAllRRs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnDoAllRRs.Name = "btnDoAllRRs";
+            this.btnDoAllRRs.Size = new System.Drawing.Size(127, 29);
+            this.btnDoAllRRs.TabIndex = 283;
+            this.btnDoAllRRs.Text = "Do All RRs";
+            this.btnDoAllRRs.UseVisualStyleBackColor = false;
+            this.btnDoAllRRs.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // plotTurbUncert
             // 
             this.plotTurbUncert.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -10733,6 +10749,8 @@ namespace ContinuumNS
             // pgeStepwise
             // 
             this.pgeStepwise.AutoScroll = true;
+            this.pgeStepwise.Controls.Add(this.btnExportRMS_Errors);
+            this.pgeStepwise.Controls.Add(this.txtImportedModel);
             this.pgeStepwise.Controls.Add(this.btnImportModel);
             this.pgeStepwise.Controls.Add(this.btnExportModel);
             this.pgeStepwise.Controls.Add(this.plotDHModel);
@@ -10795,6 +10813,30 @@ namespace ContinuumNS
             this.pgeStepwise.TabIndex = 10;
             this.pgeStepwise.Text = "Advanced";
             this.pgeStepwise.UseVisualStyleBackColor = true;
+            this.pgeStepwise.Click += new System.EventHandler(this.pgeStepwise_Click);
+            // 
+            // btnExportRMS_Errors
+            // 
+            this.btnExportRMS_Errors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportRMS_Errors.Font = new System.Drawing.Font("Palatino Linotype", 9F);
+            this.btnExportRMS_Errors.Location = new System.Drawing.Point(1346, 59);
+            this.btnExportRMS_Errors.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnExportRMS_Errors.Name = "btnExportRMS_Errors";
+            this.btnExportRMS_Errors.Size = new System.Drawing.Size(114, 45);
+            this.btnExportRMS_Errors.TabIndex = 290;
+            this.btnExportRMS_Errors.Text = "Export All Model RMS Errors";
+            this.btnExportRMS_Errors.UseVisualStyleBackColor = true;
+            this.btnExportRMS_Errors.Click += new System.EventHandler(this.btnExportRMS_Errors_Click);
+            // 
+            // txtImportedModel
+            // 
+            this.txtImportedModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtImportedModel.Location = new System.Drawing.Point(741, 102);
+            this.txtImportedModel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtImportedModel.Name = "txtImportedModel";
+            this.txtImportedModel.ReadOnly = true;
+            this.txtImportedModel.Size = new System.Drawing.Size(180, 25);
+            this.txtImportedModel.TabIndex = 289;
             // 
             // btnImportModel
             // 
@@ -10820,6 +10862,7 @@ namespace ContinuumNS
             this.btnExportModel.TabIndex = 287;
             this.btnExportModel.Text = "Export Model Parameters";
             this.btnExportModel.UseVisualStyleBackColor = true;
+            this.btnExportModel.Click += new System.EventHandler(this.btnExportModel_Click);
             // 
             // plotDHModel
             // 
@@ -10891,7 +10934,7 @@ namespace ContinuumNS
             // txtisMCPdAdv
             // 
             this.txtisMCPdAdv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtisMCPdAdv.Location = new System.Drawing.Point(741, 48);
+            this.txtisMCPdAdv.Location = new System.Drawing.Point(741, 42);
             this.txtisMCPdAdv.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtisMCPdAdv.Name = "txtisMCPdAdv";
             this.txtisMCPdAdv.ReadOnly = true;
@@ -11037,7 +11080,7 @@ namespace ContinuumNS
             // txtAdv_FlowSep_Used
             // 
             this.txtAdv_FlowSep_Used.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAdv_FlowSep_Used.Location = new System.Drawing.Point(741, 78);
+            this.txtAdv_FlowSep_Used.Location = new System.Drawing.Point(741, 72);
             this.txtAdv_FlowSep_Used.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAdv_FlowSep_Used.Name = "txtAdv_FlowSep_Used";
             this.txtAdv_FlowSep_Used.ReadOnly = true;
@@ -11187,7 +11230,7 @@ namespace ContinuumNS
             // txtAdv_LC_used
             // 
             this.txtAdv_LC_used.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAdv_LC_used.Location = new System.Drawing.Point(741, 17);
+            this.txtAdv_LC_used.Location = new System.Drawing.Point(741, 11);
             this.txtAdv_LC_used.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtAdv_LC_used.Name = "txtAdv_LC_used";
             this.txtAdv_LC_used.ReadOnly = true;
@@ -11550,11 +11593,11 @@ namespace ContinuumNS
             // btnExportStepwise
             // 
             this.btnExportStepwise.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExportStepwise.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.btnExportStepwise.Location = new System.Drawing.Point(1336, 61);
+            this.btnExportStepwise.Font = new System.Drawing.Font("Palatino Linotype", 8F);
+            this.btnExportStepwise.Location = new System.Drawing.Point(1232, 59);
             this.btnExportStepwise.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportStepwise.Name = "btnExportStepwise";
-            this.btnExportStepwise.Size = new System.Drawing.Size(122, 45);
+            this.btnExportStepwise.Size = new System.Drawing.Size(114, 45);
             this.btnExportStepwise.TabIndex = 101;
             this.btnExportStepwise.Text = "Export Nodes and WS Estimates";
             this.btnExportStepwise.UseVisualStyleBackColor = true;
@@ -12562,6 +12605,7 @@ namespace ContinuumNS
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(46, 21);
             this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
             // 
             // showHelpToolStripMenuItem
             // 
@@ -12720,17 +12764,18 @@ namespace ContinuumNS
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
-            // btnDoAllRRs
+            // chkUseValleyFlow
             // 
-            this.btnDoAllRRs.BackColor = System.Drawing.Color.LightCoral;
-            this.btnDoAllRRs.Location = new System.Drawing.Point(15, 398);
-            this.btnDoAllRRs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnDoAllRRs.Name = "btnDoAllRRs";
-            this.btnDoAllRRs.Size = new System.Drawing.Size(127, 29);
-            this.btnDoAllRRs.TabIndex = 283;
-            this.btnDoAllRRs.Text = "Do All RRs";
-            this.btnDoAllRRs.UseVisualStyleBackColor = false;
-            this.btnDoAllRRs.Click += new System.EventHandler(this.button1_Click_1);
+            this.chkUseValleyFlow.AutoSize = true;
+            this.chkUseValleyFlow.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkUseValleyFlow.Location = new System.Drawing.Point(330, 235);
+            this.chkUseValleyFlow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUseValleyFlow.Name = "chkUseValleyFlow";
+            this.chkUseValleyFlow.Size = new System.Drawing.Size(141, 21);
+            this.chkUseValleyFlow.TabIndex = 144;
+            this.chkUseValleyFlow.Text = "Enable Valley Model";
+            this.chkUseValleyFlow.UseVisualStyleBackColor = true;
+            this.chkUseValleyFlow.CheckedChanged += new System.EventHandler(this.chkUseValleyFlow_CheckedChanged);
             // 
             // Continuum
             // 
@@ -13850,6 +13895,9 @@ namespace ContinuumNS
         private ToolStripMenuItem downloadTopographyDataToolStripMenuItem;
         public CheckBox chkUseElevModel;
         internal Button btnDoAllRRs;
+        internal TextBox txtImportedModel;
+        internal Button btnExportRMS_Errors;
+        public CheckBox chkUseValleyFlow;
     }
 }
 

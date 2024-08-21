@@ -54,41 +54,42 @@ namespace Continuum_Tests
             Model thisModel = new Model();
             thisModel.SizeArrays(16);
             thisModel.SetDefaultModelCoeffs(16);
+            bool useValley = false;
             
-            string flowType = thisModel.GetFlowType(-10, -10, 0, "UW", null, 0, false, 0); // Test 1
+            string flowType = thisModel.GetFlowType(-10, -10, 0, "UW", null, 0, false, 0, useValley); // Test 1
             Assert.AreSame("Downhill", flowType, "Wrong flow type: Test 1");
 
-            flowType = thisModel.GetFlowType(-10, -10, 0, "DW", null, 0, false, 0); // Test 2
+            flowType = thisModel.GetFlowType(-10, -10, 0, "DW", null, 0, false, 0, useValley); // Test 2
             Assert.AreSame("Uphill", flowType, "Wrong flow type: Test 2");
 
-            flowType = thisModel.GetFlowType(-10, 10, 0, "UW", null, 0, false, 0); // Test 3
+            flowType = thisModel.GetFlowType(-10, 10, 0, "UW", null, 0, false, 0, useValley); // Test 3
             Assert.AreSame("Downhill", flowType, "Wrong flow type: Test 3");
 
-            flowType = thisModel.GetFlowType(-10, 10, 0, "DW", null, 0, false, 0); // Test 4
+            flowType = thisModel.GetFlowType(-10, 10, 0, "DW", null, 0, false, 0, useValley); // Test 4
             Assert.AreSame("Downhill", flowType, "Wrong flow type: Test 4");
 
-            flowType = thisModel.GetFlowType(10, -10, 0, "UW", null, 0, false, 0); // Test 5
+            flowType = thisModel.GetFlowType(10, -10, 0, "UW", null, 0, false, 0, useValley); // Test 5
             Assert.AreSame("SpdUp", flowType, "Wrong flow type: Test 5");
 
-            flowType = thisModel.GetFlowType(10, -10, 0, "DW", null, 0, false, 0); // Test 6
+            flowType = thisModel.GetFlowType(10, -10, 0, "DW", null, 0, false, 0, useValley); // Test 6
             Assert.AreSame("Uphill", flowType, "Wrong flow type: Test 6");
 
-            flowType = thisModel.GetFlowType(10, 10, 0, "UW", null, 0, false, 0); // Test 7
+            flowType = thisModel.GetFlowType(10, 10, 0, "UW", null, 0, false, 0, useValley); // Test 7
             Assert.AreSame("SpdUp", flowType, "Wrong flow type: Test 7");
 
-            flowType = thisModel.GetFlowType(10, 10, 0, "DW", null, 0, false, 0); // Test 8
+            flowType = thisModel.GetFlowType(10, 10, 0, "DW", null, 0, false, 0, useValley); // Test 8
             Assert.AreSame("Downhill", flowType, "Wrong flow type: Test 8");
 
-            flowType = thisModel.GetFlowType(30, 10, 0, "UW", null, 0, false, 0); // Test 9
+            flowType = thisModel.GetFlowType(30, 10, 0, "UW", null, 0, false, 0, useValley); // Test 9
             Assert.AreSame("Uphill", flowType, "Wrong flow type: Test 9");
 
-            flowType = thisModel.GetFlowType(10, 10, 0, "DW", null, 0, false, 0); // Test 10
+            flowType = thisModel.GetFlowType(10, 10, 0, "DW", null, 0, false, 0, useValley); // Test 10
             Assert.AreSame("Downhill", flowType, "Wrong flow type: Test 10");
 
-            flowType = thisModel.GetFlowType(30, -10, 0, "UW", null, 0, false, 0); // Test 11
+            flowType = thisModel.GetFlowType(30, -10, 0, "UW", null, 0, false, 0, useValley); // Test 11
             Assert.AreSame("Uphill", flowType, "Wrong flow type: Test 11");
 
-            flowType = thisModel.GetFlowType(30, -10, 0, "DW", null, 0, false, 0); // Test 12
+            flowType = thisModel.GetFlowType(30, -10, 0, "DW", null, 0, false, 0, useValley); // Test 12
             Assert.AreSame("Uphill", flowType, "Wrong flow type: Test 12");
 
             // Turbulent tests
@@ -98,10 +99,10 @@ namespace Continuum_Tests
             This_Sep_Node[0].highNode.expo[0].expo[0] = 200; // UW expo
             This_Sep_Node[0].highNode.expo[0].expo[8] = 200; // DW expo
 
-            flowType = thisModel.GetFlowType(-10, 10, 0, "UW", This_Sep_Node, 8, true, 0); // Test 13
+            flowType = thisModel.GetFlowType(-10, 10, 0, "UW", This_Sep_Node, 8, true, 0, useValley); // Test 13
             Assert.AreSame("Turbulent", flowType, "Wrong flow type: Test 13");
 
-            flowType = thisModel.GetFlowType(200, 200, 0, "DW", null, 8, true, 0); // Test 14
+            flowType = thisModel.GetFlowType(200, 200, 0, "DW", null, 8, true, 0, useValley); // Test 14
             Assert.AreSame("Turbulent", flowType, "Wrong flow type: Test 14");
 
         }

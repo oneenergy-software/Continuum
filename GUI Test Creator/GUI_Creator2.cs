@@ -192,7 +192,7 @@ namespace GUI_Test_Creator
 
                 if (trimmedLine.Length > 42)
                     if (trimmedLine.Substring(0, 42) == "thisInst.metList.ImportFilterExtrapMetData")
-                        lineToWrite = lineToWrite + doFiltering.ToString().ToLower() + ");";
+                        lineToWrite = lineToWrite + doFiltering.ToString().ToLower() + ", true);"; // All test files in local time
 
                 sw.WriteLine(lineToWrite);
             }
@@ -2227,7 +2227,7 @@ namespace GUI_Test_Creator
             string continuumFile = cboCFNFiles.SelectedItem.ToString();
 
             continuumFile = continuumFolder + "\\" + continuumFile + ".cfm";
-            Continuum thisInst = new Continuum(continuumFile);
+            Continuum thisInst = new Continuum(continuumFile, false);
 
  /*           try
             {
@@ -2266,7 +2266,7 @@ namespace GUI_Test_Creator
 
             for (int i = 0; i < numZones; i++)
                 chkZonesToDelete.Items.Add(thisInst.siteSuitability.zones[i].name, true);
-
+                        
             thisInst.Close();
         }
 

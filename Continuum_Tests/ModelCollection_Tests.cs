@@ -32,34 +32,34 @@ namespace Continuum_Tests
             ModelCollection modelList = new ModelCollection();
             ModelCollection.Coeff_Delta_WS[] This_Delta_WS = new ModelCollection.Coeff_Delta_WS[0];
 
-            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(6, 10, 10, 20, 30, 20, 20, thisModel, 0, false); // Test 1
+            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(6, 10, 10, 20, 30, 20, 20, thisModel, 0, false, false); // Test 1
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.20205, 0.001, "Wrong delta WS in Test 1");
 
-            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(6, 10, 10, 15, -10, 30, 30, thisModel, 0, false); // Test 2
+            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(6, 10, 10, 15, -10, 30, 30, thisModel, 0, false, false); // Test 2
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.23250, 0.001, "Wrong delta WS in Test 2");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.09801, 0.001, "Wrong delta WS in Test 2");
 
-            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(6, 10, 10, -8, -20, 5, 5, thisModel, 0, false); // Test 3
+            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(6, 10, 10, -8, -20, 5, 5, thisModel, 0, false, false); // Test 3
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.35988, 0.001, "Wrong delta WS in Test 3");
 
-            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(6, 10, 10, -4, 15, 8, 8, thisModel, 0, false); // Test 4
+            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(6, 10, 10, -4, 15, 8, 8, thisModel, 0, false, false); // Test 4
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.089461, 0.001, "Wrong delta WS in Test 4");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.551676, 0.001, "Wrong delta WS in Test 4");
 
-            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(10, 50, 200, 50, 200, 220, 220, thisModel, 0, true); // Test 5
+            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(10, 50, 200, 50, 200, 220, 220, thisModel, 0, true, false); // Test 5
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.316054, 0.001, "Wrong delta WS in Test 5");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.21193, 0.001, "Wrong delta WS in Test 5");
 
-            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(8, 180, 150, 130, 75, 100, 100, thisModel, 0, true); // Test 6
+            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(8, 180, 150, 130, 75, 100, 100, thisModel, 0, true, false); // Test 6
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.208015, 0.001, "Wrong delta WS in Test 6");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.07055, 0.001, "Wrong delta WS in Test 6");
 
-            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(8, 75, 125, -10, 160, 110, 110, thisModel, 0, true); // Test 7
+            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(8, 75, 125, -10, 160, 110, 110, thisModel, 0, true, false); // Test 7
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.043555, 0.001, "Wrong delta WS in Test 7");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.994433, 0.001, "Wrong delta WS in Test 7");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.04355, 0.001, "Wrong delta WS in Test 7");
 
-            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(8, 160, 140, 200, -5, 160, 160, thisModel, 0, true); // Test 8
+            This_Delta_WS = modelList.Get_DeltaWS_DW_Expo(8, 160, 140, 200, -5, 160, 160, thisModel, 0, true, false); // Test 8
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.344724, 0.001, "Wrong delta WS in Test 8");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.518931, 0.001, "Wrong delta WS in Test 8");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.01723, 0.001, "Wrong delta WS in Test 8");
@@ -102,7 +102,7 @@ namespace Continuum_Tests
             Sep_Node_2[0].highNode.expo[0].expo[8] = 150;
 
             Sep_Node_1[0].turbEndNode = null;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-10, 0, 20, 30, 80, 80, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-10, 0, 20, 30, 80, 80, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.656725, 0.001, "Wrong delta WS in Test 1");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.265671, 0.001, "Wrong delta WS in Test 1");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -3.31577, 0.001, "Wrong delta WS in Test 1");
@@ -122,7 +122,7 @@ namespace Continuum_Tests
             Sep_Node_2[0].turbEndNode.expo[0].expo[0] = -14;
             Sep_Node_2[0].turbEndNode.expo[0].expo[8] = 30;
 
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-15, -2, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-15, -2, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.091724715, 0.001, "Wrong delta WS in Test 2");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.449658964, 0.001, "Wrong delta WS in Test 2");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 0.231128716, 0.001, "Wrong delta WS in Test 2");
@@ -132,7 +132,7 @@ namespace Continuum_Tests
 
             // Test 3: Scenario 1, Site 1 has turb_end_node and Site 2 does not (i.e. Site 1 outside turbulent zone, Sie 2 inside turbulent zone)
             Sep_Node_2[0].turbEndNode = null;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-9, -4, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-9, -4, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.049390231, 0.001, "Wrong delta WS in Test 3");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.449658964, 0.001, "Wrong delta WS in Test 3");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 0.231128716, 0.001, "Wrong delta WS in Test 3");
@@ -148,7 +148,7 @@ namespace Continuum_Tests
             Sep_Node_2[0].turbEndNode.expo[0].expo[0] = -14;
             Sep_Node_2[0].turbEndNode.expo[0].expo[8] = 30;
 
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-15, -2, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-15, -2, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.656725886, 0.001, "Wrong delta WS in Test 4");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.231128716, 0.001, "Wrong delta WS in Test 4");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -1.666803194, 0.001, "Wrong delta WS in Test 4");
@@ -156,26 +156,26 @@ namespace Continuum_Tests
             Assert.AreEqual(This_Delta_WS[4].deltaWS_Expo, -0.863617561, 0.001, "Wrong delta WS in Test 4");
 
             // Test 5: Scenario 2, flow = Downhill
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-30, -46, 40, 60, 10, 10, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-30, -46, 40, 60, 10, 10, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.50858436, 0.001, "Wrong delta WS in Test 5");
 
             // Test 6: Scenario 2, flow = Uphill
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(80, 82, 40, 60, 60, 60, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(80, 82, 40, 60, 60, 60, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.012717211, 0.001, "Wrong delta WS in Test 6");
 
             // Test 7: Scenario 2, flow = Speed-Up
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(2, 10, 40, 60, 60, 60, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(2, 10, 40, 60, 60, 60, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.011474371, 0.001, "Wrong delta WS in Test 7");
 
             // Test 8: Scenario 3, Flow 1 = Downhill; Flow 2 = Uphill
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-30, 82, 40, 60, 55, 55, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-30, 82, 40, 60, 55, 55, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.312888198, 0.001, "Wrong delta WS in Test 8");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.03172509, 0.001, "Wrong delta WS in Test 8");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.409523988, 0.001, "Wrong delta WS in Test 8");
             Assert.AreEqual(This_Delta_WS[3].deltaWS_Expo, -0.690687097, 0.001, "Wrong delta WS in Test 8");
 
             // Test 9: Scenario 4, Flow 1 = Downhill; Flow 2 = Speed-Up
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-22, 18, 40, 60, 15, 15, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-22, 18, 40, 60, 15, 15, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.536481614, 0.001, "Wrong delta WS in Test 9");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.059033754, 0.001, "Wrong delta WS in Test 9");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.47744786, 0.001, "Wrong delta WS in Test 9");
@@ -183,7 +183,7 @@ namespace Continuum_Tests
             // Test 10: Scenario 6, Flow 1 = Downhill, Flow 2 = Turbulent (Sep Pt 2 is Uphill, Site 2 is outside turbulent zone)
             Sep_Node_1 = null;
             Sep_Node_2[0].highNode.expo[0].expo[0] = 120;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-15, -2, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-15, -2, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.105836209, 0.001, "Wrong delta WS in Test 10");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.022207682, 0.001, "Wrong delta WS in Test 10");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.457634857, 0.001, "Wrong delta WS in Test 10");
@@ -194,7 +194,7 @@ namespace Continuum_Tests
             // Test 11: Scenario 6, Flow 1 = Downhill, Flow 2 = Turbulent (Sep Pt 2 is SpdUp, Site 2 is outside turbulent zone)
             Sep_Node_2[0].highNode.expo[0].expo[0] = 20;
             Sep_Node_2[0].highNode.expo[0].expo[8] = 250;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-9, -11, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-9, -11, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.063501726, 0.001, "Wrong delta WS in Test 11");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.021150174, 0.001, "Wrong delta WS in Test 11");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -1.666803194, 0.001, "Wrong delta WS in Test 11");
@@ -204,7 +204,7 @@ namespace Continuum_Tests
             // Test 12: Scenario 6, Flow 1 = Downhill, Flow 2 = Turbulent (Sep Pt 2 is Uphill, Site 2 is inside turbulent zone)
             Sep_Node_2[0].turbEndNode = null;
             Sep_Node_2[0].highNode.expo[0].expo[0] = 120;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-9, -11, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-9, -11, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.063501726, 0.001, "Wrong delta WS in Test 12");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.022207682, 0.001, "Wrong delta WS in Test 12");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.457634857, 0.001, "Wrong delta WS in Test 12");
@@ -214,21 +214,21 @@ namespace Continuum_Tests
             // Test 13: Scenario 6, Flow 1 = Downhill, Flow 2 = Turbulent (Sep Pt 2 is SpdUp, Site 2 is inside turbulent zone)
             Sep_Node_2[0].highNode.expo[0].expo[0] = 20;
             Sep_Node_2[0].highNode.expo[0].expo[8] = 250;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-9, -11, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(-9, -11, 40, 60, 100, 100, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.063501726, 0.001, "Wrong delta WS in Test 13");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.021150174, 0.001, "Wrong delta WS in Test 13");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -3.315776698, 0.001, "Wrong delta WS in Test 13");
             Assert.AreEqual(This_Delta_WS[3].deltaWS_Expo, -3.35812825, 0.001, "Wrong delta WS in Test 13");
 
             // Test 14: Scenario 7, Flow 1 = Uphill, Flow 2 = Downhill 
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(40, -11, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(40, -11, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.18621661, 0.001, "Wrong delta WS in Test 14");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.045546258, 0.001, "Wrong delta WS in Test 14");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 0.170506735, 0.001, "Wrong delta WS in Test 14");
             Assert.AreEqual(This_Delta_WS[3].deltaWS_Expo, 0.311177087, 0.001, "Wrong delta WS in Test 14");
 
             // Test 15: Scenario 8, Flow 1 = Uphill, Flow 2 = SpdUp
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(40, 15, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(40, 15, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.18621661, 0.001, "Wrong delta WS in Test 15");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.013013216, 0.001, "Wrong delta WS in Test 15");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 0.173203393, 0.001, "Wrong delta WS in Test 15");
@@ -241,7 +241,7 @@ namespace Continuum_Tests
             Sep_Node_2[0].turbEndNode.expo[0].expo[0] = -14;
             Sep_Node_2[0].turbEndNode.expo[0].expo[8] = 30;
             Sep_Node_2[0].highNode.expo[0].expo[0] = 120;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(30, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(30, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.882078678, 0.001, "Wrong delta WS in Test 16");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -1.666803194, 0.001, "Wrong delta WS in Test 16");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.186007348, 0.001, "Wrong delta WS in Test 16");
@@ -249,7 +249,7 @@ namespace Continuum_Tests
 
             // Test 17: Scenario 8, Flow 1 = Uphill, Flow 2 = Turbulent (Sep Pt 2 is SpdUp, Site 2 is outside turbulent zone)
             Sep_Node_2[0].highNode.expo[0].expo[0] = 19;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(30, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(30, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.088207868, 0.001, "Wrong delta WS in Test 17");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.004337739, 0.001, "Wrong delta WS in Test 17");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -1.666803194, 0.001, "Wrong delta WS in Test 17");
@@ -259,27 +259,27 @@ namespace Continuum_Tests
             // Test 18: Scenario 8, Flow 1 = Uphill, Flow 2 = Turbulent (Sep Pt 2 is Uphill, Site 2 is inside turbulent zone)
             Sep_Node_2[0].turbEndNode = null;
             Sep_Node_2[0].highNode.expo[0].expo[0] = 50;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(30, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(30, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.196017484, 0.001, "Wrong delta WS in Test 18");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -3.315776698, 0.001, "Wrong delta WS in Test 18");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -3.511794182, 0.001, "Wrong delta WS in Test 18");
 
             // Test 19: Scenario 8, Flow 1 = Uphill, Flow 2 = Turbulent (Sep Pt 2 is SpdUp, Site 2 is inside turbulent zone)
             Sep_Node_2[0].highNode.expo[0].expo[0] = 15;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(30, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(30, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.088207868, 0.001, "Wrong delta WS in Test 19");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.013013216, 0.001, "Wrong delta WS in Test 19");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -3.315776698, 0.001, "Wrong delta WS in Test 19");
             Assert.AreEqual(This_Delta_WS[3].deltaWS_Expo, -3.240582047, 0.001, "Wrong delta WS in Test 19");
 
             // Test 20: Flow 1 = Speed-Up; Flow 2 = Uphill
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, 30, 40, 60, 25, 25, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, 30, 40, 60, 25, 25, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.026599019, 0.001, "Wrong delta WS in Test 20");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.098839891, 0.001, "Wrong delta WS in Test 20");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.072240872, 0.001, "Wrong delta WS in Test 20");
 
             // Test 21: Flow 1 = Speed-Up; Flow 2 = Downhill
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -10, 40, 60, 25, 25, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -10, 40, 60, 25, 25, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, false, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, -0.024180926, 0.001, "Wrong delta WS in Test 20");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.174626293, 0.001, "Wrong delta WS in Test 20");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 0.150445366, 0.001, "Wrong delta WS in Test 20");
@@ -292,7 +292,7 @@ namespace Continuum_Tests
             Sep_Node_2[0].turbEndNode.expo[0].expo[0] = -14;
             Sep_Node_2[0].turbEndNode.expo[0].expo[8] = 30;
             Sep_Node_2[0].highNode.expo[0].expo[0] = 120;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.023857564, 0.001, "Wrong delta WS in Test 22");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.970286545, 0.001, "Wrong delta WS in Test 22");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -1.666803194, 0.001, "Wrong delta WS in Test 22");
@@ -301,7 +301,7 @@ namespace Continuum_Tests
 
             // Test 23: Flow 1 = Speed-Up; Flow 2 = Turbulent (Sep Pt 2 is SpdUp, Site 2 is outside turbulent zone)
             Sep_Node_2[0].highNode.expo[0].expo[0] = 18;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.017350955, 0.001, "Wrong delta WS in Test 23");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -1.666803194, 0.001, "Wrong delta WS in Test 23");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.186007348, 0.001, "Wrong delta WS in Test 23");
@@ -310,7 +310,7 @@ namespace Continuum_Tests
             // Test 24: Flow 1 = Speed-Up; Flow 2 = Turbulent (Sep Pt 2 is Uphill, Site 2 is inside turbulent zone)
             Sep_Node_2[0].turbEndNode = null;
             Sep_Node_2[0].highNode.expo[0].expo[0] = 120;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.023857564, 0.001, "Wrong delta WS in Test 24");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.970286545, 0.001, "Wrong delta WS in Test 24");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -3.315776698, 0.001, "Wrong delta WS in Test 24");
@@ -318,7 +318,7 @@ namespace Continuum_Tests
 
             // Test 25: Flow 1 = Speed-Up; Flow 2 = Turbulent (Sep Pt 2 is SpdUp, Site 2 is inside turbulent zone)
             Sep_Node_2[0].highNode.expo[0].expo[0] = 18;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(10, -2, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.017350955, 0.001, "Wrong delta WS in Test 25");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -3.315776698, 0.001, "Wrong delta WS in Test 25");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -3.298425743, 0.001, "Wrong delta WS in Test 25");
@@ -334,7 +334,7 @@ namespace Continuum_Tests
             Sep_Node_1[0].highNode.UTMX = 280610;
             Sep_Node_1[0].highNode.UTMY = 4558900;
             Sep_Node_1[0].highNode.expo[0].expo[0] = 200;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 110, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 110, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.031001225, 0.001, "Wrong delta WS in Test 26");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.449658964, 0.001, "Wrong delta WS in Test 26");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 0.882078678, 0.001, "Wrong delta WS in Test 26");
@@ -342,7 +342,7 @@ namespace Continuum_Tests
 
             // Test 27: Flow 1 = Turbulent; Flow 2 = Uphill (Sep Pt 1 is SpdUp, Site 1 is outside turbulent zone)
             Sep_Node_1[0].highNode.expo[0].expo[0] = 20;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 110, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 110, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.031001225, 0.001, "Wrong delta WS in Test 27");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.449658964, 0.001, "Wrong delta WS in Test 27");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 0.002168869, 0.001, "Wrong delta WS in Test 27");
@@ -352,14 +352,14 @@ namespace Continuum_Tests
             // Test 28: Flow 1 = Turbulent; Flow 2 = Uphill (Sep Pt 1 is Uphill, Site 1 is inside turbulent zone)
             Sep_Node_1[0].turbEndNode = null;
             Sep_Node_1[0].highNode.expo[0].expo[0] = 200;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 110, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 110, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.656725886, 0.001, "Wrong delta WS in Test 28");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.882078678, 0.001, "Wrong delta WS in Test 28");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 1.538804563, 0.001, "Wrong delta WS in Test 28");
 
             // Test 29: Flow 1 = Turbulent; Flow 2 = Uphill (Sep Pt 1 is SpdUp, Site 1 is inside turbulent zone)
             Sep_Node_1[0].highNode.expo[0].expo[0] = 20;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 110, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 110, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.656725886, 0.001, "Wrong delta WS in Test 29");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 0.002168869, 0.001, "Wrong delta WS in Test 29");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.872277803, 0.001, "Wrong delta WS in Test 29");
@@ -372,7 +372,7 @@ namespace Continuum_Tests
             Sep_Node_1[0].turbEndNode.UTMY = 4558000;
             Sep_Node_1[0].turbEndNode.AddExposure(4000, 1, 1, 16);
             Sep_Node_1[0].turbEndNode.expo[0].expo[0] = -2;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, -20, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, -20, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.031001225, 0.001, "Wrong delta WS in Test 30");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.449658964, 0.001, "Wrong delta WS in Test 30");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 1.754356481, 0.001, "Wrong delta WS in Test 30");
@@ -382,7 +382,7 @@ namespace Continuum_Tests
 
             // Test 31: Flow 1 = Turbulent; Flow 2 = Downhill (Sep Pt 1 is SpdUp, Site 1 is outside turbulent zone)
             Sep_Node_1[0].highNode.expo[0].expo[0] = 20;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, -20, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, -20, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.031001225, 0.001, "Wrong delta WS in Test 31");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.449658964, 0.001, "Wrong delta WS in Test 31");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.043377388, 0.001, "Wrong delta WS in Test 31");
@@ -392,7 +392,7 @@ namespace Continuum_Tests
             // Test 32: Flow 1 = Turbulent; Flow 2 = Downhill (Sep Pt 1 is Uphill, Site 1 is inside turbulent zone)
             Sep_Node_1[0].highNode.expo[0].expo[0] = 200;
             Sep_Node_1[0].turbEndNode = null;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, -20, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, -20, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.656725886, 0.001, "Wrong delta WS in Test 32");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.754356481, 0.001, "Wrong delta WS in Test 32");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.045546258, 0.001, "Wrong delta WS in Test 32");
@@ -401,7 +401,7 @@ namespace Continuum_Tests
 
             // Test 33: Flow 1 = Turbulent; Flow 2 = Downhill (Sep Pt 1 is SpdUp, Site 1 is inside turbulent zone)
             Sep_Node_1[0].highNode.expo[0].expo[0] = 20;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, -20, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, -20, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.656725886, 0.001, "Wrong delta WS in Test 33");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.043377388, 0.001, "Wrong delta WS in Test 33");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 0.310012246, 0.001, "Wrong delta WS in Test 33");
@@ -414,7 +414,7 @@ namespace Continuum_Tests
             Sep_Node_1[0].turbEndNode.UTMY = 4558000;
             Sep_Node_1[0].turbEndNode.AddExposure(4000, 1, 1, 16);
             Sep_Node_1[0].turbEndNode.expo[0].expo[0] = -2;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 10, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 10, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.031001225, 0.001, "Wrong delta WS in Test 34");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.449658964, 0.001, "Wrong delta WS in Test 34");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 1.754356481, 0.001, "Wrong delta WS in Test 34");
@@ -423,7 +423,7 @@ namespace Continuum_Tests
 
             // Test 34: Flow 1 = Turbulent; Flow 2 = Speed-Up (Sep Pt 1 is SpdUp, Site 1 is outside turbulent zone)
             Sep_Node_1[0].highNode.expo[0].expo[0] = 20;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 10, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 10, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.031001225, 0.001, "Wrong delta WS in Test 35");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.449658964, 0.001, "Wrong delta WS in Test 35");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.021688694, 0.001, "Wrong delta WS in Test 35");
@@ -432,7 +432,7 @@ namespace Continuum_Tests
             // Test 35: Flow 1 = Turbulent; Flow 2 = Speed-Up (Sep Pt 1 is Uphill, Site 1 is inside turbulent zone)
             Sep_Node_1[0].highNode.expo[0].expo[0] = 200;
             Sep_Node_1[0].turbEndNode = null;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 10, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 10, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.656725886, 0.001, "Wrong delta WS in Test 36");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, 1.754356481, 0.001, "Wrong delta WS in Test 36");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, -0.023857564, 0.001, "Wrong delta WS in Test 36");
@@ -440,7 +440,7 @@ namespace Continuum_Tests
 
             // Test 35: Flow 1 = Turbulent; Flow 2 = Speed-Up (Sep Pt 1 is SpdUp, Site 1 is inside turbulent zone)
             Sep_Node_1[0].highNode.expo[0].expo[0] = 20;
-            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 10, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2);
+            This_Delta_WS = modelList.Get_DeltaWS_UW_Expo(0, 10, 40, 60, 30, 30, thisModel, 0, 0, Sep_Node_1, Sep_Node_2, 8, true, Node_1, Node_2, false);
             Assert.AreEqual(This_Delta_WS[0].deltaWS_Expo, 0.656725886, 0.001, "Wrong delta WS in Test 37");
             Assert.AreEqual(This_Delta_WS[1].deltaWS_Expo, -0.021688694, 0.001, "Wrong delta WS in Test 37");
             Assert.AreEqual(This_Delta_WS[2].deltaWS_Expo, 0.635037192, 0.001, "Wrong delta WS in Test 37");
@@ -771,6 +771,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
+            bool useValley = thisInst.topo.useValley;
 
             StreamWriter sr = new StreamWriter(testingFolder + "\\DoWS_Estimate\\WS and Expos for DoWS_Estimate.csv");
 
@@ -814,15 +815,15 @@ namespace Continuum_Tests
             double avgUWExpo = (UW_Expo1 + UW_Expo2) / 2;
             double avgDWExpo = (DW_Expo1 + DW_Expo2) / 2;
 
-            double UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR1, false, "UW");
-            double DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR1, false, "DW");
-            double UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR2, false, "UW");
-            double DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR2, false, "DW");
+            double UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR1, false, "UW", useValley);
+            double DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR1, false, "DW", useValley);
+            double UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR2, false, "UW", useValley);
+            double DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR2, false, "DW", useValley);
                         
             ModelCollection.Coeff_Delta_WS[] deltaWS_UW = thisInst.modelList.Get_DeltaWS_UW_Expo(UW_Expo1, UW_Expo2, DW_Expo1, DW_Expo2, avgP10UW, avgP10DW, model, WD_ind, radInd, null, null, 0,
-                false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs());
+                false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs(), useValley);
             ModelCollection.Coeff_Delta_WS[] deltaWS_DW = thisInst.modelList.Get_DeltaWS_DW_Expo(equivWS[WD_ind], UW_Expo1, UW_Expo2, DW_Expo1, DW_Expo2, avgP10UW, avgP10DW,
-                model, WD_ind, false);
+                model, WD_ind, false, useValley);
             double deltaWS_SRDH_UW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, UW_SR1, UW_SR2, UW_DH1, UW_DH2, UW_Stab1, UW_Stab2);
             double deltaWS_SRDH_DW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, DW_SR1, DW_SR2, DW_DH1, DW_DH2, DW_Stab1, DW_Stab2);
 
@@ -876,15 +877,15 @@ namespace Continuum_Tests
             avgUWExpo = (UW_Expo1 + UW_Expo2) / 2;
             avgDWExpo = (DW_Expo1 + DW_Expo2) / 2;
 
-            UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR1, false, "UW");
-            DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR1, false, "DW");
-            UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR2, false, "UW");
-            DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR2, false, "DW");
+            UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR1, false, "UW", useValley);
+            DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR1, false, "DW", useValley);
+            UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR2, false, "UW", useValley);
+            DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR2, false, "DW", useValley);
 
             deltaWS_UW = thisInst.modelList.Get_DeltaWS_UW_Expo(UW_Expo1, UW_Expo2, DW_Expo1, DW_Expo2, avgP10UW, avgP10DW, model, WD_ind, radInd, null, null, 0,
-                false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs());
+                false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs(), useValley);
             deltaWS_DW = thisInst.modelList.Get_DeltaWS_DW_Expo(equivWS[WD_ind], UW_Expo1, UW_Expo2, DW_Expo1, DW_Expo2, avgP10UW, avgP10DW,
-                model, WD_ind, false);
+                model, WD_ind, false, useValley);
             deltaWS_SRDH_UW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, UW_SR1, UW_SR2, UW_DH1, UW_DH2, UW_Stab1, UW_Stab2);
             deltaWS_SRDH_DW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, DW_SR1, DW_SR2, DW_DH1, DW_DH2, DW_Stab1, DW_Stab2);
 
@@ -951,15 +952,15 @@ namespace Continuum_Tests
                 avgUWExpo = (UW_Expo1 + UW_Expo2) / 2;
                 avgDWExpo = (DW_Expo1 + DW_Expo2) / 2;
 
-                UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD, UW_SR1, false, "UW");
-                DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD, DW_SR1, false, "DW");
-                UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD, UW_SR2, false, "UW");
-                DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD, DW_SR2, false, "DW");
+                UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD, UW_SR1, false, "UW", useValley);
+                DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD, DW_SR1, false, "DW", useValley);
+                UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD, UW_SR2, false, "UW", useValley);
+                DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD, DW_SR2, false, "DW", useValley);
 
                 deltaWS_UW = thisInst.modelList.Get_DeltaWS_UW_Expo(UW_Expo1, UW_Expo2, DW_Expo1, DW_Expo2, avgP10UW, avgP10DW, model, WD, radInd, null, null, 0,
-                    false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs());
+                    false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs(), useValley);
                 deltaWS_DW = thisInst.modelList.Get_DeltaWS_DW_Expo(equivWS[WD], UW_Expo1, UW_Expo2, DW_Expo1, DW_Expo2, avgP10UW, avgP10DW,
-                    model, WD, false);
+                    model, WD, false, useValley);
                 deltaWS_SRDH_UW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD], thisInst.modeledHeight, UW_SR1, UW_SR2, UW_DH1, UW_DH2, UW_Stab1, UW_Stab2);
                 deltaWS_SRDH_DW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD], thisInst.modeledHeight, DW_SR1, DW_SR2, DW_DH1, DW_DH2, DW_Stab1, DW_Stab2);
 
@@ -1017,15 +1018,15 @@ namespace Continuum_Tests
             avgUWExpo = (UW_Expo1 + UW_Expo2) / 2;
             avgDWExpo = (DW_Expo1 + DW_Expo2) / 2;
 
-            UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR1, false, "UW");
-            DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR1, false, "DW");
-            UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR2, false, "UW");
-            DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR2, false, "DW");
+            UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR1, false, "UW", useValley);
+            DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR1, false, "DW", useValley);
+            UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, UW_SR2, false, "UW", useValley);
+            DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, DW_SR2, false, "DW", useValley);
 
             deltaWS_UW = thisInst.modelList.Get_DeltaWS_UW_Expo(UW_Expo1, UW_Expo2, DW_Expo1, DW_Expo2, avgP10UW, avgP10DW, model, WD_ind, radInd, null, null, 0,
-                false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs());
+                false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs(), useValley);
             deltaWS_DW = thisInst.modelList.Get_DeltaWS_DW_Expo(equivWS[WD_ind], UW_Expo1, UW_Expo2, DW_Expo1, DW_Expo2, avgP10UW, avgP10DW,
-                model, WD_ind, false);
+                model, WD_ind, false, useValley);
             deltaWS_SRDH_UW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, UW_SR1, UW_SR2, UW_DH1, UW_DH2, UW_Stab1, UW_Stab2);
             deltaWS_SRDH_DW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, DW_SR1, DW_SR2, DW_DH1, DW_DH2, DW_Stab1, DW_Stab2);
                        
@@ -1227,6 +1228,7 @@ namespace Continuum_Tests
             
             string fileName = testingFolder + "\\ModelCollection TS testing.cfm";
             thisInst.Open(fileName);
+            thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
             NodeCollection nodeList = new NodeCollection();
             Nodes endNode = nodeList.GetTurbNode(thisInst.turbineList.turbineEsts[1]);
@@ -1352,6 +1354,8 @@ namespace Continuum_Tests
             double deltaWS_SRDH_UW;
             double deltaWS_SRDH_DW;
 
+            bool useValley = thisInst.topo.useValley;
+
             for (int i = 0; i < pathOfNodes.Length; i++)
             {
                 node2 = pathOfNodes[i];   
@@ -1363,15 +1367,15 @@ namespace Continuum_Tests
                 avgDWExpo = (node1.expo[radInd].GetDW_Param(WD_ind, "Expo") + node2.expo[radInd].GetDW_Param(WD_ind, "Expo")) / 2;
 
                 deltaWS_UW = thisInst.modelList.Get_DeltaWS_UW_Expo(node1.expo[radInd].expo[WD_ind], node2.expo[radInd].expo[WD_ind], node1.expo[radInd].GetDW_Param(WD_ind, "Expo"),
-                    node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW, model, WD_ind, radInd, null, null, 0, false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs());
+                    node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW, model, WD_ind, radInd, null, null, 0, false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs(), useValley);
                 deltaWS_DW = thisInst.modelList.Get_DeltaWS_DW_Expo(equivWS[WD_ind], node1.expo[radInd].expo[WD_ind], node2.expo[radInd].expo[WD_ind],
                     node1.expo[radInd].GetDW_Param(WD_ind, "Expo"), node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW,
-                    model, WD_ind, false);
+                    model, WD_ind, false, useValley);
 
-                UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].SR[WD_ind], false, "UW");
-                DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW");
-                UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].SR[WD_ind], false, "UW");
-                DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW");
+                UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].SR[WD_ind], false, "UW", useValley);
+                DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW", useValley);
+                UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].SR[WD_ind], false, "UW", useValley);
+                DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW", useValley);
 
                 deltaWS_SRDH_UW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, node1.expo[radInd].SR[WD_ind], node2.expo[radInd].SR[WD_ind], node1.expo[radInd].dispH[WD_ind],
                     node2.expo[radInd].dispH[WD_ind], UW_Stab1, UW_Stab2);
@@ -1412,15 +1416,15 @@ namespace Continuum_Tests
             avgDWExpo = (node1.expo[radInd].GetDW_Param(WD_ind, "Expo") + node2.expo[radInd].GetDW_Param(WD_ind, "Expo")) / 2;
 
             deltaWS_UW = thisInst.modelList.Get_DeltaWS_UW_Expo(node1.expo[radInd].expo[WD_ind], node2.expo[radInd].expo[WD_ind], node1.expo[radInd].GetDW_Param(WD_ind, "Expo"),
-                node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW, model, WD_ind, radInd, null, null, 0, false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs());
+                node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW, model, WD_ind, radInd, null, null, 0, false, new NodeCollection.Node_UTMs(), new NodeCollection.Node_UTMs(), useValley);
             deltaWS_DW = thisInst.modelList.Get_DeltaWS_DW_Expo(equivWS[WD_ind], node1.expo[radInd].expo[WD_ind], node2.expo[radInd].expo[WD_ind],
                 node1.expo[radInd].GetDW_Param(WD_ind, "Expo"), node2.expo[radInd].GetDW_Param(WD_ind, "Expo"), avgP10UW, avgP10DW,
-                model, WD_ind, false);
+                model, WD_ind, false, useValley);
 
-            UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].SR[WD_ind], false, "UW");
-            DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW");
-            UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].SR[WD_ind], false, "UW");
-            DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW");
+            UW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].SR[WD_ind], false, "UW", useValley);
+            DW_Stab1 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node1.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW", useValley);
+            UW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].SR[WD_ind], false, "UW", useValley);
+            DW_Stab2 = model.GetStabilityCorrection(avgUWExpo, avgDWExpo, WD_ind, node2.expo[radInd].GetDW_Param(WD_ind, "SR"), false, "DW", useValley);
 
             deltaWS_SRDH_UW = thisInst.modelList.GetDeltaWS_SRDH(equivWS[WD_ind], thisInst.modeledHeight, node1.expo[radInd].SR[WD_ind], node2.expo[radInd].SR[WD_ind], node1.expo[radInd].dispH[WD_ind],
                 node2.expo[radInd].dispH[WD_ind], UW_Stab1, UW_Stab2);
