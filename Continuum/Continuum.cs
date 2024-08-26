@@ -1867,6 +1867,27 @@ namespace ContinuumNS
                 return;
             }
 
+            // Get sensor data from database and set shear settings min/max height (if not set)
+            for (int m = 0; m < metList.ThisCount; m++)
+            {
+                if (metList.metItem[m].metData == null)
+                    continue;
+
+                metList.metItem[m].metData.GetSensorDataFromDB(this, metList.metItem[m].name);
+
+                double[] anemHeights = metList.metItem[m].metData.GetHeightsOfAnems();
+                Array.Sort(anemHeights);
+
+                if (metList.metItem[m].metData.shearSettings.minHeight == 0)
+                    metList.metItem[m].metData.shearSettings.minHeight = anemHeights[0];
+
+                if (metList.metItem[m].metData.shearSettings.maxHeight == 0)
+                    metList.metItem[m].metData.shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];
+
+                metList.metItem[m].metData.EstimateAlpha();
+                metList.metItem[m].metData.ExtrapolateData(modeledHeight);
+            }
+            
             // Check that models have a modeled height and if not set it to met data height, if available, otherwise set it to 80
             for (int m = 0; m < modelList.ModelCount; m++)
                 for (int r = 0; r < modelList.RadiiCount; r++)

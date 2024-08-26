@@ -5430,7 +5430,7 @@ namespace ContinuumNS
 
                             //          int tsIndex = selMets[m].metData.baros[s].GetTS_Index(thisTS);
 
-                            if (tsIndex != -999) // Found record at specified TS
+                            if (tsIndex != -999 && selMets[m].metData.baros[s].pressure != null) // Found record at specified TS
                             {
                                 dataForTableRow[colInd] = selMets[m].metData.baros[s].pressure[tsIndex].avg;
                                 dataForTableRow[colInd + 1] = selMets[m].metData.baros[s].pressure[tsIndex].SD;

@@ -139,6 +139,7 @@ namespace Continuum_Tests
             thisInst.Open(Filename);
 
             thisInst.turbineList.ClearAllWSEsts();
+            thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
             Model[] models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
 

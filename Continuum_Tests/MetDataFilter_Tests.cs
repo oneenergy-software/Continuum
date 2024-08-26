@@ -1156,7 +1156,7 @@ namespace Continuum_Tests
 
             Continuum thisInst = new Continuum("");
             thisInst.isTest = true;
-            string Filename = testingFolder + "\\GetTS_Index\\GetTS_Index test.cfm";
+            string Filename = testingFolder + "\\GetTS_Index\\GetTS_Index_Test.cfm";
             thisInst.Open(Filename);
             Thread.Sleep(4000);
             while (thisInst.metList.metItem[0].metData.simDataCalcComplete == false) // RunWorkerCompleted isn't getting called (?) so killing BW_Worker once it reaches end of DoWork
