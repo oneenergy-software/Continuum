@@ -2956,7 +2956,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.6.1       "
+                "FrameworkVersion" = "8:v4.6.1        "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=671728"
                 }
@@ -10673,15 +10673,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Continuum 3"
-        "ProductCode" = "8:{6F9356D0-6EF2-4B55-803B-E53A7CDDF4C0}"
-        "PackageCode" = "8:{6FB0E9C7-179D-4B58-B9E7-C7CD537E6052}"
+        "ProductCode" = "8:{883E271B-E799-4BED-A0B1-799EF5A0EFD5}"
+        "PackageCode" = "8:{BB2C0140-22F2-4358-A75D-85484694B7BB}"
         "UpgradeCode" = "8:{C6A3FCE0-9B67-4431-889A-452DDBE71C27}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.2.6"
+        "ProductVersion" = "8:1.2.7"
         "Manufacturer" = "8:One Energy Enterprises LLC"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
