@@ -30,51 +30,51 @@ namespace ContinuumNS
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Alpha");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Extrap. WS");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode6});
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11});
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
-            treeNode13,
-            treeNode14,
-            treeNode15,
-            treeNode16});
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Average");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("St. Dev.");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Minimum");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Maximum");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
-            treeNode18,
-            treeNode19,
-            treeNode20,
-            treeNode21});
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Alpha");
+            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Extrap. WS");
+            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Anems", new System.Windows.Forms.TreeNode[] {
+            treeNode23,
+            treeNode24,
+            treeNode25,
+            treeNode26,
+            treeNode27,
+            treeNode28});
+            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode33 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode34 = new System.Windows.Forms.TreeNode("Vanes", new System.Windows.Forms.TreeNode[] {
+            treeNode30,
+            treeNode31,
+            treeNode32,
+            treeNode33});
+            System.Windows.Forms.TreeNode treeNode35 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode36 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode37 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode38 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode39 = new System.Windows.Forms.TreeNode("Temps.", new System.Windows.Forms.TreeNode[] {
+            treeNode35,
+            treeNode36,
+            treeNode37,
+            treeNode38});
+            System.Windows.Forms.TreeNode treeNode40 = new System.Windows.Forms.TreeNode("Average");
+            System.Windows.Forms.TreeNode treeNode41 = new System.Windows.Forms.TreeNode("St. Dev.");
+            System.Windows.Forms.TreeNode treeNode42 = new System.Windows.Forms.TreeNode("Minimum");
+            System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Maximum");
+            System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Baros.", new System.Windows.Forms.TreeNode[] {
+            treeNode40,
+            treeNode41,
+            treeNode42,
+            treeNode43});
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Continuum));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabContinuum = new System.Windows.Forms.TabControl();
             this.pgeInput = new System.Windows.Forms.TabPage();
             this.chkUseValleyFlow = new System.Windows.Forms.CheckBox();
@@ -1256,7 +1256,6 @@ namespace ContinuumNS
             this.chkUseValleyFlow.TabIndex = 144;
             this.chkUseValleyFlow.Text = "Enable Valley Model";
             this.chkUseValleyFlow.UseVisualStyleBackColor = true;
-            this.chkUseValleyFlow.Visible = false;
             this.chkUseValleyFlow.CheckedChanged += new System.EventHandler(this.chkUseValleyFlow_CheckedChanged);
             // 
             // chkUseElevModel
@@ -1270,7 +1269,6 @@ namespace ContinuumNS
             this.chkUseElevModel.TabIndex = 143;
             this.chkUseElevModel.Text = "Enable Elevation Model";
             this.chkUseElevModel.UseVisualStyleBackColor = true;
-            this.chkUseElevModel.Visible = false;
             this.chkUseElevModel.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // btnShowMetTS_Info
@@ -2101,57 +2099,57 @@ namespace ContinuumNS
             this.treeDataParams.CheckBoxes = true;
             this.treeDataParams.Location = new System.Drawing.Point(184, 72);
             this.treeDataParams.Name = "treeDataParams";
-            treeNode1.Checked = true;
-            treeNode1.Name = "nodeAnemAvg";
-            treeNode1.Text = "Average";
-            treeNode2.Name = "nodeAnemSD";
-            treeNode2.Text = "St. Dev.";
-            treeNode3.Name = "nodeAnemMin";
-            treeNode3.Text = "Minimum";
-            treeNode4.Name = "nodeAnemMax";
-            treeNode4.Text = "Maximum";
-            treeNode5.Name = "nodeAlpha";
-            treeNode5.Text = "Alpha";
-            treeNode6.Name = "nodeExtrapWS";
-            treeNode6.Text = "Extrap. WS";
-            treeNode7.Checked = true;
-            treeNode7.Name = "nodeAnems";
-            treeNode7.Text = "Anems";
-            treeNode8.Name = "nodeVaneAvg";
-            treeNode8.Text = "Average";
-            treeNode9.Name = "nodeVaneSD";
-            treeNode9.Text = "St. Dev.";
-            treeNode10.Name = "nodeVaneMax";
-            treeNode10.Text = "Minimum";
-            treeNode11.Name = "nodeVaneMax";
-            treeNode11.Text = "Maximum";
-            treeNode12.Name = "nodeVanes";
-            treeNode12.Text = "Vanes";
-            treeNode13.Name = "Node0";
-            treeNode13.Text = "Average";
-            treeNode14.Name = "Node1";
-            treeNode14.Text = "St. Dev.";
-            treeNode15.Name = "Node2";
-            treeNode15.Text = "Minimum";
-            treeNode16.Name = "Node3";
-            treeNode16.Text = "Maximum";
-            treeNode17.Name = "nodeTemps";
-            treeNode17.Text = "Temps.";
-            treeNode18.Name = "Node4";
-            treeNode18.Text = "Average";
-            treeNode19.Name = "Node5";
-            treeNode19.Text = "St. Dev.";
-            treeNode20.Name = "Node6";
-            treeNode20.Text = "Minimum";
-            treeNode21.Name = "Node7";
-            treeNode21.Text = "Maximum";
-            treeNode22.Name = "nodeBaros";
-            treeNode22.Text = "Baros.";
+            treeNode23.Checked = true;
+            treeNode23.Name = "nodeAnemAvg";
+            treeNode23.Text = "Average";
+            treeNode24.Name = "nodeAnemSD";
+            treeNode24.Text = "St. Dev.";
+            treeNode25.Name = "nodeAnemMin";
+            treeNode25.Text = "Minimum";
+            treeNode26.Name = "nodeAnemMax";
+            treeNode26.Text = "Maximum";
+            treeNode27.Name = "nodeAlpha";
+            treeNode27.Text = "Alpha";
+            treeNode28.Name = "nodeExtrapWS";
+            treeNode28.Text = "Extrap. WS";
+            treeNode29.Checked = true;
+            treeNode29.Name = "nodeAnems";
+            treeNode29.Text = "Anems";
+            treeNode30.Name = "nodeVaneAvg";
+            treeNode30.Text = "Average";
+            treeNode31.Name = "nodeVaneSD";
+            treeNode31.Text = "St. Dev.";
+            treeNode32.Name = "nodeVaneMax";
+            treeNode32.Text = "Minimum";
+            treeNode33.Name = "nodeVaneMax";
+            treeNode33.Text = "Maximum";
+            treeNode34.Name = "nodeVanes";
+            treeNode34.Text = "Vanes";
+            treeNode35.Name = "Node0";
+            treeNode35.Text = "Average";
+            treeNode36.Name = "Node1";
+            treeNode36.Text = "St. Dev.";
+            treeNode37.Name = "Node2";
+            treeNode37.Text = "Minimum";
+            treeNode38.Name = "Node3";
+            treeNode38.Text = "Maximum";
+            treeNode39.Name = "nodeTemps";
+            treeNode39.Text = "Temps.";
+            treeNode40.Name = "Node4";
+            treeNode40.Text = "Average";
+            treeNode41.Name = "Node5";
+            treeNode41.Text = "St. Dev.";
+            treeNode42.Name = "Node6";
+            treeNode42.Text = "Minimum";
+            treeNode43.Name = "Node7";
+            treeNode43.Text = "Maximum";
+            treeNode44.Name = "nodeBaros";
+            treeNode44.Text = "Baros.";
             this.treeDataParams.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode7,
-            treeNode12,
-            treeNode17,
-            treeNode22});
+            treeNode29,
+            treeNode34,
+            treeNode39,
+            treeNode44});
             this.treeDataParams.Size = new System.Drawing.Size(121, 104);
             this.treeDataParams.TabIndex = 32;
             this.treeDataParams.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeDataParams_AfterCheck);
@@ -8015,9 +8013,9 @@ namespace ContinuumNS
             // 
             // Column6
             // 
-            dataGridViewCellStyle1.Format = "P";
-            dataGridViewCellStyle1.NullValue = null;
-            this.Column6.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Format = "P";
+            dataGridViewCellStyle5.NullValue = null;
+            this.Column6.DefaultCellStyle = dataGridViewCellStyle5;
             this.Column6.HeaderText = "5h 360 TVI";
             this.Column6.MinimumWidth = 6;
             this.Column6.Name = "Column6";
@@ -8034,9 +8032,9 @@ namespace ContinuumNS
             // 
             // Column8
             // 
-            dataGridViewCellStyle2.Format = "P";
-            dataGridViewCellStyle2.NullValue = null;
-            this.Column8.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Format = "P";
+            dataGridViewCellStyle6.NullValue = null;
+            this.Column8.DefaultCellStyle = dataGridViewCellStyle6;
             this.Column8.HeaderText = "5h 30 TVI";
             this.Column8.MinimumWidth = 6;
             this.Column8.Name = "Column8";
@@ -8053,9 +8051,9 @@ namespace ContinuumNS
             // 
             // Column10
             // 
-            dataGridViewCellStyle3.Format = "P";
-            dataGridViewCellStyle3.NullValue = null;
-            this.Column10.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle7.Format = "P";
+            dataGridViewCellStyle7.NullValue = null;
+            this.Column10.DefaultCellStyle = dataGridViewCellStyle7;
             this.Column10.HeaderText = "10h 30 TVI";
             this.Column10.MinimumWidth = 6;
             this.Column10.Name = "Column10";
@@ -8072,9 +8070,9 @@ namespace ContinuumNS
             // 
             // Column12
             // 
-            dataGridViewCellStyle4.Format = "P";
-            dataGridViewCellStyle4.NullValue = null;
-            this.Column12.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle8.Format = "P";
+            dataGridViewCellStyle8.NullValue = null;
+            this.Column12.DefaultCellStyle = dataGridViewCellStyle8;
             this.Column12.HeaderText = "20h 30 TVI";
             this.Column12.MinimumWidth = 6;
             this.Column12.Name = "Column12";
