@@ -1108,7 +1108,7 @@ namespace ContinuumNS
             if (fileName != "" && fileName != savedParams.savedFileName)
             {
                 // Save As.  Need to copy database with new filename.
-                SetDefaultFolderLocations(savedParams.pathName);
+                SetDefaultFolderLocations(fileName);
                 BW_worker = new BackgroundWork();
                 BackgroundWork.Vars_for_Save_As argsForBW = new BackgroundWork.Vars_for_Save_As();
                 argsForBW.oldFilename = savedParams.savedFileName;
