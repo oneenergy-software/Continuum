@@ -194,7 +194,8 @@ namespace ContinuumNS
 
         /// <summary> Prompts user to find open topo data file and then calls Call_BW_TopoImport function (calls background worker) </summary>
         public void LoadTopo()
-        {            
+        {          
+            
             if (ofdXYZfile.ShowDialog() == DialogResult.OK)
             {
                 string wholePath = ofdXYZfile.FileName;
@@ -1107,6 +1108,7 @@ namespace ContinuumNS
             if (fileName != "" && fileName != savedParams.savedFileName)
             {
                 // Save As.  Need to copy database with new filename.
+                SetDefaultFolderLocations(savedParams.pathName);
                 BW_worker = new BackgroundWork();
                 BackgroundWork.Vars_for_Save_As argsForBW = new BackgroundWork.Vars_for_Save_As();
                 argsForBW.oldFilename = savedParams.savedFileName;
@@ -3041,7 +3043,17 @@ namespace ContinuumNS
                 topo.useSR = true;
             else
                 topo.useSR = false;
-                        
+
+            if (chkUseElevModel.Checked == true)
+                topo.useElev = true;
+            else
+                topo.useElev = false;
+
+            if (chkUseValleyFlow.Checked == true)
+                topo.useValley = true;
+            else
+                topo.useValley = false;
+
             BW_worker = new BackgroundWork();
             BackgroundWork.Vars_for_BW theArgs = new BackgroundWork.Vars_for_BW();
             theArgs.thisInst = this;            
@@ -3310,6 +3322,10 @@ namespace ContinuumNS
                     BW_worker.Call_BW_MetCalcs(theArgs);
                     ChangesMade();
                  }
+                else
+                { // Reset checkbox to original setting
+                    chkUseSR.Checked = topo.useSR;
+                }
             }
         }
 
@@ -8597,6 +8613,11 @@ namespace ContinuumNS
                     BW_worker.Call_BW_MetCalcs(theArgs);
                     ChangesMade();
                 }
+                else
+                { // Reset checkbox to original setting
+                    chkUseElevModel.Checked = topo.useElev;
+                }
+
             }
             else
             {
@@ -8693,6 +8714,17 @@ namespace ContinuumNS
                     BW_worker.Call_BW_MetCalcs(theArgs);
                     ChangesMade();
                 }
+                else
+                { // Reset checkbox to original setting
+                    chkUseValleyFlow.Checked = topo.useValley;
+                }
+            }
+            else
+            {
+                if (chkUseValleyFlow.Checked == true)
+                    topo.useValley = true;
+                else
+                    topo.useValley = false;
             }
         }
     }

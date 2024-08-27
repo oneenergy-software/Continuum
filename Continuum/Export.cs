@@ -4373,7 +4373,7 @@ namespace ContinuumNS
                 for (int r = 0; r < thisInst.radiiList.ThisCount; r++)
                 {
                     Model thisModel = theseModels[r];
-                    sw.WriteLine("Radius of investigation:," + thisInst.radiiList.investItem[r].ToString());
+                    sw.WriteLine("Radius of investigation:," + thisInst.radiiList.investItem[r].radius.ToString());
                     sw.WriteLine("RMS Overall Error [%]," + thisModel.RMS_WS_Est.ToString());
                     sw.WriteLine("WD, RMS Error");
 
