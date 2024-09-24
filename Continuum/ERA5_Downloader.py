@@ -25,7 +25,7 @@ c = cdsapi.Client()
 c.retrieve('reanalysis-era5-single-levels',
         {
         'product_type': 'reanalysis',
-        'format': 'netcdf',
+        'data_format': 'netcdf_legacy',
         'variable': [
             '100m_u_component_of_wind', '100m_v_component_of_wind', '2m_temperature',
             'surface_pressure',
