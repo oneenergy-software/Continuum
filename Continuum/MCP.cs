@@ -361,11 +361,17 @@ namespace ContinuumNS
 
         /// <summary>   Calculates WD index of specified wind direction . </summary>        
         /// <returns>   The wind direction index corresponding to specified wind direction. </returns>        
-        public int Get_WD_ind(double thisWD)
-        {            
-            int WD_Ind = (int)Math.Round(thisWD / (360 / (double)numWD),0, MidpointRounding.AwayFromZero);
-                        
-            if (WD_Ind == numWD) WD_Ind = 0;
+        public int Get_WD_ind(double thisWD, int numWD_Bins = 0)
+        {
+            int WD_Ind = -999;
+            int numBins = numWD;
+
+            if (numWD_Bins != 0)
+                numBins = numWD_Bins;
+            
+            WD_Ind = (int)Math.Round(thisWD / (360 / (double)numBins), 0, MidpointRounding.AwayFromZero);
+
+            if (WD_Ind == numBins) WD_Ind = 0;                       
 
             return WD_Ind;
         }

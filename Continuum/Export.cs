@@ -2628,6 +2628,9 @@ namespace ContinuumNS
             string MCP_method = thisInst.Get_MCP_Method();
             DateTime exportStart = thisInst.dateMCPExportStart.Value;
             DateTime exportEnd = thisInst.dateMCPExportEnd.Value;
+            int numTAB_Bins = Convert.ToInt32(thisInst.cboTAB_bins.SelectedItem.ToString());
+            double wsBinWidth = 1;
+            double.TryParse(thisInst.txtTAB_WS_bin.Text, out wsBinWidth);
 
             if (thisMCP.LT_WS_Ests.Length == 0)
                 thisMCP.LT_WS_Ests = thisMCP.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
@@ -2655,13 +2658,13 @@ namespace ContinuumNS
 
                     // write TAB header details
                     file.WriteLine(UTMs_Height);
-                    file.Write(thisMCP.numWD);
+                    file.Write(numTAB_Bins);
                     file.Write(" ");
-                    file.Write(thisMCP.WS_BinWidth);
+                    file.Write(wsBinWidth);
                     file.WriteLine(" 0");
 
-                    double[] windRose = new double[thisMCP.numWD];
-                    double[,] WSWD_Dist = new double[thisInst.metList.numWS, thisMCP.numWD];
+                    double[] windRose = new double[numTAB_Bins];
+                    double[,] WSWD_Dist = new double[thisInst.metList.numWS, numTAB_Bins];
 
                     DateTime thisTS = DateTime.Today;
                     double thisWS = 0;
@@ -2693,8 +2696,8 @@ namespace ContinuumNS
                     {
                         if (thisWS >= 0 && thisWD >= 0)
                         {
-                            int WS_Ind = thisMCP.Get_WS_ind(thisWS, thisMCP.WS_BinWidth);
-                            int WD_Ind = thisMCP.Get_WD_ind(thisWD);
+                            int WS_Ind = thisMCP.Get_WS_ind(thisWS, wsBinWidth);
+                            int WD_Ind = thisMCP.Get_WD_ind(thisWD, numTAB_Bins);
 
                             if (WS_Ind > 30) WS_Ind = 30;
 
@@ -2714,17 +2717,17 @@ namespace ContinuumNS
                     }
 
                     double Sum_WD = 0;
-                    for (int i = 0; i < thisMCP.numWD; i++)
+                    for (int i = 0; i < numTAB_Bins; i++)
                         Sum_WD = Sum_WD + windRose[i];
 
-                    for (int i = 0; i < thisMCP.numWD; i++)
+                    for (int i = 0; i < numTAB_Bins; i++)
                     {
                         windRose[i] = windRose[i] / Sum_WD * 100;
                         file.Write(Math.Round(windRose[i], 4) + "\t");
                     }
                     file.WriteLine();
 
-                    for (int WD_Ind = 0; WD_Ind < thisMCP.numWD; WD_Ind++)
+                    for (int WD_Ind = 0; WD_Ind < numTAB_Bins; WD_Ind++)
                     {
                         double Sum_WS = 0;
                         for (int WS_Ind = 0; WS_Ind < thisInst.metList.numWS; WS_Ind++)
@@ -2737,8 +2740,8 @@ namespace ContinuumNS
 
                     for (int i = 0; i < thisInst.metList.numWS; i++)
                     {
-                        file.Write((i + thisMCP.WS_BinWidth / 2) + "\t");
-                        for (int j = 0; j < thisMCP.numWD; j++)
+                        file.Write((i + wsBinWidth / 2) + "\t");
+                        for (int j = 0; j < numTAB_Bins; j++)
                             file.Write(Math.Round(WSWD_Dist[i, j], 3) + "\t");
                         file.WriteLine();
                     }

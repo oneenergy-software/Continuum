@@ -14,6 +14,7 @@ using Microsoft.VisualBasic;
 using System.Windows.Media.Media3D;
 using System.Runtime.CompilerServices;
 using static ContinuumNS.MetPairCollection;
+using System.Globalization;
 
 namespace ContinuumNS
 {
@@ -484,9 +485,19 @@ namespace ContinuumNS
             DateTime startDate, endDate;
             bool haveStart = false;
             bool haveEnd = false;
+                       
+            DateTimeFormatInfo thisDateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat;
 
-            startDate = Convert.ToDateTime("1/1/" + thisYear);
-            endDate = Convert.ToDateTime("12/31/" + thisYear + " 23:00");
+            if (thisDateTimeFormat.ShortDatePattern == "MM/dd/yyyy" || thisDateTimeFormat.ShortDatePattern == "MM/d/yyyy" || thisDateTimeFormat.ShortDatePattern == "M/d/yyyy")
+            {
+                startDate = Convert.ToDateTime("1/1/" + thisYear);
+                endDate = Convert.ToDateTime("12/31/" + thisYear + " 23:00");
+            }
+            else
+            {
+                startDate = Convert.ToDateTime("1/1/" + thisYear);
+                endDate = Convert.ToDateTime("31/12/" + thisYear + " 23:00");
+            }                      
 
             for (int i = 0; i < thisTS.Length; i++)
             {
@@ -514,6 +525,7 @@ namespace ContinuumNS
             bool haveStart = false;
             bool haveEnd = false;
 
+            RegionInfo machineLocation = RegionInfo.CurrentRegion;
             startDate = Convert.ToDateTime(thisMonth + "/1/" + thisYear);
 
             if (thisMonth == 1 || thisMonth == 3 || thisMonth == 5 || thisMonth == 7 || thisMonth == 8 || thisMonth == 10 || thisMonth == 12)
