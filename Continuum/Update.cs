@@ -9964,7 +9964,12 @@ namespace ContinuumNS
             LT_ReferenceMonthlyTableAndPlot();
             LT_ReferenceTextboxes();
             LT_ReferenceSettings();
-            LT_ReferenceWindRosePlot();            
+            LT_ReferenceWindRosePlot();
+
+            if (thisInst.GetSelectedReference("LT Ref").refDataDownload.refType != "MERRA2" || thisInst.GetSelectedReference("LT Ref").refDataDownload.inclCloud == false)
+                thisInst.btnExportCloudCover.Enabled = false;
+            else
+                thisInst.btnExportCloudCover.Enabled = true;
         }
 
         /// <summary> Updates all tables and plots on Site Suitability tab. </summary> 

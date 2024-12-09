@@ -272,6 +272,7 @@
       <DependentUpon>BackgroundWork.cs</DependentUpon>
     </Compile>
     <Compile Include="Check_class.cs" />
+    <Compile Include="CloudCover.cs" />
     <Compile Include="Continuum.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -611,6 +612,9 @@
     <Content Include="Continuum icon Hi Res.ico" />
     <Content Include="Continuum icon.ico" />
     <Content Include="ERA5_CredsCheck.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ERA5_MonthlyDownloader.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ERA5_Downloader.py">

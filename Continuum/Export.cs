@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Globalization;
+using MathNet.Numerics.Statistics;
 
 namespace ContinuumNS
 {
@@ -3064,8 +3065,8 @@ namespace ContinuumNS
 
             file.WriteLine();
             file.Write("Time Stamp ,");
-            file.Write("50mWS [m/s],");
-            file.Write("50mWD [degs],");            
+            file.Write(thisRef.wswdH.ToString() + "mWS [m/s],");
+            file.Write(thisRef.wswdH.ToString() + "mWD [degs],");            
             file.Write("Surf. Press. [kPa],");
             file.Write("Sea Press. [kPa],");
             file.Write("10mTemp[deg C],");
@@ -4387,6 +4388,72 @@ namespace ContinuumNS
                 }
 
                 sw.Close();
+
+            }
+        }
+
+        /// <summary> Exports MERRA2 cloud cover data to CSV </summary>        
+        public void ExportCloudData(CloudCover cloudData, string filename)
+        {
+            StreamWriter sw = new StreamWriter(filename);
+            sw.WriteLine("MERRA2 Cloud Cover Data");
+            sw.WriteLine("Lat: " + cloudData.coords.Lat.ToString() + ", Long:" + cloudData.coords.Lon.ToString());
+            sw.WriteLine();
+
+            // Write headers
+            sw.WriteLine("Timestamp, ISCCP Cloud Cover Fraction, Modis Cloud Cover Fraction, Modis Cloud Optical Thickness");
+
+            for (int t = 0; t < cloudData.merraCloud.Length; t++)
+            {
+                sw.WriteLine(cloudData.merraCloud[t].thisDate.ToString() + "," + cloudData.merraCloud[t].isccpCloudCover.ToString()
+                    + "," + cloudData.merraCloud[t].modisCloudCover.ToString() + "," + cloudData.merraCloud[t].modisCloudThickness.ToString());
+            }
+
+            sw.Close();
+
+        }
+
+        /// <summary> Exports overall summary results of all Round Robin analyses </summary>
+        public void Export_RoundRobinSummary(Continuum thisInst)
+        {
+            MetPairCollection.RR_WS_Ests[] allRoundRobins = thisInst.metPairList.roundRobinEsts;
+
+            if (allRoundRobins == null)
+            {
+                MessageBox.Show("No Round Robin analyses have been generated yet.", "Continuum 3");
+                return;
+            }
+
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
+
+                try
+                {
+                    sw.WriteLine("Continuum 3: Summary of Modeled " + thisInst.modeledHeight + " m Wind Speeds: Round Robin Analysis Results");
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine();
+
+                    // Write headers
+                    sw.WriteLine("Met Subset Size, RMS Error [%], Num. Models, Min Error [%], Max Error [%]");
+
+                    for (int r = 0; r < allRoundRobins.Length; r++)
+                    {
+                        sw.Write(allRoundRobins[r].metSubSize.ToString() + ",");
+                        sw.Write(allRoundRobins[r].RMS_All.ToString() + ",");
+                        sw.Write(allRoundRobins[r].RMS_Err.Length.ToString() + ",");
+                        sw.Write(ArrayStatistics.Minimum(allRoundRobins[r].RMS_Err).ToString() + ",");
+                        sw.WriteLine(ArrayStatistics.Maximum(allRoundRobins[r].RMS_Err).ToString());
+                    }
+
+                    sw.Close();
+                }
+                catch
+                {
+                    MessageBox.Show("Error writing to file.  Make sure that it is not open in another program");
+                    sw.Close();
+                    return;
+                }
 
             }
         }

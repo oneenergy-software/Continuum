@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Research.Science.Data.Imperative;
 using System.Runtime.CompilerServices;
+using Python.Runtime;
 
 namespace ContinuumNS
 {
@@ -51,6 +52,14 @@ namespace ContinuumNS
             public double minLon;
             /// <summary> Max longitude of downloaded nodes in files </summary>
             public double maxLon;
+            /// <summary> Flag specifying whether to download daily or monthly data </summary>
+            public string monthlyOrDaily;
+
+            public bool incl10mWS;
+
+            public bool incl10mGust; // Applies to ERA5 only
+
+            public bool inclCloud; // Applies to MERRA2 only
 
             /// <summary> Creates and returns name for specified reference data download </summary>
             public string GetName()
@@ -657,7 +666,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Returns URL of MERRA2 data file to download. </summary> 
-        public string GetMERRA2URL(DateTime thisDay, RefDataDownload merraDownload)
+        public string GetMERRA2URL(DateTime thisDay, RefDataDownload merraDownload, string windOrCloud)
         {
             int dateNum = 0;
 
@@ -688,16 +697,30 @@ namespace ContinuumNS
             int maxLatInd = GetLatitudeIndex(merraDownload, merraDownload.maxLat);
             int minLongInd = GetLongitudeIndex(merraDownload, merraDownload.minLon);
             int maxLongInd = GetLongitudeIndex(merraDownload, merraDownload.maxLon);
+            string URL = "";
 
-            string URL = "https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXSLV.5.12.4/";
-            URL += thisYear + "/" + thisMonth + "/";
-            URL += "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisYear + thisMonth + thisDayStr + ".nc4.ascii?";
-            URL += "T10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-            URL += "U50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-            URL += "V50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-            URL += "SLP[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-            URL += "PS[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-            URL += "lat[" + minLatInd + ":" + maxLatInd + "]," + "time[0:23]," + "lon[" + minLongInd + ":" + maxLongInd + "]";
+            if (windOrCloud == "Wind")
+            {
+                URL = "https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXSLV.5.12.4/";
+                URL += thisYear + "/" + thisMonth + "/";
+                URL += "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisYear + thisMonth + thisDayStr + ".nc4.ascii?";
+                URL += "T10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                URL += "U50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                URL += "V50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                URL += "SLP[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                URL += "PS[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                URL += "lat[" + minLatInd + ":" + maxLatInd + "]," + "time[0:23]," + "lon[" + minLongInd + ":" + maxLongInd + "]";
+            }
+            else
+            {
+                URL = "https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXCSP.5.12.4/";
+                URL += thisYear + "/" + thisMonth + "/";
+                URL += "MERRA2_" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisYear + thisMonth + thisDayStr + ".nc4.ascii?";
+                URL += "ISCCPCLDFRC[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                URL += "MDSCLDFRCTTL[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                URL += "MDSOPTHCKTTL[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";                
+                URL += "lat[" + minLatInd + ":" + maxLatInd + "]," + "time[0:23]," + "lon[" + minLongInd + ":" + maxLongInd + "]";
+            }
 
             return URL;
 
@@ -1216,13 +1239,18 @@ namespace ContinuumNS
                             for (int i = 1; i < substrings.Length; i++)
                                 longs[i - 1] = Convert.ToDouble(substrings[i]);
                         }
+
+                        if (substrings[0] == "U10M")
+                            refDataDownload.incl10mWS = true;
+
+                        
                     }
 
                     file.Close();
                 }
                 else
                 {
-                    // Read ERA5 file and get coords and indices                                
+                    // Read ERA5 file and get coords and indices and figure out if it's monthly or daily data                               
 
                     try
                     {
@@ -1243,6 +1271,16 @@ namespace ContinuumNS
 
                         Array.Sort(lats);
                         Array.Sort(longs);
+
+                        int slashInd = ERA5Files[0].LastIndexOf("\\");
+                        string fileName = ERA5Files[0].Substring(slashInd + 1, ERA5Files[0].Length - slashInd - 1);
+                        int numUnderscores = fileName.Count(c => c == '_');
+
+                        if (numUnderscores == 8)
+                            refDataDownload.monthlyOrDaily = "Monthly";
+                        else
+                            refDataDownload.monthlyOrDaily = "Daily";
+
                     }
                     catch (Exception ex)
                     {
@@ -1448,7 +1486,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Creates filename for exported MERRA2 or ERA5 data. </summary>
-        public string CreateReferenceDatafilename(RefDataDownload refData, DateTime thisDate = new DateTime())
+        public string CreateReferenceDatafilename(RefDataDownload refData, DateTime thisDate = new DateTime(), string windOrCloud = "")
         {
             string fileName = "";            
 
@@ -1467,8 +1505,14 @@ namespace ContinuumNS
                 string maxLonForm = GetStringFormatForReferenceDataFilename(refData.maxLon);
 
                 if (thisDate.Year != 1)
-                    fileName = "ERA5_N" + minLat.ToString(minLatForm) + "_to_" + maxLat.ToString(maxLatForm) + "_W" + minLon.ToString(minLonForm)
-                        + "_to_" + maxLon.ToString(maxLonForm) + "_" + thisDate.ToString("yyyy_MM_dd") + ".nc";
+                {
+                    if (refData.monthlyOrDaily == "Daily")
+                        fileName = "ERA5_N" + minLat.ToString(minLatForm) + "_to_" + maxLat.ToString(maxLatForm) + "_W" + minLon.ToString(minLonForm)
+                            + "_to_" + maxLon.ToString(maxLonForm) + "_" + thisDate.ToString("yyyy_MM_dd") + ".nc";
+                    else
+                        fileName = "ERA5_N" + minLat.ToString(minLatForm) + "_to_" + maxLat.ToString(maxLatForm) + "_W" + minLon.ToString(minLonForm)
+                            + "_to_" + maxLon.ToString(maxLonForm) + "_" + thisDate.ToString("yyyy_MM") + ".nc";
+                }
                 else
                     fileName = "ERA5_N" + minLat.ToString(minLatForm) + "_to_" + maxLat.ToString(maxLatForm) + "_W" + minLon.ToString(minLonForm)
                         + "_to_" + maxLon.ToString(maxLonForm) + ".nc";
@@ -1493,17 +1537,21 @@ namespace ContinuumNS
                 if (thisDate.Day < 10)
                     thisDay = "0" + thisDay;
 
-                fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";                                
+                if (windOrCloud == "Wind")
+                    fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
+                else if (windOrCloud == "Cloud")
+                    fileName = "MERRA2_Cloud" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
+                                
             }
 
             return fileName;
         }               
 
         /// <summary> Returns true if reference daily datafile exists in folder. </summary>
-        public bool ReferenceFileExists(DateTime thisDate, RefDataDownload refDataDown)
+        public bool ReferenceFileExists(DateTime thisDate, RefDataDownload refDataDown, string windOrCloud = "")
         {
             bool fileExists = false;
-            string fileName = CreateReferenceDatafilename(refDataDown, thisDate);
+            string fileName = CreateReferenceDatafilename(refDataDown, thisDate, windOrCloud);
 
             try
             {
@@ -1522,12 +1570,12 @@ namespace ContinuumNS
         }
 
         /// <summary> Downloads and save MERRA2 datafile for specified day.     </summary>
-        public bool SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate, RefDataDownload refDataDown)
+        public bool SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate, RefDataDownload refDataDown, string windOrCloud)
         {
             // Now access the data            
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
-            string MERRA2filename = CreateReferenceDatafilename(refDataDown, thisDate);
+            string MERRA2filename = CreateReferenceDatafilename(refDataDown, thisDate, windOrCloud);
             StreamWriter writer = new StreamWriter(refDataDown.folderLocation + "\\" + MERRA2filename);
 
             bool isDataset = false;

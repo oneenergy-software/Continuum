@@ -51,6 +51,7 @@
             this.BackgroundWorker_ERA5Download = new System.ComponentModel.BackgroundWorker();
             this.BackgroundWorker_DBUpdate = new System.ComponentModel.BackgroundWorker();
             this.BackgroundWorker_MetImport = new System.ComponentModel.BackgroundWorker();
+            this.BackgroundWorker_CloudDataExtract = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // progbar
@@ -233,6 +234,12 @@
             this.BackgroundWorker_MetImport.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_MetImport_ProgressChanged);
             this.BackgroundWorker_MetImport.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_MetImport_RunWorkerCompleted);
             // 
+            // BackgroundWorker_CloudDataExtract
+            // 
+            this.BackgroundWorker_CloudDataExtract.WorkerReportsProgress = true;
+            this.BackgroundWorker_CloudDataExtract.WorkerSupportsCancellation = true;
+            this.BackgroundWorker_CloudDataExtract.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_CloudDataExtract_DoWork);
+            // 
             // BackgroundWork
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -273,5 +280,6 @@
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_ERA5Download;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_DBUpdate;
         internal System.ComponentModel.BackgroundWorker BackgroundWorker_MetImport;
+        internal System.ComponentModel.BackgroundWorker BackgroundWorker_CloudDataExtract;
     }
 }

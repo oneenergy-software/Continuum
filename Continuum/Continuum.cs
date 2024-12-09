@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Data;
+using static ContinuumNS.BackgroundWork;
 
 namespace ContinuumNS
 {
@@ -1382,6 +1383,16 @@ namespace ContinuumNS
                 return;
             }
 
+            for (int m = 0; m < metPairList.PairCount; m++)
+                for (int p = 0; p < metPairList.metPairs[m].WS_PredCount; p++)
+                    for (int r = 0; r < radiiList.ThisCount; r++)
+                    {
+                        if (metPairList.metPairs[m].WS_Pred[p, r].model.valleyCoeff == null)
+                            metPairList.metPairs[m].WS_Pred[p, r].model.valleyCoeff = new double[metList.numWD];
+                        if (metPairList.metPairs[m].WS_Pred[p, r].model.elevCoeff == null)
+                            metPairList.metPairs[m].WS_Pred[p, r].model.elevCoeff = new double[metList.numWD];
+                    }
+
             try {
                 modelList = (ModelCollection)bin.Deserialize(fstream);               
             }
@@ -1391,6 +1402,15 @@ namespace ContinuumNS
                 updateThe.NewProject();
                 return;
             }
+
+            for (int m = 0; m < modelList.ModelCount; m++)
+                for (int r = 0; r < radiiList.ThisCount; r++)
+                {
+                    if (modelList.models[m, r].valleyCoeff == null)
+                        modelList.models[m, r].valleyCoeff = new double[metList.numWD];
+                    if (modelList.models[m, r].elevCoeff == null)
+                        modelList.models[m, r].elevCoeff = new double[metList.numWD];
+                }
 
             // Set default parameters in ModelList if not previously set (i.e. in older versions)
             if (modelList.airDens == 0)
@@ -8746,6 +8766,60 @@ namespace ContinuumNS
         private void pgeInput_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnExportCloudCover_Click(object sender, EventArgs e)
+        {
+            // Disable if ERA5 reference or MERRA2 without inclCloud selected
+
+            if (sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+
+                Reference thisRef = GetSelectedReference("LT Ref");
+                CloudCover cloudCover = new CloudCover();
+                cloudCover.coords.Lat = thisRef.interpData.Coords.latitude;
+                cloudCover.coords.Lon = thisRef.interpData.Coords.longitude;
+                
+                BackgroundWork.Vars_for_CloudData_Extract varsForExtract = new BackgroundWork.Vars_for_CloudData_Extract();
+                varsForExtract.cloudCover = cloudCover;
+                varsForExtract.reference = thisRef;
+                varsForExtract.filePath = sfd60mWS.FileName;
+
+                BW_worker = new BackgroundWork();
+                BW_worker.Call_BW_CloudCoverExtract(varsForExtract);
+
+            }
+        }
+                
+        private void Continuum_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Checks for changes, asks user to save, then closes program
+
+            if (fileChanged == true)
+            {
+                DialogResult saveChanges = MessageBox.Show("Do you want to save changes?", "Closing Continuum", MessageBoxButtons.YesNo);
+                if (saveChanges == DialogResult.Yes)
+                {
+                    if (savedParams.savedFileName != "")
+                        SaveFile();
+                    else
+                    {
+                        if (sfdCFMfile.ShowDialog() == DialogResult.OK)
+                            SaveFile(sfdCFMfile.FileName);
+                    }
+                }
+            }
+        }
+
+        private void pgeRound_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnExportRR_Summary_Click(object sender, EventArgs e)
+        {
+            Export export = new Export();
+            export.Export_RoundRobinSummary(this);
         }
     }
 }

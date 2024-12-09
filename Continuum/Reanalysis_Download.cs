@@ -32,6 +32,7 @@ namespace ContinuumNS
             InitializeComponent();
             thisInst = continuum;
             UpdateListOfRefDataDownloads();
+            cboDailyOrMonthly.SelectedIndex = 0;
         }
 
         private void btnDownloadMERRA2_Click(object sender, EventArgs e)
@@ -82,6 +83,13 @@ namespace ContinuumNS
                 // Make sure that a valid folder has been selected, end date is after start date, confirm number of nodes, check for username/password
                                 
                 dataToDownload.refType = cboReanalysisType.SelectedItem.ToString(); 
+                dataToDownload.monthlyOrDaily = cboDailyOrMonthly.SelectedItem.ToString();
+                dataToDownload.incl10mWS = chkInclOpParam1.Checked;
+
+                if (dataToDownload.refType == "MERRA2" && chkInclOpParam2.Checked)
+                    dataToDownload.inclCloud = true;
+                else if (dataToDownload.refType == "ERA5" && chkInclOpParam2.Checked)
+                    dataToDownload.incl10mGust = true;
                 
                 if (dataToDownload.folderLocation == "")
                 {
@@ -392,7 +400,12 @@ namespace ContinuumNS
                     dataToDownload.startDate = refdataRangeAndComplete.startEnd[0];
                     dataToDownload.endDate = refdataRangeAndComplete.startEnd[1];
                     dataToDownload.completion = refdataRangeAndComplete.completion;
-                }
+
+                    if (dataToDownload.monthlyOrDaily == "Daily")
+                        cboDailyOrMonthly.SelectedIndex = 0;
+                    else
+                        cboDailyOrMonthly.SelectedIndex = 1;
+                }                
 
                 if (thisInst.refList.HaveThisRefDataDownload(dataToDownload) == false && dataToDownload.minLat != 0)
                 {
@@ -480,7 +493,43 @@ namespace ContinuumNS
 
         private void cboReanalysisType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            UpdateOptionalParams();
 
+            if (cboReanalysisType.SelectedItem.ToString() == "MERRA2")
+            {
+                cboDailyOrMonthly.Text = "Daily";
+                cboDailyOrMonthly.Enabled = false;
+            }
+            else            
+                cboDailyOrMonthly.Enabled = true;            
+        }
+
+        private void cboDailyOrMonthly_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboDailyOrMonthly.SelectedItem.ToString() == "Monthly")
+            {                
+                dateReferenceStart.CustomFormat = "MM/yyyy";
+                dateReferenceEnd.CustomFormat = "MM/yyyy";
+            }
+            else
+            {
+                dateReferenceStart.CustomFormat = "MM/dd/yyyy HH:mm";
+                dateReferenceEnd.CustomFormat = "MM/dd/yyyy HH:mm";
+            }
+        }
+
+        public void UpdateOptionalParams()
+        {
+            if (cboReanalysisType.SelectedItem.ToString() == "MERRA2")
+            {
+                chkInclOpParam1.Text = "10m WS";
+                chkInclOpParam2.Text = "Cloud Cover data"; 
+            }
+            else // ERA5
+            {
+                chkInclOpParam1.Text = "10m WS";
+                chkInclOpParam2.Text = "10m Wind Gust since previous post processing";                
+            }
         }
     }
 }

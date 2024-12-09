@@ -118,10 +118,11 @@ namespace ContinuumNS
                         break;
                     }
             }
-     
-            dateRefStart.Value = thisRef.startDate;
-            dateRefEnd.Value = thisRef.endDate;
 
+            int offset = utmConv.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
+                        
+            dateRefStart.Value = thisRef.refDataDownload.startDate.AddHours(offset);                        
+            dateRefEnd.Value = thisRef.refDataDownload.endDate.AddHours(offset);                         
         }
 
         /// <summary> Populates dropdown list with met sites and selects first in list </summary>

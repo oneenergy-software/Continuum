@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ContinuumNS
 {
@@ -1337,9 +1340,11 @@ namespace ContinuumNS
              //   model.stabB[WD_Ind] = adjModel.stabB[WD_Ind];
             }
 
+            List<int> integerList = Enumerable.Range(0, PairCount).ToList();
 
-            for (int i = 0; i < PairCount; i++)
-            {   
+            Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (i, loopState) =>
+            //      for (int i = 0; i < PairCount; i++)
+            {
                 bool bothMetsUsed = BothInModel(metPairs[i], model); // See if mets in pair are used in UW&DW model
 
                 if (bothMetsUsed == true)
@@ -1352,11 +1357,11 @@ namespace ContinuumNS
                             radiusIndex = m;
                             break;
                         }
-                    }                                       
-                    
+                    }
+
                     int WS_PredInd = metPairs[i].GetWS_PredIndOneModel(model, thisInst.modelList);
-                    
-                    if (WS_PredInd == -1)                                            
+
+                    if (WS_PredInd == -1)
                         return RMS_Err;
 
                     metPairs[i].DoMetCrossPred(WS_PredInd, radiusIndex, thisInst);
@@ -1365,10 +1370,10 @@ namespace ContinuumNS
                     RMS_Count++;
 
                     RMS_Err = RMS_Err + metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1] * metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1];
-              //      RMS_Err = RMS_Err + Math.Pow(metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1], 2);
+                    //      RMS_Err = RMS_Err + Math.Pow(metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1], 2);
                     RMS_Count++;
                 }
-            }
+            });
 
             RMS_Err = Math.Pow((RMS_Err / (RMS_Count)), 0.5);
 
