@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,8 +9,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Data;
 using static ContinuumNS.BackgroundWork;
 
 namespace ContinuumNS
@@ -354,6 +353,7 @@ namespace ContinuumNS
             if (metList.ThisCount == 0)
             {
                 metList.expoIsCalc = false;
+                metList.SRDH_IsCalc = false;
                 metList.NewList(); // Resets the metList settings (eg if TAB file had first WS = 1 m/s then WS_FirstInt would be updated to this value.  
             }
 
@@ -597,6 +597,7 @@ namespace ContinuumNS
                 }
                 
                 thisDist.windRose = new double[WR_size];
+                thisDist.energyRose = new double[WR_size];
                 thisDist.sectorWS_Ratio = new double[WR_size];
                 thisDist.sectorWS_Dist = new double[0, 0];
 
@@ -649,6 +650,21 @@ namespace ContinuumNS
 
                     for (int i = 0; i <= fileRow.Length - 2; i++)
                         thisDist.sectorWS_Dist[i, WS_Int - 1] = Convert.ToSingle(fileRow[i + 1]);
+
+                    // Calculate energy rose from TAB file
+                    double sumPower = 0;
+
+                    for (int d = 0; d < WR_size; d++)
+                    {
+                        double thisPower = 0.5 * modelList.airDens * Math.PI * Math.Pow(modelList.rotorDiam / 2, 2) 
+                            * Math.Pow(thisDist.sectorWS_Ratio[d] * thisDist.WS, 3) / 1000; // Power in wind
+                        thisDist.energyRose[d] = thisPower;
+                        sumPower = sumPower + thisPower;
+                    }
+
+                    if (sumPower > 0)
+                        for (int d = 0; d < WR_size; d++)
+                            thisDist.energyRose[d] = thisDist.energyRose[d] / sumPower;
 
                     WS_Int++;
                 }
@@ -1484,6 +1500,9 @@ namespace ContinuumNS
 
                 if (metList.metItem[m].metData.shearSettings.maxHeight == 0)
                     metList.metItem[m].metData.shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];
+
+                if (metList.metItem[m].metData.shearSettings.minNumHs == 0)
+                    metList.metItem[m].metData.shearSettings.minNumHs = 3;
 
                 metList.metItem[m].metData.EstimateAlpha();
                 metList.metItem[m].metData.ExtrapolateData(modeledHeight);
@@ -6966,7 +6985,7 @@ namespace ContinuumNS
         /// <summary> Updates site suitability surface plot labels after selected zones change </summary>        
         public void lstZones_ItemCheckChanged(object sender, EventArgs e)
         {
-            if (this.IsHandleCreated)
+            if (this.IsHandleCreated && okToUpdate)
             {
                 this.BeginInvoke((MethodInvoker)(
                         () => updateThe.SiteSuitabilityTAB()));
@@ -7225,6 +7244,19 @@ namespace ContinuumNS
                                 refList.DeleteMERRANodeDataFromDB(newReference.thisRef.nodes[n].XY_ind.Lat, newReference.thisRef.nodes[n].XY_ind.Lon, this);                            
                             else if (newReference.thisRef.refDataDownload.refType == "ERA5")                            
                                 refList.DeleteERANodeDataFromDB(newReference.thisRef.nodes[n].XY_ind.Lat, newReference.thisRef.nodes[n].XY_ind.Lon, this);                            
+                        }
+                    }
+                    else if (dBhasTheData && (newReference.thisRef.refDataDownload.incl10mWS || newReference.thisRef.refDataDownload.incl10mGust))
+                    {
+                        // The 100/50 m data is in the database but this refDataDownload includes 10m data (which is not currently stored in DB)
+                        // So, clear the database and extract again
+                        dBhasTheData = false;
+                        for (int n = 0; n < newReference.thisRef.numNodes; n++)
+                        {
+                            if (newReference.thisRef.refDataDownload.refType == "MERRA2")
+                                refList.DeleteMERRANodeDataFromDB(newReference.thisRef.nodes[n].XY_ind.Lat, newReference.thisRef.nodes[n].XY_ind.Lon, this);
+                            else if (newReference.thisRef.refDataDownload.refType == "ERA5")
+                                refList.DeleteERANodeDataFromDB(newReference.thisRef.nodes[n].XY_ind.Lat, newReference.thisRef.nodes[n].XY_ind.Lon, this);
                         }
                     }
                     else
@@ -8158,7 +8190,7 @@ namespace ContinuumNS
                 else
                     metList.DeleteAllTimeSeriesEsts(this);
             }
-            
+                                    
             EditShearCalcSettings editShear = new EditShearCalcSettings(selMet);
 
             editShear.ShowDialog();
@@ -8174,7 +8206,11 @@ namespace ContinuumNS
                 
                 selMet.metData.shearSettings.minHeight = Convert.ToDouble(editShear.cboMinHeight.SelectedItem.ToString());
                 selMet.metData.shearSettings.maxHeight = Convert.ToDouble(editShear.cboMaxHeight.SelectedItem.ToString());
-                
+                selMet.metData.shearSettings.minNumHs = Convert.ToInt16(editShear.cboMinValidHeights.SelectedItem.ToString());
+
+                selMet.metData.EstimateAlpha();
+                selMet.metData.ExtrapolateData(modeledHeight);
+
                 selMet.CalcAllMeas_WSWD_Dists(this, selMet.metData.GetSimulatedTimeSeries(modeledHeight));
                 updateThe.ShearAndExtrapWSInTable(selMet);
                 updateThe.AllTABs();
@@ -8769,17 +8805,13 @@ namespace ContinuumNS
         }
 
         private void btnExportCloudCover_Click(object sender, EventArgs e)
-        {
-            // Disable if ERA5 reference or MERRA2 without inclCloud selected
-
+        {           
             if (sfd60mWS.ShowDialog() == DialogResult.OK)
             {
-
                 Reference thisRef = GetSelectedReference("LT Ref");
                 CloudCover cloudCover = new CloudCover();
-                cloudCover.coords.Lat = thisRef.interpData.Coords.latitude;
-                cloudCover.coords.Lon = thisRef.interpData.Coords.longitude;
-                
+                cloudCover.SetCoordsToClosestNode(thisRef.interpData.Coords, thisRef.refDataDownload, refList);
+                                
                 BackgroundWork.Vars_for_CloudData_Extract varsForExtract = new BackgroundWork.Vars_for_CloudData_Extract();
                 varsForExtract.cloudCover = cloudCover;
                 varsForExtract.reference = thisRef;
@@ -8820,6 +8852,84 @@ namespace ContinuumNS
         {
             Export export = new Export();
             export.Export_RoundRobinSummary(this);
+        }
+
+        private void btn10mDataExplain_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("When a new reference site is created, the 50m (MERRA2) or 100m (ERA5) WS and WD data is extracted from the netCDF or " +
+                "ascii files and is saved to the local database. Users may select to include 10m WS data when downloading ERA5/MERRA2 data however " +
+                "this is not currently stored in the local DB. If 10m WS data was included, click 'Extract 10m WS' data to access the data");
+        }                
+
+        private void btnExportSiteSuitMap_Click(object sender, EventArgs e)
+        {
+            Export export = new Export();
+            
+            if (cboSiteSuitabilitySelectPlot.SelectedItem != null)
+            {
+                if (sfd60mWS.ShowDialog() == DialogResult.OK)
+                {
+                    if (cboSiteSuitabilitySelectPlot.SelectedItem.ToString() == "Shadow Flicker")
+                    {
+                        string thisMonthStr = cboSiteSuitMonth.SelectedItem.ToString();
+                        string thisHourStr = cboSiteSuitHour.SelectedItem.ToString();
+
+                        int monthInd = updateThe.GetMonthInd(thisMonthStr);
+                        int hourInd = 100;
+
+                        if (thisHourStr != "All")
+                            hourInd = updateThe.GetHourFromHourString(thisHourStr);
+
+                        export.ExportShadowFlickerMap(this, sfd60mWS.FileName, monthInd, hourInd);
+                    }
+                    else if (cboSiteSuitabilitySelectPlot.SelectedItem.ToString() == "Sound")
+                        export.ExportSoundMap(this, sfd60mWS.FileName);                            
+                }
+            }
+        }
+
+        private void cboShadowMapOptions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboSiteSuitabilitySelectPlot.SelectedItem != null)
+                if (cboSiteSuitabilitySelectPlot.SelectedItem.ToString() == "Shadow Flicker")
+                    updateThe.ShadowFlickerSurfacePlot();
+        }
+
+        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void chkAdvToShow_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (okToUpdate)
+            {
+                updateThe.PathNodesList();
+                updateThe.PlotAdvancedTable();
+            }
+        }
+
+        private void cboExpo_or_Stab_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.ModelPlots();
+        }
+
+        private void cboUphill_to_show_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.ModelPlots();
+        }
+
+        private void cboDHplot_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.ModelPlots();
         }
     }
 }

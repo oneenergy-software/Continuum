@@ -42,36 +42,8 @@ namespace ContinuumNS
                     headerString = "Using Default Model";
 
                 sw.WriteLine(headerString);
-
-                if (thisInst.topo.useSR == true)
-                    headerString = "Surface Roughness model USED";
-                else
-                    headerString = "Surface Roughness model NOT USED";
-
-                sw.WriteLine(headerString);
-
-                if (thisInst.topo.useElev == true)
-                    headerString = "Elevation model USED";
-                else
-                    headerString = "Elevation model NOT USED";
-
-                sw.WriteLine(headerString);
-
-                if (thisInst.topo.useValley == true)
-                    headerString = "Valley flow model USED";
-                else
-                    headerString = "Valley flow model NOT USED";
-
-                sw.WriteLine(headerString);
-
-                if (thisInst.topo.useSepMod == true)
-                    headerString = "Flow Separation model USED";
-                else
-                    headerString = "Flow Separation model NOT USED";
-
-                sw.WriteLine(headerString);
-                sw.WriteLine();
-
+                WriteModelInfoHeader(sw, thisInst.topo);                              
+                
                 for (int r = 0; r < thisInst.radiiList.ThisCount; r++)
                 {                    
                     int radius = thisInst.radiiList.investItem[r].radius;
@@ -187,6 +159,7 @@ namespace ContinuumNS
 
                 sw.WriteLine(headerString);
                 sw.WriteLine(DateTime.Now.ToString());
+                WriteModelInfoHeader(sw, thisInst.topo);
 
                 sw.WriteLine("radius, WD sector, Model");
                 sw.Write(radius + ",");
@@ -587,7 +560,7 @@ namespace ContinuumNS
                 {
                     sw.WriteLine("Continuum 3: Modeled " + thisInst.modeledHeight + " m Wind Speeds: Round Robin Analysis Results");
                     sw.WriteLine(DateTime.Now);
-                    sw.WriteLine();
+                    WriteModelInfoHeader(sw, thisInst.topo);
 
                     for (int i = 0; i < allRoundRobins.Length; i++)
                     {
@@ -700,6 +673,9 @@ namespace ContinuumNS
                     if (useElev)
                         sw.Write("Elevation coeff.,");
 
+                    if (useValley)
+                        sw.Write("Valley coeff.,");
+
                     sw.Write("downhill_A,");
                     sw.Write("downhill_B,");
                     sw.Write("uphill_A,");
@@ -737,6 +713,9 @@ namespace ContinuumNS
 
                         if (useElev)
                             sw.Write(Math.Round(thisModel.elevCoeff[WD_Ind], 5).ToString() + ",");
+
+                        if (useValley)
+                            sw.Write(Math.Round(thisModel.valleyCoeff[WD_Ind], 5).ToString() + ",");
 
                         sw.Write(Math.Round(thisModel.downhill_A[WD_Ind], 5).ToString() + ",");
                         sw.Write(Math.Round(thisModel.downhill_B[WD_Ind], 5).ToString() + ",");
@@ -805,6 +784,7 @@ namespace ContinuumNS
                         sw = new StreamWriter(thisInst.sfd60mWS.FileName);
                         string headerString = "Continuum 3: Estimated Gross WS and AEP at Met and Turbine Sites";
                         sw.WriteLine(headerString);
+                        WriteModelInfoHeader(sw, thisInst.topo);
 
                         if (powerCurve == "No Power Curves Imported")
                             haveAEP = false;
@@ -965,6 +945,8 @@ namespace ContinuumNS
                         sw.WriteLine("Using Power Curve: " + thisWakeModel.powerCurve.name);
                         sw.WriteLine("Using Wake Model: " + Wake_model_name);
                         sw.WriteLine("Using Continuum Model: " + Model_type);
+                        WriteModelInfoHeader(sw, thisInst.topo);
+
                         if (WD_Ind == numWD)
                             sw.WriteLine("Overall Estimates");
                         else
@@ -2395,7 +2377,14 @@ namespace ContinuumNS
                 {
                     StreamWriter file = new StreamWriter(filename);
                     file.WriteLine("Shear & WD data at: " + metName);
-                    file.WriteLine("Using Average of valid Redundant sensors");
+
+                    if (thisMetData.shearSettings.shearCalcType == Met_Data_Filter.ShearCalculationTypes.avgAllPairs)
+                        file.WriteLine("Using Average of valid Redundant sensors");
+                    else
+                        file.WriteLine("Using Best-Fit Alpha calculated between " + thisMetData.shearSettings.minHeight.ToString() + "m to " +
+                            thisMetData.shearSettings.maxHeight.ToString() + "m with a min. of " + thisMetData.shearSettings.minNumHs.ToString()
+                            + " heights with a valid WS");
+
                     file.WriteLine(DateTime.Today);
                     if (thisMetData.filteringDone == true)
                         file.WriteLine("Fitered Met data");
@@ -2633,6 +2622,10 @@ namespace ContinuumNS
             double wsBinWidth = 1;
             double.TryParse(thisInst.txtTAB_WS_bin.Text, out wsBinWidth);
 
+            int numTAB_wsBins = thisInst.metList.numWS; // Default = 30 bins at 1 m/s width
+            if (wsBinWidth != 1 && wsBinWidth > 0)
+                numTAB_wsBins = Convert.ToInt16(thisInst.metList.numWS / wsBinWidth);
+
             if (thisMCP.LT_WS_Ests.Length == 0)
                 thisMCP.LT_WS_Ests = thisMCP.GenerateLT_WS_TS(thisInst, thisMet, MCP_method);
 
@@ -2665,7 +2658,7 @@ namespace ContinuumNS
                     file.WriteLine(" 0");
 
                     double[] windRose = new double[numTAB_Bins];
-                    double[,] WSWD_Dist = new double[thisInst.metList.numWS, numTAB_Bins];
+                    double[,] WSWD_Dist = new double[numTAB_wsBins, numTAB_Bins];
 
                     DateTime thisTS = DateTime.Today;
                     double thisWS = 0;
@@ -3065,26 +3058,20 @@ namespace ContinuumNS
 
             file.WriteLine();
             file.Write("Time Stamp ,");
-            file.Write(thisRef.wswdH.ToString() + "mWS [m/s],");
-            file.Write(thisRef.wswdH.ToString() + "mWD [degs],");            
+            file.Write(thisRef.wswdH.ToString() + "m WS [m/s],");
+            file.Write(thisRef.wswdH.ToString() + "m WD [degs],");            
             file.Write("Surf. Press. [kPa],");
             file.Write("Sea Press. [kPa],");
-            file.Write("10mTemp[deg C],");
-            
-            /*
-            if (thisRef.MERRA_Params.Get_50mWSWD) file.Write("50mWS [m/s],");
-            if (thisRef.MERRA_Params.Get_50mWSWD) file.Write("50mWD [degs],");
-            if (thisRef.MERRA_Params.Get_10mWSWD) file.Write("10mWS [m/s],");
-            if (thisRef.MERRA_Params.Get_10mWSWD) file.Write("10mWD [degs],");
-            if (thisRef.MERRA_Params.Get_SurfPress) file.Write("Surf. Press. [kPa],");
-            if (thisRef.MERRA_Params.Get_SurfPress) file.Write("Sea Press. [kPa],");
-            if (thisRef.MERRA_Params.Get_10mTemp) file.Write("10mTemp[deg C],");
-            if (thisRef.MERRA_Params.Get_FracMean) file.Write("MODIS Cloud Fraction,");
-            if (thisRef.MERRA_Params.Get_OpticalThick) file.Write("MODIS Optical Thickness,");
-            if (thisRef.MERRA_Params.Get_TotalFrac) file.Write("ISCCP Cloud Fraction,");
-            if (thisRef.MERRA_Params.Get_Precip) file.Write("Total Precipitation,");
-            if (thisRef.MERRA_Params.Get_Corr_Precip) file.Write("Corrected Precipitation,");
-            */
+            file.Write(thisRef.temperatureH.ToString() + " Temp [deg C],");
+
+            if (thisRef.refDataDownload.incl10mWS && thisRef.tenM_Data != null)
+            {
+                file.Write("10 m WS [m/s],");
+                file.Write("10 m WD [degs],");
+            }
+
+            if (thisRef.refDataDownload.incl10mGust && thisRef.haveGustWS) 
+                file.Write("10 m Gust WS [m/s],");                        
 
             file.WriteLine();
 
@@ -3092,18 +3079,20 @@ namespace ContinuumNS
             {
                 file.Write(thisRef.interpData.TS_Data[i].thisDate + ",");
                 file.Write(Math.Round(thisRef.interpData.TS_Data[i].WS, 4) + ",");
-                file.Write(Math.Round(thisRef.interpData.TS_Data[i].WD, 3) + ",");
-                //    if (thisRef.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisRef.interpData.TS_Data[i].WS10m, 3) + ",");
-                //    if (thisRef.MERRA_Params.Get_10mWSWD) file.Write(Math.Round(thisRef.interpData.TS_Data[i].WD10m, 2) + ",");
+                file.Write(Math.Round(thisRef.interpData.TS_Data[i].WD, 3) + ",");                
                 file.Write(Math.Round(thisRef.interpData.TS_Data[i].surfPress / 1000, 3) + ",");
                 file.Write(Math.Round(thisRef.interpData.TS_Data[i].seaPress / 1000, 3) + ",");
                 file.Write(Math.Round(thisRef.interpData.TS_Data[i].temperature - 273.15, 2) + ",");
-                //   if (thisRef.MERRA_Params.Get_FracMean) file.Write(thisRef.interpData.TS_Data[i].Mean_Cloud_Fraction + ",");
-                //   if (thisRef.MERRA_Params.Get_OpticalThick) file.Write(thisRef.interpData.TS_Data[i].Optical_Thick + ",");
-                //   if (thisRef.MERRA_Params.Get_TotalFrac) file.Write(thisRef.interpData.TS_Data[i].Total_Cloud_Area_Fraction + ",");
-                //   if (thisRef.MERRA_Params.Get_Precip) file.Write(thisRef.interpData.TS_Data[i].Precip + ",");
-                //   if (thisRef.MERRA_Params.Get_Corr_Precip) file.Write(thisRef.interpData.TS_Data[i].Precip_Corr + ",");
 
+                if (thisRef.refDataDownload.incl10mWS && thisRef.tenM_Data != null)
+                {
+                    file.Write(Math.Round(thisRef.tenM_Data.interpData.TS_Data[i].WS, 4) + ",");
+                    file.Write(Math.Round(thisRef.tenM_Data.interpData.TS_Data[i].WD, 3) + ",");
+                }
+
+                if (thisRef.refDataDownload.incl10mGust && thisRef.haveGustWS) 
+                    file.Write(Math.Round(thisRef.interpData.TS_Data[i].gustWS, 4) + ",");
+                
                 file.WriteLine();
             }
 
@@ -4350,25 +4339,7 @@ namespace ContinuumNS
 
                 sw.WriteLine("Mets used: " + thisInst.metList.CreateMetString(thisInst.metList.GetMetsUsed(), true));
 
-                if (thisInst.topo.useSR == true)
-                    sw.WriteLine("Surface roughness model used");
-                else
-                    sw.WriteLine("Surface roughness model NOT used");
-
-                if (thisInst.topo.useSepMod == true)
-                    sw.WriteLine("Flow separation model used");
-
-                if (thisInst.topo.useElev == true)
-                    sw.WriteLine("Elevation model used");
-                else
-                    sw.WriteLine("Elevation model NOT used");
-
-                if (thisInst.topo.useValley == true)
-                    sw.WriteLine("Valley flow model used");
-                else
-                    sw.WriteLine("Valley flow model NOT used");
-
-                sw.WriteLine();
+                WriteModelInfoHeader(sw, thisInst.topo);
 
                 Met.TOD thisTOD = thisInst.GetSelectedTOD("Advanced");
                 Met.Season thisSeason = thisInst.GetSelectedSeason("Advanced");
@@ -4456,6 +4427,64 @@ namespace ContinuumNS
                 }
 
             }
+        }
+
+        /// <summary> Writes model info header (i.e. whether roughness/elevation/valley/flow separation models were used or not) /// </summary>        
+        public void WriteModelInfoHeader(StreamWriter sw, TopoInfo topo)
+        {
+            if (topo.useSR)
+                sw.WriteLine("Roughness Model Used");
+            else
+                sw.WriteLine("Roughness Model Not Used");
+
+            if (topo.useElev)
+                sw.WriteLine("Elevation Model Used");
+            else
+                sw.WriteLine("Elevation Model Not Used");
+
+            if (topo.useValley)
+                sw.WriteLine("Valley Flow Model Used");
+            else
+                sw.WriteLine("Valley Flow Model Not Used");
+
+            if (topo.useSepMod)
+                sw.WriteLine("Flow Separation Model Used");
+
+            sw.WriteLine();
+        }
+
+        /// <summary> Exports selected shadow flicker map to a CSV file </summary>
+        public void ExportShadowFlickerMap(Continuum thisInst, string fileName, int monthInd, int hourInd)
+        {
+            SiteSuitability.FlickerGrid[] plotFlicker = thisInst.siteSuitability.GetTotalFlickerHoursByMonthAndHour(monthInd, hourInd);
+
+            StreamWriter sw = new StreamWriter(fileName);
+            sw.WriteLine("Total Shadow Flicker Hours Gridded Map");
+            sw.WriteLine("Created in Continuum " + DateTime.Now);
+            sw.WriteLine();
+            sw.WriteLine("UTMX [m], UTMY [m], Total Shadow Hours");
+
+            for (int f = 0; f < plotFlicker.Length; f++)            
+                sw.WriteLine(plotFlicker[f].UTMX.ToString() + "," + plotFlicker[f].UTMY.ToString() + "," + plotFlicker[f].flickerStats.totalShadowMinsPerYear.ToString());
+               
+            sw.Close();
+
+        }
+
+        /// <summary> Exports Sound Map to CSV file</summary>        
+        public void ExportSoundMap(Continuum thisInst, string fileName)
+        {            
+            StreamWriter sw = new StreamWriter(fileName);
+            sw.WriteLine("Sound Level Gridded Map");
+            sw.WriteLine("Created in Continuum " + DateTime.Now);
+            sw.WriteLine();
+            sw.WriteLine("UTMX [m], UTMY [m], Sound Level [dBA]");
+
+            for (int i = 0; i < thisInst.siteSuitability.numXSound; i++)
+                for (int j = 0; j < thisInst.siteSuitability.numYSound; j++)
+                    sw.WriteLine(thisInst.siteSuitability.soundMap[i, j].ToString());
+
+            sw.Close();
         }
     }
 

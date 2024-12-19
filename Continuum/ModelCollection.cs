@@ -457,11 +457,12 @@ namespace ContinuumNS
                 {
                     try
                     {
-                        if (model1.height == model2.height && model1.timeOfDay == model2.timeOfDay && model1.season == model2.season && isSameMets == true 
+                        if (model1.height == model2.height && model1.timeOfDay == model2.timeOfDay && model1.season == model2.season && isSameMets == true && model1.elevCoeff[WD] == model2.elevCoeff[WD]
+                            && model1.valleyCoeff[WD] == model2.valleyCoeff[WD]
                             && model1.downhill_A[WD] == model2.downhill_A[WD] && model1.downhill_B[WD] == model2.downhill_B[WD] && model1.uphill_A[WD] == model2.uphill_A[WD] && model1.radius == model2.radius
                             && model1.uphill_B[WD] == model2.uphill_B[WD] && model1.UW_crit[WD] == model2.UW_crit[WD] && model1.spdUp_A[WD] == model2.spdUp_A[WD] && model1.spdUp_B[WD] == model2.spdUp_B[WD]
                             && model1.DH_Stab_A[WD] == model2.DH_Stab_A[WD] && model1.UH_Stab_A[WD] == model2.UH_Stab_A[WD] && model1.SU_Stab_A[WD] == model2.SU_Stab_A[WD] && model1.stabB[WD] == model2.stabB[WD]
-                            && model1.isImported == model2.isImported) 
+                            && model1.isImported == model2.isImported)
 
                             isSame = true;
                         else
@@ -882,6 +883,9 @@ namespace ContinuumNS
             double deltaWS_DWExpo = 0; // change in wind speed due to change in DW exposure
             double deltaWS_UW_SR = 0; // change in wind speed due to change in UW surface roughness and displacement height
             double deltaWS_DW_SR = 0; // change in wind speed due to change in DW surface roughness and displacement height
+            double deltaWS_Valley = 0; // change in wind speed going in / coming out of valley
+            double deltaWS_Elev = 0; // change in wind speed due to change in elevation
+            double elevDiff = 0;
 
             double UW_Stab_Corr_1 = 0;
             double UW_Stab_Corr_2 = 0;
@@ -916,6 +920,7 @@ namespace ContinuumNS
                 // Met to first node                    
                 avgP10DW = (startMet.gridStats.stats[radInd].P10_DW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
                 avgP10UW = (startMet.gridStats.stats[radInd].P10_UW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
+                elevDiff = thisNode.elev - startMet.elev;
 
                 UW_1 = startMet.expo[radInd].GetWgtAvg(startMet.GetWS_WD_Dist(thisInst.modeledHeight, thisModel.timeOfDay, thisModel.season).windRose, WD_Ind, "UW", "Expo");
                 UW_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "UW", "Expo");
@@ -944,7 +949,12 @@ namespace ContinuumNS
                 DW_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "DW", "Expo");
                 DW_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "Expo");
 
-                avgDW = (DW_1 + DW_2) / 2;                                
+                avgDW = (DW_1 + DW_2) / 2;
+
+                // If valley model is enabled, check to see if either site is in a valley
+                deltaWS_Valley = 0;
+                if (thisInst.topo.useValley)
+                    deltaWS_Valley = CalcValleyFlowWS(thisModel, WD_Ind, ref UW_1, ref DW_1, ref UW_2, ref DW_2);
 
                 coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes,
                                                         thisNode.flowSepNodes, WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
@@ -963,9 +973,12 @@ namespace ContinuumNS
                     deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                 }
 
+                if (thisInst.topo.useElev)
+                    deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
                 // Avg WS Estimate at first node
-                if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                    WS_AtNodes[0] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley) > 0)
+                    WS_AtNodes[0] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley;
                 else
                     WS_AtNodes[0] = 0.05f; // no negative wind speed estimates!                    
 
@@ -988,6 +1001,7 @@ namespace ContinuumNS
                     avgP10DW = (node1.gridStats.stats[radInd].P10_DW[WD_Ind] + node2.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
                     avgP10UW = (node1.gridStats.stats[radInd].P10_UW[WD_Ind] + node2.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
 
+                    elevDiff = node2.elev - node1.elev;
                     // for flow around vs. flow over hill algorithm
                     //      UW_CW_Grade = (node1.expo[radInd].UW_P10CrossGrade[WD_Ind] + node2.expo[radInd].UW_P10CrossGrade[WD_Ind]) / 2;
                     //      UW_PL_Grade = (node1.expo[radInd].UW_ParallelGrade[WD_Ind] + node2.expo[radInd].UW_ParallelGrade[WD_Ind]) / 2;
@@ -1014,7 +1028,12 @@ namespace ContinuumNS
                     DW_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "DW", "Expo");
 
                     avgDW = (DW_1 + DW_2) / 2;
-                                        
+
+                    // If valley model is enabled, check to see if either site is in a valley
+                    deltaWS_Valley = 0;
+                    if (thisInst.topo.useValley)
+                        deltaWS_Valley = CalcValleyFlowWS(thisModel, WD_Ind, ref UW_1, ref DW_1, ref UW_2, ref DW_2);
+
                     coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, node1.flowSepNodes, node2.flowSepNodes,
                                                         WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                     deltaWS_UWExpo = GetTotalWS(coeffsDelta);
@@ -1032,8 +1051,11 @@ namespace ContinuumNS
                         deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                     }
 
-                    if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                        WS_AtNodes[nodeInd + 1] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                    if (thisInst.topo.useElev)
+                        deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
+                    if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley) > 0)
+                        WS_AtNodes[nodeInd + 1] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley;
                     else
                         WS_AtNodes[nodeInd + 1] = 0.05f; // no negative wind speed estimates!
 
@@ -1054,6 +1076,8 @@ namespace ContinuumNS
                                                 
                 avgP10DW = (endNode.gridStats.stats[radInd].P10_DW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
                 avgP10UW = (endNode.gridStats.stats[radInd].P10_UW[WD_Ind] + thisNode.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
+
+                elevDiff = endNode.elev - thisNode.elev;
 
                 //     UW_CW_Grade = (thisNode.expo[radInd].UW_P10CrossGrade[WD_Ind] + endNode.expo[radInd].UW_P10CrossGrade[WD_Ind]) / 2;
                 //     UW_PL_Grade = (thisNode.expo[radInd].UW_ParallelGrade[WD_Ind] + endNode.expo[radInd].UW_ParallelGrade[WD_Ind]) / 2;
@@ -1080,7 +1104,12 @@ namespace ContinuumNS
                 DW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "Expo");
 
                 avgDW = (DW_1 + DW_2) / 2;
-                                
+
+                // If valley model is enabled, check to see if either site is in a valley
+                deltaWS_Valley = 0;
+                if (thisInst.topo.useValley)
+                    deltaWS_Valley = CalcValleyFlowWS(thisModel, WD_Ind, ref UW_1, ref DW_1, ref UW_2, ref DW_2);
+
                 coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, thisNode.flowSepNodes, endNode.flowSepNodes,
                                                     WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                 deltaWS_UWExpo = GetTotalWS(coeffsDelta);
@@ -1098,8 +1127,11 @@ namespace ContinuumNS
                     deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                 }
 
-                if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                    thisWS_Est = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                if (thisInst.topo.useElev)
+                    deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
+                if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley) > 0)
+                    thisWS_Est = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley;
                 else
                     thisWS_Est = 0.05f;
                                 
@@ -1117,6 +1149,8 @@ namespace ContinuumNS
                                 
                 avgP10DW = (startMet.gridStats.stats[radInd].P10_DW[WD_Ind] + endNode.gridStats.stats[radInd].P10_DW[WD_Ind]) / 2;
                 avgP10UW = (startMet.gridStats.stats[radInd].P10_UW[WD_Ind] + endNode.gridStats.stats[radInd].P10_UW[WD_Ind]) / 2;
+
+                elevDiff = endNode.elev - startMet.elev;
 
                 //     UW_CW_Grade = (endNode.expo[radInd].UW_P10CrossGrade[WD_Ind] + startMet.expo[radInd].UW_P10CrossGrade[WD_Ind]) / 2;
                 //     UW_PL_Grade = (endNode.expo[radInd].UW_ParallelGrade[WD_Ind] + startMet.expo[radInd].UW_ParallelGrade[WD_Ind]) / 2;
@@ -1142,7 +1176,12 @@ namespace ContinuumNS
                 DW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "Expo");
 
                 avgDW = (DW_1 + DW_2) / 2;
-                                
+
+                // If valley model is enabled, check to see if either site is in a valley
+                deltaWS_Valley = 0;
+                if (thisInst.topo.useValley)
+                    deltaWS_Valley = CalcValleyFlowWS(thisModel, WD_Ind, ref UW_1, ref DW_1, ref UW_2, ref DW_2);
+
                 coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes, endNode.flowSepNodes,
                                                     WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
                 deltaWS_UWExpo = GetTotalWS(coeffsDelta);
@@ -1160,14 +1199,63 @@ namespace ContinuumNS
                     deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
                 }
 
-                if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                    thisWS_Est = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR;
+                if (thisInst.topo.useElev)
+                    deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
+                if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley) > 0)
+                    thisWS_Est = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley;
                 else
                     thisWS_Est = 0.05f;                            
 
             }
             
             return thisWS_Est;
+        }
+
+        public double CalcValleyFlowWS(Model thisModel, int WD_Ind, ref double UW_1, ref double DW_1, ref double UW_2, ref double DW_2, double avgValleyCoeff = 0)
+        {
+            double valleyCoeff = avgValleyCoeff;
+            if (avgValleyCoeff == 0)
+                valleyCoeff = thisModel.CalcValleyCoeff(WD_Ind);
+
+            bool site1_InValley = false;
+            bool site2_InValley = false;
+            double deltaWS_Valley = 0;
+
+            if (UW_1 < 0 && DW_1 < 0)
+                site1_InValley = true;
+
+            if (UW_2 < 0 && DW_2 < 0)
+                site2_InValley = true;
+
+            if (site1_InValley && site2_InValley) // Both of the two sites are in a valley
+            {
+                deltaWS_Valley = valleyCoeff * ((UW_2 + DW_2) - (UW_1 + DW_1));
+                UW_1 = 0;
+                DW_1 = 0;
+                UW_2 = 0;
+                DW_2 = 0;
+            }
+            else if (site1_InValley || site2_InValley)
+            {
+                // One of the two sites is in a valley
+                if (site1_InValley)
+                {
+                    // Site 1 is in valley so estimate change in WS from Site 1 to flat terrain and set UW and DW to 0 at Site 1
+                    deltaWS_Valley = -valleyCoeff * (UW_1 + DW_1);
+                    UW_1 = 0;
+                    DW_1 = 0;
+                }
+                else
+                {
+                    // Site 2 is in valley so estimate change in WS from flat terrain down to Site 2 and set UW and DW to 0 at Site 2
+                    deltaWS_Valley = valleyCoeff * (UW_2 + DW_2);
+                    UW_2 = 0;
+                    DW_2 = 0;
+                }
+            }
+
+            return deltaWS_Valley;
         }
 
         /// <summary> Performs wind speed estimate along path of nodes using specified model and returns WS_Est_Struct object with results </summary>        
@@ -1209,13 +1297,14 @@ namespace ContinuumNS
             double deltaWS_DWExpo = 0; // change in wind speed due to change in DW exposure
             double deltaWS_UW_SR = 0; // change in wind speed due to change in UW surface roughness and displacement height
             double deltaWS_DW_SR = 0; // change in wind speed due to change in DW surface roughness and displacement height
+            double deltaWS_Valley = 0; // change in wind speed going in / coming out of valley
+            double deltaWS_Elev = 0; // Change in WS due to changes in elevation
 
             double UW_Stab_Corr_1 = 0;
             double UW_Stab_Corr_2 = 0;
             double DW_Stab_Corr_1 = 0;
             double DW_Stab_Corr_2 = 0;
-
-            double deltaWS_Elev = 0; // Change in WS due to changes in elevation
+            
             double elevDiff = 0;
 
             NodeCollection nodeList = new NodeCollection();
@@ -1282,7 +1371,12 @@ namespace ContinuumNS
                     DW_1 = startMet.expo[radInd].GetWgtAvg(startMetDist.windRose, WD_Ind, "DW", "Expo");
                     DW_2 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "Expo");
 
-                    avgDW = (DW_1 + DW_2) / 2;                    
+                    avgDW = (DW_1 + DW_2) / 2;
+
+                    // If valley model is enabled, check to see if either site is in a valley
+                    deltaWS_Valley = 0;
+                    if (thisInst.topo.useValley)
+                        deltaWS_Valley = CalcValleyFlowWS(thisModel, WD_Ind, ref UW_1, ref DW_1, ref UW_2, ref DW_2);
 
                     coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes,
                                                            thisNode.flowSepNodes, WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
@@ -1304,8 +1398,8 @@ namespace ContinuumNS
                         deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
 
                     // Avg WS Estimate at first node
-                    if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                        WS_Est_Return.sectorWS_AtNodes[0, WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev;
+                    if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley) > 0)
+                        WS_Est_Return.sectorWS_AtNodes[0, WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley;
                     else
                         WS_Est_Return.sectorWS_AtNodes[0, WD_Ind] = 0.05f; // no negative wind speed estimates!                    
                 }
@@ -1361,7 +1455,12 @@ namespace ContinuumNS
                         DW_1 = node1.expo[radInd].GetWgtAvg(node1WindRose, WD_Ind, "DW", "Expo");
                         DW_2 = node2.expo[radInd].GetWgtAvg(node2WindRose, WD_Ind, "DW", "Expo");
 
-                        avgDW = (DW_1 + DW_2) / 2;                                                
+                        avgDW = (DW_1 + DW_2) / 2;
+
+                        // If valley model is enabled, check to see if either site is in a valley
+                        deltaWS_Valley = 0;
+                        if (thisInst.topo.useValley)
+                            deltaWS_Valley = CalcValleyFlowWS(thisModel, WD_Ind, ref UW_1, ref DW_1, ref UW_2, ref DW_2);
 
                         coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, node1.flowSepNodes, node2.flowSepNodes,
                                                             WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
@@ -1382,8 +1481,8 @@ namespace ContinuumNS
                         if (thisInst.topo.useElev)
                             deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
 
-                        if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                            WS_Est_Return.sectorWS_AtNodes[nodeInd + 1, WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev;
+                        if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley) > 0)
+                            WS_Est_Return.sectorWS_AtNodes[nodeInd + 1, WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley;
                         else
                             WS_Est_Return.sectorWS_AtNodes[nodeInd + 1, WD_Ind] = 0.05f; // no negative wind speed estimates!
 
@@ -1439,7 +1538,12 @@ namespace ContinuumNS
                     DW_1 = thisNode.expo[radInd].GetWgtAvg(nodeWindRose, WD_Ind, "DW", "Expo");
                     DW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "Expo");
 
-                    avgDW = (DW_1 + DW_2) / 2;                    
+                    avgDW = (DW_1 + DW_2) / 2;
+
+                    // If valley model is enabled, check to see if either site is in a valley
+                    deltaWS_Valley = 0;
+                    if (thisInst.topo.useValley)
+                        deltaWS_Valley = CalcValleyFlowWS(thisModel, WD_Ind, ref UW_1, ref DW_1, ref UW_2, ref DW_2);
 
                     coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, thisNode.flowSepNodes, endNode.flowSepNodes,
                                                         WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
@@ -1461,8 +1565,8 @@ namespace ContinuumNS
                     if (thisInst.topo.useElev)
                         deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
 
-                    if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                        WS_Est_Return.sectorWS[WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev;
+                    if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Valley) > 0)
+                        WS_Est_Return.sectorWS[WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley;
                     else
                         WS_Est_Return.sectorWS[WD_Ind] = 0.05f;
 
@@ -1507,7 +1611,12 @@ namespace ContinuumNS
                     DW_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "DW", "Expo");
                     DW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "Expo");
 
-                    avgDW = (DW_1 + DW_2) / 2;                    
+                    avgDW = (DW_1 + DW_2) / 2;
+
+                    // If valley model is enabled, check to see if either site is in a valley
+                    deltaWS_Valley = 0;
+                    if (thisInst.topo.useValley)
+                        deltaWS_Valley = CalcValleyFlowWS(thisModel, WD_Ind, ref UW_1, ref DW_1, ref UW_2, ref DW_2);
 
                     coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes, endNode.flowSepNodes, 
                                                         WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
@@ -1529,8 +1638,8 @@ namespace ContinuumNS
                     if (thisInst.topo.useElev)
                         deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
 
-                    if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR) > 0)
-                        WS_Est_Return.sectorWS[WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev;
+                    if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley) > 0)
+                        WS_Est_Return.sectorWS[WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley;
                     else
                         WS_Est_Return.sectorWS[WD_Ind] = 0.05f;
 

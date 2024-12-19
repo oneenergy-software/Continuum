@@ -40,6 +40,15 @@ namespace ContinuumNS
                 }
             }
 
+            int numH = thisMet.metData.GetHeightsOfAnems().Length;
+
+            if (numH <= 2 && cboShearCalcTypes.SelectedItem.ToString() == "Best-Fit Alpha")
+            {
+                MessageBox.Show("A minimum of 3 wind speed measurement heights are needed to use the best-fit shear calculation");
+                goodToGo = false;
+                return;
+            }
+
             goodToGo = true;
             Close();
         }
@@ -50,12 +59,23 @@ namespace ContinuumNS
 
             cboShearCalcTypes.SelectedItem = thisMet.metData.GetShearCalcNameFromEnum(thisMet.metData.shearSettings.shearCalcType);
 
+            double[] wsHeights = thisMet.metData.GetHeightsOfAnems();
+
+            // Populate min valid heights dropdown
+            cboMinValidHeights.Items.Clear();
+
+            for (int i = 3; i <= wsHeights.Length; i++)
+                cboMinValidHeights.Items.Add(i.ToString());
+
+            if (thisMet.metData.shearSettings.minNumHs == 0)
+                cboMinValidHeights.SelectedIndex = 0; // Min of 3 heights by default
+            else
+                cboMinValidHeights.SelectedItem = thisMet.metData.shearSettings.minNumHs.ToString();
+
             // Populate min/max height dropdowns
             cboMinHeight.Items.Clear();
             cboMaxHeight.Items.Clear();
-
-            double[] wsHeights = thisMet.metData.GetHeightsOfAnems();
-
+                      
             for (int h = 0; h < wsHeights.Length; h++)
             {
                 cboMinHeight.Items.Add(wsHeights[h]);
@@ -91,11 +111,13 @@ namespace ContinuumNS
             {
                 cboMinHeight.Enabled = true;
                 cboMaxHeight.Enabled = true;
+                cboMinHeight.Enabled = true;
             }
             else if (cboShearCalcTypes.SelectedItem.ToString() == thisMet.metData.GetShearCalcNameFromEnum(Met_Data_Filter.ShearCalculationTypes.avgAllPairs))
             {
                 cboMinHeight.Enabled = false;
                 cboMaxHeight.Enabled = false;
+                cboMinHeight.Enabled = false;   
             }
         }
 

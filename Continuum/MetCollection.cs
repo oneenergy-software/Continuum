@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Security.Cryptography.Xml;
 using System.Security.RightsManagement;
 using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace ContinuumNS
 {
@@ -566,7 +567,7 @@ namespace ContinuumNS
         {
             double[] avgWindRose = null;
 
-            if (ThisCount > 0 && isTimeSeries)
+            if (ThisCount > 0)
             {
                 avgWindRose = new double[thisNumWD];
 
@@ -1765,10 +1766,20 @@ namespace ContinuumNS
 
                         if (data.Length > 0)
                             if (data[0] == "")
-                                break;                                               
+                                break;
 
-                        DateTime thisTimeStamp = Convert.ToDateTime(data[0]);
-
+                        DateTime thisTimeStamp = new DateTime();
+                        try
+                        {
+                            thisTimeStamp = Convert.ToDateTime(data[0]);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error importing met data. " + ex.Message);
+                            file.Close();
+                            return false;
+                        }
+                        
                         if (inLocalTime == false) // Need to convert to local time
                             thisTimeStamp = thisTimeStamp.AddHours(thisOffset);
 

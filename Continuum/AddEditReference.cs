@@ -127,12 +127,37 @@ namespace ContinuumNS
             dateRefStart.Value = thisRef.startDate; // Reference start/end stored in local time
             dateRefEnd.Value = thisRef.endDate;
 
-            if (cboShowTime.SelectedItem.ToString() == "UTC-0" && thisRef.interpData.Coords.latitude != 0)
+            if (cboShowTime.SelectedItem.ToString() == "UTC-0" && (thisRef.interpData.Coords.latitude != 0 || (txtReferenceLat.Text != "" &&
+                txtReferenceLong.Text != "")))
             {
-                int offset = utmConv.GetUTC_Offset(thisRef.interpData.Coords.latitude, thisRef.interpData.Coords.longitude);
-                
-                dateRefStart.Value = dateRefStart.Value.AddHours(-offset);
-                dateRefEnd.Value = dateRefEnd.Value.AddHours(-offset);
+                int offset = 0;
+                bool gotCoords = false;
+
+                if (thisRef.interpData.Coords.latitude != 0)
+                {
+                    offset = utmConv.GetUTC_Offset(thisRef.interpData.Coords.latitude, thisRef.interpData.Coords.longitude);
+                    gotCoords = true;
+                }
+                else
+                {
+                    try
+                    {
+                        double thisLat = Convert.ToDouble(txtReferenceLat.Text);
+                        double thisLong = Convert.ToDouble(txtReferenceLong.Text);
+                        offset = utmConv.GetUTC_Offset(thisLat, thisLong);
+                        gotCoords = true;
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                if (gotCoords)
+                {
+                    dateRefStart.Value = dateRefStart.Value.AddHours(-offset);
+                    dateRefEnd.Value = dateRefEnd.Value.AddHours(-offset);
+                }
             }
             okToUpdate = true;
             
@@ -223,6 +248,8 @@ namespace ContinuumNS
                         thisRef.endDate = thisRef.refDataDownload.endDate.AddHours(offset);  // Set end date to last day of month
                     }
 
+                    thisRef.interpData.Coords.latitude = Math.Round(thisLL.latitude, 3);
+                    thisRef.interpData.Coords.longitude = Math.Round(thisLL.longitude, 3);
                 }
 
                 txtReferenceLat.Enabled = false;
@@ -383,6 +410,11 @@ namespace ContinuumNS
 
         private void cboShowTime_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (okToUpdate == false)
+                return;
+
+            okToUpdate = false;
+
             dateRefStart.Value = thisRef.startDate; // Reference dates stored in Local
             dateRefEnd.Value = thisRef.endDate;
 
@@ -402,6 +434,8 @@ namespace ContinuumNS
                 dateRefStart.Value = dateRefStart.Value.AddHours(-offset);
                 dateRefEnd.Value = dateRefEnd.Value.AddHours(-offset);
             }
+
+            okToUpdate = true;
         }
 
         /// <summary> Updates 'Show Time' dropdown so that Local time option only allowed after lat/long range has been defined </summary>

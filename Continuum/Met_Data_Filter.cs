@@ -638,6 +638,7 @@ namespace ContinuumNS
             public ShearCalculationTypes shearCalcType;
             public double minHeight; // If using best-fit calc
             public double maxHeight; // If using best-fit
+            public int minNumHs; // Min number of heights for best-fit calc
         }
                 
         /// <summary> Filter_Flags Used to define the different QC filtering flags. </summary>
@@ -2057,7 +2058,7 @@ namespace ContinuumNS
                 if ((thisHH - anemHeights[i] >= 0) && (Math.Abs(anemHeights[i] - thisHH) < heightDiff))
                 {
                     heightInd = i;
-                    heightDiff = Math.Abs(anems[i].height - thisHH);
+                    heightDiff = Math.Abs(anemHeights[i] - thisHH);
                 }
             }
 
@@ -2351,15 +2352,23 @@ namespace ContinuumNS
             int numH_ToIncl = maxInd - minInd + 1;
             double[] logH = new double[numH_ToIncl];
             double[] logWS = new double[numH_ToIncl];
+            int numValid = 0;
 
             for (int h = minInd; h <= maxInd; h++)
             {
                 if (avgWS_ByH[h] == 0 || avgWS_ByH[h] == -999)
-                    return -999;
+                    continue;
 
-                logH[h - minInd] = Math.Log10(wsHeights[h]);
-                logWS[h - minInd] = Math.Log10(avgWS_ByH[h]);
+                logH[numValid] = Math.Log10(wsHeights[h]);
+                logWS[numValid] = Math.Log10(avgWS_ByH[h]);
+                numValid++;
             }
+
+            if (numValid < shearSettings.minNumHs)
+                return -999;
+
+            Array.Resize(ref logH, numValid);
+            Array.Resize(ref logWS, numValid);
 
             Tuple<double,double> bestAlphaTuple = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(logH, logWS);
             bestAlpha = bestAlphaTuple.Item2;

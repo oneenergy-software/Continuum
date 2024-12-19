@@ -1321,6 +1321,11 @@ namespace ContinuumNS
         /// <summary> Resets the export dates with start/end date of reference dataset. </summary>        
         public void ResetExportDates(Continuum thisInst)
         {            
+            DateTime refStart = GetStartOrEndDate("Reference", "Start");
+
+            if (refStart.Year == 1)
+                return;
+
             thisInst.dateMCPExportStart.Value = GetStartOrEndDate("Reference","Start");
             thisInst.dateMCPExportEnd.Value = GetStartOrEndDate("Reference", "End");            
         }

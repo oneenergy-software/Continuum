@@ -98,6 +98,8 @@ namespace ContinuumNS
         {
             /// <summary> Elevation model coefficient multiplier by direction sector </summary>
             public double[] elev_Adj;
+            /// <summary> Valley model coefficient multiplier by direction sector </summary>
+            public double[] valley_Adj;
             /// <summary> Downhill model parameter, A, multiplier by direction sector </summary>
             public double[] DH_A_Adj;
             /// <summary> Downhill model parameter, B, multiplier by direction sector </summary>
@@ -423,8 +425,16 @@ namespace ContinuumNS
                 if (iterType == "Elevation")
                 {
                     adjModel.elev_Adj[WD_Ind] = thisVal;
+                    if (counter == midInt)
+                        midVal1 = adjModel.elev_Adj[WD_Ind];
                 }
-                if (iterType == "Downhill A")
+                else if (iterType == "Valley")
+                {
+                    adjModel.valley_Adj[WD_Ind] = thisVal;
+                    if (counter == midInt)
+                        midVal1 = adjModel.valley_Adj[WD_Ind];
+                }
+                else if (iterType == "Downhill A")
                 {
                     adjModel.DH_A_Adj[WD_Ind] = thisVal * theseInit.DH / origModel.downhill_A[WD_Ind] / (Math.Pow(avgP10ExpoWD[WD_Ind], (origModel.downhill_B[WD_Ind] * adjModel.DH_B_Adj[WD_Ind])));
                     if (counter == midInt)
@@ -551,8 +561,9 @@ namespace ContinuumNS
                 {
                     if (iterType == "Elevation")
                         val1MinRMS = adjModel.elev_Adj[WD_Ind];
-
-                    if (iterType == "Downhill A")
+                    else if (iterType == "Valley")
+                        val1MinRMS = adjModel.valley_Adj[WD_Ind];
+                    else if (iterType == "Downhill A")
                         val1MinRMS = adjModel.DH_A_Adj[WD_Ind];
                     else if (iterType == "Downhill B")
                     {
@@ -612,7 +623,9 @@ namespace ContinuumNS
             
             if (iterType == "Elevation")
                 adjModel.elev_Adj[WD_Ind] = val1MinRMS;
-            if (iterType == "UW Critical")
+            else if (iterType == "Valley")
+                adjModel.valley_Adj[WD_Ind] = val1MinRMS;
+            else if (iterType == "UW Critical")
                 adjModel.UW_Crit[WD_Ind] = val1MinRMS;
             else if (iterType == "Flow Sep Critical")
             {
@@ -678,6 +691,7 @@ namespace ContinuumNS
         public void SizeAdjModel(ref Model_Adj thisAdjModel, int numWD)
         {    
             thisAdjModel.elev_Adj = new double[numWD];
+            thisAdjModel.valley_Adj = new double[numWD];
             thisAdjModel.DH_A_Adj = new double[numWD];
             thisAdjModel.DH_B_Adj = new double[numWD];
             thisAdjModel.UH_A_Adj = new double[numWD];
@@ -836,7 +850,11 @@ namespace ContinuumNS
 
                 // Elevation
                 if (thisInst.topo.useElev)
-                    Sweep_a_Param(thisInst, 0.0f, 2.0f, 0.2f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+                    Sweep_a_Param(thisInst, 0.25f, 2.0f, 0.25f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                // Valley
+                if (thisInst.topo.useValley)
+                    Sweep_a_Param(thisInst, 0.25f, 2.0f, 0.25f, WD_Ind, "Valley", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
                 // 3) Downhill flow
                 Sweep_a_Param(thisInst, 0.65f, 1.5, 0.2f, WD_Ind, "Downhill A", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
@@ -918,10 +936,16 @@ namespace ContinuumNS
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
                 // Elevation
-                lowLim = 0.7f * thisAdjModel.elev_Adj[WD_Ind];
-                upperLim = 1.3f * thisAdjModel.elev_Adj[WD_Ind];
+                lowLim = 0.75f * thisAdjModel.elev_Adj[WD_Ind];
+                upperLim = 1.25f * thisAdjModel.elev_Adj[WD_Ind];
                 if (thisInst.topo.useElev)
-                    Sweep_a_Param(thisInst, 0.0f, 2.0f, 0.2f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+                    Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 5, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                // Valley
+                lowLim = 0.75f * thisAdjModel.valley_Adj[WD_Ind];
+                upperLim = 1.25f * thisAdjModel.valley_Adj[WD_Ind];
+                if (thisInst.topo.useValley)
+                    Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 5, WD_Ind, "Valley", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
                 // 1) Sweep UW Crit
 
@@ -1033,6 +1057,7 @@ namespace ContinuumNS
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
                 thisAdjModel.elev_Adj[WD_Ind] = 1;
+                thisAdjModel.valley_Adj[WD_Ind] = 1;
                 thisAdjModel.DH_A_Adj[WD_Ind] = theseInitParams.DH / thisModel.downhill_A[0];
                 thisAdjModel.DH_B_Adj[WD_Ind] = 0;
                 thisAdjModel.UH_A_Adj[WD_Ind] = Math.Abs(theseInitParams.UH) / thisModel.uphill_A[0];
@@ -1135,6 +1160,7 @@ namespace ContinuumNS
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
                 thisModel.elevCoeff[WD_Ind] = origModel.elevCoeff[WD_Ind] * thisAdjModel.elev_Adj[WD_Ind];
+                thisModel.valleyCoeff[WD_Ind] = origModel.valleyCoeff[WD_Ind] * thisAdjModel.valley_Adj[WD_Ind];
 
                 thisModel.downhill_A[WD_Ind] = origModel.downhill_A[WD_Ind] * thisAdjModel.DH_A_Adj[WD_Ind];
                 thisModel.downhill_B[WD_Ind] = origModel.downhill_B[WD_Ind] * thisAdjModel.DH_B_Adj[WD_Ind];
@@ -1318,6 +1344,7 @@ namespace ContinuumNS
             for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
             {
                 model.elevCoeff[WD_Ind] = defaultModel.elevCoeff[WD_Ind] * adjModel.elev_Adj[WD_Ind];
+                model.valleyCoeff[WD_Ind] = defaultModel.valleyCoeff[WD_Ind] * adjModel.valley_Adj[WD_Ind];
 
                 model.downhill_A[WD_Ind] = defaultModel.downhill_A[WD_Ind] * adjModel.DH_A_Adj[WD_Ind];
                 model.downhill_B[WD_Ind] = defaultModel.downhill_B[WD_Ind] * adjModel.DH_B_Adj[WD_Ind];
@@ -1340,37 +1367,36 @@ namespace ContinuumNS
              //   model.stabB[WD_Ind] = adjModel.stabB[WD_Ind];
             }
 
+            Model modelForCrossPred = new Model();
+            modelForCrossPred = model;
+
             List<int> integerList = Enumerable.Range(0, PairCount).ToList();
 
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (i, loopState) =>
             //      for (int i = 0; i < PairCount; i++)
             {
-                bool bothMetsUsed = BothInModel(metPairs[i], model); // See if mets in pair are used in UW&DW model
+                bool bothMetsUsed = BothInModel(metPairs[i], modelForCrossPred); // See if mets in pair are used in UW&DW model
 
                 if (bothMetsUsed == true)
                 {
                     int radiusIndex = 0;
                     for (int m = 0; m <= metPairs[i].WS_Pred.GetUpperBound(1); m++)
                     {
-                        if (metPairs[i].WS_Pred[0, m].model.radius == model.radius)
+                        if (metPairs[i].WS_Pred[0, m].model.radius == modelForCrossPred.radius)
                         {
                             radiusIndex = m;
                             break;
                         }
                     }
 
-                    int WS_PredInd = metPairs[i].GetWS_PredIndOneModel(model, thisInst.modelList);
-
-                    if (WS_PredInd == -1)
-                        return RMS_Err;
-
+                    int WS_PredInd = metPairs[i].GetWS_PredIndOneModel(modelForCrossPred, thisInst.modelList);
+                                        
                     metPairs[i].DoMetCrossPred(WS_PredInd, radiusIndex, thisInst);
 
                     RMS_Err = RMS_Err + metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0] * metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0]; // + Math.Pow(metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0], 2);
                     RMS_Count++;
 
                     RMS_Err = RMS_Err + metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1] * metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1];
-                    //      RMS_Err = RMS_Err + Math.Pow(metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[1], 2);
                     RMS_Count++;
                 }
             });

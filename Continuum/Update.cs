@@ -8,6 +8,7 @@ using OxyPlot.Series;
 using OxyPlot.Axes;
 using static ContinuumNS.Met;
 using static ContinuumNS.Met_Data_Filter;
+using Microsoft.VisualBasic;
 
 
 //using System.Windows.Media;
@@ -55,6 +56,10 @@ namespace ContinuumNS
             public bool show_dWS_UW_SRDH;
             /// <summary> Show change in wind speed due to change in downwind SR/DH if true. </summary>
             public bool show_dWS_DW_SRDH;
+            /// <summary> Show change in wind speed due to change in elevation if true. </summary>
+            public bool show_dWS_Elev;
+            /// <summary> Show change in wind speed due to valley flow if true. </summary>
+            public bool show_dWS_Valley;
             /// <summary> Show wind speed estimate if true. </summary>
             public bool showWS_Est;
             /// <summary> Show equivalent wind speed estimate (adjusted for flow rotation) if true. </summary>
@@ -184,7 +189,12 @@ namespace ContinuumNS
             }
 
             // LT Reference tab
-            Reference thisRef = thisInst.GetSelectedReference("LT Ref");                     
+            Reference thisRef = thisInst.GetSelectedReference("LT Ref");     
+                        
+            if (thisRef.refDataDownload.inclCloud)
+                thisInst.btnExportCloudCover.Enabled = true;
+            else
+                thisInst.btnExportCloudCover.Enabled = false;
 
             // MCP tab
             Met thisMet = thisInst.GetSelectedMet("MCP");
@@ -1366,6 +1376,10 @@ namespace ContinuumNS
                     paramsToShow.show_dWS_UW_SRDH = true;
                 else if (thisInst.chkAdvToShow.CheckedItems[i].ToString() == "dWS DW SRDH")
                     paramsToShow.show_dWS_DW_SRDH = true;
+                else if (thisInst.chkAdvToShow.CheckedItems[i].ToString() == "dWS Elev")
+                    paramsToShow.show_dWS_Elev = true;
+                else if (thisInst.chkAdvToShow.CheckedItems[i].ToString() == "dWS Valley")
+                    paramsToShow.show_dWS_Valley = true;
                 else if (thisInst.chkAdvToShow.CheckedItems[i].ToString() == "WS Est.")
                     paramsToShow.showWS_Est = true;
                 else if (thisInst.chkAdvToShow.CheckedItems[i].ToString() == "Equiv WS")
@@ -1483,6 +1497,20 @@ namespace ContinuumNS
             if (paramsToShow.show_dWS_DW_SRDH == true)
             {
                 objList.Columns.Add("dWS DW SRDH");
+                objList.Columns[colNum].Width = 95;
+                colNum++;
+            }
+
+            if (paramsToShow.show_dWS_Elev == true)
+            {
+                objList.Columns.Add("dWS Elev");
+                objList.Columns[colNum].Width = 85;
+                colNum++;
+            }
+
+            if (paramsToShow.show_dWS_Valley == true)
+            {
+                objList.Columns.Add("dWS Valley");
                 objList.Columns[colNum].Width = 95;
                 colNum++;
             }
@@ -1692,6 +1720,8 @@ namespace ContinuumNS
             double deltaWS_DWExpo = 0;
             double deltaWS_UW_SRDH = 0;
             double deltaWS_DW_SRDH = 0;
+            double deltaWS_Elev = 0;
+            double deltaWS_Valley = 0;
 
             NodeCollection.Sep_Nodes[] flowSepNodes = new NodeCollection.Sep_Nodes[1];
             Nodes node1 = new Nodes();
@@ -1715,6 +1745,8 @@ namespace ContinuumNS
             bool gotSR = thisInst.topo.gotSR;
             bool useFlowSep = thisInst.topo.useSepMod;
             bool useValley = thisInst.topo.useValley;
+            bool useElev = thisInst.topo.useElev;
+            double elevDiff = 0;
 
             objListItem = thisInst.lstPathNodes.Items.Add(startMetStr);
 
@@ -1833,6 +1865,8 @@ namespace ContinuumNS
             if (paramsToShow.show_dWS_DWExpo) objListItem.SubItems.Add(""); // Delta WS DW expo col
             if (paramsToShow.show_dWS_UW_SRDH) objListItem.SubItems.Add(""); // Delta WS UW SRDH col
             if (paramsToShow.show_dWS_DW_SRDH) objListItem.SubItems.Add(""); // Delta WS DW SRDH col
+            if (paramsToShow.show_dWS_Elev) objListItem.SubItems.Add(""); // Delta WS Elev col
+            if (paramsToShow.show_dWS_Valley) objListItem.SubItems.Add(""); // Delta WS Valley col
             if (paramsToShow.showWS_Est) objListItem.SubItems.Add(Math.Round(WS_1, 2).ToString());
 
             for (int i = 0; i < numNodes; i++)
@@ -1858,6 +1892,7 @@ namespace ContinuumNS
 
                 if (paramsToShow.showEquivWS) objListItem.SubItems.Add(Math.Round(WS_Equiv_1, 2).ToString());
                 if (WD_Ind != numWD) WS_1 = WS_Equiv[WD_Ind];
+                elevDiff = node2.elev - node1.elev;
 
                 for (int WD = 0; WD < numWD; WD++)
                 {
@@ -1929,9 +1964,15 @@ namespace ContinuumNS
                 {
                     deltaWS_DWExpo = 0;
                     deltaWS_UWExpo = 0;
+                    deltaWS_Elev = 0;
+                    deltaWS_Valley = 0;
 
                     for (int WD = 0; WD < numWD; WD++)
-                    {
+                    {                  
+                        if (useValley)
+                            deltaWS_Valley = deltaWS_Valley + thisInst.modelList.CalcValleyFlowWS(thisModel, WD, ref UWExpo_1_All[WD], ref DWExpo_1_All[WD],
+                                ref UWExpo_2_All[WD], ref DWExpo_2_All[WD]) * node2WindRose[WD];
+
                         UW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_UW_Expo(UWExpo_1_All[WD], UWExpo_2_All[WD], DWExpo_1_All[WD], DWExpo_2_All[WD], P10_UW_All[WD], P10_DW_All[WD], thisModel,
                                                                 WD, radiusIndex, node1.flowSepNodes, node2.flowSepNodes, WS_Equiv[WD], useFlowSep, node1Coords, node2Coords, useValley);
 
@@ -1946,10 +1987,16 @@ namespace ContinuumNS
 
                         deltaWS_UWExpo = deltaWS_UWExpo + UW_CoeffsDeltas[numUW_CoeffsDeltas - 1].deltaWS_Expo * node2WindRose[WD];
                         deltaWS_DWExpo = deltaWS_DWExpo + DW_CoeffsDeltas[numDW_CoeffsDeltas - 1].deltaWS_Expo * node2WindRose[WD];
+                        
+                        deltaWS_Elev = deltaWS_Elev + elevDiff * thisModel.elevCoeff[WD] * node2WindRose[WD];
                     }
                 }
                 else
                 {
+                    if (useValley)
+                        deltaWS_Valley = thisInst.modelList.CalcValleyFlowWS(thisModel, WD_Ind, ref UWExpo_1, ref DWExpo_1,
+                            ref UWExpo_2, ref DWExpo_2);
+
                     UW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_UW_Expo(UWExpo_1, UWExpo_2, DWExpo_1, DWExpo_2, (P10_UW_1 + P10_UW_2) / 2, (P10_DW_1 + P10_DW_2) / 2, thisModel, WD_Ind,
                         radiusIndex, node1.flowSepNodes, node2.flowSepNodes, WS_1, useFlowSep, node1Coords, node2Coords, useValley);
 
@@ -1995,6 +2042,8 @@ namespace ContinuumNS
                     deltaWS_UWExpo = UW_CoeffsDeltas[numUW_CoeffsDeltas - 1].deltaWS_Expo;
                     deltaWS_DWExpo = DW_CoeffsDeltas[numDW_CoeffsDeltas - 1].deltaWS_Expo;
 
+                    deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
                 }
 
                 if (paramsToShow.show_dWS_UWExpo) objListItem.SubItems.Add(Math.Round(deltaWS_UWExpo, 2).ToString());
@@ -2036,6 +2085,9 @@ namespace ContinuumNS
                     if (paramsToShow.show_dWS_UW_SRDH) objListItem.SubItems.Add("");
                     if (paramsToShow.show_dWS_DW_SRDH) objListItem.SubItems.Add("");
                 }
+
+                if (paramsToShow.show_dWS_Elev) objListItem.SubItems.Add(Math.Round(deltaWS_Elev, 2).ToString());
+                if (paramsToShow.show_dWS_Valley) objListItem.SubItems.Add(Math.Round(deltaWS_Valley, 2).ToString());
 
                 if (WD_Ind == numWD)
                 {
@@ -2079,6 +2131,7 @@ namespace ContinuumNS
             node2Coords.UTMX = endNode.UTMX;
             node2Coords.UTMY = endNode.UTMY;
             node2 = endNode;
+            elevDiff = endNode.elev - node1.elev;
 
             if (WD_Ind == numWD)
             {
@@ -2158,9 +2211,15 @@ namespace ContinuumNS
             {
                 deltaWS_DWExpo = 0;
                 deltaWS_UWExpo = 0;
+                deltaWS_Elev = 0;
+                deltaWS_Valley = 0;
 
                 for (int WD = 0; WD < numWD; WD++)
                 {
+                    if (useValley)
+                        deltaWS_Valley = deltaWS_Valley + thisInst.modelList.CalcValleyFlowWS(thisModel, WD, ref UWExpo_1_All[WD], ref DWExpo_1_All[WD],
+                            ref UWExpo_2_All[WD], ref DWExpo_2_All[WD]) * endNodeWindRose[WD];
+
                     UW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_UW_Expo(UWExpo_1_All[WD], UWExpo_2_All[WD], DWExpo_1_All[WD], DWExpo_2_All[WD], P10_UW_All[WD], P10_DW_All[WD], thisModel,
                                                             WD, radiusIndex, node1.flowSepNodes, endNode.flowSepNodes, WS_Equiv[WD], useFlowSep, node1Coords, node2Coords, useValley);
 
@@ -2174,12 +2233,18 @@ namespace ContinuumNS
 
                     deltaWS_UWExpo = deltaWS_UWExpo + UW_CoeffsDeltas[numUW_CoeffsDeltas - 1].deltaWS_Expo * endNodeWindRose[WD];
                     deltaWS_DWExpo = deltaWS_DWExpo + DW_CoeffsDeltas[numDW_CoeffsDeltas - 1].deltaWS_Expo * endNodeWindRose[WD];
+                    deltaWS_Elev = deltaWS_Elev + elevDiff * thisModel.elevCoeff[WD] * endNodeWindRose[WD];
 
                 }
             }
             else
             {
                 WS_1 = WS_Equiv[WD_Ind];
+
+                if (useValley)
+                    deltaWS_Valley = deltaWS_Valley + thisInst.modelList.CalcValleyFlowWS(thisModel, WD_Ind, ref UWExpo_1, ref DWExpo_1,
+                        ref UWExpo_2, ref DWExpo_2);
+
                 UW_CoeffsDeltas = thisInst.modelList.Get_DeltaWS_UW_Expo(UWExpo_1, UWExpo_2, DWExpo_1, DWExpo_2, (P10_UW_1 + P10_UW_2) / 2, (P10_DW_1 + P10_DW_2) / 2, thisModel,
                                                             WD_Ind, radiusIndex, node1.flowSepNodes, node2.flowSepNodes, WS_1, useFlowSep, node1Coords, node2Coords, useValley);
 
@@ -2223,7 +2288,7 @@ namespace ContinuumNS
 
                 deltaWS_UWExpo = UW_CoeffsDeltas[numUW_CoeffsDeltas - 1].deltaWS_Expo;
                 deltaWS_DWExpo = DW_CoeffsDeltas[numDW_CoeffsDeltas - 1].deltaWS_Expo;
-
+                deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
             }
 
             if (paramsToShow.show_dWS_UWExpo) objListItem.SubItems.Add(Math.Round(deltaWS_UWExpo, 2).ToString());
@@ -2288,6 +2353,10 @@ namespace ContinuumNS
                 if (paramsToShow.show_dWS_UW_SRDH) objListItem.SubItems.Add("");
                 if (paramsToShow.show_dWS_DW_SRDH) objListItem.SubItems.Add("");
             }
+
+            // Elevation and valley flow model
+            if (paramsToShow.show_dWS_Elev) objListItem.SubItems.Add(Math.Round(deltaWS_Elev, 2).ToString());
+            if (paramsToShow.show_dWS_Valley) objListItem.SubItems.Add(Math.Round(deltaWS_Valley, 2).ToString());
 
             if (WD_Ind == numWD)
             {
@@ -5275,6 +5344,8 @@ namespace ContinuumNS
                 if (thisInst.lstPathNodes.Columns[i].Text == "dWS DW Expo") paramToShow.show_dWS_DWExpo = true;
                 if (thisInst.lstPathNodes.Columns[i].Text == "dWS UW SRDH") paramToShow.show_dWS_UW_SRDH = true;
                 if (thisInst.lstPathNodes.Columns[i].Text == "dWS DW SRDH") paramToShow.show_dWS_DW_SRDH = true;
+                if (thisInst.lstPathNodes.Columns[i].Text == "dWS Elev") paramToShow.show_dWS_Elev = true;
+                if (thisInst.lstPathNodes.Columns[i].Text == "dWS Valley") paramToShow.show_dWS_Valley = true;
                 if (thisInst.lstPathNodes.Columns[i].Text == "WS Est.") paramToShow.showWS_Est = true;
                 if (thisInst.lstPathNodes.Columns[i].Text == "Equiv WS") paramToShow.showEquivWS = true;
                 if (thisInst.lstPathNodes.Columns[i].Text == "Actual WS") paramToShow.showActualWS = true;
@@ -9567,6 +9638,9 @@ namespace ContinuumNS
             Reference.Wind_TS_with_Prod[] thisTS = thisRef.interpData.TS_Data;
             string selectedParam = thisInst.GetLT_RefSelectedPlotParameter();
             thisInst.lstMERRA_MonthlyProd.Columns[2].Text = selectedParam;
+            Reference.Wind_TS_with_Prod[] thisTenM_TS = null;
+            if (thisRef.tenM_Data != null)
+                thisTenM_TS = thisRef.tenM_Data.interpData.TS_Data;
 
             if (thisRef.powerCurve.name == null && (selectedParam == "CF (%)" || selectedParam == "Energy Prod."))
             {
@@ -9655,8 +9729,19 @@ namespace ContinuumNS
                         }
                         else
                         {
-                            double LT_Val = thisRef.Calc_Avg_or_LT(thisTS, i, 100, selectedParam);
-                            double monthVal = thisRef.Calc_Avg_or_LT(thisTS, i, thisYear, selectedParam);
+                            double LT_Val = 0; thisRef.Calc_Avg_or_LT(thisTS, i, 100, selectedParam);
+                            double monthVal = 0; thisRef.Calc_Avg_or_LT(thisTS, i, thisYear, selectedParam);
+
+                            if (selectedParam == "10 m WS" || selectedParam == "10 m Gust WS")
+                            {
+                                LT_Val = thisRef.Calc_Avg_or_LT(thisTenM_TS, i, 100, selectedParam);
+                                monthVal = thisRef.Calc_Avg_or_LT(thisTenM_TS, i, thisYear, selectedParam);
+                            }
+                            else
+                            {
+                                LT_Val = thisRef.Calc_Avg_or_LT(thisTS, i, 100, selectedParam);
+                                monthVal = thisRef.Calc_Avg_or_LT(thisTS, i, thisYear, selectedParam);
+                            }
 
                             if (monthVal != 0)
                             {
@@ -9736,14 +9821,15 @@ namespace ContinuumNS
             {
                 thisInst.cboReferenceYear.Items.Add("LT Avg");
                 thisInst.chkYearsToDisplay.Items.Add("LT Avg", true);
-                
 
-                for (DateTime thisDate = thisRef.startDate; thisDate <= thisRef.endDate; thisDate = thisDate.AddYears(1))
+                int startYear = thisRef.startDate.Year;
+                int endYear = thisRef.endDate.Year;
+
+                for (int y = startYear; y <= endYear; y++)
                 {
-                    thisInst.cboReferenceYear.Items.Add(Convert.ToString(thisDate.Year));
-                    thisInst.chkYearsToDisplay.Items.Add(Convert.ToString(thisDate.Year), false);
-                    
-                }
+                    thisInst.cboReferenceYear.Items.Add(y.ToString());
+                    thisInst.chkYearsToDisplay.Items.Add(y.ToString(), false);
+                }                
             }
 
             if (thisInst.cboReferenceYear.Items.Count > 0) thisInst.cboReferenceYear.SelectedIndex = 0;
@@ -9756,6 +9842,12 @@ namespace ContinuumNS
             thisInst.cboMERRA_PlotParam.Items.Add(thisRef.temperatureH + " m Temp");
             thisInst.cboMERRA_PlotParam.Items.Add("Surface Pressure");
             thisInst.cboMERRA_PlotParam.Items.Add("Sea Level Pressure");
+                        
+            if (thisRef.refDataDownload.incl10mWS)
+                thisInst.cboMERRA_PlotParam.Items.Add("10 m WS");
+
+            if (thisRef.refDataDownload.incl10mGust)
+                thisInst.cboMERRA_PlotParam.Items.Add("10 m Gust WS");
 
             if (thisInst.cboMERRA_PlotParam.Items.Count > 0)
                 thisInst.cboMERRA_PlotParam.SelectedIndex = 0;
@@ -10001,17 +10093,20 @@ namespace ContinuumNS
                 if (selectedSiteSuitability == "Ice Throw")
                 {
                     IceThrowPlotsAndTables();
+                    thisInst.btnExportSiteSuitMap.Enabled = false;
                 }
                 else if (selectedSiteSuitability == "Shadow Flicker")
-                {
+                { 
                     ShadowFlickerSurfacePlot();
                     ShadowFlicker12x24();
                     ZoneShadowSummary();
                     ShadowFlickerMaxDay();
+                    thisInst.btnExportSiteSuitMap.Enabled = true;
                 }
                 else if (selectedSiteSuitability == "Sound")
                 {
                     SoundMap();
+                    thisInst.btnExportSiteSuitMap.Enabled = true;
 
                     if (thisInst.siteSuitability.yearlyIceHits.Length != 0) // Update the ice throw by zone table too in case zone list changed                
                         IceHitsByZone();
@@ -10892,12 +10987,21 @@ namespace ContinuumNS
             if (thisHourStr != "All")
                 hourInd = GetHourFromHourString(thisHourStr);
 
+       //     if (thisInst.cboShadowMapOptions.SelectedIndex == -1)
+       //         thisInst.cboShadowMapOptions.SelectedIndex = 0;
+
+       //     string shadowMapToShow = thisInst.cboShadowMapOptions.SelectedItem.ToString();
+
             // Create grid array with total number of shadow flicker hours            
             SiteSuitability.FlickerGrid[] plotFlicker = thisInst.siteSuitability.GetTotalFlickerHoursByMonthAndHour(monthInd, hourInd);
 
             thisInst.plotIceShadowSound.Model = new PlotModel();
             var model = thisInst.plotIceShadowSound.Model;
-            model.Title = "Total Number of Shadow Flicker Hours";
+
+       //     if (shadowMapToShow == "Total Hours")
+                model.Title = "Total Number of Shadow Flicker Hours";
+       //     else
+       //         model.Title = "Max. Daily Number of Shadow Flicker Minutes";
 
             if (plotFlicker.Length == 0)
             {
@@ -10938,7 +11042,11 @@ namespace ContinuumNS
             for (int i = 0; i < thisInst.siteSuitability.numXFlicker; i++)
                 for (int j = 0; j < thisInst.siteSuitability.numYFlicker; j++)
                 {
-                    flickerGrid[i, j] = plotFlicker[flickerMapInd].flickerStats.totalShadowMinsPerYear;
+            //        if (shadowMapToShow == "Total Hours")
+                        flickerGrid[i, j] = plotFlicker[flickerMapInd].flickerStats.totalShadowMinsPerYear;
+            //        else
+            //            flickerGrid[i, j] = plotFlicker[flickerMapInd].flickerStats.maxDailyShadowMins;
+
                     flickerMapInd++;
                 }
 

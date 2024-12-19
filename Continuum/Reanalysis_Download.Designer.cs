@@ -58,13 +58,15 @@
             this.label4 = new System.Windows.Forms.Label();
             this.cboDailyOrMonthly = new System.Windows.Forms.ComboBox();
             this.chkInclOpParam1 = new System.Windows.Forms.CheckBox();
+            this.cboShowTime = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label54
             // 
             this.label54.AutoSize = true;
             this.label54.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label54.Location = new System.Drawing.Point(211, 413);
+            this.label54.Location = new System.Drawing.Point(211, 397);
             this.label54.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(20, 18);
@@ -74,7 +76,7 @@
             // txtMaxLong
             // 
             this.txtMaxLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxLong.Location = new System.Drawing.Point(232, 410);
+            this.txtMaxLong.Location = new System.Drawing.Point(232, 394);
             this.txtMaxLong.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxLong.Name = "txtMaxLong";
             this.txtMaxLong.Size = new System.Drawing.Size(57, 25);
@@ -84,7 +86,7 @@
             // 
             this.label146.AutoSize = true;
             this.label146.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label146.Location = new System.Drawing.Point(37, 413);
+            this.label146.Location = new System.Drawing.Point(37, 397);
             this.label146.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label146.Name = "label146";
             this.label146.Size = new System.Drawing.Size(109, 18);
@@ -94,17 +96,18 @@
             // txtMinLong
             // 
             this.txtMinLong.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinLong.Location = new System.Drawing.Point(151, 410);
+            this.txtMinLong.Location = new System.Drawing.Point(151, 394);
             this.txtMinLong.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinLong.Name = "txtMinLong";
             this.txtMinLong.Size = new System.Drawing.Size(57, 25);
             this.txtMinLong.TabIndex = 246;
+            this.txtMinLong.TextChanged += new System.EventHandler(this.txtMinLong_TextChanged);
             // 
             // label52
             // 
             this.label52.AutoSize = true;
             this.label52.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label52.Location = new System.Drawing.Point(211, 380);
+            this.label52.Location = new System.Drawing.Point(211, 364);
             this.label52.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(20, 18);
@@ -114,7 +117,7 @@
             // txtMaxLat
             // 
             this.txtMaxLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxLat.Location = new System.Drawing.Point(232, 377);
+            this.txtMaxLat.Location = new System.Drawing.Point(232, 361);
             this.txtMaxLat.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxLat.Name = "txtMaxLat";
             this.txtMaxLat.Size = new System.Drawing.Size(57, 25);
@@ -124,7 +127,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(48, 380);
+            this.label5.Location = new System.Drawing.Point(48, 364);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(99, 18);
@@ -134,17 +137,18 @@
             // txtMinLat
             // 
             this.txtMinLat.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinLat.Location = new System.Drawing.Point(151, 377);
+            this.txtMinLat.Location = new System.Drawing.Point(151, 361);
             this.txtMinLat.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinLat.Name = "txtMinLat";
             this.txtMinLat.Size = new System.Drawing.Size(57, 25);
             this.txtMinLat.TabIndex = 242;
+            this.txtMinLat.TextChanged += new System.EventHandler(this.txtMinLat_TextChanged);
             // 
             // btnDownloadMERRA2
             // 
             this.btnDownloadMERRA2.BackColor = System.Drawing.Color.LightCoral;
             this.btnDownloadMERRA2.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDownloadMERRA2.Location = new System.Drawing.Point(421, 382);
+            this.btnDownloadMERRA2.Location = new System.Drawing.Point(421, 366);
             this.btnDownloadMERRA2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnDownloadMERRA2.Name = "btnDownloadMERRA2";
             this.btnDownloadMERRA2.Size = new System.Drawing.Size(121, 53);
@@ -160,7 +164,7 @@
             this.dateReferenceEnd.CustomFormat = "MM/dd/yyyy HH:mm";
             this.dateReferenceEnd.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateReferenceEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateReferenceEnd.Location = new System.Drawing.Point(123, 320);
+            this.dateReferenceEnd.Location = new System.Drawing.Point(142, 320);
             this.dateReferenceEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateReferenceEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
             this.dateReferenceEnd.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
@@ -176,7 +180,7 @@
             this.dateReferenceStart.CustomFormat = "MM/dd/yyyy HH:mm";
             this.dateReferenceStart.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateReferenceStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateReferenceStart.Location = new System.Drawing.Point(123, 286);
+            this.dateReferenceStart.Location = new System.Drawing.Point(142, 286);
             this.dateReferenceStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateReferenceStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
             this.dateReferenceStart.MinDate = new System.DateTime(1950, 1, 1, 0, 0, 0, 0);
@@ -190,23 +194,23 @@
             // 
             this.label152.AutoSize = true;
             this.label152.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label152.Location = new System.Drawing.Point(37, 324);
+            this.label152.Location = new System.Drawing.Point(97, 324);
             this.label152.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label152.Name = "label152";
-            this.label152.Size = new System.Drawing.Size(74, 18);
+            this.label152.Size = new System.Drawing.Size(34, 18);
             this.label152.TabIndex = 238;
-            this.label152.Text = "End (Local)";
+            this.label152.Text = "End:";
             // 
             // label153
             // 
             this.label153.AutoSize = true;
             this.label153.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label153.Location = new System.Drawing.Point(35, 290);
+            this.label153.Location = new System.Drawing.Point(94, 290);
             this.label153.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label153.Name = "label153";
-            this.label153.Size = new System.Drawing.Size(81, 18);
+            this.label153.Size = new System.Drawing.Size(41, 18);
             this.label153.TabIndex = 237;
-            this.label153.Text = "Start (Local)";
+            this.label153.Text = "Start:";
             // 
             // label151
             // 
@@ -222,7 +226,7 @@
             // btnChangeFolder
             // 
             this.btnChangeFolder.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.btnChangeFolder.Location = new System.Drawing.Point(451, 203);
+            this.btnChangeFolder.Location = new System.Drawing.Point(451, 196);
             this.btnChangeFolder.Name = "btnChangeFolder";
             this.btnChangeFolder.Size = new System.Drawing.Size(91, 32);
             this.btnChangeFolder.TabIndex = 253;
@@ -234,7 +238,7 @@
             // 
             this.label154.AutoSize = true;
             this.label154.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label154.Location = new System.Drawing.Point(16, 215);
+            this.label154.Location = new System.Drawing.Point(16, 208);
             this.label154.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label154.Name = "label154";
             this.label154.Size = new System.Drawing.Size(146, 20);
@@ -244,7 +248,7 @@
             // txtFolderLoc
             // 
             this.txtFolderLoc.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFolderLoc.Location = new System.Drawing.Point(15, 246);
+            this.txtFolderLoc.Location = new System.Drawing.Point(15, 239);
             this.txtFolderLoc.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtFolderLoc.Name = "txtFolderLoc";
             this.txtFolderLoc.ReadOnly = true;
@@ -314,7 +318,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(306, 291);
+            this.label3.Location = new System.Drawing.Point(339, 275);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(95, 20);
@@ -324,7 +328,7 @@
             // txtPercComplete
             // 
             this.txtPercComplete.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPercComplete.Location = new System.Drawing.Point(405, 288);
+            this.txtPercComplete.Location = new System.Drawing.Point(438, 272);
             this.txtPercComplete.Margin = new System.Windows.Forms.Padding(2);
             this.txtPercComplete.Name = "txtPercComplete";
             this.txtPercComplete.Size = new System.Drawing.Size(63, 27);
@@ -385,12 +389,40 @@
             this.chkInclOpParam1.Text = "Optional 1";
             this.chkInclOpParam1.UseVisualStyleBackColor = true;
             // 
+            // cboShowTime
+            // 
+            this.cboShowTime.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboShowTime.FormattingEnabled = true;
+            this.cboShowTime.Items.AddRange(new object[] {
+            "Local",
+            "UTC-0"});
+            this.cboShowTime.Location = new System.Drawing.Point(8, 314);
+            this.cboShowTime.Margin = new System.Windows.Forms.Padding(2);
+            this.cboShowTime.Name = "cboShowTime";
+            this.cboShowTime.Size = new System.Drawing.Size(72, 26);
+            this.cboShowTime.TabIndex = 320;
+            this.cboShowTime.Text = "UTC-0";
+            this.cboShowTime.SelectedIndexChanged += new System.EventHandler(this.cboShowTime_SelectedIndexChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(6, 294);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(78, 18);
+            this.label6.TabIndex = 319;
+            this.label6.Text = "Show Time:";
+            // 
             // Reanalysis_Download
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(558, 454);
+            this.ClientSize = new System.Drawing.Size(558, 437);
+            this.Controls.Add(this.cboShowTime);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.chkInclOpParam1);
             this.Controls.Add(this.cboDailyOrMonthly);
             this.Controls.Add(this.label4);
@@ -460,5 +492,7 @@
         private System.Windows.Forms.Label label4;
         public System.Windows.Forms.ComboBox cboDailyOrMonthly;
         private System.Windows.Forms.CheckBox chkInclOpParam1;
+        public System.Windows.Forms.ComboBox cboShowTime;
+        private System.Windows.Forms.Label label6;
     }
 }

@@ -32,13 +32,16 @@ max_lat = float(sys.argv[5])
 min_lon = float(sys.argv[6])
 max_lon = float(sys.argv[7])
 
-incl10mWS = bool(sys.argv[8])
-incl10mGust = bool(sys.argv[9])
+incl10mWS = sys.argv[8].lower() in ('true', '1', 'yes')
+incl10mGust = sys.argv[9].lower() in ('true', '1', 'yes')
 
-if incl10mWS == False and incl10mGust == False:
-    varStr = "['100m_u_component_of_wind', '100m_v_component_of_wind', '2m_temperature','surface_pressure',]"
-elif incl10mWS == True and incl10mGust == False:
-    varStr = "['100m_u_component_of_wind', '100m_v_component_of_wind', '2m_temperature','surface_pressure','10m_u_component_of_wind','10m_v_component_of_wind',]"
+if not incl10mWS and not incl10mGust:
+    varStr = ["100m_u_component_of_wind", "100m_v_component_of_wind", "2m_temperature", "surface_pressure"]
+elif incl10mWS and not incl10mGust:
+    varStr = ["100m_u_component_of_wind", "100m_v_component_of_wind", "2m_temperature", "surface_pressure", "10m_u_component_of_wind", "10m_v_component_of_wind"]
+elif incl10mWS and incl10mGust:
+    varStr = ["100m_u_component_of_wind", "100m_v_component_of_wind", "2m_temperature", "surface_pressure", "10m_u_component_of_wind", "10m_v_component_of_wind", "10m_wind_gust_since_previous_post_processing"]
+
 
 #output_file = 'ERA5_N' + str(min_lat) + "_to_" + str(max_lat) + "_W" + str(min_lon) + '_to_' + str(max_lat) + '_' + str(req_year)  + str(req_month) + str(req_day) + '.nc'
 output_file = 'ERA5_N' + str(min_lat) + "_to_" + str(max_lat) + "_W" + str(min_lon) + '_to_' + str(max_lon) + '_' + str(req_datetime.strftime("%Y_%m")) + '.nc'

@@ -40,6 +40,8 @@
             this.cboMinHeight = new System.Windows.Forms.ComboBox();
             this.cboMaxHeight = new System.Windows.Forms.ComboBox();
             this.txtMetSite = new System.Windows.Forms.TextBox();
+            this.cboMinValidHeights = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label151
@@ -159,12 +161,34 @@
             this.txtMetSite.Size = new System.Drawing.Size(445, 24);
             this.txtMetSite.TabIndex = 268;
             // 
+            // cboMinValidHeights
+            // 
+            this.cboMinValidHeights.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboMinValidHeights.FormattingEnabled = true;
+            this.cboMinValidHeights.Location = new System.Drawing.Point(173, 225);
+            this.cboMinValidHeights.Name = "cboMinValidHeights";
+            this.cboMinValidHeights.Size = new System.Drawing.Size(65, 26);
+            this.cboMinValidHeights.TabIndex = 270;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(29, 228);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(145, 20);
+            this.label5.TabIndex = 269;
+            this.label5.Text = "Min # Valid Heights:";
+            // 
             // EditShearCalcSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(502, 285);
+            this.Controls.Add(this.cboMinValidHeights);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.txtMetSite);
             this.Controls.Add(this.cboMaxHeight);
             this.Controls.Add(this.cboMinHeight);
@@ -197,5 +221,7 @@
         public System.Windows.Forms.ComboBox cboMinHeight;
         public System.Windows.Forms.ComboBox cboMaxHeight;
         private System.Windows.Forms.TextBox txtMetSite;
+        public System.Windows.Forms.ComboBox cboMinValidHeights;
+        private System.Windows.Forms.Label label5;
     }
 }

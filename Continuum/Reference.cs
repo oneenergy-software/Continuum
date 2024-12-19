@@ -33,11 +33,7 @@ namespace ContinuumNS
         public DateTime endDate = new DateTime(2018, 12, 31, 23, 0, 0);
         /// <summary> Reference data download object (contains folder location, start/end, coords). </summary>
         public ReferenceCollection.RefDataDownload refDataDownload;
-   //     /// <summary> Renalysis data provider username (NASA EarthData). This is now stored in ReferenceCollection.RefDataDownload objects </summary>
-   //     public string earthdataUser = "";
-   //     /// <summary> Renalysis data provider password. This is now stored in ReferenceCollection.RefDataDownload objects </summary>
-   //     public string earthdataPwd = "";
-
+   
         /// <summary> Site location coordinates, interpolated reference time series data (WS, WD, pressure, and temp), and calculated monthly and annual energy production. </summary>
         public Wind_Data_and_Prod_Stats interpData;
         /// <summary> List of reference node data. Each entry contains time series data, node coordinates, and X/Y datafile indices. User selects either 1, 4, or 16 nodes. </summary>
@@ -55,10 +51,10 @@ namespace ContinuumNS
         public double wswdH;
         /// <summary> Height of Temperature estimates </summary>
         public double temperatureH;
-   //     /// <summary> Latitude resolution in degs </summary> // Moved this to ReferenceCollection.GetLatRes(RefDataDownload)
-   //     public double latRes = 0.5;
-   //     /// <summary> Longitude resolution in degs </summary>
-   //     public double lonRes = 0.625;                
+        /// <summary> 10m wind speed </summary>
+        public Reference tenM_Data;
+        /// <summary> True if gust WS is extracted (ERA5 only) </summary>
+        public bool haveGustWS;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -138,17 +134,19 @@ namespace ContinuumNS
             public double seaPress;
             /// <summary> Temperature at temperatureH  </summary>
             public double temperature;
+            /// <summary> 10m Gust wind speed (ERA5)  </summary>
+            public double gustWS;
 
             /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary> 
             public Wind_TS_with_Prod(MERRA.Wind_TS_with_Prod merraObj) : this()
             {
-                this.thisDate = merraObj.ThisDate;
-                this.WS = merraObj.WS50m;
-                this.WD = merraObj.WD50m;
-                this.prod = merraObj.Prod;
-                this.seaPress = merraObj.SeaPress;
-                this.surfPress = merraObj.SurfPress;
-                this.temperature = merraObj.Temp10m;
+                thisDate = merraObj.ThisDate;
+                WS = merraObj.WS50m;
+                WD = merraObj.WD50m;
+                prod = merraObj.Prod;
+                seaPress = merraObj.SeaPress;
+                surfPress = merraObj.SurfPress;
+                temperature = merraObj.Temp10m;
             }
 
             /// <summary> Data conversion operator from MERRA2 object </summary>            
@@ -289,7 +287,18 @@ namespace ContinuumNS
             {
                 Met thisMet = metList.GetMetAtLatLon(interpData.Coords.latitude, interpData.Coords.longitude, utmConv);
                 refName = refDataDownload.refType + " interp. at " + thisMet.name + " , Num Nodes: " + numNodes.ToString();
-            }                
+            }
+
+            if (refDataDownload.incl10mWS && refDataDownload.incl10mGust)
+                refName = refName + " with 10m WS and Gust";
+            else if (refDataDownload.incl10mWS && refDataDownload.inclCloud)
+                refName = refName + " with 10m WS and Cloud data";
+            else if (refDataDownload.incl10mWS && refDataDownload.incl10mGust == false && refDataDownload.inclCloud == false)
+                refName = refName + " with 10m WS";
+            else if (refDataDownload.incl10mWS == false && refDataDownload.incl10mGust == true)
+                refName = refName + " with 10m Gust";
+            else if (refDataDownload.incl10mWS == false && refDataDownload.inclCloud == true)
+                refName = refName + " with Cloud data";
 
             return refName;            
         }               
@@ -398,7 +407,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Returns true if MERRA2 datafile parameter is needed (i.e. wind speed, temperature, or pressure). </summary>
-        public bool Need_This_Param(string thisString)
+        public bool Need_This_Param(string thisString, bool incl10mWS)
         {
             bool Need_it = false;
             int String_Len = thisString.Length;
@@ -415,19 +424,23 @@ namespace ContinuumNS
 
                 if (String_Len >= 9)
                     if (thisString.Substring(0, 9) == "MDSOPTHCK") // Optical Thickness Total Mean))
-                        Need_it = false; // Optical Thickness Total Mean))
+                        Need_it = true; // Optical Thickness Total Mean))
 
                 if (String_Len >= 8)
                     if (thisString.Substring(0, 8) == "ISCCPCLD") // Total Cloud Area Fraction )
-                        Need_it = false; // ISCCP Total Cloud Area Fraction
+                        Need_it = true; // ISCCP Total Cloud Area Fraction
 
                 if (String_Len >= 6)
                     if (thisString.Substring(0, 6) == "MDSCLD") // Cloud Fraction Total mean))
-                        Need_it = false; // MODIS Cloud Fraction Total mean))
+                        Need_it = true; // MODIS Cloud Fraction Total mean))
 
                 if (String_Len >= 3)
                     if (thisString.Substring(0, 3) == "U50" || thisString.Substring(0, 3) == "V50" ||
                     thisString.Substring(0, 3) == "SLP" || thisString.Substring(0, 3) == "T10")
+                        Need_it = true;
+
+                if (String_Len >= 3)
+                    if (incl10mWS && (thisString.Substring(0, 3) == "U10" || thisString.Substring(0, 3) == "V10"))
                         Need_it = true;
 
                 if (String_Len >= 2)
@@ -773,7 +786,7 @@ namespace ContinuumNS
                 if ((thisMonth == 100 || thisTS[i].thisDate.Month == thisMonth) &&
                     (thisYear == 100 || thisTS[i].thisDate.Year == thisYear))
                 {
-                    if (param == "50 m WS" || param == "100 m WS")
+                    if (param == "50 m WS" || param == "100 m WS" || param == "10 m WS")
                         avgOrLT = avgOrLT + thisTS[i].WS;
                     else if (param == "Energy prod.")
                         avgOrLT = avgOrLT + thisTS[i].prod;
@@ -781,8 +794,10 @@ namespace ContinuumNS
                         avgOrLT = avgOrLT + thisTS[i].surfPress / 1000;
                     else if (param == "Sea Level Pressure")
                         avgOrLT = avgOrLT + thisTS[i].seaPress / 1000;
-                    else if (param == "10 m Temp")
+                    else if (param == "10 m Temp" || param == "2 m Temp")
                         avgOrLT = avgOrLT + thisTS[i].temperature - 273.15;
+                    else if (param == "10 m Gust WS")                    
+                        avgOrLT = avgOrLT + thisTS[i].gustWS;                    
 
                     count++;
                 }
@@ -1566,7 +1581,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Generates interpData time series dataset which contains MERRA2 interpolated temperature, pressure, and wind speed data </summary>        
-        public void GetInterpData(UTM_conversion utm)
+        public void GetInterpData(UTM_conversion utm, bool do10mOnly = false)
         {
             // interpData not saved in file or DB, only MERRA2 data saved in DB and interpData created as needed)
             if (nodes.Length == 0)
@@ -1575,8 +1590,17 @@ namespace ContinuumNS
             if (nodes[0].TS_Data == null)
                 return;
 
+            bool got10mData = false;
+            if (tenM_Data != null)
+                if (tenM_Data.nodes != null)
+                    got10mData = true;
+
             int MERRA_Length = nodes[0].TS_Data.Length;
-            Array.Resize(ref interpData.TS_Data, MERRA_Length);
+            if (do10mOnly == false) 
+                Array.Resize(ref interpData.TS_Data, MERRA_Length);
+
+            if (got10mData)
+                Array.Resize(ref tenM_Data.interpData.TS_Data, MERRA_Length);
 
             TopoInfo topo = new TopoInfo(); // created to use "CalcDistanceBetweenTwoPoints" function
 
@@ -1589,40 +1613,75 @@ namespace ContinuumNS
                 double avgSurfPress = 0; // average surface level pressure
                 double avgSeaLevelPress = 0; // average sea level pressure
 
-                interpData.TS_Data[i].thisDate = nodes[0].TS_Data[i].thisDate;
-
-                for (int n = 0; n < numNodes; n++)
+                if (do10mOnly == false)
                 {
-                    UTM_conversion.UTM_coords theseUTM = utm.LLtoUTM(nodes[n].XY_ind.Lat, nodes[n].XY_ind.Lon);
-                    double thisDist = topo.CalcDistanceBetweenPoints(interpData.UTM.UTMEasting, interpData.UTM.UTMNorthing, theseUTM.UTMEasting, theseUTM.UTMNorthing);
-                    if (thisDist == 0)
-                        thisDist = 0.1; // so it doesn't throw divide by zero error
+                    interpData.TS_Data[i].thisDate = nodes[0].TS_Data[i].thisDate;
 
-                    sumDist = sumDist + 1 / thisDist;
+                    for (int n = 0; n < numNodes; n++)
+                    {
+                        UTM_conversion.UTM_coords theseUTM = utm.LLtoUTM(nodes[n].XY_ind.Lat, nodes[n].XY_ind.Lon);
+                        double thisDist = topo.CalcDistanceBetweenPoints(interpData.UTM.UTMEasting, interpData.UTM.UTMNorthing, theseUTM.UTMEasting, theseUTM.UTMNorthing);
+                        if (thisDist == 0)
+                            thisDist = 0.1; // so it doesn't throw divide by zero error
 
-                    double thisU = -nodes[n].TS_Data[i].WS * Math.Cos(Math.PI / 180 * (90 - nodes[n].TS_Data[i].WD)); // negative sign is there since WD is the direction 
-                    double thisV = -nodes[n].TS_Data[i].WS * Math.Sin(Math.PI / 180 * (90 - nodes[n].TS_Data[i].WD)); // that wind is coming from.
+                        sumDist = sumDist + 1 / thisDist;
 
-                    avgU = avgU + thisU / thisDist;
-                    avgV = avgV + thisV / thisDist;
-                    avgTemp = avgTemp + nodes[n].TS_Data[i].temperature / thisDist;
-                    avgSurfPress = avgSurfPress + nodes[n].TS_Data[i].surfPress / thisDist;
-                    avgSeaLevelPress = avgSeaLevelPress + nodes[n].TS_Data[i].seaPress / thisDist;
+                        double thisU = -nodes[n].TS_Data[i].WS * Math.Cos(Math.PI / 180 * (90 - nodes[n].TS_Data[i].WD)); // negative sign is there since WD is the direction 
+                        double thisV = -nodes[n].TS_Data[i].WS * Math.Sin(Math.PI / 180 * (90 - nodes[n].TS_Data[i].WD)); // that wind is coming from.
+
+                        avgU = avgU + thisU / thisDist;
+                        avgV = avgV + thisV / thisDist;
+                        avgTemp = avgTemp + nodes[n].TS_Data[i].temperature / thisDist;
+                        avgSurfPress = avgSurfPress + nodes[n].TS_Data[i].surfPress / thisDist;
+                        avgSeaLevelPress = avgSeaLevelPress + nodes[n].TS_Data[i].seaPress / thisDist;
+                    }
+
+                    if (sumDist > 0)
+                    {
+                        avgU = avgU / sumDist;
+                        avgV = avgV / sumDist;
+                        interpData.TS_Data[i].WS = Math.Sqrt(avgU * avgU + avgV * avgV);
+                        interpData.TS_Data[i].WD = 180 + 180 / Math.PI * Math.Atan2(avgU, avgV);
+                        interpData.TS_Data[i].temperature = avgTemp / sumDist;
+                        interpData.TS_Data[i].seaPress = avgSeaLevelPress / sumDist;
+                        interpData.TS_Data[i].surfPress = avgSurfPress / sumDist;
+                    }
                 }
 
-                if (sumDist > 0)
+                if (got10mData)
                 {
-                    avgU = avgU / sumDist;
-                    avgV = avgV / sumDist;
-                    interpData.TS_Data[i].WS = Math.Sqrt(avgU * avgU + avgV * avgV);
-                    interpData.TS_Data[i].WD = 180 + 180 / Math.PI * Math.Atan2(avgU, avgV);
-                    interpData.TS_Data[i].temperature = avgTemp / sumDist;
-                    interpData.TS_Data[i].seaPress = avgSeaLevelPress / sumDist;
-                    interpData.TS_Data[i].surfPress = avgSurfPress / sumDist;
+                    sumDist = 0;
+                    avgU = 0;
+                    avgV = 0;
+                    tenM_Data.interpData.TS_Data[i].thisDate = nodes[0].TS_Data[i].thisDate;
+
+                    for (int n = 0; n < numNodes; n++)
+                    {
+                        UTM_conversion.UTM_coords theseUTM = utm.LLtoUTM(nodes[n].XY_ind.Lat, nodes[n].XY_ind.Lon);
+                        double thisDist = topo.CalcDistanceBetweenPoints(interpData.UTM.UTMEasting, interpData.UTM.UTMNorthing, theseUTM.UTMEasting, theseUTM.UTMNorthing);
+                        if (thisDist == 0)
+                            thisDist = 0.1; // so it doesn't throw divide by zero error
+
+                        sumDist = sumDist + 1 / thisDist;
+
+                        double thisU = -tenM_Data.nodes[n].TS_Data[i].WS * Math.Cos(Math.PI / 180 * (90 - tenM_Data.nodes[n].TS_Data[i].WD)); // negative sign is there since WD is the direction 
+                        double thisV = -tenM_Data.nodes[n].TS_Data[i].WS * Math.Sin(Math.PI / 180 * (90 - tenM_Data.nodes[n].TS_Data[i].WD)); // that wind is coming from.
+
+                        avgU = avgU + thisU / thisDist;
+                        avgV = avgV + thisV / thisDist;                        
+                    }
+
+                    if (sumDist > 0)
+                    {
+                        avgU = avgU / sumDist;
+                        avgV = avgV / sumDist;
+                        tenM_Data.interpData.TS_Data[i].WS = Math.Sqrt(avgU * avgU + avgV * avgV);
+                        tenM_Data.interpData.TS_Data[i].WD = 180 + 180 / Math.PI * Math.Atan2(avgU, avgV);                        
+                    }
                 }
             }
 
-            if (powerCurve.name != null)
+            if (powerCurve.name != null && do10mOnly == false)
                 ApplyPC(ref interpData.TS_Data);
 
         }
@@ -2020,7 +2079,7 @@ namespace ContinuumNS
             {
                 WS_ScaleFactor = 1.0;
                 wswdH = 100;
-                temperatureH = 10;          
+                temperatureH = 2;          
             }
         }
 

@@ -54,18 +54,29 @@ namespace ContinuumNS
             public double maxLon;
             /// <summary> Flag specifying whether to download daily or monthly data </summary>
             public string monthlyOrDaily;
-
+            /// <summary> Flag specifying whether to download 10m WS and WD data </summary>
             public bool incl10mWS;
-
-            public bool incl10mGust; // Applies to ERA5 only
-
-            public bool inclCloud; // Applies to MERRA2 only
+            /// <summary> Flag specifying whether to download 10m gust WS data (ERA5 only) </summary>
+            public bool incl10mGust;
+            /// <summary> Flag specifying whether to download Cloud Cover data (MERRA2 only) </summary>
+            public bool inclCloud; 
 
             /// <summary> Creates and returns name for specified reference data download </summary>
             public string GetName()
             {               
                 string refDownName = refType + " Lat range: " + minLat.ToString() + " to " + maxLat.ToString() + ", Long range: " +
                     minLon.ToString() + " to " + maxLon.ToString();
+
+                if (incl10mWS && incl10mGust)
+                    refDownName = refDownName + " with 10m WS and Gust";
+                else if (incl10mWS && inclCloud)
+                    refDownName = refDownName + " with 10m WS and Cloud data";
+                else if (incl10mWS && incl10mGust == false && inclCloud == false)
+                    refDownName = refDownName + " with 10m WS";
+                else if (incl10mWS == false && incl10mGust == true)
+                    refDownName = refDownName + " with 10m Gust";
+                else if (incl10mWS == false && inclCloud == true)
+                    refDownName = refDownName + " with Cloud data";
 
                 return refDownName;
             }
@@ -709,6 +720,13 @@ namespace ContinuumNS
                 URL += "V50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
                 URL += "SLP[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
                 URL += "PS[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+
+                if (merraDownload.incl10mWS)
+                {
+                    URL += "U10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                    URL += "V10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                }
+
                 URL += "lat[" + minLatInd + ":" + maxLatInd + "]," + "time[0:23]," + "lon[" + minLongInd + ":" + maxLongInd + "]";
             }
             else
@@ -1019,7 +1037,8 @@ namespace ContinuumNS
             {
                 if (thisDataDownload.refType == refDataDownloads[r].refType && thisDataDownload.minLat == refDataDownloads[r].minLat &&
                     thisDataDownload.maxLat == refDataDownloads[r].maxLat && thisDataDownload.minLon == refDataDownloads[r].minLon
-                    && thisDataDownload.maxLon == refDataDownloads[r].maxLon)
+                    && thisDataDownload.maxLon == refDataDownloads[r].maxLon && thisDataDownload.incl10mWS == refDataDownloads[r].incl10mWS &&
+                    thisDataDownload.incl10mGust == refDataDownloads[r].incl10mGust && thisDataDownload.inclCloud == refDataDownloads[r].inclCloud)
                 {
                     gotIt = true;
                     break;
@@ -1052,7 +1071,8 @@ namespace ContinuumNS
 
             if (refData1.refType != refData2.refType || refData1.startDate != refData2.startDate || refData1.endDate != refData2.endDate
                 || refData1.minLat != refData2.minLat || refData1.maxLat != refData2.maxLat || refData1.minLon != refData2.minLon || refData1.maxLon != refData2.maxLon
-                || refData1.folderLocation != refData2.folderLocation) 
+                || refData1.folderLocation != refData2.folderLocation || refData1.incl10mWS != refData2.incl10mWS || refData1.incl10mGust != refData2.incl10mGust
+                || refData1.inclCloud != refData2.inclCloud) 
                 areSame = false;
 
             return areSame;
@@ -1062,15 +1082,34 @@ namespace ContinuumNS
         public double CalcDownloadedDataCompletion(RefDataDownload thisRefData)
         {
             double complete = 0;
-            int numTotalDays = (int)Math.Round(thisRefData.endDate.Subtract(thisRefData.startDate).TotalDays,0);                                    
+
+            int numTotalDays = 0;                                    
             int daysWithData = 0;
+
+            if (thisRefData.folderLocation == null)
+                return complete;
 
             if (Directory.GetFiles(thisRefData.folderLocation).Count() > 0)
             {
-                for (DateTime thisDate = thisRefData.startDate; thisDate <= thisRefData.endDate; thisDate = thisDate.AddDays(1))
+                if (thisRefData.monthlyOrDaily == "Daily")
                 {
-                    if (ReferenceFileExists(thisDate, thisRefData))
-                        daysWithData++;
+                    for (DateTime thisDate = thisRefData.startDate; thisDate <= thisRefData.endDate; thisDate = thisDate.AddDays(1))
+                    {
+                        if (ReferenceFileExists(thisDate, thisRefData))
+                            daysWithData++;
+
+                        numTotalDays++;
+                    }
+                }
+                else // Monthly
+                {
+                    for (DateTime thisDate = thisRefData.startDate; thisDate <= thisRefData.endDate; thisDate = thisDate.AddMonths(1))
+                    {
+                        if (ReferenceFileExists(thisDate, thisRefData))
+                            daysWithData++;
+
+                        numTotalDays++;
+                    }
                 }
             }
 
@@ -1203,14 +1242,17 @@ namespace ContinuumNS
 
                 if (refDataDownload.refType == "MERRA2")
                 {
+                    refDataDownload.monthlyOrDaily = "Daily"; // MERRA2 data only available on a daily 
                     string line;
 
                     // Open one of the MERRA .ascii files and find the lat/lon closest TWO lats/lons to that of the input
                     StreamReader file;
+                    StreamReader lastFile;
 
                     try
                     {
                         file = new StreamReader(MERRAfiles[0]);
+                        lastFile = new StreamReader(MERRAfiles[MERRAfiles.Length - 1]);
                     }
                     catch
                     {
@@ -1222,7 +1264,6 @@ namespace ContinuumNS
                     {
                         char[] delims = { ',' };
                         string[] substrings = line.Split(delims);
-
 
                         if (substrings[0] == "lat") // read in all latitudes
                         {
@@ -1240,13 +1281,25 @@ namespace ContinuumNS
                                 longs[i - 1] = Convert.ToDouble(substrings[i]);
                         }
 
-                        if (substrings[0] == "U10M")
+                        if (substrings[0].Contains("U10M"))
                             refDataDownload.incl10mWS = true;
 
-                        
+                        if (substrings[0].Contains("MDSCLDFRCTTL"))
+                            refDataDownload.inclCloud = true;
+
                     }
 
                     file.Close();
+
+                    while ((line = lastFile.ReadLine()) != null)
+                    {                        
+                        string[] substrings = line.Split(',');                                              
+
+                        if (substrings[0].Contains("MDSCLDFRCTTL"))
+                            refDataDownload.inclCloud = true;
+                    }
+
+                    lastFile.Close();
                 }
                 else
                 {
@@ -1281,6 +1334,18 @@ namespace ContinuumNS
                         else
                             refDataDownload.monthlyOrDaily = "Daily";
 
+                        for (int v = 0; v < allVars.Length; v++)
+                        {
+                            string thisType = allVars[v].TypeOfData.Name;
+
+                            if (thisType == "Int16")
+                            {
+                                if (allVars[v].Name == "u10")
+                                    refDataDownload.incl10mWS = true;
+                                else if (allVars[v].Name == "fg10")
+                                    refDataDownload.incl10mGust = true;
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -1371,9 +1436,7 @@ namespace ContinuumNS
                 {
                     MessageBox.Show("Could not find netCDF file. Check specified folder path and try again.");
                     return dateRangeAndCount;
-                }
-
-                                             
+                }                                                             
 
                 try
                 {
@@ -1430,6 +1493,26 @@ namespace ContinuumNS
             return dateRangeAndCount;
         }
 
+        /// <summary> Reads ERA5 file and returns the start/end dates contained in the file </summary>        
+        public DateTime[] GetStartEndOfERAFile(RefDataDownload refDataDown, string era5File)
+        {
+            string[] thisFile = Directory.GetFiles(refDataDown.folderLocation, era5File);
+
+            DateTime baseTime = new DateTime(1900, 01, 01, 0, 0, 0); //time that all the ERA5 'time' variable values are relative to
+
+            DataSet thisERA5Data = DataSet.Open(thisFile[0]);
+            Variable[] allVars = thisERA5Data.Variables.ToArray();
+
+            Int32[] allTime = thisERA5Data.GetData<Int32[]>("time");
+
+            DateTime[] startEndDates = new DateTime[2];
+            startEndDates[0] = baseTime.AddHours(allTime[0]);
+            startEndDates[1] = baseTime.AddHours(allTime[allTime.Length - 1]);
+                        
+            thisERA5Data.Dispose();
+
+            return startEndDates;
+        }
     
         /// <summary> Returns true if file at specfied path is an ERA5 file that was downloaded by Continuum </summary>    
         public DateTime IsThisAContinuumERA5File(string refDataFile)
@@ -1537,7 +1620,7 @@ namespace ContinuumNS
                 if (thisDate.Day < 10)
                     thisDay = "0" + thisDay;
 
-                if (windOrCloud == "Wind")
+                if (windOrCloud == "Wind" || windOrCloud == "")
                     fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
                 else if (windOrCloud == "Cloud")
                     fileName = "MERRA2_Cloud" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";

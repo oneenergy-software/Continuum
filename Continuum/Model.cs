@@ -15,6 +15,8 @@ namespace ContinuumNS
 
         /// <summary> Elevation model coefficient in each WD sector </summary>
         public double[] elevCoeff;
+        /// <summary> Valley model coefficient in each WD sector </summary>
+        public double[] valleyCoeff;
 
         /// <summary> 'A' model coefficient for Downhill flow in each WD sector (m = A*P10Expo^B) </summary>
         public double[] downhill_A;
@@ -98,7 +100,32 @@ namespace ContinuumNS
             return DW_Coeff;
 
         }
-                
+
+        public double CalcValleyCoeff(int WD_sec)
+        {
+
+            return valleyCoeff[WD_sec];
+        }
+
+        public double CalcAvgValleyCoeff(double[] windRose)
+        {
+            double avgCoeff = 0;
+
+            for (int d = 0; d < windRose.Length; d++)
+                avgCoeff = avgCoeff + valleyCoeff[d] * windRose[d];
+
+            return avgCoeff;
+        }
+        public double CalcAvgelevCoeff(double[] windRose)
+        {
+            double avgCoeff = 0;
+
+            for (int d = 0; d < windRose.Length; d++)
+                avgCoeff = avgCoeff + elevCoeff[d] * windRose[d];
+
+            return avgCoeff;
+        }
+
         /// <summary> Calculates and returns UW coefficient based on flowType (Downhill, Uphill, SpdUp, Valley, or Turbulent) and P10_Expo. </summary>        
         public double CalcUW_Coeff(double P10_UW_Expo, double P10_DW_Expo, int WD_sec, string flowType)
         {              
@@ -324,6 +351,7 @@ namespace ContinuumNS
             for (int i = 0; i < numWD; i++)
             {
                 elevCoeff[i] = 0.005;
+                valleyCoeff[i] = 0.01;
 
                 downhill_A[i] = 0.1432f; // old DW_A = 0.2551
                 downhill_B[i] = -0.6537f; // old DW_B = -0.774
@@ -362,6 +390,7 @@ namespace ContinuumNS
         public void SizeArrays(int numWD)
         {     
             elevCoeff = new double[numWD];
+            valleyCoeff = new double[numWD];
             downhill_A = new double[numWD];
             downhill_B = new double[numWD];
             uphill_A = new double[numWD];

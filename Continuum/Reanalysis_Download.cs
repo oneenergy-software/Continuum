@@ -25,21 +25,33 @@ namespace ContinuumNS
         Continuum thisInst;
         /// <summary> Reference data download object created to initiate new download </summary>
         public ReferenceCollection.RefDataDownload dataToDownload = new ReferenceCollection.RefDataDownload();
-        
+        /// <summary> If set to false, form is not updated </summary>
+        public bool okToUpdate;
+
         /// <summary> Reanalysis download Constructor </summary>        
         public Reanalysis_Download(Continuum continuum)
         {
             InitializeComponent();
             thisInst = continuum;
+            okToUpdate = true;
             UpdateListOfRefDataDownloads();
-            cboDailyOrMonthly.SelectedIndex = 0;
+            UpdateShowTimeDropdown();
+
+            if (cboDailyOrMonthly.SelectedIndex == -1)
+                cboDailyOrMonthly.SelectedIndex = 0;
         }
 
         private void btnDownloadMERRA2_Click(object sender, EventArgs e)
         {
             bool needToDownload = false;
+            string selRefDataDownload = "";
 
-            if (cboRefDataDownloads.SelectedItem == null)
+            if (cboRefDataDownloads.SelectedItem != null)
+                selRefDataDownload = cboRefDataDownloads.SelectedItem.ToString();
+            else if (cboRefDataDownloads.Text != null)
+                selRefDataDownload = cboRefDataDownloads.Text;
+
+            if (selRefDataDownload == "")
             {
                 MessageBox.Show("Select 'New' to create a new reference data download");
                 return;
@@ -77,7 +89,7 @@ namespace ContinuumNS
                 }     
             }
             
-            if (cboRefDataDownloads.SelectedItem.ToString() == "Define New")
+            if (selRefDataDownload == "Define New")
             {
                 // User is trying to start a new data download.
                 // Make sure that a valid folder has been selected, end date is after start date, confirm number of nodes, check for username/password
@@ -95,21 +107,7 @@ namespace ContinuumNS
                 {
                     MessageBox.Show("You have to choose a folder to save the " + dataToDownload.refType + " datafiles.  Click 'Change Folder' button to select folder");
                     return;
-                }                                
-
-                int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);                
-                dataToDownload.startDate = dateReferenceStart.Value.AddHours(-offset);                
-                dataToDownload.endDate = dateReferenceEnd.Value.AddHours(-offset);
-
-                if (dateReferenceEnd.Value > DateTime.Now)
-                {
-                    MessageBox.Show("End date cannot be in the future.");
-                    return;
                 }
-
-                // Check to see if new files need to be downloaded
-                if (dataToDownload.completion < 1.0)
-                    needToDownload = true;
 
                 // Make sure that the lat/long range includes at least one node, min < max, and show message displaying number of nodes and time range selected to download (give chance to cancel)
                 if (txtMinLat.Text == "" || txtMaxLat.Text == "" || txtMinLong.Text == "" || txtMaxLong.Text == "")
@@ -118,11 +116,8 @@ namespace ContinuumNS
                     return;
                 }
 
-                double minLat = Convert.ToDouble(txtMinLat.Text);
-                double maxLat = Convert.ToDouble(txtMaxLat.Text);
-                double minLong = Convert.ToDouble(txtMinLong.Text);
-                double maxLong = Convert.ToDouble(txtMaxLong.Text);
-
+                ReadLatLongs();
+                
                 double latRes = 0.25;
                 double longRes = 0.25;
 
@@ -132,27 +127,22 @@ namespace ContinuumNS
                     longRes = 0.625;
                 }
 
-                minLat = Math.Round(minLat / latRes, 0) * latRes;
-                maxLat = Math.Round(maxLat / latRes, 0) * latRes;
-                minLong = Math.Round(minLong / longRes) * longRes;
-                maxLong = Math.Round(maxLong / longRes) * longRes;
+                dataToDownload.minLat = Math.Round(dataToDownload.minLat / latRes, 0) * latRes;
+                dataToDownload.maxLat = Math.Round(dataToDownload.maxLat / latRes, 0) * latRes;
+                dataToDownload.minLon = Math.Round(dataToDownload.minLon / longRes) * longRes;
+                dataToDownload.maxLon = Math.Round(dataToDownload.maxLon / longRes) * longRes;                               
 
-                dataToDownload.minLat = minLat;
-                dataToDownload.maxLat = maxLat;
-                dataToDownload.minLon = minLong;
-                dataToDownload.maxLon = maxLong;
-
-                int numLat = thisInst.refList.GetNumNodesInRange(minLat, maxLat, "Lat", dataToDownload);
-                int numLong = thisInst.refList.GetNumNodesInRange(minLong, maxLong, "Long", dataToDownload);
+                int numLat = thisInst.refList.GetNumNodesInRange(dataToDownload.minLat, dataToDownload.maxLat, "Lat", dataToDownload);
+                int numLong = thisInst.refList.GetNumNodesInRange(dataToDownload.minLon, dataToDownload.maxLon, "Long", dataToDownload);
                 int numNodes = numLat * numLong;
 
-                if (minLat > maxLat)
+                if (dataToDownload.minLat > dataToDownload.maxLat)
                 {
                     MessageBox.Show("Minimum latitude must be smaller than maximum latitude in range");
                     return;
                 }
 
-                if (minLong > maxLong)
+                if (dataToDownload.minLon > dataToDownload.maxLon)
                 {
                     MessageBox.Show("Minimum longitude must be smaller than maximum longitude in range");
                     return;
@@ -160,17 +150,40 @@ namespace ContinuumNS
 
                 if (numLat == 0)
                 {
-                    MessageBox.Show("There are no nodes that fall within specified latitude range: " + minLat.ToString() + " to " + maxLat.ToString());
+                    MessageBox.Show("There are no nodes that fall within specified latitude range: " + dataToDownload.minLat.ToString() + " to " + dataToDownload.maxLat.ToString());
                     return;
                 }
                 if (numLong == 0)
                 {
-                    MessageBox.Show("There are no nodes that fall within specified longitude range: " + minLong.ToString() + " to " + maxLong.ToString());
+                    MessageBox.Show("There are no nodes that fall within specified longitude range: " + dataToDownload.minLon.ToString() + " to " + dataToDownload.maxLon.ToString());
                     return;
                 }
 
-                DialogResult goodToGo = MessageBox.Show("With a latitude range of " + minLat.ToString() + " to " + maxLat.ToString() + " and a longitude range of " + minLong.ToString()
-                    + " to " + maxLong.ToString() + ", a total of " + numNodes.ToString() + " nodes will be downloaded (" + numLat.ToString() + " along latitude and " + numLong
+                dataToDownload.startDate = dateReferenceStart.Value;
+                dataToDownload.endDate = dateReferenceEnd.Value;
+
+                if (cboDailyOrMonthly.SelectedItem.ToString() == "Monthly")
+                    dataToDownload.endDate = dataToDownload.endDate.AddMonths(1).AddHours(-1);
+
+                if (cboShowTime.SelectedItem.ToString() == "Local")
+                {
+                    int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
+                    dataToDownload.startDate = dataToDownload.startDate.AddHours(-offset);
+                    dataToDownload.endDate = dataToDownload.endDate.AddHours(-offset);
+                }
+                
+                if (dateReferenceEnd.Value > DateTime.Now)
+                {
+                    MessageBox.Show("End date cannot be in the future.");
+                    return;
+                }
+
+                // Check to see if new files need to be downloaded
+                if (dataToDownload.completion < 1.0)
+                    needToDownload = true;
+                                
+                DialogResult goodToGo = MessageBox.Show("With a latitude range of " + dataToDownload.minLat.ToString() + " to " + dataToDownload.maxLat.ToString() + " and a longitude range of " + dataToDownload.minLon.ToString()
+                    + " to " + dataToDownload.maxLon.ToString() + ", a total of " + numNodes.ToString() + " nodes will be downloaded (" + numLat.ToString() + " along latitude and " + numLong
                     + " along longitude. Do you want to continue?", "Continuum", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.No)
@@ -262,9 +275,13 @@ namespace ContinuumNS
                         }
                         
                     }
-                }                
+                }
 
                 thisInst.refList.UpdateRefDataDownload(dataToDownload);
+
+                if (thisInst.refList.HaveThisRefDataDownload(dataToDownload) == false)
+                    thisInst.refList.AddRefDataDownload(dataToDownload);
+                
             }
 
             if (needToDownload)
@@ -285,9 +302,15 @@ namespace ContinuumNS
         public void EnableDisableControls(bool enable)
         {
             cboReanalysisType.Enabled = enable;
-            txtFolderLoc.Enabled = enable;
-       //     dateReferenceStart.Enabled = enable;  // Always allow users to change start/end dates for downloading
-       //     dateReferenceEnd.Enabled = enable;
+            cboDailyOrMonthly.Enabled = enable;
+
+            if (enable && cboReanalysisType.SelectedItem.ToString() == "MERRA2")
+            {
+                cboDailyOrMonthly.SelectedIndex = 0;
+                cboDailyOrMonthly.Enabled = false;
+            }
+
+            txtFolderLoc.Enabled = enable;       
             txtMinLat.Enabled = enable;
             txtMaxLat.Enabled = enable;
             txtMinLong.Enabled = enable;
@@ -298,40 +321,35 @@ namespace ContinuumNS
         /// new, then default start/end date, emtpy min max lat/long ranges, same data folder as last reference data of same type (if any). </summary>
         public void UpdateForm()
         {
-            if (cboRefDataDownloads.SelectedItem == null && dataToDownload.minLat == 0) // No defined reference downloads yet
+            string selRefDataDownload = "";
+
+            if (cboRefDataDownloads.SelectedItem != null)
+                selRefDataDownload = cboRefDataDownloads.SelectedItem.ToString();
+
+            if (selRefDataDownload == "" && dataToDownload.minLat == 0) // No defined reference downloads yet
             {
                 cboReanalysisType.SelectedIndex = 0;
                 EnableDisableControls(false); // Disable all controls (ie user needs to click 'New')
                 return;
             }
-            else if (cboRefDataDownloads.SelectedItem == null && dataToDownload.minLat != 0) // Created RefDataDownload from selected folder
+            else if (selRefDataDownload == "Define New" && dataToDownload.minLat == 0)
             {
-                EnableDisableControls(false);
-
-                txtFolderLoc.Text = dataToDownload.folderLocation;                
-
-                txtMinLat.Text = dataToDownload.minLat.ToString();
-                txtMaxLat.Text = dataToDownload.maxLat.ToString();
-                txtMinLong.Text = dataToDownload.minLon.ToString();
-                txtMaxLong.Text = dataToDownload.maxLon.ToString();
-
-                cboReanalysisType.SelectedItem = dataToDownload.refType;
-
-                dataToDownload.completion = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
-                txtPercComplete.Text = Math.Round(dataToDownload.completion * 100.0, 1).ToString();
-
-                btnDownloadMERRA2.BackColor = Color.MediumSeaGreen;
-            }
-            else if (cboRefDataDownloads.SelectedItem.ToString() == "Define New")
-            {                
                 // Enable all controls to let user define new reference data download
                 EnableDisableControls(true);
                 txtFolderLoc.Text = dataToDownload.folderLocation;
-                //return;                
+                dataToDownload.completion = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
+                txtPercComplete.Text = Math.Round(dataToDownload.completion * 100.0, 1).ToString();
             }
-            else
+            else if ((selRefDataDownload == "" && dataToDownload.minLat != 0) || (selRefDataDownload == "Define New" && dataToDownload.minLat != 0) 
+                || (selRefDataDownload != "" && selRefDataDownload != "Define New"))
             {
-                dataToDownload = thisInst.refList.GetRefDataDownloadByName(cboRefDataDownloads.SelectedItem.ToString());
+                // Created RefDataDownload from selected folder or user selected ref data download from list
+
+                if (selRefDataDownload != "" && selRefDataDownload != "Define New")
+                    dataToDownload = thisInst.refList.GetRefDataDownloadByName(cboRefDataDownloads.SelectedItem.ToString());
+                else
+                    cboRefDataDownloads.Text = dataToDownload.GetName();
+                                
                 EnableDisableControls(false);
             
                 txtFolderLoc.Text = dataToDownload.folderLocation;
@@ -351,25 +369,35 @@ namespace ContinuumNS
                 txtMaxLong.Text = dataToDownload.maxLon.ToString();
 
                 cboReanalysisType.SelectedItem = dataToDownload.refType;
-                int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
+                                
+                okToUpdate = false;
+                dateReferenceStart.Value = dataToDownload.startDate;
+                dateReferenceEnd.Value = dataToDownload.endDate;
 
-                if (dataToDownload.startDate.Year != 1)
-                {                    
-                    dateReferenceStart.Value = dataToDownload.startDate.AddHours(offset); // dateReference are local time start/end                    
-                    dateReferenceEnd.Value = dataToDownload.endDate.AddHours(offset); // dataToDownload start/end are in UTC-0
-                }
-                else
+                if (cboShowTime.SelectedItem.ToString() == "Local")
                 {
-                    dateReferenceStart.Enabled = true;
-                    dateReferenceEnd.Enabled = true;
-                    dataToDownload.startDate = dateReferenceStart.Value.AddHours(-offset);
-                    dataToDownload.endDate = dateReferenceEnd.Value.AddHours(-offset);
+                    int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
+                    dateReferenceStart.Value = dateReferenceStart.Value.AddHours(offset);
+                    dateReferenceEnd.Value = dateReferenceEnd.Value.AddHours(offset);
                 }
 
+                okToUpdate = true;
                 dataToDownload.completion = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
                 txtPercComplete.Text = Math.Round(dataToDownload.completion * 100.0, 4).ToString();
 
+                chkInclOpParam1.Checked = dataToDownload.incl10mWS;
+
+                if (dataToDownload.refType == "ERA5")
+                    chkInclOpParam2.Checked = dataToDownload.incl10mGust;
+                else
+                    chkInclOpParam2.Checked = dataToDownload.inclCloud;
+
                 btnDownloadMERRA2.BackColor = Color.MediumSeaGreen;
+
+                if (dataToDownload.monthlyOrDaily == "Daily")
+                    cboDailyOrMonthly.SelectedIndex = 0;
+                else
+                    cboDailyOrMonthly.SelectedIndex = 1;                
             }
            
         }
@@ -391,29 +419,12 @@ namespace ContinuumNS
                 }
 
                 dataToDownload = thisInst.refList.ReadFileAndDefineRefDataDownload(thisInst.fbd_MERRAData.SelectedPath);
+                DateRangeAndCompletion dateRngCompl = thisInst.refList.GetDataFileStartEndDateAndCompletion(thisInst.fbd_MERRAData.SelectedPath, dataToDownload.refType);
 
-                if (dataToDownload.refType == null)
-                    dataToDownload.refType = cboReanalysisType.SelectedItem.ToString();
-                else
-                {
-                    ReferenceCollection.DateRangeAndCompletion refdataRangeAndComplete = thisInst.refList.GetDataFileStartEndDateAndCompletion(dataToDownload.folderLocation, dataToDownload.refType);
-                    dataToDownload.startDate = refdataRangeAndComplete.startEnd[0];
-                    dataToDownload.endDate = refdataRangeAndComplete.startEnd[1];
-                    dataToDownload.completion = refdataRangeAndComplete.completion;
+                dataToDownload.startDate = dateRngCompl.startEnd[0];
+                dataToDownload.endDate = dateRngCompl.startEnd[1];                
 
-                    if (dataToDownload.monthlyOrDaily == "Daily")
-                        cboDailyOrMonthly.SelectedIndex = 0;
-                    else
-                        cboDailyOrMonthly.SelectedIndex = 1;
-                }                
-
-                if (thisInst.refList.HaveThisRefDataDownload(dataToDownload) == false && dataToDownload.minLat != 0)
-                {
-                    thisInst.refList.AddRefDataDownload(dataToDownload);
-                    UpdateListOfRefDataDownloads();
-                }
-                else
-                    UpdateForm();
+                UpdateForm();
             }
             else
                 return;
@@ -448,23 +459,32 @@ namespace ContinuumNS
             for (int r = 0; r < cboRefDataDownloads.Items.Count; r++)
                 if (cboRefDataDownloads.Items[r].ToString() == "Define New")
                 {
+                    dataToDownload = new RefDataDownload();
+                    dataToDownload.refType = cboReanalysisType.SelectedItem.ToString();
                     cboRefDataDownloads.SelectedIndex = r;
                     return;
                 }
 
             // Otherwise add "Define New" and select it
             cboRefDataDownloads.Items.Add("Define New");
-            cboRefDataDownloads.SelectedIndex = cboRefDataDownloads.Items.Count - 1;            
+            cboRefDataDownloads.SelectedIndex = cboRefDataDownloads.Items.Count - 1;           
             
         }
 
         private void dateReferenceStart_ValueChanged(object sender, EventArgs e)
         {
             // Update start date of selected RefDataDownload
-            DateTime newStart = dateReferenceStart.Value;
-            int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
-            dataToDownload.startDate = dateReferenceStart.Value.AddHours(-offset);
-                        
+            if (okToUpdate == false)
+                return;                        
+
+            if (cboShowTime.SelectedItem.ToString() == "Local")
+            {
+                int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
+                dataToDownload.startDate = dateReferenceStart.Value.AddHours(-offset);
+            }
+            else
+                dataToDownload.startDate = dateReferenceStart.Value;
+
             double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
             dataToDownload.completion = percCompl;
             txtPercComplete.Text = Math.Round(percCompl * 100.0, 1).ToString();
@@ -472,14 +492,27 @@ namespace ContinuumNS
 
         private void dateReferenceEnd_ValueChanged(object sender, EventArgs e)
         {
-            // Update end date of selected RefDataDownload
-            DateTime newEnd = dateReferenceEnd.Value;
-            int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
-            dataToDownload.endDate = dateReferenceEnd.Value.AddHours(-offset);
+            // Update end date of selected RefDataDownload. If it is a monthly download, update dataToDownload.endDate to end of month
+            if (okToUpdate == false)
+                return;
 
-            double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
-            dataToDownload.completion = percCompl;
-            txtPercComplete.Text = Math.Round(percCompl * 100.0, 1).ToString();
+            if (cboDailyOrMonthly.SelectedItem.ToString() == "Daily")            
+                dataToDownload.endDate = dateReferenceEnd.Value;  
+            else // Monthly            
+                dataToDownload.endDate = dateReferenceEnd.Value.AddMonths(1).AddHours(-1); // End date of a monthly download will be at last hour of month (UTC-0)
+              
+            if (cboShowTime.SelectedItem.ToString() == "Local")
+            {
+                int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
+                dataToDownload.endDate = dataToDownload.endDate.AddHours(-offset);
+            }
+
+            if (dataToDownload.startDate.Year != 1)
+            {
+                double percCompl = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
+                dataToDownload.completion = percCompl;
+                txtPercComplete.Text = Math.Round(percCompl * 100.0, 1).ToString();
+            }
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -492,8 +525,7 @@ namespace ContinuumNS
         }
 
         private void cboReanalysisType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateOptionalParams();
+        {           
 
             if (cboReanalysisType.SelectedItem.ToString() == "MERRA2")
             {
@@ -501,15 +533,24 @@ namespace ContinuumNS
                 cboDailyOrMonthly.Enabled = false;
             }
             else            
-                cboDailyOrMonthly.Enabled = true;            
+                cboDailyOrMonthly.Enabled = true;
+
+            UpdateOptionalParams();
         }
 
         private void cboDailyOrMonthly_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (okToUpdate == false)
+                return;
+
             if (cboDailyOrMonthly.SelectedItem.ToString() == "Monthly")
             {                
                 dateReferenceStart.CustomFormat = "MM/yyyy";
                 dateReferenceEnd.CustomFormat = "MM/yyyy";
+                okToUpdate = false; // By setting okToUpdate to false, this modification will not affect the actual start/end time of the refDataDownload
+                dateReferenceStart.Value = new DateTime(dateReferenceStart.Value.Year, dateReferenceStart.Value.Month, 1);
+                dateReferenceEnd.Value = new DateTime(dateReferenceEnd.Value.Year, dateReferenceEnd.Value.Month, 1);
+                okToUpdate = true;
             }
             else
             {
@@ -530,6 +571,65 @@ namespace ContinuumNS
                 chkInclOpParam1.Text = "10m WS";
                 chkInclOpParam2.Text = "10m Wind Gust since previous post processing";                
             }
+        }
+
+        private void cboShowTime_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            okToUpdate = false;
+            dateReferenceStart.Value = dataToDownload.startDate;
+            dateReferenceEnd.Value = dataToDownload.endDate;
+            
+            if (cboShowTime.SelectedItem.ToString() == "Local")
+            {
+                if (dataToDownload.minLat == 0)                
+                    ReadLatLongs();
+                                    
+                int offset = thisInst.UTM_conversions.GetUTC_Offset(dataToDownload.minLat, dataToDownload.minLon);
+                dateReferenceStart.Value = dateReferenceStart.Value.AddHours(offset);
+                dateReferenceEnd.Value = dateReferenceEnd.Value.AddHours(offset);
+            }
+
+            okToUpdate = true;            
+        }
+
+        /// <summary> Tries to read min/max lat/long entries </summary>
+        public void ReadLatLongs()
+        {
+            if (txtMinLat.Text != "")
+                double.TryParse(txtMinLat.Text, out dataToDownload.minLat);
+
+            if (txtMaxLat.Text != "")
+                double.TryParse(txtMaxLat.Text, out dataToDownload.maxLat);
+
+            if (txtMinLong.Text != "")
+                double.TryParse(txtMinLong.Text, out dataToDownload.minLon);
+
+            if (txtMaxLong.Text != "")
+                double.TryParse(txtMaxLong.Text, out dataToDownload.maxLon);
+        }
+
+        /// <summary> Updates 'Show Time' dropdown so that Local time option only allowed after lat/long range has been defined </summary>
+        public void UpdateShowTimeDropdown()
+        {            
+            if (dataToDownload.minLat == 0 || dataToDownload.minLon == 0)
+            {
+                cboShowTime.Enabled = false;
+                cboShowTime.Text = "UTC-0";
+            }
+            else
+                cboShowTime.Enabled = true;
+        }
+
+        private void txtMinLat_TextChanged(object sender, EventArgs e)
+        {
+            ReadLatLongs();
+            UpdateShowTimeDropdown();
+        }
+
+        private void txtMinLong_TextChanged(object sender, EventArgs e)
+        {
+            ReadLatLongs();
+            UpdateShowTimeDropdown();
         }
     }
 }
