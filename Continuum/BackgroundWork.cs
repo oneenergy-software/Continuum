@@ -3898,6 +3898,20 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             Reference thisRef = theArgs.thisRef;
             Reference.RefData_Pull[] nodesToPull = theArgs.nodesToPull;
+            Reference.RefData_Pull[] nodesToPull10 = null;
+
+            if (thisRef.refDataDownload.incl10mWS)
+            {
+                nodesToPull10 = new Reference.RefData_Pull[nodesToPull.Length];
+
+                for (int n = 0; n < nodesToPull.Length; n++)
+                {
+                    nodesToPull10[n].Coords = nodesToPull[n].Coords;
+                    nodesToPull10[n].UTM = nodesToPull[n].UTM;
+                    nodesToPull10[n].XY_ind = nodesToPull[n].XY_ind;                    
+                }
+            }    
+
             int numNodesToPull = nodesToPull.Length;
             ReferenceCollection refList = thisInst.refList;
 
@@ -3929,6 +3943,13 @@ namespace ContinuumNS
 
             // Resize Refpull objects to hold all TS data and define East_North_WS arrays
             Reference.East_North_WSs[] nodeEastNorthWS = new Reference.East_North_WSs[numNodesToPull];
+            Reference.East_North_WSs[] nodeEastNorthWS10 = new Reference.East_North_WSs[numNodesToPull];
+
+            if (thisRef.refDataDownload.incl10mWS)
+            {
+                thisRef.tenM_Data = new Reference();
+                thisRef.tenM_Data.nodes = new Reference.Node_Data[thisRef.numNodes];
+            }
 
             for (int i = 0; i < numNodesToPull; i++)
             {
@@ -3936,6 +3957,14 @@ namespace ContinuumNS
                 Array.Resize(ref nodeEastNorthWS[i].timeStamp, numRefHours);
                 Array.Resize(ref nodeEastNorthWS[i].U_WS, numRefHours);
                 Array.Resize(ref nodeEastNorthWS[i].V_WS, numRefHours);
+
+                if (thisRef.refDataDownload.incl10mWS)
+                {
+                    Array.Resize(ref nodesToPull10[i].Data, numRefHours);
+                    Array.Resize(ref nodeEastNorthWS10[i].timeStamp, numRefHours);
+                    Array.Resize(ref nodeEastNorthWS10[i].U_WS, numRefHours);
+                    Array.Resize(ref nodeEastNorthWS10[i].V_WS, numRefHours);
+                }
             }
 
             int lastInd = 0;
@@ -3968,8 +3997,10 @@ namespace ContinuumNS
                     for (int i = last_file_ind; i < refDataFiles.Length; i++)
                     {
                         string thisFile = refDataFiles[i];
+                        int lastSlash = thisFile.LastIndexOf("\\");
+                        string fileNameOnly = thisFile.Substring(lastSlash + 1, thisFile.Length - lastSlash - 1);
 
-                        if (thisFile.Contains("Cloud"))
+                        if (fileNameOnly.Contains("Cloud"))
                             continue;
 
                         if (thisFile.Substring(thisFile.Length - 18, 8) == datestring)
@@ -3993,7 +4024,7 @@ namespace ContinuumNS
 
                             while (file_ind < file_strings.Length && file_strings[file_ind - 1] != "time")
                             {
-                                if (thisRef.Need_This_Param(file_strings[file_ind]))
+                                if (thisRef.Need_This_Param(file_strings[file_ind], thisRef.refDataDownload.incl10mWS))
                                 {
                                     // Using location of brackets in file line to grab the hour of that line
                                     int open_bracket = file_strings[file_ind].IndexOf("[");
@@ -4011,7 +4042,6 @@ namespace ContinuumNS
                                     {
                                         if (This_X_ind == nodesToPull[j].XY_ind.X_ind)
                                         {
-
                                             if (file_strings[file_ind].Substring(0, 3) == "U50")
                                                 nodeEastNorthWS[j].U_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
                                             else if (file_strings[file_ind].Substring(0, 3) == "V50")
@@ -4023,9 +4053,23 @@ namespace ContinuumNS
                                             else if (file_strings[file_ind].Substring(0, 3) == "SLP")
                                                 nodesToPull[j].Data[thisInd].seaPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
 
+                                            if (thisRef.refDataDownload.incl10mWS)
+                                            {
+                                                if (file_strings[file_ind].Substring(0, 3) == "U10")
+                                                    nodeEastNorthWS10[j].U_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                                else if (file_strings[file_ind].Substring(0, 3) == "V10")
+                                                    nodeEastNorthWS10[j].V_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                            }
+
                                             // Save dates in UTC-0 time
                                             nodesToPull[j].Data[thisInd].thisDate = thisDate.AddHours(ThisHour); // + thisRef.interpData.UTC_offset);
                                             nodeEastNorthWS[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour); // + thisRef.interpData.UTC_offset);
+
+                                            if (thisRef.refDataDownload.incl10mWS)
+                                            {
+                                                nodesToPull10[j].Data[thisInd].thisDate = thisDate.AddHours(ThisHour);
+                                                nodeEastNorthWS10[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour);
+                                            }
                                         }
                                     }
                                 }
@@ -4068,6 +4112,15 @@ namespace ContinuumNS
 
                     for (int n = 0; n < nodesToPull.Length; n++)
                         nodesToPull[n].Data[hourInd].thisDate = thisTS; //.AddHours(thisRef.interpData.UTC_offset);
+
+                    if (thisRef.refDataDownload.incl10mWS)
+                    {
+                        for (int n = 0; n < nodeEastNorthWS10.Length; n++)
+                            nodeEastNorthWS10[n].timeStamp[hourInd] = thisTS; //.AddHours(thisRef.interpData.UTC_offset);
+
+                        for (int n = 0; n < nodesToPull10.Length; n++)
+                            nodesToPull10[n].Data[hourInd].thisDate = thisTS; //.AddHours(thisRef.interpData.UTC_offset);
+                    }
                 }
 
                 DateTime baseTime = new DateTime(1900, 01, 01, 0, 0, 0); //time that all the ERA5 'time' variable values are relative to
@@ -4132,7 +4185,7 @@ namespace ContinuumNS
                             }
                             else if (allVars[v].Name == "t2m")
                             {
-                                // 10 m temperature
+                                // 2 m temperature
                                 for (int t = 0; t <= currentVar.GetUpperBound(0); t++)
                                 {
                                     thisDate = baseTime.AddHours(allTime[t]);
@@ -4175,10 +4228,55 @@ namespace ContinuumNS
                                         nodeEastNorthWS[n].V_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
                                 }
                             }
+                            else if (allVars[v].Name == "u10" && thisRef.refDataDownload.incl10mWS)
+                            {
+                                // 10 m U component of WS (if included)
+                                for (int t = 0; t <= currentVar.GetUpperBound(0); t++)
+                                {
+                                    thisDate = baseTime.AddHours(allTime[t]);
+                                    tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
+
+                                    if (tsInd >= numRefHours || tsInd < 0)
+                                        continue;
+
+                                    for (int n = 0; n < nodesToPull.Length; n++)
+                                        nodeEastNorthWS10[n].U_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                }
+                            }
+                            else if (allVars[v].Name == "v10" && thisRef.refDataDownload.incl10mWS)
+                            {
+                                // 10 m V component of WS (if included)
+                                for (int t = 0; t <= currentVar.GetUpperBound(0); t++)
+                                {
+                                    thisDate = baseTime.AddHours(allTime[t]);
+                                    tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
+
+                                    if (tsInd >= numRefHours || tsInd < 0)
+                                        continue;
+
+                                    for (int n = 0; n < nodesToPull.Length; n++)
+                                        nodeEastNorthWS10[n].V_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                }
+                            }
+                            else if (allVars[v].Name == "fg10" && thisRef.refDataDownload.incl10mGust) // to do: get name of gust param in netCDF
+                            {
+                                // 10 m WS gust (if included)
+                                for (int t = 0; t <= currentVar.GetUpperBound(0); t++)
+                                {
+                                    thisDate = baseTime.AddHours(allTime[t]);
+                                    tsInd = Convert.ToInt32(thisDate.Subtract(startTimeZeroHour).TotalHours);
+
+                                    if (tsInd >= numRefHours || tsInd < 0)
+                                        continue;
+                                                                        
+                                    for (int n = 0; n < nodesToPull.Length; n++)
+                                        nodesToPull[n].Data[tsInd].gustWS = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+
+                                }
+                            }
                         }
                     }
                 }
-
             }
 
             // Trim nodesToPull to only include data between start and end time (in UTC-0)
@@ -4218,6 +4316,25 @@ namespace ContinuumNS
                 nodeEastNorthWS[i].V_WS = croppedEastNorth[0].V_WS;
 
                 thisRef.Calc_WS_WD(ref nodesToPull, nodeEastNorthWS);
+
+                if (thisRef.refDataDownload.incl10mWS)
+                {
+                    Reference.Wind_TS_with_Prod[] croppedData10 = new Reference.Wind_TS_with_Prod[endInd - startInd + 1];
+                    Array.Copy(nodesToPull10[i].Data, startInd, croppedData10, 0, endInd - startInd + 1);
+                    nodesToPull10[i].Data = croppedData10;
+
+                    Reference.East_North_WSs[] croppedEastNorth10 = new Reference.East_North_WSs[1];
+                    croppedEastNorth10[0].U_WS = new double[endInd - startInd + 1];
+                    croppedEastNorth10[0].V_WS = new double[endInd - startInd + 1];
+
+                    Array.Copy(nodeEastNorthWS10[i].U_WS, startInd, croppedEastNorth10[0].U_WS, 0, endInd - startInd + 1);
+                    nodeEastNorthWS10[i].U_WS = croppedEastNorth10[0].U_WS;
+
+                    Array.Copy(nodeEastNorthWS10[i].V_WS, startInd, croppedEastNorth10[0].V_WS, 0, endInd - startInd + 1);
+                    nodeEastNorthWS10[i].V_WS = croppedEastNorth10[0].V_WS;
+
+                    thisRef.Calc_WS_WD(ref nodesToPull10, nodeEastNorthWS10);
+                }
             }
 
             // Check that reference data was read in
@@ -4231,14 +4348,30 @@ namespace ContinuumNS
                 return;
             }
 
+            if (thisRef.refDataDownload.incl10mGust)
+                thisRef.haveGustWS = true;
+
             // Add new reference nodes to database (saved in UTC-0)
             thisRef.AddNewDataToDB(thisInst, nodesToPull);                       
 
             // Get all nodes from database (timestamps are adjusted to local time)
-            thisRef.GetReferenceDataFromDB(thisInst);
+            thisRef.GetReferenceDataFromDB(thisInst);                       
+
+            if (thisRef.refDataDownload.incl10mWS)
+            {
+                for (int n = 0; n < numNodesToPull; n++)
+                    thisRef.tenM_Data.nodes[n].TS_Data = nodesToPull10[n].Data;
+            }
 
             // Generate interpData
             thisRef.GetInterpData(thisInst.UTM_conversions);
+
+            if (thisRef.refDataDownload.incl10mGust)
+            {
+                for (int n = 0; n < numNodesToPull; n++)
+                    for (int t = 0; t < nodesToPull[n].Data.Length; t++)
+                        thisRef.tenM_Data.interpData.TS_Data[t].gustWS = nodesToPull[n].Data[t].gustWS;
+            }
 
             thisRef.Calc_MonthProdStats(thisInst.UTM_conversions);
             thisRef.CalcAnnualProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, thisInst.UTM_conversions);
@@ -5028,7 +5161,8 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             ReferenceCollection.RefDataDownload refData = theArgs.thisRefDownload;
             ReferenceCollection refList = thisInst.refList;
-            string dailyOrMonthly = refData.monthlyOrDaily;
+            bool incl10mWS = refData.incl10mWS;
+            bool incl10mGust = refData.incl10mGust;
 
             double minLat = refData.minLat;
             double maxLat = refData.maxLat;
@@ -5043,10 +5177,7 @@ namespace ContinuumNS
             DateTime startDayOnly = new DateTime(refData.startDate.Year, refData.startDate.Month, refData.startDate.Day);
             DateTime endDayOnly = new DateTime(refData.endDate.Year, refData.endDate.Month, refData.endDate.Day);
 
-            int numDays = endDayOnly.Subtract(startDayOnly).Days + 1;
-
-            List<int> integerList = Enumerable.Range(0, numDays).ToList();
-            int count = 0;
+            int numDays = endDayOnly.Subtract(startDayOnly).Days + 1;                        
 
             Stopwatch thisStopwatch = new Stopwatch();
             thisStopwatch.Start();
@@ -5088,8 +5219,9 @@ namespace ContinuumNS
                         string pythonPath = Environment.GetEnvironmentVariable("python") + "\\python.exe";
 
                         string pythonScript = "ERA5_Downloader.py \"" + refData.folderLocation + "\" " + thisDate.Year + " " + thisDate.Month + " "
-                            + thisDate.Day + " " + minLat.ToString() + " " + maxLat.ToString() + " " + minLong.ToString() + " " + maxLong.ToString();
+                            + thisDate.Day + " " + minLat.ToString() + " " + maxLat.ToString() + " " + minLong.ToString() + " " + maxLong.ToString() + " " + incl10mWS.ToString() + " " + incl10mGust.ToString();
 
+                        Debug.WriteLine(pythonScript);
                         ProcessStartInfo start = new ProcessStartInfo();
                         start.WorkingDirectory = Directory.GetCurrentDirectory();
                         start.FileName = pythonPath;
@@ -5120,6 +5252,18 @@ namespace ContinuumNS
                     thisDate = refData.startDate.AddMonths(i);
                     bool fileExists = refList.ReferenceFileExists(thisDate, refData);
 
+                    if (fileExists) // Check to see if it contains the full month
+                    {                        
+                        DateTime[] thisStartEnd = refList.GetStartEndOfERAFile(refData, refList.CreateReferenceDatafilename(refData, thisDate));
+
+                        if (thisStartEnd[1] != thisDate.AddMonths(1).AddHours(-1))
+                        {
+                            fileExists = false;
+                            string[] thisFile = Directory.GetFiles(refData.folderLocation, refList.CreateReferenceDatafilename(refData, thisDate));
+                            File.Delete(thisFile[0]);
+                        }
+                    }
+
                     double Prog = Math.Min(100 * (double)i / numMonths, 100);
                     if (i > 0)
                     {
@@ -5141,8 +5285,9 @@ namespace ContinuumNS
                         string pythonPath = Environment.GetEnvironmentVariable("python") + "\\python.exe";
 
                         string pythonScript = "ERA5_MonthlyDownloader.py \"" + refData.folderLocation + "\" " + thisDate.Year + " " + thisDate.Month + " "
-                            + " " + minLat.ToString() + " " + maxLat.ToString() + " " + minLong.ToString() + " " + maxLong.ToString();
+                            + " " + minLat.ToString() + " " + maxLat.ToString() + " " + minLong.ToString() + " " + maxLong.ToString() + " " + incl10mWS.ToString() + " " + incl10mGust.ToString();
 
+                        Debug.WriteLine(pythonScript);
                         ProcessStartInfo start = new ProcessStartInfo();
                         start.WorkingDirectory = Directory.GetCurrentDirectory();
                         start.FileName = pythonPath;
@@ -5798,9 +5943,9 @@ namespace ContinuumNS
                 double Prog = 100 * Num_Days_Processed.TotalDays / Num_Days_Total.TotalDays;
 
                 if (counter % 50 == 0 && Prog > 0)
-                    BackgroundWorker_RefDataExtract.ReportProgress((int)Prog, "Importing MERRA2 data");
+                    BackgroundWorker_CloudDataExtract.ReportProgress((int)Prog, "Importing MERRA2 data");
 
-                if (BackgroundWorker_RefDataExtract.CancellationPending == true)
+                if (BackgroundWorker_CloudDataExtract.CancellationPending == true)
                 {                         
                     DoWorkDone = true;
                     return;
@@ -5810,9 +5955,14 @@ namespace ContinuumNS
                 for (int i = last_file_ind; i < refDataFiles.Length; i++)
                 {
                     string thisFile = refDataFiles[i];
+                    int lastSlash = thisFile.LastIndexOf("\\");
+                    string fileNameOnly = thisFile.Substring(lastSlash + 1, thisFile.Length - lastSlash - 1);
 
-                    if (thisFile.Contains("Cloud"))
+                    if (fileNameOnly.Contains("Cloud") == false)
                         continue;
+
+              //      if (thisFile.Contains("Cloud") == false)
+              //          continue;
 
                     if (thisFile.Substring(thisFile.Length - 18, 8) == datestring)
                     {
@@ -5835,7 +5985,7 @@ namespace ContinuumNS
 
                         while (file_ind < file_strings.Length && file_strings[file_ind - 1] != "time")
                         {
-                            if (thisRef.Need_This_Param(file_strings[file_ind]))
+                            if (thisRef.Need_This_Param(file_strings[file_ind], thisRef.refDataDownload.incl10mWS))
                             {
                                 // Using location of brackets in file line to grab the hour of that line
                                 int open_bracket = file_strings[file_ind].IndexOf("[");
@@ -5852,11 +6002,11 @@ namespace ContinuumNS
                                 if (This_X_ind == cloudCover.coords.X_ind)
                                 {
 
-                                    if (file_strings[file_ind].Substring(0, 3) == "MDSCLDFRCTTL")
+                                    if (file_strings[file_ind].Substring(0, 12) == "MDSCLDFRCTTL")
                                         cloudCover.merraCloud[thisInd].modisCloudCover = Convert.ToSingle(file_strings[file_ind + 1 + cloudCover.coords.Y_ind]);
-                                    else if (file_strings[file_ind].Substring(0, 3) == "MDSOPTHCKTTL")
+                                    else if (file_strings[file_ind].Substring(0, 12) == "MDSOPTHCKTTL")
                                         cloudCover.merraCloud[thisInd].modisCloudThickness = Convert.ToSingle(file_strings[file_ind + 1 + cloudCover.coords.Y_ind]);
-                                    else if (file_strings[file_ind].Substring(0, 3) == "ISCCPCLDFRC")
+                                    else if (file_strings[file_ind].Substring(0, 11) == "ISCCPCLDFRC")
                                         cloudCover.merraCloud[thisInd].isccpCloudCover = Convert.ToSingle(file_strings[file_ind + 1 + cloudCover.coords.Y_ind]);
 
                                     // Save dates in UTC-0 time
@@ -5883,8 +6033,8 @@ namespace ContinuumNS
                 }
 
                 // update lastInd
-          //      while (nodeEastNorthWS[0].U_WS[lastInd] != 0 && lastInd < (numRefHours - 1))
-          //          lastInd++;
+                while (cloudCover.merraCloud[lastInd].thisDate.Year != 1 && lastInd < (numRefHours - 1))
+                    lastInd++;
             }
 
             // Export to CSV
@@ -5897,6 +6047,27 @@ namespace ContinuumNS
         {
             Show();
             BackgroundWorker_CloudDataExtract.RunWorkerAsync(varsForExtract);
+        }
+
+        private void BackgroundWorker_CloudDataExtract_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // Updates the reference data import progress bar
+            BringToFront();
+            string textForLabel = e.UserState.ToString();
+            int progBarVal = e.ProgressPercentage;
+
+            if (progBarVal > 100)
+                progBarVal = 100;
+
+            progbar.Value = progBarVal;
+            Text = "Continuum 3";
+            lblprogbar.Text = textForLabel;
+            Refresh();
+        }
+
+        private void BackgroundWorker_CloudDataExtract_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Close();
         }
     }
 }

@@ -64,6 +64,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtRefDataFolder = new System.Windows.Forms.TextBox();
             this.btnDownloadHelp = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cboShowTime = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataLTRefNodes)).BeginInit();
             this.SuspendLayout();
             // 
@@ -150,9 +152,9 @@
             this.label52.Location = new System.Drawing.Point(31, 307);
             this.label52.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(74, 18);
+            this.label52.Size = new System.Drawing.Size(67, 18);
             this.label52.TabIndex = 301;
-            this.label52.Text = "End (Local)";
+            this.label52.Text = "End Time:";
             // 
             // label54
             // 
@@ -161,9 +163,9 @@
             this.label54.Location = new System.Drawing.Point(32, 248);
             this.label54.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(81, 18);
+            this.label54.Size = new System.Drawing.Size(74, 18);
             this.label54.TabIndex = 300;
-            this.label54.Text = "Start (Local)";
+            this.label54.Text = "Start Time:";
             // 
             // label5
             // 
@@ -263,7 +265,7 @@
             this.dateRefEnd.CustomFormat = "MM/dd/yyyy HH:mm";
             this.dateRefEnd.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateRefEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateRefEnd.Location = new System.Drawing.Point(146, 655);
+            this.dateRefEnd.Location = new System.Drawing.Point(188, 668);
             this.dateRefEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateRefEnd.MaxDate = new System.DateTime(2050, 12, 1, 0, 0, 0, 0);
             this.dateRefEnd.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -279,7 +281,7 @@
             this.dateRefStart.CustomFormat = "MM/dd/yyyy HH:mm";
             this.dateRefStart.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateRefStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dateRefStart.Location = new System.Drawing.Point(146, 621);
+            this.dateRefStart.Location = new System.Drawing.Point(188, 634);
             this.dateRefStart.Margin = new System.Windows.Forms.Padding(2);
             this.dateRefStart.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
             this.dateRefStart.MinDate = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
@@ -293,23 +295,23 @@
             // 
             this.label152.AutoSize = true;
             this.label152.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label152.Location = new System.Drawing.Point(33, 655);
+            this.label152.Location = new System.Drawing.Point(112, 665);
             this.label152.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label152.Name = "label152";
-            this.label152.Size = new System.Drawing.Size(74, 18);
+            this.label152.Size = new System.Drawing.Size(67, 18);
             this.label152.TabIndex = 288;
-            this.label152.Text = "End (Local)";
+            this.label152.Text = "End Time:";
             // 
             // label153
             // 
             this.label153.AutoSize = true;
             this.label153.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label153.Location = new System.Drawing.Point(32, 628);
+            this.label153.Location = new System.Drawing.Point(111, 638);
             this.label153.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label153.Name = "label153";
-            this.label153.Size = new System.Drawing.Size(81, 18);
+            this.label153.Size = new System.Drawing.Size(74, 18);
             this.label153.TabIndex = 287;
-            this.label153.Text = "Start (Local)";
+            this.label153.Text = "Start Time:";
             // 
             // label147
             // 
@@ -462,12 +464,40 @@
             this.btnDownloadHelp.UseVisualStyleBackColor = true;
             this.btnDownloadHelp.Click += new System.EventHandler(this.btnDownloadHelp_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(11, 636);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 18);
+            this.label2.TabIndex = 317;
+            this.label2.Text = "Show Time:";
+            // 
+            // cboShowTime
+            // 
+            this.cboShowTime.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboShowTime.FormattingEnabled = true;
+            this.cboShowTime.Items.AddRange(new object[] {
+            "Local",
+            "UTC-0"});
+            this.cboShowTime.Location = new System.Drawing.Point(13, 656);
+            this.cboShowTime.Margin = new System.Windows.Forms.Padding(2);
+            this.cboShowTime.Name = "cboShowTime";
+            this.cboShowTime.Size = new System.Drawing.Size(72, 26);
+            this.cboShowTime.TabIndex = 318;
+            this.cboShowTime.Text = "UTC-0";
+            this.cboShowTime.SelectedIndexChanged += new System.EventHandler(this.cboShowTime_SelectedIndexChanged);
+            // 
             // AddEditReference
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.ClientSize = new System.Drawing.Size(531, 717);
+            this.Controls.Add(this.cboShowTime);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.btnDownloadHelp);
             this.Controls.Add(this.txtRefDataFolder);
             this.Controls.Add(this.cboRefDataDownloads);
@@ -547,5 +577,7 @@
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.TextBox txtRefDataFolder;
         private System.Windows.Forms.Button btnDownloadHelp;
+        private System.Windows.Forms.Label label2;
+        public System.Windows.Forms.ComboBox cboShowTime;
     }
 }

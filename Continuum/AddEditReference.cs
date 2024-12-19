@@ -15,8 +15,9 @@ namespace ContinuumNS
         UTM_conversion utmConv = new UTM_conversion();
         /// <summary> Set to true if all user inputs are ok </summary>
         public bool goodToGo = false;
+        /// <summary> Set to false if form should not be updated </summary>
+        public bool okToUpdate = false;
         
-
         /// <summary> Constructor.  Selects MERRA2 by default </summary>
         public AddEditReference(MetCollection metCollection, ReferenceCollection referenceList, UTM_conversion utmConversion, Reference newOrEditRef = null)
         {
@@ -24,6 +25,7 @@ namespace ContinuumNS
             metList = metCollection;
             refList = referenceList;
             utmConv = utmConversion;
+            okToUpdate = true;
 
             if (newOrEditRef == null) // If null then we're adding new reference.  
             {
@@ -35,20 +37,21 @@ namespace ContinuumNS
                 thisRef.SetDefaultsForReferenceType();
                 thisRef.numNodes = 1;
 
-                int offset = utmConv.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
+           //     int offset = utmConv.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
 
                 if (refList.numReferences > 0)
                 {
                     // Set start and end dates to same as other references
                     thisRef.startDate = refList.reference[0].startDate;
                     thisRef.endDate = refList.reference[0].endDate;
-                    dateRefEnd.Value = thisRef.endDate;
+              //      dateRefEnd.Value = thisRef.endDate;
                 }
                 else
                 {
-                    thisRef.startDate = thisRef.refDataDownload.startDate; // Make default starttime same as RefDataDownload start .AddHours(offset);                 
-                    thisRef.endDate = thisRef.refDataDownload.endDate; //.AddHours(offset); // Set end date to last day of month
-                    dateRefEnd.Value = thisRef.endDate;
+                    // Don't assign a start/end date since we don't know the coords and could get the wrong offset
+          //          thisRef.startDate = thisRef.refDataDownload.startDate.AddHours(offset); // Make default starttime same as RefDataDownload start (stored in local time)                 
+          //          thisRef.endDate = thisRef.refDataDownload.endDate.AddHours(offset);  // Set end date to last day of month
+           //         dateRefEnd.Value = thisRef.endDate;
                 }
 
                 thisRef.isUserDefined = true; // Default to user-specified lat/lon
@@ -57,6 +60,7 @@ namespace ContinuumNS
             else // Editing reference
             {
                 thisRef = newOrEditRef;
+                cboShowTime.SelectedIndex = 0; // Reference start/end time stored as local
             }
 
             // Populate dropdown with all downloaded reference data
@@ -119,10 +123,19 @@ namespace ContinuumNS
                     }
             }
 
-            int offset = utmConv.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
-                        
-            dateRefStart.Value = thisRef.refDataDownload.startDate.AddHours(offset);                        
-            dateRefEnd.Value = thisRef.refDataDownload.endDate.AddHours(offset);                         
+            okToUpdate = false;
+            dateRefStart.Value = thisRef.startDate; // Reference start/end stored in local time
+            dateRefEnd.Value = thisRef.endDate;
+
+            if (cboShowTime.SelectedItem.ToString() == "UTC-0" && thisRef.interpData.Coords.latitude != 0)
+            {
+                int offset = utmConv.GetUTC_Offset(thisRef.interpData.Coords.latitude, thisRef.interpData.Coords.longitude);
+                
+                dateRefStart.Value = dateRefStart.Value.AddHours(-offset);
+                dateRefEnd.Value = dateRefEnd.Value.AddHours(-offset);
+            }
+            okToUpdate = true;
+            
         }
 
         /// <summary> Populates dropdown list with met sites and selects first in list </summary>
@@ -154,12 +167,18 @@ namespace ContinuumNS
 
             if (refNodes.Length == 0)
                 return;
-                        
-            int offset = utmConv.GetUTC_Offset(refNodes[0].XY_ind.Lat, refNodes[0].XY_ind.Lon);
-                        
-            dateLTRefAvailStart.Value = thisRef.refDataDownload.startDate.AddHours(offset);
-            dateLTRefAvailEnd.Value = thisRef.refDataDownload.endDate.AddHours(offset);                        
 
+            dateLTRefAvailStart.Value = thisRef.refDataDownload.startDate;
+            dateLTRefAvailEnd.Value = thisRef.refDataDownload.endDate;
+
+            if (cboShowTime.SelectedItem.ToString() == "Local")
+            {
+                int offset = utmConv.GetUTC_Offset(thisRef.interpData.Coords.latitude, thisRef.interpData.Coords.longitude);
+
+                dateLTRefAvailStart.Value = dateLTRefAvailStart.Value.AddHours(-offset);
+                dateLTRefAvailEnd.Value = dateLTRefAvailEnd.Value.AddHours(-offset);
+            }
+            
             txtRefDataAvail.Text = Math.Round(thisRef.refDataDownload.completion * 100.0, 1).ToString();
                       
         }               
@@ -196,8 +215,16 @@ namespace ContinuumNS
                     UTM_conversion.Lat_Long thisLL = utmConv.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
                     txtReferenceLat.Text = Math.Round(thisLL.latitude, 3).ToString();
                     txtReferenceLong.Text = Math.Round(thisLL.longitude, 3).ToString();
+
+                    if (thisRef.startDate.Year == 1989 && thisRef.endDate.Year == 2018) // defaults so update to refDataDownload.addhours
+                    {
+                        int offset = utmConv.GetUTC_Offset(thisLL.latitude, thisLL.longitude);
+                        thisRef.startDate = thisRef.refDataDownload.startDate.AddHours(offset); // Make default starttime same as RefDataDownload start (stored in local time)                 
+                        thisRef.endDate = thisRef.refDataDownload.endDate.AddHours(offset);  // Set end date to last day of month
+                    }
+
                 }
-                    
+
                 txtReferenceLat.Enabled = false;
                 txtReferenceLong.Enabled = false;
                 thisRef.isUserDefined = false;                
@@ -206,7 +233,18 @@ namespace ContinuumNS
 
         private void dateMERRAStart_ValueChanged(object sender, EventArgs e)
         {
-            thisRef.startDate = dateRefStart.Value;
+            if (okToUpdate == false)
+                return;
+
+            if (cboShowTime.SelectedItem.ToString() == "UTC-0")
+            {
+                // Reference start date stored in local time. Reference data download starts in UTC-0. 
+                int offset = utmConv.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);                                
+                thisRef.startDate = dateRefStart.Value.AddHours(offset);
+            }
+            else            
+                thisRef.startDate = dateRefStart.Value;
+            
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -306,7 +344,16 @@ namespace ContinuumNS
 
         private void dateRefEnd_ValueChanged(object sender, EventArgs e)
         {
-            thisRef.endDate = dateRefEnd.Value;
+            if (okToUpdate == false)
+                return;
+
+            if (cboShowTime.SelectedItem.ToString() == "UTC-0")
+            {
+                int offset = utmConv.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
+                thisRef.endDate = dateRefEnd.Value.AddHours(offset);
+            }
+            else
+                thisRef.endDate = dateRefEnd.Value;
         }               
 
         private void cboRefDataDownloads_SelectedIndexChanged_1(object sender, EventArgs e)
@@ -333,5 +380,41 @@ namespace ContinuumNS
         {
 
         }
+
+        private void cboShowTime_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            dateRefStart.Value = thisRef.startDate; // Reference dates stored in Local
+            dateRefEnd.Value = thisRef.endDate;
+
+            dateLTRefAvailStart.Value = thisRef.refDataDownload.startDate; // Reference Data Download stored in UTC-0
+            dateLTRefAvailEnd.Value = thisRef.refDataDownload.endDate;
+
+            int offset = utmConv.GetUTC_Offset(thisRef.interpData.Coords.latitude, thisRef.interpData.Coords.longitude);
+
+            if (cboShowTime.SelectedItem.ToString() == "Local")
+            {
+                // Show Reference Data Download available data range in Local time
+                dateLTRefAvailStart.Value = dateLTRefAvailStart.Value.AddHours(offset); 
+                dateLTRefAvailEnd.Value = dateLTRefAvailEnd.Value.AddHours(offset); 
+            }
+            else // Show in UTC-0
+            {                
+                dateRefStart.Value = dateRefStart.Value.AddHours(-offset);
+                dateRefEnd.Value = dateRefEnd.Value.AddHours(-offset);
+            }
+        }
+
+        /// <summary> Updates 'Show Time' dropdown so that Local time option only allowed after lat/long range has been defined </summary>
+        public void UpdateShowTimeDropdown()
+        {
+            if (thisRef.interpData.Coords.latitude == 0 || thisRef.interpData.Coords.longitude == 0)
+            {
+                cboShowTime.Enabled = false;
+                cboShowTime.Text = "UTC-0";
+            }
+            else
+                cboShowTime.Enabled = true;
+        }
+
     }
 }

@@ -111,5 +111,48 @@ namespace ContinuumNS
             return true;
                 
         }
+
+        /// <summary> Sets the cloud cover coordinates to node closest to specified location </summary>        
+        public bool SetCoordsToClosestNode(UTM_conversion.Lat_Long interpCoords, RefDataDownload refDataDownload, ReferenceCollection refList)
+        {
+            bool foundInds = false;
+
+            double[] lats = refList.GetAllLatsOrLongs(refDataDownload, "Lats");
+            double[] longs = refList.GetAllLatsOrLongs(refDataDownload, "Longs");                      
+                        
+            // Figure out if the Reference files have nodes covering the specified area
+            double latReso = refList.GetLatRes(refDataDownload);
+            double longReso = refList.GetLongRes(refDataDownload);                       
+
+            int closestLatInd = 0;
+            int closestLongInd = 0;
+            double lastDiff = 1000;
+                        
+            for (int i = 0; i < lats.Length; i++)
+            {
+                double thisDiff = lats[i] - interpCoords.latitude;
+                if (Math.Abs(thisDiff) < lastDiff)
+                {
+                    closestLatInd = i;
+                    lastDiff = Math.Abs(thisDiff);
+                }
+            }
+
+            lastDiff = 1000;
+            for (int i = 0; i < longs.Length; i++)
+            {
+                double thisDiff = longs[i] - interpCoords.longitude;
+                if (Math.Abs(thisDiff) < lastDiff)
+                {
+                    closestLongInd = i;
+                    lastDiff = Math.Abs(thisDiff);
+                }
+            }           
+            
+            coords.Lat = lats[closestLatInd];
+            coords.Lon = longs[closestLongInd];
+
+            return foundInds;
+        }
     }
 }

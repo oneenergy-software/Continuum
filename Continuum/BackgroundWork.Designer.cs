@@ -239,6 +239,8 @@
             this.BackgroundWorker_CloudDataExtract.WorkerReportsProgress = true;
             this.BackgroundWorker_CloudDataExtract.WorkerSupportsCancellation = true;
             this.BackgroundWorker_CloudDataExtract.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_CloudDataExtract_DoWork);
+            this.BackgroundWorker_CloudDataExtract.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker_CloudDataExtract_ProgressChanged);
+            this.BackgroundWorker_CloudDataExtract.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_CloudDataExtract_RunWorkerCompleted);
             // 
             // BackgroundWork
             // 
