@@ -1365,7 +1365,16 @@ namespace ContinuumNS
                 fstream.Close();
                 updateThe.NewProject();
                 return;
-            }                        
+            }    
+            
+            for (int t = 0; t < turbineList.TurbineCount; t++)
+                for (int p = 0; p < turbineList.turbineEsts[t].WSEst_Count; p++)
+                {
+                    if (turbineList.turbineEsts[t].WS_Estimate[p].model.elevCoeff == null)
+                        turbineList.turbineEsts[t].WS_Estimate[p].model.elevCoeff = new double[metList.numWD];
+                    if (turbineList.turbineEsts[t].WS_Estimate[p].model.valleyCoeff == null)
+                        turbineList.turbineEsts[t].WS_Estimate[p].model.valleyCoeff = new double[metList.numWD];
+                }
 
             try {
                 savedParams = (Saved_Parameters)bin.Deserialize(fstream);
@@ -2619,7 +2628,7 @@ namespace ContinuumNS
 
         private void btnExportStepwise_Click(object sender, EventArgs e)
         {
-            // Calls Export.ExportNodesAndWS to export estimates calculated along path of nodes for selected start and end met/turbine
+            // Calls Export.ExportNodesAndWS to export all selected parameters along path of nodes for selected start and end met/turbine
                   
             if (modelList.ModelCount == 0) {
                 MessageBox.Show("No models have been created yet.", "Continuum 3");
@@ -2627,7 +2636,7 @@ namespace ContinuumNS
             }                   
 
             Export thisExport = new Export();
-            thisExport.ExportNodesAndWS(this);
+            thisExport.ExportSelectedParamsAdvanced(this);
         }
 
         private void btnDoRRCalcs_Click(object sender, EventArgs e)

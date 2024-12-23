@@ -2077,8 +2077,8 @@ namespace ContinuumNS
 
                     }
 
-                    if (paramsToShow.show_dWS_UW_SRDH) objListItem.SubItems.Add(Math.Round(deltaWS_UW_SRDH, 2).ToString());
-                    if (paramsToShow.show_dWS_DW_SRDH) objListItem.SubItems.Add(Math.Round(deltaWS_DW_SRDH, 2).ToString());
+                    if (paramsToShow.show_dWS_UW_SRDH) objListItem.SubItems.Add(Math.Round(deltaWS_UW_SRDH, 4).ToString());
+                    if (paramsToShow.show_dWS_DW_SRDH) objListItem.SubItems.Add(Math.Round(deltaWS_DW_SRDH, 4).ToString());
                 }
                 else
                 {
@@ -2340,13 +2340,13 @@ namespace ContinuumNS
                     deltaWS_DW_SRDH = thisInst.modelList.GetDeltaWS_SRDH(sectWS_1[WD_Ind], HH, DW_SR_All_1[WD_Ind], DW_SR_All_2[WD_Ind], DW_DH_All_1[WD_Ind], DW_DH_All_2[WD_Ind],
                                                                 DW_Stab_Corr_1[WD_Ind], DW_Stab_Corr_2[WD_Ind]);
 
-                    objList_UW.SubItems.Add(Math.Round(deltaWS_UW_SRDH, 2).ToString());
-                    objList_DW.SubItems.Add(Math.Round(deltaWS_DW_SRDH, 2).ToString());
+                    objList_UW.SubItems.Add(Math.Round(deltaWS_UW_SRDH, 4).ToString());
+                    objList_DW.SubItems.Add(Math.Round(deltaWS_DW_SRDH, 4).ToString());
 
                 }
 
-                if (paramsToShow.show_dWS_UW_SRDH) objListItem.SubItems.Add(Math.Round(deltaWS_UW_SRDH, 2).ToString());
-                if (paramsToShow.show_dWS_DW_SRDH) objListItem.SubItems.Add(Math.Round(deltaWS_DW_SRDH, 2).ToString());
+                if (paramsToShow.show_dWS_UW_SRDH) objListItem.SubItems.Add(Math.Round(deltaWS_UW_SRDH, 4).ToString());
+                if (paramsToShow.show_dWS_DW_SRDH) objListItem.SubItems.Add(Math.Round(deltaWS_DW_SRDH, 4).ToString());
             }
             else
             {

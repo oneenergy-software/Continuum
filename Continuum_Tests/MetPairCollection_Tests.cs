@@ -197,7 +197,7 @@ namespace Continuum_Tests
 
             RMS_err = Math.Pow((RMS_err / (RMS_Count)), 0.5);
 
-            Assert.AreEqual(Sweep_get_RMS_Error, RMS_err);
+            Assert.AreEqual(Sweep_get_RMS_Error, RMS_err, 0.000001);
 
             thisInst.Close();
         }

@@ -100,6 +100,104 @@ namespace ContinuumNS
 
         }
 
+        /// <summary> Exports all selected parameters on Advanced tab 'path of nodes' table </summary>        
+        public void ExportSelectedParamsAdvanced(Continuum thisInst)
+        {
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter sw;
+                try
+                {
+                    sw = new StreamWriter(thisInst.sfd60mWS.FileName);
+                }
+                catch
+                {
+                    MessageBox.Show("Error writing to file.  Make sure the file is closed.", "Continuum 3");
+                    return;
+                }
+
+                int numWD = thisInst.GetNumWD();
+
+                int radiusIndex = thisInst.GetRadiusInd("Advanced");
+                int radius = thisInst.radiiList.investItem[radiusIndex].radius;
+                int WD_Ind = thisInst.GetWD_ind("Advanced");
+
+                string startStr = thisInst.GetStartMetAdvanced();
+                string endStr = thisInst.GetEndSiteAdvanced();
+                string headerString = "Continuum 3: Estimated and Calculated Values from " + startStr + " to " + endStr;
+
+                sw.WriteLine(headerString);
+                sw.WriteLine(DateTime.Now.ToString());
+                WriteModelInfoHeader(sw, thisInst.topo);
+
+                sw.WriteLine("radius, WD sector, Model");
+                sw.Write(radius + ",");
+
+                if (WD_Ind == numWD)
+                    sw.Write("Overall,");
+                else
+                    sw.Write(WD_Ind.ToString() + ",");
+
+                sw.Write(thisInst.metList.CreateMetString(thisInst.metList.GetMetsUsed(), false));
+
+                sw.WriteLine();
+
+                // Export everything displayed in lstPathNodes, lstPathNodes_UW, and lstPathNodes_DW
+                // Export lstPathNodes
+                sw.WriteLine("Estimates along path of nodes");
+
+                for (int c = 0; c < thisInst.lstPathNodes.Columns.Count; c++)
+                    sw.Write(thisInst.lstPathNodes.Columns[c].Text + ",");
+
+                sw.WriteLine();
+
+                for (int r = 0; r < thisInst.lstPathNodes.Items.Count; r++)
+                {
+                    for (int c = 0; c < thisInst.lstPathNodes.Columns.Count; c++)
+                        sw.Write(thisInst.lstPathNodes.Items[r].SubItems[c].Text + ",");
+                    sw.WriteLine();
+                }
+
+                sw.WriteLine();
+
+                // Export lstPathNodes_UW
+                sw.WriteLine("Upwind flow estimates");
+
+                for (int c = 0; c < thisInst.lstPathNodes_UW.Columns.Count; c++)
+                    sw.Write(thisInst.lstPathNodes_UW.Columns[c].Text + ",");
+
+                sw.WriteLine();
+
+                for (int r = 0; r < thisInst.lstPathNodes_UW.Items.Count; r++)
+                {
+                    for (int c = 0; c < thisInst.lstPathNodes_UW.Items[r].SubItems.Count; c++)
+                        sw.Write(thisInst.lstPathNodes_UW.Items[r].SubItems[c].Text + ",");
+                    sw.WriteLine();
+                }
+
+                sw.WriteLine();
+
+                // Export lstPathNodes_DW
+                sw.WriteLine("Downwind flow estimates");
+
+                for (int c = 0; c < thisInst.lstPathNodes_DW.Columns.Count; c++)
+                    sw.Write(thisInst.lstPathNodes_DW.Columns[c].Text + ",");
+
+                sw.WriteLine();
+
+                for (int r = 0; r < thisInst.lstPathNodes_DW.Items.Count; r++)
+                {
+                    for (int c = 0; c < thisInst.lstPathNodes_DW.Items[r].SubItems.Count; c++)
+                        sw.Write(thisInst.lstPathNodes_DW.Items[r].SubItems[c].Text + ",");
+                    sw.WriteLine();
+                }
+
+                sw.WriteLine();
+
+                sw.Close();
+            }
+        }
+
         /// <summary> Exports calculations and estimates along path of nodes between selected start and end site </summary>   
         public void ExportNodesAndWS(Continuum thisInst)
         { 

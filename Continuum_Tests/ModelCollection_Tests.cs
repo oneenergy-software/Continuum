@@ -1056,6 +1056,7 @@ namespace Continuum_Tests
             thisInst.Open(Filename);                    
 
             // Test 1: Met 474 to Met 475            
+            
             int radInd = 0;
             int WD_Ind = 18;
             Met startMet = thisInst.metList.GetMet("Met_474");
@@ -1308,6 +1309,7 @@ namespace Continuum_Tests
             Continuum thisInst = new Continuum("");
 
             string Filename = testingFolder + "\\ModelCollection TS testing.cfm";
+            thisInst.isTest = true;
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
 
