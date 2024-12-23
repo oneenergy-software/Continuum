@@ -315,8 +315,8 @@ namespace ContinuumNS
                     flowType = "Uphill";
                 else if (thisUW >= 0 && thisUW <= UW_crit[WD_sec] && UW_or_DW == "UW")
                     flowType = "SpdUp";
-                else if (thisUW < 0 && thisDW <= 0 && useValley)
-                    flowType = "Valley";
+             //   else if (thisUW < 0 && thisDW <= 0 && useValley)
+               //     flowType = "Valley";
                 else if (thisUW < 0 && thisDW <= 0)
                     flowType = "Downhill";
             }
