@@ -180,7 +180,7 @@ namespace ContinuumNS
                     }
                     else
                     {
-                        MessageBox.Show($"Failed to download data. Status code: {response.StatusCode}");
+                        MessageBox.Show($"Failed to download data. Status code: {response.Content.ReadAsStringAsync().Result}");
                     }
                 }
                 catch (Exception ex)
