@@ -1127,6 +1127,8 @@ namespace ContinuumNS
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
+            this.txtMaxShadowDist = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pnlInputMap.SuspendLayout();
@@ -2241,7 +2243,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 537);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(776, 155);
+            this.plotTS_Baros.Size = new System.Drawing.Size(770, 155);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2465,7 +2467,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 382);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(776, 155);
+            this.plotTS_Temp.Size = new System.Drawing.Size(770, 155);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2480,7 +2482,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 227);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(776, 155);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(770, 155);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2495,7 +2497,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(776, 155);
+            this.plotTS_Anems.Size = new System.Drawing.Size(770, 155);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -8369,7 +8371,7 @@ namespace ContinuumNS
             this.plotTurbInt.Location = new System.Drawing.Point(520, 18);
             this.plotTurbInt.Name = "plotTurbInt";
             this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(911, 684);
+            this.plotTurbInt.Size = new System.Drawing.Size(911, 689);
             this.plotTurbInt.TabIndex = 289;
             this.plotTurbInt.Text = "plotView1";
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8532,7 +8534,7 @@ namespace ContinuumNS
             this.lstTurbulence.Location = new System.Drawing.Point(13, 51);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 656);
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 661);
             this.lstTurbulence.TabIndex = 275;
             this.lstTurbulence.UseCompatibleStateImageBehavior = false;
             this.lstTurbulence.View = System.Windows.Forms.View.Details;
@@ -8722,7 +8724,7 @@ namespace ContinuumNS
             this.plotExtremeShear.Location = new System.Drawing.Point(501, 18);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeShear.Size = new System.Drawing.Size(914, 675);
+            this.plotExtremeShear.Size = new System.Drawing.Size(914, 680);
             this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8949,7 +8951,7 @@ namespace ContinuumNS
             // btnExportExtremeWSTable
             // 
             this.btnExportExtremeWSTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 657);
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 662);
             this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
             this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
@@ -9246,7 +9248,7 @@ namespace ContinuumNS
             this.plotExtremeWS_TS.Location = new System.Drawing.Point(921, 24);
             this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
             this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 345);
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 350);
             this.plotExtremeWS_TS.TabIndex = 293;
             this.plotExtremeWS_TS.Text = "plotView1";
             this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9269,7 +9271,7 @@ namespace ContinuumNS
             this.dataExtremeWS.Location = new System.Drawing.Point(359, 17);
             this.dataExtremeWS.Name = "dataExtremeWS";
             this.dataExtremeWS.RowHeadersWidth = 51;
-            this.dataExtremeWS.Size = new System.Drawing.Size(548, 689);
+            this.dataExtremeWS.Size = new System.Drawing.Size(548, 694);
             this.dataExtremeWS.TabIndex = 292;
             // 
             // Column17
@@ -9360,7 +9362,7 @@ namespace ContinuumNS
             this.plotExtremeWS.Location = new System.Drawing.Point(921, 298);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(510, 345);
+            this.plotExtremeWS.Size = new System.Drawing.Size(510, 350);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9379,7 +9381,7 @@ namespace ContinuumNS
             // btnExtremeWS
             // 
             this.btnExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExtremeWS.Location = new System.Drawing.Point(916, 657);
+            this.btnExtremeWS.Location = new System.Drawing.Point(916, 662);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);
@@ -11811,6 +11813,8 @@ namespace ContinuumNS
             // pgeSuitability
             // 
             this.pgeSuitability.AutoScroll = true;
+            this.pgeSuitability.Controls.Add(this.txtMaxShadowDist);
+            this.pgeSuitability.Controls.Add(this.label21);
             this.pgeSuitability.Controls.Add(this.btnExportSiteSuitMap);
             this.pgeSuitability.Controls.Add(this.btnZoneFileFormatHelp);
             this.pgeSuitability.Controls.Add(this.plotIceVsDist);
@@ -12022,21 +12026,22 @@ namespace ContinuumNS
             // txtTurbineNoise
             // 
             this.txtTurbineNoise.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTurbineNoise.Location = new System.Drawing.Point(791, 70);
+            this.txtTurbineNoise.Location = new System.Drawing.Point(787, 72);
             this.txtTurbineNoise.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtTurbineNoise.Name = "txtTurbineNoise";
             this.txtTurbineNoise.Size = new System.Drawing.Size(44, 25);
             this.txtTurbineNoise.TabIndex = 270;
+            this.txtTurbineNoise.TextChanged += new System.EventHandler(this.txtTurbineNoise_TextChanged);
             // 
             // label90
             // 
             this.label90.AutoSize = true;
             this.label90.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label90.Location = new System.Drawing.Point(657, 74);
+            this.label90.Location = new System.Drawing.Point(701, 67);
             this.label90.Name = "label90";
-            this.label90.Size = new System.Drawing.Size(134, 18);
+            this.label90.Size = new System.Drawing.Size(84, 36);
             this.label90.TabIndex = 269;
-            this.label90.Text = "Turbine Noise (dBA) :";
+            this.label90.Text = "Turbine \r\nNoise (dBA) :";
             // 
             // txtNumIceDays
             // 
@@ -12447,7 +12452,7 @@ namespace ContinuumNS
             // 
             this.label169.AutoSize = true;
             this.label169.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label169.Location = new System.Drawing.Point(638, 109);
+            this.label169.Location = new System.Drawing.Point(638, 112);
             this.label169.Name = "label169";
             this.label169.Size = new System.Drawing.Size(45, 18);
             this.label169.TabIndex = 218;
@@ -12477,7 +12482,7 @@ namespace ContinuumNS
             "8 pm",
             "9 pm",
             "10 pm"});
-            this.cboSiteSuitHour.Location = new System.Drawing.Point(687, 106);
+            this.cboSiteSuitHour.Location = new System.Drawing.Point(687, 109);
             this.cboSiteSuitHour.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboSiteSuitHour.Name = "cboSiteSuitHour";
             this.cboSiteSuitHour.Size = new System.Drawing.Size(74, 26);
@@ -12921,6 +12926,25 @@ namespace ContinuumNS
             this.ofdExceedCurves.Filter = "CSV file|*.CSV";
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
+            // 
+            // txtMaxShadowDist
+            // 
+            this.txtMaxShadowDist.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMaxShadowDist.Location = new System.Drawing.Point(626, 73);
+            this.txtMaxShadowDist.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtMaxShadowDist.Name = "txtMaxShadowDist";
+            this.txtMaxShadowDist.Size = new System.Drawing.Size(57, 25);
+            this.txtMaxShadowDist.TabIndex = 289;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Location = new System.Drawing.Point(538, 67);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(89, 36);
+            this.label21.TabIndex = 288;
+            this.label21.Text = "Max. Shadow\r\n Dist. [m] :";
             // 
             // Continuum
             // 
@@ -14073,6 +14097,8 @@ namespace ContinuumNS
         internal TextBox txtUWDWRMS;
         internal Label Label44;
         internal CheckedListBox chkAdvToShow;
+        public TextBox txtMaxShadowDist;
+        internal Label label21;
     }
 }
 

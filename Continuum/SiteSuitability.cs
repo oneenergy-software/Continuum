@@ -59,6 +59,8 @@ namespace ContinuumNS
         public int numYFlicker;
         /// <summary> Angle from center of sun to its edge based on minimum distance from sun (0.2725 degrees). </summary>
         double sunVariation = 0.2725;
+        /// <summary> Maximum distance for a turbine shadow to be recognized at a receiver </summary>
+        public double maxShadowDistance;
 
         // Sound Model constants
         /// <summary> Turbine sound level (dBA). </summary>

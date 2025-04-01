@@ -102,8 +102,8 @@ namespace ContinuumNS
         /// <summary> Updates all buttons that are color-coded to be either red or green depending on state of analysis. </summary>
         public void ColoredButtons() // 
         {
-            if (thisInst.IsHandleCreated == false)
-                return;
+          //  if (thisInst.IsHandleCreated == false)
+          //      return;
 
             // Input tab buttons
             if (thisInst.topo.gotTopo == true)
@@ -4750,6 +4750,9 @@ namespace ContinuumNS
                 thisInst.lstTurbines.Columns[1].Text = "Latitude [degs]";
                 thisInst.lstTurbines.Columns[2].Text = "Longitude [degs]";
             }
+
+            // Add 'Wind Farm Total / All WTGs' to Time Series Analysis
+            thisInst.cboSelectedTurbine.Items.Add("All WTGs");
 
             for (int i = 0; i < turbCount; i++)
             {
@@ -10130,7 +10133,21 @@ namespace ContinuumNS
         public void TurbineYearlyPlotAndTable()
         {
             thisInst.lstYearlyTurbine.Items.Clear();
-            Turbine thisTurb = thisInst.GetSelectedTurbine("Monthly");
+            Turbine thisTurb = null;
+            bool showAllWTGs = true;
+
+            if (thisInst.cboSelectedTurbine.SelectedItem.ToString() != "All WTGs")
+            {
+                thisTurb = thisInst.GetSelectedTurbine("Monthly");
+                showAllWTGs = false;
+            }
+            else if (thisInst.turbineList.TurbineCount > 0)
+            {
+                // Assign first turbine in list to thisTurb
+                thisTurb = thisInst.turbineList.turbineEsts[0];
+            }
+            else
+                return;
 
             thisInst.plotYearlyTS.Model = new PlotModel();
             var model = thisInst.plotYearlyTS.Model;
@@ -10213,7 +10230,10 @@ namespace ContinuumNS
                 }
             }
 
-            model.Title = "Yearly Trends at " + thisTurb.name;
+            if (showAllWTGs)
+                model.Title = "Yearly Trends at all WTG Sites";
+            else
+                model.Title = "Yearly Trends at " + thisTurb.name;
 
             // Specify axes
             LinearAxis xAxis = new LinearAxis();

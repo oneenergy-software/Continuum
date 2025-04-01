@@ -1490,6 +1490,17 @@ namespace ContinuumNS
                     mapNodes[i].UTMX = thisX;
                     mapNodes[i].UTMY = thisY;
                     Nodes thisNode = nodeList.GetANode(thisX, thisY, thisInst);
+                    bool nodeIsComplete = nodeList.IsNodeComplete(thisNode, thisInst.radiiList, thisInst.metList.numWD, thisInst.topo.gotSR);
+
+                    if (nodeIsComplete == false)
+                    {
+                        while (nodeIsComplete == false)
+                        {
+                            thisNode = nodeList.GetANode(thisX, thisY, thisInst);
+                            nodeIsComplete = nodeList.IsNodeComplete(thisNode, thisInst.radiiList, thisInst.metList.numWD, thisInst.topo.gotSR);
+                        }
+                    }
+
                     mapNodes[i].elev = thisNode.elev;
                     mapNodes[i].expo = thisNode.expo;
                     mapNodes[i].gridStats = thisNode.gridStats;
@@ -4627,12 +4638,9 @@ namespace ContinuumNS
 
                     totalDailyMins = new int[siteSuit.GetNumZones()];
                     lastDay = dateTime;
-                }
+                }                                
 
-                if (dateTime.Month == 5 && dateTime.Day == 13 && dateTime.Hour == 6)
-                    dateTime = dateTime;
-
-                // Only check sun position if time is between 6 am and 10 pm.
+                // Only check sun position if hour is >= sunrise and <= sunset
                 if (dateTime.Hour >= sunRiseAndSet[0].Hour && dateTime.Hour <= sunRiseAndSet[1].Hour)
                 {
                     bool sunIsUp = siteSuit.isSunUp(dateTime, UTC_offset, siteSuit.flickerMap[0].latitude,
@@ -4652,6 +4660,15 @@ namespace ContinuumNS
                                     // loop through zones and calculate flicker statistics
                                     for (int i = 0; i < thisInst.turbineList.TurbineCount; i++)
                                     {
+                                        Turbine thisTurb = thisInst.turbineList.turbineEsts[i];
+                                        SiteSuitability.Zone thisZone = siteSuit.zones[z];
+                                        UTM_conversion.UTM_coords zoneUTM = thisInst.UTM_conversions.LLtoUTM(thisZone.latitude, thisZone.longitude);
+
+                                        double thisDist = thisInst.topo.CalcDistanceBetweenPoints(thisTurb.UTMX, thisTurb.UTMY, zoneUTM.UTMNorthing, zoneUTM.UTMEasting);
+
+                                        if (thisDist > siteSuit.maxShadowDistance)
+                                            continue;
+
                                         double aziDiff = sunPosition.azimuth - siteSuit.zones[z].flickerAngles[i].targetAzimuthAngle;
                                         double altDiff = sunPosition.altitude - siteSuit.zones[z].flickerAngles[i].targetAltitudeAngle;
                                         double angleErrorSqr = aziDiff * aziDiff + altDiff * altDiff;

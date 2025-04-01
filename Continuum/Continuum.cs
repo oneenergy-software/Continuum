@@ -127,8 +127,12 @@ namespace ContinuumNS
             updateThe.MCP_Settings();
 
             if (fileName != "")
-                Open(fileName, updateAll);
-                        
+            {
+                this.BeginInvoke((MethodInvoker)delegate // This ensures handle is created
+                {
+                    Open(fileName, updateAll);
+                });
+            }                        
             
         }               
 
@@ -5324,8 +5328,32 @@ namespace ContinuumNS
                 return;
             }
 
+            double maxShadowDist = GetMaxShadowDist();
+
+            if (maxShadowDist != -999)            
+                siteSuitability.maxShadowDistance = maxShadowDist;
+
             siteSuitability.RunShadowFlickerModel(this);
 
+        }
+
+        /// <summary> Reads and returns maximum shadow flicker distance enterd on GUI (Site Suitability tab) </summary>
+        /// <returns></returns>
+        public double GetMaxShadowDist()
+        {
+            double thisMaxDist = 0;
+
+            try
+            {
+                thisMaxDist = Convert.ToDouble(txtMaxShadowDist.Text);
+            }
+            catch
+            {
+                MessageBox.Show("Invalid maximum shadow distance entered.", "Continuum 3");
+                thisMaxDist = -999;
+            }
+
+            return thisMaxDist;
         }
 
         private void cboMERRASelectedMet_SelectedIndexChanged(object sender, EventArgs e)
@@ -8939,6 +8967,11 @@ namespace ContinuumNS
         {
             if (okToUpdate)
                 updateThe.ModelPlots();
+        }
+
+        private void txtTurbineNoise_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

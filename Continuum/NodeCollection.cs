@@ -927,6 +927,16 @@ namespace ContinuumNS
             if (highNode.UTMX != 0 && highNode.UTMY != 0)
             {
                 thisNode = GetANode(highNode.UTMX, highNode.UTMY, thisInst);
+                bool isComplete = IsNodeComplete(thisNode, thisInst.radiiList, thisInst.metList.numWD, thisInst.topo.gotSR);
+
+                if (isComplete == false)
+                {
+                    while (isComplete == false)
+                    {
+                        thisNode = GetANode(highNode.UTMX, highNode.UTMY, thisInst);
+                        isComplete = IsNodeComplete(thisNode, thisInst.radiiList, thisInst.metList.numWD, thisInst.topo.gotSR);
+                    }
+                }
 
                 if (thisNode.UTMX == highNode.UTMX && thisNode.UTMY == highNode.UTMY)
                 {
@@ -949,6 +959,35 @@ namespace ContinuumNS
             }
 
             return highNode;
+        }
+
+        /// <summary> When creating maps, there may be times when a node is requested from the DB at the same time as it is being written and results
+        /// in an incomplete node and ends up causing outliers in the calculated map. This function looks at the node to see if all values have been
+        /// entered.<summary>        
+        public bool IsNodeComplete(Nodes thisNode, InvestCollection radiiList, int numWD, bool gotSR)
+        {
+            bool isComplete = true;
+            int numRs = radiiList.ThisCount;
+
+            if (thisNode.expo.Length != numRs)
+                return false;
+
+            for (int i = 0; i < numRs; i++)
+            {
+                if (thisNode.expo[i].expo.Length != numWD)
+                    return false;
+
+                for (int d = 0; d < numWD; d++)
+                {
+                    if (thisNode.expo[i].expo[d] == 0)
+                        return false;
+
+                    if (gotSR && thisNode.expo[i].SR[d] == 0)
+                        return false;
+                }
+            }
+
+            return isComplete;
         }
 
         /// <summary> Returns flow separation nodes for specified WD sector. </summary> 

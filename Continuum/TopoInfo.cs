@@ -2930,6 +2930,7 @@ namespace ContinuumNS
             int newHeight = Convert.ToInt16((newLC_MaxY - newLC_MinY) / LC_NumXY.Y.all.reso + 1); // Y Grid size of UTM grid
 
             int[,] projLandCover = new int[newWidth, newHeight]; // Holds land cover at each grid point
+            int missingCode = GetMissingCode();
 
             CoordinateTransformation ct_to_LL = new CoordinateTransformation(dst, src); // GDal CoordinateTransformation object used to convert UTM to LL
 
@@ -2981,6 +2982,10 @@ namespace ContinuumNS
                             
                         }
                     }
+
+                    if (closestLC == missingCode)
+                        closestLC = -999;
+
                     projLandCover[i, j] = closestLC;
 
                 }
@@ -3025,7 +3030,7 @@ namespace ContinuumNS
         {            
             // Land cover type as defined by USGS:
             
-            LC_Key = new LC_SR_DH[20];
+            LC_Key = new LC_SR_DH[21];
             LC_Key[0].code = 11;
             LC_Key[0].desc = "Open Water";
             LC_Key[0].SR = 0.0002f;
@@ -3125,6 +3130,11 @@ namespace ContinuumNS
             LC_Key[19].desc = "Developed High-intensity residential";
             LC_Key[19].SR = 1.6f;
             LC_Key[19].DH = 13.3f;
+
+            LC_Key[20].code = 250;
+            LC_Key[20].desc = "Missing";
+            LC_Key[20].SR = 0;
+            LC_Key[20].DH = 0f;
 
         }
 
@@ -3556,6 +3566,27 @@ namespace ContinuumNS
             LC_Key[43].SR = 0.0002f;
             LC_Key[43].DH = 0f;
 
+        }
+
+        /// <summary> Finds and returns land cover code for missing data </summary>
+        /// <returns></returns>
+        public int GetMissingCode()
+        {
+            int missingCode = -999;
+
+            if (LC_Key == null)
+                return missingCode;
+
+            for (int i = 0; i < LC_Key.Length; i++)
+            {
+                if (LC_Key[i].desc == "Missing")
+                {
+                    missingCode = LC_Key[i].code;
+                    break;
+                }
+            }
+
+            return missingCode;
         }
 
         /// <summary> Finds min/max X/Y of shape and determines whether it is a line or a closed contour . </summary>        
