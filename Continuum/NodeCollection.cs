@@ -929,7 +929,7 @@ namespace ContinuumNS
                 thisNode = GetANode(highNode.UTMX, highNode.UTMY, thisInst);
                 bool isComplete = IsNodeComplete(thisNode, thisInst.radiiList, thisInst.metList.numWD, thisInst.topo.gotSR);
 
-                if (isComplete == false)
+                if (isComplete == false && thisNode.UTMX != 0)
                 {
                     while (isComplete == false)
                     {
@@ -968,6 +968,9 @@ namespace ContinuumNS
         {
             bool isComplete = true;
             int numRs = radiiList.ThisCount;
+
+            if (thisNode.expo == null)
+                return false;
 
             if (thisNode.expo.Length != numRs)
                 return false;

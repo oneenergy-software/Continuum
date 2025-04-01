@@ -10136,6 +10136,9 @@ namespace ContinuumNS
             Turbine thisTurb = null;
             bool showAllWTGs = true;
 
+            if (thisInst.cboSelectedTurbine.SelectedItem == null)
+                return;
+
             if (thisInst.cboSelectedTurbine.SelectedItem.ToString() != "All WTGs")
             {
                 thisTurb = thisInst.GetSelectedTurbine("Monthly");
