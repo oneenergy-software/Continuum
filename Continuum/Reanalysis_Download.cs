@@ -397,7 +397,10 @@ namespace ContinuumNS
                 if (dataToDownload.monthlyOrDaily == "Daily")
                     cboDailyOrMonthly.SelectedIndex = 0;
                 else
-                    cboDailyOrMonthly.SelectedIndex = 1;                
+                    cboDailyOrMonthly.SelectedIndex = 1;
+
+                if (dataToDownload.minLat != 0)
+                    cboDailyOrMonthly.Enabled = false;
             }
            
         }
@@ -436,7 +439,7 @@ namespace ContinuumNS
         {
             cboRefDataDownloads.Items.Clear();
             cboRefDataDownloads.Text = "";
-
+            
             for (int r = 0; r < thisInst.refList.numRefDataDownloads; r++)            
                 cboRefDataDownloads.Items.Add(thisInst.refList.refDataDownloads[r].GetName());
             

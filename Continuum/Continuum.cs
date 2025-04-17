@@ -4,8 +4,10 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -100,7 +102,9 @@ namespace ContinuumNS
                     "not installed on this PC.  Please visit continuumwind.com and go to 'Download Software' to access the SQL LocalDB installation file.");
                 return;
             }
-           
+
+            CheckForNewRelease();
+
             updateThe = new Update(this);
             radiiList.New(); // populates with R = 4000, 6000, 8000, 10000 and invserse distance exponent = 1
             metList.NewList(); // sets MCP settings and day/night hours
@@ -115,10 +119,12 @@ namespace ContinuumNS
             chkSelectedTurbineParam.Items.Add("Gross AEP", false);
             chkSelectedTurbineParam.Items.Add("Net AEP", false);
             chkSelectedTurbineParam.Items.Add("Wake Loss", false);
-            chkSelectedTurbineParam.Items.Add("% Diff", false);
-
+            
             txtNumIceDays.Text = siteSuitability.numIceDaysPerYear.ToString();
             txtNumIceThrowsPerDay.Text = siteSuitability.iceThrowsPerIceDay.ToString();
+
+            cboTimeSeriesAnalysis.SelectedIndex = 0;
+            cboTimeSeriesInterval.SelectedIndex = 0;
 
             cboTI_Type.SelectedIndex = 0;
             cboEffectiveTI_m.SelectedIndex = 0;
@@ -4427,7 +4433,7 @@ namespace ContinuumNS
             if (turbineList.TurbineCount > 0)
             {
                 if (TAB_Name == "Monthly")               
-                    thisTurb = turbineList.GetTurbine(cboSelectedTurbine.SelectedItem.ToString());                    
+                    thisTurb = turbineList.GetTurbine(cboTimeSeriesInterval.SelectedItem.ToString());                    
                 else if (TAB_Name == "Exceedance")                
                     thisTurb = turbineList.GetTurbine(cboExceedTurbine.SelectedItem.ToString());                    
                 else if (TAB_Name == "Turbulence")                
@@ -5583,7 +5589,7 @@ namespace ContinuumNS
 
         private void cboSelectedTurbine_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Updates "Time Series Analysis" tab based on selected turbine
+            // Updates "Time Series Analysis" tab based on selected data interval
             if (okToUpdate)
                 updateThe.Monthly_TAB();
         }
@@ -5614,14 +5620,10 @@ namespace ContinuumNS
         private void btnExportYearlyTurbineValues_Click(object sender, EventArgs e)
         {
             // Exports annual estimates at turbine site selected on "Time Series Analysis" tab            
-            export.ExportYearlyTurbineValues(this);
+            export.ExportTimeSeries(this);
         }
 
-        private void btnExportHourlyTurbineValues_Click(object sender, EventArgs e)
-        {
-            // Exports hourly estimates at turbine site selected on "Time Series Analysis" tab            
-            export.ExportHourlyTurbineValues(this);
-        }
+        
 
         private void cboMonthlyPowerCurve_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -5636,7 +5638,7 @@ namespace ContinuumNS
         {
             // Updates monthly plot and table on "Time Series Analysis" tab based on years selected in checked list
             if (okToUpdate)
-                updateThe.TurbineMonthlyPlot();
+                updateThe.Monthly_TAB();
         }
 
         private void chkSelectedTurbineParam_SelectedIndexChanged(object sender, EventArgs e)
@@ -6944,11 +6946,7 @@ namespace ContinuumNS
 
         }
 
-        private void btnExportMonthlyTurbineValues_Click(object sender, EventArgs e)
-        {
-            // Exports hourly estimates at turbine site selected on "Time Series Analysis" tab            
-            export.ExportMonthlyTurbineValues(this);
-        }
+        
 
         private void btnInflowAngles_Click(object sender, EventArgs e)
         {            
@@ -7944,6 +7942,35 @@ namespace ContinuumNS
         {
             Reanalysis_Download dataDownload = new Reanalysis_Download(this);  
             dataDownload.ShowDialog();            
+        }
+
+        public void CheckForNewRelease()
+        {
+            // Open text file hosted on Dropbox where installation file is. Compare version number and show message if newer release is available
+            
+            string versionTxtFile = "https://www.dropbox.com/scl/fi/uous8gk9xhg3jhad63ep9/Version.txt?rlkey=pyare5ch4p8wxygd61ts2miv8&st=awtpuirz&raw=1";
+
+            using (WebClient client = new WebClient())
+            {
+                try
+                {
+                    string content = client.DownloadString(versionTxtFile);
+                    
+                    string thisVersion = this.ProductVersion.ToString();
+
+                    if (thisVersion != content)
+                    {
+                        MessageBox.Show("An updated release of Continuum (" + content + ") is now available! Go to continuumwind.com to download");
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error reading file: " + ex.Message);
+                }
+            }
+
+
         }
 
         public bool IsPythonInstalled()
@@ -8972,6 +8999,169 @@ namespace ContinuumNS
         private void txtTurbineNoise_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void plotYearlyTS_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chkYears_Monthly_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chkSelectAllTurbineYears_CheckedChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lstYearlyTurbine_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pgeMonthlyAnalysis_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnExportTimeSeriesEsts_Click(object sender, EventArgs e)
+        {
+            export.ExportTimeSeries(this);
+        }
+
+        private void cboTimeSeriesAnalysis_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (cboTimeSeriesAnalysis.SelectedItem.ToString() == "Time Series")
+            {  
+                dateTimeSeriesStart.Enabled = true;
+                dateTimeSeriesEnd.Enabled = true;
+                btnTimeSeriesLeft.Enabled = true;
+                btnTimeSeriesRight.Enabled = true;
+                txtTimeSeriesInterval.Enabled = true;
+            }
+            else
+            {                
+                dateTimeSeriesStart.Enabled = false;
+                dateTimeSeriesEnd.Enabled = false;
+                btnTimeSeriesLeft.Enabled = false;
+                btnTimeSeriesRight.Enabled = false;
+                txtTimeSeriesInterval.Enabled = false;
+            }
+
+            updateThe.TurbineTimeSeriesPlot();
+
+        }
+
+        private void chkWTGsToShow_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chkWTGsToShow_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (this.IsHandleCreated && okToUpdate)
+            {
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.TurbineTimeSeriesVisibleColumns()));
+                updateThe.TurbineTimeSeriesPlot();
+            }
+        }
+
+        private void chkSelectAllWTGsToShow_CheckedChanged(object sender, EventArgs e)
+        {
+            // Select/deselect all WTG sites in checkbox
+            okToUpdate = false;
+
+            if (chkSelectAllWTGsToShow.Checked)
+            {
+                for (int c = 0; c < chkWTGsToShow.Items.Count; c++)
+                    chkWTGsToShow.SetItemChecked(c, true);
+            }
+            else
+            {
+                for (int c = 0; c < chkWTGsToShow.Items.Count; c++)
+                    chkWTGsToShow.SetItemChecked(c, false);
+            }
+
+            okToUpdate = true;
+            updateThe.TurbineTimeSeriesVisibleColumns();
+            updateThe.TurbineTimeSeriesPlot();
+        }
+
+        private void btnTimeSeriesLeft_Click(object sender, EventArgs e)
+        {
+            ShiftTimeSeriesPlot("Left");
+        }
+
+        /// <summary> Shifts turbine time series plot left or right </summary>
+        /// <param name="leftOrRight"></param>
+        public void ShiftTimeSeriesPlot(string leftOrRight)
+        {
+            double numDays = 1;
+            try
+            {
+                numDays = Convert.ToDouble(txtTimeSeriesInterval.Text);
+            }
+            catch
+            {
+                numDays = 1;
+            }
+
+            DateTime startDate = dateTimeSeriesStart.Value;
+            DateTime endDate = dateTimeSeriesEnd.Value;
+
+            if (leftOrRight == "Left")
+            {
+                startDate = dateTimeSeriesStart.Value.AddDays(-numDays);
+                endDate = dateTimeSeriesEnd.Value.AddDays(-numDays);
+            }
+            else
+            {
+                startDate = dateTimeSeriesStart.Value.AddDays(numDays);
+                endDate = dateTimeSeriesEnd.Value.AddDays(numDays);
+            }
+
+            if (turbineList.TurbineCount == 0 || turbineList.turbineCalcsDone == false || turbineList.genTimeSeries == false)
+                return;
+
+            Turbine.Avg_Est avgEst = turbineList.turbineEsts[0].GetAvgWS_Est(null);
+            DateTime tsStart = avgEst.timeSeries[0].dateTime;
+            DateTime tsEnd = avgEst.timeSeries[avgEst.timeSeries.Length - 1].dateTime;
+
+            if (startDate < tsStart)
+                startDate = tsStart;
+
+            if (endDate > tsEnd)
+                endDate = tsEnd;
+
+            // Make sure start time is at a 10-min value otherwise set to closest one
+            if (startDate.Minute % 10 != 0 || startDate.Second != 0)
+                startDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, startDate.Hour, 0, 0);
+
+            // Make sure start time is at a 10-min value otherwise set to closest one
+            if (endDate.Minute % 10 != 0 || endDate.Second != 0)
+                endDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour, 0, 0);
+
+            // Find num days between start/end and update txtNumDaysTS if different
+            double newNumDays = endDate.Subtract(startDate).TotalDays;
+
+            if (newNumDays != 0 && Math.Abs(newNumDays - numDays) > 1)
+                txtTimeSeriesInterval.Text = Math.Round(newNumDays, 1).ToString();
+            else if (newNumDays == 0)
+                return;
+
+            okToUpdate = false;
+            dateTimeSeriesStart.Value = startDate;
+            okToUpdate = true;
+            dateTimeSeriesEnd.Value = endDate;
+        }
+
+        private void btnTimeSeriesRight_Click(object sender, EventArgs e)
+        {
+            ShiftTimeSeriesPlot("Right");
         }
     }
 }

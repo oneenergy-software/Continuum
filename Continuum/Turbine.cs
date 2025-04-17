@@ -71,6 +71,75 @@ namespace ContinuumNS
             public TurbIntensity TI;
             /// <summary> Array of time series data (Timestamp, WS, Gross, Net). Clears on save. Is stored in DB. </summary>
             public ModelCollection.TimeSeries[] timeSeries;
+
+            /// <summary> Returns index with specified timestamp </summary>            
+            public int GetTS_Index(DateTime targetDate)
+            {
+                if (targetDate < timeSeries[0].dateTime || targetDate > timeSeries[timeSeries.Length - 1].dateTime)
+                    return -999;
+
+                int indMid = timeSeries.Length / 2;
+                int dataIntMins = Convert.ToInt32(Math.Round(timeSeries[indMid].dateTime.Subtract(timeSeries[indMid - 1].dateTime).TotalMinutes, 0));
+
+                int tsInd = Convert.ToInt32(Math.Round(targetDate.Subtract(timeSeries[0].dateTime).TotalMinutes / dataIntMins, 0));
+
+                if (tsInd < 0)
+                    tsInd = 0;
+
+                if (tsInd >= timeSeries.Length)
+                    tsInd = timeSeries.Length - 1;
+
+                DateTime thisDate = timeSeries[tsInd].dateTime;
+
+                if (thisDate == targetDate)
+                    return tsInd;
+
+                double timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+                double lastTimeDiff = timeDiffMins;
+                int stepSize = Convert.ToInt32(timeDiffMins / 2 / dataIntMins);
+                bool diffGettingSmaller = true;
+
+                while (Math.Abs(timeDiffMins) >= dataIntMins && diffGettingSmaller)
+                {
+                    if (timeDiffMins < 0)
+                        tsInd = tsInd - stepSize;
+                    else
+                        tsInd = tsInd + stepSize;
+
+                    if (tsInd >= timeSeries.Length)
+                    {
+                        tsInd = timeSeries.Length - 1;
+                        break;
+                    }
+
+                    thisDate = timeSeries[tsInd].dateTime;
+
+                    if (thisDate == targetDate)
+                        return tsInd;
+
+                    timeDiffMins = targetDate.Subtract(thisDate).TotalMinutes;
+
+                    if (Math.Abs(timeDiffMins) >= Math.Abs(lastTimeDiff))
+                        diffGettingSmaller = false;
+
+                    lastTimeDiff = timeDiffMins;
+                    stepSize = Math.Abs(Convert.ToInt32(timeDiffMins / 2 / dataIntMins));
+
+                    if (stepSize == 0)
+                        stepSize = 1;
+                }
+
+                while (timeSeries[tsInd].dateTime < targetDate && tsInd < timeSeries.Length - 1)
+                    tsInd++;
+
+                while (timeSeries[tsInd].dateTime > targetDate && tsInd > 0)
+                    tsInd--;
+
+                if (timeSeries[tsInd].dateTime != targetDate)
+                    tsInd = -999;
+
+                return tsInd;
+            }
         }
 
         /// <summary> Holds average, representative, and effective sectorwise turbulence intensity. </summary> 
@@ -2097,5 +2166,7 @@ namespace ContinuumNS
 
             return gotSome;
         }
+
+        
     }
 }

@@ -27,6 +27,8 @@ if not incl10mWS and not incl10mGust:
     varStr = ["100m_u_component_of_wind", "100m_v_component_of_wind", "2m_temperature", "surface_pressure"]
 elif incl10mWS and not incl10mGust:
     varStr = ["100m_u_component_of_wind", "100m_v_component_of_wind", "2m_temperature", "surface_pressure", "10m_u_component_of_wind", "10m_v_component_of_wind"]
+elif not incl10mWS and incl10mGust:
+    varStr = ["100m_u_component_of_wind", "100m_v_component_of_wind", "2m_temperature", "surface_pressure", "10m_wind_gust_since_previous_post_processing"]
 elif incl10mWS and incl10mGust:
     varStr = ["100m_u_component_of_wind", "100m_v_component_of_wind", "2m_temperature", "surface_pressure", "10m_u_component_of_wind", "10m_v_component_of_wind", "10m_wind_gust_since_previous_post_processing"]
     

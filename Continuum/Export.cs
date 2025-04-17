@@ -2791,15 +2791,14 @@ namespace ContinuumNS
                             int WS_Ind = thisMCP.Get_WS_ind(thisWS, wsBinWidth);
                             int WD_Ind = thisMCP.Get_WD_ind(thisWD, numTAB_Bins);
 
-                            if (WS_Ind > 30) WS_Ind = 30;
-
+                            if (WS_Ind >= 30) WS_Ind = 29;
+                                                        
                             windRose[WD_Ind]++;
                             WSWD_Dist[WS_Ind, WD_Ind]++;
-
                         }
 
                         if (thisTS == exportEnd)
-                            break;
+                            break;                                                
 
                         thisTS = thisMCP.LT_WS_Ests[Est_data_ind].thisDate;
                         thisWS = thisMCP.LT_WS_Ests[Est_data_ind].thisWS;
@@ -2840,8 +2839,9 @@ namespace ContinuumNS
 
                     file.Close();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    MessageBox.Show(ex.Message);
                     MessageBox.Show("Error writing to file. Make sure that it is not open in another program.");
                 }
             }
@@ -3198,7 +3198,57 @@ namespace ContinuumNS
         }
 
         /// <summary> Exports annual average values shown on Time Series tab. </summary>
-        public void ExportYearlyTurbineValues(Continuum thisInst)
+        public void ExportTimeSeries(Continuum thisInst)
+        {
+            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
+            {
+               
+                Turbine thisTurb = new Turbine();
+                bool all_WTGs = true;
+
+                if (thisInst.cboTimeSeriesInterval.SelectedItem.ToString() != "All WTGs")
+                {
+                    thisTurb = thisInst.GetSelectedTurbine("Monthly");
+                    all_WTGs = false;
+                }
+                else if (thisInst.turbineList.TurbineCount > 0)
+                {
+                    // Assign first turbine in list to thisTurb
+                    thisTurb = thisInst.turbineList.turbineEsts[0];
+                }
+                else
+                    return;
+
+                string filePath = thisInst.sfd60mWS.FileName;
+                StreamWriter file = new StreamWriter(filePath);
+
+                if (all_WTGs)
+                    file.WriteLine("Estimated Annual Parameters at all Turbine Sites");
+                else
+                    file.WriteLine("Estimated Annual Parameters at Turbine: " + thisTurb.name);
+
+                file.WriteLine(DateTime.Now.ToShortDateString());
+                file.WriteLine();
+
+                // Write out column names
+                for (int c = 0; c < thisInst.dataWTG_TimeSeriesEsts.ColumnCount; c++)
+                    file.Write(thisInst.dataWTG_TimeSeriesEsts.Columns[c].Name + ",");
+                file.WriteLine();
+
+                // Write out all data in table
+                for (int r = 0; r < thisInst.dataWTG_TimeSeriesEsts.RowCount; r++)
+                {
+                    for (int c = 0; c < thisInst.dataWTG_TimeSeriesEsts.ColumnCount; c++)
+                        file.Write(thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[c].Value + ",");
+                    file.WriteLine();
+                }
+                
+                file.Close();
+            }
+        }
+
+        /// <summary> Exports annual average values shown on Time Series tab. </summary>
+   /*     public void ExportYearlyTurbineValues(Continuum thisInst)
         {             
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
             {
@@ -3218,10 +3268,30 @@ namespace ContinuumNS
                     return;
                 }
 
+                Turbine thisTurb = new Turbine();
+                bool all_WTGs = true;
+
+                if (thisInst.cboTimeSeriesInterval.SelectedItem.ToString() != "All WTGs")
+                {
+                    thisTurb = thisInst.GetSelectedTurbine("Monthly");
+                    all_WTGs = false;
+                }
+                else if (thisInst.turbineList.TurbineCount > 0)
+                {
+                    // Assign first turbine in list to thisTurb
+                    thisTurb = thisInst.turbineList.turbineEsts[0];
+                }
+                else
+                    return;
+
                 string filePath = thisInst.sfd60mWS.FileName;
                 StreamWriter file = new StreamWriter(filePath);
 
-                file.WriteLine("Estimated Annual Parameters at Turbine: " + thisInst.GetSelectedTurbine("Monthly").name);
+                if (all_WTGs)
+                    file.WriteLine("Estimated Annual Parameters at all Turbine Sites");
+                else
+                    file.WriteLine("Estimated Annual Parameters at Turbine: " + thisTurb.name);
+
                 file.WriteLine(DateTime.Now.ToShortDateString());
                 file.WriteLine();
 
@@ -3272,10 +3342,30 @@ namespace ContinuumNS
                     return;
                 }
 
+                Turbine thisTurb = new Turbine();
+                bool all_WTGs = true;
+
+                if (thisInst.cboTimeSeriesInterval.SelectedItem.ToString() != "All WTGs")
+                {
+                    thisTurb = thisInst.GetSelectedTurbine("Monthly");
+                    all_WTGs = false;
+                }
+                else if (thisInst.turbineList.TurbineCount > 0)
+                {
+                    // Assign first turbine in list to thisTurb
+                    thisTurb = thisInst.turbineList.turbineEsts[0];
+                }
+                else
+                    return;
+
                 string filePath = thisInst.sfd60mWS.FileName;
                 StreamWriter file = new StreamWriter(filePath);
 
-                file.WriteLine("Estimated Monthly Parameters at Turbine: " + thisInst.GetSelectedTurbine("Monthly").name);
+                if (all_WTGs)
+                    file.WriteLine("Estimated Monthly Parameters at All Turbine Sites");
+                else
+                    file.WriteLine("Estimated Monthly Parameters at Turbine: " + thisTurb.name);
+
                 file.WriteLine(DateTime.Now.ToShortDateString());
                 file.WriteLine();
 
@@ -3310,7 +3400,21 @@ namespace ContinuumNS
         {
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
             {
-                Turbine thisTurb = thisInst.GetSelectedTurbine("Monthly");
+                Turbine thisTurb = new Turbine();
+                bool all_WTGs = true;
+
+                if (thisInst.cboTimeSeriesInterval.SelectedItem.ToString() != "All WTGs")
+                {
+                    thisTurb = thisInst.GetSelectedTurbine("Monthly");
+                    all_WTGs = false;
+                }
+                else if (thisInst.turbineList.TurbineCount > 0)
+                {
+                    // Assign first turbine in list to thisTurb
+                    thisTurb = thisInst.turbineList.turbineEsts[0];
+                }
+                else
+                    return;
 
                 Wake_Model thisWakeModel = null;
                 if (thisInst.wakeModelList.NumWakeModels > 0)
@@ -3362,7 +3466,11 @@ namespace ContinuumNS
                 string filePath = thisInst.sfd60mWS.FileName;
                 StreamWriter file = new StreamWriter(filePath);
 
-                file.WriteLine("Estimated Hourly Estimates at Turbine: " + thisInst.GetSelectedTurbine("Monthly").name);
+                if (all_WTGs)
+                    file.WriteLine("Estimated Hourly Estimates at all WTGs");
+                else
+                    file.WriteLine("Estimated Hourly Estimates at Turbine: " + thisTurb.name);
+
                 file.WriteLine(DateTime.Now.ToShortDateString());
 
                 if (powerCurve.power != null)
@@ -3403,19 +3511,42 @@ namespace ContinuumNS
 
                 for (int i = 0; i < TS_length; i++)
                 {
-                    file.Write(thisTS[i].dateTime + "," + Math.Round(thisTS[i].freeStreamWS, 3) + "," + thisTS[i].WD + ",");
 
-                    if (haveGross)
-                        file.Write(thisTS[i].grossEnergy + ",");
-
-                    if (haveNet)
+                    if (all_WTGs)
                     {
-                        double thisWake = 100 * (thisTS[i].grossEnergy - thisTS[i].netEnergy / overallP50) / thisTS[i].grossEnergy;
+                        ModelCollection.TimeSeries thisAvgTS = thisInst.turbineList.CalcWindFarmHourlyValues(i, thisWakeModel);
 
-                        if (thisTS[i].grossEnergy == 0)
-                            thisWake = 0;
+                        file.Write(thisTS[i].dateTime + "," + Math.Round(thisAvgTS.freeStreamWS, 3) + "," + Math.Round(thisAvgTS.WD, 2) + ",");
 
-                        file.Write(thisTS[i].netEnergy + "," + Math.Round(thisTS[i].wakedWS, 3) + "," + Math.Round(thisWake, 3));
+                        if (haveGross)
+                            file.Write(thisAvgTS.grossEnergy + ",");
+
+                        if (haveNet)
+                        {
+                            double thisWake = 0;
+
+                            if (thisAvgTS.grossEnergy != 0)
+                                thisWake = 100 * (thisAvgTS.grossEnergy - thisAvgTS.netEnergy / overallP50) / thisAvgTS.grossEnergy;                                                       
+
+                            file.Write(thisAvgTS.netEnergy + "," + Math.Round(thisAvgTS.wakedWS, 3) + "," + Math.Round(thisWake, 3));
+                        }
+                    }
+                    else
+                    {
+                        file.Write(thisTS[i].dateTime + "," + Math.Round(thisTS[i].freeStreamWS, 3) + "," + thisTS[i].WD + ",");
+
+                        if (haveGross)
+                            file.Write(thisTS[i].grossEnergy + ",");
+
+                        if (haveNet)
+                        {
+                            double thisWake = 0;
+
+                            if (thisTS[i].grossEnergy != 0)
+                                    thisWake = 100 * (thisTS[i].grossEnergy - thisTS[i].netEnergy / overallP50) / thisTS[i].grossEnergy;                                                      
+
+                            file.Write(thisTS[i].netEnergy + "," + Math.Round(thisTS[i].wakedWS, 3) + "," + Math.Round(thisWake, 3));
+                        }
                     }
 
                     file.WriteLine();
@@ -3425,6 +3556,7 @@ namespace ContinuumNS
 
             }
         }
+   */
 
         /// <summary> Exports exceedance tables/performance factor probability distribution. </summary>
         public void Export_P_tables_and_Curves(bool Exp_Curves, bool Exp_Table, bool Exp_All_P_Vals, Continuum thisInst)

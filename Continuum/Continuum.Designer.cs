@@ -796,38 +796,36 @@ namespace ContinuumNS
             this.label170 = new System.Windows.Forms.Label();
             this.label92 = new System.Windows.Forms.Label();
             this.pgeMonthlyAnalysis = new System.Windows.Forms.TabPage();
-            this.plotMonthlyTS = new OxyPlot.WindowsForms.PlotView();
-            this.plotYearlyTS = new OxyPlot.WindowsForms.PlotView();
-            this.label158 = new System.Windows.Forms.Label();
-            this.cboMonthlyPowerCurve = new System.Windows.Forms.ComboBox();
-            this.btnExportHourlyTurbineValues = new System.Windows.Forms.Button();
-            this.btnExportMonthlyTurbineValues = new System.Windows.Forms.Button();
-            this.btnExportYearlyTurbineValues = new System.Windows.Forms.Button();
-            this.cboMonthlyWakeModel = new System.Windows.Forms.ComboBox();
-            this.label157 = new System.Windows.Forms.Label();
-            this.label148 = new System.Windows.Forms.Label();
-            this.chkSelectedTurbineParam = new System.Windows.Forms.CheckedListBox();
-            this.label131 = new System.Windows.Forms.Label();
-            this.cboSelectedTurbine = new System.Windows.Forms.ComboBox();
             this.label126 = new System.Windows.Forms.Label();
-            this.label122 = new System.Windows.Forms.Label();
+            this.txtTimeSeriesInterval = new System.Windows.Forms.TextBox();
+            this.btnTimeSeriesLeft = new System.Windows.Forms.Button();
+            this.btnTimeSeriesRight = new System.Windows.Forms.Button();
+            this.label150 = new System.Windows.Forms.Label();
+            this.label244 = new System.Windows.Forms.Label();
+            this.dateTimeSeriesEnd = new System.Windows.Forms.DateTimePicker();
+            this.dateTimeSeriesStart = new System.Windows.Forms.DateTimePicker();
+            this.label22 = new System.Windows.Forms.Label();
+            this.cboTimeSeriesAnalysis = new System.Windows.Forms.ComboBox();
+            this.chkSelectAllWTGsToShow = new System.Windows.Forms.CheckBox();
+            this.chkWTGsToShow = new System.Windows.Forms.CheckedListBox();
             this.chkSelectAllTurbineYears = new System.Windows.Forms.CheckBox();
             this.chkYears_Monthly = new System.Windows.Forms.CheckedListBox();
-            this.lstYearlyTurbine = new System.Windows.Forms.ListView();
-            this.columnHeader118 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader119 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader131 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader122 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader127 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader128 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.lstMonthlyTurbine = new System.Windows.Forms.ListView();
-            this.columnHeader123 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader124 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader125 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader132 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader126 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader129 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader130 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label148 = new System.Windows.Forms.Label();
+            this.chkSelectedTurbineParam = new System.Windows.Forms.CheckedListBox();
+            this.btnExportTimeSeriesEsts = new System.Windows.Forms.Button();
+            this.splitTimeSeries = new System.Windows.Forms.SplitContainer();
+            this.dataWTG_TimeSeriesEsts = new System.Windows.Forms.DataGridView();
+            this.Column21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column23 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column24 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.plotWTG_TimeSeries = new OxyPlot.WindowsForms.PlotView();
+            this.label158 = new System.Windows.Forms.Label();
+            this.cboMonthlyPowerCurve = new System.Windows.Forms.ComboBox();
+            this.cboMonthlyWakeModel = new System.Windows.Forms.ComboBox();
+            this.label157 = new System.Windows.Forms.Label();
+            this.label131 = new System.Windows.Forms.Label();
+            this.cboTimeSeriesInterval = new System.Windows.Forms.ComboBox();
             this.label163 = new System.Windows.Forms.Label();
             this.pgeMaps = new System.Windows.Forms.TabPage();
             this.plotGenMap = new OxyPlot.WindowsForms.PlotView();
@@ -1011,6 +1009,8 @@ namespace ContinuumNS
             this.Label11 = new System.Windows.Forms.Label();
             this.Label7 = new System.Windows.Forms.Label();
             this.pgeSuitability = new System.Windows.Forms.TabPage();
+            this.txtMaxShadowDist = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
             this.btnExportSiteSuitMap = new System.Windows.Forms.Button();
             this.btnZoneFileFormatHelp = new System.Windows.Forms.Button();
             this.plotIceVsDist = new OxyPlot.WindowsForms.PlotView();
@@ -1127,8 +1127,6 @@ namespace ContinuumNS
             this.fbd_Export = new System.Windows.Forms.FolderBrowserDialog();
             this.ofdZones = new System.Windows.Forms.OpenFileDialog();
             this.ofdExceedCurves = new System.Windows.Forms.OpenFileDialog();
-            this.txtMaxShadowDist = new System.Windows.Forms.TextBox();
-            this.label21 = new System.Windows.Forms.Label();
             this.tabContinuum.SuspendLayout();
             this.pgeInput.SuspendLayout();
             this.pnlInputMap.SuspendLayout();
@@ -1157,6 +1155,11 @@ namespace ContinuumNS
             this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataExtremeWS)).BeginInit();
             this.pgeMonthlyAnalysis.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitTimeSeries)).BeginInit();
+            this.splitTimeSeries.Panel1.SuspendLayout();
+            this.splitTimeSeries.Panel2.SuspendLayout();
+            this.splitTimeSeries.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataWTG_TimeSeriesEsts)).BeginInit();
             this.pgeMaps.SuspendLayout();
             this.pgeRound.SuspendLayout();
             this.pgeStepwise.SuspendLayout();
@@ -2243,7 +2246,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 537);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(770, 155);
+            this.plotTS_Baros.Size = new System.Drawing.Size(692, 155);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2467,7 +2470,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 382);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(770, 155);
+            this.plotTS_Temp.Size = new System.Drawing.Size(692, 155);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2482,7 +2485,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 227);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(770, 155);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(692, 155);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2497,7 +2500,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(770, 155);
+            this.plotTS_Anems.Size = new System.Drawing.Size(692, 155);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -8227,7 +8230,11 @@ namespace ContinuumNS
             "700",
             "800",
             "900",
-            "1000"});
+            "1000",
+            "4000",
+            "6000",
+            "8000",
+            "10000"});
             this.cboInflowRadius.Location = new System.Drawing.Point(118, 380);
             this.cboInflowRadius.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboInflowRadius.Name = "cboInflowRadius";
@@ -8371,7 +8378,7 @@ namespace ContinuumNS
             this.plotTurbInt.Location = new System.Drawing.Point(520, 18);
             this.plotTurbInt.Name = "plotTurbInt";
             this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(911, 689);
+            this.plotTurbInt.Size = new System.Drawing.Size(911, 754);
             this.plotTurbInt.TabIndex = 289;
             this.plotTurbInt.Text = "plotView1";
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8534,7 +8541,7 @@ namespace ContinuumNS
             this.lstTurbulence.Location = new System.Drawing.Point(13, 51);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 661);
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 726);
             this.lstTurbulence.TabIndex = 275;
             this.lstTurbulence.UseCompatibleStateImageBehavior = false;
             this.lstTurbulence.View = System.Windows.Forms.View.Details;
@@ -8724,7 +8731,7 @@ namespace ContinuumNS
             this.plotExtremeShear.Location = new System.Drawing.Point(501, 18);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeShear.Size = new System.Drawing.Size(914, 680);
+            this.plotExtremeShear.Size = new System.Drawing.Size(914, 745);
             this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8951,7 +8958,7 @@ namespace ContinuumNS
             // btnExportExtremeWSTable
             // 
             this.btnExportExtremeWSTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 662);
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 727);
             this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
             this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
@@ -9248,7 +9255,7 @@ namespace ContinuumNS
             this.plotExtremeWS_TS.Location = new System.Drawing.Point(921, 24);
             this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
             this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 350);
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 415);
             this.plotExtremeWS_TS.TabIndex = 293;
             this.plotExtremeWS_TS.Text = "plotView1";
             this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9271,7 +9278,7 @@ namespace ContinuumNS
             this.dataExtremeWS.Location = new System.Drawing.Point(359, 17);
             this.dataExtremeWS.Name = "dataExtremeWS";
             this.dataExtremeWS.RowHeadersWidth = 51;
-            this.dataExtremeWS.Size = new System.Drawing.Size(548, 694);
+            this.dataExtremeWS.Size = new System.Drawing.Size(548, 759);
             this.dataExtremeWS.TabIndex = 292;
             // 
             // Column17
@@ -9362,7 +9369,7 @@ namespace ContinuumNS
             this.plotExtremeWS.Location = new System.Drawing.Point(921, 298);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(510, 350);
+            this.plotExtremeWS.Size = new System.Drawing.Size(510, 415);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9381,7 +9388,7 @@ namespace ContinuumNS
             // btnExtremeWS
             // 
             this.btnExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExtremeWS.Location = new System.Drawing.Point(916, 662);
+            this.btnExtremeWS.Location = new System.Drawing.Point(916, 727);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);
@@ -9491,25 +9498,30 @@ namespace ContinuumNS
             // pgeMonthlyAnalysis
             // 
             this.pgeMonthlyAnalysis.AutoScroll = true;
-            this.pgeMonthlyAnalysis.Controls.Add(this.plotMonthlyTS);
-            this.pgeMonthlyAnalysis.Controls.Add(this.plotYearlyTS);
-            this.pgeMonthlyAnalysis.Controls.Add(this.label158);
-            this.pgeMonthlyAnalysis.Controls.Add(this.cboMonthlyPowerCurve);
-            this.pgeMonthlyAnalysis.Controls.Add(this.btnExportHourlyTurbineValues);
-            this.pgeMonthlyAnalysis.Controls.Add(this.btnExportMonthlyTurbineValues);
-            this.pgeMonthlyAnalysis.Controls.Add(this.btnExportYearlyTurbineValues);
-            this.pgeMonthlyAnalysis.Controls.Add(this.cboMonthlyWakeModel);
-            this.pgeMonthlyAnalysis.Controls.Add(this.label157);
-            this.pgeMonthlyAnalysis.Controls.Add(this.label148);
-            this.pgeMonthlyAnalysis.Controls.Add(this.chkSelectedTurbineParam);
-            this.pgeMonthlyAnalysis.Controls.Add(this.label131);
-            this.pgeMonthlyAnalysis.Controls.Add(this.cboSelectedTurbine);
             this.pgeMonthlyAnalysis.Controls.Add(this.label126);
-            this.pgeMonthlyAnalysis.Controls.Add(this.label122);
+            this.pgeMonthlyAnalysis.Controls.Add(this.txtTimeSeriesInterval);
+            this.pgeMonthlyAnalysis.Controls.Add(this.btnTimeSeriesLeft);
+            this.pgeMonthlyAnalysis.Controls.Add(this.btnTimeSeriesRight);
+            this.pgeMonthlyAnalysis.Controls.Add(this.label150);
+            this.pgeMonthlyAnalysis.Controls.Add(this.label244);
+            this.pgeMonthlyAnalysis.Controls.Add(this.dateTimeSeriesEnd);
+            this.pgeMonthlyAnalysis.Controls.Add(this.dateTimeSeriesStart);
+            this.pgeMonthlyAnalysis.Controls.Add(this.label22);
+            this.pgeMonthlyAnalysis.Controls.Add(this.cboTimeSeriesAnalysis);
+            this.pgeMonthlyAnalysis.Controls.Add(this.chkSelectAllWTGsToShow);
+            this.pgeMonthlyAnalysis.Controls.Add(this.chkWTGsToShow);
             this.pgeMonthlyAnalysis.Controls.Add(this.chkSelectAllTurbineYears);
             this.pgeMonthlyAnalysis.Controls.Add(this.chkYears_Monthly);
-            this.pgeMonthlyAnalysis.Controls.Add(this.lstYearlyTurbine);
-            this.pgeMonthlyAnalysis.Controls.Add(this.lstMonthlyTurbine);
+            this.pgeMonthlyAnalysis.Controls.Add(this.label148);
+            this.pgeMonthlyAnalysis.Controls.Add(this.chkSelectedTurbineParam);
+            this.pgeMonthlyAnalysis.Controls.Add(this.btnExportTimeSeriesEsts);
+            this.pgeMonthlyAnalysis.Controls.Add(this.splitTimeSeries);
+            this.pgeMonthlyAnalysis.Controls.Add(this.label158);
+            this.pgeMonthlyAnalysis.Controls.Add(this.cboMonthlyPowerCurve);
+            this.pgeMonthlyAnalysis.Controls.Add(this.cboMonthlyWakeModel);
+            this.pgeMonthlyAnalysis.Controls.Add(this.label157);
+            this.pgeMonthlyAnalysis.Controls.Add(this.label131);
+            this.pgeMonthlyAnalysis.Controls.Add(this.cboTimeSeriesInterval);
             this.pgeMonthlyAnalysis.Controls.Add(this.label163);
             this.pgeMonthlyAnalysis.Location = new System.Drawing.Point(4, 27);
             this.pgeMonthlyAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -9518,38 +9530,271 @@ namespace ContinuumNS
             this.pgeMonthlyAnalysis.TabIndex = 17;
             this.pgeMonthlyAnalysis.Text = "Time Series Analysis";
             this.pgeMonthlyAnalysis.UseVisualStyleBackColor = true;
+            this.pgeMonthlyAnalysis.Click += new System.EventHandler(this.pgeMonthlyAnalysis_Click);
             // 
-            // plotMonthlyTS
+            // label126
             // 
-            this.plotMonthlyTS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.plotMonthlyTS.Location = new System.Drawing.Point(760, 428);
-            this.plotMonthlyTS.Name = "plotMonthlyTS";
-            this.plotMonthlyTS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotMonthlyTS.Size = new System.Drawing.Size(712, 269);
-            this.plotMonthlyTS.TabIndex = 279;
-            this.plotMonthlyTS.Text = "plotView2";
-            this.plotMonthlyTS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotMonthlyTS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotMonthlyTS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.label126.AutoSize = true;
+            this.label126.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label126.Location = new System.Drawing.Point(1368, 66);
+            this.label126.Name = "label126";
+            this.label126.Size = new System.Drawing.Size(38, 18);
+            this.label126.TabIndex = 309;
+            this.label126.Text = "Days";
+            this.label126.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // plotYearlyTS
+            // txtTimeSeriesInterval
             // 
-            this.plotYearlyTS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.plotYearlyTS.Location = new System.Drawing.Point(14, 428);
-            this.plotYearlyTS.Name = "plotYearlyTS";
-            this.plotYearlyTS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotYearlyTS.Size = new System.Drawing.Size(733, 269);
-            this.plotYearlyTS.TabIndex = 278;
-            this.plotYearlyTS.Text = "plotView1";
-            this.plotYearlyTS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
-            this.plotYearlyTS.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.plotYearlyTS.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            this.txtTimeSeriesInterval.Location = new System.Drawing.Point(1303, 62);
+            this.txtTimeSeriesInterval.Name = "txtTimeSeriesInterval";
+            this.txtTimeSeriesInterval.Size = new System.Drawing.Size(59, 25);
+            this.txtTimeSeriesInterval.TabIndex = 308;
+            // 
+            // btnTimeSeriesLeft
+            // 
+            this.btnTimeSeriesLeft.BackColor = System.Drawing.Color.LightCyan;
+            this.btnTimeSeriesLeft.Image = ((System.Drawing.Image)(resources.GetObject("btnTimeSeriesLeft.Image")));
+            this.btnTimeSeriesLeft.Location = new System.Drawing.Point(1242, 54);
+            this.btnTimeSeriesLeft.Name = "btnTimeSeriesLeft";
+            this.btnTimeSeriesLeft.Size = new System.Drawing.Size(55, 40);
+            this.btnTimeSeriesLeft.TabIndex = 307;
+            this.btnTimeSeriesLeft.UseVisualStyleBackColor = false;
+            this.btnTimeSeriesLeft.Click += new System.EventHandler(this.btnTimeSeriesLeft_Click);
+            // 
+            // btnTimeSeriesRight
+            // 
+            this.btnTimeSeriesRight.BackColor = System.Drawing.Color.LightCyan;
+            this.btnTimeSeriesRight.Image = ((System.Drawing.Image)(resources.GetObject("btnTimeSeriesRight.Image")));
+            this.btnTimeSeriesRight.Location = new System.Drawing.Point(1409, 55);
+            this.btnTimeSeriesRight.Name = "btnTimeSeriesRight";
+            this.btnTimeSeriesRight.Size = new System.Drawing.Size(55, 40);
+            this.btnTimeSeriesRight.TabIndex = 306;
+            this.btnTimeSeriesRight.UseVisualStyleBackColor = false;
+            this.btnTimeSeriesRight.Click += new System.EventHandler(this.btnTimeSeriesRight_Click);
+            // 
+            // label150
+            // 
+            this.label150.AutoSize = true;
+            this.label150.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label150.Location = new System.Drawing.Point(1059, 62);
+            this.label150.Name = "label150";
+            this.label150.Size = new System.Drawing.Size(23, 18);
+            this.label150.TabIndex = 305;
+            this.label150.Text = "To";
+            this.label150.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label244
+            // 
+            this.label244.AutoSize = true;
+            this.label244.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label244.Location = new System.Drawing.Point(859, 62);
+            this.label244.Name = "label244";
+            this.label244.Size = new System.Drawing.Size(40, 18);
+            this.label244.TabIndex = 304;
+            this.label244.Text = "From";
+            this.label244.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // dateTimeSeriesEnd
+            // 
+            this.dateTimeSeriesEnd.CustomFormat = "MM/dd/yy HH:mm";
+            this.dateTimeSeriesEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimeSeriesEnd.Location = new System.Drawing.Point(1089, 59);
+            this.dateTimeSeriesEnd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.dateTimeSeriesEnd.Name = "dateTimeSeriesEnd";
+            this.dateTimeSeriesEnd.Size = new System.Drawing.Size(140, 25);
+            this.dateTimeSeriesEnd.TabIndex = 303;
+            // 
+            // dateTimeSeriesStart
+            // 
+            this.dateTimeSeriesStart.CustomFormat = "MM/dd/yy HH:mm";
+            this.dateTimeSeriesStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimeSeriesStart.Location = new System.Drawing.Point(903, 59);
+            this.dateTimeSeriesStart.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.dateTimeSeriesStart.Name = "dateTimeSeriesStart";
+            this.dateTimeSeriesStart.Size = new System.Drawing.Size(140, 25);
+            this.dateTimeSeriesStart.TabIndex = 302;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.Location = new System.Drawing.Point(267, 63);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(67, 18);
+            this.label22.TabIndex = 299;
+            this.label22.Text = "Analysis :";
+            // 
+            // cboTimeSeriesAnalysis
+            // 
+            this.cboTimeSeriesAnalysis.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboTimeSeriesAnalysis.FormattingEnabled = true;
+            this.cboTimeSeriesAnalysis.Items.AddRange(new object[] {
+            "Time Series",
+            "Monthly (Seasonal)",
+            "Diurnal ",
+            "12x24"});
+            this.cboTimeSeriesAnalysis.Location = new System.Drawing.Point(334, 58);
+            this.cboTimeSeriesAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTimeSeriesAnalysis.Name = "cboTimeSeriesAnalysis";
+            this.cboTimeSeriesAnalysis.Size = new System.Drawing.Size(190, 26);
+            this.cboTimeSeriesAnalysis.TabIndex = 298;
+            this.cboTimeSeriesAnalysis.SelectedIndexChanged += new System.EventHandler(this.cboTimeSeriesAnalysis_SelectedIndexChanged);
+            // 
+            // chkSelectAllWTGsToShow
+            // 
+            this.chkSelectAllWTGsToShow.AutoSize = true;
+            this.chkSelectAllWTGsToShow.Checked = true;
+            this.chkSelectAllWTGsToShow.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSelectAllWTGsToShow.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkSelectAllWTGsToShow.Location = new System.Drawing.Point(25, 71);
+            this.chkSelectAllWTGsToShow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkSelectAllWTGsToShow.Name = "chkSelectAllWTGsToShow";
+            this.chkSelectAllWTGsToShow.Size = new System.Drawing.Size(81, 30);
+            this.chkSelectAllWTGsToShow.TabIndex = 297;
+            this.chkSelectAllWTGsToShow.Text = "Select/\r\nDeselect All";
+            this.chkSelectAllWTGsToShow.UseVisualStyleBackColor = true;
+            this.chkSelectAllWTGsToShow.CheckedChanged += new System.EventHandler(this.chkSelectAllWTGsToShow_CheckedChanged);
+            // 
+            // chkWTGsToShow
+            // 
+            this.chkWTGsToShow.CheckOnClick = true;
+            this.chkWTGsToShow.FormattingEnabled = true;
+            this.chkWTGsToShow.Location = new System.Drawing.Point(15, 105);
+            this.chkWTGsToShow.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkWTGsToShow.Name = "chkWTGsToShow";
+            this.chkWTGsToShow.Size = new System.Drawing.Size(100, 244);
+            this.chkWTGsToShow.TabIndex = 296;
+            this.chkWTGsToShow.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkWTGsToShow_ItemCheck);
+            this.chkWTGsToShow.SelectedIndexChanged += new System.EventHandler(this.chkWTGsToShow_SelectedIndexChanged);
+            // 
+            // chkSelectAllTurbineYears
+            // 
+            this.chkSelectAllTurbineYears.AutoSize = true;
+            this.chkSelectAllTurbineYears.Checked = true;
+            this.chkSelectAllTurbineYears.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkSelectAllTurbineYears.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkSelectAllTurbineYears.Location = new System.Drawing.Point(13, 486);
+            this.chkSelectAllTurbineYears.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkSelectAllTurbineYears.Name = "chkSelectAllTurbineYears";
+            this.chkSelectAllTurbineYears.Size = new System.Drawing.Size(81, 30);
+            this.chkSelectAllTurbineYears.TabIndex = 295;
+            this.chkSelectAllTurbineYears.Text = "Select/\r\nDeselect All";
+            this.chkSelectAllTurbineYears.UseVisualStyleBackColor = true;
+            // 
+            // chkYears_Monthly
+            // 
+            this.chkYears_Monthly.CheckOnClick = true;
+            this.chkYears_Monthly.FormattingEnabled = true;
+            this.chkYears_Monthly.Location = new System.Drawing.Point(13, 521);
+            this.chkYears_Monthly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkYears_Monthly.Name = "chkYears_Monthly";
+            this.chkYears_Monthly.Size = new System.Drawing.Size(98, 144);
+            this.chkYears_Monthly.TabIndex = 294;
+            // 
+            // label148
+            // 
+            this.label148.AutoSize = true;
+            this.label148.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label148.Location = new System.Drawing.Point(12, 366);
+            this.label148.Name = "label148";
+            this.label148.Size = new System.Drawing.Size(101, 17);
+            this.label148.TabIndex = 293;
+            this.label148.Text = "Plot Parameters:";
+            // 
+            // chkSelectedTurbineParam
+            // 
+            this.chkSelectedTurbineParam.CheckOnClick = true;
+            this.chkSelectedTurbineParam.FormattingEnabled = true;
+            this.chkSelectedTurbineParam.Location = new System.Drawing.Point(13, 389);
+            this.chkSelectedTurbineParam.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkSelectedTurbineParam.Name = "chkSelectedTurbineParam";
+            this.chkSelectedTurbineParam.Size = new System.Drawing.Size(100, 84);
+            this.chkSelectedTurbineParam.TabIndex = 292;
+            // 
+            // btnExportTimeSeriesEsts
+            // 
+            this.btnExportTimeSeriesEsts.Font = new System.Drawing.Font("Palatino Linotype", 10F);
+            this.btnExportTimeSeriesEsts.Location = new System.Drawing.Point(23, 673);
+            this.btnExportTimeSeriesEsts.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnExportTimeSeriesEsts.Name = "btnExportTimeSeriesEsts";
+            this.btnExportTimeSeriesEsts.Size = new System.Drawing.Size(81, 30);
+            this.btnExportTimeSeriesEsts.TabIndex = 291;
+            this.btnExportTimeSeriesEsts.Text = "Export";
+            this.btnExportTimeSeriesEsts.UseVisualStyleBackColor = true;
+            this.btnExportTimeSeriesEsts.Click += new System.EventHandler(this.btnExportTimeSeriesEsts_Click);
+            // 
+            // splitTimeSeries
+            // 
+            this.splitTimeSeries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitTimeSeries.Location = new System.Drawing.Point(129, 105);
+            this.splitTimeSeries.Name = "splitTimeSeries";
+            this.splitTimeSeries.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitTimeSeries.Panel1
+            // 
+            this.splitTimeSeries.Panel1.Controls.Add(this.dataWTG_TimeSeriesEsts);
+            // 
+            // splitTimeSeries.Panel2
+            // 
+            this.splitTimeSeries.Panel2.Controls.Add(this.plotWTG_TimeSeries);
+            this.splitTimeSeries.Size = new System.Drawing.Size(1339, 604);
+            this.splitTimeSeries.SplitterDistance = 260;
+            this.splitTimeSeries.TabIndex = 280;
+            // 
+            // dataWTG_TimeSeriesEsts
+            // 
+            this.dataWTG_TimeSeriesEsts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataWTG_TimeSeriesEsts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column21,
+            this.Column22,
+            this.Column23,
+            this.Column24});
+            this.dataWTG_TimeSeriesEsts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataWTG_TimeSeriesEsts.Location = new System.Drawing.Point(0, 0);
+            this.dataWTG_TimeSeriesEsts.Name = "dataWTG_TimeSeriesEsts";
+            this.dataWTG_TimeSeriesEsts.Size = new System.Drawing.Size(1339, 260);
+            this.dataWTG_TimeSeriesEsts.TabIndex = 282;
+            // 
+            // Column21
+            // 
+            this.Column21.HeaderText = "Year";
+            this.Column21.Name = "Column21";
+            // 
+            // Column22
+            // 
+            this.Column22.HeaderText = "Avg. Free-Stream WS [m/s]";
+            this.Column22.Name = "Column22";
+            // 
+            // Column23
+            // 
+            this.Column23.HeaderText = "Gross AEP [MWh]";
+            this.Column23.Name = "Column23";
+            // 
+            // Column24
+            // 
+            this.Column24.HeaderText = "Net AEP [MWh]";
+            this.Column24.Name = "Column24";
+            // 
+            // plotWTG_TimeSeries
+            // 
+            this.plotWTG_TimeSeries.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.plotWTG_TimeSeries.Location = new System.Drawing.Point(0, 0);
+            this.plotWTG_TimeSeries.Name = "plotWTG_TimeSeries";
+            this.plotWTG_TimeSeries.PanCursor = System.Windows.Forms.Cursors.Hand;
+            this.plotWTG_TimeSeries.Size = new System.Drawing.Size(1339, 340);
+            this.plotWTG_TimeSeries.TabIndex = 280;
+            this.plotWTG_TimeSeries.Text = "plotView1";
+            this.plotWTG_TimeSeries.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
+            this.plotWTG_TimeSeries.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
+            this.plotWTG_TimeSeries.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
             // label158
             // 
             this.label158.AutoSize = true;
             this.label158.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label158.Location = new System.Drawing.Point(180, 17);
+            this.label158.Location = new System.Drawing.Point(606, 23);
             this.label158.Name = "label158";
             this.label158.Size = new System.Drawing.Size(93, 18);
             this.label158.TabIndex = 229;
@@ -9559,53 +9804,17 @@ namespace ContinuumNS
             // 
             this.cboMonthlyPowerCurve.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboMonthlyPowerCurve.FormattingEnabled = true;
-            this.cboMonthlyPowerCurve.Location = new System.Drawing.Point(279, 15);
+            this.cboMonthlyPowerCurve.Location = new System.Drawing.Point(705, 21);
             this.cboMonthlyPowerCurve.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMonthlyPowerCurve.Name = "cboMonthlyPowerCurve";
             this.cboMonthlyPowerCurve.Size = new System.Drawing.Size(321, 26);
             this.cboMonthlyPowerCurve.TabIndex = 228;
             this.cboMonthlyPowerCurve.SelectedIndexChanged += new System.EventHandler(this.cboMonthlyPowerCurve_SelectedIndexChanged);
             // 
-            // btnExportHourlyTurbineValues
-            // 
-            this.btnExportHourlyTurbineValues.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.btnExportHourlyTurbineValues.Location = new System.Drawing.Point(648, 318);
-            this.btnExportHourlyTurbineValues.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnExportHourlyTurbineValues.Name = "btnExportHourlyTurbineValues";
-            this.btnExportHourlyTurbineValues.Size = new System.Drawing.Size(105, 30);
-            this.btnExportHourlyTurbineValues.TabIndex = 227;
-            this.btnExportHourlyTurbineValues.Text = "Export Hourly";
-            this.btnExportHourlyTurbineValues.UseVisualStyleBackColor = true;
-            this.btnExportHourlyTurbineValues.Click += new System.EventHandler(this.btnExportHourlyTurbineValues_Click);
-            // 
-            // btnExportMonthlyTurbineValues
-            // 
-            this.btnExportMonthlyTurbineValues.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.btnExportMonthlyTurbineValues.Location = new System.Drawing.Point(648, 352);
-            this.btnExportMonthlyTurbineValues.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnExportMonthlyTurbineValues.Name = "btnExportMonthlyTurbineValues";
-            this.btnExportMonthlyTurbineValues.Size = new System.Drawing.Size(105, 30);
-            this.btnExportMonthlyTurbineValues.TabIndex = 226;
-            this.btnExportMonthlyTurbineValues.Text = "Export Monthly";
-            this.btnExportMonthlyTurbineValues.UseVisualStyleBackColor = true;
-            this.btnExportMonthlyTurbineValues.Click += new System.EventHandler(this.btnExportMonthlyTurbineValues_Click);
-            // 
-            // btnExportYearlyTurbineValues
-            // 
-            this.btnExportYearlyTurbineValues.Font = new System.Drawing.Font("Palatino Linotype", 9F);
-            this.btnExportYearlyTurbineValues.Location = new System.Drawing.Point(648, 386);
-            this.btnExportYearlyTurbineValues.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.btnExportYearlyTurbineValues.Name = "btnExportYearlyTurbineValues";
-            this.btnExportYearlyTurbineValues.Size = new System.Drawing.Size(105, 30);
-            this.btnExportYearlyTurbineValues.TabIndex = 225;
-            this.btnExportYearlyTurbineValues.Text = "Export Annual";
-            this.btnExportYearlyTurbineValues.UseVisualStyleBackColor = true;
-            this.btnExportYearlyTurbineValues.Click += new System.EventHandler(this.btnExportYearlyTurbineValues_Click);
-            // 
             // cboMonthlyWakeModel
             // 
             this.cboMonthlyWakeModel.FormattingEnabled = true;
-            this.cboMonthlyWakeModel.Location = new System.Drawing.Point(279, 48);
+            this.cboMonthlyWakeModel.Location = new System.Drawing.Point(1147, 19);
             this.cboMonthlyWakeModel.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboMonthlyWakeModel.Name = "cboMonthlyWakeModel";
             this.cboMonthlyWakeModel.Size = new System.Drawing.Size(321, 26);
@@ -9616,220 +9825,36 @@ namespace ContinuumNS
             // 
             this.label157.AutoSize = true;
             this.label157.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label157.Location = new System.Drawing.Point(180, 49);
+            this.label157.Location = new System.Drawing.Point(1053, 23);
             this.label157.Name = "label157";
             this.label157.Size = new System.Drawing.Size(84, 18);
             this.label157.TabIndex = 223;
             this.label157.Text = "Wake Model:";
             // 
-            // label148
-            // 
-            this.label148.AutoSize = true;
-            this.label148.Font = new System.Drawing.Font("Palatino Linotype", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label148.Location = new System.Drawing.Point(649, 203);
-            this.label148.Name = "label148";
-            this.label148.Size = new System.Drawing.Size(101, 17);
-            this.label148.TabIndex = 220;
-            this.label148.Text = "Plot Parameters:";
-            // 
-            // chkSelectedTurbineParam
-            // 
-            this.chkSelectedTurbineParam.CheckOnClick = true;
-            this.chkSelectedTurbineParam.FormattingEnabled = true;
-            this.chkSelectedTurbineParam.Location = new System.Drawing.Point(650, 226);
-            this.chkSelectedTurbineParam.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkSelectedTurbineParam.Name = "chkSelectedTurbineParam";
-            this.chkSelectedTurbineParam.Size = new System.Drawing.Size(100, 84);
-            this.chkSelectedTurbineParam.TabIndex = 219;
-            this.chkSelectedTurbineParam.SelectedIndexChanged += new System.EventHandler(this.chkSelectedTurbineParam_SelectedIndexChanged);
-            // 
             // label131
             // 
             this.label131.AutoSize = true;
             this.label131.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label131.Location = new System.Drawing.Point(343, 86);
+            this.label131.Location = new System.Drawing.Point(337, 24);
             this.label131.Name = "label131";
-            this.label131.Size = new System.Drawing.Size(61, 18);
+            this.label131.Size = new System.Drawing.Size(62, 18);
             this.label131.TabIndex = 218;
-            this.label131.Text = "Turbine :";
+            this.label131.Text = "Interval :";
             // 
-            // cboSelectedTurbine
+            // cboTimeSeriesInterval
             // 
-            this.cboSelectedTurbine.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboSelectedTurbine.FormattingEnabled = true;
-            this.cboSelectedTurbine.Location = new System.Drawing.Point(410, 81);
-            this.cboSelectedTurbine.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboSelectedTurbine.Name = "cboSelectedTurbine";
-            this.cboSelectedTurbine.Size = new System.Drawing.Size(190, 26);
-            this.cboSelectedTurbine.TabIndex = 217;
-            this.cboSelectedTurbine.SelectedIndexChanged += new System.EventHandler(this.cboSelectedTurbine_SelectedIndexChanged);
-            // 
-            // label126
-            // 
-            this.label126.AutoSize = true;
-            this.label126.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label126.Location = new System.Drawing.Point(779, 16);
-            this.label126.Name = "label126";
-            this.label126.Size = new System.Drawing.Size(149, 19);
-            this.label126.TabIndex = 216;
-            this.label126.Text = "Monthly Summary";
-            // 
-            // label122
-            // 
-            this.label122.AutoSize = true;
-            this.label122.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label122.Location = new System.Drawing.Point(20, 90);
-            this.label122.Name = "label122";
-            this.label122.Size = new System.Drawing.Size(137, 19);
-            this.label122.TabIndex = 215;
-            this.label122.Text = "Yearly Summary";
-            // 
-            // chkSelectAllTurbineYears
-            // 
-            this.chkSelectAllTurbineYears.AutoSize = true;
-            this.chkSelectAllTurbineYears.Checked = true;
-            this.chkSelectAllTurbineYears.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkSelectAllTurbineYears.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkSelectAllTurbineYears.Location = new System.Drawing.Point(649, 14);
-            this.chkSelectAllTurbineYears.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkSelectAllTurbineYears.Name = "chkSelectAllTurbineYears";
-            this.chkSelectAllTurbineYears.Size = new System.Drawing.Size(81, 30);
-            this.chkSelectAllTurbineYears.TabIndex = 214;
-            this.chkSelectAllTurbineYears.Text = "Select/\r\nDeselect All";
-            this.chkSelectAllTurbineYears.UseVisualStyleBackColor = true;
-            this.chkSelectAllTurbineYears.CheckedChanged += new System.EventHandler(this.chkSelectAllTurbineYears_CheckedChanged);
-            // 
-            // chkYears_Monthly
-            // 
-            this.chkYears_Monthly.CheckOnClick = true;
-            this.chkYears_Monthly.FormattingEnabled = true;
-            this.chkYears_Monthly.Location = new System.Drawing.Point(649, 49);
-            this.chkYears_Monthly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkYears_Monthly.Name = "chkYears_Monthly";
-            this.chkYears_Monthly.Size = new System.Drawing.Size(98, 144);
-            this.chkYears_Monthly.TabIndex = 213;
-            this.chkYears_Monthly.SelectedIndexChanged += new System.EventHandler(this.chkYears_Monthly_SelectedIndexChanged);
-            // 
-            // lstYearlyTurbine
-            // 
-            this.lstYearlyTurbine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.lstYearlyTurbine.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader118,
-            this.columnHeader119,
-            this.columnHeader131,
-            this.columnHeader122,
-            this.columnHeader127,
-            this.columnHeader128});
-            this.lstYearlyTurbine.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstYearlyTurbine.GridLines = true;
-            this.lstYearlyTurbine.HideSelection = false;
-            this.lstYearlyTurbine.Location = new System.Drawing.Point(15, 124);
-            this.lstYearlyTurbine.Margin = new System.Windows.Forms.Padding(2);
-            this.lstYearlyTurbine.Name = "lstYearlyTurbine";
-            this.lstYearlyTurbine.Size = new System.Drawing.Size(611, 299);
-            this.lstYearlyTurbine.TabIndex = 201;
-            this.lstYearlyTurbine.UseCompatibleStateImageBehavior = false;
-            this.lstYearlyTurbine.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader118
-            // 
-            this.columnHeader118.Text = "Year";
-            this.columnHeader118.Width = 70;
-            // 
-            // columnHeader119
-            // 
-            this.columnHeader119.Text = "Avg WS (m/s)";
-            this.columnHeader119.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader119.Width = 83;
-            // 
-            // columnHeader131
-            // 
-            this.columnHeader131.Text = "Gross AEP (MWh)";
-            this.columnHeader131.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader131.Width = 100;
-            // 
-            // columnHeader122
-            // 
-            this.columnHeader122.Text = "Net AEP (MWh)";
-            this.columnHeader122.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader122.Width = 85;
-            // 
-            // columnHeader127
-            // 
-            this.columnHeader127.Text = "Wake Loss (%)";
-            this.columnHeader127.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader127.Width = 86;
-            // 
-            // columnHeader128
-            // 
-            this.columnHeader128.Text = "% Energy Diff. from LT";
-            this.columnHeader128.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader128.Width = 118;
-            // 
-            // lstMonthlyTurbine
-            // 
-            this.lstMonthlyTurbine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstMonthlyTurbine.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader123,
-            this.columnHeader124,
-            this.columnHeader125,
-            this.columnHeader132,
-            this.columnHeader126,
-            this.columnHeader129,
-            this.columnHeader130});
-            this.lstMonthlyTurbine.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstMonthlyTurbine.GridLines = true;
-            this.lstMonthlyTurbine.HideSelection = false;
-            this.lstMonthlyTurbine.Location = new System.Drawing.Point(765, 47);
-            this.lstMonthlyTurbine.Margin = new System.Windows.Forms.Padding(2);
-            this.lstMonthlyTurbine.Name = "lstMonthlyTurbine";
-            this.lstMonthlyTurbine.Size = new System.Drawing.Size(695, 377);
-            this.lstMonthlyTurbine.TabIndex = 200;
-            this.lstMonthlyTurbine.UseCompatibleStateImageBehavior = false;
-            this.lstMonthlyTurbine.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader123
-            // 
-            this.columnHeader123.Text = "Month";
-            this.columnHeader123.Width = 44;
-            // 
-            // columnHeader124
-            // 
-            this.columnHeader124.Text = "Year";
-            this.columnHeader124.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader124.Width = 48;
-            // 
-            // columnHeader125
-            // 
-            this.columnHeader125.Text = "Avg WS (m/s)";
-            this.columnHeader125.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader125.Width = 110;
-            // 
-            // columnHeader132
-            // 
-            this.columnHeader132.Text = "Gross Energy (MWh)";
-            this.columnHeader132.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader132.Width = 116;
-            // 
-            // columnHeader126
-            // 
-            this.columnHeader126.Text = "Net Energy (MWh)";
-            this.columnHeader126.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader126.Width = 112;
-            // 
-            // columnHeader129
-            // 
-            this.columnHeader129.Text = "Wake Loss (%)";
-            this.columnHeader129.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader129.Width = 89;
-            // 
-            // columnHeader130
-            // 
-            this.columnHeader130.Text = "% Energy Diff. from LT";
-            this.columnHeader130.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader130.Width = 123;
+            this.cboTimeSeriesInterval.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboTimeSeriesInterval.FormattingEnabled = true;
+            this.cboTimeSeriesInterval.Items.AddRange(new object[] {
+            "Hourly",
+            "Monthly",
+            "Yearly"});
+            this.cboTimeSeriesInterval.Location = new System.Drawing.Point(404, 19);
+            this.cboTimeSeriesInterval.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.cboTimeSeriesInterval.Name = "cboTimeSeriesInterval";
+            this.cboTimeSeriesInterval.Size = new System.Drawing.Size(190, 26);
+            this.cboTimeSeriesInterval.TabIndex = 217;
+            this.cboTimeSeriesInterval.SelectedIndexChanged += new System.EventHandler(this.cboSelectedTurbine_SelectedIndexChanged);
             // 
             // label163
             // 
@@ -9837,9 +9862,9 @@ namespace ContinuumNS
             this.label163.Font = new System.Drawing.Font("Century Gothic", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label163.Location = new System.Drawing.Point(20, 20);
             this.label163.Name = "label163";
-            this.label163.Size = new System.Drawing.Size(159, 50);
+            this.label163.Size = new System.Drawing.Size(292, 25);
             this.label163.TabIndex = 1;
-            this.label163.Text = "Turbine Time \r\nSeries Analysis";
+            this.label163.Text = "Turbine Time Series Analysis";
             // 
             // pgeMaps
             // 
@@ -11873,6 +11898,25 @@ namespace ContinuumNS
             this.pgeSuitability.Text = "Site Suitability";
             this.pgeSuitability.UseVisualStyleBackColor = true;
             // 
+            // txtMaxShadowDist
+            // 
+            this.txtMaxShadowDist.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMaxShadowDist.Location = new System.Drawing.Point(626, 73);
+            this.txtMaxShadowDist.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtMaxShadowDist.Name = "txtMaxShadowDist";
+            this.txtMaxShadowDist.Size = new System.Drawing.Size(57, 25);
+            this.txtMaxShadowDist.TabIndex = 289;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Location = new System.Drawing.Point(538, 67);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(89, 36);
+            this.label21.TabIndex = 288;
+            this.label21.Text = "Max. Shadow\r\n Dist. [m] :";
+            // 
             // btnExportSiteSuitMap
             // 
             this.btnExportSiteSuitMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -12927,25 +12971,6 @@ namespace ContinuumNS
             this.ofdExceedCurves.InitialDirectory = "C:\\";
             this.ofdExceedCurves.Title = "Import Turbine Coords from a file";
             // 
-            // txtMaxShadowDist
-            // 
-            this.txtMaxShadowDist.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxShadowDist.Location = new System.Drawing.Point(626, 73);
-            this.txtMaxShadowDist.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txtMaxShadowDist.Name = "txtMaxShadowDist";
-            this.txtMaxShadowDist.Size = new System.Drawing.Size(57, 25);
-            this.txtMaxShadowDist.TabIndex = 289;
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label21.Location = new System.Drawing.Point(538, 67);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(89, 36);
-            this.label21.TabIndex = 288;
-            this.label21.Text = "Max. Shadow\r\n Dist. [m] :";
-            // 
             // Continuum
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -13007,6 +13032,11 @@ namespace ContinuumNS
             ((System.ComponentModel.ISupportInitialize)(this.dataExtremeWS)).EndInit();
             this.pgeMonthlyAnalysis.ResumeLayout(false);
             this.pgeMonthlyAnalysis.PerformLayout();
+            this.splitTimeSeries.Panel1.ResumeLayout(false);
+            this.splitTimeSeries.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitTimeSeries)).EndInit();
+            this.splitTimeSeries.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataWTG_TimeSeriesEsts)).EndInit();
             this.pgeMaps.ResumeLayout(false);
             this.pgeMaps.PerformLayout();
             this.pgeRound.ResumeLayout(false);
@@ -13554,34 +13584,10 @@ namespace ContinuumNS
         internal System.Windows.Forms.CheckedListBox chkYearsToDisplay;
         internal System.Windows.Forms.CheckBox chkYearsToDisplayAll;
         internal System.Windows.Forms.Button btnImportCRV_MERRA;
-        public System.Windows.Forms.ListView lstYearlyTurbine;
-        private System.Windows.Forms.ColumnHeader columnHeader118;
-        private System.Windows.Forms.ColumnHeader columnHeader119;
-        private System.Windows.Forms.ColumnHeader columnHeader122;
-        public System.Windows.Forms.ListView lstMonthlyTurbine;
-        private System.Windows.Forms.ColumnHeader columnHeader123;
-        private System.Windows.Forms.ColumnHeader columnHeader124;
-        private System.Windows.Forms.ColumnHeader columnHeader125;
-        private System.Windows.Forms.ColumnHeader columnHeader126;
-        internal System.Windows.Forms.CheckBox chkSelectAllTurbineYears;
-        internal System.Windows.Forms.CheckedListBox chkYears_Monthly;
         internal System.Windows.Forms.Label label131;
-        internal System.Windows.Forms.ComboBox cboSelectedTurbine;
-        internal System.Windows.Forms.Label label126;
-        internal System.Windows.Forms.Label label122;
-        private System.Windows.Forms.ColumnHeader columnHeader127;
-        private System.Windows.Forms.ColumnHeader columnHeader128;
-        private System.Windows.Forms.ColumnHeader columnHeader129;
-        private System.Windows.Forms.ColumnHeader columnHeader130;
-        internal System.Windows.Forms.CheckedListBox chkSelectedTurbineParam;
-        internal System.Windows.Forms.Label label148;
+        internal System.Windows.Forms.ComboBox cboTimeSeriesInterval;
         internal System.Windows.Forms.ComboBox cboMonthlyWakeModel;
         internal System.Windows.Forms.Label label157;
-        private System.Windows.Forms.ColumnHeader columnHeader131;
-        private System.Windows.Forms.ColumnHeader columnHeader132;
-        internal System.Windows.Forms.Button btnExportMonthlyTurbineValues;
-        internal System.Windows.Forms.Button btnExportYearlyTurbineValues;
-        internal System.Windows.Forms.Button btnExportHourlyTurbineValues;
         internal System.Windows.Forms.Label label158;
         internal System.Windows.Forms.ComboBox cboMonthlyPowerCurve;
         internal System.Windows.Forms.ColumnHeader columnHeader133;
@@ -13748,8 +13754,6 @@ namespace ContinuumNS
         public OxyPlot.WindowsForms.PlotView plotWakedDists;
         public OxyPlot.WindowsForms.PlotView plotTurbsByString;
         public OxyPlot.WindowsForms.PlotView plotWakeMap;
-        public OxyPlot.WindowsForms.PlotView plotMonthlyTS;
-        public OxyPlot.WindowsForms.PlotView plotYearlyTS;
         public OxyPlot.WindowsForms.PlotView plotGenMap;
         public OxyPlot.WindowsForms.PlotView plotRRErrorByNumMets;
         public OxyPlot.WindowsForms.PlotView plotRR_Histo;
@@ -14099,6 +14103,30 @@ namespace ContinuumNS
         internal CheckedListBox chkAdvToShow;
         public TextBox txtMaxShadowDist;
         internal Label label21;
+        private SplitContainer splitTimeSeries;
+        private DataGridViewTextBoxColumn Column21;
+        private DataGridViewTextBoxColumn Column22;
+        private DataGridViewTextBoxColumn Column23;
+        private DataGridViewTextBoxColumn Column24;
+        public DataGridView dataWTG_TimeSeriesEsts;
+        public OxyPlot.WindowsForms.PlotView plotWTG_TimeSeries;
+        internal CheckBox chkSelectAllTurbineYears;
+        public CheckedListBox chkYears_Monthly;
+        internal Label label148;
+        public CheckedListBox chkSelectedTurbineParam;
+        internal Button btnExportTimeSeriesEsts;
+        internal CheckBox chkSelectAllWTGsToShow;
+        public CheckedListBox chkWTGsToShow;
+        internal Label label22;
+        internal ComboBox cboTimeSeriesAnalysis;
+        private Label label126;
+        public TextBox txtTimeSeriesInterval;
+        private Button btnTimeSeriesLeft;
+        private Button btnTimeSeriesRight;
+        private Label label150;
+        private Label label244;
+        public DateTimePicker dateTimeSeriesEnd;
+        public DateTimePicker dateTimeSeriesStart;
     }
 }
 

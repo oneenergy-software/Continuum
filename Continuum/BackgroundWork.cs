@@ -3877,6 +3877,12 @@ namespace ContinuumNS
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_MERRADownload.CancelAsync();
             }
+            else if (BackgroundWorker_ERA5Download.IsBusy == true)
+            {
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the ERA5 download?", "Continuum 3", MessageBoxButtons.YesNo);
+                if (Yes_or_no == DialogResult.Yes)
+                    BackgroundWorker_ERA5Download.CancelAsync();
+            }
 
         }
 
@@ -5203,8 +5209,9 @@ namespace ContinuumNS
             double avgTimePerFile = 0;
             double timeToFinish;
             DateTime thisDate = refData.startDate;
-            int i = 0;
-
+           // int i = 0;
+            int fileCount = 0;
+            int newFileCount = 0;
 
             if (refData.monthlyOrDaily == "Daily")
             {
@@ -5212,15 +5219,15 @@ namespace ContinuumNS
                 //   Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
                 while (thisDate <= refData.endDate)
                 {
-                    thisDate = refData.startDate.AddDays(i);
+                    thisDate = refData.startDate.AddDays(fileCount);
                     bool fileExists = refList.ReferenceFileExists(thisDate, refData);
 
-                    double Prog = Math.Min(100 * (double)i / numDays, 100);
-                    if (i % 10 == 0)
+                    double Prog = Math.Min(100 * (double)fileCount / numDays, 100);
+                    if (fileCount % 1 == 0)
                     {
                         timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
-                        avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (i + 1));
-                        timeToFinish = (numDays - i) * avgTimePerFile / 60;
+                        avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (newFileCount + 1));
+                        timeToFinish = (numDays - fileCount) * avgTimePerFile / 60;
                         BackgroundWorker_ERA5Download.ReportProgress((int)Prog, "Downloading ERA5 data. Avg time/file: " + Math.Round(avgTimePerFile, 1) +
                             " secs. Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.");
                     }
@@ -5251,9 +5258,10 @@ namespace ContinuumNS
                         Process process = Process.Start(start);
 
                         process.WaitForExit();
+                        newFileCount++;
                     }
 
-                    i++;
+                    fileCount++;
                 }
                 // });
             }
@@ -5266,7 +5274,7 @@ namespace ContinuumNS
 
                 while (thisDate <= refData.endDate)
                 {
-                    thisDate = refData.startDate.AddMonths(i);
+                    thisDate = refData.startDate.AddMonths(fileCount);
                     bool fileExists = refList.ReferenceFileExists(thisDate, refData);
 
                     if (fileExists) // Check to see if it contains the full month
@@ -5281,12 +5289,12 @@ namespace ContinuumNS
                         }
                     }
 
-                    double Prog = Math.Min(100 * (double)i / numMonths, 100);
-                    if (i > 0)
+                    double Prog = Math.Min(100 * (double)fileCount / numMonths, 100);
+                    if (fileCount > 0)
                     {
                         timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
-                        avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (i + 1));
-                        timeToFinish = (numMonths - i) * avgTimePerFile / 60;
+                        avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (newFileCount + 1));
+                        timeToFinish = (numMonths - fileCount) * avgTimePerFile / 60;
                         BackgroundWorker_ERA5Download.ReportProgress((int)Prog, "Downloading ERA5 data. Avg time/file: " + Math.Round(avgTimePerFile, 1) +
                             " secs. Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.");
                     }
@@ -5317,9 +5325,10 @@ namespace ContinuumNS
                         Process process = Process.Start(start);
 
                         process.WaitForExit();
+                        newFileCount++;
                     }
 
-                    i++;
+                    fileCount++;
                 }
             }
 

@@ -647,6 +647,10 @@ namespace ContinuumNS
                     break;
             }
 
+            // Initialize concDataAll to be same size at refData then resize after finding all concurrent
+            concDataAll = new Concurrent_data[refData.Length];
+            
+
             for (int i = targStartInd; i < targetData.Length; i++)
             {
                 for (int j = refStartInd; j < refData.Length; j++)
@@ -654,7 +658,7 @@ namespace ContinuumNS
                     if (targetData[i].thisDate == refData[j].thisDate && targetData[i].thisDate <= end)
                     {                        
                         concCount = concCount + 1;
-                        Array.Resize(ref concDataAll, concCount);
+                  //      Array.Resize(ref concDataAll, concCount);
                         concDataAll[concCount - 1].thisDate = targetData[i].thisDate;
                         concDataAll[concCount - 1].refWS = refData[j].thisWS;
                         concDataAll[concCount - 1].refWD = refData[j].thisWD;
@@ -670,6 +674,7 @@ namespace ContinuumNS
                 
             }
 
+            Array.Resize(ref concDataAll, concCount);
             concData = concDataAll;
 
             if (concCount == 0 && showMsg)

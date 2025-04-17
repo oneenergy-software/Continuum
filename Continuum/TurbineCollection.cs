@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using MathNet.Numerics;
 using System.IO;
+using static ContinuumNS.TurbineCollection;
 
 namespace ContinuumNS
 {
@@ -1778,6 +1779,136 @@ namespace ContinuumNS
         {
             for (int t = 0; t < TurbineCount; t++)
                 turbineEsts[t].SaveTimeSeriesToDB(thisInst);
+        }
+
+        /// <summary> Calculates and returns average wind speed for specified month (by month index) </summary>  
+        public double CalcAvgWS_ByMonthInd(int monthInd)
+        {
+            
+            double avgWS = 0;
+            for (int t = 0; t < TurbineCount; t++)
+                avgWS = avgWS + turbineEsts[t].GetAvgWS_Est(null).FS_MonthlyVals[monthInd].avgWS;
+
+            avgWS = avgWS / TurbineCount;
+
+            return avgWS;
+        }
+
+   
+        /// <summary>  </summary>   
+        public ModelCollection.TimeSeries CalcWindFarmHourlyValues(int timeInd, Wake_Model thisWakeModel)
+        {
+            ModelCollection.TimeSeries windFarmAvg = new ModelCollection.TimeSeries();
+            double avgU = 0;
+            double avgV = 0;
+
+            for (int t = 0; t < TurbineCount; t++)
+            {
+                Turbine.Avg_Est thisAvgEst = turbineEsts[t].GetAvgWS_Est(thisWakeModel);
+                windFarmAvg.freeStreamWS = windFarmAvg.freeStreamWS + thisAvgEst.timeSeries[timeInd].freeStreamWS;
+                windFarmAvg.wakedWS = windFarmAvg.wakedWS + thisAvgEst.timeSeries[timeInd].wakedWS;
+                windFarmAvg.grossEnergy = windFarmAvg.grossEnergy + thisAvgEst.timeSeries[timeInd].grossEnergy;
+                windFarmAvg.netEnergy = windFarmAvg.netEnergy + thisAvgEst.timeSeries[timeInd].netEnergy;
+
+                avgU = avgU + thisAvgEst.timeSeries[timeInd].freeStreamWS * Math.Cos(thisAvgEst.timeSeries[timeInd].WD - 90);
+                avgV = avgV + thisAvgEst.timeSeries[timeInd].freeStreamWS * Math.Sin(thisAvgEst.timeSeries[timeInd].WD - 90);
+            }
+
+            windFarmAvg.freeStreamWS = windFarmAvg.freeStreamWS / TurbineCount;
+            windFarmAvg.wakedWS = windFarmAvg.wakedWS / TurbineCount;
+
+            avgU = avgU / TurbineCount;
+            avgV = avgV / TurbineCount;
+            windFarmAvg.WD = Math.Atan2(avgV, avgU) * 180.0 / Math.PI + 90;                       
+
+            return windFarmAvg;
+        }
+
+        /// <summary> Calculates and returns gross energy production for specified month (by month index) </summary> 
+        public double CalcGrossEnergy_ByMonthInd(PowerCurve powerCurve, int monthInd)
+        {
+            double grossProd = 0;
+            for (int t = 0; t < TurbineCount; t++)
+                grossProd = grossProd + turbineEsts[t].GetGrossEnergyEst(powerCurve).monthlyVals[monthInd].energyProd;
+
+            return grossProd;
+        }
+
+        /// <summary> Calculates and returns gross energy production for specified month (by month index) </summary> 
+        public double CalcNetEnergy_ByMonthInd(int monthInd, Wake_Model wakeModel)
+        {
+            double netProd = 0;
+            for (int t = 0; t < TurbineCount; t++)
+                netProd = netProd + turbineEsts[t].GetNetEnergyEst(wakeModel).monthlyVals[monthInd].energyProd;
+
+            return netProd;
+        }
+
+        /// <summary> Calculates and returns LT monthly value (thisParam = "Avg WS", "Gross AEP", "Net AEP", or "Wake Loss") </summary>        
+        public double CalcLT_MonthlyValue(string thisParam, int thisMonth, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
+        {
+            double lt_Value = 0;
+
+            for (int t = 0; t < TurbineCount; t++)
+                lt_Value = lt_Value + turbineEsts[t].CalcLT_MonthlyValue(thisParam, thisMonth, thisWakeModel, powerCurve);
+
+            if (thisParam == "Avg WS")
+                lt_Value = lt_Value / TurbineCount;
+
+            return lt_Value;
+        }
+
+        /// <summary> Calcuate and return LT value of turbine collection (thisParam = "Avg WS", "Gross AEP", "Net AEP", or "Wake Loss") </summary>        
+        public double CalcLT_Value(string thisParam, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
+        {
+            double ltVal = 0;
+
+            for (int t = 0; t < TurbineCount; t++)
+            {
+                if (thisParam == "Avg WS")
+                {
+                    Turbine.Avg_Est thisAvgEst = turbineEsts[t].GetAvgWS_Est(thisWakeModel);
+                    ltVal = ltVal + thisAvgEst.freeStream.WS;
+                }
+                else if (thisParam == "Gross AEP")
+                {
+                    Turbine.Gross_Energy_Est thisGrossEst = turbineEsts[t].GetGrossEnergyEst(powerCurve);
+                    ltVal = ltVal + thisGrossEst.AEP;
+                }
+                else if (thisParam == "Net AEP")
+                {
+                    Turbine.Net_Energy_Est thisNetEst = turbineEsts[t].GetNetEnergyEst(thisWakeModel);
+                    ltVal = ltVal + thisNetEst.AEP;
+                }
+            }
+
+            if (thisParam == "Avg WS" && TurbineCount > 0)
+                ltVal = ltVal / TurbineCount;
+
+            return ltVal;
+        }
+
+
+        /// <summary> Calculates and returns specified annual value  </summary>
+        
+        public double CalcYearlyValue(string thisParam, int thisYear, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
+        {
+            double thisVal = 0;
+
+            for (int t = 0; t < TurbineCount; t++)
+            {
+                if (thisParam == "Avg WS")
+                    thisVal = thisVal + turbineEsts[t].CalcYearlyValue(thisYear, "Avg WS", null, new TurbineCollection.PowerCurve());
+                else if (thisParam == "Gross Energy")
+                    thisVal = thisVal + turbineEsts[t].CalcYearlyValue(thisYear, "Gross AEP", thisWakeModel, powerCurve);
+                else if (thisParam == "Net Energy")
+                    thisVal = thisVal + turbineEsts[t].CalcYearlyValue(thisYear, "Net AEP", thisWakeModel, powerCurve);
+            }
+
+            if (thisParam == "Avg Ws")
+                thisVal = thisVal / TurbineCount;
+
+            return thisVal;
         }
     }
 }
