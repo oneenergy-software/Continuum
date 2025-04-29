@@ -46,6 +46,12 @@ namespace ContinuumNS
                     thisRef.endDate = refList.reference[0].endDate;
               //      dateRefEnd.Value = thisRef.endDate;
                 }
+                else if (refList.numRefDataDownloads > 0)
+                {
+                    double thisOffset = utmConv.GetUTC_Offset(refList.refDataDownloads[0].minLat, refList.refDataDownloads[0].minLon);
+                    thisRef.startDate = refList.refDataDownloads[0].startDate.AddHours(thisOffset);
+                    thisRef.endDate = refList.refDataDownloads[0].endDate.AddHours(thisOffset);
+                }
                 else
                 {
                     // Don't assign a start/end date since we don't know the coords and could get the wrong offset
@@ -127,8 +133,7 @@ namespace ContinuumNS
             dateRefStart.Value = thisRef.startDate; // Reference start/end stored in local time
             dateRefEnd.Value = thisRef.endDate;
 
-            if (cboShowTime.SelectedItem.ToString() == "UTC-0" && (thisRef.interpData.Coords.latitude != 0 || (txtReferenceLat.Text != "" &&
-                txtReferenceLong.Text != "")))
+            if (cboShowTime.SelectedItem.ToString() == "UTC-0")
             {
                 int offset = 0;
                 bool gotCoords = false;
@@ -138,7 +143,7 @@ namespace ContinuumNS
                     offset = utmConv.GetUTC_Offset(thisRef.interpData.Coords.latitude, thisRef.interpData.Coords.longitude);
                     gotCoords = true;
                 }
-                else
+                else if (txtReferenceLat.Text != "")
                 {
                     try
                     {
@@ -151,6 +156,13 @@ namespace ContinuumNS
                     {
 
                     }
+                }
+                else
+                {
+                    // Use ref. data download lat/long
+                    offset = utmConv.GetUTC_Offset(thisRef.refDataDownload.minLat, thisRef.refDataDownload.minLon);
+                    gotCoords = true;
+
                 }
 
                 if (gotCoords)

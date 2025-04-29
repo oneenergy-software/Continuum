@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Windows.Media.Media3D;
 
 namespace ContinuumNS
 {
@@ -45,8 +47,8 @@ namespace ContinuumNS
         /// <summary> True if flow separation model is used </summary>
         public bool useFlowSep;
         /// <summary> True if each map node is estimated using GenerateTimeSeries </summary>
-        public bool useTimeSeries;
-        
+        public bool useTimeSeries;                                
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary> Holds all calculated parameters, wind speed and energy estimates at Map node. </summary>
@@ -116,36 +118,32 @@ namespace ContinuumNS
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary> Generates wind speed estimates at referenced map node using each met and each Continuum model (i.e. each radius of investigation). </summary>
-        public void DoMapCalcs(ref MapNode thisMapNode, Continuum thisInst)
-        {   
+        public WS_Ests[] DoMapCalcs(Continuum thisInst, MapNode thisMapNode, NodeCollection nodeList)
+        {            
             MetCollection metList = thisInst.metList;                                   
             int numMetsUsed = metsUsed.Length;            
             int numRadii = thisInst.radiiList.ThisCount;
-            NodeCollection nodeList = new NodeCollection();
-                        
+                                    
             Met[] theseMets = metList.GetMets(metList.GetMetsUsed(), null);
+
+            int numWS_Ests = numMetsUsed * numRadii;
+            WS_Ests[] wsEsts = new WS_Ests[numWS_Ests];
+            int WS_Est_ind = 0;
 
             // For each met and each radius of investigation (i.e. each Continuum model), generate wind speed estimate at map node. 
             for (int j = 0; j < numMetsUsed; j++)
             {               
                 for (int r = 0; r < numRadii; r++)
-                {
-                    int thisRadius = thisInst.radiiList.investItem[r].radius;
-                    WS_Ests newWS_Est = new WS_Ests();
-                    newWS_Est.predictorMetName = theseMets[j].name;
-                    newWS_Est.radius = thisRadius;
-                    AddWS_Estimate(ref thisMapNode, ref newWS_Est);
-                    int WS_Est_ind = thisMapNode.WS_Estimates.Length - 1;
-                   
-                    Nodes targetNode = nodeList.GetMapAsNode(thisMapNode);
-                    Nodes startNode = nodeList.GetMetNode(theseMets[j]);
+                {                    
+                    Nodes mapNode = nodeList.GetMapAsNode(thisMapNode);
+                    Nodes metNode = nodeList.GetMetNode(theseMets[j]);
 
-                    thisMapNode.WS_Estimates[WS_Est_ind].pathOfNodes = nodeList.FindPathOfNodes(startNode, targetNode, model[r], thisInst);                                               
-                    thisMapNode.WS_Estimates[WS_Est_ind].radius = model[r].radius;
-                    DoWS_EstAlongNodes(thisInst, ref thisMapNode, WS_Est_ind);                                                    
-                                 
+                    wsEsts[WS_Est_ind] = DoWS_EstAlongNodes(thisInst, theseMets[j], r, mapNode, metNode, thisMapNode.windRose, nodeList);
+                    WS_Est_ind++;
                 }
-            }  
+            }
+
+            return wsEsts;
         }
 
         /// <summary> Using calculated wake profile polynomials (i.e. wakeLossCoeffs), calculates the wake losses and net energy at the referenced map node. </summary>
@@ -166,7 +164,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Combines all wind speed estimates formed by each predictor met and each wind flow model to form average wind speed estimate at map node. </summary>
-        public void GenerateAvgWS_AtOneMapNode(ref MapNode thisMapNode, Continuum thisInst)
+        public void GenerateAvgWS_AtOneMapNode(ref MapNode thisMapNode, Continuum thisInst, int nodeInd)
         {            
             double avgWS = 0;
             double avgWeight = 0;
@@ -214,11 +212,12 @@ namespace ContinuumNS
 
                         Met thisMet = thisInst.metList.GetMet(thisMapNode.WS_Estimates[j].predictorMetName);
                         double weight = thisInst.modelList.GetWeightForMetAndModel(indivMetWeights, thisMet, models[r]);
-                        avgWS = avgWS + thisMapNode.WS_Estimates[j].WS * weight;
+                        avgWS = Math.Round(avgWS, 5) + Math.Round(thisMapNode.WS_Estimates[j].WS, 5) * Math.Round(weight, 3);
                         thisMapNode.WS_Estimates[j].WS_weight = weight;
-                        avgWeight = avgWeight + weight;
+                        avgWeight = Math.Round(avgWeight, 3) + Math.Round(weight, 3);
+
                         for (int WD = 0; WD < numWD; WD++)
-                            sectorWS[WD] = sectorWS[WD] + thisMapNode.WS_Estimates[j].sectorWS[WD] * weight;                        
+                            sectorWS[WD] = sectorWS[WD] + Math.Round(thisMapNode.WS_Estimates[j].sectorWS[WD], 5) * Math.Round(weight, 3);
                     }
                 }
             }
@@ -226,10 +225,10 @@ namespace ContinuumNS
             thisMapNode.avgWS_Est = 0;
 
             if (avgWeight != 0) { 
-                thisMapNode.avgWS_Est = avgWS / avgWeight;
+                thisMapNode.avgWS_Est = Math.Round(avgWS, 5) / Math.Round(avgWeight, 3);
 
                 for (int WD = 0; WD < numWD; WD++)
-                    thisMapNode.sectorWS[WD] = thisMapNode.sectorWS[WD] + sectorWS[WD] / avgWeight;
+                    thisMapNode.sectorWS[WD] = Math.Round(sectorWS[WD], 5) / Math.Round(avgWeight, 3);  
             }
         }
 
@@ -277,39 +276,30 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates wind speed from predictor met to Map node along path of nodes.  </summary>  
-        public void DoWS_EstAlongNodes(Continuum thisInst, ref MapNode thisMapNode, int WS_Est_Ind)
-        {                 
+        public WS_Ests DoWS_EstAlongNodes(Continuum thisInst, Met predictorMet, int radiusInd, Nodes mapNode, Nodes metNode, double[] windRose, NodeCollection nodeList)
+        {       
+            WS_Ests thisWS = new WS_Ests();
+            
             InvestCollection radiiList = thisInst.radiiList;
             ModelCollection modelList = thisInst.modelList;
-            NodeCollection nodeList = new NodeCollection();
-                        
-            Met thisMet = thisInst.metList.GetMet(thisMapNode.WS_Estimates[WS_Est_Ind].predictorMetName);
-            int thisRadius = thisMapNode.WS_Estimates[WS_Est_Ind].radius;                      
-
-            if (thisMet == null) return;
-
-            int numWD = thisInst.metList.numWD;
-            int radiusIndex = 0;            
-
-            for (int i = 0; i < radiiList.ThisCount; i++) { 
-                if (thisRadius == radiiList.investItem[i].radius) {
-                    radiusIndex = i;
-                    break;
-                }
-            }
-            
             Model[] models = modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
-            Model thisModel = models[radiusIndex];                       
+            Model thisModel = models[radiusInd];
 
-            Nodes endNode = nodeList.GetMapAsNode(thisMapNode);
-            ModelCollection.WS_Est_Struct WS_EstStr = modelList.DoWS_Estimate(thisMet, endNode, thisMapNode.WS_Estimates[WS_Est_Ind].pathOfNodes, thisModel, thisInst);
+            thisWS.predictorMetName = predictorMet.name;
+            thisWS.radius = radiiList.investItem[radiusInd].radius;
+            thisWS.pathOfNodes = nodeList.FindPathOfNodes(metNode, mapNode, thisModel, thisInst);              
 
-            thisMapNode.WS_Estimates[WS_Est_Ind].sectorWS = WS_EstStr.sectorWS;
+            int numWD = thisInst.metList.numWD;                                                          
+                        
+            ModelCollection.WS_Est_Struct WS_EstStr = modelList.DoWS_Estimate(predictorMet, mapNode, thisWS.pathOfNodes, thisModel, thisInst);
+
+            thisWS.sectorWS = WS_EstStr.sectorWS;
 
             // Have sectorwise wind speed at map node now need to calculate avg WS using wind rose            
-            for (int WD = 0; WD < numWD; WD++) 
-                thisMapNode.WS_Estimates[WS_Est_Ind].WS = thisMapNode.WS_Estimates[WS_Est_Ind].WS + thisMapNode.WS_Estimates[WS_Est_Ind].sectorWS[WD] * thisMapNode.windRose[WD];             
+            for (int WD = 0; WD < numWD; WD++)
+                thisWS.WS = thisWS.WS + Math.Round(thisWS.sectorWS[WD] * windRose[WD], 5);
 
+            return thisWS;
         }
 
         /// <summary> Adds a wind speed estimate to the list of WS_Ests. </summary>        

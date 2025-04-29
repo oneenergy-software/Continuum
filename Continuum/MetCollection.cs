@@ -613,7 +613,7 @@ namespace ContinuumNS
 
                             for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++)
                             {
-                                Met.WSWD_Dist thisDist = metItem[i].GetWS_WD_Dist(thisHeight, thisTOD, thisSeason);
+                                Met.WSWD_Dist thisDist = metItem[i].GetWS_WD_Dist(thisHeight, thisTOD, thisSeason); 
                                 thisWR[WD_Ind] = thisWR[WD_Ind] + thisDist.windRose[WD_Ind] * 1 / thisDistance;
                                 wgts[WD_Ind] = wgts[WD_Ind] + 1 / thisDistance;
                             }
@@ -649,6 +649,10 @@ namespace ContinuumNS
                 for (int WD_Ind = 0; WD_Ind <= numWD - 1; WD_Ind++)
                     thisWR[WD_Ind] = thisWR[WD_Ind] / wgts[WD_Ind];
             }
+
+            for (int WD_Ind = 0; WD_Ind < numWD; WD_Ind++)
+                thisWR[WD_Ind] = Math.Round(thisWR[WD_Ind], 5);
+
 
             return thisWR;
         }

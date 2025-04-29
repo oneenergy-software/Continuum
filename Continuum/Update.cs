@@ -11,6 +11,7 @@ using static ContinuumNS.Met_Data_Filter;
 using Microsoft.VisualBasic;
 using static ContinuumNS.TurbineCollection;
 using System.Data;
+using System.Security.Cryptography.Pkcs;
 
 
 //using System.Windows.Media;
@@ -104,8 +105,8 @@ namespace ContinuumNS
         /// <summary> Updates all buttons that are color-coded to be either red or green depending on state of analysis. </summary>
         public void ColoredButtons() // 
         {
-          //  if (thisInst.IsHandleCreated == false)
-          //      return;
+            if (thisInst.IsHandleCreated == false)
+               return;
 
             // Input tab buttons
             if (thisInst.topo.gotTopo == true)
@@ -193,7 +194,7 @@ namespace ContinuumNS
             // LT Reference tab
             Reference thisRef = thisInst.GetSelectedReference("LT Ref");     
                         
-            if (thisRef.refDataDownload.inclCloud)
+            if (thisRef.refDataDownload.refType == "MERRA2 Cloud")
                 thisInst.btnExportCloudCover.Enabled = true;
             else
                 thisInst.btnExportCloudCover.Enabled = false;
@@ -1328,8 +1329,7 @@ namespace ContinuumNS
 
             // Need to figure out if end is a met or a turbine
             bool endIsMet = false;
-            //  Met thisMet = new Met();
-
+            
             for (int i = 0; i < numMets; i++)
             {
                 Met thisMet = thisInst.metList.metItem[i];
@@ -1990,7 +1990,8 @@ namespace ContinuumNS
                         deltaWS_UWExpo = deltaWS_UWExpo + UW_CoeffsDeltas[numUW_CoeffsDeltas - 1].deltaWS_Expo * node2WindRose[WD];
                         deltaWS_DWExpo = deltaWS_DWExpo + DW_CoeffsDeltas[numDW_CoeffsDeltas - 1].deltaWS_Expo * node2WindRose[WD];
                         
-                        deltaWS_Elev = deltaWS_Elev + elevDiff * thisModel.elevCoeff[WD] * node2WindRose[WD];
+                        if (useElev)
+                            deltaWS_Elev = deltaWS_Elev + elevDiff * thisModel.elevCoeff[WD] * node2WindRose[WD];
                     }
                 }
                 else
@@ -2044,7 +2045,8 @@ namespace ContinuumNS
                     deltaWS_UWExpo = UW_CoeffsDeltas[numUW_CoeffsDeltas - 1].deltaWS_Expo;
                     deltaWS_DWExpo = DW_CoeffsDeltas[numDW_CoeffsDeltas - 1].deltaWS_Expo;
 
-                    deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+                    if (useElev)
+                        deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
 
                 }
 
@@ -2235,7 +2237,9 @@ namespace ContinuumNS
 
                     deltaWS_UWExpo = deltaWS_UWExpo + UW_CoeffsDeltas[numUW_CoeffsDeltas - 1].deltaWS_Expo * endNodeWindRose[WD];
                     deltaWS_DWExpo = deltaWS_DWExpo + DW_CoeffsDeltas[numDW_CoeffsDeltas - 1].deltaWS_Expo * endNodeWindRose[WD];
-                    deltaWS_Elev = deltaWS_Elev + elevDiff * thisModel.elevCoeff[WD] * endNodeWindRose[WD];
+
+                    if (useElev)
+                        deltaWS_Elev = deltaWS_Elev + elevDiff * thisModel.elevCoeff[WD] * endNodeWindRose[WD];
 
                 }
             }
@@ -2290,7 +2294,9 @@ namespace ContinuumNS
 
                 deltaWS_UWExpo = UW_CoeffsDeltas[numUW_CoeffsDeltas - 1].deltaWS_Expo;
                 deltaWS_DWExpo = DW_CoeffsDeltas[numDW_CoeffsDeltas - 1].deltaWS_Expo;
-                deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
+
+                if (useElev)
+                    deltaWS_Elev = elevDiff * thisModel.elevCoeff[WD_Ind];
             }
 
             if (paramsToShow.show_dWS_UWExpo) objListItem.SubItems.Add(Math.Round(deltaWS_UWExpo, 2).ToString());
@@ -2863,7 +2869,13 @@ namespace ContinuumNS
         /// <summary> Updates all wind direction dropdown menus. </summary>
         public void WindDirectionToDisplay()
         {
-            thisInst.okToUpdate = false;
+            bool resetUpdate = false;
+
+            if (thisInst.okToUpdate)
+            {
+                thisInst.okToUpdate = false;
+                resetUpdate = true;
+            }
 
             int numWD = thisInst.GetNumWD();
 
@@ -2948,7 +2960,9 @@ namespace ContinuumNS
             thisInst.cboTurbWD.SelectedIndex = numWD;
 
             thisInst.cboInflowWD.SelectedIndex = 0;
-            thisInst.okToUpdate = true;
+
+            if (resetUpdate)
+                thisInst.okToUpdate = true;
         }
 
         /// <summary> Updates all season dropdown menus. </summary>
@@ -3546,6 +3560,7 @@ namespace ContinuumNS
             bool isNLCD = thisInst.topo.LC_IsDefaultNLCD(thisInst.topo.LC_Key);
             bool isNALC = thisInst.topo.LC_IsDefaultNALC(thisInst.topo.LC_Key);
             bool isEULC = thisInst.topo.LC_IsDefaultEU_Corine(thisInst.topo.LC_Key);
+            bool isSANLC = thisInst.topo.LC_IsDefaultSANLC(thisInst.topo.LC_Key);
 
             if (thisInst.topo.LC_Key != null)
                 thisInst.btnViewModNLCD.BackColor = Color.MediumSeaGreen;
@@ -3570,6 +3585,11 @@ namespace ContinuumNS
             else if (isEULC == true)
             {
                 thisInst.txt_LC_Key_selected.Text = "EU Corine LC";
+                thisInst.txt_LC_Key_selected.BackColor = Color.MediumSeaGreen;
+            }
+            else if (isSANLC == true)
+            {
+                thisInst.txt_LC_Key_selected.Text = "South Africa LC";
                 thisInst.txt_LC_Key_selected.BackColor = Color.MediumSeaGreen;
             }
             else
@@ -9799,9 +9819,10 @@ namespace ContinuumNS
             thisInst.plotMERRA_Monthly.Refresh();
         }
 
+        /// <summary> Populates checkbox list with years (and LT Avg) on Turbine Time Series tab </summary>
         public void Turbine_TS_Years()
         {
-            
+            thisInst.okToUpdate = false;
             Turbine selTurb = new Turbine();
                                                 
             if (thisInst.turbineList.TurbineCount > 0)            
@@ -9822,6 +9843,7 @@ namespace ContinuumNS
                 for (int i = firstYear; i <= lastYear; i++)
                     thisInst.chkYears_Monthly.Items.Add(i.ToString(), true);
             }
+            thisInst.okToUpdate = true;
         }
 
         /// <summary> Updates LT Reference dropdown menu based on what datasets have been imported on MERRA2 tab. </summary> 
@@ -10094,16 +10116,19 @@ namespace ContinuumNS
             LT_ReferenceSettings();
             LT_ReferenceWindRosePlot();
 
-            if (thisInst.GetSelectedReference("LT Ref").refDataDownload.refType != "MERRA2" || thisInst.GetSelectedReference("LT Ref").refDataDownload.inclCloud == false)
-                thisInst.btnExportCloudCover.Enabled = false;
-            else
-                thisInst.btnExportCloudCover.Enabled = true;
+            // If a MERRA2 cloud refType has been defined and has finished downloading, enable button
+            for (int r = 0; r < thisInst.refList.numRefDataDownloads; r++)
+            {
+                if (thisInst.refList.refDataDownloads[r].refType == "MERRA2 Cloud" && thisInst.refList.refDataDownloads[r].completion == 1.0)
+                    thisInst.btnExportCloudCover.Enabled = true;
+                else
+                    thisInst.btnExportCloudCover.Enabled = false;
+            }           
         }
 
         /// <summary> Updates all tables and plots on Site Suitability tab. </summary> 
         public void SiteSuitabilityTAB()
         {
-
             if (thisInst.cboIcingYear.Items.Count == 0)
                 IcingYearsDropDown();
 
@@ -10116,6 +10141,7 @@ namespace ContinuumNS
             thisInst.txtNumIceThrowsPerDay.Text = thisInst.siteSuitability.iceThrowsPerIceDay.ToString();
             thisInst.txtNumIceDays.Text = thisInst.siteSuitability.numIceDaysPerYear.ToString();
             thisInst.txtTurbineNoise.Text = Math.Round(thisInst.siteSuitability.turbineSound, 1).ToString();
+            thisInst.txtMaxShadowDist.Text = Math.Round(thisInst.siteSuitability.maxShadowDistance, 1).ToString();
 
             if (thisInst.cboIceDistORIceHisto.SelectedItem == null)
                 thisInst.cboIceDistORIceHisto.SelectedIndex = 0;
@@ -10555,22 +10581,29 @@ namespace ContinuumNS
             }
 
             TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
+            DataTable tsTable = CreateWTG_TS_TableColumns(selPlot);
 
-            if (selPlot == "Time Series")
-            {
-                string timeInterval = thisInst.cboTimeSeriesInterval.SelectedItem.ToString();
+            if (selPlot.Contains("Time Series"))
+            {                
                 // Update table 
                 // Create columns for data grid based on selected parameters and show all WTG checkbox
-                DataTable tsTable = CreateWTG_TS_TableColumns(thisInst.cboTimeSeriesAnalysis.SelectedItem.ToString());
-
-                if (timeInterval == "Hourly")
+                
+                if (selPlot.Contains("Hourly"))
                     PopulateTimeSeriesTable_Hourly(tsTable, thisWakeModel, powerCurve);
-                else if (timeInterval == "Monthly")
+                else if (selPlot.Contains("Monthly"))
                     PopulateTimeSeriesTable_Monthly(tsTable, thisWakeModel, powerCurve);
-                else if (timeInterval == "Yearly")
+                else if (selPlot.Contains("Yearly"))
                     PopulateTimeSeriesTable_Yearly(tsTable, thisWakeModel, powerCurve);
 
                 TurbineTimeSeriesVisibleColumns();
+            }
+            else if (selPlot == "Trends - Monthly")
+            {
+                PopulateMonthTrendTable(tsTable, thisWakeModel, powerCurve);
+            }
+            else if (selPlot == "Trends - Diuranlly")
+            {
+
             }
         }
 
@@ -10580,6 +10613,9 @@ namespace ContinuumNS
             int colInd = 1;
 
             if (thisInst.turbineList.TurbineCount == 0 || thisInst.turbineList.genTimeSeries == false || thisInst.turbineList.turbineCalcsDone == false)
+                return;
+
+            if (thisInst.cboTimeSeriesAnalysis.SelectedItem.ToString() == "Trends - Monthly")
                 return;
 
             for (int t = 0; t < thisInst.chkWTGsToShow.Items.Count; t++)
@@ -10610,13 +10646,17 @@ namespace ContinuumNS
                 return;
             }            
 
-            string timeInterval = thisInst.cboTimeSeriesInterval.SelectedItem.ToString();
+            string analysisType = thisInst.cboTimeSeriesAnalysis.SelectedItem.ToString();
 
             // Format plot axes and chart tile
-            bool useSecAxis = FormatAnnualWTG_EstimatePlot(timeInterval, model);
+            bool useSecAxis = FormatAnnualWTG_EstimatePlot(analysisType, model);
 
-            // Create plots series for each selected parameter
-            CreateWTG_EstSeries(timeInterval, useSecAxis, model);                        
+            // Create plots series for each selected parameter            
+
+            if (analysisType == "Trends - Monthly")
+                CreateWTG_EstSeriesMonthTrend(useSecAxis, model);
+            else
+                CreateWTG_EstSeries(analysisType, useSecAxis, model);
 
             thisInst.plotWTG_TimeSeries.Refresh();
             
@@ -10645,7 +10685,8 @@ namespace ContinuumNS
 
                 object[] rowData = new object[1 + numParams + numParams * thisInst.turbineList.TurbineCount];
 
-                rowData[0] = new DateTime(i, 1, 1).ToString("YYYY");
+                DateTime thisYearDate = new DateTime(i, 1, 1);
+                rowData[0] = thisYearDate.ToString("yyyy");
                 int colInd = 1;
 
                 // First get data for whole wind farm
@@ -10657,8 +10698,8 @@ namespace ContinuumNS
                     netEnergy = thisInst.turbineList.CalcYearlyValue("Net AEP", i, thisWakeModel, powerCurve);
 
                 rowData[colInd] = Math.Round(avgWS, 3);
-                rowData[colInd + 1] = Math.Round(grossEnergy, 0);
-                rowData[colInd + 2] = Math.Round(netEnergy, 0);
+                rowData[colInd + 1] = Math.Round(grossEnergy, 1);
+                rowData[colInd + 2] = Math.Round(netEnergy, 1);
                 double thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
                 rowData[colInd + 3] = Math.Round(100.0 * thisWakeLoss, 1);
                 colInd = colInd + numParams;
@@ -10673,8 +10714,8 @@ namespace ContinuumNS
                         netEnergy = thisTurb.CalcYearlyValue(i, "Net AEP", thisWakeModel, powerCurve);
 
                     rowData[colInd] = Math.Round(avgWS, 3);
-                    rowData[colInd + 1] = Math.Round(grossEnergy, 0);
-                    rowData[colInd + 2] = Math.Round(grossEnergy, 0);
+                    rowData[colInd + 1] = Math.Round(grossEnergy, 1);
+                    rowData[colInd + 2] = Math.Round(grossEnergy, 1);
                     thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
                     rowData[colInd + 3] = Math.Round(100.0 * thisWakeLoss, 1);
                     colInd = colInd + numParams;
@@ -10721,8 +10762,8 @@ namespace ContinuumNS
                     netEnergy = thisInst.turbineList.CalcNetEnergy_ByMonthInd(i, thisWakeModel);
 
                 rowData[colInd] = Math.Round(avgWS, 3);
-                rowData[colInd + 1] = Math.Round(grossEnergy, 0);
-                rowData[colInd + 2] = Math.Round(netEnergy, 0);
+                rowData[colInd + 1] = Math.Round(grossEnergy, 1);
+                rowData[colInd + 2] = Math.Round(netEnergy, 1);
                 double thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
                 rowData[colInd + 3] = Math.Round(100.0 * thisWakeLoss, 1);
                 colInd = colInd + numParams;
@@ -10738,14 +10779,178 @@ namespace ContinuumNS
                         netEnergy = thisTurb.GetNetEnergyEst(thisWakeModel).monthlyVals[i].energyProd;
 
                     rowData[colInd] = Math.Round(avgWS, 3);
-                    rowData[colInd + 1] = Math.Round(grossEnergy, 0);
-                    rowData[colInd + 2] = Math.Round(netEnergy, 0);
+                    rowData[colInd + 1] = Math.Round(grossEnergy, 1);
+                    rowData[colInd + 2] = Math.Round(netEnergy, 1);
                     thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
                     rowData[colInd + 3] = Math.Round(100.0 * thisWakeLoss, 1);
                     colInd = colInd + numParams;
                 }
 
                 tsTable.Rows.Add(rowData);
+            }
+
+            thisInst.dataWTG_TimeSeriesEsts.DataSource = tsTable;
+        }
+
+        /// <summary> Populates Time Series Table with all monthly values for each year (All WTGs and each WTG) </summary>        
+        public void PopulateMonthTrendTable(DataTable tsTable, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
+        {
+            double otherLoss = 0;
+
+            if (thisInst.turbineList.exceed.compositeLoss.isComplete)
+                otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+
+            Turbine.Avg_Est avgEst = thisInst.turbineList.turbineEsts[0].GetAvgWS_Est(null);
+            int numYears = thisInst.chkYears_Monthly.Items.Count;
+            int numParams = 4; // Avg WS, Gross Energy, Net Energy, Wake Loss
+
+            // 13 columns, one to hold SiteName+Year and one for each month
+            int numCols = 13;
+
+            // Create entries for wind farm first
+            if (IsWTG_Selected("All WTGs"))
+            {
+                for (int y = 0; y < numYears; y++)
+                {
+                    object[] avgWSRowData = new object[numCols];
+                    object[] grossAEPRowData = new object[numCols];
+                    object[] netAEPRowData = new object[numCols];
+                    object[] wakeLossRowData = new object[numCols];
+
+                    string thisYearStr = thisInst.chkYears_Monthly.Items[y].ToString();
+
+                    if (IsYearSelected(thisYearStr) == false)
+                        continue;
+
+                    int thisYear = 0;
+
+                    if (thisYearStr != "LT Avg")
+                        thisYear = Convert.ToInt16(thisInst.chkYears_Monthly.Items[y].ToString());
+
+                    avgWSRowData[0] = "Wind Farm Avg WS - " + thisYearStr;
+                    grossAEPRowData[0] = "Wind Farm Gross AEP - " + thisYearStr;
+                    netAEPRowData[0] = "Wind Farm Net AEP - " + thisYearStr;
+                    wakeLossRowData[0] = "Wind Farm Wake Loss - " + thisYearStr;
+
+                    double avgWS = 0;
+                    double grossEnergy = 0;
+                    double netEnergy = 0;
+
+                    for (int m = 1; m <= 12; m++)
+                    {
+                        if (thisYearStr != "LT Avg")
+                        {
+                            avgWS = thisInst.turbineList.CalcAvgWS_ByMonthYear(m, thisYear, "Free-stream");
+                            grossEnergy = thisInst.turbineList.CalcGrossEnergy_ByMonthYear(m, thisYear, powerCurve);
+
+                            if (thisWakeModel != null)
+                                netEnergy = thisInst.turbineList.CalcNetEnergy_ByMonthYear(m, thisYear, thisWakeModel);
+                        }
+                        else
+                        {
+                            avgWS = thisInst.turbineList.CalcLT_MonthlyValue("Avg WS", m, thisWakeModel, powerCurve);
+                            grossEnergy = thisInst.turbineList.CalcLT_MonthlyValue("Gross AEP", m, thisWakeModel, powerCurve);
+
+                            if (thisWakeModel != null)
+                                netEnergy = thisInst.turbineList.CalcLT_MonthlyValue("Net AEP", m, thisWakeModel, powerCurve);
+                        }
+
+                        avgWSRowData[m] = Math.Round(avgWS, 3);
+                        grossAEPRowData[m] = Math.Round(grossEnergy, 0);
+                        netAEPRowData[m] = Math.Round(netEnergy, 0);
+                        double thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
+                        wakeLossRowData[m] = Math.Round(100.0 * thisWakeLoss, 1);
+
+                    }
+
+                    if (IsParam_Selected("Avg WS"))
+                        tsTable.Rows.Add(avgWSRowData);
+
+                    if (IsParam_Selected("Gross AEP"))
+                        tsTable.Rows.Add(grossAEPRowData);
+
+                    if (IsParam_Selected("Net AEP"))
+                        tsTable.Rows.Add(netAEPRowData);
+
+                    if (IsParam_Selected("Wake Loss"))
+                        tsTable.Rows.Add(wakeLossRowData);
+
+                }
+            }
+
+            // Now create entries for all WTG sites
+
+            for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
+            {
+                Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+
+                if (IsWTG_Selected(thisTurb.name) == false)
+                    continue;
+
+                for (int y = 0; y < numYears; y++)
+                {
+                    object[] avgWSRowData = new object[numCols];
+                    object[] grossAEPRowData = new object[numCols];
+                    object[] netAEPRowData = new object[numCols];
+                    object[] wakeLossRowData = new object[numCols];
+
+                    string thisYearStr = thisInst.chkYears_Monthly.Items[y].ToString();
+                    if (IsYearSelected(thisYearStr) == false)
+                        continue;
+
+                    int thisYear = 0;
+
+                    if (thisYearStr != "LT Avg")
+                        thisYear = Convert.ToInt16(thisInst.chkYears_Monthly.Items[y].ToString());
+
+                    avgWSRowData[0] = thisTurb.name + " Avg WS - " + thisYearStr;
+                    grossAEPRowData[0] = thisTurb.name + " Gross AEP - " + thisYearStr;
+                    netAEPRowData[0] = thisTurb.name + " Net AEP - " + thisYearStr;
+                    wakeLossRowData[0] = thisTurb.name + " Wake Loss - " + thisYearStr;
+
+                    double avgWS = 0;
+                    double grossEnergy = 0;
+                    double netEnergy = 0;
+
+                    for (int m = 1; m <= 12; m++)
+                    {
+                        if (thisYearStr != "LT Avg")
+                        {
+                            avgWS = thisTurb.GetAvgWS_Est(null).GetMonthlyValue(m, thisYear, "Free-stream");
+                            grossEnergy = thisTurb.GetGrossEnergyEst(powerCurve).GetMonthlyValue(m, thisYear);
+                            netEnergy = 0;
+
+                            if (thisWakeModel != null)
+                                netEnergy = thisTurb.GetNetEnergyEst(thisWakeModel).GetMonthlyValue(m, thisYear);
+                        }
+                        else
+                        {
+                            avgWS = thisTurb.CalcLT_MonthlyValue("Avg WS", m, thisWakeModel, powerCurve);
+                            grossEnergy = thisTurb.CalcLT_MonthlyValue("Gross AEP", m, thisWakeModel, powerCurve);
+
+                            if (thisWakeModel != null)
+                                netEnergy = thisTurb.CalcLT_MonthlyValue("Net AEP", m, thisWakeModel, powerCurve);
+                        }
+
+                        avgWSRowData[m] = Math.Round(avgWS, 3);
+                        grossAEPRowData[m] = Math.Round(grossEnergy, 0);
+                        netAEPRowData[m] = Math.Round(netEnergy, 0);
+                        double thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
+                        wakeLossRowData[m] = Math.Round(100.0 * thisWakeLoss, 1);
+                    }
+
+                    if (IsParam_Selected("Avg WS"))
+                        tsTable.Rows.Add(avgWSRowData);
+
+                    if (IsParam_Selected("Gross AEP"))
+                        tsTable.Rows.Add(grossAEPRowData);
+
+                    if (IsParam_Selected("Net AEP"))
+                        tsTable.Rows.Add(netAEPRowData);
+
+                    if (IsParam_Selected("Wake Loss"))
+                        tsTable.Rows.Add(wakeLossRowData);
+                }
             }
 
             thisInst.dataWTG_TimeSeriesEsts.DataSource = tsTable;
@@ -10783,8 +10988,8 @@ namespace ContinuumNS
                 double netEnergy = hourAvg.netEnergy;
 
                 rowData[colInd] = Math.Round(avgWS, 3);
-                rowData[colInd + 1] = Math.Round(grossEnergy, 0);
-                rowData[colInd + 2] = Math.Round(netEnergy, 0);
+                rowData[colInd + 1] = Math.Round(grossEnergy, 1);
+                rowData[colInd + 2] = Math.Round(netEnergy, 1);
                 double thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
                 rowData[colInd + 3] = Math.Round(100.0 * thisWakeLoss, 1);
                 colInd = colInd + numParams;
@@ -10793,12 +10998,12 @@ namespace ContinuumNS
                 {
                     Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
                     avgWS = thisTurb.GetAvgWS_Est(null).timeSeries[i].freeStreamWS;
-                    grossEnergy = thisTurb.GetAvgWS_Est(null).timeSeries[i].grossEnergy;
-                    netEnergy = thisTurb.GetAvgWS_Est(null).timeSeries[i].netEnergy;
+                    grossEnergy = thisTurb.GetAvgWS_Est(thisWakeModel).timeSeries[i].grossEnergy;
+                    netEnergy = thisTurb.GetAvgWS_Est(thisWakeModel).timeSeries[i].netEnergy;
 
                     rowData[colInd] = Math.Round(avgWS, 3);
-                    rowData[colInd + 1] = Math.Round(grossEnergy, 0);
-                    rowData[colInd + 2] = Math.Round(netEnergy, 0);
+                    rowData[colInd + 1] = Math.Round(grossEnergy, 1);
+                    rowData[colInd + 2] = Math.Round(netEnergy, 1);
                     thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
                     rowData[colInd + 3] = Math.Round(100.0 * thisWakeLoss, 1);
                     colInd = colInd + numParams;
@@ -10810,8 +11015,8 @@ namespace ContinuumNS
             thisInst.dataWTG_TimeSeriesEsts.DataSource = tsTable;
         }
 
-        /// <summary> Sets annual WTG TS plot's title and axes. Returns true if second axis is needed </summary>        
-        public bool FormatAnnualWTG_EstimatePlot(string timeInterval, PlotModel model)
+        /// <summary> Sets Time Series plot's title and axes. Returns true if second axis is needed </summary>        
+        public bool FormatAnnualWTG_EstimatePlot(string analysisType, PlotModel model)
         {
             bool needSecondYAxis = false;
             string YAxisTitle = "";
@@ -10835,13 +11040,27 @@ namespace ContinuumNS
                 }
             }
                         
-            model.Title = timeInterval + " Trends at WTG Sites";
+            model.Title = analysisType;
 
             // Specify axes
             DateTimeAxis timeAxis = new DateTimeAxis();
             timeAxis.Position = AxisPosition.Bottom;
-            timeAxis.Title = timeInterval.Substring(0, timeInterval.Length - 2); // Chops off 'ly' from Yearly, Monthly, Hourly
-            timeAxis.AxisChanged += TimeSeries_AxisChanged;
+
+            if (analysisType.Contains("Time Series"))
+            {
+                int hypenInd = analysisType.IndexOf("-");
+                string timeInterval = analysisType.Substring(hypenInd + 1, analysisType.Length - hypenInd - 1);
+                timeAxis.Title = timeInterval.Substring(0, timeInterval.Length - 2); // Chops off 'ly' from Yearly, Monthly, Hourly
+                timeAxis.AxisChanged += TimeSeries_AxisChanged;
+            }
+            else if (analysisType == "Trends - Monthly")
+            {
+                timeAxis.Title = "Month";
+            }
+            else if (analysisType == "Trends - Diurnally")
+            {
+                timeAxis.Title = "Hour of Day";
+            }
 
             LinearAxis yAxis = new LinearAxis();
             yAxis.Position = AxisPosition.Left;
@@ -10867,7 +11086,7 @@ namespace ContinuumNS
 
         /// <summary> Creates LineSeries to plot displayed WTG estimates on Time Series tab </summary>
 
-        public void CreateWTG_EstSeries(string timeInterval, bool useSecAxis, PlotModel model)
+        public void CreateWTG_EstSeries(string analysisType, bool useSecAxis, PlotModel model)
         {
             CheckedListBox.CheckedItemCollection theseParams = thisInst.chkSelectedTurbineParam.CheckedItems;
             CheckedListBox.CheckedItemCollection theseSites = thisInst.chkWTGsToShow.CheckedItems;
@@ -10881,53 +11100,179 @@ namespace ContinuumNS
 
             DateTime startTime = thisInst.dateTimeSeriesStart.Value;
             DateTime endTime = thisInst.dateTimeSeriesEnd.Value;
-            Turbine.Avg_Est avgEst = thisInst.turbineList.turbineEsts[0].GetAvgWS_Est(null);
-
+            
             int startInd = 0;
-            int endInd = 0;
+            int endInd = thisInst.dataWTG_TimeSeriesEsts.RowCount - 1;
             int colInd = 1;
-                     
-            while (Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[startInd].Cells[0].Value) < startTime 
-                && startInd < thisInst.dataWTG_TimeSeriesEsts.RowCount - 1)
-                startInd++;
 
-            while (Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[endInd].Cells[0].Value) < endTime
-                && endInd < thisInst.dataWTG_TimeSeriesEsts.RowCount - 1)
-                endInd++;
-         
-            for (int t = 0; t < thisInst.chkWTGsToShow.Items.Count; t++)
+            if (analysisType.Contains("Time Series"))
             {
-                for (int c = 0; c < thisInst.chkSelectedTurbineParam.Items.Count; c++)
+                if (analysisType.Contains("Yearly"))
                 {
-                    if (thisInst.chkWTGsToShow.GetItemChecked(t) && thisInst.chkSelectedTurbineParam.GetItemChecked(c))
+                    while (Convert.ToInt16(thisInst.dataWTG_TimeSeriesEsts.Rows[startInd].Cells[0].Value) < startTime.Year
+                        && startInd < thisInst.dataWTG_TimeSeriesEsts.RowCount - 1)
+                        startInd++;
+
+                    while (Convert.ToInt16(thisInst.dataWTG_TimeSeriesEsts.Rows[endInd].Cells[0].Value) < endTime.Year
+                        && endInd < thisInst.dataWTG_TimeSeriesEsts.RowCount - 1)
+                        endInd++;
+                }
+                else
+                {                   
+                    while (Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[startInd].Cells[0].Value) < startTime                   
+                        && startInd < thisInst.dataWTG_TimeSeriesEsts.RowCount - 1)
+                        startInd++;
+
+                    while (Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[endInd].Cells[0].Value) < endTime
+                        && endInd < thisInst.dataWTG_TimeSeriesEsts.RowCount - 1)
+                        endInd++;
+                }
+
+               
+            }
+
+            int numYearlySeries = 1;
+            
+            if (analysisType.Contains("Time Series") == false)
+                numYearlySeries = thisInst.chkYears_Monthly.Items.Count;
+
+            int seriesInd = 0;
+                       
+            for (int y = 0; y < numYearlySeries; y++)
+            {
+                for (int t = 0; t < thisInst.chkWTGsToShow.Items.Count; t++)
+                {
+                    for (int c = 0; c < thisInst.chkSelectedTurbineParam.Items.Count; c++)
                     {
-                        string siteName = thisInst.chkWTGsToShow.Items[t].ToString();
-                        if (siteName == "All WTGs")
-                            siteName = "Wind Farm";
-
-                        series[c] = new LineSeries();
-                        string thisParam = thisInst.chkSelectedTurbineParam.Items[c].ToString();
-                        series[c].Title = siteName + " " + thisParam;
-                        model.Series.Add(series[c]);
-
-                        if (useSecAxis && (thisParam == "Gross AEP" || thisParam == "Net AEP"))
-                            series[c].YAxisKey = "Secondary";
-                        else
-                            series[c].YAxisKey = "Primary";
-
-                        for (int r = startInd; r <= endInd; r++)
+                        if (thisInst.chkWTGsToShow.GetItemChecked(t) && thisInst.chkSelectedTurbineParam.GetItemChecked(c))
                         {
-                            DateTime thisDate = Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[0].Value);
-                            double thisVal = Convert.ToDouble(thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[colInd].Value);
-                            series[c].Points.Add(new DataPoint(thisDate.ToOADate(), thisVal));
-                        }                            
+                            string siteName = thisInst.chkWTGsToShow.Items[t].ToString();
+                            if (siteName == "All WTGs")
+                                siteName = "Wind Farm";
+
+                            series[seriesInd] = new LineSeries();
+                            string thisParam = thisInst.chkSelectedTurbineParam.Items[c].ToString();
+                            
+                            series[seriesInd].Title = thisInst.dataWTG_TimeSeriesEsts.Columns[colInd].Name;
+                            model.Series.Add(series[seriesInd]);
+
+                            if (useSecAxis && (thisParam == "Gross AEP" || thisParam == "Net AEP"))
+                                series[seriesInd].YAxisKey = "Secondary";
+                            else
+                                series[seriesInd].YAxisKey = "Primary";
+
+                            for (int r = startInd; r < endInd; r++)
+                            {
+                                double thisVal = Convert.ToDouble(thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[colInd].Value);
+
+                                if (analysisType.Contains("Time Series"))
+                                {
+                                    DateTime thisDate = new DateTime();
+                                    if (analysisType.Contains("Yearly"))
+                                        thisDate = new DateTime(Convert.ToInt16(thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[0].Value), 1, 1);
+                                    else
+                                        thisDate = Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[0].Value);
+                                                                                
+                                    series[seriesInd].Points.Add(new DataPoint(thisDate.ToOADate(), thisVal));
+                                }
+                                else
+                                {
+                                    int thisMonthOrHour = Convert.ToInt16(thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[0].Value);
+                                    series[seriesInd].Points.Add(new DataPoint(thisMonthOrHour, thisVal));
+                                }                                
+                            }
+
+                            seriesInd++;
+                        }
+
+                        colInd++;
                     }
-
-                    colInd++;
-                }                             
-
+                }
             }
             
+        }
+
+        public void CreateWTG_EstSeriesMonthTrend(bool useSecAxis, PlotModel model)
+        {
+            CheckedListBox.CheckedItemCollection theseParams = thisInst.chkSelectedTurbineParam.CheckedItems;
+            CheckedListBox.CheckedItemCollection theseSites = thisInst.chkWTGsToShow.CheckedItems;
+            CheckedListBox.CheckedItemCollection theseYears = thisInst.chkYears_Monthly.CheckedItems;
+
+            int numParams = theseParams.Count;
+            int numWTGs = theseSites.Count;
+            int numYears = theseYears.Count;
+
+            int numSeries = numParams * numWTGs * numYears;
+                        
+            LineSeries[] series = new LineSeries[numSeries];
+
+            if (numSeries == 0)
+                return;
+
+            int numRows = thisInst.dataWTG_TimeSeriesEsts.RowCount;
+            int seriesInd = 0;
+
+            for (int r = 0; r < numRows - 1; r++)
+            {
+                string thisRow = thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[0].Value.ToString();
+                
+                int hyphenInd = thisRow.LastIndexOf("-");
+                string thisYearStr = thisRow.Substring(hyphenInd + 2, thisRow.Length - hyphenInd - 2);
+
+                if (IsYearSelected(thisYearStr) == false)
+                    continue;
+
+                if (thisRow.Contains("Wind Farm") && IsWTG_Selected("All WTGs") == false)
+                    continue;
+                
+                string thisParam = "";
+                
+                if (thisRow.Contains("Avg WS"))
+                    thisParam = "Avg WS";
+                else if (thisRow.Contains("Gross AEP"))
+                    thisParam = "Gross AEP";
+                else if (thisRow.Contains("Net AEP"))
+                    thisParam = "Net AEP";
+                else if (thisRow.Contains("Wake Loss"))
+                    thisParam = "Wake Loss";
+
+                if (IsParam_Selected(thisParam) == false)
+                    continue;
+
+                string thisSite = thisRow;
+                thisSite = thisSite.Replace(thisParam, "");
+                thisSite = thisSite.Replace(thisYearStr, "");
+                thisSite = thisSite.Replace("-", "");
+                thisSite = thisSite.Trim(' ');
+
+                if (thisSite == "Wind Farm")
+                    thisSite = "All WTGs";
+
+                if (IsWTG_Selected(thisSite) == false)
+                    continue;
+
+                series[seriesInd] = new LineSeries();
+                series[seriesInd].Title = thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[0].Value.ToString();
+
+                if (series[seriesInd].Title.Contains("LT Avg"))
+                {
+                    series[seriesInd].Color = OxyColors.Black;
+                    series[seriesInd].LineStyle = LineStyle.Dash;
+                    series[seriesInd].StrokeThickness = 3;
+                }
+                                              
+                model.Series.Add(series[seriesInd]);
+
+                if (useSecAxis && (thisParam == "Gross AEP" || thisParam == "Net AEP"))
+                    series[seriesInd].YAxisKey = "Secondary";
+                else
+                    series[seriesInd].YAxisKey = "Primary";
+                            
+                for (int m = 1; m <= 12; m++)
+                    series[seriesInd].Points.Add(new DataPoint(m + 1, Convert.ToDouble(thisInst.dataWTG_TimeSeriesEsts.Rows[seriesInd].Cells[m].Value)));
+
+                seriesInd++;
+            }           
         }
 
         /// <summary> Creates columns for data grid table showing turbine TS estimates on Time Series tab.  </summary>
@@ -10935,9 +11280,8 @@ namespace ContinuumNS
         {
             DataTable timeSeriesTable = new DataTable();
 
-            if (analysisType == "Time Series") 
+            if (analysisType.Contains("Time Series")) 
             {
-
                 timeSeriesTable.Columns.Add("Timestamp");                       
                             
                 for (int t = 0; t < thisInst.chkWTGsToShow.Items.Count; t++)
@@ -10946,17 +11290,24 @@ namespace ContinuumNS
                     if (siteName == "All WTGs")
                         siteName = "Wind Farm";
 
-                    timeSeriesTable.Columns.Add(siteName + "Avg. WS [m/s]");
-                    timeSeriesTable.Columns.Add(siteName + "Gross AEP [MWh]");
-                    timeSeriesTable.Columns.Add(siteName + "Net AEP [MWh]");
-                    timeSeriesTable.Columns.Add(siteName + "Wake Loss [%]");                                        
+                    string energyUnit = "[kWh]";
+                    if (analysisType.Contains("Monthly"))
+                        energyUnit = "[MWh]";
+
+                    timeSeriesTable.Columns.Add(siteName + " Avg. WS [m/s]");
+                    timeSeriesTable.Columns.Add(siteName + " Gross AEP " + energyUnit);
+                    timeSeriesTable.Columns.Add(siteName + " Net AEP " + energyUnit);
+                    timeSeriesTable.Columns.Add(siteName + " Wake Loss [%]");                                        
                 }
             }
-            else if (analysisType == "Monthly (Seasonal)")
+            else if (analysisType.Contains("Trends"))
             {
+                timeSeriesTable.Columns.Add("Site - Param - Year");
 
+                for (int m = 1; m <= 12; m++)
+                    timeSeriesTable.Columns.Add(GetMonthString(m));
             }
-
+            
             return timeSeriesTable;
         }
 
@@ -11152,6 +11503,36 @@ namespace ContinuumNS
             for (int i = 0; i < thisInst.chkYears_Monthly.CheckedItems.Count; i++)
                 if (thisInst.chkYears_Monthly.CheckedItems[i].ToString() == thisYear)
                 {                    
+                    isSelected = true;
+                    break;
+                }
+
+            return isSelected;
+        }
+
+        /// <summary> Returns true if specified site is selected in Turbine Time Series Analysis tab </summary>        
+        public bool IsWTG_Selected(string thisSite)
+        {
+            bool isSelected = false;
+
+            for (int i = 0; i < thisInst.chkWTGsToShow.CheckedItems.Count; i++)
+                if (thisInst.chkWTGsToShow.CheckedItems[i].ToString() == thisSite)
+                {
+                    isSelected = true;
+                    break;
+                }
+
+            return isSelected;
+        }
+
+        /// <summary> Returns true if specified parameter is selected in Turbine Time Series Analysis tab </summary>        
+        public bool IsParam_Selected(string thisParam)
+        {
+            bool isSelected = false;
+
+            for (int i = 0; i < thisInst.chkSelectedTurbineParam.CheckedItems.Count; i++)
+                if (thisInst.chkSelectedTurbineParam.CheckedItems[i].ToString() == thisParam)
+                {
                     isSelected = true;
                     break;
                 }
@@ -14448,17 +14829,34 @@ namespace ContinuumNS
         {
             // Figure out what row index corresponds to selected start date
             DateTime selStart = thisInst.dateTimeSeriesStart.Value;
-            DateTime tableStart = Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[0].Cells[0].Value);
-            DateTime tableEnd = Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[thisInst.dataWTG_TimeSeriesEsts.RowCount - 2].Cells[0].Value);
 
+            string dataInt = thisInst.cboTimeSeriesAnalysis.SelectedItem.ToString();
+
+            DateTime tableStart = new DateTime(); 
+            DateTime tableEnd = new DateTime();
+
+            if (dataInt.Contains("Yearly"))
+            {
+                tableStart = new DateTime(Convert.ToInt16(thisInst.dataWTG_TimeSeriesEsts.Rows[0].Cells[0].Value), 1, 1);
+                tableEnd = new DateTime(Convert.ToInt16(thisInst.dataWTG_TimeSeriesEsts.Rows[thisInst.dataWTG_TimeSeriesEsts.RowCount - 2].Cells[0].Value), 1, 1);
+            }
+            else
+            {
+                tableStart = Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[0].Cells[0].Value);
+                tableEnd = Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[thisInst.dataWTG_TimeSeriesEsts.RowCount - 2].Cells[0].Value);
+            }
+            
             if (selStart > tableEnd)
                 selStart = tableEnd;
 
-            string dataInt = thisInst.cboTimeSeriesInterval.SelectedItem.ToString();
+            
             int numHoursPerInt = 1;
-            if (dataInt == "Monthly")
+
+            if (dataInt.Contains("Hourly"))
+                numHoursPerInt = 1;
+            else if (dataInt.Contains("Monthly"))
                 numHoursPerInt = 720;
-            else if (dataInt == "Yearly")
+            else if (dataInt.Contains("Yearly"))
                 numHoursPerInt = 8760;
 
             int startRow = Convert.ToInt32(selStart.Subtract(tableStart).TotalHours / numHoursPerInt);
@@ -14466,16 +14864,29 @@ namespace ContinuumNS
             if (startRow < 0)
                 startRow = 0;
 
+            if (startRow >= thisInst.dataWTG_TimeSeriesEsts.RowCount)
+                startRow = thisInst.dataWTG_TimeSeriesEsts.RowCount - 2;
+
             TimeSpan timeDiff = new TimeSpan();
             bool diffGettingSmaller = true;
 
-            DateTime thisRowTS = Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[startRow].Cells[0].Value);
+            DateTime thisRowTS = new DateTime();
+            
+            if (dataInt.Contains("Yearly"))
+            {
+                int thisYear = Convert.ToInt16(thisInst.dataWTG_TimeSeriesEsts.Rows[startRow].Cells[0].Value);
+                thisRowTS = new DateTime(thisYear, 1, 1);
+            }
+            else
+                thisRowTS = Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[startRow].Cells[0].Value);
+            
             timeDiff = selStart.Subtract(thisRowTS);
 
             double stepSize = startRow / 2;
             TimeSpan lastTimeDiff = timeDiff;
+            bool diffSameAsLast = false;
 
-            while (Math.Abs(timeDiff.TotalHours) > numHoursPerInt && diffGettingSmaller)
+            while (Math.Abs(timeDiff.TotalHours) > numHoursPerInt && diffSameAsLast == false)
             {
                 lastTimeDiff = timeDiff;
 
@@ -14486,12 +14897,18 @@ namespace ContinuumNS
                     // thisRowTS is after selStart
                     startRow = Convert.ToInt32(startRow + stepSize);
 
+                if (startRow > thisInst.dataWTG_TimeSeriesEsts.RowCount)
+                    startRow = thisInst.dataWTG_TimeSeriesEsts.RowCount - 2;
+
                 thisRowTS = Convert.ToDateTime(thisInst.dataWTG_TimeSeriesEsts.Rows[startRow].Cells[0].Value);
                 timeDiff = selStart.Subtract(thisRowTS);
                 stepSize = stepSize / 2;
 
                 if (Math.Abs(timeDiff.TotalHours) >= Math.Abs(lastTimeDiff.TotalHours))
                     diffGettingSmaller = false;
+
+                if (Math.Abs(timeDiff.TotalHours) == Math.Abs(lastTimeDiff.TotalHours))
+                    diffSameAsLast = true;
             }
 
             thisInst.dataWTG_TimeSeriesEsts.FirstDisplayedScrollingRowIndex = startRow;

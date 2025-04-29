@@ -96,7 +96,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates the grid stats (i.e. P10 exposure), exposure, surface roughness and disp. height at node for each radius of investigation. </summary>        
-        public void CalcGridStatsAndExposures(Continuum thisInst)
+        public void CalcGridStatsAndExposures(Continuum thisInst, NodeCollection nodeList)
         {   
             int numWD = thisInst.metList.numWD;                        
             int smallerRadius = 0;
@@ -137,7 +137,7 @@ namespace ContinuumNS
             }
              
             if (gridStats.stats == null)
-                gridStats.GetGridArrayAndCalcStats(UTMX, UTMY, thisInst);
+                gridStats.GetGridArrayAndCalcStats(UTMX, UTMY, thisInst, nodeList);
                         
             // Calc P10 UW Crosswind and Parallel Grade            
             for (int expInd = 0; expInd < thisInst.radiiList.ThisCount; expInd++) {

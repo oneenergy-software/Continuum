@@ -4,12 +4,18 @@ using System.Data.SqlClient;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading;
+using System.Data.Entity.Validation;
+using System.Security.RightsManagement;
 
 namespace ContinuumNS
 {
     /// <summary> Class with functions to find path of nodes between two sites and to add/access nodes in database. Also has functions to find flow separation nodes.  </summary>
     public class NodeCollection
     {
+        /// <summary> Used to control access to database (to avoid adding/getting same node at same time) </summary>        
+        private static readonly object _dbLock = new object();
+                        
         /// <summary> Holds UTM X and Y coordinates.  </summary>
         [Serializable()]
         public struct Node_UTMs
@@ -33,6 +39,7 @@ namespace ContinuumNS
         }
         
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
         
 
@@ -75,7 +82,9 @@ namespace ContinuumNS
 
         /// <summary> Adds a node to database including exposure, SRDH and grid stats. </summary>
         public void AddNodes(Nodes[] newNodes, string savedFileName)
-        {            
+        {
+            
+
             string connString = GetDB_ConnectionString(savedFileName);
             int numNewNodes = 0;
 
@@ -147,18 +156,24 @@ namespace ContinuumNS
                     newNodesDB[i].expo.Add(newExpo);                  
                     newNodesDB[i].GridStats.Add(newGridStat);
                 }
-            }
-                        
-            try {
-                using (var context = new Continuum_EDMContainer(connString)) {
-                    context.Node_table.AddRange(newNodesDB);
-                    context.SaveChanges();                    
+            }            
+
+            lock (_dbLock)
+            {
+                try
+                {
+                    using (var context = new Continuum_EDMContainer(connString))
+                    {
+                        context.Node_table.AddRange(newNodesDB);
+                        context.SaveChanges();
+                    }
                 }
-            }
-            catch (Exception ex) {
-                MessageBox.Show(ex.InnerException.ToString());                
-                return;
-            }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());                   
+                    return;
+                }
+            }                     
 
         }
 
@@ -168,59 +183,62 @@ namespace ContinuumNS
             string connString = GetDB_ConnectionString(savedFileName);
             
             if (nodeToUpdate == null)
-                return;
+                return;            
 
-            try
+            lock (_dbLock)
             {
-                using (var context = new Continuum_EDMContainer(connString))
+                try
                 {
-                    var node_db = from N in context.Node_table where N.UTMX == nodeToUpdate.UTMX & N.UTMY == nodeToUpdate.UTMY select N;
-                    Node_table thisNode = new Node_table();
-
-                    foreach (var N in node_db)
-                        thisNode = N;
-
-                    if (thisNode.elev == 0) // didn't find it in the database so need to add it
+                    using (var context = new Continuum_EDMContainer(connString))
                     {
-                        Nodes[] nodeToAdd = new Nodes[1];
-                        nodeToAdd[0] = nodeToUpdate;
-                        AddNodes(nodeToAdd, savedFileName);
-                    }
-                    else // need to update existing database entry
-                    {
-                        BinaryFormatter bin = new BinaryFormatter();
-                        int numRadii = nodeToUpdate.expo.Length;
+                        var node_db = from N in context.Node_table where N.UTMX == nodeToUpdate.UTMX & N.UTMY == nodeToUpdate.UTMY select N;
+                        Node_table thisNode = new Node_table();
 
-                        for (int j = 0; j < numRadii; j++)
+                        foreach (var N in node_db)
+                            thisNode = N;
+
+                        if (thisNode.elev == 0) // didn't find it in the database so need to add it
                         {
-                            MemoryStream MS1 = new MemoryStream();
-                            MemoryStream MS2 = new MemoryStream();
+                            Nodes[] nodeToAdd = new Nodes[1];
+                            nodeToAdd[0] = nodeToUpdate;
+                            AddNodes(nodeToAdd, savedFileName);
+                        }
+                        else // need to update existing database entry
+                        {
+                            BinaryFormatter bin = new BinaryFormatter();
+                            int numRadii = nodeToUpdate.expo.Length;
 
-                            if (nodeToUpdate.gridStats.StatCount > 0)
+                            for (int j = 0; j < numRadii; j++)
                             {
-                                GridStat_table newGridStat = new GridStat_table();
-                                newGridStat.radius = nodeToUpdate.gridStats.stats[j].radius;
+                                MemoryStream MS1 = new MemoryStream();
+                                MemoryStream MS2 = new MemoryStream();
 
-                                bin.Serialize(MS1, nodeToUpdate.gridStats.stats[j].P10_UW);
-                                newGridStat.P10_UW = MS1.ToArray();
+                                if (nodeToUpdate.gridStats.StatCount > 0)
+                                {
+                                    GridStat_table newGridStat = new GridStat_table();
+                                    newGridStat.radius = nodeToUpdate.gridStats.stats[j].radius;
 
-                                bin.Serialize(MS2, nodeToUpdate.gridStats.stats[j].P10_DW);
-                                newGridStat.P10_DW = MS2.ToArray();
+                                    bin.Serialize(MS1, nodeToUpdate.gridStats.stats[j].P10_UW);
+                                    newGridStat.P10_UW = MS1.ToArray();
 
-                                thisNode.GridStats.Add(newGridStat);
+                                    bin.Serialize(MS2, nodeToUpdate.gridStats.stats[j].P10_DW);
+                                    newGridStat.P10_DW = MS2.ToArray();
+
+                                    thisNode.GridStats.Add(newGridStat);
+                                }
                             }
+
+                            context.SaveChanges();
                         }
 
-                        context.SaveChanges();                        
                     }
-                    
                 }
-            }            
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.InnerException.ToString());
-                return;
-            }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());                    
+                    return;
+                }
+            }                     
 
         }
 
@@ -274,115 +292,134 @@ namespace ContinuumNS
             int numRadii = 0;
             int numWD = thisInst.metList.numWD;
 
-            string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);
-            
-            try {
-                using (var context = new Continuum_EDMContainer(connString)) {
-                    var node_db = from N in context.Node_table.Include("expo") where N.UTMX == UTMX & N.UTMY == UTMY select N;
+            string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);                       
 
-                    foreach (var N in node_db)
+            lock (_dbLock)
+            {
+                try
+                {
+                    using (var context = new Continuum_EDMContainer(connString))
                     {
-                        if (newNode.expo == null) { // in case there are more than node with this X and Y
-                            newNode.UTMX = N.UTMX;
-                            newNode.UTMY = N.UTMY;
-                            newNode.elev = N.elev;
+                        var node_db = from N in context.Node_table.Include("expo") where N.UTMX == UTMX & N.UTMY == UTMY select N;
 
-                            try {
-                                numRadii = N.expo.Count();                                
-                            }
-                            catch {
-                                newNode.UTMX = 0;
-                                newNode.UTMY = 0;
-                                return newNode;
-                            }
+                        foreach (var N in node_db)
+                        {
+                            if (newNode.expo == null)
+                            { // in case there are more than node with this X and Y
+                                newNode.UTMX = N.UTMX;
+                                newNode.UTMY = N.UTMY;
+                                newNode.elev = N.elev;
 
-                            BinaryFormatter bin = new BinaryFormatter();
-
-                            for (int i = 0; i < numRadii; i++)
-                            {
-                                newNode.AddExposure(N.expo.ElementAt(i).radius, N.expo.ElementAt(i).exponent, 1, numWD);
-                                
-                                if (N.expo.ElementAt(i).Expo_Array != null)
+                                try
                                 {
-                                    MemoryStream MS1 = new MemoryStream(N.expo.ElementAt(i).Expo_Array);
-                                    newNode.expo[i].expo = (double[])bin.Deserialize(MS1);
+                                    numRadii = N.expo.Count();
+                                }
+                                catch
+                                {
+                                    newNode.UTMX = 0;
+                                    newNode.UTMY = 0;
+                                    return newNode;
                                 }
 
-                                if (N.expo.ElementAt(i).ExpoDist_Array != null) {
-                                    MemoryStream MS2 = new MemoryStream(N.expo.ElementAt(i).ExpoDist_Array);
-                                    newNode.expo[i].expoDist = (double[])bin.Deserialize(MS2);
-                                }
+                                BinaryFormatter bin = new BinaryFormatter();
 
-                                if (N.expo.ElementAt(i).UW_Cross_Grade != null) {
-                                    MemoryStream MS3 = new MemoryStream(N.expo.ElementAt(i).UW_Cross_Grade);
-                                    newNode.expo[i].UW_P10CrossGrade = (double[])bin.Deserialize(MS3);
-                                }
+                                for (int i = 0; i < numRadii; i++)
+                                {
+                                    newNode.AddExposure(N.expo.ElementAt(i).radius, N.expo.ElementAt(i).exponent, 1, numWD);
 
-                                if (N.expo.ElementAt(i).UW_ParallelGrade != null) {
-                                    MemoryStream MS3 = new MemoryStream(N.expo.ElementAt(i).UW_ParallelGrade);
-                                    newNode.expo[i].UW_ParallelGrade = (double[])bin.Deserialize(MS3);
-                                }
+                                    if (N.expo.ElementAt(i).Expo_Array != null)
+                                    {
+                                        MemoryStream MS1 = new MemoryStream(N.expo.ElementAt(i).Expo_Array);
+                                        newNode.expo[i].expo = (double[])bin.Deserialize(MS1);
+                                    }
 
-                                if (N.expo.ElementAt(i).SR_Array != null) {
-                                    MemoryStream MS3 = new MemoryStream(N.expo.ElementAt(i).SR_Array);
-                                    newNode.expo[i].SR = (double[])bin.Deserialize(MS3);
-                                }
+                                    if (N.expo.ElementAt(i).ExpoDist_Array != null)
+                                    {
+                                        MemoryStream MS2 = new MemoryStream(N.expo.ElementAt(i).ExpoDist_Array);
+                                        newNode.expo[i].expoDist = (double[])bin.Deserialize(MS2);
+                                    }
 
-                                if (N.expo.ElementAt(i).DH_Array != null) {
-                                    MemoryStream MS3 = new MemoryStream(N.expo.ElementAt(i).DH_Array);
-                                    newNode.expo[i].dispH = (double[])bin.Deserialize(MS3);
-                                }
+                                    if (N.expo.ElementAt(i).UW_Cross_Grade != null)
+                                    {
+                                        MemoryStream MS3 = new MemoryStream(N.expo.ElementAt(i).UW_Cross_Grade);
+                                        newNode.expo[i].UW_P10CrossGrade = (double[])bin.Deserialize(MS3);
+                                    }
 
-                                newNode.expo[i].radius = N.expo.ElementAt(i).radius;
-                                newNode.expo[i].exponent = N.expo.ElementAt(i).exponent;
+                                    if (N.expo.ElementAt(i).UW_ParallelGrade != null)
+                                    {
+                                        MemoryStream MS3 = new MemoryStream(N.expo.ElementAt(i).UW_ParallelGrade);
+                                        newNode.expo[i].UW_ParallelGrade = (double[])bin.Deserialize(MS3);
+                                    }
+
+                                    if (N.expo.ElementAt(i).SR_Array != null)
+                                    {
+                                        MemoryStream MS3 = new MemoryStream(N.expo.ElementAt(i).SR_Array);
+                                        newNode.expo[i].SR = (double[])bin.Deserialize(MS3);
+                                    }
+
+                                    if (N.expo.ElementAt(i).DH_Array != null)
+                                    {
+                                        MemoryStream MS3 = new MemoryStream(N.expo.ElementAt(i).DH_Array);
+                                        newNode.expo[i].dispH = (double[])bin.Deserialize(MS3);
+                                    }
+
+                                    newNode.expo[i].radius = N.expo.ElementAt(i).radius;
+                                    newNode.expo[i].exponent = N.expo.ElementAt(i).exponent;
+                                }
                             }
                         }
-                    }
 
-                    var grid_db = from N in context.Node_table.Include("GridStats") where N.UTMX == UTMX & N.UTMY == UTMY select N;
+                        var grid_db = from N in context.Node_table.Include("GridStats") where N.UTMX == UTMX & N.UTMY == UTMY select N;
 
-                    foreach (var N in grid_db)
-                    {
-                        if (newNode.gridStats.stats == null) {
-                            newNode.UTMX = N.UTMX;
-                            newNode.UTMY = N.UTMY;
-                            newNode.elev = N.elev;
-
-                            try {
-                                numRadii = N.GridStats.Count();
-                            }
-                            catch {
-                                newNode.UTMX = 0;
-                                newNode.UTMY = 0;
-                                return newNode;
-                            }
-
-                            BinaryFormatter bin = new BinaryFormatter();
-                            newNode.gridStats.stats = new Grid_Info.Grid_Avg_SD[numRadii];
-
-                            for (int i = 0; i < numRadii; i++)
+                        foreach (var N in grid_db)
+                        {
+                            if (newNode.gridStats.stats == null)
                             {
-                                newNode.gridStats.stats[i].radius = N.GridStats.ElementAt(i).radius;
+                                newNode.UTMX = N.UTMX;
+                                newNode.UTMY = N.UTMY;
+                                newNode.elev = N.elev;
 
-                                if (N.GridStats.ElementAt(i).P10_UW != null) {
-                                    MemoryStream MS3 = new MemoryStream(N.GridStats.ElementAt(i).P10_UW);
-                                    newNode.gridStats.stats[i].P10_UW = (double[])bin.Deserialize(MS3);
+                                try
+                                {
+                                    numRadii = N.GridStats.Count();
+                                }
+                                catch
+                                {
+                                    newNode.UTMX = 0;
+                                    newNode.UTMY = 0;
+                                    return newNode;
                                 }
 
-                                if (N.GridStats.ElementAt(i).P10_DW != null) {
-                                    MemoryStream MS4 = new MemoryStream(N.GridStats.ElementAt(i).P10_DW);
-                                    newNode.gridStats.stats[i].P10_DW = (double[])bin.Deserialize(MS4);
-                                }
+                                BinaryFormatter bin = new BinaryFormatter();
+                                newNode.gridStats.stats = new Grid_Info.Grid_Avg_SD[numRadii];
 
+                                for (int i = 0; i < numRadii; i++)
+                                {
+                                    newNode.gridStats.stats[i].radius = N.GridStats.ElementAt(i).radius;
+
+                                    if (N.GridStats.ElementAt(i).P10_UW != null)
+                                    {
+                                        MemoryStream MS3 = new MemoryStream(N.GridStats.ElementAt(i).P10_UW);
+                                        newNode.gridStats.stats[i].P10_UW = (double[])bin.Deserialize(MS3);
+                                    }
+
+                                    if (N.GridStats.ElementAt(i).P10_DW != null)
+                                    {
+                                        MemoryStream MS4 = new MemoryStream(N.GridStats.ElementAt(i).P10_DW);
+                                        newNode.gridStats.stats[i].P10_DW = (double[])bin.Deserialize(MS4);
+                                    }
+
+                                }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception ex) {
-                MessageBox.Show(ex.InnerException.ToString());                
-                return newNode;
-            }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());                    
+                    return newNode;
+                }
+            }                     
 
             if (newNode.expo != null) {
                 for (int i = 0; i < newNode.expo.Length; i++)
@@ -392,8 +429,7 @@ namespace ContinuumNS
                             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, true);
                         thisInst.topo.CalcSRDH(ref newNode.expo[i], newNode.UTMX, newNode.UTMY, newNode.expo[i].radius, newNode.expo[i].exponent, numWD);
 
-                    }
-                                                        
+                    }                                                        
             }
 
             string[] metsUsed = new string[thisInst.metList.ThisCount];
@@ -413,129 +449,130 @@ namespace ContinuumNS
             int newNodeCount = 0;
 
             string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);
-            //MessageBox.Show(thisInst.savedParams.savedFileName + "," + "GetNodes");
-            BinaryFormatter bin = new BinaryFormatter();
+           
+            BinaryFormatter bin = new BinaryFormatter();           
 
-            try
+            lock (_dbLock)
             {
-                using (var context = new Continuum_EDMContainer(connString))
+                try
                 {
-                    var node_db = from N in context.Node_table.Include("expo") where N.UTMX >= minX & N.UTMX <= maxX & N.UTMY >= minY & N.UTMY <= maxY select N;
+                    using (var context = new Continuum_EDMContainer(connString))
+                    {
+                        var node_db = from N in context.Node_table.Include("expo") where N.UTMX >= minX & N.UTMX <= maxX & N.UTMY >= minY & N.UTMY <= maxY select N;
 
-                    foreach (var N in node_db)
-                    {                        
-                        Array.Resize(ref nodesFromDB, newNodeCount + 1);
-                        nodesFromDB[newNodeCount] = new Nodes();
-                        nodesFromDB[newNodeCount].UTMX = N.UTMX;
-                        nodesFromDB[newNodeCount].UTMY = N.UTMY;
-                        nodesFromDB[newNodeCount].elev = N.elev;
-                        nodesFromDB[newNodeCount].gridStats = new Grid_Info();
-                        nodesFromDB[newNodeCount].gridStats.stats = new Grid_Info.Grid_Avg_SD[numRadii];
-
-                        for (int i = 0; i < numRadii; i++)
+                        foreach (var N in node_db)
                         {
-                            nodesFromDB[newNodeCount].AddExposure(N.expo.ElementAt(i).radius, N.expo.ElementAt(i).exponent, 1, numWD);
+                            Array.Resize(ref nodesFromDB, newNodeCount + 1);
+                            nodesFromDB[newNodeCount] = new Nodes();
+                            nodesFromDB[newNodeCount].UTMX = N.UTMX;
+                            nodesFromDB[newNodeCount].UTMY = N.UTMY;
+                            nodesFromDB[newNodeCount].elev = N.elev;
+                            nodesFromDB[newNodeCount].gridStats = new Grid_Info();
                             nodesFromDB[newNodeCount].gridStats.stats = new Grid_Info.Grid_Avg_SD[numRadii];
 
-                            if (N.expo.ElementAt(i).Expo_Array != null)
+                            for (int i = 0; i < numRadii; i++)
                             {
-                                MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).Expo_Array);
-                                nodesFromDB[newNodeCount].expo[i].expo = (double[])bin.Deserialize(MS);
-                                MS.Close();
-                            }
+                                nodesFromDB[newNodeCount].AddExposure(N.expo.ElementAt(i).radius, N.expo.ElementAt(i).exponent, 1, numWD);
+                                nodesFromDB[newNodeCount].gridStats.stats = new Grid_Info.Grid_Avg_SD[numRadii];
 
-                            if (N.expo.ElementAt(i).ExpoDist_Array != null)
-                            {
-                                MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).ExpoDist_Array);
-                                nodesFromDB[newNodeCount].expo[i].expoDist = (double[])bin.Deserialize(MS);
-                                MS.Close();
-                            }
-
-                            if (N.expo.ElementAt(i).SR_Array != null)
-                            {
-                                MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).SR_Array);
-                                nodesFromDB[newNodeCount].expo[i].SR = (double[])bin.Deserialize(MS);
-                                MS.Close();
-                            }
-
-                            if (N.expo.ElementAt(i).DH_Array != null)
-                            {
-                                MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).DH_Array);
-                                nodesFromDB[newNodeCount].expo[i].dispH = (double[])bin.Deserialize(MS);
-                                MS.Close();
-                            }
-
-                            if (N.expo.ElementAt(i).UW_Cross_Grade != null)
-                            {
-                                MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).UW_Cross_Grade);
-                                nodesFromDB[newNodeCount].expo[i].UW_P10CrossGrade = (double[])bin.Deserialize(MS);
-                                MS.Close();
-                            }
-
-                            if (N.expo.ElementAt(i).UW_ParallelGrade != null)
-                            {
-                                MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).UW_ParallelGrade);
-                                nodesFromDB[newNodeCount].expo[i].UW_ParallelGrade = (double[])bin.Deserialize(MS);
-                                MS.Close();
-                            }
-
-                            nodesFromDB[newNodeCount].expo[i].radius = N.expo.ElementAt(i).radius;
-                            nodesFromDB[newNodeCount].expo[i].exponent = N.expo.ElementAt(i).exponent;
-                                                       
-                            
-                            if (nodesFromDB[newNodeCount].expo != null)
-                            {
-                                // This should never happen
-                                if (thisInst.topo.gotSR == true && nodesFromDB[newNodeCount].expo[i].SR == null && forGridStatCalcs == false)
-                                { // calculate SRDH then add to database
-                                    thisInst.topo.CalcSRDH(ref nodesFromDB[newNodeCount].expo[i], nodesFromDB[newNodeCount].UTMX, nodesFromDB[newNodeCount].UTMY,
-                                        nodesFromDB[newNodeCount].expo[i].radius, nodesFromDB[newNodeCount].expo[i].exponent, numWD);
-
-                                    MemoryStream MS = new MemoryStream();
-
-                                    bin.Serialize(MS, nodesFromDB[newNodeCount].expo[i].SR);
-                                    N.expo.ElementAt(i).SR_Array = MS.ToArray();                                    
-                                    
-                                    bin.Serialize(MS, nodesFromDB[newNodeCount].expo[i].dispH);
-                                    N.expo.ElementAt(i).DH_Array = MS.ToArray();                                    
+                                if (N.expo.ElementAt(i).Expo_Array != null)
+                                {
+                                    MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).Expo_Array);
+                                    nodesFromDB[newNodeCount].expo[i].expo = (double[])bin.Deserialize(MS);
                                     MS.Close();
                                 }
 
-                            }                                                      
-                                                        
-                        }
-                        newNodeCount++;
-                    }
-
-                    for (int i = 0; i < newNodeCount; i++)
-                    {
-                        if (nodesFromDB[i].gridStats != null && forGridStatCalcs == false)
-                        {
-                            double thisX = nodesFromDB[i].UTMX;
-                            double thisY = nodesFromDB[i].UTMY;
-                            var grid_db = from G in context.Node_table.Include("GridStats") where G.UTMX == thisX & G.UTMY == thisY select G;
-                            int grid_db_count = grid_db.Count();
-
-                            foreach (var G in grid_db)
-                            {
-                                if (G.GridStats.Count() == numRadii)
+                                if (N.expo.ElementAt(i).ExpoDist_Array != null)
                                 {
-                                    for (int r = 0; r < numRadii; r++)
+                                    MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).ExpoDist_Array);
+                                    nodesFromDB[newNodeCount].expo[i].expoDist = (double[])bin.Deserialize(MS);
+                                    MS.Close();
+                                }
+
+                                if (N.expo.ElementAt(i).SR_Array != null)
+                                {
+                                    MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).SR_Array);
+                                    nodesFromDB[newNodeCount].expo[i].SR = (double[])bin.Deserialize(MS);
+                                    MS.Close();
+                                }
+
+                                if (N.expo.ElementAt(i).DH_Array != null)
+                                {
+                                    MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).DH_Array);
+                                    nodesFromDB[newNodeCount].expo[i].dispH = (double[])bin.Deserialize(MS);
+                                    MS.Close();
+                                }
+
+                                if (N.expo.ElementAt(i).UW_Cross_Grade != null)
+                                {
+                                    MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).UW_Cross_Grade);
+                                    nodesFromDB[newNodeCount].expo[i].UW_P10CrossGrade = (double[])bin.Deserialize(MS);
+                                    MS.Close();
+                                }
+
+                                if (N.expo.ElementAt(i).UW_ParallelGrade != null)
+                                {
+                                    MemoryStream MS = new MemoryStream(N.expo.ElementAt(i).UW_ParallelGrade);
+                                    nodesFromDB[newNodeCount].expo[i].UW_ParallelGrade = (double[])bin.Deserialize(MS);
+                                    MS.Close();
+                                }
+
+                                nodesFromDB[newNodeCount].expo[i].radius = N.expo.ElementAt(i).radius;
+                                nodesFromDB[newNodeCount].expo[i].exponent = N.expo.ElementAt(i).exponent;
+
+
+                                if (nodesFromDB[newNodeCount].expo != null)
+                                {
+                                    // This should never happen
+                                    if (thisInst.topo.gotSR == true && nodesFromDB[newNodeCount].expo[i].SR == null && forGridStatCalcs == false)
+                                    { // calculate SRDH then add to database
+                                        thisInst.topo.CalcSRDH(ref nodesFromDB[newNodeCount].expo[i], nodesFromDB[newNodeCount].UTMX, nodesFromDB[newNodeCount].UTMY,
+                                            nodesFromDB[newNodeCount].expo[i].radius, nodesFromDB[newNodeCount].expo[i].exponent, numWD);
+
+                                        MemoryStream MS = new MemoryStream();
+
+                                        bin.Serialize(MS, nodesFromDB[newNodeCount].expo[i].SR);
+                                        N.expo.ElementAt(i).SR_Array = MS.ToArray();
+
+                                        bin.Serialize(MS, nodesFromDB[newNodeCount].expo[i].dispH);
+                                        N.expo.ElementAt(i).DH_Array = MS.ToArray();
+                                        MS.Close();
+                                    }
+                                }
+                            }
+                            newNodeCount++;
+                        }
+
+                        for (int i = 0; i < newNodeCount; i++)
+                        {
+                            if (nodesFromDB[i].gridStats != null && forGridStatCalcs == false)
+                            {
+                                double thisX = nodesFromDB[i].UTMX;
+                                double thisY = nodesFromDB[i].UTMY;
+                                var grid_db = from G in context.Node_table.Include("GridStats") where G.UTMX == thisX & G.UTMY == thisY select G;
+                                int grid_db_count = grid_db.Count();
+
+                                foreach (var G in grid_db)
+                                {
+                                    if (G.GridStats.Count() == numRadii)
                                     {
-                                        nodesFromDB[i].gridStats.stats[r].radius = G.GridStats.ElementAt(r).radius;
-
-                                        if (G.GridStats.ElementAt(r).P10_UW != null)
+                                        for (int r = 0; r < numRadii; r++)
                                         {
-                                            MemoryStream MS = new MemoryStream(G.GridStats.ElementAt(r).P10_UW);
-                                            nodesFromDB[i].gridStats.stats[r].P10_UW = (double[])bin.Deserialize(MS);
-                                            MS.Close();
-                                        }
+                                            nodesFromDB[i].gridStats.stats[r].radius = G.GridStats.ElementAt(r).radius;
 
-                                        if (G.GridStats.ElementAt(r).P10_DW != null)
-                                        {
-                                            MemoryStream MS = new MemoryStream(G.GridStats.ElementAt(r).P10_DW);
-                                            nodesFromDB[i].gridStats.stats[r].P10_DW = (double[])bin.Deserialize(MS);
-                                            MS.Close();
+                                            if (G.GridStats.ElementAt(r).P10_UW != null)
+                                            {
+                                                MemoryStream MS = new MemoryStream(G.GridStats.ElementAt(r).P10_UW);
+                                                nodesFromDB[i].gridStats.stats[r].P10_UW = (double[])bin.Deserialize(MS);
+                                                MS.Close();
+                                            }
+
+                                            if (G.GridStats.ElementAt(r).P10_DW != null)
+                                            {
+                                                MemoryStream MS = new MemoryStream(G.GridStats.ElementAt(r).P10_DW);
+                                                nodesFromDB[i].gridStats.stats[r].P10_DW = (double[])bin.Deserialize(MS);
+                                                MS.Close();
+                                            }
                                         }
                                     }
                                 }
@@ -543,13 +580,13 @@ namespace ContinuumNS
                         }
                     }
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());                    
+                    return nodesFromDB;
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.InnerException.ToString());
-                return nodesFromDB;
-            }            
-
+                     
             return nodesFromDB;
         }               
 
@@ -945,7 +982,7 @@ namespace ContinuumNS
                     if (highNode.gridStats.StatCount == 0)
                     {
                         highNode.gridStats = new Grid_Info();
-                        highNode.CalcGridStatsAndExposures(thisInst);
+                        highNode.CalcGridStatsAndExposures(thisInst, this);
                         AddNodeOrUpdateNodeGridStat(highNode, thisInst.savedParams.savedFileName);
                     }
                 }
@@ -953,7 +990,7 @@ namespace ContinuumNS
                 if (foundHighNode == false && highNode.UTMX != 0 && highNode.UTMY != 0)
                 {
                     highNode.gridStats = new Grid_Info();
-                    highNode.CalcGridStatsAndExposures(thisInst);
+                    highNode.CalcGridStatsAndExposures(thisInst, this);
                     AddNodeOrUpdateNodeGridStat(highNode, thisInst.savedParams.savedFileName);
                 }
             }
@@ -1158,6 +1195,32 @@ namespace ContinuumNS
             {
                 MessageBox.Show(ex.ToString());
             }
+        }
+
+        /// <summary>   Adds the nodes (calculated exposures) to the local SQL database. </summary>        
+        public void AddNodesDB(Node_table[] theseNodes, string savedFileName)
+        {
+            if (theseNodes == null)
+                return;                       
+                        
+            lock (_dbLock)
+            {                
+                string connString = GetDB_ConnectionString(savedFileName);
+
+                try
+                {
+                    using (var ctx = new Continuum_EDMContainer(connString))
+                    {
+                        ctx.Node_table.AddRange(theseNodes);
+                        ctx.SaveChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.InnerException.ToString());             
+                    return;
+                }
+            }                    
         }
 
     }

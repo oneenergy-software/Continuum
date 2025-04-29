@@ -1794,7 +1794,18 @@ namespace ContinuumNS
             return avgWS;
         }
 
-   
+        /// <summary> Calculates and returns average wind speed for specified month and year </summary>  
+        public double CalcAvgWS_ByMonthYear(int thisMonth, int thisYear, string freeOrWake)
+        {
+            double avgWS = 0;
+            for (int t = 0; t < TurbineCount; t++)
+                avgWS = avgWS + turbineEsts[t].GetAvgWS_Est(null).GetMonthlyValue(thisMonth, thisYear, freeOrWake);
+
+            avgWS = avgWS / TurbineCount;
+
+            return avgWS;
+        }
+
         /// <summary>  </summary>   
         public ModelCollection.TimeSeries CalcWindFarmHourlyValues(int timeInd, Wake_Model thisWakeModel)
         {
@@ -1834,7 +1845,7 @@ namespace ContinuumNS
             return grossProd;
         }
 
-        /// <summary> Calculates and returns gross energy production for specified month (by month index) </summary> 
+        /// <summary> Calculates and returns net energy production for specified month (by month index) </summary> 
         public double CalcNetEnergy_ByMonthInd(int monthInd, Wake_Model wakeModel)
         {
             double netProd = 0;
@@ -1842,6 +1853,27 @@ namespace ContinuumNS
                 netProd = netProd + turbineEsts[t].GetNetEnergyEst(wakeModel).monthlyVals[monthInd].energyProd;
 
             return netProd;
+        }
+
+
+        /// <summary> Calculates and returns net energy production for specified month and year </summary> 
+        public double CalcNetEnergy_ByMonthYear(int thisMonth, int thisYear, Wake_Model wakeModel)
+        {
+            double netProd = 0;
+            for (int t = 0; t < TurbineCount; t++)
+                netProd = netProd + turbineEsts[t].GetNetEnergyEst(wakeModel).GetMonthlyValue(thisMonth, thisYear);
+
+            return netProd;
+        }
+
+        /// <summary> Calculates and returns gross energy production for specified month and year </summary> 
+        public double CalcGrossEnergy_ByMonthYear(int thisMonth, int thisYear, PowerCurve powerCurve)
+        {
+            double grossProd = 0;
+            for (int t = 0; t < TurbineCount; t++)
+                grossProd = grossProd + turbineEsts[t].GetGrossEnergyEst(powerCurve).GetMonthlyValue(thisMonth, thisYear);
+
+            return grossProd;
         }
 
         /// <summary> Calculates and returns LT monthly value (thisParam = "Avg WS", "Gross AEP", "Net AEP", or "Wake Loss") </summary>        
@@ -1857,38 +1889,7 @@ namespace ContinuumNS
 
             return lt_Value;
         }
-
-        /// <summary> Calcuate and return LT value of turbine collection (thisParam = "Avg WS", "Gross AEP", "Net AEP", or "Wake Loss") </summary>        
-        public double CalcLT_Value(string thisParam, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
-        {
-            double ltVal = 0;
-
-            for (int t = 0; t < TurbineCount; t++)
-            {
-                if (thisParam == "Avg WS")
-                {
-                    Turbine.Avg_Est thisAvgEst = turbineEsts[t].GetAvgWS_Est(thisWakeModel);
-                    ltVal = ltVal + thisAvgEst.freeStream.WS;
-                }
-                else if (thisParam == "Gross AEP")
-                {
-                    Turbine.Gross_Energy_Est thisGrossEst = turbineEsts[t].GetGrossEnergyEst(powerCurve);
-                    ltVal = ltVal + thisGrossEst.AEP;
-                }
-                else if (thisParam == "Net AEP")
-                {
-                    Turbine.Net_Energy_Est thisNetEst = turbineEsts[t].GetNetEnergyEst(thisWakeModel);
-                    ltVal = ltVal + thisNetEst.AEP;
-                }
-            }
-
-            if (thisParam == "Avg WS" && TurbineCount > 0)
-                ltVal = ltVal / TurbineCount;
-
-            return ltVal;
-        }
-
-
+        
         /// <summary> Calculates and returns specified annual value  </summary>
         
         public double CalcYearlyValue(string thisParam, int thisYear, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve)
@@ -1899,13 +1900,13 @@ namespace ContinuumNS
             {
                 if (thisParam == "Avg WS")
                     thisVal = thisVal + turbineEsts[t].CalcYearlyValue(thisYear, "Avg WS", null, new TurbineCollection.PowerCurve());
-                else if (thisParam == "Gross Energy")
+                else if (thisParam == "Gross AEP")
                     thisVal = thisVal + turbineEsts[t].CalcYearlyValue(thisYear, "Gross AEP", thisWakeModel, powerCurve);
-                else if (thisParam == "Net Energy")
+                else if (thisParam == "Net AEP")
                     thisVal = thisVal + turbineEsts[t].CalcYearlyValue(thisYear, "Net AEP", thisWakeModel, powerCurve);
             }
 
-            if (thisParam == "Avg Ws")
+            if (thisParam == "Avg WS")
                 thisVal = thisVal / TurbineCount;
 
             return thisVal;

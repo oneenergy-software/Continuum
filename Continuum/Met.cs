@@ -506,15 +506,15 @@ namespace ContinuumNS
                 thisDist.WS = thisDist.WS / allCount;
 
                 for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                    thisDist.WS_Dist[WS_ind] = thisDist.WS_Dist[WS_ind] / allCount;
+                    thisDist.WS_Dist[WS_ind] = Math.Round(thisDist.WS_Dist[WS_ind] / allCount, 5);
                 
                 for (int i = 0; i < thisInst.metList.numWD; i++)
-                    thisDist.windRose[i] = thisDist.windRose[i] / allCount;
+                    thisDist.windRose[i] = Math.Round(thisDist.windRose[i] / allCount, 5);
             }
 
             if (sumPower > 0)
                 for (int i = 0; i < thisInst.metList.numWD; i++)
-                    thisDist.energyRose[i] = thisDist.energyRose[i] / sumPower;
+                    thisDist.energyRose[i] = Math.Round(thisDist.energyRose[i] / sumPower, 5);
 
             // Calculate sectorwise wind speed ratios and wind speed distribution
             for (int WD_ind = 0; WD_ind < thisInst.metList.numWD; WD_ind++)
@@ -522,10 +522,10 @@ namespace ContinuumNS
                 if (secCount[WD_ind] > 0)
                 {
                     for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                        thisDist.sectorWS_Dist[WD_ind, WS_ind] = thisDist.sectorWS_Dist[WD_ind, WS_ind] / secCount[WD_ind];
+                        thisDist.sectorWS_Dist[WD_ind, WS_ind] = Math.Round(thisDist.sectorWS_Dist[WD_ind, WS_ind] / secCount[WD_ind], 5);
 
                     if (thisDist.WS > 0)
-                        thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] / secCount[WD_ind] / thisDist.WS;
+                        thisDist.sectorWS_Ratio[WD_ind] = Math.Round(thisDist.sectorWS_Ratio[WD_ind] / secCount[WD_ind] / thisDist.WS, 5);
                 }
             }               
 
@@ -598,16 +598,16 @@ namespace ContinuumNS
                 thisDist.WS = thisDist.WS / allCount;
 
                 for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                    thisDist.WS_Dist[WS_ind] = thisDist.WS_Dist[WS_ind] / allCount;
+                    thisDist.WS_Dist[WS_ind] = Math.Round(thisDist.WS_Dist[WS_ind] / allCount, 5);
 
                 for (int i = 0; i < thisInst.metList.numWD; i++)
-                    thisDist.windRose[i] = thisDist.windRose[i] / allCount;
+                    thisDist.windRose[i] = Math.Round(thisDist.windRose[i] / allCount, 5);
             }
 
             // Calculate energy rose
             if (sumPower > 0)
                 for (int i = 0; i < thisInst.metList.numWD; i++)
-                    thisDist.energyRose[i] = thisDist.energyRose[i] / sumPower;
+                    thisDist.energyRose[i] = Math.Round(thisDist.energyRose[i] / sumPower, 5);
 
             // Calculate sectorwise wind speed ratios and wind speed distribution
             for (int WD_ind = 0; WD_ind < thisInst.metList.numWD; WD_ind++)
@@ -615,10 +615,10 @@ namespace ContinuumNS
                 if (secCount[WD_ind] > 0)
                 {                 
                     for (int WS_ind = 0; WS_ind < thisInst.metList.numWS; WS_ind++)
-                        thisDist.sectorWS_Dist[WD_ind, WS_ind] = thisDist.sectorWS_Dist[WD_ind, WS_ind] / secCount[WD_ind];
+                        thisDist.sectorWS_Dist[WD_ind, WS_ind] = Math.Round(thisDist.sectorWS_Dist[WD_ind, WS_ind] / secCount[WD_ind], 5);
 
                     if (thisDist.WS > 0)
-                        thisDist.sectorWS_Ratio[WD_ind] = thisDist.sectorWS_Ratio[WD_ind] / secCount[WD_ind] / thisDist.WS;
+                        thisDist.sectorWS_Ratio[WD_ind] = Math.Round(thisDist.sectorWS_Ratio[WD_ind] / secCount[WD_ind] / thisDist.WS, 5);
                 }
             }           
 

@@ -1,0 +1,73 @@
+1,Contiguous (indigenous) Forest ,1,16.7
+2,contiguous low forest & thicket,1,16.7
+3,dense forest & woodland,1,16.7
+4,open woodland,1.1,16.7
+5,contiguous & dense plantation forest,1.1,16.7
+6,open & sparse plantation forest,1.1,16.7
+7,temporary unplanted (clear-felled) plantation forest,1.1,16.7
+8,low shrubland (other),0.2,1.3
+9,low shrubland (fynbos),0.2,1.3
+10,low shrubland (succulent karoo),0.2,1.3
+11,low shrubland (Nama Karoo),0.2,1.3
+12,sparsely wooded grassland,0.03,0.1
+13,natural grassland,0.03,0.1
+14,Natural Rivers,0.0002,0
+15,Natural Estuaries & Lagoons,0.0002,0
+16,natural ocean & coastal,0.0002,0
+17,Natural Lakes,0.0002,0
+18,natural pans (flooded @ observation times),0.0002,0
+19,artificial dams (including canals),0.0002,0
+20,artificial sewage ponds,0.0002,0
+21,artificial flooded mine pits,0.0002,0
+22,herbaceous wetlands (currently mapped),0.4,0.7
+23,herbaceous wetlands (previously mapped),0.4,0.7
+24,Mangrove Wetlands,0.4,0.7
+25,natural rock surfaces,0.005,0
+26,dry pans,0.005,0
+27,eroded lands,0.005,0
+28,Sand Dunes (terrestrial),0.005,0
+29,coastal sand & dunes,0.005,0
+30,bare riverbed material,0.005,0
+31,other bare,0.005,0
+32,cultivated commercial permanent orchards,0.25,1.3
+33,cultivated commercial permanent vines,0.25,1.3
+34,Cultivated Commercial Sugarcane Pivot Irrigated,0.25,1.3
+35,Commercial Permanent Pineapples,0.25,1.3
+36,Cultivated Commercial Sugarcane Non-Pivot (all other),0.25,1.3
+37,Cultivated Emerging Farmer Sugarcane Non-Pivot (all other),0.25,1.3
+38,commercial annual crops pivot irrigated,0.25,1.3
+39,commercial annual crops non-pivot irrigated,0.25,1.3
+40,commercial annual crops rain-fed / dryland,0.25,1.3
+41,Subsistence / Small-Scale Annual Crops,0.25,1.3
+42,fallow land & old fields (trees),0.03,0.1
+43,fallow land & old fields (bush),0.03,0.1
+44,fallow land & old fields (grass),0.03,0.1
+45,fallow land & old fields (bare),0.03,0.1
+46,fallow land & old fields (low shrub),0.03,0.1
+47,residential formal (tree),0.2,0.7
+48,residential formal (bush),0.2,0.7
+49,residential formal (low veg / grass),0.2,0.7
+50,residential formal (bare),1.1,16.7
+51,residential informal (tree),0.2,0.7
+52,residential informal (bush),0.2,0.7
+53,residential informal (low veg / grass),0.2,0.7
+54,residential informal (bare),0.8,3.3
+55,village scattered (bare & low veg/ grass combo),0.4,1.3
+56,village dense (bare & low veg / grass combo),0.4,1.3
+57,smallholdings (tree),0.25,1.3
+58,smallholdings (bush),0.03,0.1
+59,smallholdings (low veg / grass),0.03,0.1
+60,smallholdings (bare),0.8,3.3
+61,urban recreational fields (tree),0.2,0.7
+62,urban recreational fields (bush),0.2,0.7
+63,urban recreational fields (grass),0.2,0.7
+64,urban recreational fields (bare),0.2,0.7
+65,commercial,1.6,13.3
+66,industrial,1.6,13.3
+67,roads & rails (major linear),1.6,13.3
+68,mines: surface infrastructure,0.005,0
+69,mines: extraction pits quarries,0.005,0
+70,Mines: Extraction Sites: Salt Mines,0.005,0
+71,Mines: Waste (Tailings) & Resource Dumps,0.005,0
+72,land-fills,0.005,0
+73,fallow land & old fields (wetlands),0.4,0.7

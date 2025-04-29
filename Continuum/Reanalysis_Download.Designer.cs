@@ -171,7 +171,7 @@
             this.dateReferenceEnd.Name = "dateReferenceEnd";
             this.dateReferenceEnd.Size = new System.Drawing.Size(153, 25);
             this.dateReferenceEnd.TabIndex = 240;
-            this.dateReferenceEnd.Value = new System.DateTime(2022, 12, 31, 23, 0, 0, 0);
+            this.dateReferenceEnd.Value = new System.DateTime(2024, 12, 31, 23, 0, 0, 0);
             this.dateReferenceEnd.ValueChanged += new System.EventHandler(this.dateReferenceEnd_ValueChanged);
             // 
             // dateReferenceStart
@@ -261,10 +261,11 @@
             this.cboReanalysisType.FormattingEnabled = true;
             this.cboReanalysisType.Items.AddRange(new object[] {
             "MERRA2",
-            "ERA5"});
+            "ERA5",
+            "MERRA2 Cloud"});
             this.cboReanalysisType.Location = new System.Drawing.Point(139, 129);
             this.cboReanalysisType.Name = "cboReanalysisType";
-            this.cboReanalysisType.Size = new System.Drawing.Size(121, 26);
+            this.cboReanalysisType.Size = new System.Drawing.Size(177, 26);
             this.cboReanalysisType.TabIndex = 254;
             this.cboReanalysisType.SelectedIndexChanged += new System.EventHandler(this.cboReanalysisType_SelectedIndexChanged);
             // 
@@ -348,7 +349,7 @@
             // chkInclOpParam2
             // 
             this.chkInclOpParam2.AutoSize = true;
-            this.chkInclOpParam2.Location = new System.Drawing.Point(288, 166);
+            this.chkInclOpParam2.Location = new System.Drawing.Point(338, 166);
             this.chkInclOpParam2.Name = "chkInclOpParam2";
             this.chkInclOpParam2.Size = new System.Drawing.Size(74, 17);
             this.chkInclOpParam2.TabIndex = 262;
@@ -359,7 +360,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(285, 117);
+            this.label4.Location = new System.Drawing.Point(335, 117);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(211, 19);
@@ -375,14 +376,14 @@
             "Monthly"});
             this.cboDailyOrMonthly.Location = new System.Drawing.Point(138, 167);
             this.cboDailyOrMonthly.Name = "cboDailyOrMonthly";
-            this.cboDailyOrMonthly.Size = new System.Drawing.Size(121, 26);
+            this.cboDailyOrMonthly.Size = new System.Drawing.Size(178, 26);
             this.cboDailyOrMonthly.TabIndex = 264;
             this.cboDailyOrMonthly.SelectedIndexChanged += new System.EventHandler(this.cboDailyOrMonthly_SelectedIndexChanged);
             // 
             // chkInclOpParam1
             // 
             this.chkInclOpParam1.AutoSize = true;
-            this.chkInclOpParam1.Location = new System.Drawing.Point(289, 143);
+            this.chkInclOpParam1.Location = new System.Drawing.Point(339, 143);
             this.chkInclOpParam1.Name = "chkInclOpParam1";
             this.chkInclOpParam1.Size = new System.Drawing.Size(74, 17);
             this.chkInclOpParam1.TabIndex = 266;

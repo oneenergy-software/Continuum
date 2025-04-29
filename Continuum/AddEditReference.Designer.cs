@@ -127,7 +127,7 @@
             this.dateLTRefAvailEnd.Name = "dateLTRefAvailEnd";
             this.dateLTRefAvailEnd.Size = new System.Drawing.Size(163, 25);
             this.dateLTRefAvailEnd.TabIndex = 303;
-            this.dateLTRefAvailEnd.Value = new System.DateTime(2022, 12, 31, 23, 0, 0, 0);
+            this.dateLTRefAvailEnd.Value = new System.DateTime(2024, 12, 31, 23, 0, 0, 0);
             // 
             // dateLTRefAvailStart
             // 

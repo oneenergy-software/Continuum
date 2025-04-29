@@ -72,6 +72,40 @@ namespace ContinuumNS
             /// <summary> Array of time series data (Timestamp, WS, Gross, Net). Clears on save. Is stored in DB. </summary>
             public ModelCollection.TimeSeries[] timeSeries;
 
+            /// <summary> Finds and returns free-stream or waked monthly value (freeOrWake = "Free-stream" or "Waked" </summary>            
+            public double GetMonthlyValue(int thisMonth, int thisYear, string freeOrWake)
+            {
+                double monthVal = 0;
+
+                if (freeOrWake == "Free-stream")
+                {
+                    if (FS_MonthlyVals != null)
+                    {
+                        for (int m = 0; m < FS_MonthlyVals.Length; m++)
+                            if (FS_MonthlyVals[m].year == thisYear && FS_MonthlyVals[m].month == thisMonth)
+                            {
+                                monthVal = FS_MonthlyVals[m].avgWS;
+                                break;
+                            }
+                    }
+                }
+                else if (freeOrWake == "Waked")
+                {
+                    if (wakedMonthlyVals != null)
+                    {
+                        for (int m = 0; m < wakedMonthlyVals.Length; m++)
+                            if (wakedMonthlyVals[m].year == thisYear && wakedMonthlyVals[m].month == thisMonth)
+                            {
+                                monthVal = wakedMonthlyVals[m].avgWS;
+                                break;
+                            }
+                    }
+                }
+
+                return monthVal;
+
+            }
+
             /// <summary> Returns index with specified timestamp </summary>            
             public int GetTS_Index(DateTime targetDate)
             {
@@ -194,6 +228,25 @@ namespace ContinuumNS
             public double CF;
             /// <summary> Monthly gross energy estimates. </summary>
             public MonthlyEnergyVals[] monthlyVals;
+
+            /// <summary> Finds and returns monthly value </summary>            
+            public double GetMonthlyValue(int thisMonth, int thisYear)
+            {
+                double monthVal = 0;
+                                
+                if (monthlyVals != null)
+                {
+                    for (int m = 0; m < monthlyVals.Length; m++)
+                        if (monthlyVals[m].year == thisYear && monthlyVals[m].month == thisMonth)
+                        {
+                            monthVal = monthlyVals[m].energyProd;
+                            break;
+                        }
+                }                               
+
+                return monthVal;
+
+            }
         }
 
         /// <summary> Contains total and sectorwise net energy estimate values, capacity factors, and monthly values for given power curve and wake loss model. </summary>
@@ -218,6 +271,25 @@ namespace ContinuumNS
             public double[] sectorWakeLoss;
             /// <summary> Monthly net energy estimates. </summary>
             public MonthlyEnergyVals[] monthlyVals;
+
+            /// <summary> Finds and returns monthly value </summary>            
+            public double GetMonthlyValue(int thisMonth, int thisYear)
+            {
+                double monthVal = 0;
+
+                if (monthlyVals != null)
+                {
+                    for (int m = 0; m < monthlyVals.Length; m++)
+                        if (monthlyVals[m].year == thisYear && monthlyVals[m].month == thisMonth)
+                        {
+                            monthVal = monthlyVals[m].energyProd;
+                            break;
+                        }
+                }
+
+                return monthVal;
+
+            }
         }
 
         /// <summary> Contains month, year, average wind speed and WS distribution. </summary>

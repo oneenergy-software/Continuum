@@ -19,9 +19,8 @@ namespace ContinuumNS
         public double maxP10ExpoAllowed = 200;
 
         public double rotorDiam = 100; // Wind turbine rotor diameter.  Default is 100 m until user imports a power curve (or edits from Input tab)
-        public double airDens = 1.225; // Air density kg/m^3 (default of 1.225)
-
-
+        public double airDens = 1.225; // Air density kg/m^3 (default of 1.225)             
+                
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary> Holds sectorwise wind speeds at site of interest and sectorwise wind speed estimates at each node in path of nodes  </summary>
@@ -1307,7 +1306,7 @@ namespace ContinuumNS
             
             double elevDiff = 0;
 
-            NodeCollection nodeList = new NodeCollection();
+            //NodeCollection nodeList = new NodeCollection();
             Nodes thisNode;
             Nodes node1;
             Nodes node2;
@@ -1576,7 +1575,7 @@ namespace ContinuumNS
                 // No nodes so just one step from Met 1 to Target
                 double[]  startWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, startMet.UTMX, startMet.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight); // should use start met wind rose and not interpolated
                 double[] endNodeWindRose = thisInst.metList.GetInterpolatedWindRose(thisModel.metsUsed, endNode.UTMX, endNode.UTMY, thisModel.timeOfDay, thisModel.season, thisInst.modeledHeight);
-
+                                
                 WS_Equiv = GetWS_Equiv(startWindRose, endNodeWindRose, sectorWS);
                 nodeUTM2.UTMX = endNode.UTMX;
                 nodeUTM2.UTMY = endNode.UTMY;
@@ -1611,7 +1610,7 @@ namespace ContinuumNS
                     DW_1 = startMet.expo[radInd].GetWgtAvg(startWindRose, WD_Ind, "DW", "Expo");
                     DW_2 = endNode.expo[radInd].GetWgtAvg(endNodeWindRose, WD_Ind, "DW", "Expo");
 
-                    avgDW = (DW_1 + DW_2) / 2;
+                    avgDW = (DW_1 + DW_2) / 2;                    
 
                     // If valley model is enabled, check to see if either site is in a valley
                     deltaWS_Valley = 0;
@@ -1620,9 +1619,10 @@ namespace ContinuumNS
 
                     coeffsDelta = Get_DeltaWS_UW_Expo(UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, radInd, startMet.flowSepNodes, endNode.flowSepNodes, 
                                                         WS_1, thisInst.topo.useSepMod, nodeUTM1, nodeUTM2, useValley);
-                    deltaWS_UWExpo = GetTotalWS(coeffsDelta);
+                    deltaWS_UWExpo = GetTotalWS(coeffsDelta);                                       
+
                     coeffsDelta = Get_DeltaWS_DW_Expo(WS_1, UW_1, UW_2, DW_1, DW_2, avgP10UW, avgP10DW, thisModel, WD_Ind, thisInst.topo.useSepMod, useValley);
-                    deltaWS_DWExpo = GetTotalWS(coeffsDelta);
+                    deltaWS_DWExpo = GetTotalWS(coeffsDelta);                                       
 
                     if (thisInst.topo.useSR == true)
                     {
@@ -1632,7 +1632,7 @@ namespace ContinuumNS
 
                         DW_Stab_Corr_1 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_1, thisInst.topo.useSepMod, "DW", useValley);
                         DW_Stab_Corr_2 = thisModel.GetStabilityCorrection(avgUW, avgDW, WD_Ind, DW_SR_2, thisInst.topo.useSepMod, "DW", useValley);
-                        deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);
+                        deltaWS_DW_SR = GetDeltaWS_SRDH(WS_1, thisInst.modeledHeight, DW_SR_1, DW_SR_2, DW_DH_1, DW_DH_2, DW_Stab_Corr_1, DW_Stab_Corr_2);                        
                     }
 
                     if (thisInst.topo.useElev)
@@ -1641,7 +1641,7 @@ namespace ContinuumNS
                     if ((WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley) > 0)
                         WS_Est_Return.sectorWS[WD_Ind] = WS_1 + deltaWS_UWExpo + deltaWS_DWExpo + deltaWS_UW_SR + deltaWS_DW_SR + deltaWS_Elev + deltaWS_Valley;
                     else
-                        WS_Est_Return.sectorWS[WD_Ind] = 0.05f;
+                        WS_Est_Return.sectorWS[WD_Ind] = 0.05f;                                                         
 
                 }
 

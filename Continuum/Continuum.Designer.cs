@@ -824,8 +824,6 @@ namespace ContinuumNS
             this.cboMonthlyPowerCurve = new System.Windows.Forms.ComboBox();
             this.cboMonthlyWakeModel = new System.Windows.Forms.ComboBox();
             this.label157 = new System.Windows.Forms.Label();
-            this.label131 = new System.Windows.Forms.Label();
-            this.cboTimeSeriesInterval = new System.Windows.Forms.ComboBox();
             this.label163 = new System.Windows.Forms.Label();
             this.pgeMaps = new System.Windows.Forms.TabPage();
             this.plotGenMap = new OxyPlot.WindowsForms.PlotView();
@@ -2246,7 +2244,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 537);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(692, 155);
+            this.plotTS_Baros.Size = new System.Drawing.Size(644, 155);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2470,7 +2468,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 382);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(692, 155);
+            this.plotTS_Temp.Size = new System.Drawing.Size(644, 155);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2485,7 +2483,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 227);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(692, 155);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(644, 155);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2500,7 +2498,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(692, 155);
+            this.plotTS_Anems.Size = new System.Drawing.Size(644, 155);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -8378,7 +8376,7 @@ namespace ContinuumNS
             this.plotTurbInt.Location = new System.Drawing.Point(520, 18);
             this.plotTurbInt.Name = "plotTurbInt";
             this.plotTurbInt.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTurbInt.Size = new System.Drawing.Size(911, 754);
+            this.plotTurbInt.Size = new System.Drawing.Size(911, 794);
             this.plotTurbInt.TabIndex = 289;
             this.plotTurbInt.Text = "plotView1";
             this.plotTurbInt.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8541,7 +8539,7 @@ namespace ContinuumNS
             this.lstTurbulence.Location = new System.Drawing.Point(13, 51);
             this.lstTurbulence.Margin = new System.Windows.Forms.Padding(2);
             this.lstTurbulence.Name = "lstTurbulence";
-            this.lstTurbulence.Size = new System.Drawing.Size(217, 726);
+            this.lstTurbulence.Size = new System.Drawing.Size(217, 766);
             this.lstTurbulence.TabIndex = 275;
             this.lstTurbulence.UseCompatibleStateImageBehavior = false;
             this.lstTurbulence.View = System.Windows.Forms.View.Details;
@@ -8731,7 +8729,7 @@ namespace ContinuumNS
             this.plotExtremeShear.Location = new System.Drawing.Point(501, 18);
             this.plotExtremeShear.Name = "plotExtremeShear";
             this.plotExtremeShear.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeShear.Size = new System.Drawing.Size(914, 745);
+            this.plotExtremeShear.Size = new System.Drawing.Size(914, 785);
             this.plotExtremeShear.TabIndex = 292;
             this.plotExtremeShear.Text = "plotView1";
             this.plotExtremeShear.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -8958,7 +8956,7 @@ namespace ContinuumNS
             // btnExportExtremeWSTable
             // 
             this.btnExportExtremeWSTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 727);
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(1042, 767);
             this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
             this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
@@ -9255,7 +9253,7 @@ namespace ContinuumNS
             this.plotExtremeWS_TS.Location = new System.Drawing.Point(921, 24);
             this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
             this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 415);
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 455);
             this.plotExtremeWS_TS.TabIndex = 293;
             this.plotExtremeWS_TS.Text = "plotView1";
             this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9278,7 +9276,7 @@ namespace ContinuumNS
             this.dataExtremeWS.Location = new System.Drawing.Point(359, 17);
             this.dataExtremeWS.Name = "dataExtremeWS";
             this.dataExtremeWS.RowHeadersWidth = 51;
-            this.dataExtremeWS.Size = new System.Drawing.Size(548, 759);
+            this.dataExtremeWS.Size = new System.Drawing.Size(548, 799);
             this.dataExtremeWS.TabIndex = 292;
             // 
             // Column17
@@ -9369,7 +9367,7 @@ namespace ContinuumNS
             this.plotExtremeWS.Location = new System.Drawing.Point(921, 298);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(510, 415);
+            this.plotExtremeWS.Size = new System.Drawing.Size(510, 455);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -9388,7 +9386,7 @@ namespace ContinuumNS
             // btnExtremeWS
             // 
             this.btnExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExtremeWS.Location = new System.Drawing.Point(916, 727);
+            this.btnExtremeWS.Location = new System.Drawing.Point(916, 767);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);
@@ -9520,8 +9518,6 @@ namespace ContinuumNS
             this.pgeMonthlyAnalysis.Controls.Add(this.cboMonthlyPowerCurve);
             this.pgeMonthlyAnalysis.Controls.Add(this.cboMonthlyWakeModel);
             this.pgeMonthlyAnalysis.Controls.Add(this.label157);
-            this.pgeMonthlyAnalysis.Controls.Add(this.label131);
-            this.pgeMonthlyAnalysis.Controls.Add(this.cboTimeSeriesInterval);
             this.pgeMonthlyAnalysis.Controls.Add(this.label163);
             this.pgeMonthlyAnalysis.Location = new System.Drawing.Point(4, 27);
             this.pgeMonthlyAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -9603,6 +9599,7 @@ namespace ContinuumNS
             this.dateTimeSeriesEnd.Name = "dateTimeSeriesEnd";
             this.dateTimeSeriesEnd.Size = new System.Drawing.Size(140, 25);
             this.dateTimeSeriesEnd.TabIndex = 303;
+            this.dateTimeSeriesEnd.ValueChanged += new System.EventHandler(this.dateTimeSeriesEnd_ValueChanged);
             // 
             // dateTimeSeriesStart
             // 
@@ -9613,12 +9610,13 @@ namespace ContinuumNS
             this.dateTimeSeriesStart.Name = "dateTimeSeriesStart";
             this.dateTimeSeriesStart.Size = new System.Drawing.Size(140, 25);
             this.dateTimeSeriesStart.TabIndex = 302;
+            this.dateTimeSeriesStart.ValueChanged += new System.EventHandler(this.dateTimeSeriesStart_ValueChanged);
             // 
             // label22
             // 
             this.label22.AutoSize = true;
             this.label22.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label22.Location = new System.Drawing.Point(267, 63);
+            this.label22.Location = new System.Drawing.Point(343, 27);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(67, 18);
             this.label22.TabIndex = 299;
@@ -9629,11 +9627,11 @@ namespace ContinuumNS
             this.cboTimeSeriesAnalysis.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTimeSeriesAnalysis.FormattingEnabled = true;
             this.cboTimeSeriesAnalysis.Items.AddRange(new object[] {
-            "Time Series",
-            "Monthly (Seasonal)",
-            "Diurnal ",
-            "12x24"});
-            this.cboTimeSeriesAnalysis.Location = new System.Drawing.Point(334, 58);
+            "Time Series - Hourly",
+            "Time Series - Monthly",
+            "Time Series - Yearly",
+            "Trends - Monthly"});
+            this.cboTimeSeriesAnalysis.Location = new System.Drawing.Point(410, 22);
             this.cboTimeSeriesAnalysis.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cboTimeSeriesAnalysis.Name = "cboTimeSeriesAnalysis";
             this.cboTimeSeriesAnalysis.Size = new System.Drawing.Size(190, 26);
@@ -9680,6 +9678,7 @@ namespace ContinuumNS
             this.chkSelectAllTurbineYears.TabIndex = 295;
             this.chkSelectAllTurbineYears.Text = "Select/\r\nDeselect All";
             this.chkSelectAllTurbineYears.UseVisualStyleBackColor = true;
+            this.chkSelectAllTurbineYears.CheckedChanged += new System.EventHandler(this.chkSelectAllTurbineYears_CheckedChanged_2);
             // 
             // chkYears_Monthly
             // 
@@ -9690,6 +9689,7 @@ namespace ContinuumNS
             this.chkYears_Monthly.Name = "chkYears_Monthly";
             this.chkYears_Monthly.Size = new System.Drawing.Size(98, 144);
             this.chkYears_Monthly.TabIndex = 294;
+            this.chkYears_Monthly.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkYears_Monthly_ItemCheck);
             // 
             // label148
             // 
@@ -9710,6 +9710,7 @@ namespace ContinuumNS
             this.chkSelectedTurbineParam.Name = "chkSelectedTurbineParam";
             this.chkSelectedTurbineParam.Size = new System.Drawing.Size(100, 84);
             this.chkSelectedTurbineParam.TabIndex = 292;
+            this.chkSelectedTurbineParam.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkSelectedTurbineParam_ItemCheck);
             // 
             // btnExportTimeSeriesEsts
             // 
@@ -9830,31 +9831,6 @@ namespace ContinuumNS
             this.label157.Size = new System.Drawing.Size(84, 18);
             this.label157.TabIndex = 223;
             this.label157.Text = "Wake Model:";
-            // 
-            // label131
-            // 
-            this.label131.AutoSize = true;
-            this.label131.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label131.Location = new System.Drawing.Point(337, 24);
-            this.label131.Name = "label131";
-            this.label131.Size = new System.Drawing.Size(62, 18);
-            this.label131.TabIndex = 218;
-            this.label131.Text = "Interval :";
-            // 
-            // cboTimeSeriesInterval
-            // 
-            this.cboTimeSeriesInterval.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboTimeSeriesInterval.FormattingEnabled = true;
-            this.cboTimeSeriesInterval.Items.AddRange(new object[] {
-            "Hourly",
-            "Monthly",
-            "Yearly"});
-            this.cboTimeSeriesInterval.Location = new System.Drawing.Point(404, 19);
-            this.cboTimeSeriesInterval.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.cboTimeSeriesInterval.Name = "cboTimeSeriesInterval";
-            this.cboTimeSeriesInterval.Size = new System.Drawing.Size(190, 26);
-            this.cboTimeSeriesInterval.TabIndex = 217;
-            this.cboTimeSeriesInterval.SelectedIndexChanged += new System.EventHandler(this.cboSelectedTurbine_SelectedIndexChanged);
             // 
             // label163
             // 
@@ -10992,7 +10968,6 @@ namespace ContinuumNS
             "DW Roughness",
             "UW Disp H",
             "DW Disp H",
-            "dWS Elev",
             "dWS UW Expo",
             "dWS DW Expo",
             "dWS UW SRDH",
@@ -13584,8 +13559,6 @@ namespace ContinuumNS
         internal System.Windows.Forms.CheckedListBox chkYearsToDisplay;
         internal System.Windows.Forms.CheckBox chkYearsToDisplayAll;
         internal System.Windows.Forms.Button btnImportCRV_MERRA;
-        internal System.Windows.Forms.Label label131;
-        internal System.Windows.Forms.ComboBox cboTimeSeriesInterval;
         internal System.Windows.Forms.ComboBox cboMonthlyWakeModel;
         internal System.Windows.Forms.Label label157;
         internal System.Windows.Forms.Label label158;

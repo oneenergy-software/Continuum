@@ -290,15 +290,11 @@ namespace ContinuumNS
             }
 
             if (refDataDownload.incl10mWS && refDataDownload.incl10mGust)
-                refName = refName + " with 10m WS and Gust";
-            else if (refDataDownload.incl10mWS && refDataDownload.inclCloud)
-                refName = refName + " with 10m WS and Cloud data";
-            else if (refDataDownload.incl10mWS && refDataDownload.incl10mGust == false && refDataDownload.inclCloud == false)
+                refName = refName + " with 10m WS and Gust";            
+            else if (refDataDownload.incl10mWS && refDataDownload.incl10mGust == false)
                 refName = refName + " with 10m WS";
             else if (refDataDownload.incl10mWS == false && refDataDownload.incl10mGust == true)
-                refName = refName + " with 10m Gust";
-            else if (refDataDownload.incl10mWS == false && refDataDownload.inclCloud == true)
-                refName = refName + " with Cloud data";
+                refName = refName + " with 10m Gust";            
 
             return refName;            
         }               
@@ -412,7 +408,7 @@ namespace ContinuumNS
             bool Need_it = false;
             int String_Len = thisString.Length;
 
-            if (refDataDownload.refType == "MERRA2")
+            if (refDataDownload.refType.Contains("MERRA2"))
             {
                 if (String_Len >= 11)
                     if (thisString.Substring(0, 11) == "PRECTOTCORR") // Bias-corrected precipitation

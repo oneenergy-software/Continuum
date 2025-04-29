@@ -31,7 +31,7 @@ namespace ContinuumNS
         public struct RefDataDownload
         {
             /// <summary> Struct to hold info related to reference data downloads </summary>
-            public string refType; // MERRA2 or ERA5
+            public string refType; // MERRA2 or ERA5 or 'MERRA2 Cloud'
             /// <summary> File folder location of daily reference data files </summary>
             public string folderLocation;
             /// <summary> Username for download access </summary>
@@ -58,8 +58,8 @@ namespace ContinuumNS
             public bool incl10mWS;
             /// <summary> Flag specifying whether to download 10m gust WS data (ERA5 only) </summary>
             public bool incl10mGust;
-            /// <summary> Flag specifying whether to download Cloud Cover data (MERRA2 only) </summary>
-            public bool inclCloud; 
+            /// <summary> Flag specifying whether to download Cloud Cover data (MERRA2 only) Removed and added 'MERRA2 Cloud' as refType </summary>
+         //   public bool inclCloud; 
 
             /// <summary> Creates and returns name for specified reference data download </summary>
             public string GetName()
@@ -68,16 +68,12 @@ namespace ContinuumNS
                     minLon.ToString() + " to " + maxLon.ToString();
 
                 if (incl10mWS && incl10mGust)
-                    refDownName = refDownName + " with 10m WS and Gust";
-                else if (incl10mWS && inclCloud)
-                    refDownName = refDownName + " with 10m WS and Cloud data";
-                else if (incl10mWS && incl10mGust == false && inclCloud == false)
+                    refDownName = refDownName + " with 10m WS and Gust";                
+                else if (incl10mWS && incl10mGust == false)
                     refDownName = refDownName + " with 10m WS";
                 else if (incl10mWS == false && incl10mGust == true)
                     refDownName = refDownName + " with 10m Gust";
-                else if (incl10mWS == false && inclCloud == true)
-                    refDownName = refDownName + " with Cloud data";
-
+                
                 return refDownName;
             }
         }
@@ -608,7 +604,7 @@ namespace ContinuumNS
         {
             double latRes = 0;
 
-            if (thisRefData.refType == "MERRA2")
+            if (thisRefData.refType.Contains("MERRA2"))
                 latRes = 0.5;
             else if (thisRefData.refType == "ERA5")
                 latRes = 0.25;
@@ -621,7 +617,7 @@ namespace ContinuumNS
         {
             double lonRes = 0;
 
-            if (thisRefData.refType == "MERRA2")
+            if (thisRefData.refType.Contains("MERRA2"))
                 lonRes = 0.625;
             else if (thisRefData.refType == "ERA5")
                 lonRes = 0.25;
@@ -677,7 +673,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Returns URL of MERRA2 data file to download. </summary> 
-        public string GetMERRA2URL(DateTime thisDay, RefDataDownload merraDownload, string windOrCloud)
+        public string GetMERRA2URL(DateTime thisDay, RefDataDownload merraDownload)
         {
             int dateNum = 0;
 
@@ -710,7 +706,7 @@ namespace ContinuumNS
             int maxLongInd = GetLongitudeIndex(merraDownload, merraDownload.maxLon);
             string URL = "";
 
-            if (windOrCloud == "Wind")
+            if (merraDownload.refType == "MERRA2")
             {
                 URL = "https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXSLV.5.12.4/";
                 URL += thisYear + "/" + thisMonth + "/";
@@ -729,7 +725,7 @@ namespace ContinuumNS
 
                 URL += "lat[" + minLatInd + ":" + maxLatInd + "]," + "time[0:23]," + "lon[" + minLongInd + ":" + maxLongInd + "]";
             }
-            else
+            else if (merraDownload.refType == "MERRA2 Cloud")
             {
                 URL = "https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXCSP.5.12.4/";
                 URL += thisYear + "/" + thisMonth + "/";
@@ -888,7 +884,7 @@ namespace ContinuumNS
             string[] userPsd = new string[2];
 
             for (int r = 0; r < numRefDataDownloads; r++)
-                if (refType == refDataDownloads[r].refType && refDataDownloads[r].userName != "")
+                if ((refType == refDataDownloads[r].refType || refType.Contains("MERRA2") && refDataDownloads[r].refType.Contains("MERRA2")) && refDataDownloads[r].userName != "")
                 {
                     userPsd[0] = refDataDownloads[r].userName;
                     userPsd[1] = refDataDownloads[r].userPassword;
@@ -1038,7 +1034,7 @@ namespace ContinuumNS
                 if (thisDataDownload.refType == refDataDownloads[r].refType && thisDataDownload.minLat == refDataDownloads[r].minLat &&
                     thisDataDownload.maxLat == refDataDownloads[r].maxLat && thisDataDownload.minLon == refDataDownloads[r].minLon
                     && thisDataDownload.maxLon == refDataDownloads[r].maxLon && thisDataDownload.incl10mWS == refDataDownloads[r].incl10mWS &&
-                    thisDataDownload.incl10mGust == refDataDownloads[r].incl10mGust && thisDataDownload.inclCloud == refDataDownloads[r].inclCloud)
+                    thisDataDownload.incl10mGust == refDataDownloads[r].incl10mGust)
                 {
                     gotIt = true;
                     break;
@@ -1071,8 +1067,7 @@ namespace ContinuumNS
 
             if (refData1.refType != refData2.refType || refData1.startDate != refData2.startDate || refData1.endDate != refData2.endDate
                 || refData1.minLat != refData2.minLat || refData1.maxLat != refData2.maxLat || refData1.minLon != refData2.minLon || refData1.maxLon != refData2.maxLon
-                || refData1.folderLocation != refData2.folderLocation || refData1.incl10mWS != refData2.incl10mWS || refData1.incl10mGust != refData2.incl10mGust
-                || refData1.inclCloud != refData2.inclCloud) 
+                || refData1.folderLocation != refData2.folderLocation || refData1.incl10mWS != refData2.incl10mWS || refData1.incl10mGust != refData2.incl10mGust) 
                 areSame = false;
 
             return areSame;
@@ -1097,6 +1092,7 @@ namespace ContinuumNS
                     {
                         if (ReferenceFileExists(thisDate, thisRefData))
                             daysWithData++;
+                        
 
                         numTotalDays++;
                     }
@@ -1228,7 +1224,16 @@ namespace ContinuumNS
 
                 }
                 else if (MERRAfiles.Length > 0)
-                    fileRefType = "MERRA2";
+                {
+                    // See if it's WS/WD/P/T data or Cloud data
+                    int slashInd = MERRAfiles[0].LastIndexOf("\\");
+                    string firstFileName = MERRAfiles[0].Substring(slashInd, MERRAfiles[0].Length -  slashInd);
+
+                    if (firstFileName.Contains("2d_csp"))
+                        fileRefType = "MERRA2 Cloud";
+                    else
+                        fileRefType = "MERRA2";
+                }
                 else if (ERA5Files.Length > 0)
                     fileRefType = "ERA5";
                 else if (MERRAfiles.Length == 0 && ERA5Files.Length == 0)
@@ -1240,19 +1245,17 @@ namespace ContinuumNS
                 double[] longs = new double[0];
 
 
-                if (refDataDownload.refType == "MERRA2")
+                if (refDataDownload.refType.Contains("MERRA2"))
                 {
                     refDataDownload.monthlyOrDaily = "Daily"; // MERRA2 data only available on a daily 
                     string line;
 
                     // Open one of the MERRA .ascii files and find the lat/lon closest TWO lats/lons to that of the input
                     StreamReader file;
-                    StreamReader lastFile;
-
+                    
                     try
                     {
-                        file = new StreamReader(MERRAfiles[0]);
-                        lastFile = new StreamReader(MERRAfiles[MERRAfiles.Length - 1]);
+                        file = new StreamReader(MERRAfiles[0]);                        
                     }
                     catch
                     {
@@ -1282,24 +1285,11 @@ namespace ContinuumNS
                         }
 
                         if (substrings[0].Contains("U10M"))
-                            refDataDownload.incl10mWS = true;
-
-                        if (substrings[0].Contains("MDSCLDFRCTTL"))
-                            refDataDownload.inclCloud = true;
+                            refDataDownload.incl10mWS = true;                       
 
                     }
 
-                    file.Close();
-
-                    while ((line = lastFile.ReadLine()) != null)
-                    {                        
-                        string[] substrings = line.Split(',');                                              
-
-                        if (substrings[0].Contains("MDSCLDFRCTTL"))
-                            refDataDownload.inclCloud = true;
-                    }
-
-                    lastFile.Close();
+                    file.Close();                    
                 }
                 else
                 {
@@ -1397,7 +1387,7 @@ namespace ContinuumNS
             if (folderExists == false)
                 return dateRangeAndCount;
 
-            if (refType == "MERRA2")
+            if (refType.Contains("MERRA2"))
             {
                 string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii");
                 
@@ -1569,7 +1559,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Creates filename for exported MERRA2 or ERA5 data. </summary>
-        public string CreateReferenceDatafilename(RefDataDownload refData, DateTime thisDate = new DateTime(), string windOrCloud = "")
+        public string CreateReferenceDatafilename(RefDataDownload refData, DateTime thisDate = new DateTime(), bool inclCloud = true)
         {
             string fileName = "";            
 
@@ -1600,7 +1590,7 @@ namespace ContinuumNS
                     fileName = "ERA5_N" + minLat.ToString(minLatForm) + "_to_" + maxLat.ToString(maxLatForm) + "_W" + minLon.ToString(minLonForm)
                         + "_to_" + maxLon.ToString(maxLonForm) + ".nc";
             }
-            else if (refData.refType == "MERRA2")
+            else if (refData.refType.Contains("MERRA2"))
             {
                 int dateNum = 0;
                 if (thisDate.Year <= 1991)
@@ -1620,10 +1610,12 @@ namespace ContinuumNS
                 if (thisDate.Day < 10)
                     thisDay = "0" + thisDay;
 
-                if (windOrCloud == "Wind" || windOrCloud == "")
+                if (refData.refType == "MERRA2")
                     fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
-                else if (windOrCloud == "Cloud")
+                else if (refData.refType == "MERRA2 Cloud" && inclCloud)
                     fileName = "MERRA2_Cloud" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
+                else if (refData.refType == "MERRA2 Cloud")
+                    fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
                                 
             }
 
@@ -1631,10 +1623,10 @@ namespace ContinuumNS
         }               
 
         /// <summary> Returns true if reference daily datafile exists in folder. </summary>
-        public bool ReferenceFileExists(DateTime thisDate, RefDataDownload refDataDown, string windOrCloud = "")
+        public bool ReferenceFileExists(DateTime thisDate, RefDataDownload refDataDown)
         {
             bool fileExists = false;
-            string fileName = CreateReferenceDatafilename(refDataDown, thisDate, windOrCloud);
+            string fileName = CreateReferenceDatafilename(refDataDown, thisDate);
 
             try
             {
@@ -1643,6 +1635,18 @@ namespace ContinuumNS
                     fileExists = true;
                 else
                     fileExists = false;
+
+                if (fileExists == false && refDataDown.refType == "MERRA2 Cloud")
+                {
+                    // Folder might have old files without naming for MERRA2 Cloud. 
+                    fileName = CreateReferenceDatafilename(refDataDown, thisDate, false);
+                    thisFile = Directory.GetFiles(refDataDown.folderLocation, fileName);
+
+                    if (thisFile.Length == 1)
+                        fileExists = true;
+                    else
+                        fileExists = false;
+                }
             }
             catch
             {
@@ -1653,12 +1657,12 @@ namespace ContinuumNS
         }
 
         /// <summary> Downloads and save MERRA2 datafile for specified day.     </summary>
-        public bool SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate, RefDataDownload refDataDown, string windOrCloud)
+        public bool SaveMERRA2DataFile(HttpWebResponse response, DateTime thisDate, RefDataDownload refDataDown)
         {
             // Now access the data            
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
-            string MERRA2filename = CreateReferenceDatafilename(refDataDown, thisDate, windOrCloud);
+            string MERRA2filename = CreateReferenceDatafilename(refDataDown, thisDate);
             StreamWriter writer = new StreamWriter(refDataDown.folderLocation + "\\" + MERRA2filename);
 
             bool isDataset = false;
@@ -1717,6 +1721,21 @@ namespace ContinuumNS
             }
 
             return isSame;
+        }
+
+        /// <summary> Finds and returns MERRA2 Cloud reference data download </summary>        
+        public RefDataDownload GetCloudRefDataDownload()
+        {
+            RefDataDownload cloudDownload = new RefDataDownload();
+
+            for (int r = 0; r < numRefDataDownloads; r++)
+                if (refDataDownloads[r].refType == "MERRA2 Cloud")
+                {
+                    cloudDownload = refDataDownloads[r];
+                    break;
+                }
+
+            return cloudDownload;
         }
 
     }

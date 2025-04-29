@@ -150,7 +150,7 @@ namespace ContinuumNS
             /// <summary> File path to CSV </summary>
             public string filePath;
             /// <summary> Reference object </summary>
-            public Reference reference;
+            public ReferenceCollection.RefDataDownload cloudRefDown;
         }
 
         /// <summary> Contains LT Reference data download form </summary>
@@ -244,7 +244,10 @@ namespace ContinuumNS
                 Met thisMet = metList.metItem[i];
 
                 if (thisMet.gridStats.stats == null)
-                    thisMet.gridStats.GetGridArrayAndCalcStats(thisMet.UTMX, thisMet.UTMY, thisInst);
+                {
+                    Node_table[] nodesForDB = thisMet.gridStats.GetGridArrayAndCalcStats(thisMet.UTMX, thisMet.UTMY, thisInst, nodeList);
+                    nodeList.AddNodesDB(nodesForDB, thisInst.savedParams.savedFileName);                    
+                }
 
                 // Find flow separation nodes for met site
                 if (topo.useSepMod == true) thisMet.GetFlowSepNodes(nodeList, thisInst);
@@ -1091,6 +1094,7 @@ namespace ContinuumNS
             Wake_Model wakeModel = theArgs.thisWakeModel;
             NodeCollection nodeList = new NodeCollection();
             TurbineCollection turbList = thisInst.turbineList;
+            
             int numTurbs = turbList.TurbineCount;
             //   int numWD = thisInst.metList.numWD;
 
@@ -1158,7 +1162,10 @@ namespace ContinuumNS
                 if (thisInst.topo.useSepMod == true) turbine.GetFlowSepNodes(thisInst);
 
                 if (turbine.gridStats.stats == null)
-                    turbine.gridStats.GetGridArrayAndCalcStats(turbine.UTMX, turbine.UTMY, thisInst);
+                {
+                    Node_table[] nodesForDB = turbine.gridStats.GetGridArrayAndCalcStats(turbine.UTMX, turbine.UTMY, thisInst, nodeList);
+                    nodeList.AddNodesDB(nodesForDB, thisInst.savedParams.savedFileName);
+                }
 
                 textForProgBar = "Calculating terrain complexity at " + (i + 1).ToString() + "/" + turbList.TurbineCount + " turbine sites.";
                 int prog = (int)((double)(i + 1) / thisInst.turbineList.TurbineCount * 100);
@@ -1379,14 +1386,14 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
             TopoInfo topo = thisInst.topo;
             Map thisMap = theArgs.thisMap;
+            
             string MCP_Method = theArgs.MCP_Method;
             MetCollection metList = thisInst.metList;
             NodeCollection nodeList = new NodeCollection();
             TurbineCollection turbList = thisInst.turbineList;
             WakeCollection wakeModelList = thisInst.wakeModelList;
-
+         
             int numWD = thisInst.metList.numWD;
-
             int numX = thisMap.numX;
             int numY = thisMap.numY;
             int numMapNodes = numX * numY;
@@ -1411,16 +1418,9 @@ namespace ContinuumNS
             thisStopwatch.Start();
 
             double timeElapsed = 0;
-            double timeToFinish;
+            double timeToFinish;                        
 
-            //       NodeCollection.Path_of_Nodes_w_Rad_and_Met_Name[] pathsToMets = null;
-
-            //      Nodes[] allNodesInX = new Nodes[numY];
-            //      Nodes firstNodeLastCol = new Nodes();
-
-            Nodes[] nodesToAdd = new Nodes[1];
-            //     Nodes[] nodesFromDB = null;
-
+            Nodes[] nodesToAdd = new Nodes[1];            
             WakeCollection.WakeLossCoeffs[] wakeCoeffs = null;
 
             if (thisMap.isWaked == true)
@@ -1460,104 +1460,98 @@ namespace ContinuumNS
                     indexList[counter].UTMX = Convert.ToInt16(Math.Round((coordsList[counter].UTMX - thisMap.minUTMX) / thisMap.reso, 0));
                     indexList[counter].UTMY = Convert.ToInt16(Math.Round((coordsList[counter].UTMY - thisMap.minUTMY) / thisMap.reso, 0));
                     counter++;
-                }
+                }            
+                    
+            Parallel.For(0, numMapNodes, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (i, loopState) => 
+            { 
+                if (BackgroundWorker_Map.CancellationPending == true)
+               {                                              
+                   e.Result = thisInst;
+                   return;
+               }
 
-      //      int xind = 0;
-      //      int yind = 0;
-            counter = 0;
-            Map.MapNode[] mapNodes = new Map.MapNode[numMapNodes];
+               int xInd = Convert.ToInt16(indexList[i].UTMX);
+               int yInd = Convert.ToInt16(indexList[i].UTMY);
+           
+               double thisX = thisMap.minUTMX + xInd * thisMap.reso;
+               double thisY = thisMap.minUTMY + yInd * thisMap.reso;                       
+                
+               mapNodeCount++;
+                          
+               if (thisMap.parameterToMap[xInd, yInd] == 0)           
+               { 
+                   // Define new map node and populate with UTM X/Y coordinates
+                   Map.MapNode thisMapNode = new Map.MapNode();
+                   thisMapNode.UTMX = thisX;
+                   thisMapNode.UTMY = thisY;
 
-            Parallel.For(0, numMapNodes, new ParallelOptions { MaxDegreeOfParallelism = 100 }, (i, loopState) =>
-            {
-
-                //      for (int xind = 0; xind < numX; xind++)
-                //  {
-                double thisX = thisMap.minUTMX + Convert.ToInt16(indexList[i].UTMX) * thisMap.reso;
-                double thisY = thisMap.minUTMY + Convert.ToInt16(indexList[i].UTMY) * thisMap.reso;
-                //   int minY = thisMap.minUTMY;
-                //   int maxY = thisMap.minUTMY + thisMap.numY * thisMap.reso;
-
-                //  nodesFromDB = nodeList.GetNodes(thisX, minY, thisX, maxY, thisInst, false); // To do: this isn't used anywhere...
-
-                //      for (int yind = 0; yind <= numY - 1; yind++)
-                //      {
-                mapNodeCount++;
-
-                if (thisMap.parameterToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY)] == 0)
-                {
-                    //        double thisY = thisMap.minUTMY + Convert.ToInt16(indexList[i].UTMY) * thisMap.reso;
-                    //        Map.MapNode thisMapNode = new Map.MapNode();
-                    mapNodes[i].UTMX = thisX;
-                    mapNodes[i].UTMY = thisY;
-                    Nodes thisNode = nodeList.GetANode(thisX, thisY, thisInst);
-                    bool nodeIsComplete = nodeList.IsNodeComplete(thisNode, thisInst.radiiList, thisInst.metList.numWD, thisInst.topo.gotSR);
-
-                    if (nodeIsComplete == false)
-                    {
-                        while (nodeIsComplete == false)
-                        {
-                            thisNode = nodeList.GetANode(thisX, thisY, thisInst);
-                            nodeIsComplete = nodeList.IsNodeComplete(thisNode, thisInst.radiiList, thisInst.metList.numWD, thisInst.topo.gotSR);
-                        }
-                    }
-
-                    mapNodes[i].elev = thisNode.elev;
-                    mapNodes[i].expo = thisNode.expo;
-                    mapNodes[i].gridStats = thisNode.gridStats;
-
-                    if (BackgroundWorker_Map.CancellationPending == true)
-                    {
-                        //  nodeList.AddNodes(Nodes_to_add, thisInst.savedParams.savedFileName);                            
-                        e.Result = thisInst;
-                        return;
-                    }
-
-                    if ((mapNodes[i].expo == null) || (mapNodes[i].gridStats.stats == null))
-                    {
-                        if (mapNodes[i].expo == null)
-                            thisMap.CalcMapExposures(ref mapNodes[i], 1, thisInst);
-
-                        if (mapNodes[i].gridStats.stats == null)
-                            mapNodes[i].gridStats.GetGridArrayAndCalcStats(mapNodes[i].UTMX, mapNodes[i].UTMY, thisInst);
-
-                        nodesToAdd[0] = nodeList.GetMapAsNode(mapNodes[i]);
-                        nodeList.AddNodes(nodesToAdd, thisInst.savedParams.savedFileName);
-                    }
-
+                   // Try to get node from DB               
+                   Nodes thisNode = nodeList.GetANode(thisX, thisY, thisInst);
+                                   
+                   // Assign elevation, exposure, and grid statistics to map node
+                   thisMapNode.elev = thisNode.elev;               
+                   thisMapNode.expo = thisNode.expo;               
+                   thisMapNode.gridStats = thisNode.gridStats;
+                                 
+                   // If exposure and/or grid statistics was not calculated at this node yet, call CalcMapExposures and/or GetGridArrayAndCalcStats
+               
+                   if ((thisMapNode.expo == null) || (thisMapNode.gridStats.stats == null))               
+                   {
+                       bool needToAddMapNode = false;
+                       if (thisMapNode.expo == null)
+                       {
+                           thisMap.CalcMapExposures(ref thisMapNode, 1, thisInst);                           
+                           needToAddMapNode = true;
+                       }
+                   
+                       if (thisMapNode.gridStats.stats == null)                   
+                       {                                       
+                           // Get grid of nodes around theMapNode and calculate grid statistics. Returns all newly defined nodes and are then added to the database 
+                           Node_table[] nodesForDB = thisMapNode.gridStats.GetGridArrayAndCalcStats(thisMapNode.UTMX, thisMapNode.UTMY, thisInst, nodeList);                       
+                           nodeList.AddNodesDB(nodesForDB, thisInst.savedParams.savedFileName);    
+                       }        
+                   
+                       if (needToAddMapNode)
+                       {
+                           nodesToAdd[0] = nodeList.GetMapAsNode(thisMapNode);
+                           nodeList.AddNodes(nodesToAdd, thisInst.savedParams.savedFileName);
+                       }               
+                   }
+               
+                   
                     if (thisInst.metList.isTimeSeries == false || thisInst.metList.allMCPd == false || thisMap.useTimeSeries == false || thisMap.modelType <= 1)
                     {
-                        // if (mapNodeCount > 0 && mapNodeCount % 10 == 0)
-                        //  {
-                        timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
-                        double avgTimePerNode = (thisStopwatch.Elapsed.TotalSeconds / (mapNodeCount + 1));
-                        timeToFinish = (numMapNodes - mapNodeCount) * avgTimePerNode / 60;
-                        textForProgBar = "Node " + mapNodeCount + "/" + numMapNodes + " Avg time/node: " + Math.Round(avgTimePerNode, 1) +
-                            " secs." + " Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.";
-                        int Prog = Convert.ToInt16(100.0f * mapNodeCount / numMapNodes);
-                        BackgroundWorker_Map.ReportProgress(Prog, textForProgBar);
-                        //  }
+                   
+                   
+                        timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);                   
+                        double avgTimePerNode = (thisStopwatch.Elapsed.TotalSeconds / (mapNodeCount + 1));                   
+                        timeToFinish = (numMapNodes - mapNodeCount) * avgTimePerNode / 60;                   
+                        textForProgBar = "Node " + mapNodeCount + "/" + numMapNodes + " Avg time/node: " + Math.Round(avgTimePerNode, 1) +                      
+                        " secs." + " Est. time to finish: " + Math.Round(timeToFinish, 1) + " mins.";                   
+                        int Prog = Convert.ToInt16(100.0f * mapNodeCount / numMapNodes);                   
+                        BackgroundWorker_Map.ReportProgress(Prog, textForProgBar);                   
 
-                        if (mapNodes[i].windRose == null)
-                            mapNodes[i].windRose = metList.GetInterpolatedWindRose(metList.GetMetsUsed(), mapNodes[i].UTMX, mapNodes[i].UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
-
-                        if (thisMap.useFlowSep == true) thisMap.GetFlowSepNodes(ref mapNodes[i], thisInst);
-
-                        if (thisMap.modelType == 2 || thisMap.modelType == 3)
-                            thisMap.DoMapCalcs(ref mapNodes[i], thisInst);
-
-                        // Combine WS ests from various mets into one average
+                   
+                        if (thisMapNode.windRose == null)                      
+                            thisMapNode.windRose = metList.GetInterpolatedWindRose(metList.GetMetsUsed(), thisMapNode.UTMX, thisMapNode.UTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);
+                                           
+                        if (thisMap.useFlowSep == true) thisMap.GetFlowSepNodes(ref thisMapNode, thisInst);
+                   
+                        if (thisMap.modelType == 2 || thisMap.modelType == 3)                       
+                            thisMapNode.WS_Estimates = thisMap.DoMapCalcs(thisInst, thisMapNode, nodeList);                              
+                        
+                        // Combine WS ests from various mets into one average                        
                         if (thisMap.modelType >= 2)
-                            thisMap.GenerateAvgWS_AtOneMapNode(ref mapNodes[i], thisInst);
+                            thisMap.GenerateAvgWS_AtOneMapNode(ref thisMapNode, thisInst, i);
 
-                        if ((thisMap.modelType == 5 || thisMap.modelType == 3) && mapNodes[i].avgWS_Est != 0)
+                        if ((thisMap.modelType == 5 || thisMap.modelType == 3) && thisMapNode.avgWS_Est != 0)
                         {
-                            thisMap.CalcWS_DistAtMapNode(ref mapNodes[i], metList, numWD, thisInst.modeledHeight);
-                            thisMap.CalcGrossAEP_AtMapNode(ref mapNodes[i], metList, turbList);
+                            thisMap.CalcWS_DistAtMapNode(ref thisMapNode, metList, numWD, thisInst.modeledHeight);
+                            thisMap.CalcGrossAEP_AtMapNode(ref thisMapNode, metList, turbList);
                         }
 
                         if (thisMap.isWaked)
-                            thisMap.CalcWakeLossesMap(ref mapNodes[i], thisInst, thisMap.wakeModel, wakeCoeffs);
-
+                            thisMap.CalcWakeLossesMap(ref thisMapNode, thisInst, thisMap.wakeModel, wakeCoeffs);                                      
                     }
                     else // Time Series model
                     {
@@ -1570,7 +1564,7 @@ namespace ContinuumNS
                         BackgroundWorker_Map.ReportProgress(Prog, textForProgBar);
 
                         TurbineCollection.PowerCurve thisPowerCurve = thisInst.turbineList.GetPowerCurve(thisMap.powerCurve);
-                        Nodes targetNode = nodeList.GetMapAsNode(mapNodes[i]);
+                        Nodes targetNode = nodeList.GetMapAsNode(thisMapNode);
                         ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
                             thisPowerCurve, thisMap.wakeModel, wakeCoeffs, MCP_Method);
 
@@ -1579,14 +1573,14 @@ namespace ContinuumNS
                             wakedOrFreestream = "Waked";
 
                         Met.WSWD_Dist thisDist = thisInst.modelList.CalcWSWD_Dist(thisTS, thisInst, wakedOrFreestream);
-                        mapNodes[i].avgWS_Est = thisDist.WS;
-                        mapNodes[i].sectorWS = thisDist.sectorWS_Ratio;
-                        mapNodes[i].sectDist = thisDist.sectorWS_Dist;
-                        mapNodes[i].windRose = thisDist.windRose;
-                        mapNodes[i].WS_Dist = thisDist.WS_Dist;
+                        thisMapNode.avgWS_Est = thisDist.WS;
+                        thisMapNode.sectorWS = thisDist.sectorWS_Ratio;
+                        thisMapNode.sectDist = thisDist.sectorWS_Dist;
+                        thisMapNode.windRose = thisDist.windRose;
+                        thisMapNode.WS_Dist = thisDist.WS_Dist;
 
                         for (int s = 0; s < thisDist.sectorWS_Ratio.Length; s++)
-                            mapNodes[i].sectorWS[s] = mapNodes[i].sectorWS[s] * mapNodes[i].avgWS_Est;
+                            thisMapNode.sectorWS[s] = thisMapNode.sectorWS[s] * thisMapNode.avgWS_Est;
 
                         if (thisMap.modelType == 3 || thisMap.modelType == 5)
                         {
@@ -1594,70 +1588,68 @@ namespace ContinuumNS
                             {
                                 Turbine.Gross_Energy_Est thisGross = new Turbine.Gross_Energy_Est();
                                 thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, thisTS, thisInst);
-                                mapNodes[i].grossAEP = thisGross.AEP;
-                                mapNodes[i].sectorGross = thisGross.sectorEnergy;
+                                thisMapNode.grossAEP = thisGross.AEP;
+                                thisMapNode.sectorGross = thisGross.sectorEnergy;
                             }
                             else
                             {
                                 Turbine.Net_Energy_Est thisNet = new Turbine.Net_Energy_Est();
                                 thisNet.wakeModel = thisMap.wakeModel;
                                 thisInst.modelList.CalcNetAEP_AndMonthlyEnergy(ref thisNet, thisTS, thisInst);
-                                mapNodes[i].netEnergyEsts.est = thisNet.AEP;
-                                mapNodes[i].netEnergyEsts.sectorEnergy = thisNet.sectorEnergy;
-                                mapNodes[i].netEnergyEsts.wakeLoss = thisNet.wakeLoss;
-                                mapNodes[i].netEnergyEsts.sectorWakeLoss = thisNet.sectorWakeLoss;
+                                thisMapNode.netEnergyEsts.est = thisNet.AEP;
+                                thisMapNode.netEnergyEsts.sectorEnergy = thisNet.sectorEnergy;
+                                thisMapNode.netEnergyEsts.wakeLoss = thisNet.wakeLoss;
+                                thisMapNode.netEnergyEsts.sectorWakeLoss = thisNet.sectorWakeLoss;
 
                                 // Get gross estimates to calculate wake loss
                                 ModelCollection.TimeSeries[] grossTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode,
                                     thisPowerCurve, null, null, MCP_Method);
                                 Turbine.Gross_Energy_Est thisGross = new Turbine.Gross_Energy_Est();
                                 thisInst.modelList.CalcGrossAEP_AndMonthlyEnergy(ref thisGross, grossTS, thisInst);
-                                mapNodes[i].grossAEP = thisGross.AEP;
-                                mapNodes[i].sectorGross = thisGross.sectorEnergy;
-                                mapNodes[i].sectDist = thisDist.sectorWS_Dist;
+                                thisMapNode.grossAEP = thisGross.AEP;
+                                thisMapNode.sectorGross = thisGross.sectorEnergy;
+                                thisMapNode.sectDist = thisDist.sectorWS_Dist;
                                 double otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
-                                mapNodes[i].netEnergyEsts.wakeLoss = thisInst.wakeModelList.CalcThisWakeLoss(thisNet.AEP, thisGross.AEP, otherLoss);
-                                mapNodes[i].netEnergyEsts.sectorWakeLoss = thisInst.wakeModelList.CalcThisSectWakeLoss(thisNet.sectorEnergy, thisGross.sectorEnergy, otherLoss);
+                                thisMapNode.netEnergyEsts.wakeLoss = thisInst.wakeModelList.CalcThisWakeLoss(thisNet.AEP, thisGross.AEP, otherLoss);
+                                thisMapNode.netEnergyEsts.sectorWakeLoss = thisInst.wakeModelList.CalcThisSectWakeLoss(thisNet.sectorEnergy, thisGross.sectorEnergy, otherLoss);
                             }
                         }
                     }
 
                     if (thisMap.isWaked)
-                        wakeModelList.PopulateWakeGrid(mapNodes[i], wakeGridInd);
+                        wakeModelList.PopulateWakeGrid(thisMapNode, wakeGridInd);
 
                     // Finally, populate parameterToMap 
 
                     if (thisMap.modelType == 0)  // UW exposure
                     {
-                        thisMap.parameterToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY)] = mapNodes[i].expo[thisMap.expoMapRadius].GetOverallValue(mapNodes[i].windRose, "Expo", "UW");
+                        thisMap.parameterToMap[xInd, yInd] = thisMapNode.expo[thisMap.expoMapRadius].GetOverallValue(thisMapNode.windRose, "Expo", "UW");
                         for (int WD = 0; WD < numWD; WD++)
-                            thisMap.sectorParamToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY), WD] = mapNodes[i].expo[thisMap.expoMapRadius].expo[WD];
+                            thisMap.sectorParamToMap[xInd, yInd, WD] = thisMapNode.expo[thisMap.expoMapRadius].expo[WD];
                     }
                     else if (thisMap.modelType == 1)  // DW Exposure
                     {
-                        thisMap.parameterToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY)] = mapNodes[i].expo[thisMap.expoMapRadius].GetOverallValue(mapNodes[i].windRose, "Expo", "DW");
+                        thisMap.parameterToMap[xInd, yInd] = thisMapNode.expo[thisMap.expoMapRadius].GetOverallValue(thisMapNode.windRose, "Expo", "DW");
                         for (int WD = 0; WD < numWD; WD++)
-                            thisMap.sectorParamToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY), WD] = mapNodes[i].expo[thisMap.expoMapRadius].GetDW_Param(WD, "Expo");
+                            thisMap.sectorParamToMap[xInd, yInd, WD] = thisMapNode.expo[thisMap.expoMapRadius].GetDW_Param(WD, "Expo");
                     }
                     else if (thisMap.modelType == 2 || thisMap.modelType == 4)
                     {
-                        thisMap.parameterToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY)] = mapNodes[i].avgWS_Est;
+                        thisMap.parameterToMap[xInd, yInd] = thisMapNode.avgWS_Est;
                         for (int WD = 0; WD < numWD; WD++)
-                            thisMap.sectorParamToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY), WD] = mapNodes[i].sectorWS[WD];
+                            thisMap.sectorParamToMap[xInd, yInd, WD] = thisMapNode.sectorWS[WD];
                     }
                     else if (thisMap.isWaked == false && (thisMap.modelType == 3 || thisMap.modelType == 5))  // AEP Best UWSW
-                        thisMap.parameterToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY)] = mapNodes[i].grossAEP;
+                        thisMap.parameterToMap[xInd, yInd] = thisMapNode.grossAEP;
                     else if (thisMap.isWaked)
                     {
-                        thisMap.parameterToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY)] = mapNodes[i].avgWS_Est;
+                        thisMap.parameterToMap[xInd, yInd] = thisMapNode.avgWS_Est;
                         for (int WD = 0; WD < numWD; WD++)
-                            thisMap.sectorParamToMap[Convert.ToInt16(indexList[i].UTMX), Convert.ToInt16(indexList[i].UTMY), WD] = mapNodes[i].sectorWS[WD];
+                            thisMap.sectorParamToMap[xInd, yInd, WD] = thisMapNode.sectorWS[WD];
                     }
                 }
-            });
-             //   }
-          //  }
-
+            });                         
+                    
             thisMap.isComplete = true;
             if (thisMap.isWaked)
                 wakeModelList.wakeGridMaps[wakeGridInd].isComplete = true;
@@ -4469,10 +4461,7 @@ namespace ContinuumNS
 
             int numYearlyHits = siteSuit.iceThrowsPerIceDay * siteSuit.numIceDaysPerYear;
             int totalIceHits = numYearlyHits * thisInst.turbineList.TurbineCount; // Only used to calculate progress for progress bar
-            int totalCount = 0;
-
-            //     string fileName = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\Site Suitability\\Ice Throw\\Ice Throw Hits Findlay Turbines.txt";
-            //     StreamWriter file = new StreamWriter(fileName);
+            int totalCount = 0;                        
 
             for (int y = 0; y < siteSuit.numYearsToModel; y++)
             {
@@ -4670,7 +4659,7 @@ namespace ContinuumNS
                                         SiteSuitability.Zone thisZone = siteSuit.zones[z];
                                         UTM_conversion.UTM_coords zoneUTM = thisInst.UTM_conversions.LLtoUTM(thisZone.latitude, thisZone.longitude);
 
-                                        double thisDist = thisInst.topo.CalcDistanceBetweenPoints(thisTurb.UTMX, thisTurb.UTMY, zoneUTM.UTMNorthing, zoneUTM.UTMEasting);
+                                        double thisDist = thisInst.topo.CalcDistanceBetweenPoints(thisTurb.UTMX, thisTurb.UTMY, zoneUTM.UTMEasting, zoneUTM.UTMNorthing);
 
                                         if (thisDist > siteSuit.maxShadowDistance)
                                             continue;
@@ -4921,7 +4910,7 @@ namespace ContinuumNS
             Vars_for_Reference_Download theArgs = (Vars_for_Reference_Download)(e.Argument);
             Continuum thisInst = theArgs.thisInst;
             ReferenceCollection.RefDataDownload refDownload = theArgs.thisRefDownload;
-            //       Reanalysis_Download download = theArgs.thisRef;
+            
             ReferenceCollection refList = thisInst.refList;
 
             string urs = "https://urs.earthdata.nasa.gov";
@@ -4958,21 +4947,22 @@ namespace ContinuumNS
             double timeToFinish;
 
             // Attempt to connect and test credentials
-            string testResource = thisInst.refList.GetMERRA2URL(refDownload.startDate, refDownload, "Wind");
-
-            HttpWebRequest testRequest = (HttpWebRequest)WebRequest.Create(testResource);
-            testRequest.Method = "GET";
-            testRequest.Credentials = cache;
-            testRequest.CookieContainer = myContainer;
-            testRequest.PreAuthenticate = false;
-            testRequest.AllowAutoRedirect = true;
-            testRequest.Timeout = 100000;
-
-            HttpWebResponse testResponse = null;
+            string testResource = thisInst.refList.GetMERRA2URL(refDownload.startDate, refDownload);
 
             try
             {
-                testResponse = (HttpWebResponse)testRequest.GetResponse();
+                HttpWebRequest testRequest = (HttpWebRequest)WebRequest.Create(testResource);
+                testRequest.Method = "GET";
+                testRequest.Credentials = cache;
+                testRequest.CookieContainer = myContainer;
+                testRequest.PreAuthenticate = true;
+                testRequest.AllowAutoRedirect = true;
+                testRequest.Timeout = 100000;
+
+                using (var testResponse = (HttpWebResponse)testRequest.GetResponse())
+                {
+                }
+
             }
             catch (Exception ex)
             {
@@ -4993,7 +4983,7 @@ namespace ContinuumNS
                 bool fileExists = refList.ReferenceFileExists(thisDate, refDownload);
 
                 double Prog = Math.Min(100 * (double)count / numDays, 100);
-                if (count % 10 == 0)
+                if (count % 1 == 0)
                 {
                     timeElapsed = (thisStopwatch.Elapsed.TotalSeconds - timeElapsed);
                     avgTimePerFile = (thisStopwatch.Elapsed.TotalSeconds / (numDownloaded + 1));
@@ -5011,120 +5001,47 @@ namespace ContinuumNS
                 if (fileExists == false)
                 {
                     // Execute the request
-                    string resource = thisInst.refList.GetMERRA2URL(thisDate, refDownload, "Wind");
+                    string resource = thisInst.refList.GetMERRA2URL(thisDate, refDownload);
 
-                    HttpWebResponse response = null;
-
-                    while (response == null)
+                    try
                     {
                         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(resource);
                         request.Method = "GET";
                         request.Credentials = cache;
                         request.CookieContainer = myContainer;
-                        request.PreAuthenticate = false;
+                        request.PreAuthenticate = true;
                         request.AllowAutoRedirect = true;
                         request.Timeout = 30000;
 
-                        response = null;
-
-                        try
+                        using (var response = (HttpWebResponse)request.GetResponse())
                         {
-                            response = (HttpWebResponse)request.GetResponse();
-
-                        }
-                        catch (WebException ex)
-                        {
-                            //  MessageBox.Show(ex.Message);
-                        }
-                    }
-
-                    if (response != null)
-                    {
-                        try
-                        {
-                            bool allGood = thisInst.refList.SaveMERRA2DataFile(response, thisDate, refDownload, "Wind");
+                            bool allGood = thisInst.refList.SaveMERRA2DataFile(response, thisDate, refDownload);
                             if (allGood == false)
                             {
                                 MessageBox.Show("Downloaded file does not contain the expected dataset.  Check your Earthdata credentials at https://urs.earthdata.nasa.gov/.  Aborting download");
                                 return;
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                            return;
+                            numDownloaded++;
+
                         }
                     }
-                    else if (response == null)
+                    catch (Exception ex)
                     {
-                        e.Result = thisInst;
-                        return;
+
                     }
                 }
-
-                if (refDownload.inclCloud)
-                {
-                    fileExists = refList.ReferenceFileExists(thisDate, refDownload, "Cloud");                                              
-
-                    if (fileExists == false)
-                    {
-                        // Execute the request
-                        string resource = thisInst.refList.GetMERRA2URL(thisDate, refDownload, "Cloud");
-                        HttpWebResponse response = null;
-
-                        while (response == null)
-                        {
-                            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(resource);
-                            request.Method = "GET";
-                            request.Credentials = cache;
-                            request.CookieContainer = myContainer;
-                            request.PreAuthenticate = false;
-                            request.AllowAutoRedirect = true;
-                            request.Timeout = 30000;
-
-                            response = null;
-
-                            try
-                            {
-                                response = (HttpWebResponse)request.GetResponse();
-
-                            }
-                            catch (WebException ex)
-                            {
-                                //  MessageBox.Show(ex.Message);
-                            }
-                        }
-
-                        if (response != null)
-                        {
-                            try
-                            {
-                                bool allGood = thisInst.refList.SaveMERRA2DataFile(response, thisDate, refDownload, "Cloud");
-                                if (allGood == false)
-                                {
-                                    MessageBox.Show("Downloaded file does not contain the expected dataset.  Check your Earthdata credentials at https://urs.earthdata.nasa.gov/.  Aborting download");
-                                    return;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                                return;
-                            }
-                        }
-                        else if (response == null)
-                        {
-                            e.Result = thisInst;
-                            return;
-                        }
-                    }
-
-                    numDownloaded++;
-
-                }
-
+                
                 count++;
             });
+                        
+            refDownload.completion = thisInst.refList.CalcDownloadedDataCompletion(refDownload);
+
+            for (int r = 0; r < thisInst.refList.numRefDataDownloads; r++)
+                if (thisInst.refList.IsSameRefDataDownload(refDownload, thisInst.refList.refDataDownloads[r]))
+                {
+                    thisInst.refList.refDataDownloads[r] = refDownload;
+                    break;
+                }                        
 
             DoWorkDone = true;
             e.Result = thisInst;
@@ -5844,8 +5761,11 @@ namespace ContinuumNS
 
             for (int m = 0; m < numMets; m++)
             {
-                thisInst.metList.metItem[m].WSWD_Dists = new Met.WSWD_Dist[0];
-                thisInst.metList.metItem[m].CalcAllMeas_WSWD_Dists(thisInst, selMets[m].metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+                if (thisInst.metList.metItem[m].isMCPd == false)
+                {
+                    thisInst.metList.metItem[m].WSWD_Dists = new Met.WSWD_Dist[0];
+                    thisInst.metList.metItem[m].CalcAllMeas_WSWD_Dists(thisInst, selMets[m].metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
+                }
             }
 
             //  metTable.Rows.AddRange(rows.ToArray());                       
@@ -5931,20 +5851,24 @@ namespace ContinuumNS
             Vars_for_CloudData_Extract theArgs = (Vars_for_CloudData_Extract)(e.Argument);
             CloudCover cloudCover = theArgs.cloudCover;
             string filePath = theArgs.filePath;
-            Reference thisRef = theArgs.reference;
-            cloudCover.GetPullXYIndices(thisRef.refDataDownload.folderLocation);
+            ReferenceCollection.RefDataDownload cloudRefDown = theArgs.cloudRefDown;
+            
+            cloudCover.GetPullXYIndices(cloudRefDown.folderLocation);
 
             int last_file_ind = 0;
             char[] delims = { ',', '\n' };
                         
-            string[] refDataFiles = Directory.GetFiles(thisRef.refDataDownload.folderLocation, "*.ascii");
+            string[] refDataFiles = Directory.GetFiles(cloudRefDown.folderLocation, "*.ascii");
             
             StreamReader file;
-            DateTime startTime = thisRef.startDate;
-            DateTime endTime = thisRef.endDate;
+            DateTime startTime = cloudRefDown.startDate;
+            DateTime endTime = cloudRefDown.endDate;
+
             // Convert start and end time to UTC-0
-            startTime = startTime.AddHours(-thisRef.interpData.UTC_offset);
-            endTime = endTime.AddHours(-thisRef.interpData.UTC_offset);
+            UTM_conversion utmConv = new UTM_conversion();
+            double utcOff = utmConv.GetUTC_Offset(cloudCover.coords.Lat, cloudCover.coords.Lon);
+            startTime = startTime.AddHours(-utcOff);
+            endTime = endTime.AddHours(-utcOff);
 
             // Set hour of startTime and endTime to 0. (Daily files are read in and all data is processed. After 
             // all files have been read, the data is trimmed to the actual start and end times
@@ -5958,11 +5882,13 @@ namespace ContinuumNS
             TimeSpan timeSpan = endTimeZeroHour - startTimeZeroHour;
             int numRefHours = Convert.ToInt32(timeSpan.TotalHours) + 24;
             cloudCover.merraCloud = new CloudCover.MERRA2_CloudData[numRefHours];
+            Reference refObj = new Reference();
+            refObj.refDataDownload = cloudRefDown;
 
             // Looping through every day in specified date range
             for (DateTime thisDate = startTimeZeroHour; thisDate <= endTimeZeroHour; thisDate = thisDate.AddDays(1))
             {
-                string datestring = thisRef.Make_MERRA2_Date_String(thisDate);
+                string datestring = refObj.Make_MERRA2_Date_String(thisDate);
                 counter++;
                 TimeSpan Num_Days_Processed = thisDate.Subtract(startTime);
                 
@@ -5984,11 +5910,8 @@ namespace ContinuumNS
                     int lastSlash = thisFile.LastIndexOf("\\");
                     string fileNameOnly = thisFile.Substring(lastSlash + 1, thisFile.Length - lastSlash - 1);
 
-                    if (fileNameOnly.Contains("Cloud") == false)
-                        continue;
-
-              //      if (thisFile.Contains("Cloud") == false)
-              //          continue;
+                    if (fileNameOnly.Contains("2d_csp") == false)
+                        continue;                                 
 
                     if (thisFile.Substring(thisFile.Length - 18, 8) == datestring)
                     {
@@ -6011,7 +5934,7 @@ namespace ContinuumNS
 
                         while (file_ind < file_strings.Length && file_strings[file_ind - 1] != "time")
                         {
-                            if (thisRef.Need_This_Param(file_strings[file_ind], thisRef.refDataDownload.incl10mWS))
+                            if (refObj.Need_This_Param(file_strings[file_ind], false))
                             {
                                 // Using location of brackets in file line to grab the hour of that line
                                 int open_bracket = file_strings[file_ind].IndexOf("[");
@@ -6027,7 +5950,6 @@ namespace ContinuumNS
                                                                 
                                 if (This_X_ind == cloudCover.coords.X_ind)
                                 {
-
                                     if (file_strings[file_ind].Substring(0, 12) == "MDSCLDFRCTTL")
                                         cloudCover.merraCloud[thisInd].modisCloudCover = Convert.ToSingle(file_strings[file_ind + 1 + cloudCover.coords.Y_ind]);
                                     else if (file_strings[file_ind].Substring(0, 12) == "MDSOPTHCKTTL")
@@ -6036,7 +5958,7 @@ namespace ContinuumNS
                                         cloudCover.merraCloud[thisInd].isccpCloudCover = Convert.ToSingle(file_strings[file_ind + 1 + cloudCover.coords.Y_ind]);
 
                                     // Save dates in UTC-0 time
-                                    cloudCover.merraCloud[thisInd].thisDate = thisDate.AddHours(ThisHour); // + thisRef.interpData.UTC_offset);                                    
+                                    cloudCover.merraCloud[thisInd].thisDate = thisDate.AddHours(ThisHour);                                    
                                 }                                
                             }
 

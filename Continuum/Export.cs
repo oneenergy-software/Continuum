@@ -3201,32 +3201,12 @@ namespace ContinuumNS
         public void ExportTimeSeries(Continuum thisInst)
         {
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
-            {
-               
-                Turbine thisTurb = new Turbine();
-                bool all_WTGs = true;
-
-                if (thisInst.cboTimeSeriesInterval.SelectedItem.ToString() != "All WTGs")
-                {
-                    thisTurb = thisInst.GetSelectedTurbine("Monthly");
-                    all_WTGs = false;
-                }
-                else if (thisInst.turbineList.TurbineCount > 0)
-                {
-                    // Assign first turbine in list to thisTurb
-                    thisTurb = thisInst.turbineList.turbineEsts[0];
-                }
-                else
-                    return;
-
+            {             
                 string filePath = thisInst.sfd60mWS.FileName;
                 StreamWriter file = new StreamWriter(filePath);
 
-                if (all_WTGs)
-                    file.WriteLine("Estimated Annual Parameters at all Turbine Sites");
-                else
-                    file.WriteLine("Estimated Annual Parameters at Turbine: " + thisTurb.name);
-
+                file.WriteLine(thisInst.cboTimeSeriesAnalysis.SelectedItem.ToString());
+                file.WriteLine(thisInst.savedParams.savedFileName);
                 file.WriteLine(DateTime.Now.ToShortDateString());
                 file.WriteLine();
 

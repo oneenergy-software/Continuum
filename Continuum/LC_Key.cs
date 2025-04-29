@@ -50,7 +50,7 @@ namespace ContinuumNS
             int sciExp = (int)Math.Floor(Math.Log10(thisLC.SR));
             int numDigs = 2;
 
-            if (sciExp < 0)
+            if (sciExp < 0 && thisLC.SR != 0)
                 numDigs = (int)Math.Abs(sciExp) + 1;
 
             thisMod.txtSR.Text = Math.Round(thisLC.SR, numDigs).ToString();
@@ -62,6 +62,8 @@ namespace ContinuumNS
                 thisInst.topo.SetNA_LC_Key();
             else if (cboLC_Key.SelectedIndex == 2)
                 thisInst.topo.SetEU_Corine_LC_Key();
+            else if (cboLC_Key.SelectedIndex == 3)
+                thisInst.topo.SetSANLC_Key();
 
             thisMod.ShowDialog();
             LC_Key_New = thisMod.thisLC_Key.LC_Key_New;
@@ -97,7 +99,7 @@ namespace ContinuumNS
                             newLC_Key[LC_Count].SR = Convert.ToSingle(fileRow[2]);
                             newLC_Key[LC_Count].DH = Convert.ToSingle(fileRow[3]);
 
-                            if (newLC_Key[LC_Count].SR == 0)
+                            if (newLC_Key[LC_Count].SR == 0 && newLC_Key[LC_Count].desc != "Missing")
                             {
                                 MessageBox.Show("Error reading land cover key for " + newLC_Key[LC_Count].desc + ". The surface roughness may not be 0.  Please enter a value above 0 such as 0.0001 m");
                                 sr.Close();
@@ -171,11 +173,17 @@ namespace ContinuumNS
                 topo.SetEU_Corine_LC_Key();
                 LC_Key_New = topo.LC_Key;
             }
+            else if (thisKey == "South African National Land Cover (SANLC)")
+            {
+                topo.SetSANLC_Key();
+                LC_Key_New = topo.LC_Key;
+            }
             else if (thisKey == "User-Defined")
             {
                 bool isNLCD = topo.LC_IsDefaultNLCD(LC_Key_New);
                 bool Is_NALCD = topo.LC_IsDefaultNALC(LC_Key_New);
                 bool Is_EULCD = topo.LC_IsDefaultEU_Corine(LC_Key_New);
+                bool Is_SANLC = topo.LC_IsDefaultSANLC(LC_Key_New);
 
                 if (isNLCD == true)
                 {
@@ -192,6 +200,11 @@ namespace ContinuumNS
                     cboLC_Key.SelectedIndex = 2;
                     return;
                 }
+                else if (Is_SANLC == true)
+                {
+                    cboLC_Key.SelectedIndex = 3;
+                    return;
+                }
             }
 
             int numSR = LC_Key_New.Length;
@@ -204,7 +217,7 @@ namespace ContinuumNS
                 int sciExp = (int)Math.Floor(Math.Log10(LC_Key_New[i].SR));
                 int numDigs = 2;
 
-                if (sciExp < 0)
+                if (sciExp < 0 && LC_Key_New[i].SR != 0)
                     numDigs = (int)Math.Abs(sciExp) + 1;
                                 
                 objListItem.SubItems.Add(Math.Round(LC_Key_New[i].SR, numDigs).ToString());

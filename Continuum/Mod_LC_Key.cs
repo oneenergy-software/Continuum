@@ -59,7 +59,7 @@ namespace ContinuumNS
                 return;
             }
 
-            if (newSR == 0.0)
+            if (newSR == 0.0 && newDesc != "Missing")
             {
                 MessageBox.Show("Surface roughness of zero is not allowed.  Please enter a value other than 0.", "Continuum 3");
                 return;

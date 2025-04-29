@@ -60,6 +60,7 @@
             "US NLCD",
             "North America NALCMS",
             "EU Corine 2006 LC",
+            "South African National Land Cover (SANLC)",
             "User-Defined"});
             this.cboLC_Key.Location = new System.Drawing.Point(20, 48);
             this.cboLC_Key.Name = "cboLC_Key";
@@ -125,6 +126,7 @@
             this.ColumnHeader4});
             this.lstLC_SR_DH.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstLC_SR_DH.FullRowSelect = true;
+            this.lstLC_SR_DH.HideSelection = false;
             this.lstLC_SR_DH.Location = new System.Drawing.Point(20, 88);
             this.lstLC_SR_DH.Margin = new System.Windows.Forms.Padding(2);
             this.lstLC_SR_DH.MultiSelect = false;

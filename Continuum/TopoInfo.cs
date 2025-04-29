@@ -1266,10 +1266,7 @@ namespace ContinuumNS
             double maxDistance = Convert.ToSingle(radius * 1.414);
 
             int stepInt;
-
-            // DEBUGGING
-          //  StreamWriter sw = new StreamWriter("C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\New DB Structure\\Testing Calcs w Diff TopoCalcs\\Elevs & DirInd MapNode1 with Met 474.csv");
-
+            
             if (topoNumXY.X.all.reso < 30)
                 stepInt = (int)(30 / topoNumXY.X.all.reso);
             else
@@ -1298,22 +1295,11 @@ namespace ContinuumNS
 
                             exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
                             exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
-
-                     /*       if (dirInd >= 0)
-                            {
-                                sw.Write(gridUTMX + ",");
-                                sw.Write(gridUTMY + ",");
-                                sw.Write(topo.elevsForCalcs[j, k] + ",");
-                                sw.Write(dirInd + ",");
-                                sw.WriteLine();
-                            }
-*/
+                     
                         }
                     }
                 }
-            }
-
-     //      sw.Close();
+            }                 
 
             for (int m = 0; m < numWD; m++)
                 if (exposureDist[m] != 0) exposure[m] = exposure[m] / exposureDist[m];
@@ -2401,22 +2387,7 @@ namespace ContinuumNS
                     MessageBox.Show(ex.Message.ToString());
                     return;
                 }
-
-                // DEBUGGING
-                /*         StreamWriter sw = new StreamWriter("C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\RR Calcs debugging\\Elevs_for_Calcs_Mets_475_3350_no_turbs.csv");
-                         for (int i = 0; i < elevsForCalcs.GetUpperBound(0); i++)
-                             for (int j = 0; j < elevsForCalcs.GetUpperBound(1); j++)
-                             {
-                                 double thisX = topoNumXY.X.calcs.min + i * topoNumXY.X.calcs.reso;
-                                 double thisY = topoNumXY.Y.calcs.min + j * topoNumXY.Y.calcs.reso;
-                                 sw.Write(thisX + ",");
-                                 sw.Write(thisY + ",");
-                                 sw.Write(elevsForCalcs[i, j]);
-                                 sw.WriteLine();
-                             }
-
-                         sw.Close();
-                         */
+                                
                 if (gotSR == true)
                 {   
                     SR_ForCalcs = new double[LC_NumXY.X.calcs.num, LC_NumXY.Y.calcs.num];
@@ -3152,7 +3123,7 @@ namespace ContinuumNS
                 isNLCD = false;
             }
             
-            if (numCodes == 20)
+            if (numCodes == 21)
             {
                 TopoInfo topoNLCD_Key = new TopoInfo();
                 topoNLCD_Key.SetUS_NLCD_Key();
@@ -3203,6 +3174,40 @@ namespace ContinuumNS
                 isNALC = false;
 
             return isNALC;
+
+        }
+
+        /// <summary> Returns true if Land Cover key is South Africa National Land Cover data. </summary>        
+        public bool LC_IsDefaultSANLC(LC_SR_DH[] thisLC_Key)
+        {
+            bool isSANLC = true;
+            int numCodes = 0;
+
+            if (thisLC_Key != null)
+                numCodes = thisLC_Key.Length;
+            else
+            {
+                numCodes = 0;
+                isSANLC = false;
+            }
+
+            if (numCodes == 73)
+            {
+                TopoInfo topoSANLC_Key = new TopoInfo();
+                topoSANLC_Key.SetSANLC_Key();
+
+                for (int i = 0; i < numCodes; i++)
+                    if (topoSANLC_Key.LC_Key[i].code != thisLC_Key[i].code || (topoSANLC_Key.LC_Key[i].code == thisLC_Key[i].code && (topoSANLC_Key.LC_Key[i].SR != thisLC_Key[i].SR
+                            || topoSANLC_Key.LC_Key[i].DH != thisLC_Key[i].DH)))
+                    {
+                        isSANLC = false;
+                        break;
+                    }
+            }
+            else
+                isSANLC = false;
+
+            return isSANLC;
 
         }
 
@@ -3340,6 +3345,31 @@ namespace ContinuumNS
             LC_Key[18].SR = 0.0024f;
             LC_Key[18].DH = 0.0f;
 
+        }
+
+        /// <summary> Opens and reads CSV with South Africa land cover key </summary>
+        public void SetSANLC_Key()
+        {
+            string folderPath = Directory.GetCurrentDirectory();
+            StreamReader sr = new StreamReader(folderPath + "\\SANLC key.csv");
+            LC_Key = new LC_SR_DH[73];
+            int LC_Count = 0;
+
+            while (sr.EndOfStream == false)
+            {
+                var dataStr = sr.ReadLine();
+                string[] fileRow = dataStr.Split(',');
+
+                LC_Key[LC_Count] = new TopoInfo.LC_SR_DH();
+                LC_Key[LC_Count].code = Convert.ToInt16(fileRow[0]);
+                LC_Key[LC_Count].desc = fileRow[1];
+                LC_Key[LC_Count].SR = Convert.ToSingle(fileRow[2]);
+                LC_Key[LC_Count].DH = Convert.ToSingle(fileRow[3]);
+                LC_Count++;
+            }
+
+            sr.Close();
+                
         }
 
         /// <summary> Sets the land cover key to be EU Corine 2006 Land Cover DB. </summary>

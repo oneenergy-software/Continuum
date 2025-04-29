@@ -96,11 +96,11 @@ namespace ContinuumNS
                                 
                 dataToDownload.refType = cboReanalysisType.SelectedItem.ToString(); 
                 dataToDownload.monthlyOrDaily = cboDailyOrMonthly.SelectedItem.ToString();
-                dataToDownload.incl10mWS = chkInclOpParam1.Checked;
+                
+                if (dataToDownload.refType != "MERRA2 Cloud")
+                    dataToDownload.incl10mWS = chkInclOpParam1.Checked;
 
-                if (dataToDownload.refType == "MERRA2" && chkInclOpParam2.Checked)
-                    dataToDownload.inclCloud = true;
-                else if (dataToDownload.refType == "ERA5" && chkInclOpParam2.Checked)
+                if (dataToDownload.refType == "ERA5" && chkInclOpParam2.Checked)
                     dataToDownload.incl10mGust = true;
                 
                 if (dataToDownload.folderLocation == "")
@@ -121,7 +121,7 @@ namespace ContinuumNS
                 double latRes = 0.25;
                 double longRes = 0.25;
 
-                if (dataToDownload.refType == "MERRA2")
+                if (dataToDownload.refType.Contains("MERRA2"))
                 {
                     latRes = 0.5;
                     longRes = 0.625;
@@ -202,7 +202,7 @@ namespace ContinuumNS
                     }
                     else
                     {
-                        if (dataToDownload.refType == "MERRA2")
+                        if (dataToDownload.refType.Contains("MERRA2"))
                         {
                             NASA_LogIn nasaCreds = new NASA_LogIn();
                             nasaCreds.ShowDialog();
@@ -245,7 +245,7 @@ namespace ContinuumNS
                 if (dataToDownload.completion < 1.0)
                     needToDownload = true;
                 
-                if (dataToDownload.refType == "MERRA2" && (dataToDownload.userName == null || dataToDownload.userPassword == null))
+                if (dataToDownload.refType.Contains("MERRA2") && (dataToDownload.userName == null || dataToDownload.userPassword == null))
                 {
                     // See if user credentials are saved in another MERRA2 object
                     string[] userPsd = thisInst.refList.GetUserPasswordbyRefType(dataToDownload.refType);                                                            
@@ -286,7 +286,7 @@ namespace ContinuumNS
 
             if (needToDownload)
             {
-                if (dataToDownload.refType == "MERRA2")
+                if (dataToDownload.refType.Contains("MERRA2"))
                     thisInst.refList.NASA_LogInAsync(thisInst, dataToDownload);
                 else
                 {
@@ -337,7 +337,7 @@ namespace ContinuumNS
                 // Enable all controls to let user define new reference data download
                 EnableDisableControls(true);
                 txtFolderLoc.Text = dataToDownload.folderLocation;
-                dataToDownload.completion = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
+                dataToDownload.completion = 0;
                 txtPercComplete.Text = Math.Round(dataToDownload.completion * 100.0, 1).ToString();
             }
             else if ((selRefDataDownload == "" && dataToDownload.minLat != 0) || (selRefDataDownload == "Define New" && dataToDownload.minLat != 0) 
@@ -363,14 +363,14 @@ namespace ContinuumNS
                     MessageBox.Show("Saved folder location not found");
                 }
 
+                okToUpdate = false;
                 txtMinLat.Text = dataToDownload.minLat.ToString();
                 txtMaxLat.Text = dataToDownload.maxLat.ToString();
                 txtMinLong.Text = dataToDownload.minLon.ToString();
                 txtMaxLong.Text = dataToDownload.maxLon.ToString();
 
-                cboReanalysisType.SelectedItem = dataToDownload.refType;
-                                
-                okToUpdate = false;
+                cboReanalysisType.SelectedItem = dataToDownload.refType;                               
+                
                 dateReferenceStart.Value = dataToDownload.startDate;
                 dateReferenceEnd.Value = dataToDownload.endDate;
 
@@ -385,12 +385,21 @@ namespace ContinuumNS
                 dataToDownload.completion = thisInst.refList.CalcDownloadedDataCompletion(dataToDownload);
                 txtPercComplete.Text = Math.Round(dataToDownload.completion * 100.0, 4).ToString();
 
-                chkInclOpParam1.Checked = dataToDownload.incl10mWS;
+                if (dataToDownload.refType != "MERRA2 Cloud")
+                {
+                    chkInclOpParam1.Checked = dataToDownload.incl10mWS;
+                    chkInclOpParam1.Visible = true;
+                }
+                else
+                    chkInclOpParam1.Visible = false;
 
                 if (dataToDownload.refType == "ERA5")
+                {
+                    chkInclOpParam2.Visible = true;
                     chkInclOpParam2.Checked = dataToDownload.incl10mGust;
+                }
                 else
-                    chkInclOpParam2.Checked = dataToDownload.inclCloud;
+                    chkInclOpParam2.Visible = false;
 
                 btnDownloadMERRA2.BackColor = Color.MediumSeaGreen;
 
@@ -398,6 +407,21 @@ namespace ContinuumNS
                     cboDailyOrMonthly.SelectedIndex = 0;
                 else
                     cboDailyOrMonthly.SelectedIndex = 1;
+
+                if (cboDailyOrMonthly.SelectedItem.ToString() == "Monthly")
+                {
+                    dateReferenceStart.CustomFormat = "MM/yyyy";
+                    dateReferenceEnd.CustomFormat = "MM/yyyy";
+                    okToUpdate = false; // By setting okToUpdate to false, this modification will not affect the actual start/end time of the refDataDownload
+                    dateReferenceStart.Value = new DateTime(dateReferenceStart.Value.Year, dateReferenceStart.Value.Month, 1);
+                    dateReferenceEnd.Value = new DateTime(dateReferenceEnd.Value.Year, dateReferenceEnd.Value.Month, 1);
+                    okToUpdate = true;
+                }
+                else
+                {
+                    dateReferenceStart.CustomFormat = "MM/dd/yyyy HH:mm";
+                    dateReferenceEnd.CustomFormat = "MM/dd/yyyy HH:mm";
+                }
 
                 if (dataToDownload.minLat != 0)
                     cboDailyOrMonthly.Enabled = false;
@@ -422,10 +446,14 @@ namespace ContinuumNS
                 }
 
                 dataToDownload = thisInst.refList.ReadFileAndDefineRefDataDownload(thisInst.fbd_MERRAData.SelectedPath);
-                DateRangeAndCompletion dateRngCompl = thisInst.refList.GetDataFileStartEndDateAndCompletion(thisInst.fbd_MERRAData.SelectedPath, dataToDownload.refType);
 
-                dataToDownload.startDate = dateRngCompl.startEnd[0];
-                dataToDownload.endDate = dateRngCompl.startEnd[1];                
+                if (dataToDownload.refType != null)
+                {
+                    DateRangeAndCompletion dateRngCompl = thisInst.refList.GetDataFileStartEndDateAndCompletion(thisInst.fbd_MERRAData.SelectedPath, dataToDownload.refType);
+
+                    dataToDownload.startDate = dateRngCompl.startEnd[0];
+                    dataToDownload.endDate = dateRngCompl.startEnd[1];
+                }
 
                 UpdateForm();
             }
@@ -470,6 +498,8 @@ namespace ContinuumNS
 
             // Otherwise add "Define New" and select it
             cboRefDataDownloads.Items.Add("Define New");
+            dataToDownload = new RefDataDownload();
+            dataToDownload.refType = cboReanalysisType.SelectedItem.ToString();
             cboRefDataDownloads.SelectedIndex = cboRefDataDownloads.Items.Count - 1;           
             
         }
@@ -530,7 +560,7 @@ namespace ContinuumNS
         private void cboReanalysisType_SelectedIndexChanged(object sender, EventArgs e)
         {           
 
-            if (cboReanalysisType.SelectedItem.ToString() == "MERRA2")
+            if (cboReanalysisType.SelectedItem.ToString().Contains("MERRA2"))
             {
                 cboDailyOrMonthly.Text = "Daily";
                 cboDailyOrMonthly.Enabled = false;
@@ -562,17 +592,26 @@ namespace ContinuumNS
             }
         }
 
+        /// <summary> Updates checkboxes on form to show optional downloads (if any) </summary>
         public void UpdateOptionalParams()
         {
             if (cboReanalysisType.SelectedItem.ToString() == "MERRA2")
             {
                 chkInclOpParam1.Text = "10m WS";
-                chkInclOpParam2.Text = "Cloud Cover data"; 
+                chkInclOpParam1.Visible = true;
+                chkInclOpParam2.Visible = false; 
             }
-            else // ERA5
+            else if (cboReanalysisType.SelectedItem.ToString() == "ERA5")
             {
                 chkInclOpParam1.Text = "10m WS";
-                chkInclOpParam2.Text = "10m Wind Gust since previous post processing";                
+                chkInclOpParam1.Visible = true;
+                chkInclOpParam2.Text = "10m Wind Gust since previous post processing";
+                chkInclOpParam2.Visible = true;
+            }
+            else if (cboReanalysisType.SelectedItem.ToString() == "MERRA2 Cloud")
+            {
+                chkInclOpParam1.Visible = false;
+                chkInclOpParam2.Visible = false;
             }
         }
 
@@ -625,14 +664,20 @@ namespace ContinuumNS
 
         private void txtMinLat_TextChanged(object sender, EventArgs e)
         {
-            ReadLatLongs();
-            UpdateShowTimeDropdown();
+            if (okToUpdate)
+            {
+                ReadLatLongs();
+                UpdateShowTimeDropdown();
+            }
         }
 
         private void txtMinLong_TextChanged(object sender, EventArgs e)
         {
-            ReadLatLongs();
-            UpdateShowTimeDropdown();
+            if (okToUpdate)
+            {
+                ReadLatLongs();
+                UpdateShowTimeDropdown();
+            }
         }
     }
 }

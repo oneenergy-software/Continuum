@@ -103,7 +103,8 @@ namespace ContinuumNS
                 return;
             }
 
-            CheckForNewRelease();
+            if (updateAll)
+                CheckForNewRelease();
 
             updateThe = new Update(this);
             radiiList.New(); // populates with R = 4000, 6000, 8000, 10000 and invserse distance exponent = 1
@@ -124,8 +125,7 @@ namespace ContinuumNS
             txtNumIceThrowsPerDay.Text = siteSuitability.iceThrowsPerIceDay.ToString();
 
             cboTimeSeriesAnalysis.SelectedIndex = 0;
-            cboTimeSeriesInterval.SelectedIndex = 0;
-
+            
             cboTI_Type.SelectedIndex = 0;
             cboEffectiveTI_m.SelectedIndex = 0;
             
@@ -3210,6 +3210,7 @@ namespace ContinuumNS
             bool Using_NLCD = topo.LC_IsDefaultNLCD(thisKey.LC_Key_New);
             bool Using_NALC = topo.LC_IsDefaultNALC(thisKey.LC_Key_New);
             bool Using_EULC = topo.LC_IsDefaultEU_Corine(thisKey.LC_Key_New);
+            bool Using_SANLC = topo.LC_IsDefaultSANLC(thisKey.LC_Key_New);
 
             if (Using_NLCD == true)
                 thisKey.cboLC_Key.SelectedIndex = 0;
@@ -3217,8 +3218,10 @@ namespace ContinuumNS
                 thisKey.cboLC_Key.SelectedIndex = 1;
             else if (Using_EULC == true)
                 thisKey.cboLC_Key.SelectedIndex = 2;
-            else
+            else if (Using_SANLC == true)
                 thisKey.cboLC_Key.SelectedIndex = 3;
+            else
+                thisKey.cboLC_Key.SelectedIndex = 4;
 
             thisKey.Update_LC_table();
 
@@ -4431,10 +4434,8 @@ namespace ContinuumNS
             Turbine thisTurb = new Turbine();
 
             if (turbineList.TurbineCount > 0)
-            {
-                if (TAB_Name == "Monthly")               
-                    thisTurb = turbineList.GetTurbine(cboTimeSeriesInterval.SelectedItem.ToString());                    
-                else if (TAB_Name == "Exceedance")                
+            {                              
+                if (TAB_Name == "Exceedance")                
                     thisTurb = turbineList.GetTurbine(cboExceedTurbine.SelectedItem.ToString());                    
                 else if (TAB_Name == "Turbulence")                
                     thisTurb = turbineList.GetTurbine(cboTurbineTI.SelectedItem.ToString());                    
@@ -8869,16 +8870,35 @@ namespace ContinuumNS
         }
 
         private void btnExportCloudCover_Click(object sender, EventArgs e)
-        {           
+        {
+            CloudNodeToDownload cloudDownload = new CloudNodeToDownload();
+
+            // Get lat/long ranges of cloud cover data
+            ReferenceCollection.RefDataDownload cloudData = refList.GetCloudRefDataDownload();
+            string latRange = "Latitude range: " + cloudData.minLat.ToString() + " to " + cloudData.maxLat.ToString();
+            string lonRange = "Longitude range: " + cloudData.minLon.ToString() + " to " + cloudData.maxLon.ToString();
+            cloudDownload.lblLatRange.Text = latRange;
+            cloudDownload.lblLongRange.Text = lonRange;
+            cloudDownload.cloudRefDown = cloudData;
+
+            cloudDownload.ShowDialog();
+
+            if (cloudDownload.goodToGo == false)
+                return;
+
+            double lat = Convert.ToDouble(cloudDownload.txtLat.Text);
+            double lon = Convert.ToDouble(cloudDownload.txtLon.Text);
+
             if (sfd60mWS.ShowDialog() == DialogResult.OK)
-            {
-                Reference thisRef = GetSelectedReference("LT Ref");
+            {               
                 CloudCover cloudCover = new CloudCover();
-                cloudCover.SetCoordsToClosestNode(thisRef.interpData.Coords, thisRef.refDataDownload, refList);
+                cloudCover.SetCoordsToClosestNode(lat, lon, cloudData, refList);
+
+                // Ask user for lat/long
                                 
                 BackgroundWork.Vars_for_CloudData_Extract varsForExtract = new BackgroundWork.Vars_for_CloudData_Extract();
                 varsForExtract.cloudCover = cloudCover;
-                varsForExtract.reference = thisRef;
+                varsForExtract.cloudRefDown = cloudData;
                 varsForExtract.filePath = sfd60mWS.FileName;
 
                 BW_worker = new BackgroundWork();
@@ -8970,11 +8990,14 @@ namespace ContinuumNS
         }
 
         private void chkAdvToShow_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            if (okToUpdate)
+        {  
+            if (this.IsHandleCreated && okToUpdate)
             {
-                updateThe.PathNodesList();
-                updateThe.PlotAdvancedTable();
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.PathNodesList()));
+
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.PlotAdvancedTable()));
             }
         }
 
@@ -9034,13 +9057,27 @@ namespace ContinuumNS
         private void cboTimeSeriesAnalysis_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            if (cboTimeSeriesAnalysis.SelectedItem.ToString() == "Time Series")
+            if (cboTimeSeriesAnalysis.SelectedItem.ToString().Contains("Time Series"))
             {  
                 dateTimeSeriesStart.Enabled = true;
                 dateTimeSeriesEnd.Enabled = true;
                 btnTimeSeriesLeft.Enabled = true;
                 btnTimeSeriesRight.Enabled = true;
                 txtTimeSeriesInterval.Enabled = true;
+
+                if (cboTimeSeriesAnalysis.SelectedItem.ToString().Contains("Yearly") && turbineList.TurbineCount > 0 && turbineList.genTimeSeries 
+                    && turbineList.turbineCalcsDone)
+                {
+                    okToUpdate = false;
+                    Turbine.Avg_Est avgEst = turbineList.turbineEsts[0].GetAvgWS_Est(null);
+
+                    DateTime firstDate = avgEst.timeSeries[0].dateTime;
+                    DateTime lastDate = avgEst.timeSeries[avgEst.timeSeries.Length - 1].dateTime;
+
+                    dateTimeSeriesStart.Value = firstDate;
+                    dateTimeSeriesEnd.Value = lastDate;
+                    okToUpdate = true;
+                }
             }
             else
             {                
@@ -9051,7 +9088,8 @@ namespace ContinuumNS
                 txtTimeSeriesInterval.Enabled = false;
             }
 
-            updateThe.TurbineTimeSeriesPlot();
+            updateThe.Monthly_TAB();
+            
 
         }
 
@@ -9066,7 +9104,9 @@ namespace ContinuumNS
             {
                 this.BeginInvoke((MethodInvoker)(
                         () => updateThe.TurbineTimeSeriesVisibleColumns()));
-                updateThe.TurbineTimeSeriesPlot();
+
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.TurbineTimeSeriesPlot()));                
             }
         }
 
@@ -9094,6 +9134,7 @@ namespace ContinuumNS
         private void btnTimeSeriesLeft_Click(object sender, EventArgs e)
         {
             ShiftTimeSeriesPlot("Left");
+            updateThe.ScrollToSelectedTimeSeriesStart();
         }
 
         /// <summary> Shifts turbine time series plot left or right </summary>
@@ -9162,6 +9203,61 @@ namespace ContinuumNS
         private void btnTimeSeriesRight_Click(object sender, EventArgs e)
         {
             ShiftTimeSeriesPlot("Right");
+            updateThe.ScrollToSelectedTimeSeriesStart();
+        }
+
+        private void chkYears_Monthly_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (this.IsHandleCreated && okToUpdate)
+            {
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.Monthly_TAB()));                
+            }
+        }
+
+        private void chkSelectAllTurbineYears_CheckedChanged_2(object sender, EventArgs e)
+        {
+            // Select/deselect all years in checkbox
+            okToUpdate = false;
+
+            if (chkSelectAllTurbineYears.Checked)
+            {
+                for (int c = 0; c < chkYears_Monthly.Items.Count; c++)
+                    chkYears_Monthly.SetItemChecked(c, true);
+            }
+            else
+            {
+                for (int c = 0; c < chkYears_Monthly.Items.Count; c++)
+                    chkYears_Monthly.SetItemChecked(c, false);
+            }
+
+            okToUpdate = true;
+            updateThe.TurbineTimeSeriesVisibleColumns();
+            updateThe.TurbineTimeSeriesPlot();
+        }
+
+        private void chkSelectedTurbineParam_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (this.IsHandleCreated && okToUpdate)
+            {
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.TurbineTimeSeriesVisibleColumns()));
+
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.TurbineTimeSeriesPlot()));                
+            }
+        }
+
+        private void dateTimeSeriesStart_ValueChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.TurbineTimeSeriesPlot();
+        }
+
+        private void dateTimeSeriesEnd_ValueChanged(object sender, EventArgs e)
+        {
+            if (okToUpdate)
+                updateThe.TurbineTimeSeriesPlot();
         }
     }
 }

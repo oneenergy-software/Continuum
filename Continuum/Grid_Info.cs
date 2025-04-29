@@ -18,6 +18,7 @@ namespace ContinuumNS
         public int reso = 250;
         /// <summary>   Array of Terrain complexity (i.e. P10 Exposure) statistics. </summary>
         public Grid_Avg_SD[] stats;
+        
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
@@ -169,29 +170,7 @@ namespace ContinuumNS
         }
 
 
-        /// <summary>   Adds the nodes (calculated exposures) to the local SQL database. </summary>        
-        public void AddNodesDB(Node_table[] theseNodes, string savedFileName)
-        {             
-            if (theseNodes == null) 
-                return;
-
-            NodeCollection nodeList = new NodeCollection();
-            string connString = nodeList.GetDB_ConnectionString(savedFileName);
-
-            try
-            {
-                using (var ctx = new Continuum_EDMContainer(connString))
-                {
-                    ctx.Node_table.AddRange(theseNodes);
-                    ctx.SaveChanges();                    
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.InnerException.ToString());                 
-                return;
-            }
-        }
+        
 
         
         /// <summary>   Calculates P10 UW and P10 DW exposure in each WD sector for specified radius. List of nodes pulled from database (nodesFromDB) are passed to function
@@ -301,7 +280,7 @@ namespace ContinuumNS
             thisStats.P10_DW = new double[numWD];
 
             //      isTest = false;
-            //      outFilename = "C:\\Users\\OEE2021_03\\OneDrive - One Energy LLC\\Documents - Analytics\\General\\Renewable Energy Services\\R&D\\Terrain Complexity\\Grid Stats\\Ashtabula";
+            
             StreamWriter wrUW = null;
             StreamWriter wrDW = null;
 
@@ -325,11 +304,7 @@ namespace ContinuumNS
                     }
                 }
 
-                if (isTest)
-                {
-                    wrUW.WriteLine();
-                    wrDW.WriteLine();
-                }
+               
 
                 Array.Sort(thisGridUW);
                 Array.Sort(thisGridDW);                
@@ -340,6 +315,14 @@ namespace ContinuumNS
 
                 if (thisStats.P10_UW[WD] > 100)
                     WD = WD;
+                                
+                if (isTest)
+                {
+                    wrUW.WriteLine();
+                    wrDW.WriteLine();
+                }
+
+               
             }
 
             Array.Resize(ref stats, radiusInd + 1);
@@ -353,8 +336,8 @@ namespace ContinuumNS
         }
 
 
-        /// <summary>  Gets grid array surrounding UTMX and UTMY and calculate grid statistics (i.e. P10 exposure). Adds newly calculated nodes to database. </summary>       
-        public void GetGridArrayAndCalcStats(double UTMX, double UTMY, Continuum thisInst)
+        /// <summary>  Gets grid array surrounding UTMX and UTMY and calculate grid statistics (i.e. P10 exposure). Returns newly calculated nodes for database. </summary>       
+        public Node_table[] GetGridArrayAndCalcStats(double UTMX, double UTMY, Continuum thisInst, NodeCollection nodeList)
         {            
             TopoInfo.TopoGrid[] gridArray = GetGridArray(UTMX, UTMY, thisInst);
 
@@ -388,18 +371,21 @@ namespace ContinuumNS
 
             // Get saved exposure data from local database (if any exist) within Min/Max X/Y
           //  Grid_Info.Expo_and_UTM[] Expos_from_DB = Get_Range_of_Expos(minX, minY, maxX, maxY, thisInst.savedParams.savedFileName);
-            NodeCollection nodeList = new NodeCollection();
+            
             Nodes[] nodesFromDB = nodeList.GetNodes(minX, minY, maxX, maxY, thisInst, true);
 
             stats = new Grid_Avg_SD[thisInst.radiiList.ThisCount];
             // Calculate grid statistics (i.e. P10 UW and P10 DW exposure) for each radius 
+            string outfileName = "Grid UTMX " + UTMX + " UTMY " + UTMY;
             for (int r = 0; r <= thisInst.radiiList.ThisCount - 1; r++)
-                CalcGridStats(r, ref gridArray, ref allNodesForDB, nodesFromDB, thisInst, false, "");
+                CalcGridStats(r, ref gridArray, ref allNodesForDB, nodesFromDB, thisInst, true, outfileName);
 
             // Add newly calculated exposures to database
-            if (allNodesForDB != null)
-                AddNodesDB(allNodesForDB, thisInst.savedParams.savedFileName);
+            //  if (allNodesForDB != null)
+            //      AddNodesDB(allNodesForDB, thisInst.savedParams.savedFileName);
 
+            // Return newly calculated exposures for database
+            return allNodesForDB;
         }
 
     }
