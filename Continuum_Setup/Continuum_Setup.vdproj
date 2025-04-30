@@ -2956,7 +2956,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:v4.6.1           "
+                "FrameworkVersion" = "8:v4.6.1            "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=671728"
                 }
@@ -3202,7 +3202,7 @@
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_06E90F1756E8489C96A09ACA598A8F57"
             {
             "SourcePath" = "8:..\\Continuum\\iconlogoalts__1__S3C_icon.ico"
-            "TargetName" = "8:Continuum icon.ico"
+            "TargetName" = "8:Continuum_icon.ico"
             "Tag" = "8:"
             "Folder" = "8:_C1636710D96745019CA29B0633DEE339"
             "Condition" = "8:"
@@ -10673,15 +10673,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Continuum 3"
-        "ProductCode" = "8:{708C0A06-7B42-4149-AF53-6342BB554D5F}"
-        "PackageCode" = "8:{420E2AF2-B18E-4E47-A1E7-FC572BB22B3A}"
+        "ProductCode" = "8:{2C05ACC0-C0E7-4967-B3AF-AAE69E460337}"
+        "PackageCode" = "8:{4201EF29-41E7-4CA3-AEA4-8AD7664616A6}"
         "UpgradeCode" = "8:{C6A3FCE0-9B67-4431-889A-452DDBE71C27}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.3.1"
+        "ProductVersion" = "8:1.3.2"
         "Manufacturer" = "8:One Energy Enterprises LLC"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -10715,20 +10715,6 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_67C93B0C4AC643F795E5E05215C9E853"
-                            {
-                            "Name" = "8:[Manufacturer]"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:FALSE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:FALSE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                }
-                            }
                         }
                         "Values"
                         {

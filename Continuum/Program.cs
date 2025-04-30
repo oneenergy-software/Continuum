@@ -17,10 +17,20 @@ namespace ContinuumNS
         {            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            if (args.Length == 0)
-                Application.Run(new Continuum(""));
-            else
-                Application.Run(new Continuum(args[0]));
+
+            try
+            {
+                if (args.Length == 0)
+                    Application.Run(new Continuum("", true));
+                else if (args.Length == 1)
+                    Application.Run(new Continuum(args[0], true));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fatal startup error:\n" + ex.Message + "\n" + ex.StackTrace);
+            }
+            
+            
         }
     }
 }

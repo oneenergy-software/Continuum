@@ -66,32 +66,9 @@ namespace ContinuumNS
         public Continuum(string fileName, bool updateAll = true)
         {
             SplashScreen Splash = new SplashScreen();
-            Splash.ShowDialog();
-
-            // Get display settings
-            //      System.Drawing.Rectangle workingWidth = Screen.GetWorkingArea(this);
-            //      System.Drawing.Rectangle workingScreen = Screen.PrimaryScreen.WorkingArea; 
-                      
-                 
+            Splash.ShowDialog();                        
             
-            InitializeComponent();
-
-
-            //        MessageBox.Show("" workingWidth.Width.ToString() + " x " + workingWidth.Height.ToString());
-            //       MessageBox.Show(workingScreen.Width.ToString() + " x " + workingScreen.Height.ToString());
-            //       MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
-
-            //       if (workingScreen.Width < Size.Width || workingScreen.Height < Size.Height)
-            //       {
-            //           double widthScaling = workingScreen.Width / Size.Width;
-            //          double heightScaling = workingScreen.Height / Size.Height;
-            //          Size = new System.Drawing.Size(workingScreen.Width, workingScreen.Height);
-            //          tabContinuum.Width = Convert.ToInt16(tabContinuum.Width * widthScaling);
-            //          tabContinuum.Height = Convert.ToInt16(tabContinuum.Height * heightScaling);
-            //      }
-
-            //      MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
-            //      MessageBox.Show(Size.Width.ToString() + " x " + Size.Height.ToString());
+            InitializeComponent();                       
 
             // Check for required programs: Local SQl DB and NetCDF
             bool gotLocalDB = IsLocalSQL_Installed();
@@ -100,7 +77,7 @@ namespace ContinuumNS
             {
                 MessageBox.Show("SQL LocalDB is a software that allows for the creation of a local database which is required by Continuum however it is " +
                     "not installed on this PC.  Please visit continuumwind.com and go to 'Download Software' to access the SQL LocalDB installation file.");
-                return;
+                Close();
             }
 
             if (updateAll)
@@ -131,14 +108,23 @@ namespace ContinuumNS
             
             cboMCP_Type.SelectedIndex = 0;
             updateThe.MCP_Settings();
-
+            
             if (fileName != "")
-            {
-                this.BeginInvoke((MethodInvoker)delegate // This ensures handle is created
+            { 
+                this.Load += (s, e) => // This ensures handle is created
                 {
-                    Open(fileName, updateAll);
-                });
-            }                        
+                    try
+                    {                        
+                        Open(fileName, updateAll);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error opening file:\n" + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace);
+                    }
+                    
+                };
+            }                       
+                        
             
         }               
 
