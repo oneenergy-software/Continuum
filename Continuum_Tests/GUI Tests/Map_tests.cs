@@ -24,7 +24,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
 
             string fileName = saveFolder + "\\Maps_Unwaked";
 
@@ -310,7 +310,7 @@ namespace Continuum_Tests.GUI_Tests
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
 
             string fileName = saveFolder + "\\Maps_Waked";
 

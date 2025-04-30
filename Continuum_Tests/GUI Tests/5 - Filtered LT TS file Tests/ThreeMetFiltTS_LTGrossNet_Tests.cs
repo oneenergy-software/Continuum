@@ -36,7 +36,7 @@ public void ThreeMetFiltTS_LTGrossNet_2375()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 
 	string fileName = saveFolder + "\\ThreeMetFiltTS_LTGrossNet_2375";
 	
@@ -451,7 +451,7 @@ public void ThreeMetFiltTS_LTGrossNet_1089()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 
 	string fileName = saveFolder + "\\ThreeMetFiltTS_LTGrossNet_1089";
 	

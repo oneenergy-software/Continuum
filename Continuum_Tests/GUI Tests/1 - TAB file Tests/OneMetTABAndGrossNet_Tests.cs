@@ -36,7 +36,7 @@ public void OneMetTABAndGrossNet_120()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 
 	string fileName = saveFolder + "\\OneMetTABAndGrossNet_120";
 	
@@ -252,7 +252,7 @@ public void OneMetTABAndGrossNet_487()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 
 	string fileName = saveFolder + "\\OneMetTABAndGrossNet_487";
 	

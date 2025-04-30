@@ -36,7 +36,7 @@ public void OneMetRawTS_GrossNet_101()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 
 	string fileName = saveFolder + "\\OneMetRawTS_GrossNet_101";
 	
@@ -231,7 +231,7 @@ public void OneMetRawTS_GrossNet_114()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 
 	string fileName = saveFolder + "\\OneMetRawTS_GrossNet_114";
 	

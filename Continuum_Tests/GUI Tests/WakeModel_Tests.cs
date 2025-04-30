@@ -24,7 +24,7 @@ namespace Continuum_Tests.GUI_Tests
         [TestMethod]
         public void WakeModelTypeAndSettings_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             string fileName = saveFolder + "OneMetTABAndGrossNet_217";
             thisInst.Open(fileName + ".cfm");
             thisInst.isTest = true;

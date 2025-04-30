@@ -19,7 +19,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetRMS_SectorErr_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
 
             string Filename =  testingFolder + "\\MetPairCollection Panhandle.cfm";
@@ -49,7 +49,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void DoRR_Calc_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string MCP_Method = thisInst.Get_MCP_Method();
 
@@ -97,7 +97,7 @@ namespace Continuum_Tests
             // Calls SweepGetRMSWithAdjModel with the Model_Adj and calls Do_Met_Cross_Preds using the model with modified values. 
             // Compares the RMS error found from the two
 
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             NodeCollection nodeList = new NodeCollection();
                         
@@ -205,7 +205,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Sweep_a_Param_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             NodeCollection nodeList = new NodeCollection();
                         

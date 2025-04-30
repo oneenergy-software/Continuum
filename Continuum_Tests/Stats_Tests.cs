@@ -18,7 +18,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Avg_WS_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\Stats testing.cfm";
             thisInst.Open(Filename);
@@ -96,7 +96,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Get_Data_Count_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\Stats testing.cfm";
             thisInst.Open(Filename);

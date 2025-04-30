@@ -19,7 +19,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void ExportWSDist()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
 
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
@@ -41,7 +41,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcAndReturnGrossAEP_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
 
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
@@ -82,7 +82,7 @@ namespace Continuum_Tests
  /*       [TestMethod] Function no longer used
         public void GetOverallWakeLoss_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename =  testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(Filename);
@@ -96,7 +96,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcTurbineExposures_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(Filename);                      
@@ -115,7 +115,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcGrossAEPFromTABs_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
 
             string Filename = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
@@ -145,10 +145,10 @@ namespace Continuum_Tests
             string LC_Change_Before = "Test_Change_LCKey_Before_Mets_and_Turbines.cfm";
             string LC_Change_After = "Test_Change_LCKey_After_Mets_and_Turbines.cfm";
 
-            Continuum Change_Before = new Continuum("");
+            Continuum Change_Before = new Continuum("", false);
             Change_Before.Open(testingFolder + "\\Node_ReCalc\\" + LC_Change_Before);
 
-            Continuum Change_After = new Continuum("");
+            Continuum Change_After = new Continuum("", false);
             Change_After.Open(testingFolder + "\\Node_ReCalc\\" + LC_Change_After);
 
             for (int i = 0; i < 3; i++)
@@ -185,7 +185,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcProbOfWakeForEffectiveTI_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string fileName = testingFolder + "\\CalcProbOfWakeForEffectiveTI\\Turbine Marion TI testing.cfm";
             thisInst.Open(fileName);
@@ -199,7 +199,7 @@ namespace Continuum_Tests
             Assert.AreEqual(probWakes[2, 5], 0.276, 0.01, "Wrong Wake Prob Test 4");
 
             thisInst.Close();
-            thisInst = new Continuum("");
+            thisInst = new Continuum("", false);
             fileName = testingFolder + "\\CalcProbOfWakeForEffectiveTI\\Turbine Findlay TI testing.cfm";
             thisInst.Open(fileName);
             thisTurb = thisInst.turbineList.turbineEsts[4];
@@ -215,7 +215,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetInterpPowerOrThrust_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string fileName = testingFolder + "\\Bobcat Bluff TurbineCollection testing.cfm";
             thisInst.Open(fileName);
@@ -244,5 +244,231 @@ namespace Continuum_Tests
 
             thisInst.Close();
         }
+
+        [TestMethod]
+        public void CalcAvgWS_ByMonthInd_Test()
+        {
+            Continuum thisInst = new Continuum("", false);
+
+            string fileName = testingFolder + "\\Time Series tests\\TS testing.cfm";
+            thisInst.isTest = true;
+            thisInst.Open(fileName, false);
+
+            // Test 1: Jan 2005
+            double avgWS = thisInst.turbineList.CalcAvgWS_ByMonthInd(0);
+            Assert.AreEqual(avgWS, 6.692658602, 0.0001, "Wrong avg WS for month Ind 0");
+
+            // Test 2: Dec 2007
+            avgWS = thisInst.turbineList.CalcAvgWS_ByMonthInd(35);
+            Assert.AreEqual(avgWS, 7.014716398, 0.0001, "Wrong avg WS for month Ind 35");
+
+            // Test 3: Jun 2020
+            avgWS = thisInst.turbineList.CalcAvgWS_ByMonthInd(185);
+            Assert.AreEqual(avgWS, 5.804454167, 0.0001, "Wrong avg WS for month Ind 185");
+
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void CalcAvgWS_ByMonthYear_Test()
+        {
+            Continuum thisInst = new Continuum("", false);
+
+            string fileName = testingFolder + "\\Time Series tests\\TS testing.cfm";
+            thisInst.isTest = true;
+            thisInst.Open(fileName, false);
+
+            // Test 1: Jan 2005
+            double avgWS = thisInst.turbineList.CalcAvgWS_ByMonthYear(1, 2005, "Free-stream");
+            Assert.AreEqual(avgWS, 6.692658602, 0.0001, "Wrong avg WS for Jan 2005");
+
+            // Test 2: Dec 2007
+            avgWS = thisInst.turbineList.CalcAvgWS_ByMonthYear(12, 2007, "Free-stream");
+            Assert.AreEqual(avgWS, 7.014716398, 0.0001, "Wrong avg WS for Dec 2007");
+
+            // Test 3: Jun 2020
+            avgWS = thisInst.turbineList.CalcAvgWS_ByMonthYear(6, 2020, "Free-stream");
+            Assert.AreEqual(avgWS, 5.804454167, 0.0001, "Wrong avg WS for Jun 2020");
+
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void CalcWindFarmHourlyValues_Test()
+        {
+            Continuum thisInst = new Continuum("", false);
+
+            string fileName = testingFolder + "\\Time Series tests\\TS testing.cfm";
+            thisInst.isTest = true;
+            thisInst.Open(fileName, false);
+            Wake_Model thisWakeModel = thisInst.wakeModelList.wakeModels[0];
+
+            // Test 1: Jan 2, 2005 1:00
+            ModelCollection.TimeSeries thisTS = thisInst.turbineList.CalcWindFarmHourlyValues(25, thisWakeModel);
+            Assert.AreEqual(thisTS.freeStreamWS, 7.1076, 0.001, "Wrong avg WS for Index 25");
+            Assert.AreEqual(thisTS.grossEnergy, 5795.60, 1, "Wrong gross AEP for Index 25");
+            Assert.AreEqual(thisTS.netEnergy, 4628.70, 1, "Wrong net AEP for Index 25");
+
+            // Test 2: July 25, 2017 11:00
+            thisTS = thisInst.turbineList.CalcWindFarmHourlyValues(110123, thisWakeModel);
+            Assert.AreEqual(thisTS.freeStreamWS, 3.5476, 0.001, "Wrong avg WS for Index 25");
+            Assert.AreEqual(thisTS.grossEnergy, 596.2, 1, "Wrong gross AEP for Index 25");
+            Assert.AreEqual(thisTS.netEnergy, 527.2, 1, "Wrong net AEP for Index 25");
+
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void CalcGrossEnergy_ByMonthInd_Test()
+        {
+            Continuum thisInst = new Continuum("", false);
+
+            string fileName = testingFolder + "\\Time Series tests\\TS testing.cfm";
+            thisInst.isTest = true;
+            thisInst.Open(fileName, false);
+            TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0];
+
+            // Test 1: Jan 2005
+            double grossAEP = thisInst.turbineList.CalcGrossEnergy_ByMonthInd(powerCurve, 0);
+            Assert.AreEqual(grossAEP, 4396.3598, 1, "Wrong gross energy for month Ind 0");
+
+            // Test 2: Dec 2007
+            grossAEP = thisInst.turbineList.CalcGrossEnergy_ByMonthInd(powerCurve, 35);
+            Assert.AreEqual(grossAEP, 4639.4766, 1, "Wrong gross energy for month Ind 35");
+
+            // Test 3: Jun 2020
+            grossAEP = thisInst.turbineList.CalcGrossEnergy_ByMonthInd(powerCurve, 185);
+            Assert.AreEqual(grossAEP, 3105.1379, 1, "Wrong gross energy for month Ind 185");
+
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void CalcNetEnergy_ByMonthInd_Test()
+        {
+            Continuum thisInst = new Continuum("", false);
+
+            string fileName = testingFolder + "\\Time Series tests\\TS testing.cfm";
+            thisInst.isTest = true;
+            thisInst.Open(fileName, false);
+            Wake_Model thisWakeModel = thisInst.wakeModelList.wakeModels[0];
+
+            // Test 1: Jan 2005
+            double netAEP = thisInst.turbineList.CalcNetEnergy_ByMonthInd(0, thisWakeModel);
+            Assert.AreEqual(netAEP, 3731.5013, 1, "Wrong net energy for month Ind 0");
+
+            // Test 2: Dec 2007
+            netAEP = thisInst.turbineList.CalcNetEnergy_ByMonthInd(35, thisWakeModel);
+            Assert.AreEqual(netAEP, 4012.2173, 1, "Wrong net energy for month Ind 35");
+
+            // Test 3: Jun 2020
+            netAEP = thisInst.turbineList.CalcNetEnergy_ByMonthInd(185, thisWakeModel);
+            Assert.AreEqual(netAEP, 2702.3186, 1, "Wrong net energy for month Ind 185");
+
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void CalcNetEnergy_ByMonthYear_Test()
+        {
+            Continuum thisInst = new Continuum("", false);
+
+            string fileName = testingFolder + "\\Time Series tests\\TS testing.cfm";
+            thisInst.isTest = true;
+            thisInst.Open(fileName, false);
+            Wake_Model thisWakeModel = thisInst.wakeModelList.wakeModels[0];
+
+            // Test 1: Jan 2005
+            double netEnergy = thisInst.turbineList.CalcNetEnergy_ByMonthYear(1, 2005, thisWakeModel);
+            Assert.AreEqual(netEnergy, 3731.5013, 1, "Wrong avg WS for Jan 2005");
+
+            // Test 2: Dec 2007
+            netEnergy = thisInst.turbineList.CalcNetEnergy_ByMonthYear(12, 2007, thisWakeModel);
+            Assert.AreEqual(netEnergy, 4012.2173, 1, "Wrong avg WS for Dec 2007");
+
+            // Test 3: Jun 2020
+            netEnergy = thisInst.turbineList.CalcNetEnergy_ByMonthYear(6, 2020, thisWakeModel);
+            Assert.AreEqual(netEnergy, 2702.3186, 1, "Wrong avg WS for Jun 2020");
+
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void CalcGrossEnergy_ByMonthYear_Test()
+        {
+            Continuum thisInst = new Continuum("", false);
+
+            string fileName = testingFolder + "\\Time Series tests\\TS testing.cfm";
+            thisInst.isTest = true;
+            thisInst.Open(fileName, false);
+            TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0];
+
+            // Test 1: Jan 2005
+            double netEnergy = thisInst.turbineList.CalcGrossEnergy_ByMonthYear(1, 2005, powerCurve);
+            Assert.AreEqual(netEnergy, 4396.3598, 1, "Wrong gross energy for Jan 2005");
+
+            // Test 2: Dec 2007
+            netEnergy = thisInst.turbineList.CalcGrossEnergy_ByMonthYear(12, 2007, powerCurve);
+            Assert.AreEqual(netEnergy, 4639.4766, 1, "Wrong gross energy for Dec 2007");
+
+            // Test 3: Jun 2020
+            netEnergy = thisInst.turbineList.CalcGrossEnergy_ByMonthYear(6, 2020, powerCurve);
+            Assert.AreEqual(netEnergy, 3105.1379, 1, "Wrong gross energy for Jun 2020");
+
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void CalcLT_MonthlyValue_Test()
+        {
+            Continuum thisInst = new Continuum("", false);
+
+            string fileName = testingFolder + "\\Time Series tests\\TS testing.cfm";
+            thisInst.isTest = true;
+            thisInst.Open(fileName, false);
+            TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0];
+            Wake_Model thisWakeModel = thisInst.wakeModelList.wakeModels[0];
+
+            // Test 1: Jan - Avg WS
+            double avgWS = thisInst.turbineList.CalcLT_MonthlyValue("Avg WS", 1, null, powerCurve);
+            Assert.AreEqual(avgWS, 7.533650403, 0.0001, "Wrong LT WS for Jan");
+
+            // Test 2: Dec - Gross AEP
+            double grossEnergy = thisInst.turbineList.CalcLT_MonthlyValue("Gross AEP", 12, null, powerCurve);
+            Assert.AreEqual(grossEnergy, 5208.67583, 1, "Wrong LT Gross for Dec");
+
+            // Test 3: Aug - Net AEP
+            double netEnergy = thisInst.turbineList.CalcLT_MonthlyValue("Net AEP", 8, thisWakeModel, powerCurve);
+            Assert.AreEqual(netEnergy, 1680.958395, 1, "Wrong LT Net for Aug");
+
+            thisInst.Close();
+        }
+
+        [TestMethod]
+        public void CalcYearlyValue_Test()
+        {
+            Continuum thisInst = new Continuum("", false);
+
+            string fileName = testingFolder + "\\Time Series tests\\TS testing.cfm";
+            thisInst.isTest = true;
+            thisInst.Open(fileName, false);
+            TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0];
+            Wake_Model thisWakeModel = thisInst.wakeModelList.wakeModels[0];
+
+            // Test 1: 2011 - Avg WS
+            double avgWS = thisInst.turbineList.CalcYearlyValue("Avg WS", 2011, null, powerCurve);
+            Assert.AreEqual(avgWS, 6.572843265, 0.0001, "Wrong LT WS for Jan");
+
+            // Test 2: 2024 - Gross AEP
+            double grossEnergy = thisInst.turbineList.CalcYearlyValue("Gross AEP", 2024, thisWakeModel, powerCurve);
+            Assert.AreEqual(grossEnergy, 48176.2139, 1, "Wrong LT Gross for Dec");
+
+            // Test 3: 2005 - Net AEP
+            double netEnergy = thisInst.turbineList.CalcYearlyValue("Net AEP", 2005, thisWakeModel, powerCurve);
+            Assert.AreEqual(netEnergy, 38401.7291, 1, "Wrong LT Net for Aug");
+
+            thisInst.Close();
+        }
+
     }
 }

@@ -26,7 +26,7 @@ namespace Continuum_Tests.GUI_Tests
         [TestMethod]
         public void ShadowFlicker_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
 
             string fileName = saveFolder + "\\OneMetTABAndGrossNet_123";
 
@@ -60,7 +60,7 @@ namespace Continuum_Tests.GUI_Tests
         [TestMethod]
         public void IceThrow_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
 
             string fileName = saveFolder + "\\OneMetTABAndGrossNet_123";
 
@@ -101,7 +101,7 @@ namespace Continuum_Tests.GUI_Tests
         [TestMethod]
         public void SoundModel_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
 
             string fileName = saveFolder + "\\OneMetTABAndGrossNet_123";
 

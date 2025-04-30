@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ContinuumNS;
 using System.IO;
+using System.Threading;
 
 namespace Continuum_Tests
 {
@@ -513,7 +514,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void ExportAllMetCrossPreds()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\ModelCollection Great Western.cfm";
             thisInst.Open(Filename);
@@ -576,7 +577,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_RMS_Overall_and_Sectorwise_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\ModelCollection Great Western.cfm";
             thisInst.Open(Filename);
@@ -631,7 +632,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void ExportP10Values()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
 
             string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
@@ -688,7 +689,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetWS_EstWeights_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
             thisInst.Open(Filename);
@@ -701,7 +702,7 @@ namespace Continuum_Tests
             targetNode.elev = thisInst.topo.CalcElevs(targetNode.UTMX, targetNode.UTMY);
             targetNode.gridStats = new Grid_Info();
 
-            targetNode.CalcGridStatsAndExposures(thisInst);
+            targetNode.CalcGridStatsAndExposures(thisInst, nodeList);
 
             Met[] metsUsed = thisInst.metList.GetMets(thisInst.metList.GetMetsUsed(), null);
             Model[] Models = thisInst.modelList.GetModels(thisInst, thisInst.metList.GetMetsUsed(), Met.TOD.All, Met.Season.All, thisInst.modeledHeight, false);
@@ -765,7 +766,7 @@ namespace Continuum_Tests
         public void ExportParamsAndDeltaWS()
         {
             // Exports values needed for DoWS_Estimate_Test
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             
             string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
@@ -1050,7 +1051,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void DoWS_Estimate_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\DoWS_Estimate\\ModelCollection DoWS_Estimate.cfm";
             thisInst.Open(Filename);                    
@@ -1106,7 +1107,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FindSiteCalibratedModels_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\ModelCollection Great Western.cfm";
             thisInst.Open(Filename);
@@ -1123,7 +1124,7 @@ namespace Continuum_Tests
    /*     [TestMethod]
         public void GetModelWeights_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\Testing Error Estimate.cfm";
             thisInst.Open(Filename);
@@ -1142,16 +1143,16 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcGrossAEP_AndMonthlyEnergy_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string fileName = testingFolder + "\\ModelCollection testing.cfm";
-            thisInst.Open(fileName);
-
+            thisInst.Open(fileName);           
+            
             Turbine thisTurb = thisInst.turbineList.turbineEsts[0];
             NodeCollection nodeList = new NodeCollection();
             Nodes targetNode = nodeList.GetTurbNode(thisTurb);
             string MCP_Method = thisInst.Get_MCP_Method();
-            TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0]; ;
+            TurbineCollection.PowerCurve powerCurve = thisInst.turbineList.powerCurves[0]; 
             Wake_Model wakeModel = new Wake_Model();
 
             ModelCollection.TimeSeries[] thisTS = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, powerCurve, wakeModel, null, MCP_Method);
@@ -1175,7 +1176,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcNetAEP_AndMonthlyEnergy_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string fileName = testingFolder + "\\ModelCollection testing.cfm";
             thisInst.Open(fileName);
@@ -1225,7 +1226,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void DoWS_EstimateOneWDTimeSeries_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string fileName = testingFolder + "\\ModelCollection TS testing.cfm";
             thisInst.Open(fileName);
@@ -1249,7 +1250,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcWSWD_Dist_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             
             string fileName = testingFolder + "\\ModelCollection testing.cfm";
@@ -1306,7 +1307,7 @@ namespace Continuum_Tests
         public void ExportDeltaWS_Ests()
         {
             // Exports values needed for DoWS_Estimate_Test
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
 
             string Filename = testingFolder + "\\ModelCollection TS testing.cfm";
             thisInst.isTest = true;

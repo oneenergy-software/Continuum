@@ -22,7 +22,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void ConvertToMPS_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter New Bremen testing.cfm";
             thisInst.Open(Filename);
@@ -39,7 +39,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetAvgAlpha_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -99,7 +99,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcAvgWS_by_WD_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -122,7 +122,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Wind_Rose_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -145,7 +145,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Get_WS_Ratio_or_Diff_and_WD_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -192,7 +192,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Get_WS_Ratio_or_Diff_and_WS_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -239,7 +239,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Get_Conc_WS_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -275,7 +275,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcAvgExtrapolatedWS_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -332,7 +332,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcAvgWS_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -401,7 +401,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Anem_Data_Recovery_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -458,7 +458,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Vane_Data_Recovery_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -502,7 +502,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Temp_Data_Recovery_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -527,7 +527,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcPercentAnemFiltered_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -584,7 +584,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Percent_Vane_Filtered_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -626,7 +626,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetMaxWS_atHeight_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -648,7 +648,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FilterData_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -760,7 +760,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetClosestWS_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -777,7 +777,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void IsAffectedByTower_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -909,7 +909,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetVaneClosestToHH_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -938,7 +938,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetAnemsClosestToHH_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -981,7 +981,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetHeightClosestToHH_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -1005,7 +1005,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void ExtrapolateData_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -1034,7 +1034,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void EstimateAlpha_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -1084,7 +1084,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetMaxWS_AndGust_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -1108,7 +1108,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void Calc_Extrap_Recovery_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\MetDataFilter Archbold testing.cfm";
             thisInst.Open(Filename);
@@ -1154,7 +1154,7 @@ namespace Continuum_Tests
         public void GetTS_Index()
         {
 
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.isTest = true;
             string Filename = testingFolder + "\\GetTS_Index\\GetTS_Index_Test.cfm";
             thisInst.Open(Filename);

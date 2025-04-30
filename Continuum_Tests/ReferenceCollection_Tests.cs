@@ -24,7 +24,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetInterpData_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\GetInterpData test.cfm";
             thisInst.Open(Filename);
@@ -221,7 +221,7 @@ namespace Continuum_Tests
 
             cfmName = cfmName + ".cfm";
 
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             thisInst.savedParams.savedFileName = cfmName;
             thisInst.UTM_conversions.savedDatumIndex = 0;
             thisInst.UTM_conversions.UTMZoneNumber = 17;
@@ -298,7 +298,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcAvgWindRose_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
 
             string Filename = testingFolder + "\\CalcAvgWindRose\\CalcAvgWindRose file.cfm";
             thisInst.Open(Filename);

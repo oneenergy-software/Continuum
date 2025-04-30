@@ -37,7 +37,7 @@ public void DelTwoMetTS_LT_11()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\TwoMetRawTS_LTGrossNet_1589.cfm";
 
@@ -501,7 +501,7 @@ public void DelTwoMetTS_LT_7()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\TwoMetRawTS_LTGrossNet_1589.cfm";
 

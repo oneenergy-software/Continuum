@@ -37,7 +37,7 @@ public void DelThreeMetTABs_15()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\ThreeMetTABAndGrossNet_332.cfm";
 

@@ -37,7 +37,7 @@ public void DelTwoMetTABs_23()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\TwoMetTABAndGrossNet_338.cfm";
 

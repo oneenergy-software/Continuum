@@ -37,7 +37,7 @@ public void DelOneMetTS_LT_13()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\OneMetRawTS_LTGrossNet_1075.cfm";
 

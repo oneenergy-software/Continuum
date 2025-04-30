@@ -119,8 +119,8 @@ namespace Continuum_Tests
 
             string filename_before = testingFolder + "\\Test_Change_LCKey_Before_Met.cfm";
             string filename_after = testingFolder + "\\Test_Change_LCKey_After_Met.cfm";
-            Continuum thisInstBefore = new Continuum("");
-            Continuum thisInstAfter = new Continuum("");
+            Continuum thisInstBefore = new Continuum("", false);
+            Continuum thisInstAfter = new Continuum("", false);
             thisInstBefore.Open(filename_before);
             thisInstAfter.Open(filename_after);
             // Loop through met and turbine sites and compare SR/DH

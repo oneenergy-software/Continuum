@@ -37,7 +37,7 @@ public void DelThreeMetFiltTS_LT_1()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\ThreeMetFiltTS_LTGrossNet_1235.cfm";
 
@@ -313,7 +313,7 @@ public void DelThreeMetFiltTS_LT_15()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\ThreeMetFiltTS_LTGrossNet_1235.cfm";
 

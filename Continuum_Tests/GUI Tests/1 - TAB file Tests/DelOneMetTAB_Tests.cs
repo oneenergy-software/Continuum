@@ -37,7 +37,7 @@ public void DelOneMetTAB_3()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\OneMetTABAndGrossNet_120.cfm";
 

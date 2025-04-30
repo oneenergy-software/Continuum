@@ -18,7 +18,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void UpdateLimits_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\GenMap testing.cfm";
             thisInst.Open(Filename);

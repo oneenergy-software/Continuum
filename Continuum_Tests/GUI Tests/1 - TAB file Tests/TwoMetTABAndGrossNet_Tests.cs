@@ -36,7 +36,7 @@ public void TwoMetTABAndGrossNet_338()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 
 	string fileName = saveFolder + "\\TwoMetTABAndGrossNet_338";
 	
@@ -293,7 +293,7 @@ public void TwoMetTABAndGrossNet_478()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 
 	string fileName = saveFolder + "\\TwoMetTABAndGrossNet_478";
 	

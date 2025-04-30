@@ -20,7 +20,7 @@ namespace Continuum_Tests
 
         [TestMethod]        public void CreateTestFilesForFindHighNodes()
         {            
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             string Filename = testingFolder + "\\Ashley.cfm";
             thisInst.Open(Filename);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
@@ -96,7 +96,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FindNodeInSectorHighSpot_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
 
             string Filename = testingFolder + "\\Ashley.cfm";
@@ -128,7 +128,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void FindPathOfNodes_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             NodeCollection nodeList = new NodeCollection();
 

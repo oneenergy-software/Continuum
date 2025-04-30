@@ -37,7 +37,7 @@ public void DelOneMetFiltTS_1()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\OneMetFiltTS_GrossNet_201.cfm";
 
@@ -482,7 +482,7 @@ public void DelOneMetFiltTS_3()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\OneMetFiltTS_GrossNet_201.cfm";
 

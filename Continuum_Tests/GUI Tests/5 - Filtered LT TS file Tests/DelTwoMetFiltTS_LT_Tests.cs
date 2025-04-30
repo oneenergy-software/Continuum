@@ -37,7 +37,7 @@ public void DelTwoMetFiltTS_LT_13()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\TwoMetFiltTS_LTGrossNet_1097.cfm";
 

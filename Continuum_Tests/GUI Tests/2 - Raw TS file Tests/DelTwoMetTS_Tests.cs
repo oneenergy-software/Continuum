@@ -37,7 +37,7 @@ public void DelTwoMetTS_5()
 	Stopwatch stopWatch = new Stopwatch();
 	stopWatch.Start();
 
-	Continuum thisInst = new Continuum("");
+	Continuum thisInst = new Continuum("", false);
 	thisInst.isTest = true;
 string fileName = saveFolder + "\\TwoMetRawTS_GrossNet_165.cfm";
 

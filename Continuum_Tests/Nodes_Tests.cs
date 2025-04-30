@@ -19,7 +19,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcGridStatsAndExposures_Test()
         {
-            Continuum thisInst = new Continuum("");
+            Continuum thisInst = new Continuum("", false);
             
             string Filename = testingFolder + "\\Findlay.cfm";
             thisInst.Open(Filename);
@@ -32,7 +32,8 @@ namespace Continuum_Tests
 
             Check_class check = new Check_class();
             int isOk = check.NewNodeCheck(thisInst.topo, newNode.UTMX, newNode.UTMY, 10000, "Calcs");
-            newNode.CalcGridStatsAndExposures(thisInst);
+            NodeCollection nodeList = new NodeCollection();
+            newNode.CalcGridStatsAndExposures(thisInst, nodeList);
             
             Assert.AreNotSame(newNode.expo, null, "Didn't calculate exposures");
             Assert.AreNotSame(newNode.gridStats, null, "Didn't calculate grid stats");
