@@ -222,7 +222,8 @@ namespace ContinuumNS
                 }
             }
 
-            thisMapNode.avgWS_Est = 0;
+            thisMapNode.avgWS_Est = 0; 
+            thisMapNode.sectorWS = new double[numWD];
 
             if (avgWeight != 0) { 
                 thisMapNode.avgWS_Est = Math.Round(avgWS, 5) / Math.Round(avgWeight, 3);

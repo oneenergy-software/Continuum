@@ -137,7 +137,11 @@ namespace ContinuumNS
             }
              
             if (gridStats.stats == null)
-                gridStats.GetGridArrayAndCalcStats(UTMX, UTMY, thisInst, nodeList);
+            {
+                Node_table[] nodesForDb = gridStats.GetGridArrayAndCalcStats(UTMX, UTMY, thisInst, nodeList);
+                nodeList.AddNodesDB(nodesForDb, thisInst.savedParams.savedFileName);
+            }
+                
                         
             // Calc P10 UW Crosswind and Parallel Grade            
             for (int expInd = 0; expInd < thisInst.radiiList.ThisCount; expInd++) {

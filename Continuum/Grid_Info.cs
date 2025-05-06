@@ -302,9 +302,7 @@ namespace ContinuumNS
                         wrUW.Write(gridUW[j, WD] + ",");
                         wrDW.Write(gridDW[j, WD] + ",");
                     }
-                }
-
-               
+                }                              
 
                 Array.Sort(thisGridUW);
                 Array.Sort(thisGridDW);                
@@ -378,7 +376,7 @@ namespace ContinuumNS
             // Calculate grid statistics (i.e. P10 UW and P10 DW exposure) for each radius 
             string outfileName = "Grid UTMX " + UTMX + " UTMY " + UTMY;
             for (int r = 0; r <= thisInst.radiiList.ThisCount - 1; r++)
-                CalcGridStats(r, ref gridArray, ref allNodesForDB, nodesFromDB, thisInst, true, outfileName);
+                CalcGridStats(r, ref gridArray, ref allNodesForDB, nodesFromDB, thisInst, false, outfileName);
 
             // Add newly calculated exposures to database
             //  if (allNodesForDB != null)

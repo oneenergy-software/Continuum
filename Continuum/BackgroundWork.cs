@@ -1462,7 +1462,7 @@ namespace ContinuumNS
                     counter++;
                 }            
                     
-            Parallel.For(0, numMapNodes, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (i, loopState) => 
+            Parallel.For(0, numMapNodes, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, (i, loopState) => 
             { 
                 if (BackgroundWorker_Map.CancellationPending == true)
                {                                              
