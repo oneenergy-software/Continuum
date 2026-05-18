@@ -848,10 +848,21 @@ namespace ContinuumNS
                               theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
                 }
 
-                // Elevation
+                // Elevation (-ve and +ve coefficient)
+                
                 if (thisInst.topo.useElev)
-                    Sweep_a_Param(thisInst, 0.25f, 2.0f, 0.25f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+                {
+                    // First sweep to see if it's a -ve or +ve coeff
+                    Sweep_a_Param(thisInst, -2.0f, 2.0f, 0.5f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
+                    // Now sweep for the value
+                    double lowLim = 0.25f * thisAdjModel.elev_Adj[WD_Ind];
+                    double upperLim = 2.0f * thisAdjModel.elev_Adj[WD_Ind];
+                    if (thisInst.topo.useElev)
+                        Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 7, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
+
+                }
                 // Valley
                 if (thisInst.topo.useValley)
                     Sweep_a_Param(thisInst, 0.25f, 2.0f, 0.25f, WD_Ind, "Valley", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);

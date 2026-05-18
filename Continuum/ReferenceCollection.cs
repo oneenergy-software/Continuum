@@ -599,6 +599,15 @@ namespace ContinuumNS
             thisInst.BW_worker.Call_BW_ERA5_Download(Vars_for_ERA5);
         }
 
+        public async Task DownloadERA5_ARCO(Continuum thisInst, ReferenceCollection.RefDataDownload era5Download)
+        {
+            BackgroundWork.Vars_for_Reference_Download Vars_for_ERA5_ARCO = new BackgroundWork.Vars_for_Reference_Download();
+            Vars_for_ERA5_ARCO.thisInst = thisInst;
+            Vars_for_ERA5_ARCO.thisRefDownload = era5Download;
+            thisInst.BW_worker = new BackgroundWork();
+            thisInst.BW_worker.Call_BW_ERA5_Download(Vars_for_ERA5_ARCO);
+        }
+
         /// <summary> Returns latitude resolution of specified RefDataDownload. </summary> 
         public double GetLatRes(RefDataDownload thisRefData)
         {
@@ -619,7 +628,7 @@ namespace ContinuumNS
 
             if (thisRefData.refType.Contains("MERRA2"))
                 lonRes = 0.625;
-            else if (thisRefData.refType == "ERA5")
+            else if (thisRefData.refType.Contains("ERA5"))
                 lonRes = 0.25;
 
             return lonRes;

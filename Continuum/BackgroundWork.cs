@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-//using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Net;
+﻿using Microsoft.Research.Science.Data;
 using Microsoft.Research.Science.Data.Imperative;
-using Microsoft.Research.Science.Data;
+using Microsoft.VisualBasic;
+using NLog.LayoutRenderers;
 using Python;
 using Python.Runtime;
-using Microsoft.VisualBasic;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+//using System.Data;
+using System.Linq;
+using System.Net;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using System.Windows.Forms.DataVisualization.Charting;
+using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace ContinuumNS
 {
@@ -3934,7 +3936,7 @@ namespace ContinuumNS
             else
                 refDataFiles = Directory.GetFiles(thisRef.refDataDownload.folderLocation, "*.nc"); // NetCDF files
 
-            StreamReader file;
+           // StreamReader file;
             DateTime startTime = thisRef.startDate;
             DateTime endTime = thisRef.endDate;
             // Convert start and end time to UTC-0
@@ -4013,91 +4015,214 @@ namespace ContinuumNS
                             continue;
 
                         if (thisFile.Substring(thisFile.Length - 18, 8) == datestring)
-                        {
-                            try
-                            {
-                                file = new StreamReader(thisFile);
-                                last_file_ind = i + 1;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                                MessageBox.Show("Error opening the MERRA data file. Check that it's not open in another program.", "", MessageBoxButtons.OK);
-                                return;
-                            }
+                        {                           
+                            string[] lines = File.ReadAllLines(thisFile);
+                            bool isNewFormat = lines.Any(x => x.Contains(".time=") && x.Contains(".lat="));
 
-                            string file_contents = file.ReadToEnd();
-                            string[] file_strings = file_contents.Split(delims);
-                            int file_ind = 1; // skip header file_string
-                            int Col_count = 1;
+                            if (isNewFormat)
+                            {                                
+                                Dictionary<int, int> lonIndexMap = new Dictionary<int, int>();
 
-                            while (file_ind < file_strings.Length && file_strings[file_ind - 1] != "time")
-                            {
-                                if (thisRef.Need_This_Param(file_strings[file_ind], thisRef.refDataDownload.incl10mWS))
+                                // Read longitude row                           
+                                for (int lineIdx = 0; lineIdx < lines.Length; lineIdx++)
                                 {
-                                    // Using location of brackets in file line to grab the hour of that line
-                                    int open_bracket = file_strings[file_ind].IndexOf("[");
-                                    int close_bracket = file_strings[file_ind].IndexOf("]");
-
-                                    int ThisHour = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));
-                                    int thisInd = lastInd + ThisHour;
-                                    //       DateTime thisTimeStamp = thisDate.AddHours(ThisHour);
-
-                                    open_bracket = file_strings[file_ind].LastIndexOf("[");
-                                    close_bracket = file_strings[file_ind].LastIndexOf("]");
-                                    int This_X_ind = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));
-
-                                    for (int j = 0; j < nodesToPull.Length; j++)
+                                    string line = lines[lineIdx];
+                                    if (line.StartsWith("lon,"))
                                     {
-                                        if (This_X_ind == nodesToPull[j].XY_ind.X_ind)
+                                        string[] parts = line.Split(',');
+
+                                        for (int p = 1; p < parts.Length; p++)
                                         {
-                                            if (file_strings[file_ind].Substring(0, 3) == "U50")
-                                                nodeEastNorthWS[j].U_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                            else if (file_strings[file_ind].Substring(0, 3) == "V50")
-                                                nodeEastNorthWS[j].V_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                            else if (file_strings[file_ind].Substring(0, 4) == "T10M")
-                                                nodesToPull[j].Data[thisInd].temperature = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                            else if (file_strings[file_ind].Substring(0, 2) == "PS")
-                                                nodesToPull[j].Data[thisInd].surfPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                            else if (file_strings[file_ind].Substring(0, 3) == "SLP")
-                                                nodesToPull[j].Data[thisInd].seaPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                            double lonVal = Convert.ToDouble(parts[p].Trim());
+                                            // Match node X indices / lon values
+                                            for (int n = 0; n < nodesToPull.Length; n++)
+                                                if (Math.Abs(nodesToPull[n].Coords.longitude - lonVal) < 0.001)
+                                                    lonIndexMap[p - 1] = n;
+                                        }
+                                        break;
+                                    }
+                                }
 
-                                            if (thisRef.refDataDownload.incl10mWS)
-                                            {
-                                                if (file_strings[file_ind].Substring(0, 3) == "U10")
-                                                    nodeEastNorthWS10[j].U_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                                else if (file_strings[file_ind].Substring(0, 3) == "V10")
-                                                    nodeEastNorthWS10[j].V_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
-                                            }
 
-                                            // Save dates in UTC-0 time
-                                            nodesToPull[j].Data[thisInd].thisDate = thisDate.AddHours(ThisHour); // + thisRef.interpData.UTC_offset);
-                                            nodeEastNorthWS[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour); // + thisRef.interpData.UTC_offset);
+                                // Read all data rows                           
+                                foreach (string line in lines)
+                                {
+                                    if (!line.Contains("[") || !line.Contains("]"))
+                                        continue;
 
-                                            if (thisRef.refDataDownload.incl10mWS)
-                                            {
-                                                nodesToPull10[j].Data[thisInd].thisDate = thisDate.AddHours(ThisHour);
-                                                nodeEastNorthWS10[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour);
-                                            }
+                                    string[] parts = line.Split(',');
+
+                                    if (parts.Length < 2)
+                                        continue;
+
+                                    string label = parts[0].Trim();
+
+                                    // Parse variable type                               
+                                    string varType = "";
+
+                                    if (label.StartsWith("U50"))
+                                        varType = "U50";
+                                    else if (label.StartsWith("V50"))
+                                        varType = "V50";
+                                    else if (label.StartsWith("U10"))
+                                        varType = "U10";
+                                    else if (label.StartsWith("V10"))
+                                        varType = "V10";
+                                    else if (label.StartsWith("T10M"))
+                                        varType = "T10M";
+                                    else if (label.StartsWith("PS"))
+                                        varType = "PS";
+                                    else if (label.StartsWith("SLP"))
+                                        varType = "SLP";
+                                    else
+                                        continue;
+
+                                    // Parse time                               
+                                    int timeStart = label.IndexOf(".time=") + 6;
+                                    int timeEnd = label.IndexOf("]", timeStart);
+
+                                    int minutes = Convert.ToInt32(label.Substring(timeStart, timeEnd - timeStart));
+                                    int hour = minutes / 60;
+
+                                    // Parse latitude                                
+                                    int latStart = label.IndexOf(".lat=") + 5;
+                                    int latEnd = label.IndexOf("]", latStart);
+                                    double latVal = Convert.ToDouble(label.Substring(latStart, latEnd - latStart));
+
+                                    // Loop through longitude values                               
+                                    for (int col = 1; col < parts.Length; col++)
+                                    {
+                                        if (!lonIndexMap.ContainsKey(col - 1))
+                                            continue;
+
+                                        int nodeIndex = lonIndexMap[col - 1];
+
+                                        // Check latitude match
+                                        if (Math.Abs(nodesToPull[nodeIndex].Coords.latitude - latVal) > 0.001)
+                                            continue;
+
+                                        float value = Convert.ToSingle(parts[col].Trim());
+                                        int thisInd = lastInd + hour;
+
+                                        switch (varType)
+                                        {
+                                            case "U50":
+                                                nodeEastNorthWS[nodeIndex].U_WS[thisInd] = value;
+                                                break;
+
+                                            case "V50":
+                                                nodeEastNorthWS[nodeIndex].V_WS[thisInd] = value;
+                                                break;
+
+                                            case "U10":
+                                                if (thisRef.refDataDownload.incl10mWS)
+                                                    nodeEastNorthWS10[nodeIndex].U_WS[thisInd] = value;
+                                                break;
+
+                                            case "V10":
+                                                if (thisRef.refDataDownload.incl10mWS)
+                                                    nodeEastNorthWS10[nodeIndex].V_WS[thisInd] = value;
+                                                break;
+
+                                            case "T10M":
+                                                nodesToPull[nodeIndex].Data[thisInd].temperature = value;
+                                                break;
+
+                                            case "PS":
+                                                nodesToPull[nodeIndex].Data[thisInd].surfPress = value;
+                                                break;
+
+                                            case "SLP":
+                                                nodesToPull[nodeIndex].Data[thisInd].seaPress = value;
+                                                break;
+                                        }
+
+                                        DateTime timestamp = thisDate.AddHours(hour);
+
+                                        nodesToPull[nodeIndex].Data[thisInd].thisDate = timestamp;
+                                        nodeEastNorthWS[nodeIndex].timeStamp[thisInd] = timestamp;
+
+                                        if (thisRef.refDataDownload.incl10mWS)
+                                        {
+                                            nodesToPull10[nodeIndex].Data[thisInd].thisDate = timestamp;
+                                            nodeEastNorthWS10[nodeIndex].timeStamp[thisInd] = timestamp;
                                         }
                                     }
                                 }
-
-                                if (Col_count == 1)
-                                {
-                                    file_ind++; // go to first data point
-                                    while (file_strings[file_ind].Contains("[") == false)
-                                    {
-                                        file_ind++;
-                                        Col_count++;
-                                    }
-                                }
-                                else
-                                    file_ind = file_ind + Col_count;
                             }
+                            else
+                            {
+                                string file_contents = string.Join(Environment.NewLine, lines);
+                                string[] file_strings = file_contents.Split(delims);
+                                int file_ind = 1; // skip header file_string
+                                int Col_count = 1;
 
+                                while (file_ind < file_strings.Length && file_strings[file_ind - 1] != "time")
+                                {
+                                    if (thisRef.Need_This_Param(file_strings[file_ind], thisRef.refDataDownload.incl10mWS))
+                                    {
+                                        // Using location of brackets in file line to grab the hour of that line
+                                        int open_bracket = file_strings[file_ind].IndexOf("[");
+                                        int close_bracket = file_strings[file_ind].IndexOf("]");
 
-                            file.Close();
+                                        int ThisHour = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));
+                                        int thisInd = lastInd + ThisHour;
+                                        //       DateTime thisTimeStamp = thisDate.AddHours(ThisHour);
+
+                                        open_bracket = file_strings[file_ind].LastIndexOf("[");
+                                        close_bracket = file_strings[file_ind].LastIndexOf("]");
+                                        int This_X_ind = Convert.ToInt16(file_strings[file_ind].Substring(open_bracket + 1, close_bracket - open_bracket - 1));
+
+                                        for (int j = 0; j < nodesToPull.Length; j++)
+                                        {
+                                            if (This_X_ind == nodesToPull[j].XY_ind.X_ind)
+                                            {
+                                                if (file_strings[file_ind].Substring(0, 3) == "U50")
+                                                    nodeEastNorthWS[j].U_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                                else if (file_strings[file_ind].Substring(0, 3) == "V50")
+                                                    nodeEastNorthWS[j].V_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                                else if (file_strings[file_ind].Substring(0, 4) == "T10M")
+                                                    nodesToPull[j].Data[thisInd].temperature = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                                else if (file_strings[file_ind].Substring(0, 2) == "PS")
+                                                    nodesToPull[j].Data[thisInd].surfPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                                else if (file_strings[file_ind].Substring(0, 3) == "SLP")
+                                                    nodesToPull[j].Data[thisInd].seaPress = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+
+                                                if (thisRef.refDataDownload.incl10mWS)
+                                                {
+                                                    if (file_strings[file_ind].Substring(0, 3) == "U10")
+                                                        nodeEastNorthWS10[j].U_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                                    else if (file_strings[file_ind].Substring(0, 3) == "V10")
+                                                        nodeEastNorthWS10[j].V_WS[thisInd] = Convert.ToSingle(file_strings[file_ind + 1 + nodesToPull[j].XY_ind.Y_ind]);
+                                                }
+
+                                                // Save dates in UTC-0 time
+                                                nodesToPull[j].Data[thisInd].thisDate = thisDate.AddHours(ThisHour); // + thisRef.interpData.UTC_offset);
+                                                nodeEastNorthWS[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour); // + thisRef.interpData.UTC_offset);
+
+                                                if (thisRef.refDataDownload.incl10mWS)
+                                                {
+                                                    nodesToPull10[j].Data[thisInd].thisDate = thisDate.AddHours(ThisHour);
+                                                    nodeEastNorthWS10[j].timeStamp[thisInd] = thisDate.AddHours(ThisHour);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (Col_count == 1)
+                                    {
+                                        file_ind++; // go to first data point
+                                        while (file_strings[file_ind].Contains("[") == false)
+                                        {
+                                            file_ind++;
+                                            Col_count++;
+                                        }
+                                    }
+                                    else
+                                        file_ind = file_ind + Col_count;
+                                }
+                            }
+                                                        
                             break; // exiting for loop cycling through files, this break only reached if the correct file has been found and read in
                         }
                     }
@@ -5130,7 +5255,7 @@ namespace ContinuumNS
             int fileCount = 0;
             int newFileCount = 0;
 
-            if (refData.monthlyOrDaily == "Daily")
+            if (refData.monthlyOrDaily == "Daily" && refData.refType.Contains("NEW") == false)
             {
                 // Trying one file at a time, may go to parallel processing
                 //   Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
@@ -5165,7 +5290,7 @@ namespace ContinuumNS
                         Debug.WriteLine(pythonScript);
                         ProcessStartInfo start = new ProcessStartInfo();
                         start.WorkingDirectory = Directory.GetCurrentDirectory();
-                        start.FileName = pythonPath;
+                        start.FileName = "python";
                         start.Arguments = pythonScript;
                         start.UseShellExecute = false;
                         start.RedirectStandardOutput = true;
@@ -5182,7 +5307,7 @@ namespace ContinuumNS
                 }
                 // });
             }
-            else
+            else if (refData.monthlyOrDaily == "Monthly" && refData.refType.Contains("NEW") == false)
             {
                 // Monthly downloads
                 refData.startDate = new DateTime(refData.startDate.Year, refData.startDate.Month, 1);
@@ -5195,7 +5320,7 @@ namespace ContinuumNS
                     bool fileExists = refList.ReferenceFileExists(thisDate, refData);
 
                     if (fileExists) // Check to see if it contains the full month
-                    {                        
+                    {
                         DateTime[] thisStartEnd = refList.GetStartEndOfERAFile(refData, refList.CreateReferenceDatafilename(refData, thisDate));
 
                         if (thisStartEnd[1] != thisDate.AddMonths(1).AddHours(-1))
@@ -5224,7 +5349,7 @@ namespace ContinuumNS
 
                     if (fileExists == false)
                     {
-                        string pythonPath = Environment.GetEnvironmentVariable("python") + "\\python.exe";
+                        //string pythonPath = Environment.GetEnvironmentVariable("python") + "\\python.exe";
 
                         string pythonScript = "ERA5_MonthlyDownloader.py \"" + refData.folderLocation + "\" " + thisDate.Year + " " + thisDate.Month + " "
                             + " " + minLat.ToString() + " " + maxLat.ToString() + " " + minLong.ToString() + " " + maxLong.ToString() + " " + incl10mWS.ToString() + " " + incl10mGust.ToString();
@@ -5232,27 +5357,128 @@ namespace ContinuumNS
                         Debug.WriteLine(pythonScript);
                         ProcessStartInfo start = new ProcessStartInfo();
                         start.WorkingDirectory = Directory.GetCurrentDirectory();
-                        start.FileName = pythonPath;
+                        start.FileName = "python";
                         start.Arguments = pythonScript;
                         start.UseShellExecute = false;
                         start.RedirectStandardOutput = true;
-                        start.ErrorDialog = true;
+                        start.RedirectStandardError = true;
                         start.CreateNoWindow = true;
 
-                        Process process = Process.Start(start);
+                        using (Process process = new Process())
+                        {
+                            process.StartInfo = start;
+                            process.Start();
+                            process.BeginOutputReadLine();
+                            process.BeginErrorReadLine();
+                            process.WaitForExit();      
 
-                        process.WaitForExit();
+                            if (process.ExitCode != 0)
+                            {
+                                throw new Exception(
+                                    $"Python script failed.");
+                            }
+                        }
+
                         newFileCount++;
-                    }
 
+                    }
                     fileCount++;
                 }
+            }
+            else
+            {
+                // ERA5 ARCO downloads
+                RunEra5ArcoDownloads(thisInst, refData, incl10mWS, incl10mGust, e);
             }
 
             DoWorkDone = true;
             e.Result = thisInst;
 
         }
+
+        private void RunEra5ArcoDownloads(Continuum thisInst, ReferenceCollection.RefDataDownload refData, bool incl10mWS, bool incl10mGust, DoWorkEventArgs e)
+        {
+            // Downloads ERA5 ARCO data for each 0.25 x 0.25 degree node in the specified lat and long range. Each node is a separate file.
+            int nodeInd = 0;
+            int totalNodes = Convert.ToInt32(((refData.maxLat - refData.minLat) / 0.25 + 1) * ((refData.maxLon - refData.minLon) / 0.25 + 1));
+            DateTime startMonth = new DateTime(refData.startDate.Year, refData.startDate.Month, 1);
+            DateTime endMonth = new DateTime(refData.endDate.Year, refData.endDate.Month, 1);
+            int numMonths = endMonth.Subtract(startMonth).Days / 30 + 1; // just used for progress bar
+            totalNodes = totalNodes * numMonths;
+
+            for (double lat = refData.minLat; lat <= refData.maxLat; lat += 0.25)
+                for (double lon = refData.minLon; lon <= refData.maxLon; lon += 0.25)
+                    for (DateTime thisMonth = startMonth; thisMonth <= endMonth; thisMonth = thisMonth.AddMonths(1))
+                    {
+                        
+                        string outputFile = $"ERA5_ARCO_{lat:F2}_{lon:F2}_" + $"{thisMonth:yyyy_MM}.csv";
+                        string outputPath = Path.Combine(refData.folderLocation, outputFile);
+                        bool fileExists = File.Exists(outputPath);
+                        double prog = 100.0 * nodeInd / totalNodes;
+
+                        BackgroundWorker_ERA5Download.ReportProgress((int)prog, $"Downloading ERA5 ARCO node {nodeInd + 1} of {totalNodes}");
+
+                        if (BackgroundWorker_ERA5Download.CancellationPending)
+                        {
+                            e.Result = thisInst;
+                            return;
+                        }
+
+                        if (!fileExists)
+                        {
+                            ProcessStartInfo start = new ProcessStartInfo();
+                            start.WorkingDirectory = Directory.GetCurrentDirectory();
+                            start.FileName = "python";
+                            start.UseShellExecute = false;
+                            start.RedirectStandardOutput = true;
+                            start.RedirectStandardError = true;
+                            start.CreateNoWindow = true;
+                            DateTime nextMonth = thisMonth.AddMonths(1);
+
+                            string pythonArgs =
+                                $"ERA5_ARCO_Downloader.py " +
+                                $"\"{refData.folderLocation}\" " +
+                                $"{lat.ToString(CultureInfo.InvariantCulture)} " +
+                                $"{lon.ToString(CultureInfo.InvariantCulture)} " +
+                                $"{thisMonth.Year} " +
+                                $"{thisMonth.Month} " +
+                                $"{nextMonth.Year} " +
+                                $"{nextMonth.Month} " +
+                                $"{incl10mWS} " +
+                                $"{incl10mGust}";
+
+                            start.Arguments = pythonArgs;
+
+                            using (Process process = new Process())
+                            {
+                                process.StartInfo = start;
+                                process.OutputDataReceived += (sender, args) =>
+                                {
+                                    if (args.Data != null)
+                                        Console.WriteLine("PYTHON: " + args.Data);
+                                };
+
+                                process.ErrorDataReceived += (sender, args) =>
+                                {
+                                    if (args.Data != null)
+                                        Console.WriteLine("PYTHON ERR: " + args.Data);
+                                };
+
+                                process.Start();
+
+                                process.BeginOutputReadLine();
+                                process.BeginErrorReadLine();
+
+                                process.WaitForExit();
+
+                                if (process.ExitCode != 0)
+                                    throw new Exception($"ERA5 ARCO download failed");
+                            }
+                        }
+                        nodeInd++;
+                    }
+        
+        }       
 
         private void BackgroundWorker_DBUpdate_DoWork(object sender, DoWorkEventArgs e)
         {

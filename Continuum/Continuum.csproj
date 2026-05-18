@@ -623,6 +623,9 @@
   <ItemGroup>
     <Content Include="Continuum icon Hi Res.ico" />
     <Content Include="Continuum icon.ico" />
+    <Content Include="ERA5_ARCO_Downloader.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="ERA5_CredsCheck.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
