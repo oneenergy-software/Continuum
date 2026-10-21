@@ -421,6 +421,27 @@ namespace ContinuumNS
                 WSWD_Dists[WSWD_ind].sectorWS_Ratio[i] = WS_by_dir[i] / WSWD_Dists[WSWD_ind].WS;
         }
 
+        public void CalcEnergyRose(Continuum thisInst)
+        {
+            // Calculate energy rose from TAB file
+            WSWD_Dist thisDist = GetWS_WD_Dist(thisInst.modeledHeight, TOD.All, Season.All);
+            int thisDistInd = GetWS_WD_DistInd(thisInst.modeledHeight, TOD.All, Season.All);
+            WSWD_Dists[thisDistInd].energyRose = new double[thisInst.metList.numWD];
+            double sumPower = 0;
+
+            for (int d = 0; d < thisInst.metList.numWD; d++)
+            {
+                double thisPower = 0.5 * thisInst.modelList.airDens * Math.PI * Math.Pow(thisInst.modelList.rotorDiam / 2, 2)
+                    * Math.Pow(thisDist.sectorWS_Ratio[d] * thisDist.WS, 3) / 1000; // Power in wind
+                WSWD_Dists[thisDistInd].energyRose[d] = thisPower;
+                sumPower = sumPower + thisPower;
+            }
+
+            if (sumPower > 0)
+                for (int d = 0; d < thisInst.metList.numWD; d++)
+                    WSWD_Dists[thisDistInd].energyRose[d] = WSWD_Dists[thisDistInd].energyRose[d] / sumPower;
+        }
+
         /// <summary> If flow separation model is enabled, this function searches for points surrounding met where flow separation is estimated to occur  </summary>
         public void GetFlowSepNodes(NodeCollection nodeList, Continuum thisInst)
         {                    
@@ -960,11 +981,11 @@ namespace ContinuumNS
         }
 
         /// <summary> Finds all alpha exponents for wind speeds within the specified minimum/maximum range and within specified start/end times and returns the alpha at the specified P-value  </summary>
-        public double[] GetAlphaPValueAndCount(double minWS, double maxWS, int pLevel, Continuum thisInst, DateTime startTime, DateTime endTime)
-        {            
-            double alphaPVal = 0;
+        public float[] GetAlphaPValueAndCount(double minWS, double maxWS, int pLevel, Continuum thisInst, DateTime startTime, DateTime endTime)
+        {
+            float alphaPVal = 0;
             int alphaCount = 0;
-            double[] alphaPValAndCount = new double[2];
+            float[] alphaPValAndCount = new float[2];
 
             if (metData == null)
                 return alphaPValAndCount;
@@ -1013,7 +1034,7 @@ namespace ContinuumNS
                 if (pInd >= alphaCount)
                     pInd = alphaCount - 1;
 
-                alphaPVal = alphaArray[pInd];
+                alphaPVal = (float)alphaArray[pInd];
             }
 
             
@@ -1360,7 +1381,7 @@ namespace ContinuumNS
 
             if (numYears == 0 && useWMO_HourTenMin == false)
             {
-                MessageBox.Show("The reference data years don't coincide with the met data. Cannot calculate extreme wind speeds.", "Continuum 3.0");
+                MessageBox.Show("The reference data years don't coincide with the met data. Cannot calculate extreme wind speeds.", "Continuum Wind Energy Software.0");
                 return extremeWinds;
             }
 
@@ -1369,7 +1390,7 @@ namespace ContinuumNS
 
             if (avgHourly == 0 && useWMO_HourTenMin == false)
             {
-                MessageBox.Show("Reference wind speeds are zero.", "Continuum 3.0");
+                MessageBox.Show("Reference wind speeds are zero.", "Continuum Wind Energy Software.0");
                 return extremeWinds;
             }
 

@@ -19,6 +19,7 @@ namespace ContinuumNS
         public GenHeaders()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             // Centers the text of specified textboxes
             txtNewAnemHeight.TextAlign = HorizontalAlignment.Center;
             txtNewAnemOrient.TextAlign = HorizontalAlignment.Center;

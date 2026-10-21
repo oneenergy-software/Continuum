@@ -166,7 +166,7 @@ namespace ContinuumNS
                 return false;
         
             if (wakeModel1.ambTI == wakeModel2.ambTI && wakeModel1.horizWakeExp == wakeModel2.horizWakeExp && wakeModel1.wakeModelType == wakeModel2.wakeModelType && 
-                wakeModel1.powerCurve.name == wakeModel2.powerCurve.name && wakeModel1.comboMethod == wakeModel2.comboMethod && wakeModel1.wakeRechargeRate == wakeModel2.wakeRechargeRate)
+                wakeModel1.powerCurve.name == wakeModel2.powerCurve.name && wakeModel1.comboMethod == wakeModel2.comboMethod)
                 {
                     if (wakeModel1.wakeModelType == 1)
                     {
@@ -753,8 +753,7 @@ namespace ContinuumNS
                 wakeString = wakeString + thisWakeModel.powerCurve.name.Trim();
 
             wakeString = wakeString + ", Exp.: " + Math.Round(thisWakeModel.horizWakeExp, 1) + " degs,";
-            wakeString = wakeString + " TI: " + Math.Round(thisWakeModel.ambTI, 1) + " %, ";
-            wakeString = wakeString + " WRR: " + Math.Round(thisWakeModel.wakeRechargeRate, 3) + ", ";
+            wakeString = wakeString + " TI: " + Math.Round(thisWakeModel.ambTI, 1) + " %, ";            
             wakeString = wakeString + thisWakeModel.comboMethod;
 
             if (thisWakeModel.wakeModelType == 1)  // DAWM
@@ -1991,12 +1990,12 @@ namespace ContinuumNS
 
                     for (int r_ind = 0; r_ind <= Num_Rs - 1; r_ind++) {
 
-                        double WS_Recharge = (Math.Pow(thisWakeModel.wakeRechargeRate, 0.5) * Math.Pow(X_Length, thisWakeModel.wakeRechargeExp * freeStream));
+                  //      double WS_Recharge = (Math.Pow(thisWakeModel.wakeRechargeRate, 0.5) * Math.Pow(X_Length, thisWakeModel.wakeRechargeExp * freeStream));
 
-                        if (U_spd[r_ind] + WS_Recharge < freeStream)
-                            U_spd[r_ind] = U_spd[r_ind] + WS_Recharge;
-                        else
-                            U_spd[r_ind] = freeStream;
+                  //      if (U_spd[r_ind] + WS_Recharge < freeStream)
+                    //        U_spd[r_ind] = U_spd[r_ind] + WS_Recharge;
+                    //    else
+                    //        U_spd[r_ind] = freeStream;
 
 
                         //  velDeficit = freeStream - U_spd(Waked_Turb_r_ind)

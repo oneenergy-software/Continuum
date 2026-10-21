@@ -29,6 +29,7 @@ namespace ContinuumNS
         public TopoDataDownload(Continuum continuum)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             CreateOpenTopoDatasets();
             thisInst = continuum;
             FindMinMaxCoords();

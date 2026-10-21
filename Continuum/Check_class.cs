@@ -33,7 +33,7 @@ namespace ContinuumNS
             for (int i = 0; i < numMets; i++) { 
                 if (metList.metItem[i].name == turbineName) {
                     inputTurbine = false;
-                    MessageBox.Show("There is a met with the same name as turbine site: " + turbineName + ".  There cannot be a turbine and met site with the same name.",  "Continuum 3");
+                    MessageBox.Show("There is a met with the same name as turbine site: " + turbineName + ".  There cannot be a turbine and met site with the same name.",  "Continuum Wind Energy Software");
                 break;
                 }
             }
@@ -43,7 +43,7 @@ namespace ContinuumNS
                 if (turbList.turbineEsts[i].name == turbineName)
                 {
                     inputTurbine = false;
-                    MessageBox.Show("There is a turbine with the same name as turbine site: " + turbineName + ".  There cannot be duplicate turbine names.", "Continuum 3");
+                    MessageBox.Show("There is a turbine with the same name as turbine site: " + turbineName + ".  There cannot be duplicate turbine names.", "Continuum Wind Energy Software");
                     break;
                 }
             }
@@ -62,7 +62,7 @@ namespace ContinuumNS
             for (int i = 0; i < numTurbines; i++) { 
                 if (turbineList.turbineEsts[i].name == metName) {
                     inputMet = false;
-                    MessageBox.Show("There is a turbine with the same name as met site: " + metName + ".  There cannot be a turbine and met site with the same name.", "Continuum 3");
+                    MessageBox.Show("There is a turbine with the same name as met site: " + metName + ".  There cannot be a turbine and met site with the same name.", "Continuum Wind Energy Software");
                     break;
                 }
             }
@@ -72,7 +72,7 @@ namespace ContinuumNS
                 if (metList.metItem[i].name == metName)
                 {
                     inputMet = false;
-                    MessageBox.Show("There is already a met with the same name: " + metName + ".  There cannot be duplicate met site names.", "Continuum 3");
+                    MessageBox.Show("There is already a met with the same name: " + metName + ".  There cannot be duplicate met site names.", "Continuum Wind Energy Software");
                     break;
                 }
             }
@@ -92,7 +92,7 @@ namespace ContinuumNS
 
             for (int i = 0; i < thisInst.metList.ThisCount; i++) { 
                 if (thisInst.metList.metItem[i].name == metName ) {
-                        MessageBox.Show("A met of the same name has already been imported.", "Continuum 3");
+                        MessageBox.Show("A met of the same name has already been imported.", "Continuum Wind Energy Software");
                         TAB_ok = false;
                         return TAB_ok;
                 }
@@ -143,7 +143,7 @@ namespace ContinuumNS
             {
                 goodToGo = false;
                 if (showMessage)
-                    MessageBox.Show("Topography data not loaded.", "Continuum 3");
+                    MessageBox.Show("Topography data not loaded.", "Continuum Wind Energy Software");
                 return goodToGo;
             }
 
@@ -151,7 +151,7 @@ namespace ContinuumNS
             {
                 goodToGo = false;
                 if (showMessage)
-                    MessageBox.Show("Error reading file.", "Continuum 3");
+                    MessageBox.Show("Error reading file.", "Continuum Wind Energy Software");
                 return goodToGo;
             }
 
@@ -210,7 +210,7 @@ namespace ContinuumNS
                 {
                     goodToGo = false;
                     if (showMessage == true)
-                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
+                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum Wind Energy Software");
                     return goodToGo;
                 }
 
@@ -220,7 +220,7 @@ namespace ContinuumNS
                 {
                     goodToGo = false;
                     if (showMessage == true)
-                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum 3");
+                        MessageBox.Show("Site: " + siteName + " is outside range of topography data.", "Continuum Wind Energy Software");
                     return goodToGo;
                 }
             }
@@ -249,7 +249,7 @@ namespace ContinuumNS
             {
                 goodToGo = false;
                 if (showMessage)
-                    MessageBox.Show("Land Cover data not loaded.", "Continuum 3");
+                    MessageBox.Show("Land Cover data not loaded.", "Continuum Wind Energy Software");
                 return goodToGo;
             }
 
@@ -308,7 +308,7 @@ namespace ContinuumNS
                 {
                     goodToGo = false;
                     if (showMessage == true)
-                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
+                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum Wind Energy Software");
 
                     return goodToGo;
                 }                
@@ -317,7 +317,7 @@ namespace ContinuumNS
                 {
                     goodToGo = false;
                     if (showMessage == true)
-                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum 3");
+                        MessageBox.Show("Site: " + siteName + " is outside range of land cover data.", "Continuum Wind Energy Software");
                     return goodToGo;
                 }
             }
@@ -369,7 +369,7 @@ namespace ContinuumNS
                 if (thisInst.metList.mcpWS_BinWidth < 0.1 || thisInst.metList.mcpWS_BinWidth > 2)
                 {
                     goodToGo = false;
-                    MessageBox.Show("Invalid wind speed bin width. Enter a value between 0.1 and 2.", "Continuum 3.0");
+                    MessageBox.Show("Invalid wind speed bin width. Enter a value between 0.1 and 2.", "Continuum Wind Energy Software.0");
                     return goodToGo;
                 }
 
@@ -379,19 +379,19 @@ namespace ContinuumNS
                 if (thisInst.metList.mcpMatrixWgt < 0 || thisInst.metList.mcpMatrixWgt > 10)
                 {
                     goodToGo = false;
-                    MessageBox.Show("Invalid matrix weight. Enter a value between 0 and 10.", "Continuum 3.0");
+                    MessageBox.Show("Invalid matrix weight. Enter a value between 0 and 10.", "Continuum Wind Energy Software.0");
                     return goodToGo;
                 }
                 else if (thisInst.metList.mcpLastWS_Wgt < 0 || thisInst.metList.mcpLastWS_Wgt > 10)
                 {
                     goodToGo = false;
-                    MessageBox.Show("Invalid last wind speed weight. Enter a value between 0 and 10.", "Continuum 3.0");
+                    MessageBox.Show("Invalid last wind speed weight. Enter a value between 0 and 10.", "Continuum Wind Energy Software.0");
                     return goodToGo;
                 }
                 else if (thisInst.metList.mcpMatrixWgt == 0 && thisInst.metList.mcpLastWS_Wgt == 0)
                 {
                     goodToGo = false;
-                    MessageBox.Show("Both Matrix weights cannot be zero.", "Continuum 3.0");
+                    MessageBox.Show("Both Matrix weights cannot be zero.", "Continuum Wind Energy Software.0");
                     return goodToGo;
                 }
             }

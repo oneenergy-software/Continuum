@@ -23,6 +23,7 @@ namespace ContinuumNS
         public Add_Mode()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
                
         /// <summary> Cancel button closes form </summary>        

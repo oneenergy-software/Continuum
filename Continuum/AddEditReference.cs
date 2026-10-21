@@ -22,6 +22,7 @@ namespace ContinuumNS
         public AddEditReference(MetCollection metCollection, ReferenceCollection referenceList, UTM_conversion utmConversion, Reference newOrEditRef = null)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             metList = metCollection;
             refList = referenceList;
             utmConv = utmConversion;
@@ -107,7 +108,7 @@ namespace ContinuumNS
             else if (thisRef.numNodes == 16)
                 cboNumNodes.SelectedIndex = 2;
                         
-            txtWS_ScaleFact.Text = thisRef.WS_ScaleFactor.ToString();
+            //txtWS_ScaleFact.Text = thisRef.WS_ScaleFactor.ToString();
 
             cboTargetMet.Items.Clear();
 
@@ -241,13 +242,13 @@ namespace ContinuumNS
             }
             else
             {
-                if (thisRef.interpData.Coords.latitude != 0)
-                {
-                    txtReferenceLat.Text = thisRef.interpData.Coords.latitude.ToString();
-                    txtReferenceLong.Text = thisRef.interpData.Coords.longitude.ToString();
-                }
-                else
-                {
+           //     if (thisRef.interpData.Coords.latitude != 0)  ///// This was preventing the lat/long from updating when selecting a different met
+           //     {
+           //         txtReferenceLat.Text = thisRef.interpData.Coords.latitude.ToString();
+           //         txtReferenceLong.Text = thisRef.interpData.Coords.longitude.ToString();
+           //     }
+           //     else
+           //     {
                     Met thisMet = metList.GetMet(cboTargetMet.SelectedItem.ToString());
                     UTM_conversion.Lat_Long thisLL = utmConv.UTMtoLL(thisMet.UTMX, thisMet.UTMY);
                     txtReferenceLat.Text = Math.Round(thisLL.latitude, 3).ToString();
@@ -262,7 +263,7 @@ namespace ContinuumNS
 
                     thisRef.interpData.Coords.latitude = Math.Round(thisLL.latitude, 3);
                     thisRef.interpData.Coords.longitude = Math.Round(thisLL.longitude, 3);
-                }
+            //    }
 
                 txtReferenceLat.Enabled = false;
                 txtReferenceLong.Enabled = false;
@@ -353,7 +354,7 @@ namespace ContinuumNS
                 }
 
                 DialogResult diffsAreOk = MessageBox.Show("The requested start/end dates are not the same as the other long-term references in the list which are " +
-                    refList.reference[diffRefInd].startDate.ToString() + " - " + refList.reference[diffRefInd].endDate.ToString() + ".  Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    refList.reference[diffRefInd].startDate.ToString() + " - " + refList.reference[diffRefInd].endDate.ToString() + ".  Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (diffsAreOk == DialogResult.No)
                 {
@@ -372,14 +373,7 @@ namespace ContinuumNS
             Close();
         }
 
-        private void txtWS_ScaleFact_TextChanged(object sender, EventArgs e)
-        {
-            double newScaleFactor = 0;
-            double.TryParse(txtWS_ScaleFact.Text, out newScaleFactor);
-
-            if (newScaleFactor != 0 && newScaleFactor != thisRef.WS_ScaleFactor) 
-                thisRef.WS_ScaleFactor = newScaleFactor;
-        }
+      
 
         private void dateRefEnd_ValueChanged(object sender, EventArgs e)
         {

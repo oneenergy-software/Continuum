@@ -19,6 +19,7 @@ namespace ContinuumNS
         public NASA_LogIn()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

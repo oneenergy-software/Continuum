@@ -23,6 +23,7 @@ namespace ContinuumNS
         public Add_Exceedance()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
               
         /// <summary> "Add Mode" button clicked </summary>        
@@ -43,25 +44,31 @@ namespace ContinuumNS
 
             if (isAddMode == false)
             { // need to find the mode that was selected
-                if (lstModes.SelectedItems.Count != 1)
+                if (dataModes.SelectedRows.Count != 1)
                 {
                     MessageBox.Show("Select one mode to edit.", "", MessageBoxButtons.OK);
                     return;
                 }
                 else
                 {
-                    for (int i = 0; i < numModes; i++ )
-                    {
-                        double selMean = Convert.ToDouble(lstModes.SelectedItems[0].SubItems[0].Text);
-                        double selSD = Convert.ToDouble(lstModes.SelectedItems[0].SubItems[1].Text);
-                        double selWeight = Convert.ToDouble(lstModes.SelectedItems[0].SubItems[2].Text);
+                    double selMean = Convert.ToDouble(dataModes.SelectedRows[0].Cells[0].Value) / 100.0;
+                    double selSD = Convert.ToDouble(dataModes.SelectedRows[0].Cells[1].Value) / 100.0;
+                    double selWeight = Convert.ToDouble(dataModes.SelectedRows[0].Cells[2].Value) / 100.0;
 
-                        if (Math.Round(thisExceed.modes[i].mean, 3) == Math.Round(selMean/100,3) && Math.Round(thisExceed.modes[i].SD, 3) == Math.Round(selSD /100, 3) 
-                            && Math.Round(thisExceed.modes[i].weight, 0) == Math.Round(selWeight /100))
+                    for (int i = 0; i < numModes; i++)
+                    {
+                        double meanDiff = Math.Abs(thisExceed.modes[i].mean - selMean);
+                        double sdDiff = Math.Abs(thisExceed.modes[i].SD - selSD);
+                        double weightDiff = Math.Abs(thisExceed.modes[i].weight - selWeight);
+
+                        if (meanDiff < 0.001 &&
+                            sdDiff < 0.001 &&
+                            weightDiff < 0.005)
                         {
                             formMode.txtMean.Text = Math.Round(thisExceed.modes[i].mean * 100, 2).ToString();
                             formMode.txtSD.Text = Math.Round(thisExceed.modes[i].SD * 100, 3).ToString();
                             formMode.txtWeight.Text = Math.Round(thisExceed.modes[i].weight * 100, 0).ToString();
+
                             editInd = i;
                             break;
                         }
@@ -154,6 +161,7 @@ namespace ContinuumNS
                 cdfSeries.Points.Add(new DataPoint(Math.Round(thisExceed.xVals[i] * 100, 2), Math.Round(thisExceed.cumulDist[i], 4)));               
             }
 
+            ContinuumStyle.StylePlot(plotExceed);
             plotExceed.Refresh();
             
         }
@@ -161,7 +169,7 @@ namespace ContinuumNS
         /// <summary> Adds mode to list and updates GUI </summary>
         public void Update_Mode_List()
         {          
-            lstModes.Items.Clear();
+            dataModes.Rows.Clear();
 
             if (thisExceed.modes == null)
                 return;
@@ -170,16 +178,13 @@ namespace ContinuumNS
 
             for (int i = 0; i < numModes; i++)
             {
-                ListViewItem lvi = new ListViewItem((100 * thisExceed.modes[i].mean).ToString());
-                lvi.SubItems.Add((thisExceed.modes[i].SD * 100).ToString());
-                lvi.SubItems.Add((thisExceed.modes[i].weight * 100).ToString());
-                                    
-                lstModes.Items.Add(lvi);
+                int rowInd = dataModes.Rows.Add();
+                dataModes.Rows[rowInd].Cells[0].Value = Math.Round(100 * thisExceed.modes[i].mean, 2);
+                dataModes.Rows[rowInd].Cells[1].Value = Math.Round(thisExceed.modes[i].SD * 100, 2);
+                dataModes.Rows[rowInd].Cells[2].Value = Math.Round(thisExceed.modes[i].weight * 100, 2); 
             }
 
-            lstModes.Columns[0].Width = 125;
-            lstModes.Columns[1].Width = 125;
-            lstModes.Columns[2].Width = 125;
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -280,7 +285,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Error opening CDF file. Make sure that it is not open in another program.", "Continuum 3");
+                    MessageBox.Show("Error opening CDF file. Make sure that it is not open in another program.", "Continuum Wind Energy Software");
                     return null;
                 }
 
@@ -328,7 +333,55 @@ namespace ContinuumNS
         {
             Add_Edit_Mode(false);
         }
-              
-        
+
+        private void txt_LowerBound_TextChanged(object sender, EventArgs e)
+        {
+            if (IsHandleCreated)
+            {
+                double newLowerBound = -999;
+                double.TryParse(txt_LowerBound.Text, out newLowerBound);
+                newLowerBound = newLowerBound / 100.0;
+
+                if (newLowerBound != -999 && newLowerBound < thisExceed.upperBound)
+                {
+                    thisExceed.lowerBound = newLowerBound;
+
+                    // Reset PDF and CDF            
+                    thisExceed.probDist = new double[thisExceed.distSize];
+                    thisExceed.cumulDist = new double[thisExceed.distSize];
+
+                    Exceedance exceed = new Exceedance();
+                    exceed.CalculateProbDist(ref thisExceed);
+                    exceed.Normalize_Dists(ref thisExceed);
+                    Update_plot();
+                }
+            }
+            
+        }
+
+        private void txt_UpperBound_TextChanged(object sender, EventArgs e)
+        {
+            if (IsHandleCreated)
+            {
+                double newUpperBound = -999;
+                double.TryParse(txt_UpperBound.Text, out newUpperBound);
+                newUpperBound = newUpperBound / 100.0;
+
+                if (newUpperBound != -999 && newUpperBound > thisExceed.lowerBound)
+                {
+                    thisExceed.upperBound = newUpperBound;
+
+                    // Reset PDF and CDF            
+                    thisExceed.probDist = new double[thisExceed.distSize];
+                    thisExceed.cumulDist = new double[thisExceed.distSize];
+
+                    Exceedance exceed = new Exceedance();
+                    exceed.CalculateProbDist(ref thisExceed);
+                    exceed.Normalize_Dists(ref thisExceed);
+                    Update_plot();
+                }
+
+            }
+        }
     }
 }

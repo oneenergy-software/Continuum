@@ -303,7 +303,7 @@ namespace ContinuumNS
             DialogResult doMCP = DialogResult.No;
 
             if (thisMet.name != null && isTest == false && (thisInst.metList.ThisCount == 1 || thisInst.metList.isMCPd == false))
-                doMCP = MessageBox.Show("Do you want to conduct MCP at selected met?", "Continuum 3.0", MessageBoxButtons.YesNo);
+                doMCP = MessageBox.Show("Do you want to conduct MCP at selected met?", "Continuum Wind Energy Software.0", MessageBoxButtons.YesNo);
             else if (thisMet.name != "" && isTest == false && thisInst.metList.ThisCount > 1 && thisInst.metList.isMCPd == true)
                 doMCP = DialogResult.Yes;
             else if (isTest == true)
@@ -568,11 +568,15 @@ namespace ContinuumNS
             bool gotIt = false;
 
             for (int i = 0; i < numReferences; i++)
-                if (reference[i].interpData.Coords.latitude == newRef.interpData.Coords.latitude && 
-                    reference[i].interpData.Coords.longitude == newRef.interpData.Coords.longitude && 
-                    IsSameRefDataDownload(reference[i].refDataDownload, newRef.refDataDownload) && reference[i].numNodes == newRef.numNodes && 
+            {                
+                if (reference[i].interpData.Coords.latitude == newRef.interpData.Coords.latitude &&
+                    reference[i].interpData.Coords.longitude == newRef.interpData.Coords.longitude &&
+                    IsSameRefDataDownload(reference[i].refDataDownload, newRef.refDataDownload) && reference[i].numNodes == newRef.numNodes &&
                     reference[i].startDate == newRef.startDate && reference[i].endDate == newRef.endDate && i != indexToIgnore)
                     gotIt = true;
+                
+             
+            }
 
             return gotIt;
         }
@@ -687,15 +691,8 @@ namespace ContinuumNS
             int dateNum = 0;
 
             string thisYear = thisDay.Year.ToString();
-            string thisMonth = thisDay.Month.ToString();
-
-            if (thisDay.Month < 10)
-                thisMonth = "0" + thisMonth;
-
-            string thisDayStr = thisDay.Day.ToString();
-
-            if (thisDay.Day < 10)
-                thisDayStr = "0" + thisDayStr;
+            string thisMonth = thisDay.Month.ToString("D2");
+            string thisDayStr = thisDay.Day.ToString("D2");
 
             if (thisDay.Year <= 1991)
                 dateNum = 100;
@@ -717,32 +714,39 @@ namespace ContinuumNS
 
             if (merraDownload.refType == "MERRA2")
             {
-                URL = "https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXSLV.5.12.4/";
-                URL += thisYear + "/" + thisMonth + "/";
-                URL += "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisYear + thisMonth + thisDayStr + ".nc4.ascii?";
-                URL += "T10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-                URL += "U50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-                URL += "V50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-                URL += "SLP[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-                URL += "PS[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                URL = "https://opendap.earthdata.nasa.gov/collections/C1276812863-GES_DISC/granules/";
+                URL += "M2T1NXSLV.5.12.4%3AMERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisYear + thisMonth + thisDayStr + ".nc4.dap.csv?dap4.ce=";
+                string constraint = "";
+
+                constraint += "/T10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "];";
+                constraint += "/U50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "];";
+                constraint += "/V50M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "];";
+                constraint += "/SLP[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "];";
+                constraint += "/PS[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "];";
 
                 if (merraDownload.incl10mWS)
                 {
-                    URL += "U10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-                    URL += "V10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
+                    constraint += "/U10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "];";
+                    constraint += "/V10M[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "];";
                 }
 
-                URL += "lat[" + minLatInd + ":" + maxLatInd + "]," + "time[0:23]," + "lon[" + minLongInd + ":" + maxLongInd + "]";
+                constraint += "/lat[" + minLatInd + ":" + maxLatInd + "];";
+                constraint += "/time[0:23];";
+                constraint += "/lon[" + minLongInd + ":" + maxLongInd + "]";
+
+                URL += Uri.EscapeDataString(constraint);
             }
             else if (merraDownload.refType == "MERRA2 Cloud")
             {
-                URL = "https://goldsmr4.gesdisc.eosdis.nasa.gov/opendap/MERRA2/M2T1NXCSP.5.12.4/";
-                URL += thisYear + "/" + thisMonth + "/";
-                URL += "MERRA2_" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisYear + thisMonth + thisDayStr + ".nc4.ascii?";
-                URL += "ISCCPCLDFRC[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-                URL += "MDSCLDFRCTTL[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";
-                URL += "MDSOPTHCKTTL[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "],";                
-                URL += "lat[" + minLatInd + ":" + maxLatInd + "]," + "time[0:23]," + "lon[" + minLongInd + ":" + maxLongInd + "]";
+                URL = "https://opendap.earthdata.nasa.gov/collections/" + "C1276812863-GES_DISC/granules/";
+
+                URL += "M2T1NXCSP.5.12.4%3AMERRA2_" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisYear + thisMonth + thisDayStr + ".nc4.dap.csv?dap4.ce=";
+                URL += "/ISCCPCLDFRC[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "]";
+                URL += "/MDSCLDFRCTTL[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "]";
+                URL += "/MDSOPTHCKTTL[0:23][" + minLatInd + ":" + maxLatInd + "][" + minLongInd + ":" + maxLongInd + "]";
+                URL += "/lat[" + minLatInd + ":" + maxLatInd + "]";
+                URL += "/time[0:23]";
+                URL += "/lon[" + minLongInd + ":" + maxLongInd + "]";
             }
 
             return URL;
@@ -1218,7 +1222,10 @@ namespace ContinuumNS
 
             try
             {
-                string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii");
+                string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii"); // old formet
+                // also search for newer MERRA2 files with .csv extension
+                MERRAfiles = MERRAfiles.Concat(Directory.GetFiles(refDataFolder, "*.csv")).ToArray();
+
                 string[] ERA5Files = Directory.GetFiles(refDataFolder, "*.nc");
 
                 if (MERRAfiles.Length > 0 && ERA5Files.Length > 0)
@@ -1228,7 +1235,7 @@ namespace ContinuumNS
                     else
                         fileRefType = "ERA5";
 
-                    MessageBox.Show("There are " + MERRAfiles.Length.ToString() + " .ascii files and " + ERA5Files.Length.ToString() + " .nc files.  " +
+                    MessageBox.Show("There are " + MERRAfiles.Length.ToString() + " .ascii and csv files and " + ERA5Files.Length.ToString() + " .nc files.  " +
                         "Assuming that reference is " + fileRefType);
 
                 }
@@ -1259,7 +1266,7 @@ namespace ContinuumNS
                     refDataDownload.monthlyOrDaily = "Daily"; // MERRA2 data only available on a daily 
                     string line;
 
-                    // Open one of the MERRA .ascii files and find the lat/lon closest TWO lats/lons to that of the input
+                    // Open one of the MERRA .ascii/csv files and find the lat/lon closest TWO lats/lons to that of the input
                     StreamReader file;
                     
                     try
@@ -1399,6 +1406,7 @@ namespace ContinuumNS
             if (refType.Contains("MERRA2"))
             {
                 string[] MERRAfiles = Directory.GetFiles(refDataFolder, "*.ascii");
+                MERRAfiles = MERRAfiles.Concat(Directory.GetFiles(refDataFolder, "*.csv")).ToArray();
                 
                 for (int f = 0; f < MERRAfiles.Length; f++)
                 {
@@ -1620,11 +1628,11 @@ namespace ContinuumNS
                     thisDay = "0" + thisDay;
 
                 if (refData.refType == "MERRA2")
-                    fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
+                    fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_slv_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.dap.csv";
                 else if (refData.refType == "MERRA2 Cloud" && inclCloud)
-                    fileName = "MERRA2_Cloud" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
+                    fileName = "MERRA2_Cloud" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.dap.csv";
                 else if (refData.refType == "MERRA2 Cloud")
-                    fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.ascii";
+                    fileName = "MERRA2_" + dateNum.ToString() + ".tavg1_2d_csp_Nx." + thisDate.Year + thisMonth + thisDay + ".nc4.dap.csv";
                                 
             }
 
@@ -1681,6 +1689,9 @@ namespace ContinuumNS
             while (reader.EndOfStream == false)
             {
                 string thisLine = reader.ReadLine();
+                if (thisLine.StartsWith("/")) // Gets rid of leading slashes
+                    thisLine = thisLine.Substring(1);
+
                 writer.WriteLine(thisLine);
 
                 if (isFirstLine)

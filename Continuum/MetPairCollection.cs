@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.Integration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -556,7 +557,7 @@ namespace ContinuumNS
 
                 if (lastError != 0 && lastError != RMS_Err)
                     errorChanged = true;
-
+                                
                 if (RMS_Err < minError)
                 {
                     if (iterType == "Elevation")
@@ -848,21 +849,7 @@ namespace ContinuumNS
                               theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
                 }
 
-                // Elevation (-ve and +ve coefficient)
                 
-                if (thisInst.topo.useElev)
-                {
-                    // First sweep to see if it's a -ve or +ve coeff
-                    Sweep_a_Param(thisInst, -2.0f, 2.0f, 0.5f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
-
-                    // Now sweep for the value
-                    double lowLim = 0.25f * thisAdjModel.elev_Adj[WD_Ind];
-                    double upperLim = 2.0f * thisAdjModel.elev_Adj[WD_Ind];
-                    if (thisInst.topo.useElev)
-                        Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 7, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
-
-
-                }
                 // Valley
                 if (thisInst.topo.useValley)
                     Sweep_a_Param(thisInst, 0.25f, 2.0f, 0.25f, WD_Ind, "Valley", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
@@ -892,6 +879,58 @@ namespace ContinuumNS
 
                     // 9) Sweep Stability factor for speed-up flow 
                     Sweep_a_Param(thisInst, 0, 3, 0.5f, WD_Ind, "SU Stability", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+                }
+
+                // Elevation (-ve and +ve coefficient)
+
+                if (thisInst.topo.useElev)
+                {
+                    // First sweep to see if it's a -ve or +ve coeff
+
+                    // See if it detects a -ve coeff
+                    // Only allow -ve coeff if more than 3 mets and correlation coefficient between elevation and sectorwise WS is less than -0.8
+                    int numMetsInModel = thisModel.metsUsed.Length;
+
+                    if (numMetsInModel > 3)
+                    {
+                        // Calculate correlation coefficient between elevation and sectorwise WS
+                        
+                        double[] sectorWS = new double[numMetsInModel];
+                        double[] metElev = new double[numMetsInModel];
+                        Met[] metsInModel = thisInst.metList.GetMets(thisModel.metsUsed, null);
+
+                        for (int m = 0; m < numMetsInModel; m++)
+                        {
+                            Met.WSWD_Dist thisDist = metsInModel[m].GetWS_WD_Dist(thisModel.height, thisModel.timeOfDay, thisModel.season);                        
+                            sectorWS[m] = thisDist.sectorWS_Ratio[WD_Ind] * thisDist.WS;
+                            metElev[m] = thisInst.metList.metItem[m].elev;
+                        }
+
+                        double thisCorrCoeff = MathNet.Numerics.Statistics.Correlation.Pearson(sectorWS, metElev);
+
+                        if (thisCorrCoeff < -0.8)                        
+                            Sweep_a_Param(thisInst, -2.0f, 0.0f, 0.5f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+                        else
+                            Sweep_a_Param(thisInst, 0.0f, 2.0f, 0.5f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+                    }
+                    else
+                        Sweep_a_Param(thisInst, 0.0f, 2.0f, 0.5f, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
+                    // Now sweep for the value
+                    double lowLim = 0.25f * thisAdjModel.elev_Adj[WD_Ind];
+                    double upperLim = 2.0f * thisAdjModel.elev_Adj[WD_Ind];
+
+                    if (lowLim > upperLim)
+                    {
+                        double tempLim = upperLim;
+                        upperLim = lowLim;
+                        lowLim = tempLim;
+                    }
+
+                    if (thisInst.topo.useElev)
+                        Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 7, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
+
+
                 }
 
                 if (thisInst.topo.useSepMod == true && thisAdjModel.sepCrit[WD_Ind] != 1000)
@@ -949,6 +988,16 @@ namespace ContinuumNS
                 // Elevation
                 lowLim = 0.75f * thisAdjModel.elev_Adj[WD_Ind];
                 upperLim = 1.25f * thisAdjModel.elev_Adj[WD_Ind];
+
+                if (lowLim > upperLim)
+                {
+                    double tempLim = lowLim;
+                    lowLim = upperLim;
+                    upperLim = tempLim;
+                }
+                else if (lowLim == upperLim && lowLim == 0)
+                    upperLim = 1;
+
                 if (thisInst.topo.useElev)
                     Sweep_a_Param(thisInst, lowLim, upperLim, (upperLim - lowLim) / 5, WD_Ind, "Elevation", ref thisModel, thisAdjModel, theseMinMax.maxSumUWDW_ExpoWD, theseMinMax.avgP10ExpoWD, theseInitParams);
 
@@ -1384,7 +1433,7 @@ namespace ContinuumNS
             List<int> integerList = Enumerable.Range(0, PairCount).ToList();
 
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (i, loopState) =>
-            //      for (int i = 0; i < PairCount; i++)
+            //for (int i = 0; i < PairCount; i++)
             {
                 bool bothMetsUsed = BothInModel(metPairs[i], modelForCrossPred); // See if mets in pair are used in UW&DW model
 
@@ -1401,7 +1450,7 @@ namespace ContinuumNS
                     }
 
                     int WS_PredInd = metPairs[i].GetWS_PredIndOneModel(modelForCrossPred, thisInst.modelList);
-                                        
+
                     metPairs[i].DoMetCrossPred(WS_PredInd, radiusIndex, thisInst);
 
                     RMS_Err = RMS_Err + metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0] * metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0]; // + Math.Pow(metPairs[i].WS_Pred[WS_PredInd, radiusIndex].percErr[0], 2);
@@ -1411,6 +1460,7 @@ namespace ContinuumNS
                     RMS_Count++;
                 }
             });
+          //  }
 
             RMS_Err = Math.Pow((RMS_Err / (RMS_Count)), 0.5);
 

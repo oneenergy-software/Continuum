@@ -17,6 +17,7 @@ namespace ContinuumNS
         public Mod_LC_Key(Continuum continuum, LC_Key lc_key)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             thisInst = continuum;
             thisLC_Key = lc_key;
         }
@@ -35,7 +36,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid land cover code.", "Continuum 3");
+                MessageBox.Show("Invalid land cover code.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -45,7 +46,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid land cover description.", "Continuum 3");
+                MessageBox.Show("Invalid land cover description.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -55,13 +56,13 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid surface roughness.", "Continuum 3");
+                MessageBox.Show("Invalid surface roughness.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (newSR == 0.0 && newDesc != "Missing")
             {
-                MessageBox.Show("Surface roughness of zero is not allowed.  Please enter a value other than 0.", "Continuum 3");
+                MessageBox.Show("Surface roughness of zero is not allowed.  Please enter a value other than 0.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -71,7 +72,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid displacement height.", "Continuum 3");
+                MessageBox.Show("Invalid displacement height.", "Continuum Wind Energy Software");
                 return;
             }
 

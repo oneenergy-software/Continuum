@@ -57,7 +57,8 @@
     </StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Continuum icon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -285,6 +286,7 @@
     <Compile Include="Continuum.Designer.cs">
       <DependentUpon>Continuum.cs</DependentUpon>
     </Compile>
+    <Compile Include="ContinuumStyle.cs" />
     <Compile Include="Continuum_ContextFactory.cs" />
     <Compile Include="Continuum_EDM_v1_2.Context.cs" />
     <Compile Include="Continuum_EDM_v1_1.Context.cs" />
@@ -368,11 +370,18 @@
     </Compile>
     <Compile Include="GridStat_table.cs" />
     <Compile Include="Grid_Info.cs" />
+    <Compile Include="LegacyDataConverter.cs" />
     <Compile Include="MCP_ValidSettings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MCP_ValidSettings.Designer.cs">
       <DependentUpon>MCP_ValidSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Met_LatLong_Units.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Met_LatLong_Units.Designer.cs">
+      <DependentUpon>Met_LatLong_Units.cs</DependentUpon>
     </Compile>
     <Compile Include="Reanalysis_Download.cs">
       <SubType>Form</SubType>
@@ -397,6 +406,19 @@
     </Compile>
     <Compile Include="Reference.cs" />
     <Compile Include="ReferenceCollection.cs" />
+    <Compile Include="SelectMetDataType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectMetDataType.Designer.cs">
+      <DependentUpon>SelectMetDataType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SelectMetsForDebiasCalc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectMetsForDebiasCalc.Designer.cs">
+      <DependentUpon>SelectMetsForDebiasCalc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SerializeBinder.cs" />
     <Compile Include="ShowIEC_TerrainComplexity.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -559,6 +581,9 @@
     <EmbeddedResource Include="MCP_ValidSettings.resx">
       <DependentUpon>MCP_ValidSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Met_LatLong_Units.resx">
+      <DependentUpon>Met_LatLong_Units.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reanalysis_Download.resx">
       <DependentUpon>Reanalysis_Download.cs</DependentUpon>
     </EmbeddedResource>
@@ -586,6 +611,12 @@
     </Compile>
     <EmbeddedResource Include="Roughness_File_Format.resx">
       <DependentUpon>Roughness_File_Format.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectMetDataType.resx">
+      <DependentUpon>SelectMetDataType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectMetsForDebiasCalc.resx">
+      <DependentUpon>SelectMetsForDebiasCalc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ShowIEC_TerrainComplexity.resx">
       <DependentUpon>ShowIEC_TerrainComplexity.cs</DependentUpon>
@@ -621,8 +652,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Continuum icon Hi Res.ico" />
-    <Content Include="Continuum icon.ico" />
+    <Content Include="Properties\Continuum full logo.png" />
+    <Content Include="Continuum logo.ico" />
     <Content Include="ERA5_ARCO_Downloader.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -635,7 +666,27 @@
     <Content Include="ERA5_Downloader.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="iconlogoalts__1__S3C_icon.ico" />
+    <Content Include="Dependencies\hdf.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dependencies\hdf5.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dependencies\hdf5_hl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dependencies\libcurl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dependencies\netcdf.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dependencies\xdr.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Dependencies\zlib1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

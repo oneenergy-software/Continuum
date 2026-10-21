@@ -269,7 +269,7 @@ namespace ContinuumNS
             DialogResult doMCP = DialogResult.No;
 
             if (thisMet.name != null && isTest == false && (thisInst.metList.ThisCount == 1 || thisMet.isMCPd == false))
-                doMCP = MessageBox.Show("Do you want to conduct MCP at selected met?", "Continuum 3.0", MessageBoxButtons.YesNo);
+                doMCP = MessageBox.Show("Do you want to conduct MCP at selected met?", "Continuum Wind Energy Software.0", MessageBoxButtons.YesNo);
             else if (thisMet.name != "" && isTest == false && thisInst.metList.ThisCount > 1 && thisMet.isMCPd == true)
                 doMCP = DialogResult.Yes;
             else if (isTest == true)

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using MathNet.Numerics.Statistics;
+using System;
 using System.Globalization;
-using MathNet.Numerics.Statistics;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows.Forms;
+using static ContinuumNS.TurbineCollection;
 
 namespace ContinuumNS
 {
@@ -14,7 +15,7 @@ namespace ContinuumNS
         /// <summary> Exports the met cross-prediction error for selected radius and WD sector </summary>        
         public void ExportMetCrossPreds(Continuum thisInst)
         {            
-            string headerString = "Continuum 3: Met Cross-Predictions";
+            string headerString = "Continuum Wind Energy Software: Met Cross-Predictions";
             int numPairs = thisInst.metPairList.PairCount;
             StreamWriter sw;
 
@@ -26,7 +27,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Error writing to file.  Make sure the file is closed.", "Continuum 3");
+                    MessageBox.Show("Error writing to file.  Make sure the file is closed.", "Continuum Wind Energy Software");
                     return;
                 }
 
@@ -112,7 +113,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Error writing to file.  Make sure the file is closed.", "Continuum 3");
+                    MessageBox.Show("Error writing to file.  Make sure the file is closed.", "Continuum Wind Energy Software");
                     return;
                 }
 
@@ -124,7 +125,7 @@ namespace ContinuumNS
 
                 string startStr = thisInst.GetStartMetAdvanced();
                 string endStr = thisInst.GetEndSiteAdvanced();
-                string headerString = "Continuum 3: Estimated and Calculated Values from " + startStr + " to " + endStr;
+                string headerString = "Continuum Wind Energy Software: Estimated and Calculated Values from " + startStr + " to " + endStr;
 
                 sw.WriteLine(headerString);
                 sw.WriteLine(DateTime.Now.ToString());
@@ -146,15 +147,15 @@ namespace ContinuumNS
                 // Export lstPathNodes
                 sw.WriteLine("Estimates along path of nodes");
 
-                for (int c = 0; c < thisInst.lstPathNodes.Columns.Count; c++)
-                    sw.Write(thisInst.lstPathNodes.Columns[c].Text + ",");
+                for (int c = 0; c < thisInst.dataPathNodes.Columns.Count; c++)
+                    sw.Write(thisInst.dataPathNodes.Columns[c].HeaderText + ",");
 
                 sw.WriteLine();
 
-                for (int r = 0; r < thisInst.lstPathNodes.Items.Count; r++)
+                for (int r = 0; r < thisInst.dataPathNodes.Rows.Count; r++)
                 {
-                    for (int c = 0; c < thisInst.lstPathNodes.Columns.Count; c++)
-                        sw.Write(thisInst.lstPathNodes.Items[r].SubItems[c].Text + ",");
+                    for (int c = 0; c < thisInst.dataPathNodes.Columns.Count; c++)
+                        sw.Write(thisInst.dataPathNodes.Rows[r].Cells[c].Value + ",");
                     sw.WriteLine();
                 }
 
@@ -163,15 +164,15 @@ namespace ContinuumNS
                 // Export lstPathNodes_UW
                 sw.WriteLine("Upwind flow estimates");
 
-                for (int c = 0; c < thisInst.lstPathNodes_UW.Columns.Count; c++)
-                    sw.Write(thisInst.lstPathNodes_UW.Columns[c].Text + ",");
+                for (int c = 0; c < thisInst.dataPathNodes_UW.Columns.Count; c++)
+                    sw.Write(thisInst.dataPathNodes_UW.Columns[c].HeaderText + ",");
 
                 sw.WriteLine();
 
-                for (int r = 0; r < thisInst.lstPathNodes_UW.Items.Count; r++)
+                for (int r = 0; r < thisInst.dataPathNodes_UW.Rows.Count; r++)
                 {
-                    for (int c = 0; c < thisInst.lstPathNodes_UW.Items[r].SubItems.Count; c++)
-                        sw.Write(thisInst.lstPathNodes_UW.Items[r].SubItems[c].Text + ",");
+                    for (int c = 0; c < thisInst.dataPathNodes_UW.Rows[r].Cells.Count; c++)
+                        sw.Write(thisInst.dataPathNodes_UW.Rows[r].Cells[c].Value + ",");
                     sw.WriteLine();
                 }
 
@@ -180,15 +181,15 @@ namespace ContinuumNS
                 // Export lstPathNodes_DW
                 sw.WriteLine("Downwind flow estimates");
 
-                for (int c = 0; c < thisInst.lstPathNodes_DW.Columns.Count; c++)
-                    sw.Write(thisInst.lstPathNodes_DW.Columns[c].Text + ",");
+                for (int c = 0; c < thisInst.dataPathNodes_DW.Columns.Count; c++)
+                    sw.Write(thisInst.dataPathNodes_DW.Columns[c].HeaderText + ",");
 
                 sw.WriteLine();
 
-                for (int r = 0; r < thisInst.lstPathNodes_DW.Items.Count; r++)
+                for (int r = 0; r < thisInst.dataPathNodes_DW.Rows.Count; r++)
                 {
-                    for (int c = 0; c < thisInst.lstPathNodes_DW.Items[r].SubItems.Count; c++)
-                        sw.Write(thisInst.lstPathNodes_DW.Items[r].SubItems[c].Text + ",");
+                    for (int c = 0; c < thisInst.dataPathNodes_DW.Rows[r].Cells.Count; c++)
+                        sw.Write(thisInst.dataPathNodes_DW.Rows[r].Cells[c].Value + ",");
                     sw.WriteLine();
                 }
 
@@ -204,7 +205,7 @@ namespace ContinuumNS
             int numPairs = thisInst.metPairList.PairCount;
      //       if (numPairs == 0)
       //      {
-      //          MessageBox.Show("Need to create met pairs and cross-predict first.  Click button on top left.", "Continuum 3");
+      //          MessageBox.Show("Need to create met pairs and cross-predict first.  Click button on top left.", "Continuum Wind Energy Software");
       //          return;
       //      }
 
@@ -223,7 +224,7 @@ namespace ContinuumNS
 
             string startStr = thisInst.GetStartMetAdvanced();
             string endStr = thisInst.GetEndSiteAdvanced();
-            string headerString = "Continuum 3: Estimated and Calculated Values from " + startStr + " to " + endStr;
+            string headerString = "Continuum Wind Energy Software: Estimated and Calculated Values from " + startStr + " to " + endStr;
 
             int numMets = thisInst.metList.ThisCount;            
             StreamWriter sw;
@@ -251,7 +252,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Error writing to file.  Make sure the file is closed.", "Continuum 3");
+                    MessageBox.Show("Error writing to file.  Make sure the file is closed.", "Continuum Wind Energy Software");
                     return;
                 }
 
@@ -599,7 +600,7 @@ namespace ContinuumNS
                     break;
             }
 
-            string headerString = "Continuum 3: Exported Power Curve";
+            string headerString = "Continuum Wind Energy Software: Exported Power Curve";
 
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
             {
@@ -646,7 +647,7 @@ namespace ContinuumNS
                         
             if (allRoundRobins == null)
             {
-                MessageBox.Show("No Round Robin analyses have been generated yet.", "Continuum 3");
+                MessageBox.Show("No Round Robin analyses have been generated yet.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -656,7 +657,7 @@ namespace ContinuumNS
 
                 try
                 {
-                    sw.WriteLine("Continuum 3: Modeled " + thisInst.modeledHeight + " m Wind Speeds: Round Robin Analysis Results");
+                    sw.WriteLine("Continuum Wind Energy Software: Modeled " + thisInst.modeledHeight + " m Wind Speeds: Round Robin Analysis Results");
                     sw.WriteLine(DateTime.Now);
                     WriteModelInfoHeader(sw, thisInst.topo);
 
@@ -704,7 +705,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Error writing to file.", "Continuum 3");
+                    MessageBox.Show("Error writing to file.", "Continuum Wind Energy Software");
                     return;
                 }
 
@@ -739,7 +740,7 @@ namespace ContinuumNS
             {
                 StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
 
-                sw.WriteLine("Continuum 3 Model Parameters");
+                sw.WriteLine("Continuum Wind Energy Software Model Parameters");
                 sw.WriteLine(DateTime.Now);
 
                 Model[] theseModels = thisInst.GetModels("Advanced");
@@ -880,7 +881,7 @@ namespace ContinuumNS
                     try
                     {
                         sw = new StreamWriter(thisInst.sfd60mWS.FileName);
-                        string headerString = "Continuum 3: Estimated Gross WS and AEP at Met and Turbine Sites";
+                        string headerString = "Continuum Wind Energy Software: Estimated Gross WS and AEP at Met and Turbine Sites";
                         sw.WriteLine(headerString);
                         WriteModelInfoHeader(sw, thisInst.topo);
 
@@ -1000,13 +1001,13 @@ namespace ContinuumNS
                     }
                     catch
                     {
-                        MessageBox.Show("Error writing to file.", "Continuum 3");
+                        MessageBox.Show("Error writing to file.", "Continuum Wind Energy Software");
                         sw.Close();
                     }
                 }
             }
             else
-                MessageBox.Show("Need to do Turbine calculations first.", "Continuum 3");
+                MessageBox.Show("Need to do Turbine calculations first.", "Continuum Wind Energy Software");
 
         }
 
@@ -1015,7 +1016,7 @@ namespace ContinuumNS
         { 
             if (thisInst.wakeModelList.NumWakeModels > 0)
             {
-                Turbine[] turbsToExport = thisInst.GetCheckedTurbs("Net");
+                Turbine[] turbsToExport = thisInst.turbineList.turbineEsts;
 
                 int numWD = thisInst.GetNumWD();
                 int WD_Ind = thisInst.GetWD_ind("Net");
@@ -1039,7 +1040,7 @@ namespace ContinuumNS
                     try
                     {
                         StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
-                        sw.WriteLine("Continuum 3: Estimated Net WS and AEP at Turbine Sites");
+                        sw.WriteLine("Continuum Wind Energy Software: Estimated Net WS and AEP at Turbine Sites");
                         sw.WriteLine("Using Power Curve: " + thisWakeModel.powerCurve.name);
                         sw.WriteLine("Using Wake Model: " + Wake_model_name);
                         sw.WriteLine("Using Continuum Model: " + Model_type);
@@ -1139,12 +1140,12 @@ namespace ContinuumNS
                     }
                     catch
                     {
-                        MessageBox.Show("Error writing to file.", "Continuum 3");
+                        MessageBox.Show("Error writing to file.", "Continuum Wind Energy Software");
                     }
                 }
             }
             else
-                MessageBox.Show("Need to do Turbine calculations first.", "Continuum 3");
+                MessageBox.Show("Need to do Turbine calculations first.", "Continuum Wind Energy Software");
 
         }
 
@@ -1166,7 +1167,7 @@ namespace ContinuumNS
                 }
                 else
                 {
-                    theseTurbines = thisInst.GetCheckedTurbs("Net");
+                    theseTurbines = thisInst.turbineList.turbineEsts;
                     thisWakeModel = thisInst.GetSelectedWakeModel();
                 }
 
@@ -1197,9 +1198,9 @@ namespace ContinuumNS
                         StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
 
                         if (tabName == "Gross")
-                            sw.WriteLine("Continuum 3: Gross Directional WS [m/s] at Met and Turbine Sites");
+                            sw.WriteLine("Continuum Wind Energy Software: Gross Directional WS [m/s] at Met and Turbine Sites");
                         else
-                            sw.WriteLine("Continuum 3: Net Directional WS [m/s] at Turbine Sites");
+                            sw.WriteLine("Continuum Wind Energy Software: Net Directional WS [m/s] at Turbine Sites");
 
                         if (latsOrUTMs == 1)
                         {
@@ -1282,9 +1283,9 @@ namespace ContinuumNS
 
                         // Weibull Shape Factors
                         if (tabName == "Gross")
-                            sw.WriteLine("Continuum 3: Gross Directional Weibull Shape factor at Met and Turbine Sites");
+                            sw.WriteLine("Continuum Wind Energy Software: Gross Directional Weibull Shape factor at Met and Turbine Sites");
                         else
-                            sw.WriteLine("Continuum 3: Net Directional Weibull Shape factor at Turbine Sites");
+                            sw.WriteLine("Continuum Wind Energy Software: Net Directional Weibull Shape factor at Turbine Sites");
 
                         sw.Write("Site,");
                         if (latsOrUTMs == 1)
@@ -1365,9 +1366,9 @@ namespace ContinuumNS
 
                         // weibull Scale Factors
                         if (tabName == "Gross")
-                            sw.WriteLine("Continuum 3: Gross Directional Weibull Scale factor at Met and Turbine Sites");
+                            sw.WriteLine("Continuum Wind Energy Software: Gross Directional Weibull Scale factor at Met and Turbine Sites");
                         else
-                            sw.WriteLine("Continuum 3: Net Directional Weibull Scale factor at Turbine Sites");
+                            sw.WriteLine("Continuum Wind Energy Software: Net Directional Weibull Scale factor at Turbine Sites");
 
                         sw.Write("Site,");
                         if (latsOrUTMs == 1)
@@ -1450,12 +1451,12 @@ namespace ContinuumNS
                     }
                     catch
                     {
-                        MessageBox.Show("Error writing to file.", "Continuum 3");                        
+                        MessageBox.Show("Error writing to file.", "Continuum Wind Energy Software");                        
                     }
                 }
             }
             else
-                MessageBox.Show("Need to do Turbine calculations first.", "Continuum 3");
+                MessageBox.Show("Need to do Turbine calculations first.", "Continuum Wind Energy Software");
 
         }
 
@@ -1465,7 +1466,7 @@ namespace ContinuumNS
             int numTurbines = thisInst.turbineList.TurbineCount;
             if (numTurbines == 0)
             {
-                MessageBox.Show("No Turbines have been loaded yet. Go to Input tab to import turbine sites.", "Continuum 3");
+                MessageBox.Show("No Turbines have been loaded yet. Go to Input tab to import turbine sites.", "Continuum Wind Energy Software");
                 return;
             }
                         
@@ -1486,7 +1487,7 @@ namespace ContinuumNS
                 try
                 {
                     StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
-                    sw.WriteLine("Continuum 3: Estimated P50 P90 & P99 WS and AEP at Turbine Sites");
+                    sw.WriteLine("Continuum Wind Energy Software: Estimated P50 P90 & P99 WS and AEP at Turbine Sites");
                     sw.WriteLine(modelStr);
                     bool haveAEP;
 
@@ -1573,7 +1574,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Error writing to file.", "Continuum 3");
+                    MessageBox.Show("Error writing to file.", "Continuum Wind Energy Software");
                 }
             }
         }
@@ -1581,7 +1582,7 @@ namespace ContinuumNS
         /// <summary> Exports overall net (i.e. waked) wind speed distributions estimated at met and turbine sites. </summary> 
         public void ExportNetWS_Dists(Continuum thisInst)
         {                        
-            int numTurbinesToExport = thisInst.chkTurbNet.CheckedItems.Count;
+            int numTurbinesToExport = thisInst.turbineList.TurbineCount;
 
             if (thisInst.metList.ThisCount == 0)
                 return;
@@ -1613,7 +1614,7 @@ namespace ContinuumNS
                     return;
                 }
 
-                sw.WriteLine("Continuum 3: Waked Wind Speed Distributions at Turbine Sites");
+                sw.WriteLine("Continuum Wind Energy Software: Waked Wind Speed Distributions at Turbine Sites");
                 if (WD_Ind == numWD)
                     sw.WriteLine("Overall WS Distributions");
                 else
@@ -1623,14 +1624,14 @@ namespace ContinuumNS
 
                 sw.Write("WS [m/s],");
 
-                for (int i = 0; i < thisInst.chkTurbNet.CheckedItems.Count; i++)
-                    sw.Write(thisInst.chkTurbNet.CheckedItems[i].ToString() + ",");
+                for (int i = 0; i < thisInst.turbineList.TurbineCount; i++)
+                    sw.Write(thisInst.turbineList.turbineEsts[i].name + ",");
 
                 sw.WriteLine();
 
                 for (int i = 0; i < numTurbinesToExport; i++)
                 {
-                    Turbine thisTurb = thisInst.turbineList.GetTurbine(thisInst.chkTurbNet.CheckedItems[i].ToString());
+                    Turbine thisTurb = thisInst.turbineList.turbineEsts[i];
                     Turbine.Avg_Est avgWSEst = thisTurb.GetAvgWS_Est(thisWakeModel);
 
                     for (int j = 0; j < numWS; j++)                    
@@ -1687,7 +1688,7 @@ namespace ContinuumNS
                     return;
                 }
 
-                sw.WriteLine("Continuum 3: Gross Wind Speed Distributions at Met and Turbine Sites");
+                sw.WriteLine("Continuum Wind Energy Software: Gross Wind Speed Distributions at Met and Turbine Sites");
                 sw.WriteLine();
 
                 sw.Write("WS [m/s],");
@@ -1762,7 +1763,7 @@ namespace ContinuumNS
                     return;
                 }
 
-                sw.WriteLine("Continuum 3: Gross Directional Wind Speed Distributions at mets and Estimated at Turbine Sites");
+                sw.WriteLine("Continuum Wind Energy Software: Gross Directional Wind Speed Distributions at mets and Estimated at Turbine Sites");
                 
                 for (int i = 0; i < numMets; i++)
                 {
@@ -1828,7 +1829,7 @@ namespace ContinuumNS
             double WS_first = thisInst.metList.WS_FirstInt;
             double WS_int = thisInst.metList.WS_IntSize;
 
-            Turbine[] turbsToExport = thisInst.GetCheckedTurbs("Net");
+            Turbine[] turbsToExport = thisInst.turbineList.turbineEsts;
             int numTurbinesToExport = turbsToExport.Length;
                                     
             Wake_Model thisWakeModel = thisInst.GetSelectedWakeModel();
@@ -1851,7 +1852,7 @@ namespace ContinuumNS
                     return;
                 }
 
-                sw.WriteLine("Continuum 3: Directional Wind Speed Distributions Estimated at Turbine Sites");
+                sw.WriteLine("Continuum Wind Energy Software: Directional Wind Speed Distributions Estimated at Turbine Sites");
 
                 for (int i = 0; i < numTurbinesToExport; i++)
                 {
@@ -1890,7 +1891,7 @@ namespace ContinuumNS
 
             if (numWD == 1)
             {
-                MessageBox.Show("You need to import met files first.", "Continuum 3");
+                MessageBox.Show("You need to import met files first.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -1900,7 +1901,7 @@ namespace ContinuumNS
                 {
 
                     StreamWriter sw = new StreamWriter(thisInst.sfdExpos.FileName);
-                    sw.WriteLine("Continuum 3: Calculated Exposures and Elevations");
+                    sw.WriteLine("Continuum Wind Energy Software: Calculated Exposures and Elevations");
                     sw.WriteLine(Date_String);
 
                     if (thisInst.savedParams.savedFileName != "")
@@ -1942,7 +1943,7 @@ namespace ContinuumNS
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.ToString());
-                        MessageBox.Show("Error writing to file.", "Continuum 3");
+                        MessageBox.Show("Error writing to file.", "Continuum Wind Energy Software");
                         sw.Close();
                     }
 
@@ -1952,7 +1953,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Error opening the file. Make sure that it's not open in another program.", "Continuum 3");
+                MessageBox.Show("Error opening the file. Make sure that it's not open in another program.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -2126,22 +2127,22 @@ namespace ContinuumNS
                 StreamWriter sw = new StreamWriter(thisInst.sfd60mWS.FileName);
 
                 if (thisMap.modelType == 0)
-                    sw.WriteLine("Continuum 3: Modeled Upwind Exposures");
+                    sw.WriteLine("Continuum Wind Energy Software: Modeled Upwind Exposures");
                 else if (thisMap.modelType == 1)
-                    sw.WriteLine("Continuum 3: Modeled Downwind Exposures");
+                    sw.WriteLine("Continuum Wind Energy Software: Modeled Downwind Exposures");
                 else if (thisMap.modelType == 2 || thisMap.modelType == 4)
                 {
                     if (WD_Ind == numWD)
-                        sw.WriteLine("Continuum 3: Modeled " + thisInst.modeledHeight + " m Wind Speeds");
+                        sw.WriteLine("Continuum Wind Energy Software: Modeled " + thisInst.modeledHeight + " m Wind Speeds");
                     else
-                        sw.WriteLine("Continuum 3: Modeled " + thisInst.modeledHeight + " m Wind Speeds for Wind direction =" + ((double)360 / numWD * WD_Ind).ToString() + " degrees");
+                        sw.WriteLine("Continuum Wind Energy Software: Modeled " + thisInst.modeledHeight + " m Wind Speeds for Wind direction =" + ((double)360 / numWD * WD_Ind).ToString() + " degrees");
                 }
                 else if (thisMap.modelType == 3 || thisMap.modelType == 5)
                 {
                     if (thisMap.isWaked == false)
-                        sw.WriteLine("Continuum 3: Modeled Gross AEP using Power Curve: " + thisMap.powerCurve);
+                        sw.WriteLine("Continuum Wind Energy Software: Modeled Gross AEP using Power Curve: " + thisMap.powerCurve);
                     else
-                        sw.WriteLine("Continuum 3: Modeled Waked WS using Power Curve: " + thisMap.powerCurve);
+                        sw.WriteLine("Continuum Wind Energy Software: Modeled Waked WS using Power Curve: " + thisMap.powerCurve);
                 }
                 
                 sw.WriteLine(DateTime.Now);
@@ -2719,6 +2720,8 @@ namespace ContinuumNS
             int numTAB_Bins = Convert.ToInt32(thisInst.cboTAB_bins.SelectedItem.ToString());
             double wsBinWidth = 1;
             double.TryParse(thisInst.txtTAB_WS_bin.Text, out wsBinWidth);
+            bool useMeasuredRose = thisInst.chkUseMeasRose.Checked;
+            bool useDebiasedWS = thisInst.chkUseDebiased.Checked;
 
             int numTAB_wsBins = thisInst.metList.numWS; // Default = 30 bins at 1 m/s width
             if (wsBinWidth != 1 && wsBinWidth > 0)
@@ -2784,7 +2787,7 @@ namespace ContinuumNS
 
                     // starting at This_Start, goes through LT WS Est data, until it reaches This_End,
                     // and finds WD and WS/WD distributions
-                    while (thisTS <= exportEnd)
+                    while (thisTS <= exportEnd && Est_data_ind < thisMCP.LT_WS_Ests.Length)
                     {
                         if (thisWS >= 0 && thisWD >= 0)
                         {
@@ -2807,6 +2810,13 @@ namespace ContinuumNS
 
                     }
 
+                    if (useMeasuredRose == true)
+                    {
+                        Met.WSWD_Dist measDist = thisMet.GetWS_WD_Dist(height, Met.TOD.All, Met.Season.All);
+                        for (int i = 0; i < numTAB_Bins; i++)
+                            windRose[i] = measDist.windRose[i];
+                    }
+
                     double Sum_WD = 0;
                     for (int i = 0; i < numTAB_Bins; i++)
                         Sum_WD = Sum_WD + windRose[i];
@@ -2825,7 +2835,72 @@ namespace ContinuumNS
                             Sum_WS = Sum_WS + WSWD_Dist[WS_Ind, WD_Ind];
 
                         for (int WS_Ind = 0; WS_Ind < thisInst.metList.numWS; WS_Ind++)
-                            WSWD_Dist[WS_Ind, WD_Ind] = WSWD_Dist[WS_Ind, WD_Ind] / Sum_WS * 1000;
+                            WSWD_Dist[WS_Ind, WD_Ind] = WSWD_Dist[WS_Ind, WD_Ind] / Sum_WS * 1000.0;
+
+                    }
+
+                    // Calculate overall average wind speed
+                    double thisAvgWS = 0;
+
+                    for (int WD_Ind = 0; WD_Ind < numTAB_Bins; WD_Ind++)
+                    {
+                        double meanWS_Direction = 0;
+
+                        for (int WS_Ind = 0; WS_Ind < numTAB_wsBins; WS_Ind++)
+                        {
+                            double wsBinCenter = WS_Ind * wsBinWidth;
+                            meanWS_Direction += WSWD_Dist[WS_Ind, WD_Ind] / 1000.0 * wsBinCenter;
+                        }
+
+                        thisAvgWS += meanWS_Direction * windRose[WD_Ind] / 100.0;
+                    }
+
+                    if (useDebiasedWS)
+                    {
+                        // Shift the WS distribution to account for bias in the MCP'd WS estimates
+                        double debiasedWS = thisMCP.debiasData.debiasedWS;
+                        double biasedWS = thisAvgWS;
+                        double wsShift = (debiasedWS - biasedWS) / 2.0;
+                        double wsDiff = debiasedWS - biasedWS;
+                        double wsDiffTolerance = 0.01;
+                        double[,] originalDist = (double[,])WSWD_Dist.Clone();
+
+                        while (Math.Abs(wsDiff) > wsDiffTolerance)
+                        {
+                            // Interpolate the WS distribution to shift it by wsShift
+                            for (int WD_Ind = 0; WD_Ind < numTAB_Bins; WD_Ind++)
+                            {
+                                for (int WS_Ind = 0; WS_Ind < thisInst.metList.numWS - 1; WS_Ind++)
+                                {
+                                    double sourceIndex = WS_Ind - wsShift / wsBinWidth;
+                                    int lowerIndex = (int)Math.Floor(sourceIndex);
+                                    double fraction = sourceIndex - lowerIndex;
+
+                                    if (lowerIndex < 0 || lowerIndex >= numTAB_wsBins - 1)                                    
+                                        WSWD_Dist[WS_Ind, WD_Ind] = 0;                                    
+                                    else                                    
+                                        WSWD_Dist[WS_Ind, WD_Ind] = originalDist[lowerIndex, WD_Ind] * (1 - fraction) + originalDist[lowerIndex + 1, WD_Ind] * fraction;                                    
+                                }
+                            }
+
+                            // Calculate average wind speed
+                            double thisIterAvgWS = 0;
+                            for (int WD_Ind = 0; WD_Ind < numTAB_Bins; WD_Ind++)
+                            {
+                                double meanWS_Direction = 0;
+
+                                for (int WS_Ind = 0; WS_Ind < numTAB_wsBins; WS_Ind++)
+                                {
+                                    double wsBinCenter = WS_Ind * wsBinWidth;
+                                    meanWS_Direction +=  WSWD_Dist[WS_Ind, WD_Ind] / 1000.0 * wsBinCenter;
+                                }
+
+                                thisIterAvgWS += meanWS_Direction * windRose[WD_Ind] / 100.0;
+                            }
+
+                            wsDiff = debiasedWS - thisIterAvgWS;
+                            wsShift += wsDiff / 2.0;
+                        }
 
                     }
 
@@ -3070,6 +3145,13 @@ namespace ContinuumNS
             if (thisRef.interpData.TS_Data == null)
                 return;
 
+            bool gotProd = false;
+            if (thisRef.interpData.monthlyProd != null)
+            {
+                if (thisRef.interpData.monthlyProd[0].LT_Prod_Avg != 0)
+                    gotProd = true;
+            }
+
             int firstYear = thisRef.startDate.Year;
             int lastYear = thisRef.endDate.Year;
 
@@ -3079,43 +3161,71 @@ namespace ContinuumNS
             if (thisRef.isUserDefined == false)
                 targetMet = thisInst.metList.GetMetAtLatLon(thisRef.interpData.Coords.latitude, thisRef.interpData.Coords.longitude, thisInst.UTM_conversions);
 
-            if (thisRef.isUserDefined)            
-                filename = Output_folder + "\\Monthly_Prod_Lat_" + thisRef.interpData.Coords.latitude + "_" + "Lon_" + thisRef.interpData.Coords.longitude +
-                "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";            
-            else            
-                filename = Output_folder + "\\Monthly_Prod_" + targetMet.name + "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";
+            if (gotProd)
+            {
+                if (thisRef.isUserDefined)
+                    filename = Output_folder + "\\Monthly_Prod_and_WS_Lat_" + thisRef.interpData.Coords.latitude + "_" + "Lon_" + thisRef.interpData.Coords.longitude +
+                    "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";
+                else
+                    filename = Output_folder + "\\Monthly_Prod_and_WS_" + targetMet.name + "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";
+            }
+            else
+            {
+                if (thisRef.isUserDefined)
+                    filename = Output_folder + "\\Monthly_WS_Lat_" + thisRef.interpData.Coords.latitude + "_" + "Lon_" + thisRef.interpData.Coords.longitude +
+                    "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";
+                else
+                    filename = Output_folder + "\\Monthly_WS_" + targetMet.name + "_" + firstYear.ToString() + "_to_" + lastYear.ToString() + ".csv";
+            }
             
             StreamWriter file = new StreamWriter(filename);
 
-            file.WriteLine("Long-Term Monthly Production based on MERRA data");
-            if (thisRef.isUserDefined)            
-                file.WriteLine("Project location (user-defined):, Lat:, " + thisRef.interpData.Coords.latitude + ", Long:, " + thisRef.interpData.Coords.longitude);            
+            if (gotProd)
+                file.WriteLine("Long-Term Monthly Gross Production and Wind Speed at: " + thisRef.GetName(thisInst.metList, thisInst.UTM_conversions));
             else
-                file.WriteLine("Project:," + targetMet.name);
+                file.WriteLine("Long-Term Monthly Wind Speed at: " + thisRef.GetName(thisInst.metList, thisInst.UTM_conversions));
+
+            if (thisRef.isUserDefined)            
+                file.WriteLine("Site location (user-defined):, Lat:, " + thisRef.interpData.Coords.latitude + ", Long:, " + thisRef.interpData.Coords.longitude);            
+            else
+                file.WriteLine("Site:," + targetMet.name);
 
             file.WriteLine();
-            file.WriteLine("Year, Month, Prod (MWh), % Diff from Monthly LT");
+
+            if (gotProd)
+                file.WriteLine("Year, Month, WS [m/s], % Diff from Monthly LT WS, Energy [MWh], % Diff from Monthly LT Prod");
+            else
+                file.WriteLine("Year, Month, WS [m/s], % Diff from Monthly LT WS");
 
             for (int i = firstYear; i <= lastYear; i++)
             {
-                {
-                    Reference.MonthlyProdByYearAndLTAvg[] thisMonthly = new Reference.MonthlyProdByYearAndLTAvg[0];
-                    thisMonthly = thisRef.interpData.monthlyProd;
+                
+                Reference.MonthlyProdByYearAndLTAvg[] thisMonthly = new Reference.MonthlyProdByYearAndLTAvg[0];
+                thisMonthly = thisRef.interpData.monthlyProd;
 
-                    for (int j = 1; j <= 12; j++)
+                for (int j = 1; j <= 12; j++)
+                {
+                    if (thisRef.Have_Full_Month(thisRef.interpData.TS_Data, j, i))
                     {
-                        if (thisRef.Have_Full_Month(thisRef.interpData.TS_Data, j, i))
+                        file.Write(i + ",");
+                        file.Write(CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(j) + ",");
+                        int[] monthYearInd = thisRef.Get_Month_Year_Inds(thisMonthly, j, i);
+
+                        file.Write(Math.Round(thisMonthly[monthYearInd[0]].YearProd[monthYearInd[1]].ws, ContinuumStyle.GetNumDecimals("WS")).ToString() + ",");
+                        double Diff = thisRef.Calc_Perc_Diff_from_LT_Monthly(thisMonthly[monthYearInd[0]], i, "Prod");
+                        file.Write(Math.Round(Diff, ContinuumStyle.GetNumDecimals("Error", true)).ToString("P")); // adds % diff from the average
+
+                        if (gotProd)
                         {
-                            file.Write(i + ",");
-                            file.Write(CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(j) + ",");
-                            int[] monthYearInd = thisRef.Get_Month_Year_Inds(thisMonthly, j, i);
-                            file.Write(Math.Round(thisMonthly[monthYearInd[0]].YearProd[monthYearInd[1]].prod / 1000, 1).ToString() + ",");
-                            double Diff = thisRef.Calc_Perc_Diff_from_LT_Monthly(thisMonthly[monthYearInd[0]], i);
-                            file.Write((Math.Round(Diff, 4)).ToString("P")); // adds % diff from the average
-                            file.WriteLine();
+                            file.Write(Math.Round(thisMonthly[monthYearInd[0]].YearProd[monthYearInd[1]].prod, ContinuumStyle.GetNumDecimals("Energy")).ToString() + ",");
+                            Diff = thisRef.Calc_Perc_Diff_from_LT_Monthly(thisMonthly[monthYearInd[0]], i, "Prod");
+                            file.Write(Math.Round(Diff, ContinuumStyle.GetNumDecimals("Error", true)).ToString("P")); // adds % diff from the average
                         }
+                        
+                        file.WriteLine();
                     }
                 }
+                
             }
 
             file.Close();
@@ -3198,18 +3308,24 @@ namespace ContinuumNS
         }
 
         /// <summary> Exports annual average values shown on Time Series tab. </summary>
-        public void ExportTimeSeries(Continuum thisInst)
+        public void ExportTimeSeries(Continuum thisInst, Wake_Model thisWakeModel, TurbineCollection.PowerCurve powerCurve, string timeInterval)
         {
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
-            {             
+            {
                 string filePath = thisInst.sfd60mWS.FileName;
                 StreamWriter file = new StreamWriter(filePath);
 
-                file.WriteLine(thisInst.cboTimeSeriesAnalysis.SelectedItem.ToString());
+                double otherLoss = 0;
+
+                if (thisInst.turbineList.exceed.compositeLoss.isComplete)
+                    otherLoss = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+
+                //     file.WriteLine(thisInst.cboTimeSeriesAnalysis.SelectedItem.ToString());
                 file.WriteLine(thisInst.savedParams.savedFileName);
                 file.WriteLine(DateTime.Now.ToShortDateString());
                 file.WriteLine();
 
+                /*
                 // Write out column names
                 for (int c = 0; c < thisInst.dataWTG_TimeSeriesEsts.ColumnCount; c++)
                     file.Write(thisInst.dataWTG_TimeSeriesEsts.Columns[c].Name + ",");
@@ -3222,321 +3338,201 @@ namespace ContinuumNS
                         file.Write(thisInst.dataWTG_TimeSeriesEsts.Rows[r].Cells[c].Value + ",");
                     file.WriteLine();
                 }
-                
-                file.Close();
-            }
-        }
+                */
 
-        /// <summary> Exports annual average values shown on Time Series tab. </summary>
-   /*     public void ExportYearlyTurbineValues(Continuum thisInst)
-        {             
-            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
-            {
-                bool haveGross = false;
-                bool haveNet = false;
 
-                try
+                if (timeInterval == "Hourly")
                 {
-                    if (thisInst.lstYearlyTurbine.Items[0].SubItems[1].Text != "")
-                        haveGross = true;
+                    // Write out headers
+                    file.Write("Timestamp, Wind Farm Free-Stream Avg WS [m/s], Wind Farm Gross Prod [MWh], Wind Farm Net Prod [MWh], Wind Farm Wake Loss [%]");
 
-                    if (thisInst.lstYearlyTurbine.Items[0].SubItems[3].Text != "")
-                        haveNet = true;
-                }
-                catch
-                {
-                    return;
-                }
-
-                Turbine thisTurb = new Turbine();
-                bool all_WTGs = true;
-
-                if (thisInst.cboTimeSeriesInterval.SelectedItem.ToString() != "All WTGs")
-                {
-                    thisTurb = thisInst.GetSelectedTurbine("Monthly");
-                    all_WTGs = false;
-                }
-                else if (thisInst.turbineList.TurbineCount > 0)
-                {
-                    // Assign first turbine in list to thisTurb
-                    thisTurb = thisInst.turbineList.turbineEsts[0];
-                }
-                else
-                    return;
-
-                string filePath = thisInst.sfd60mWS.FileName;
-                StreamWriter file = new StreamWriter(filePath);
-
-                if (all_WTGs)
-                    file.WriteLine("Estimated Annual Parameters at all Turbine Sites");
-                else
-                    file.WriteLine("Estimated Annual Parameters at Turbine: " + thisTurb.name);
-
-                file.WriteLine(DateTime.Now.ToShortDateString());
-                file.WriteLine();
-
-                // Output Annual table
-                file.Write(thisInst.lstYearlyTurbine.Columns[0].Text + "," + thisInst.lstYearlyTurbine.Columns[1].Text + ",");
-                if (haveGross == true)
-                    file.Write(thisInst.lstYearlyTurbine.Columns[2].Text + ",");
-
-                if (haveNet == true)
-                    file.Write(thisInst.lstYearlyTurbine.Columns[3].Text + "," + thisInst.lstYearlyTurbine.Columns[4].Text + ",");
-
-                if (haveGross || haveNet)
-                    file.Write(thisInst.lstYearlyTurbine.Columns[5].Text + ",");
-
-                file.WriteLine();
-
-                for (int i = 0; i < thisInst.lstYearlyTurbine.Items.Count; i++)
-                {
-                    for (int j = 0; j < thisInst.lstYearlyTurbine.Items[i].SubItems.Count; j++)
-                        if (thisInst.lstYearlyTurbine.Items[i].SubItems[j].Text != "")
-                            file.Write(thisInst.lstYearlyTurbine.Items[i].SubItems[j].Text + ",");
-
-                    file.WriteLine();
-                }
-
-                file.Close();
-            }
-        }
-
-        /// <summary> Exports monthly average values shown on Time Series tab. </summary>
-        public void ExportMonthlyTurbineValues(Continuum thisInst)
-        {            
-            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
-            {
-                bool haveGross = false;
-                bool haveNet = false;
-
-                try
-                {
-                    if (thisInst.lstMonthlyTurbine.Items[0].SubItems[2].Text != "")
-                        haveGross = true;
-
-                    if (thisInst.lstMonthlyTurbine.Items[0].SubItems[4].Text != "")
-                        haveNet = true;
-                }
-                catch
-                {
-                    return;
-                }
-
-                Turbine thisTurb = new Turbine();
-                bool all_WTGs = true;
-
-                if (thisInst.cboTimeSeriesInterval.SelectedItem.ToString() != "All WTGs")
-                {
-                    thisTurb = thisInst.GetSelectedTurbine("Monthly");
-                    all_WTGs = false;
-                }
-                else if (thisInst.turbineList.TurbineCount > 0)
-                {
-                    // Assign first turbine in list to thisTurb
-                    thisTurb = thisInst.turbineList.turbineEsts[0];
-                }
-                else
-                    return;
-
-                string filePath = thisInst.sfd60mWS.FileName;
-                StreamWriter file = new StreamWriter(filePath);
-
-                if (all_WTGs)
-                    file.WriteLine("Estimated Monthly Parameters at All Turbine Sites");
-                else
-                    file.WriteLine("Estimated Monthly Parameters at Turbine: " + thisTurb.name);
-
-                file.WriteLine(DateTime.Now.ToShortDateString());
-                file.WriteLine();
-
-                // Output Monthly table
-                file.Write(thisInst.lstMonthlyTurbine.Columns[0].Text + "," + thisInst.lstMonthlyTurbine.Columns[1].Text + "," + thisInst.lstMonthlyTurbine.Columns[2].Text + ",");
-                if (haveGross == true)
-                    file.Write(thisInst.lstMonthlyTurbine.Columns[3].Text + ",");
-
-                if (haveNet == true)
-                    file.Write(thisInst.lstMonthlyTurbine.Columns[4].Text + "," + thisInst.lstMonthlyTurbine.Columns[5].Text + ",");
-
-                if (haveGross || haveNet)
-                    file.Write(thisInst.lstMonthlyTurbine.Columns[6].Text + ",");
-
-                file.WriteLine();
-
-                for (int i = 0; i < thisInst.lstMonthlyTurbine.Items.Count; i++)
-                {
-                    for (int j = 0; j < thisInst.lstMonthlyTurbine.Items[i].SubItems.Count; j++)
-                        if (thisInst.lstMonthlyTurbine.Items[i].SubItems[j].Text != "")
-                            file.Write(thisInst.lstMonthlyTurbine.Items[i].SubItems[j].Text + ",");
-
-                    file.WriteLine();
-                }
-
-                file.Close();
-            }
-        }
-
-        /// <summary> Exports estimated hourly values at selected turbine on Time Series tab. </summary>
-        public void ExportHourlyTurbineValues(Continuum thisInst)
-        {
-            if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
-            {
-                Turbine thisTurb = new Turbine();
-                bool all_WTGs = true;
-
-                if (thisInst.cboTimeSeriesInterval.SelectedItem.ToString() != "All WTGs")
-                {
-                    thisTurb = thisInst.GetSelectedTurbine("Monthly");
-                    all_WTGs = false;
-                }
-                else if (thisInst.turbineList.TurbineCount > 0)
-                {
-                    // Assign first turbine in list to thisTurb
-                    thisTurb = thisInst.turbineList.turbineEsts[0];
-                }
-                else
-                    return;
-
-                Wake_Model thisWakeModel = null;
-                if (thisInst.wakeModelList.NumWakeModels > 0)
-                {
-                    string wakeModelString = thisInst.cboMonthlyWakeModel.SelectedItem.ToString();
-                    thisWakeModel = thisInst.wakeModelList.GetWakeModelFromString(wakeModelString);
-                }
-                                
-                TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Monthly");
-                WakeCollection.WakeLossCoeffs[] wakeCoeffs = null;
-                string MCP_Method = thisInst.Get_MCP_Method();
-
-                if (thisWakeModel != null)
-                {
-                    // Find wake loss coeffs                 
-                    int minDistance = 10000000;
-                    int maxDistance = 0;
-
-                    for (int i = 0; i < thisInst.turbineList.TurbineCount; i++)
+                    for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
                     {
-                        int[] Min_Max_Dist = thisInst.turbineList.CalcMinMaxDistanceToTurbines(thisInst.turbineList.turbineEsts[i].UTMX, thisInst.turbineList.turbineEsts[i].UTMY);
-                        if (Min_Max_Dist[0] < minDistance) minDistance = Min_Max_Dist[0]; // this is min distance to turbine but when WD is at a different angle (not in line with turbines) the X dist is less than this value so making this always equal to 2*RD
-                        if (Min_Max_Dist[1] > maxDistance) maxDistance = Min_Max_Dist[1];
+                        Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                        file.Write(", " + thisTurb.name + " Free-Stream Avg WS [m/s], " + thisTurb.name + " Gross Prod [MWh], " + thisTurb.name + " Net Prod [MWh], " + thisTurb.name + " Wake Loss [%]");
                     }
 
-                    minDistance = (int)(2 * thisWakeModel.powerCurve.RD);
-                    if (maxDistance == 0) maxDistance = 15000; // maxDistance will be zero when there is only one turbine. Might be good to make this value constant
-                    wakeCoeffs = thisInst.wakeModelList.GetWakeLossesCoeffs(minDistance, maxDistance, thisWakeModel, thisInst.metList);
-                }
+                    file.WriteLine();
 
-                NodeCollection nodeList = new NodeCollection();
-                Nodes targetNode = nodeList.GetTurbNode(thisTurb);
+                    Turbine.Avg_Est avgEst = thisInst.turbineList.turbineEsts[0].GetAvgWS_Est(null);
+                    int numHours = avgEst.timeSeries.Length;
+                    int numParams = 4; // Avg WS, Gross Energy, Net Energy, Wake Loss
 
-                Turbine.Avg_Est avgEst = thisTurb.GetAvgWS_Est(thisWakeModel);
-                ModelCollection.TimeSeries[] thisTS = avgEst.timeSeries;
-
-                if (thisTS.Length == 0)
-                    avgEst.timeSeries = thisInst.modelList.GenerateTimeSeries(thisInst, thisInst.metList.GetMetsUsed(), targetNode, 
-                        powerCurve, thisWakeModel, wakeCoeffs, MCP_Method);
-
-                if (avgEst.timeSeries == null)
-                    return;
-
-                if (avgEst.timeSeries.Length == 0)
-                    return;
-
-                thisTS = avgEst.timeSeries;
-
-                string filePath = thisInst.sfd60mWS.FileName;
-                StreamWriter file = new StreamWriter(filePath);
-
-                if (all_WTGs)
-                    file.WriteLine("Estimated Hourly Estimates at all WTGs");
-                else
-                    file.WriteLine("Estimated Hourly Estimates at Turbine: " + thisTurb.name);
-
-                file.WriteLine(DateTime.Now.ToShortDateString());
-
-                if (powerCurve.power != null)
-                    file.WriteLine("Using : " + powerCurve.name);
-
-                if (wakeCoeffs != null)
-                    file.WriteLine("Wake Model :" + thisInst.wakeModelList.CreateWakeModelString(thisWakeModel));
-
-                file.WriteLine();
-
-                file.Write("Timestamp, " + thisInst.modeledHeight + " WS [m/s], " + thisInst.modeledHeight + " WD, ");
-
-                bool haveGross = false;
-                bool haveNet = false;
-
-                if (powerCurve.power != null)
-                {
-                    file.Write("Gross Energy [kWh],");
-                    haveGross = true;
-                }
-
-                if (wakeCoeffs != null)
-                {
-                    file.Write("Net Energy [kWh], Waked Wind Speed [m/s], Wake Loss [%]");
-                    haveNet = true;
-                }
-
-                file.WriteLine();
-
-                int TS_length = thisTS.Length;
-                double overallP50 = 1;
-                
-                if (haveNet)
-                    overallP50 = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
-                
-                if (overallP50 == 0)
-                    overallP50 = 1;
-
-                for (int i = 0; i < TS_length; i++)
-                {
-
-                    if (all_WTGs)
+                    for (int i = 0; i < numHours; i++)
                     {
-                        ModelCollection.TimeSeries thisAvgTS = thisInst.turbineList.CalcWindFarmHourlyValues(i, thisWakeModel);
+                        int thisYear = avgEst.timeSeries[i].dateTime.Year;
 
-                        file.Write(thisTS[i].dateTime + "," + Math.Round(thisAvgTS.freeStreamWS, 3) + "," + Math.Round(thisAvgTS.WD, 2) + ",");
+                        string[] rowData = new string[1 + numParams + numParams * thisInst.turbineList.TurbineCount];
 
-                        if (haveGross)
-                            file.Write(thisAvgTS.grossEnergy + ",");
+                        rowData[0] = avgEst.timeSeries[i].dateTime.ToString("yyyy-MM-dd HH:mm");
 
-                        if (haveNet)
+                        int colInd = 1;
+
+                        // First get data for whole wind farm
+                        ModelCollection.TimeSeries hourAvg = thisInst.turbineList.CalcWindFarmHourlyValues(i, thisWakeModel);
+                        double avgWS = hourAvg.freeStreamWS;
+                        double grossEnergy = hourAvg.grossEnergy;
+                        double netEnergy = hourAvg.netEnergy;
+
+                        rowData[colInd] = Math.Round(avgWS, 3).ToString();
+                        rowData[colInd + 1] = Math.Round(grossEnergy, 1).ToString();
+                        rowData[colInd + 2] = Math.Round(netEnergy, 1).ToString();
+                        double thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
+                        rowData[colInd + 3] = Math.Round(100.0 * thisWakeLoss, 1).ToString();
+                        colInd = colInd + numParams;
+
+                        for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
                         {
-                            double thisWake = 0;
+                            Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                            avgWS = thisTurb.GetAvgWS_Est(null).timeSeries[i].freeStreamWS;
+                            grossEnergy = thisTurb.GetAvgWS_Est(thisWakeModel).timeSeries[i].grossEnergy;
+                            netEnergy = thisTurb.GetAvgWS_Est(thisWakeModel).timeSeries[i].netEnergy;
 
-                            if (thisAvgTS.grossEnergy != 0)
-                                thisWake = 100 * (thisAvgTS.grossEnergy - thisAvgTS.netEnergy / overallP50) / thisAvgTS.grossEnergy;                                                       
-
-                            file.Write(thisAvgTS.netEnergy + "," + Math.Round(thisAvgTS.wakedWS, 3) + "," + Math.Round(thisWake, 3));
+                            rowData[colInd] = Math.Round(avgWS, 3).ToString();
+                            rowData[colInd + 1] = Math.Round(grossEnergy, 1).ToString();
+                            rowData[colInd + 2] = Math.Round(netEnergy, 1).ToString();
+                            thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
+                            rowData[colInd + 3] = Math.Round(100.0 * thisWakeLoss, 1).ToString();
+                            colInd = colInd + numParams;
                         }
+
+                        file.WriteLine(string.Join(",", rowData));
                     }
-                    else
+
+                    file.Close();
+                }
+                else if (timeInterval == "Monthly")
+                {
+                    // Write out headers
+                    file.Write("Timestamp, Monthly Free-Stream Wind Farm Avg WS [m/s], Monthly Wind Farm Gross Prod [MWh], Monthly Wind Farm Net Prod [MWh], Monthly Wind Farm Wake Loss [%]");
+
+                    for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
                     {
-                        file.Write(thisTS[i].dateTime + "," + Math.Round(thisTS[i].freeStreamWS, 3) + "," + thisTS[i].WD + ",");
+                        Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                        file.Write(", " + thisTurb.name + " Monthly Free-Stream Avg WS [m/s], " + thisTurb.name + " Monthly Gross Prod [MWh], " + thisTurb.name + " Monthly Net Prod [MWh], " + thisTurb.name + " Monthly Wake Loss [%]");
+                    }
 
-                        if (haveGross)
-                            file.Write(thisTS[i].grossEnergy + ",");
+                    file.WriteLine();
 
-                        if (haveNet)
+                    Turbine.Avg_Est avgEst = thisInst.turbineList.turbineEsts[0].GetAvgWS_Est(null);
+                    int numMonths = avgEst.FS_MonthlyVals.Length;
+
+                    for (int i = 0; i < numMonths; i++)
+                    {
+                        int thisYear = avgEst.FS_MonthlyVals[i].year;
+
+                        DateTime thisMonth = new DateTime(avgEst.FS_MonthlyVals[i].year, avgEst.FS_MonthlyVals[i].month, 1);
+
+                        file.Write(thisMonth.ToString("yyyy-MM") + ",");
+
+                        int colInd = 1;
+
+                        // First get data for whole wind farm
+                        double avgWS = thisInst.turbineList.CalcAvgWS_ByMonthInd(i);
+                        double grossEnergy = 0;
+
+                        if (powerCurve.power != null)
+                            grossEnergy = thisInst.turbineList.CalcGrossEnergy_ByMonthInd(powerCurve, i);
+                        double netEnergy = 0;
+
+                        if (thisWakeModel != null)
+                            netEnergy = thisInst.turbineList.CalcNetEnergy_ByMonthInd(i, thisWakeModel);
+
+                        file.Write(Math.Round(avgWS, ContinuumStyle.GetNumDecimals("WS")) + ",");
+                        file.Write(Math.Round(grossEnergy, ContinuumStyle.GetNumDecimals("Energy")) + ",");
+                        file.Write(Math.Round(netEnergy, ContinuumStyle.GetNumDecimals("Energy")) + ",");
+                        double thisWakeLoss = 0;
+
+                        if (grossEnergy > 0)
+                            thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
+
+                        file.Write(Math.Round(100.0 * thisWakeLoss, ContinuumStyle.GetNumDecimals("Wake")) + ",");
+
+                        for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
                         {
-                            double thisWake = 0;
+                            Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                            avgWS = thisTurb.GetAvgWS_Est(null).FS_MonthlyVals[i].avgWS;
+                            file.Write(Math.Round(avgWS, ContinuumStyle.GetNumDecimals("WS")) + ",");
 
-                            if (thisTS[i].grossEnergy != 0)
-                                    thisWake = 100 * (thisTS[i].grossEnergy - thisTS[i].netEnergy / overallP50) / thisTS[i].grossEnergy;                                                      
+                            if (powerCurve.power != null)
+                            {
+                                grossEnergy = thisTurb.GetGrossEnergyEst(powerCurve).monthlyVals[i].energyProd;
+                                netEnergy = 0;
 
-                            file.Write(thisTS[i].netEnergy + "," + Math.Round(thisTS[i].wakedWS, 3) + "," + Math.Round(thisWake, 3));
+                                if (thisWakeModel != null)
+                                    netEnergy = thisTurb.GetNetEnergyEst(thisWakeModel).monthlyVals[i].energyProd;
+
+                                thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
+                            }
+                            else
+                            {
+                                grossEnergy = 0;
+                                netEnergy = 0;
+                            }
+
+                            file.Write(Math.Round(grossEnergy, ContinuumStyle.GetNumDecimals("Energy")) + ",");
+                            file.Write(Math.Round(netEnergy, ContinuumStyle.GetNumDecimals("Energy")) + ",");
+                            file.Write(Math.Round(100.0 * thisWakeLoss, ContinuumStyle.GetNumDecimals("Wake")) + ",");
                         }
                     }
 
-                    file.WriteLine();
+                    file.Close();
                 }
+                else if (timeInterval == "Yearly")
+                {
+                    Turbine.Avg_Est avgEst = thisInst.turbineList.turbineEsts[0].GetAvgWS_Est(thisWakeModel);
+                    int firstYear = avgEst.timeSeries[0].dateTime.Year;
 
-                file.Close();
+                    // If start time was set in UTC-0, the start time in local time might be 12/31 of the previous year, if that's the case, set firstYear to the year of the first time series value
+                    if (avgEst.timeSeries[0].dateTime.Month == 12 && avgEst.timeSeries[0].dateTime.Day == 31)
+                        firstYear = avgEst.timeSeries[1].dateTime.Year;
 
+                    int lastYear = avgEst.timeSeries[avgEst.timeSeries.Length - 1].dateTime.Year;
+                    int numParams = 4; // Avg WS, Gross Energy, Net Energy, Wake Loss
+
+                    for (int i = firstYear; i <= lastYear; i++)
+                    {
+                        DateTime thisYearDate = new DateTime(i, 1, 1);
+                        file.Write(thisYearDate.ToString("yyyy") + ",");
+                        int colInd = 1;
+
+                        // First get data for whole wind farm
+                        double avgWS = thisInst.turbineList.CalcYearlyValue("Avg WS", i, null, new TurbineCollection.PowerCurve());
+                        double grossEnergy = thisInst.turbineList.CalcYearlyValue("Gross AEP", i, null, powerCurve);
+                        double netEnergy = 0;
+
+                        if (thisWakeModel != null)
+                            netEnergy = thisInst.turbineList.CalcYearlyValue("Net AEP", i, thisWakeModel, powerCurve);
+
+                        file.Write(Math.Round(avgWS, ContinuumStyle.GetNumDecimals("WS")) + ",");
+                        file.Write(Math.Round(grossEnergy, ContinuumStyle.GetNumDecimals("Energy")) + ",");
+                        file.Write(Math.Round(netEnergy, ContinuumStyle.GetNumDecimals("Energy")) + ",");
+                        double thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
+                        file.Write(Math.Round(100.0 * thisWakeLoss, ContinuumStyle.GetNumDecimals("Wake")) + ",");
+                        colInd = colInd + numParams;
+
+                        for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
+                        {
+                            Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                            avgWS = thisTurb.CalcYearlyValue(i, "Avg WS", null, new TurbineCollection.PowerCurve());
+                            grossEnergy = thisTurb.CalcYearlyValue(i, "Gross AEP", thisWakeModel, powerCurve);
+
+                            if (thisWakeModel != null)
+                                netEnergy = thisTurb.CalcYearlyValue(i, "Net AEP", thisWakeModel, powerCurve);
+
+                            file.Write(Math.Round(avgWS, ContinuumStyle.GetNumDecimals("WS")) + ",");
+                            file.Write(Math.Round(grossEnergy, ContinuumStyle.GetNumDecimals("Energy")) + ",");
+                            file.Write(Math.Round(netEnergy, ContinuumStyle.GetNumDecimals("Energy")) + ",");
+                            thisWakeLoss = Math.Round((grossEnergy - netEnergy / otherLoss) / grossEnergy, 4);
+                            file.Write(Math.Round(100.0 * thisWakeLoss, ContinuumStyle.GetNumDecimals("Wake")) + ",");
+                            colInd = colInd + numParams;
+                        }
+
+
+                    }
+                }
             }
-        }
-   */
+        }       
 
         /// <summary> Exports exceedance tables/performance factor probability distribution. </summary>
         public void Export_P_tables_and_Curves(bool Exp_Curves, bool Exp_Table, bool Exp_All_P_Vals, Continuum thisInst)
@@ -4107,21 +4103,21 @@ namespace ContinuumNS
             if (thisMet.metData == null)
                 return;
 
-            double[] alphaP1_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 1, thisInst, startTime, endTime);
-            double[] alphaP10_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, startTime, endTime);
-            double[] alphaP50_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 50, thisInst, startTime, endTime);
+            float[] alphaP1_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 1, thisInst, startTime, endTime);
+            float[] alphaP10_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, startTime, endTime);
+            float[] alphaP50_5_to_10 = thisMet.GetAlphaPValueAndCount(5, 10, 50, thisInst, startTime, endTime);
 
-            double[] alphaP1_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 1, thisInst, startTime, endTime);
-            double[] alphaP10_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 10, thisInst, startTime, endTime);
-            double[] alphaP50_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 50, thisInst, startTime, endTime);
+            float[] alphaP1_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 1, thisInst, startTime, endTime);
+            float[] alphaP10_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 10, thisInst, startTime, endTime);
+            float[] alphaP50_10_to_15 = thisMet.GetAlphaPValueAndCount(10, 15, 50, thisInst, startTime, endTime);
 
-            double[] alphaP1_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 1, thisInst, startTime, endTime);
-            double[] alphaP10_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 10, thisInst, startTime, endTime);
-            double[] alphaP50_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 50, thisInst, startTime, endTime);
+            float[] alphaP1_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 1, thisInst, startTime, endTime);
+            float[] alphaP10_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 10, thisInst, startTime, endTime);
+            float[] alphaP50_15plus = thisMet.GetAlphaPValueAndCount(15, 30, 50, thisInst, startTime, endTime);
 
-            double[] alphaP1_All = thisMet.GetAlphaPValueAndCount(3, 30, 1, thisInst, startTime, endTime);
-            double[] alphaP10_All = thisMet.GetAlphaPValueAndCount(3, 30, 10, thisInst, startTime, endTime);
-            double[] alphaP50_All = thisMet.GetAlphaPValueAndCount(3, 30, 50, thisInst, startTime, endTime);
+            float[] alphaP1_All = thisMet.GetAlphaPValueAndCount(3, 30, 1, thisInst, startTime, endTime);
+            float[] alphaP10_All = thisMet.GetAlphaPValueAndCount(3, 30, 10, thisInst, startTime, endTime);
+            float[] alphaP50_All = thisMet.GetAlphaPValueAndCount(3, 30, 50, thisInst, startTime, endTime);
 
             if (thisInst.sfd60mWS.ShowDialog() == DialogResult.OK)
             {
@@ -4601,7 +4597,7 @@ namespace ContinuumNS
 
             if (allRoundRobins == null)
             {
-                MessageBox.Show("No Round Robin analyses have been generated yet.", "Continuum 3");
+                MessageBox.Show("No Round Robin analyses have been generated yet.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -4611,7 +4607,7 @@ namespace ContinuumNS
 
                 try
                 {
-                    sw.WriteLine("Continuum 3: Summary of Modeled " + thisInst.modeledHeight + " m Wind Speeds: Round Robin Analysis Results");
+                    sw.WriteLine("Continuum Wind Energy Software: Summary of Modeled " + thisInst.modeledHeight + " m Wind Speeds: Round Robin Analysis Results");
                     sw.WriteLine(DateTime.Now);
                     sw.WriteLine();
 

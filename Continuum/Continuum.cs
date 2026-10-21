@@ -1,15 +1,19 @@
 ﻿using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
+using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Policy;
 using System.Text;
 using System.Threading;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using static ContinuumNS.BackgroundWork;
 
@@ -58,17 +62,20 @@ namespace ContinuumNS
         /// <summary> Used to determine when the GUI plots and tables should be updated </summary>
         public bool okToUpdate = true;
         /// <summary> If true then message boxes are not displayed </summary>
-        public bool isTest = false;              
-        
+        public bool isTest = false;
+
+        public Met_Data_Filter.Filter_Flags[,] metTSFilterFlags;
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary> Continuum class initializer </summary>
         public Continuum(string fileName, bool updateAll = true)
         {
             SplashScreen Splash = new SplashScreen();
             Splash.ShowDialog();                        
             
-            InitializeComponent();                       
+            InitializeComponent();
+
+            InitializeGUI();
 
             // Check for required programs: Local SQl DB and NetCDF
             bool gotLocalDB = IsLocalSQL_Installed();
@@ -88,6 +95,7 @@ namespace ContinuumNS
             metList.NewList(); // sets MCP settings and day/night hours
             turbineList.SetExceedCurves(); // initializes Exceedance curves
             updateThe.Exceedance_TAB();
+            updateThe.SetDefaultColoredButtons();
 
             cboNumPlots.SelectedIndex = 0; // default show one plot on met data TS tab
 
@@ -101,7 +109,7 @@ namespace ContinuumNS
             txtNumIceDays.Text = siteSuitability.numIceDaysPerYear.ToString();
             txtNumIceThrowsPerDay.Text = siteSuitability.iceThrowsPerIceDay.ToString();
 
-            cboTimeSeriesAnalysis.SelectedIndex = 0;
+            cboTimeSeriesAnalysis.SelectedIndex = 1;
             
             cboTI_Type.SelectedIndex = 0;
             cboEffectiveTI_m.SelectedIndex = 0;
@@ -126,7 +134,15 @@ namespace ContinuumNS
             }                       
                         
             
-        }               
+        }  
+        
+        private void InitializeGUI()
+        {
+            // Update UI here
+            ContinuumStyle.ApplyStyles(this);
+            ContinuumStyle.StyleButtons(this);
+        }
+                
 
         private void btnLoadXYZ_Click(object sender, EventArgs e)
         {
@@ -136,19 +152,19 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot import topo data while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot import topo data while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
                         
             if (savedParams.savedFileName == null)
             {
-                MessageBox.Show("Please specify the file location.", "Continuum 3");
+                MessageBox.Show("Please specify the file location.", "Continuum Wind Energy Software");
 
                 if (sfdCFMfile.ShowDialog() == DialogResult.OK)                
                     SaveFile(sfdCFMfile.FileName);  
                 else
                 {
-                    MessageBox.Show("A file location is needed in order to create local database. Cancelling topography import.", "Continuum 3");
+                    MessageBox.Show("A file location is needed in order to create local database. Cancelling topography import.", "Continuum Wind Energy Software");
                     return;
                 }
             }                        
@@ -289,23 +305,23 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot delete met data while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot delete met data while calculations are under way.", "Continuum Wind Energy Software");
                 return;
-            }
+            }                                         
 
-            int numToDelete = lstMetTowers.SelectedItems.Count;
+            int numToDelete = dataMetTowers.SelectedRows.Count;
             string[] metNames = new string[numToDelete];  
 
             if (numToDelete == 0) {
-                MessageBox.Show("Select one or more met sites to delete by clicking met names.", "Continuum 3");
+                MessageBox.Show("Select one or more met sites to delete by clicking met names.", "Continuum Wind Energy Software");
                 return;
             }
 
             DialogResult confirm = DialogResult.Yes;
             if (numToDelete == 1)
-                confirm = MessageBox.Show("Are you sure that you want to delete this met tower?", "Continuum 3", MessageBoxButtons.YesNo);
+                confirm = MessageBox.Show("Are you sure that you want to delete this met tower?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
             else
-                confirm = MessageBox.Show("Are you sure that you want to delete these " + numToDelete + " met towers?", "Continuum 3", MessageBoxButtons.YesNo);
+                confirm = MessageBox.Show("Are you sure that you want to delete these " + numToDelete + " met towers?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
             
             if (confirm == DialogResult.Yes)
                 DeleteMet(false);               
@@ -316,12 +332,12 @@ namespace ContinuumNS
         public void DeleteMet(bool isTest)
         {             
             int metCount = metList.ThisCount;
-            int numToDelete = lstMetTowers.SelectedItems.Count;
+            int numToDelete = dataMetTowers.SelectedRows.Count;
 
             string[] metNames = new string[numToDelete];
 
             for (int i = 0; i < numToDelete; i++)
-                metNames[i] = lstMetTowers.SelectedItems[i].Text;           
+                metNames[i] = dataMetTowers.SelectedRows[i].Cells[0].Value.ToString();           
                         
             for (int i = 0; i < numToDelete; i++) { 
                 for (int j = 0; j < metCount; j++) { 
@@ -506,7 +522,7 @@ namespace ContinuumNS
                     lastH = height;
                 else if (lastH != height)
                 {
-                    MessageBox.Show("Error reading the TAB files. All TAB files must represent the same height.", "Continuum 3");
+                    MessageBox.Show("Error reading the TAB files. All TAB files must represent the same height.", "Continuum Wind Energy Software");
                     return false;
                 }
                 modeledHeight = height;
@@ -530,13 +546,13 @@ namespace ContinuumNS
                         WR_size = Convert.ToInt16(fileRow[0]);
                         if (WR_size != 12 && WR_size != 16 && WR_size != 24)
                         {
-                            MessageBox.Show("Error reading TAB file.  Number of sectors can only be 12, 16 or 24.  Read in :" + WR_size + ".  check your TAB file", "Continuum 3");
+                            MessageBox.Show("Error reading TAB file.  Number of sectors can only be 12, 16 or 24.  Read in :" + WR_size + ".  check your TAB file", "Continuum Wind Energy Software");
                             return false;
                         }
                     }
                     catch 
                     {
-                        MessageBox.Show("Error reading WR size.", "Continuum 3");
+                        MessageBox.Show("Error reading WR size.", "Continuum Wind Energy Software");
                         return false;
                     }
 
@@ -544,12 +560,12 @@ namespace ContinuumNS
                     {
                         WS_IntSize = Convert.ToSingle(fileRow[1]);
                         //   if ( WS_IntSize != 1 ) {
-                        // MessageBox.Show("Error reading TAB file.  WS interval size must be 1.0 m/s.  Read in :" + WS_IntSize + ".  check your TAB file", , "Continuum 3")
+                        // MessageBox.Show("Error reading TAB file.  WS interval size must be 1.0 m/s.  Read in :" + WS_IntSize + ".  check your TAB file", , "Continuum Wind Energy Software")
                         // return;
                     }
                     catch 
                     {
-                        MessageBox.Show("Error reading WS interval size.", "Continuum 3");
+                        MessageBox.Show("Error reading WS interval size.", "Continuum Wind Energy Software");
                         return false;
                     }
 
@@ -558,20 +574,20 @@ namespace ContinuumNS
                         WD_offset = (int)Convert.ToSingle(fileRow[2]);
                         if (WD_offset != 0)
                         {
-                            MessageBox.Show("Error reading TAB file.  WD offset size must be 0.  Read in :" + WD_offset + ".  check your TAB file", "Continuum 3");
+                            MessageBox.Show("Error reading TAB file.  WD offset size must be 0.  Read in :" + WD_offset + ".  check your TAB file", "Continuum Wind Energy Software");
                             return false;
                         }
                     }
                     catch
                     {
-                        MessageBox.Show("Error reading WD offset.", "Continuum 3");
+                        MessageBox.Show("Error reading WD offset.", "Continuum Wind Energy Software");
                         return false;
                     }
                 }
 
                 if (WR_size == 0 || WS_IntSize == 0)
                 {
-                    MessageBox.Show("Error reading WS bin size.", "Continuum 3");
+                    MessageBox.Show("Error reading WS bin size.", "Continuum Wind Energy Software");
                     return false;
                 }
 
@@ -587,7 +603,7 @@ namespace ContinuumNS
                     metList.numWD = WR_size;
                 else if (metList.numWD != WR_size)
                 { 
-                    MessageBox.Show("A " + metList.numWD + "-sector wind rose has been imported for other mets but this met has " + WR_size + " sectors. check your input file.", "Continuum 3");
+                    MessageBox.Show("A " + metList.numWD + "-sector wind rose has been imported for other mets but this met has " + WR_size + " sectors. check your input file.", "Continuum Wind Energy Software");
                     sr.Close();
                     return false;
                 }
@@ -637,7 +653,7 @@ namespace ContinuumNS
 
                     if (fileRow.Length - 1 != WR_size)
                     {
-                        MessageBox.Show("A " + WR_size + "-sector wind rose has been imported but read in " + (fileRow.Length - 1).ToString() + ". check your input file.", "Continuum 3");
+                        MessageBox.Show("A " + WR_size + "-sector wind rose has been imported but read in " + (fileRow.Length - 1).ToString() + ". check your input file.", "Continuum Wind Energy Software");
                         sr.Close();
                         return false;
                     }
@@ -646,21 +662,7 @@ namespace ContinuumNS
 
                     for (int i = 0; i <= fileRow.Length - 2; i++)
                         thisDist.sectorWS_Dist[i, WS_Int - 1] = Convert.ToSingle(fileRow[i + 1]);
-
-                    // Calculate energy rose from TAB file
-                    double sumPower = 0;
-
-                    for (int d = 0; d < WR_size; d++)
-                    {
-                        double thisPower = 0.5 * modelList.airDens * Math.PI * Math.Pow(modelList.rotorDiam / 2, 2) 
-                            * Math.Pow(thisDist.sectorWS_Ratio[d] * thisDist.WS, 3) / 1000; // Power in wind
-                        thisDist.energyRose[d] = thisPower;
-                        sumPower = sumPower + thisPower;
-                    }
-
-                    if (sumPower > 0)
-                        for (int d = 0; d < WR_size; d++)
-                            thisDist.energyRose[d] = thisDist.energyRose[d] / sumPower;
+                                      
 
                     WS_Int++;
                 }
@@ -763,12 +765,12 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot import turbine sites while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot import turbine sites while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (wakeModelList.NumWakeModels > 0) {
-                DialogResult goodToGo = MessageBox.Show("Importing additional turbine sites will cause all wake models and wake maps to be deleted. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult goodToGo = MessageBox.Show("Importing additional turbine sites will cause all wake models and wake maps to be deleted. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.Yes)
                 {
@@ -792,7 +794,7 @@ namespace ContinuumNS
             {
                 turbineList.exceed = new Exceedance();
                 turbineList.exceed.compositeLoss.isComplete = false;
-                turbineList.exceed.CreateDefaultCurve();
+                turbineList.exceed.CreateIEC_DefaultCurve();
             }       
              
             updateThe.AllTABs();
@@ -806,7 +808,7 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot import turbine sites while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot import turbine sites while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
             
@@ -851,18 +853,18 @@ namespace ContinuumNS
                         latitude = Convert.ToDouble(fileRow[fileRow.Length - 2]);
                     }
                     catch  {
-                        MessageBox.Show("Error reading the turbine input file.  The format should be Name, Latitude, Longitude", "Continuum 3");
-                        sr.Close();
-                        return;
+           //             MessageBox.Show("Error reading the turbine input file.  The format should be Name, Latitude, Longitude", "Continuum Wind Energy Software");
+            //            sr.Close();
+            //            return;
                     }
 
                     try {                            
                         longitude = Convert.ToDouble(fileRow[fileRow.Length - 1]);
                     }
                     catch  {
-                        MessageBox.Show("Error reading the turbine input file.  The format should be Name, Latitude, Longitude", "Continuum 3");
-                        sr.Close();
-                        return;
+           //             MessageBox.Show("Error reading the turbine input file.  The format should be Name, Latitude, Longitude", "Continuum Wind Energy Software");
+           //             sr.Close();
+           //             return;
                     }
 
                     turbineName = fileRow[0];
@@ -872,14 +874,14 @@ namespace ContinuumNS
 
                     if (latitude > 100)
                     {
-                        MessageBox.Show("Invalid Latitude in TAB file : " + latitude.ToString());
+                        MessageBox.Show("Invalid latitude in turbine coordinate file : " + latitude.ToString());
                         sr.Close();
                         return;
                     }
 
                     if (longitude > 200)
                     {
-                        MessageBox.Show("Invalid Longitude in TAB file : " + longitude.ToString());
+                        MessageBox.Show("Invalid longitude in turbine coordinate file : " + longitude.ToString());
                         sr.Close();
                         return;
                     }
@@ -898,21 +900,24 @@ namespace ContinuumNS
                     txtUTMZone.Text = UTM_conversions.UTMZoneNumber.ToString() + UTM_conversions.hemisphere.Substring(0,1);                                              
                                                 
                     if (turbineName == "") {
-                        MessageBox.Show("Couldn't read in a turbine name at line: " + numTurbines, "Continuum 3");
-                        sr.Close();
-                        return;
+                        //       MessageBox.Show("Couldn't read in a turbine name at line: " + numTurbines, "Continuum Wind Energy Software");
+                        //       sr.Close();
+                        //       return;
+                        continue;
                     }
 
                     if (UTMX == 0) {
-                        MessageBox.Show("Couldn't read in an easting at line: " + numTurbines, "Continuum 3");
-                        sr.Close();
-                        return;
+                        //      MessageBox.Show("Couldn't read in an easting at line: " + numTurbines, "Continuum Wind Energy Software");
+                        //      sr.Close();
+                        //      return;
+                        continue;
                     }
 
                     if (UTMY == 0) {
-                        MessageBox.Show("Couldn't read in a northing at line: " + numTurbines, "Continuum 3");
-                        sr.Close();
-                        return;
+                        //          MessageBox.Show("Couldn't read in a northing at line: " + numTurbines, "Continuum Wind Energy Software");
+                        //          sr.Close();
+                        //          return;
+                        continue;
                     }
 
                     Check_class check = new Check_class();
@@ -927,17 +932,17 @@ namespace ContinuumNS
                     }
                         
 
-                    if (inputTurbine == true) turbineList.AddTurbine(turbineName, UTMX, UTMY, thisString);
+                    if (inputTurbine == true) turbineList.AddTurbine(turbineName, UTMX, UTMY);
                     numTurbines++;
                 }
-                else {
-                    MessageBox.Show("Error reading in the file at line: " + numTurbines + "The format should be Name, Latitude, Longitude.  " +
-                        "Make sure that there are no spaces in your turbine names", "Continuum 3");
-                    sr.Close();
-                    return;
-                }
+            //    else {                    
+               //     MessageBox.Show("Error reading in the file at line: " + numTurbines + "The format should be Name, Latitude, Longitude.  " +
+               //         "Make sure that there are no spaces in your turbine names", "Continuum Wind Energy Software");
+               //     sr.Close();
+               //     return;
+             //   }
 
-                turbineName = "";
+           //     turbineName = "";
                     
             }
             sr.Close();
@@ -952,12 +957,12 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot add turbine site while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot add turbine site while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (wakeModelList.NumWakeModels > 0 ) {
-                DialogResult goodToGo = MessageBox.Show("Importing additional turbine sites will cause all wake models and wake maps to be deleted. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult goodToGo = MessageBox.Show("Importing additional turbine sites will cause all wake models and wake maps to be deleted. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.Yes)
                 {
@@ -977,7 +982,7 @@ namespace ContinuumNS
             {
                 turbineList.exceed = new Exceedance();
                 turbineList.exceed.compositeLoss.isComplete = false;
-                turbineList.exceed.CreateDefaultCurve();
+                turbineList.exceed.CreateIEC_DefaultCurve();
             }
 
             NewTurbine thisNew = new NewTurbine(this);
@@ -994,18 +999,18 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot edit a turbine site while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot edit a turbine site while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
-            if (lstTurbines.SelectedItems.Count == 0) {
-                MessageBox.Show("Select a turbine to edit by clicking a turbine name.", "Continuum 3");
+            if (dataTurbines.SelectedRows.Count == 0) {
+                MessageBox.Show("Select a turbine to edit by clicking a turbine name.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (wakeModelList.NumWakeModels > 0) {
 
-                DialogResult goodToGo = MessageBox.Show("Editing turbine sites will cause all wake models and wake maps to be deleted. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult goodToGo = MessageBox.Show("Editing turbine sites will cause all wake models and wake maps to be deleted. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.Yes)
                 {
@@ -1022,10 +1027,10 @@ namespace ContinuumNS
             {
                 turbineList.exceed = new Exceedance();
                 turbineList.exceed.compositeLoss.isComplete = false;
-                turbineList.exceed.CreateDefaultCurve();
+                turbineList.exceed.CreateIEC_DefaultCurve();
             }
 
-            string turbineName = lstTurbines.SelectedItems[0].Text;
+            string turbineName = dataTurbines.SelectedRows[0].Cells[0].Value.ToString();
             int turbInd = 0;
             
             for (turbInd = 0; turbInd < turbineList.TurbineCount; turbInd++)  
@@ -1052,19 +1057,19 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot delete turbine sites while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot delete turbine sites while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }                        
 
-            if (lstTurbines.SelectedItems.Count == 0) {
-                MessageBox.Show("Select at least one turbine to delete by clicking on a turbine name", "Continuum 3"); 
+            if (dataTurbines.SelectedRows.Count == 0) {
+                MessageBox.Show("Select at least one turbine to delete by clicking on a turbine name", "Continuum Wind Energy Software"); 
                 return;
             }
 
             DialogResult goodToGo;
             // Clear all net estimates (different set of turbines)
             if (wakeModelList.NumWakeModels > 0) {
-                goodToGo = MessageBox.Show("Deleting turbine sites will cause all wake models and wake maps to be deleted. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                goodToGo = MessageBox.Show("Deleting turbine sites will cause all wake models and wake maps to be deleted. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.Yes)
                 {
@@ -1079,10 +1084,10 @@ namespace ContinuumNS
             }
                         
             string turbineName;
-            if (lstTurbines.SelectedItems.Count == 1) {
+            if (dataTurbines.SelectedRows.Count == 1) {
 
-                turbineName = lstTurbines.SelectedItems[0].Text;
-                goodToGo = MessageBox.Show("Are you sure you want to delete turbine: " + turbineName + "?", "Continuum 3", MessageBoxButtons.YesNo);
+                turbineName = dataTurbines.SelectedRows[0].Cells[0].Value.ToString();
+                goodToGo = MessageBox.Show("Are you sure you want to delete turbine: " + turbineName + "?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.Yes) {
                     turbineList.DeleteTurbine(turbineName);
@@ -1090,12 +1095,12 @@ namespace ContinuumNS
                 }
             }
             else {
-                int numTurbines = lstTurbines.SelectedItems.Count;
-                goodToGo = MessageBox.Show("Are you sure you want to delete these " + numTurbines + " turbines?", "Continuum 3", MessageBoxButtons.YesNo);
+                int numTurbines = dataTurbines.SelectedRows.Count;
+                goodToGo = MessageBox.Show("Are you sure you want to delete these " + numTurbines + " turbines?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.Yes) {
                     for (int i = 0; i < numTurbines; i++) {
-                        turbineName = lstTurbines.SelectedItems[i].Text;
+                        turbineName = dataTurbines.SelectedRows[i].Cells[0].Value.ToString();
                         turbineList.DeleteTurbine(turbineName);
                     }
                     ChangesMade();
@@ -1289,7 +1294,23 @@ namespace ContinuumNS
 
             FileStream fstream = new FileStream(Filename, FileMode.Open, FileAccess.Read);
             BinaryFormatter bin = new BinaryFormatter();
+            bin.Binder = new SerializeBinder();
             bin.AssemblyFormat = FormatterAssemblyStyle.Simple;
+
+            // Set up legacy datatype conversion
+            SurrogateSelector selector = new SurrogateSelector();
+            StreamingContext context = new StreamingContext(StreamingContextStates.All);
+
+            LegacyDataConverter surrogate = new LegacyDataConverter();
+
+            selector.AddSurrogate(typeof(Met_Data_Filter.data), context, surrogate);
+            selector.AddSurrogate(typeof(Met_Data_Filter.Est_Alpha), context, surrogate);
+            selector.AddSurrogate(typeof(Met_Data_Filter.Est_Data), context, surrogate);
+            selector.AddSurrogate(typeof(MCP.Site_data), context, surrogate);
+            selector.AddSurrogate(typeof(Reference.Wind_TS_with_Prod), context, surrogate);
+            selector.AddSurrogate(typeof(Reference.YearAndProd), context, surrogate);
+
+            bin.SurrogateSelector = selector;
 
             // check database to see if need to update to new context
             bool dbNeedsUpdate = CheckForDB_Update();
@@ -1297,7 +1318,7 @@ namespace ContinuumNS
             if (dbNeedsUpdate)
             {
                 DialogResult okToCreateNew = MessageBox.Show("This file was created in a previous version of Continuum with a different database structure.  Do you want " +
-                    "to update the database structure and continue?  If you do, this file will no longer be compatible with the previous version of Continuum.", "Continuum 3",
+                    "to update the database structure and continue?  If you do, this file will no longer be compatible with the previous version of Continuum.", "Continuum Wind Energy Software",
                     MessageBoxButtons.YesNo);
 
                 if (okToCreateNew == DialogResult.No)
@@ -1326,7 +1347,7 @@ namespace ContinuumNS
                 }
                 catch 
                 {
-                    MessageBox.Show("Error loading. Files created in previous versions of Continuum (prior to v2.2) cannot be opened and will need to be recreated.", "Continuum 3");
+                    MessageBox.Show("Error loading. Files created in previous versions of Continuum (prior to v2.2) cannot be opened and will need to be recreated.", "Continuum Wind Energy Software");
                     fstream.Close();
                     updateThe.NewProject();
                     return;
@@ -1463,7 +1484,7 @@ namespace ContinuumNS
                 }
             }
             catch  {
-                MessageBox.Show("Error reading in UTM zone settings in Continuum file.", "Continuum 3");
+                MessageBox.Show("Error reading in UTM zone settings in Continuum file.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -1472,21 +1493,29 @@ namespace ContinuumNS
                 wakeModelList.CleanUpWakeModelsAndGrid();
             }
             catch  {
-                MessageBox.Show("Error reading in wake models in Continuum file.", "Continuum 3");
+                MessageBox.Show("Error reading in wake models in Continuum file.", "Continuum Wind Energy Software");
                 fstream.Close();
                 return;
             }                        
 
             try
             {
-                modeledHeight = (double)bin.Deserialize(fstream);
+                object modeledHeightObj = bin.Deserialize(fstream);
+
+                if (modeledHeightObj is double)                
+                    modeledHeight = (double)modeledHeightObj;                
+                else if (modeledHeightObj is float)                
+                    modeledHeight = Convert.ToDouble(modeledHeightObj);                
+                else                
+                    throw new InvalidCastException("Unexpected data type for modeledHeight.");                
+
                 txtModeledHeight.Text = Math.Round(modeledHeight, 0).ToString();
             }
             catch
-            {
-                MessageBox.Show("Error reading in modeled height in Continuum file.", "Continuum 3");
+            {               
+                MessageBox.Show("Error reading in modeled height in Continuum file.", "Continuum Wind Energy Software");
                 fstream.Close();
-                return;
+                return;                                
             }
 
             // Get sensor data from database and set shear settings min/max height (if not set)
@@ -1531,7 +1560,7 @@ namespace ContinuumNS
             }
             catch
             {
-                // MessageBox.Show("Error reading in MERRA2 data in Continuum file.", "Continuum 3");
+                // MessageBox.Show("Error reading in MERRA2 data in Continuum file.", "Continuum Wind Energy Software");
                 fstream.Close();                                
 
                 OpenFileWithOldMERRA(Filename);
@@ -1544,7 +1573,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Error reading in Site Suitability data in Continuum file.", "Continuum 3");
+                MessageBox.Show("Error reading in Site Suitability data in Continuum file.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -1744,7 +1773,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Error loading. Files created in previous versions of Continuum (prior to v2.2) cannot be opened and will need to be recreated.", "Continuum 3");
+                    MessageBox.Show("Error loading. Files created in previous versions of Continuum (prior to v2.2) cannot be opened and will need to be recreated.", "Continuum Wind Energy Software");
                     fstream.Close();
                     updateThe.NewProject();
                     return;
@@ -1884,7 +1913,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Error reading in UTM zone settings in Continuum file.", "Continuum 3");
+                MessageBox.Show("Error reading in UTM zone settings in Continuum file.", "Continuum Wind Energy Software");
                 fstream.Close();
                 return;
             }
@@ -1896,19 +1925,19 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Error reading in wake models in Continuum file.", "Continuum 3");
+                MessageBox.Show("Error reading in wake models in Continuum file.", "Continuum Wind Energy Software");
                 fstream.Close();
                 return;
             }
 
             try
             {
-                modeledHeight = (double)bin.Deserialize(fstream);
+                modeledHeight = (float)bin.Deserialize(fstream);
                 txtModeledHeight.Text = Math.Round(modeledHeight, 0).ToString();
             }
             catch
             {
-                MessageBox.Show("Error reading in modeled height in Continuum file.", "Continuum 3");
+                MessageBox.Show("Error reading in modeled height in Continuum file.", "Continuum Wind Energy Software");
                 fstream.Close();
                 return;
             }
@@ -1999,11 +2028,11 @@ namespace ContinuumNS
                         for (int t = 0; t < oldRef.MERRA_Nodes[n].TS_Data.Length; t++)
                         {
                             newRef.nodes[n].TS_Data[t].thisDate = oldRef.MERRA_Nodes[n].TS_Data[t].ThisDate;                            
-                            newRef.nodes[n].TS_Data[t].seaPress = oldRef.MERRA_Nodes[n].TS_Data[t].SeaPress;
-                            newRef.nodes[n].TS_Data[t].surfPress = oldRef.MERRA_Nodes[n].TS_Data[t].SurfPress;
-                            newRef.nodes[n].TS_Data[t].temperature = oldRef.MERRA_Nodes[n].TS_Data[t].Temp10m;
-                            newRef.nodes[n].TS_Data[t].WD = oldRef.MERRA_Nodes[n].TS_Data[t].WD50m;
-                            newRef.nodes[n].TS_Data[t].WS = oldRef.MERRA_Nodes[n].TS_Data[t].WS50m;
+                            newRef.nodes[n].TS_Data[t].seaPress = (float)oldRef.MERRA_Nodes[n].TS_Data[t].SeaPress;
+                            newRef.nodes[n].TS_Data[t].surfPress = (float)oldRef.MERRA_Nodes[n].TS_Data[t].SurfPress;
+                            newRef.nodes[n].TS_Data[t].temperature = (float)oldRef.MERRA_Nodes[n].TS_Data[t].Temp10m;
+                            newRef.nodes[n].TS_Data[t].WD = (float)oldRef.MERRA_Nodes[n].TS_Data[t].WD50m;
+                            newRef.nodes[n].TS_Data[t].WS = (float)oldRef.MERRA_Nodes[n].TS_Data[t].WS50m;
                         }
                     }
 
@@ -2041,7 +2070,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Error reading in MERRA2 data in Continuum file.", "Continuum 3");
+                MessageBox.Show("Error reading in MERRA2 data in Continuum file.", "Continuum Wind Energy Software");
          //       fstream.Close();
           //      return;
             }
@@ -2052,7 +2081,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Error reading in Site Suitability data in Continuum file.", "Continuum 3");
+                MessageBox.Show("Error reading in Site Suitability data in Continuum file.", "Continuum Wind Energy Software");
                 fstream.Close();
          //       return;
             }
@@ -2121,7 +2150,7 @@ namespace ContinuumNS
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Make sure the user wants a new project
-            DialogResult goodToGo = MessageBox.Show("Do you want to create a new Continuum file?", "Continuum 3.0", MessageBoxButtons.YesNo);
+            DialogResult goodToGo = MessageBox.Show("Do you want to create a new Continuum file?", "Continuum Wind Energy Software.0", MessageBoxButtons.YesNo);
             if (goodToGo == DialogResult.No)
                 return;            
             
@@ -2143,7 +2172,7 @@ namespace ContinuumNS
             Text = "Continuum Model.cfm";            
             updateThe.NewProject();
             savedParams.savedFileName = null;
-            MessageBox.Show("Please specify where to save file.", "Continuum 3");
+            MessageBox.Show("Please specify where to save file.", "Continuum Wind Energy Software");
 
             if (sfdCFMfile.ShowDialog() == DialogResult.OK)
                 SaveFile(sfdCFMfile.FileName);
@@ -2237,18 +2266,18 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot generate a map while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot generate a map while other calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (metList.ThisCount == 0) {
-                MessageBox.Show("You need to import met TAB files first.", "Continuum 3");
+                MessageBox.Show("You need to import met TAB files first.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (topo.gotTopo == false)
             {
-                MessageBox.Show("You need to import topography data first.", "Continuum 3");
+                MessageBox.Show("You need to import topography data first.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -2309,7 +2338,7 @@ namespace ContinuumNS
                 thisMap.ShowDialog();
             }
             else {
-                MessageBox.Show("You can only generate one map at a time.", "Continuum 3");
+                MessageBox.Show("You can only generate one map at a time.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -2347,11 +2376,11 @@ namespace ContinuumNS
                 }
 
                 updateThe.MapsTAB();
-                updateThe.NetTurbineEstsTAB();
+                updateThe.NetTurbineEstsTAB(0);
                 
             }
             else {
-                MessageBox.Show("Cannot delete a map while one is being generated.", "Continuum 3");
+                MessageBox.Show("Cannot delete a map while one is being generated.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -2383,12 +2412,12 @@ namespace ContinuumNS
         { 
             // Asks user for air density and calls background worker to create a WRG (Wind Resource Grid) file
             if (lstMaps.SelectedItems.Count == 0) {
-                MessageBox.Show("You need to select one map to export.", "Continuum 3");
+                MessageBox.Show("You need to select one map to export.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (lstMaps.SelectedItems.Count > 1) {
-                MessageBox.Show("Can only create one WRG file at a time.  Please select only one map to use.", "Continuum 3");
+                MessageBox.Show("Can only create one WRG file at a time.  Please select only one map to use.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -2521,7 +2550,7 @@ namespace ContinuumNS
         private void HelpMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Opens user manual
-            string filePath = "C:\\Program Files\\One Energy\\Continuum 3\\Documentation\\Continuum 3 Users Manual v1.0.pdf";
+            string filePath = "C:\\Program Files\\One Energy\\Continuum Wind Energy Software\\Documentation\\Continuum Wind Energy Software Users Manual v1.0.pdf";
 
             if (File.Exists(filePath))
             {
@@ -2627,7 +2656,7 @@ namespace ContinuumNS
             // Calls Export.ExportNodesAndWS to export all selected parameters along path of nodes for selected start and end met/turbine
                   
             if (modelList.ModelCount == 0) {
-                MessageBox.Show("No models have been created yet.", "Continuum 3");
+                MessageBox.Show("No models have been created yet.", "Continuum Wind Energy Software");
                 return;
             }                   
 
@@ -2642,7 +2671,7 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot conduct Round Robin analysis while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot conduct Round Robin analysis while other calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -2717,29 +2746,29 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot generate turbine estimates while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot generate turbine estimates while other calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (metList.ThisCount == 0 && refList.reference.Length == 0)
             {
-                MessageBox.Show("You need to import a met site or add long-term reference site first.", "Continuum 3");
+                MessageBox.Show("You need to import a met site or add long-term reference site first.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (turbineList.TurbineCount == 0)
             {
-                MessageBox.Show("You need to import turbines fist.", "Continuum 3");
+                MessageBox.Show("You need to import turbines fist.", "Continuum Wind Energy Software");
                 return;
             }
 
             /*      if (modelList.HaveRequiredModels(metList) == false) {
-                      MessageBox.Show("Create a site-calibrated model first clickng Analyze Mets.", "Continuum 3");
+                      MessageBox.Show("Create a site-calibrated model first clickng Analyze Mets.", "Continuum Wind Energy Software");
                       return;
                   }
 
                   if (modelList.ModelCount == 0) {
-                      MessageBox.Show("Create a Continuum model first clickng Analyze Mets.", "Continuum 3");
+                      MessageBox.Show("Create a Continuum model first clickng Analyze Mets.", "Continuum Wind Energy Software");
                       return;
                   }
             */
@@ -2774,76 +2803,7 @@ namespace ContinuumNS
         
         private void btnImportTAB_Click(object sender, EventArgs e)
         {
-            // Calls ImportMetsTAB, if successful and if have topo and land cover data, creates struct needed for Met calcs and calls background worker otherwise updates 
-            // all plots and tables referencing the met sites
-            if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
-                BW_worker = new BackgroundWork();
-
-            if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot import met data while calculations are under way.", "Continuum 3");
-                return;
-            }
-                        
-            if (metList.isTimeSeries == true && metList.ThisCount > 0)
-            {
-                DialogResult goodToGo = MessageBox.Show("Time Series Met data has already been imported. Importing TAB files will delete time series data and " +
-                    "models will be formed using TAB file WSWD distributions. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
-                if (goodToGo == DialogResult.No)
-                    return;
-                else
-                {
-                    // Clear met objects and data from DB
-                    metList.ClearAllMets(this, true);
-                }
-            }
-
-            if (ofdMets.ShowDialog() != DialogResult.OK)
-                return;
             
-            bool reCalcEsts = ImportMetsTAB();
-
-            if (reCalcEsts == true) {
-                
-                if (metList.ThisCount == 0) 
-                    return;
-
-                metList.isTimeSeries = false;
-                turbineList.ClearAllWSEsts();                
-                updateThe.AllTABs();
-
-                if (topo.gotTopo == false)                     
-                    return;                
-
-                if (chkUseSR.Checked == true && topo.gotSR == true)
-                    topo.useSR = true;
-                else
-                    topo.useSR = false;
-
-                if (chk_Use_Sep.Checked == true)
-                    topo.useSepMod = true;
-                else
-                    topo.useSepMod = false;              
-                                
-                if (topo.gotSR == false) {
-                    DialogResult yes_or_no = MessageBox.Show("Do you have land cover data to import? Click No and Continuum will start the site-calibration using only the topography data.", "Continuum 3", MessageBoxButtons.YesNo);
-                    if (yes_or_no == DialogResult.Yes) {                        
-                        updateThe.AllTABs();
-                        return;
-                    }
-                }
-                
-                // Call background worker to run calculations
-                // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
-                BW_worker = new BackgroundWork();
-                BackgroundWork.Vars_for_BW theArgs = new BackgroundWork.Vars_for_BW();
-                theArgs.thisInst = this;                
-                BW_worker.Call_BW_MetCalcs(theArgs);
-                ChangesMade();
-            }
-            else
-            {
-                updateThe.AllTABs();
-            }
 
         }
 
@@ -2856,20 +2816,20 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (ofdPowerCurve.ShowDialog() != DialogResult.OK)
                 return;
 
-            string RD_Str = Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum 3");
+            string RD_Str = Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum Wind Energy Software");
             double RD = 0;
             double.TryParse(RD_Str, out RD);
             if (RD == 0)
                 return;
 
-            string RPM_Str = Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum 3");
+            string RPM_Str = Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum Wind Energy Software");
             double RPM = 0;
             double.TryParse(RPM_Str, out RPM);
             if (RPM == 0)
@@ -2881,10 +2841,10 @@ namespace ContinuumNS
         private void btnDelPowerCrv_Click(object sender, EventArgs e)
         {           
                        
-            if (lstPowerCurveList.SelectedItems.Count > 0) {
-                for (int i = 0; i < lstPowerCurveList.SelectedItems.Count; i++)
+            if (dataPowerCurveList.SelectedRows.Count > 0) {
+                for (int i = 0; i < dataPowerCurveList.SelectedRows.Count; i++)
                 {
-                    string powerCurveToDelete = lstPowerCurveList.SelectedItems[i].Text;
+                    string powerCurveToDelete = dataPowerCurveList.SelectedRows[i].Cells[0].Value.ToString();
                     turbineList.DeletePowerCurve(powerCurveToDelete);
 
                     for (int t = 0; t < turbineList.TurbineCount; t++)
@@ -2899,7 +2859,7 @@ namespace ContinuumNS
                     
             }            
             else 
-                MessageBox.Show("No power curves to delete", "Continuum 3");            
+                MessageBox.Show("No power curves to delete", "Continuum Wind Energy Software");            
 
             updateThe.ColoredButtons();
 
@@ -2931,24 +2891,7 @@ namespace ContinuumNS
             }
         }
 
-        private void chkTurbGrossAll_CheckedChanged(object sender, EventArgs e)
-        { 
-            // Selects/Deselects all Turbines sites on 'Gross Turbine Est' tab and updates plots and tables
-            if (IsHandleCreated) {
-                if (chkTurbGross.Items.Count > 0) {
-                    if (chkTurbGrossAll.CheckState == CheckState.Checked) {
-                        for (int i = 0; i < chkTurbGross.Items.Count; i++) 
-                            chkTurbGross.SetItemChecked(i, true);
-                    }
-                    else {
-                        for (int i = 0; i < chkTurbGross.Items.Count; i++) 
-                            chkTurbGross.SetItemChecked(i, false);                        
-                    }
-                }
-                
-                updateThe.GrossTurbineEstsTAB();                                
-            }
-        }
+        
 
         private void btnWS_AEP_Exprt_Click(object sender, EventArgs e)
         {
@@ -3040,7 +2983,7 @@ namespace ContinuumNS
             }
 
             if (powerCurve == "No Power Curves Imported") {
-                MessageBox.Show("No power curves have been imported yet.", "Continuum 3");
+                MessageBox.Show("No power curves have been imported yet.", "Continuum Wind Energy Software");
                 return;
             }
             Export thisExport = new Export();
@@ -3068,7 +3011,7 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot analyze met data while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot analyze met data while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -3132,7 +3075,7 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot export model info while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot export model info while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }                   
 
@@ -3175,7 +3118,7 @@ namespace ContinuumNS
         /// <summary> Configures settings on LC_Key_Form and opens form </summary>        
         public void Populate_LC_Key_Form(LC_Key thisKey)
         {                         
-            thisKey.lstLC_SR_DH.Items.Clear();
+            thisKey.dataLC_SR_DH.Rows.Clear();
 
             int numSR = 0;
 
@@ -3220,7 +3163,7 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot import land cover data while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot import land cover data while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -3244,24 +3187,7 @@ namespace ContinuumNS
             ExportCalculatedValues();
         }
 
-        private void chkMetGrossAll_CheckedChanged(object sender, EventArgs e)
-        { 
-            // Updates tables and plots on Gross Energy Estimate tab based on selected mets in list
-            if (Created) {
-                if (chkMetGross.Items.Count > 0) {
-                    if (chkMetGrossAll.CheckState == CheckState.Checked) {
-                        for (int i = 0; i < chkMetGross.Items.Count; i++) 
-                            chkMetGross.SetItemChecked(i, true);
-                    }
-                    else {
-                        for (int i = 0; i < chkMetGross.Items.Count; i++)
-                            chkMetGross.SetItemChecked(i, false);                        
-                    }
-                }
-                
-                updateThe.GrossTurbineEstsTAB();
-            }
-        }
+        
 
         private void chkMetSumm_SelectedIndexChanged(object sender, EventArgs e)
         { 
@@ -3345,7 +3271,7 @@ namespace ContinuumNS
                     return;
                 }
 
-                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 
                 if (yes_or_no == DialogResult.Yes) {
 
@@ -3391,7 +3317,7 @@ namespace ContinuumNS
         {
             // Opens Gen_WakeModel form to create a new wake loss model
             if (turbineList.PowerCurveCount == 0) {
-                MessageBox.Show("Import a power and thrust curve to conduct wake modeling.", "Continuum 3");
+                MessageBox.Show("Import a power and thrust curve to conduct wake modeling.", "Continuum Wind Energy Software");
                     return;
             }
 
@@ -3399,7 +3325,7 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot generate a wake model while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot generate a wake model while other calculations are under way.", "Continuum Wind Energy Software");
                     return;
             }
 
@@ -3434,17 +3360,27 @@ namespace ContinuumNS
         }
 
         private void cboTurbEstWD_SelectedIndexChanged(object sender, EventArgs e)
-        { 
+        {
             // Updates the plots and tables on Net Turbine Ests. tab based on WD sector selected from dropdown
-            if (okToUpdate == true)                 
-                updateThe.NetTurbineEstsTAB();            
+            if (okToUpdate == true)
+            {
+                int selWakeModelInd = 0;
+                if (dataWakeModels.SelectedRows.Count > 0)
+                    selWakeModelInd = dataWakeModels.SelectedRows[0].Index;
+                updateThe.NetTurbineEstsTAB(selWakeModelInd);
+            }
         }
 
         private void cboWakePlot_SelectedIndexChanged(object sender, EventArgs e)
-        { 
+        {
             // Updates the wake loss map and Turb by string plot on Net Turbine Ests. tab based on whether Wind Speed, Wake loss % or Net Energy is selected from dropdown
-            if (okToUpdate == true)                 
-                updateThe.NetTurbineEstsTAB(); 
+            if (okToUpdate == true)
+            {
+                int selWakeModelInd = 0;
+                if (dataWakeModels.SelectedRows.Count > 0)
+                    selWakeModelInd = dataWakeModels.SelectedRows[0].Index;
+                updateThe.NetTurbineEstsTAB(selWakeModelInd);
+            }
         }
                 
         private void lstWakeModels_SelectedIndexChanged(object sender, EventArgs e)
@@ -3454,7 +3390,7 @@ namespace ContinuumNS
             {
                 updateThe.WakedTurbList();
                 updateThe.WakedWSDistPlot();
-                updateThe.TurbsByString();
+                updateThe.NetTurbsHistogram();
                 updateThe.WakeLossMap();
             }                           
         }
@@ -3463,7 +3399,7 @@ namespace ContinuumNS
         {
             // Deletes selected wake loss model and updates plots and tables on Net Turbine Ests.// tab
             if (BW_worker.BackgroundWorker_Map.IsBusy == false && BW_worker.BackgroundWorker_TurbCalcs.IsBusy == false) {
-                if (lstWakeModels.SelectedItems.Count == 0) {
+                if (dataWakeModels.SelectedRows.Count == 0) {
                     MessageBox.Show("Select one or more wake models to delete.", "");
                     return;
                 }
@@ -3472,7 +3408,7 @@ namespace ContinuumNS
 
                 if (yes_or_no == DialogResult.Yes) {
                     TurbineCollection.PowerCurve thisPowerCurve = new TurbineCollection.PowerCurve();
-                    string powerStr = lstWakeModels.SelectedItems[0].SubItems[0].ToString();
+                    string powerStr = dataWakeModels.SelectedRows[0].Cells[2].Value.ToString();
 
                     for (int i = 0; i < turbineList.PowerCurveCount; i++) {
                         if (turbineList.powerCurves[i].name == powerStr) {
@@ -3490,13 +3426,13 @@ namespace ContinuumNS
                     ChangesMade();
                 }
                 
-                updateThe.NetTurbineEstsTAB();
+                updateThe.NetTurbineEstsTAB(0);
                 updateThe.MapsTAB();
                 updateThe.Monthly_TAB();
                 updateThe.ColoredButtons();
             }
             else {
-                MessageBox.Show("Cannot delete a map while one is being generated.", "Continuum 3");
+                MessageBox.Show("Cannot delete a map while one is being generated.", "Continuum Wind Energy Software");
                 return;
             }
         }
@@ -3507,43 +3443,32 @@ namespace ContinuumNS
             int wakeModelType = 0;                    
             Wake_Model thisWakeModel = null;
 
-            if (lstWakeModels.Items.Count == 0)
+            if (dataWakeModels.Rows.Count == 0)
                 return thisWakeModel;
 
             if (wakeModelList.NumWakeModels == 0)
                 return thisWakeModel;
 
-            ListViewItem objListView = new ListViewItem();
+            if (dataWakeModels.CurrentRow == null)
+                return thisWakeModel;
 
-            if (lstWakeModels.SelectedItems.Count != 0)
-            {
-                try
-                {
-                    objListView = lstWakeModels.SelectedItems[0];
-                }
-                catch
-                {
-                    return wakeModelList.wakeModels[0];
-                }
-            }
-            else
-                return wakeModelList.wakeModels[0];
+            DataGridViewRow selRow = dataWakeModels.CurrentRow;                        
 
-            if (objListView.Text == "Eddy Viscosity")
+            if (selRow.Cells[0].Value == "Eddy Viscosity")
                 wakeModelType = 0;
-            else if (objListView.Text == "DAWM with EV")
+            else if (selRow.Cells[0].Value == "DAWM with EV")
                 wakeModelType = 1;
-            else if (objListView.Text == "Jensen")
+            else if (selRow.Cells[0].Value == "Jensen")
                 wakeModelType = 2;
 
-            string combo = objListView.SubItems[1].Text;
-            string powerStr = objListView.SubItems[2].Text;
-            double WRR = Convert.ToSingle(objListView.SubItems[3].Text);
-            double horiz = Convert.ToSingle(objListView.SubItems[4].Text);
-            double TI = Convert.ToSingle(objListView.SubItems[5].Text);
-            double DW_Spacing = Convert.ToSingle(objListView.SubItems[6].Text);
-            double CW_Spacing = Convert.ToSingle(objListView.SubItems[7].Text);
-            double roughness = Convert.ToSingle(objListView.SubItems[8].Text);
+            string combo = selRow.Cells[1].Value.ToString();
+            string powerStr = selRow.Cells[2].Value.ToString();
+      //      double WRR = Convert.ToSingle(selRow.Cells[3].Value);
+            double horiz = Convert.ToSingle(selRow.Cells[3].Value);
+            double TI = Convert.ToSingle(selRow.Cells[4].Value);
+            double DW_Spacing = Convert.ToSingle(selRow.Cells[5].Value);
+            double CW_Spacing = Convert.ToSingle(selRow.Cells[6].Value);
+            double roughness = Convert.ToSingle(selRow.Cells[7].Value);
 
             thisWakeModel = wakeModelList.GetWakeModel(wakeModelType, horiz, TI, DW_Spacing, CW_Spacing, roughness, powerStr, combo);
 
@@ -3555,59 +3480,41 @@ namespace ContinuumNS
         {                                               
             WakeCollection.WakeGridMap thisWakeGrid = new WakeCollection.WakeGridMap();
 
-            if (lstWakeModels.Items.Count == 0)
+            if (dataWakeModels.Rows.Count == 0)
                 return thisWakeGrid;
 
             if (wakeModelList.NumWakeGridMaps == 0)
                 return thisWakeGrid;
 
-            ListViewItem objListView;
-
-            if (lstWakeModels.SelectedItems.Count > 0)
-            {
-                try
-                {
-                    objListView = lstWakeModels.SelectedItems[0];
-                }
-                catch
-                {
-                    if (wakeModelList.NumWakeGridMaps != 0)
-                        thisWakeGrid = wakeModelList.wakeGridMaps[0];
-
-                    return thisWakeGrid;
-                }
-            }
-            else
-            {
-                if (wakeModelList.NumWakeGridMaps != 0)
-                    thisWakeGrid = wakeModelList.wakeGridMaps[0];
-
-                return thisWakeGrid;
-            }
-
+            DataGridViewRow selRow = dataWakeModels.SelectedRows[0];
+                       
             int wakeModelType = 0;
-            if (objListView.Text == "Eddy Viscosity")
+            if (selRow.Cells[0].Value == "Eddy Viscosity")
                 wakeModelType = 0;
-            else if (objListView.Text == "DAWM with EV")
+            else if (selRow.Cells[0].Value == "DAWM with EV")
                 wakeModelType = 1;
-            else if (objListView.Text == "Jensen")
+            else if (selRow.Cells[0].Value == "Jensen")
                 wakeModelType = 2;
 
-            string combo = objListView.SubItems[1].Text.ToString();
-            string powerStr = objListView.SubItems[2].Text.ToString();
-            double WRR = Convert.ToSingle(objListView.SubItems[3].Text);
-            double horiz = Convert.ToSingle(objListView.SubItems[4].Text);
-            double TI = Convert.ToSingle(objListView.SubItems[5].Text);
-            double DW_Spc = Convert.ToSingle(objListView.SubItems[6].Text);
-            double CW_Spc = Convert.ToSingle(objListView.SubItems[7].Text);
-            double roughness = Convert.ToSingle(objListView.SubItems[8].Text);
+            string combo = selRow.Cells[1].Value.ToString();
+            string powerStr = selRow.Cells[2].Value.ToString();
+            double WRR = Convert.ToSingle(selRow.Cells[3].Value);
+            double horiz = Convert.ToSingle(selRow.Cells[3].Value);
+            double TI = Convert.ToSingle(selRow.Cells[4].Value);
+            double DW_Spc = Convert.ToSingle(selRow.Cells[5].Value);
+            double CW_Spc = Convert.ToSingle(selRow.Cells[6].Value);
+            double roughness = Convert.ToSingle(selRow.Cells[7].Value);
 
             try {
-                int minX = Convert.ToInt32(objListView.SubItems[9].Text);
-                int minY = Convert.ToInt32(objListView.SubItems[10].Text);
-                int maxX = Convert.ToInt32(objListView.SubItems[11].Text);
-                int maxY = Convert.ToInt32(objListView.SubItems[12].Text);
-                int reso = Convert.ToInt16(objListView.SubItems[13].Text);
+                int minX = Convert.ToInt32(selRow.Cells[8].Value);
+
+                if (minX == 0)
+                    return thisWakeGrid;
+                
+                int minY = Convert.ToInt32(selRow.Cells[9].Value);
+                int maxX = Convert.ToInt32(selRow.Cells[10].Value);
+                int maxY = Convert.ToInt32(selRow.Cells[11].Value);
+                int reso = Convert.ToInt16(selRow.Cells[12].Value);
 
                 int numX = (maxX - minX) / reso;
                 int numY = (maxY - minY) / reso;
@@ -3634,7 +3541,7 @@ namespace ContinuumNS
                 mapList.RemoveMapByWakeGridMap(thisWakeGrid, wakeModelList);
                 wakeModelList.RemoveWakeGridMap(thisWakeGrid);
 
-                updateThe.NetTurbineEstsTAB();
+                updateThe.NetTurbineEstsTAB(0);
                 updateThe.MapsTAB();                
                 updateThe.ColoredButtons();
             }
@@ -3645,66 +3552,9 @@ namespace ContinuumNS
             // Calls Export.Export_Net_WS_AEP to export net energy estimates to a CSV file            
             Export thisExport = new Export();
             thisExport.Export_Net_WS_AEP(this);
-        }
-
-        private void chkTurbNetAll_CheckedChanged(object sender, EventArgs e)
-        { 
-            // Selects/deselects all turbines in list and calls updateThe.NetTurbineEstTab 
-            if (Created) {
-                if (chkTurbNet.Items.Count > 0) {
-                    if (chkTurbNetAll.CheckState == CheckState.Checked) {
-                        for (int i = 0; i < chkTurbNet.Items.Count; i++)
-                            chkTurbNet.SetItemChecked(i, true);
-                    }
-                    else {
-                        for (int i = 0; i < chkTurbNet.Items.Count; i++)
-                            chkTurbNet.SetItemChecked(i, false);
-                    }
-                }
-                                
-                updateThe.NetTurbineEstsTAB();
-            }
-        }
-
-        private void chkStringAll_CheckedChanged(object sender, EventArgs e)    
-        { 
-            // Selects/deselects all turbine strings in list and calls Turbine string plot
-            if (Created) {
-                if (chkStrings.Items.Count > 0) {
-                    if (chkStringAll.CheckState == CheckState.Checked) {
-                        for (int i = 0; i < chkStrings.Items.Count; i++) 
-                            chkStrings.SetItemChecked(i, true);
-                    }
-                    else {
-                        for (int i = 0; i < chkStrings.Items.Count; i++)
-                            chkStrings.SetItemChecked(i, false);
-                    }
-                }
+        }                          
                 
-                updateThe.TurbsByString();
-            }
-        }
-        
-        private void chkStrings_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates Turb by string plot based on strings selected in list
-            if (okToUpdate == true) 
-                updateThe.TurbsByString();            
-        }
 
-        private void chkTurbNet_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates Net Turbine Ests tab based on selected turbines in list
-            if (okToUpdate == true)  
-                updateThe.NetTurbineEstsTAB();            
-        }
-
-        private void cboModel_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates Net Turbine Ests tab based on selected model
-            if (okToUpdate == true)
-                updateThe.NetTurbineEstsTAB();            
-        }
 
         private void btnCreateWakeMap_Click(object sender, EventArgs e)
         {
@@ -3713,7 +3563,7 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot generate a map while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot generate a map while other calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -3745,7 +3595,7 @@ namespace ContinuumNS
 
             try
             {
-                selectedWakeInd = lstWakeModels.SelectedIndices[0];
+                selectedWakeInd = dataWakeModels.CurrentRow.Index;
             }
             catch
             {
@@ -3753,7 +3603,7 @@ namespace ContinuumNS
             }
             
             if (wakeModelList.NumWakeModels == 0) {
-                MessageBox.Show("Create a wake model first.", "Continuum 3");
+                MessageBox.Show("Create a wake model first.", "Continuum Wind Energy Software");
                 return;
             }
             else {
@@ -3799,7 +3649,7 @@ namespace ContinuumNS
             DialogResult okToClear = DialogResult.Yes;
 
             if (modelList.ModelCount > 4) 
-                okToClear = MessageBox.Show("Importing coefficients will delete the site-calibrated coefficients. Do you wish to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                okToClear = MessageBox.Show("Importing coefficients will delete the site-calibrated coefficients. Do you wish to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
             if (okToClear == DialogResult.Yes) {
                 
@@ -3819,7 +3669,7 @@ namespace ContinuumNS
             }
 
             modelList.ImportModelsCSV(this);            
-            updateThe.AllTABs();
+            updateThe.AllTABs(false);
         }
 
         private void chk_Use_Sep_CheckedChanged(object sender, EventArgs e)
@@ -3832,7 +3682,7 @@ namespace ContinuumNS
                 if ( (chk_Use_Sep.Checked == false && topo.useSepMod == false) ||(chk_Use_Sep.Checked == true && topo.useSepMod == true) ) 
                    return;
 
-                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (yes_or_no == DialogResult.Yes) {
 
@@ -3878,19 +3728,19 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot import land cover data while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot import land cover data while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
                                     
             if (savedParams.savedFileName == null)
             {
-                MessageBox.Show("Please specify the file location.", "Continuum 3");
+                MessageBox.Show("Please specify the file location.", "Continuum Wind Energy Software");
 
                 if (sfdCFMfile.ShowDialog() == DialogResult.OK)
                     SaveFile(sfdCFMfile.FileName);
                 else
                 {
-                    MessageBox.Show("A file location is needed in order to create local database. Cancelling land cover import.", "Continuum 3");
+                    MessageBox.Show("A file location is needed in order to create local database. Cancelling land cover import.", "Continuum Wind Energy Software");
                     return;
                 }                            
             }
@@ -3939,7 +3789,7 @@ namespace ContinuumNS
 
             DialogResult Good_to_go = DialogResult.Yes;
             if (turbineList.turbineCalcsDone)
-                Good_to_go = MessageBox.Show("Importing land cover data will reset all model calculations and estimates. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                Good_to_go = MessageBox.Show("Importing land cover data will reset all model calculations and estimates. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
             
             if (Good_to_go == DialogResult.No)
                 return;
@@ -4026,48 +3876,71 @@ namespace ContinuumNS
         {
             Met[] checkedMets = new Met[0];
             int metCount;
-            CheckedListBox thisMetList = null;
 
-            try
+            if (tabName != "Gross")
             {
-                if (tabName == "Input")
-                    thisMetList = chkMetLabels;
-                else if (tabName == "Summary")
-                    thisMetList = chkMetSumm;
-                else if (tabName == "Met Data TS")
-                    thisMetList = chkMetsTS;
-                else if (tabName == "Gross")
-                    thisMetList = chkMetGross;
-                else if (tabName == "Map")
-                    thisMetList = chkMetLabels_Maps;
-                else if (tabName == "Advanced")
-                    thisMetList = chkMetlabelsStep;
+                CheckedListBox thisMetList = null;
 
-                metCount = thisMetList.CheckedItems.Count;
-
-                if (metCount == 0) return checkedMets;
-
-            }
-            catch 
-            {
-                return checkedMets;
-            }
-
-            checkedMets = new Met[metCount];
-            int metInd = 0;
-
-            for (int i = 0; i < metList.ThisCount; i++)
-            {
-                for (int j = 0; j < metCount; j++)
+                try
                 {
-                    if (metList.metItem[i].name == thisMetList.CheckedItems[j].ToString())
+                    if (tabName == "Input")
+                        thisMetList = chkMetLabels;
+                    else if (tabName == "Summary")
+                        thisMetList = chkMetSumm;
+                    else if (tabName == "Met Data TS")
+                        thisMetList = chkMetsTS;                    
+                    else if (tabName == "Map")
+                        thisMetList = chkMetLabels_Maps;
+                    else if (tabName == "Advanced")
+                        thisMetList = chkMetlabelsStep;
+
+                    metCount = thisMetList.CheckedItems.Count;
+
+                    if (metCount == 0) return checkedMets;
+
+                }
+                catch
+                {
+                    return checkedMets;
+                }
+
+                checkedMets = new Met[metCount];
+                int metInd = 0;
+
+                for (int i = 0; i < metList.ThisCount; i++)
+                {
+                    for (int j = 0; j < metCount; j++)
                     {
-                        checkedMets[metInd] = metList.metItem[i];
-                        metInd++;
-                        break;
+                        if (metList.metItem[i].name == thisMetList.CheckedItems[j].ToString())
+                        {
+                            checkedMets[metInd] = metList.metItem[i];
+                            metInd++;
+                            break;
+                        }
                     }
                 }
             }
+            else
+            {
+                // For Gross tab, return mets checked in data grid view table
+                metCount = metList.ThisCount;
+                int metInd = 0;
+                checkedMets = new Met[metCount];
+
+                if (dataGrossTurbEst.RowCount == 0)
+                    return null;
+
+                for (int r = 0; r < metCount; r++)
+                    if (dataGrossTurbEst.Rows[r].Cells[0].Value != null && (bool)dataGrossTurbEst.Rows[r].Cells[0].Value == true)
+                    {
+                        checkedMets[metInd] = metList.metItem[r];
+                        metInd++;
+                    }
+
+                // Resize the array to the actual number of checked mets
+                Array.Resize(ref checkedMets, metInd);
+            }
+
 
             return checkedMets;
         }
@@ -4079,43 +3952,61 @@ namespace ContinuumNS
             CheckedListBox thisTurbList = null;
             int turbCount = 0;
 
-            try
+            if (tabName != "Gross")
             {
-                if (tabName == "Input")
-                    thisTurbList = chkTurbLabels;
-                else if (tabName == "Summary")
-                    thisTurbList = chkTurbSumm;
-                else if (tabName == "Gross")
-                    thisTurbList = chkTurbGross;
-                else if (tabName == "Net")
-                    thisTurbList = chkTurbNet;
-                else if (tabName == "Map")
-                    thisTurbList = chkTurbLabels_Maps;
-                else if (tabName == "Advanced")
-                    thisTurbList = chkTurbLabelStep;
-
-                turbCount = thisTurbList.CheckedItems.Count;
-                if (turbCount == 0) return checkedTurbines;
-            }
-            catch
-            {
-                return checkedTurbines;
-            }
-
-            checkedTurbines = new Turbine[turbCount];
-            int turbInd = 0;
-
-            for (int i = 0; i < turbineList.TurbineCount; i++)
-            {
-                for (int j = 0; j < turbCount; j++)
+                try
                 {
-                    if (turbineList.turbineEsts[i].name == thisTurbList.CheckedItems[j].ToString())
+                    if (tabName == "Input")
+                        thisTurbList = chkTurbLabels;
+                    else if (tabName == "Summary")
+                        thisTurbList = chkTurbSumm;                    
+                    else if (tabName == "Map")
+                        thisTurbList = chkTurbLabels_Maps;
+                    else if (tabName == "Advanced")
+                        thisTurbList = chkTurbLabelStep;
+
+                    turbCount = thisTurbList.CheckedItems.Count;
+                    if (turbCount == 0) return checkedTurbines;
+                }
+                catch
+                {
+                    return checkedTurbines;
+                }
+
+                checkedTurbines = new Turbine[turbCount];
+                int turbInd = 0;
+
+                for (int i = 0; i < turbineList.TurbineCount; i++)
+                {
+                    for (int j = 0; j < turbCount; j++)
                     {
-                        checkedTurbines[turbInd] = turbineList.turbineEsts[i];
-                        turbInd++;
-                        break;
+                        if (turbineList.turbineEsts[i].name == thisTurbList.CheckedItems[j].ToString())
+                        {
+                            checkedTurbines[turbInd] = turbineList.turbineEsts[i];
+                            turbInd++;
+                            break;
+                        }
                     }
                 }
+            }
+            else
+            {
+                turbCount = turbineList.TurbineCount;
+                checkedTurbines = new Turbine[turbCount];
+                int turbInd = 0;
+                int rowStart = metList.ThisCount; // first row of turbines in dataGrossTurbEst table
+                for (int r = rowStart; r < dataGrossTurbEst.RowCount; r++)
+                {
+                    if (dataGrossTurbEst.Rows[r].Cells[0].Value != null && (bool)dataGrossTurbEst.Rows[r].Cells[0].Value == true)
+                    {                        
+                        checkedTurbines[turbInd] = turbineList.turbineEsts[r - rowStart];
+                        turbInd++;
+                    }
+                }
+
+                // Resize the array to the actual number of checked turbines
+                Array.Resize(ref checkedTurbines, turbInd);
+
             }
 
             return checkedTurbines;
@@ -4211,137 +4102,7 @@ namespace ContinuumNS
         private void btnMetData_Click(object sender, EventArgs e)
         {
             // Imports met time series data. Asks user for met file format. Calls Do MCP if have reference data then calls Do Met Calcs.
-            if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
-                BW_worker = new BackgroundWork();
-
-            if (BW_worker.IsBusy())
-            {
-                MessageBox.Show("Cannot import met data while other calculations underway.", "Continuum 3");
-                return;
-            }
-            
-            if (savedParams.savedFileName == null)
-            {
-                MessageBox.Show("Please specify the file location.", "Continuum 3");
-
-                if (sfdCFMfile.ShowDialog() == DialogResult.OK)
-                    SaveFile(sfdCFMfile.FileName);
-                else
-                {
-                    MessageBox.Show("A file location is needed in order to create local database. Cancelling met data import.", "Continuum 3");
-                    return;
-                }                
-            }
-
-            string filename = "";
-            DialogResult Good_to_go = DialogResult.Yes;
-
-            if (metList.ThisCount > 0 && metList.isTimeSeries == false)
-            {
-                Good_to_go = MessageBox.Show("Annual TAB files have been entered for other met sites. If you import this time series data, the model will be reset. Do you " +
-                    "want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
-            }
-
-            if (Good_to_go == DialogResult.No)
-                return;
-
-            DialogResult doFiltering = MessageBox.Show("Do you want to apply met data QC filters?", "Continuum 3", MessageBoxButtons.YesNo);
-
-            // On first import, ask user if the modeled height is the one that they want
-            if (metList.ThisCount == 0)
-            {                
-                Good_to_go = MessageBox.Show("The modeled height is set at " + modeledHeight.ToString() + " m. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
-
-                if (Good_to_go == DialogResult.No)
-                    return;
-
-          //      Good_to_go = MessageBox.Show("The number of MERRA2 nodes is set to " + merraList.numMERRA_Nodes.ToString() + ". Options are 1, 4, or 16 nodes. " +
-          //          "Do you want to continue?", "Continuum 3.0", MessageBoxButtons.YesNo);
-
-                if (Good_to_go == DialogResult.No)
-                {
-                    tabContinuum.SelectedIndex = 2;
-                    return;
-                }
-
-      /*          Good_to_go = MessageBox.Show("The MCP settings are " + Get_MCP_Method() + " Num WD bins: " + metList.numWD.ToString() + ", Num TOD bins: " +
-                    metList.numTOD.ToString() + ", Num Seasonal bins: " + metList.numSeason.ToString() + ". Do you want to continue?", "Continuum 3.0", MessageBoxButtons.YesNo);
-
-                if (Good_to_go == DialogResult.No)
-                {
-                    tabContinuum.SelectedIndex = 3;
-                    return;
-                }   
-      */
-            }
-
-            DialogResult isLocalTimeAnswer = MessageBox.Show("Are the met data timestamps shown in local time?", "", MessageBoxButtons.YesNo);
-            bool isLocal = true;
-            if (isLocalTimeAnswer == DialogResult.No)
-                isLocal = false;
-            
-            if (Good_to_go == DialogResult.Yes)
-            {               
-
-                if (ofdMetData.ShowDialog() == DialogResult.OK)
-                {
-                    filename = ofdMetData.FileName;
-
-                    string wholePath = ofdMetData.FileName;
-                    SetDefaultFolderLocations(wholePath);
-
-                    if (metList.ThisCount > 0 & metList.isTimeSeries == false)
-                        metList.ClearAllMets(this, true);
-
-                    metList.expoIsCalc = false;
-                    turbineList.ClearAllWSEsts();
-                    turbineList.ClearAllGrossEsts();
-                    turbineList.ClearAllNetEsts();
-                    modelList.ClearAllExceptImported();
-                    metPairList.ClearAll();
-                    mapList.ClearAllWakedMaps();
-                    dataMetTS.Rows.Clear();
-                    dataMetTS.Columns.Clear();
-
-                    bool applyFilters = false;
-
-                    if (doFiltering == DialogResult.Yes)
-                    {
-                        okToUpdate = false;
-                        chkDisableFilter.CheckState = CheckState.Checked;
-                        applyFilters = true;
-                        okToUpdate = true;
-                    }
-                    else
-                    {
-                        okToUpdate = false;
-                        chkDisableFilter.CheckState = CheckState.Unchecked;                        
-                        okToUpdate = true;
-                    }
-                                        
-                    bool gotIt = metList.ImportFilterExtrapMetData(filename, this, applyFilters, isLocal); // Reads in formatted .csv file, filters and extrapolates to modeled height
-                    
-                    if (gotIt == true)
-                    {
-                        metList.isTimeSeries = true;
-                        metList.numWD = Convert.ToInt16(cboMCPNumWD.SelectedItem);
-                        metList.numWS = 30;
-
-                        string metName = metList.metItem[metList.ThisCount - 1].name;
-                        Met thisMet = metList.GetMet(metName);                        
-                        thisMet.metData.FindStartEndDatesWithMaxRecovery();
-                        thisMet.metData.AddSensorDatatoDB(this, thisMet.name);                       
-                        thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));
-                        
-                        updateThe.AllTABs();
-                        ChangesMade();
-                    } 
-                }
-                else
-                {
-                    updateThe.AllTABs();
-                }
-            }           
+                  
         
         }               
 
@@ -4353,7 +4114,7 @@ namespace ContinuumNS
 
             if (thisMet.name == null)
             {
-                MessageBox.Show("Need to import a met site first.", "Continuum 3");
+                MessageBox.Show("Need to import a met site first.", "Continuum Wind Energy Software");
                 return;
             }                
 
@@ -4370,15 +4131,16 @@ namespace ContinuumNS
             theseFilts.txtMinClosestWS.Text = thisMet.metData.minClosestWS.ToString();
 
             // Update tower shadow list
-            theseFilts.lstTowerShadow.Items.Clear();
+            theseFilts.dataTowerShadow.Rows.Clear();
             
             for (int i = 0; i < thisMet.metData.GetNumAnems(); i++)
             {
-                ListViewItem lstView = theseFilts.lstTowerShadow.Items.Add(Convert.ToString(thisMet.metData.anems[i].height));
-                lstView.SubItems.Add(thisMet.metData.anems[i].orientation.ToString());
-                lstView.SubItems.Add(thisMet.metData.anems[i].shadow.center.ToString());
-                lstView.SubItems.Add(thisMet.metData.anems[i].shadow.minWD.ToString());
-                lstView.SubItems.Add(thisMet.metData.anems[i].shadow.maxWD.ToString());
+                DataGridViewRow row = theseFilts.dataTowerShadow.Rows[theseFilts.dataTowerShadow.Rows.Add()];
+                row.Cells[0].Value = Convert.ToString(thisMet.metData.anems[i].height);
+                row.Cells[1].Value = thisMet.metData.anems[i].orientation.ToString();
+                row.Cells[2].Value = thisMet.metData.anems[i].shadow.center.ToString();
+                row.Cells[3].Value = thisMet.metData.anems[i].shadow.minWD.ToString();
+                row.Cells[4].Value = thisMet.metData.anems[i].shadow.maxWD.ToString();
 
                 int Width = 0;
                 if (thisMet.metData.anems[i].shadow.maxWD > thisMet.metData.anems[i].shadow.minWD)
@@ -4386,7 +4148,7 @@ namespace ContinuumNS
                 else
                     Width = 360 - thisMet.metData.anems[i].shadow.minWD + thisMet.metData.anems[i].shadow.maxWD;
 
-                lstView.SubItems.Add(Width.ToString());
+                row.Cells[5].Value = Width.ToString();
             }
 
             theseFilts.ShowDialog();
@@ -4735,11 +4497,11 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Invalid wind speed bin width.", "Continuum 3.0");
+                    MessageBox.Show("Invalid wind speed bin width.", "Continuum Wind Energy Software.0");
                     txtWS_bin_width.Text = metList.mcpWS_BinWidth.ToString();
                 }
 
-                updateThe.AllTABs();
+                updateThe.AllTABs(false);
             }
             else
                 txtWS_bin_width.Text = thisMCP.WS_BinWidth.ToString();
@@ -4796,7 +4558,7 @@ namespace ContinuumNS
                 {
                     metList.numTOD = Convert.ToInt16(cboMCPNumHours.SelectedItem.ToString());
                     ResetTimeSeries("All"); 
-                    updateThe.AllTABs();
+                    updateThe.AllTABs(false);
                 }
                 else
                     cboMCPNumHours.Text = metList.numTOD.ToString();
@@ -4914,7 +4676,7 @@ namespace ContinuumNS
                     DialogResult result = DialogResult.Yes;
 
                     if (isTest == false)
-                        result = MessageBox.Show("Changing the WS matrix weight will reset the Matrix MCP. Do you want to continue?", "Continuum 3.0",
+                        result = MessageBox.Show("Changing the WS matrix weight will reset the Matrix MCP. Do you want to continue?", "Continuum Wind Energy Software.0",
                         MessageBoxButtons.YesNo);
 
                     if (result == DialogResult.Yes)
@@ -4927,7 +4689,7 @@ namespace ContinuumNS
                         return;
                     }
 
-                    updateThe.AllTABs();
+                    updateThe.AllTABs(false);
                 }
 
                 try
@@ -4936,7 +4698,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Invalid Matrix weight.", "Continuum 3.0");
+                    MessageBox.Show("Invalid Matrix weight.", "Continuum Wind Energy Software.0");
                     txtWS_PDF_Wgt.Text = metList.mcpMatrixWgt.ToString();
                 }
             }
@@ -4948,7 +4710,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Invalid Matrix weight.", "Continuum 3.0");
+                    MessageBox.Show("Invalid Matrix weight.", "Continuum Wind Energy Software.0");
                     txtWS_PDF_Wgt.Text = metList.mcpMatrixWgt.ToString();
                 }
             }
@@ -4970,7 +4732,7 @@ namespace ContinuumNS
                     DialogResult result = DialogResult.Yes;
 
                     if (isTest == false)
-                        result = MessageBox.Show("Changing the WS matrix weight will reset the Matrix MCP. Do you want to continue?", "Continuum 3.0",
+                        result = MessageBox.Show("Changing the WS matrix weight will reset the Matrix MCP. Do you want to continue?", "Continuum Wind Energy Software.0",
                         MessageBoxButtons.YesNo);
 
                     if (result == DialogResult.Yes)
@@ -4983,7 +4745,7 @@ namespace ContinuumNS
                         return;
                     }
 
-                    updateThe.AllTABs();
+                    updateThe.AllTABs(false);
                 }
 
                 try
@@ -4992,7 +4754,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Invalid Matrix weight.", "Continuum 3.0");
+                    MessageBox.Show("Invalid Matrix weight.", "Continuum Wind Energy Software.0");
                     txtLast_WS_Wgt.Text = metList.mcpLastWS_Wgt.ToString();
                 } 
             }
@@ -5004,7 +4766,7 @@ namespace ContinuumNS
                 }
                 catch
                 {
-                    MessageBox.Show("Invalid Matrix weight.", "Continuum 3.0");
+                    MessageBox.Show("Invalid Matrix weight.", "Continuum Wind Energy Software.0");
                     txtLast_WS_Wgt.Text = metList.mcpLastWS_Wgt.ToString();
                 }
             }
@@ -5060,7 +4822,7 @@ namespace ContinuumNS
             export.ExportReferenceInterpData(this);
         }
         
-        /// <summary> Returns Power Curve object selected on specified tab ("MERRA", "Gross", "Uncertainty", "Site Suitability", "Monthly", "Turbulence") </summary>        
+        /// <summary> Returns Power Curve object selected on specified tab ("LT Ref", "Gross", "Uncertainty", "Site Suitability", "Monthly", "Turbulence") </summary>        
         public TurbineCollection.PowerCurve GetSelectedPowerCurve(string TAB_name)
         {             
             TurbineCollection.PowerCurve thisPowerCurve = new TurbineCollection.PowerCurve();
@@ -5145,7 +4907,7 @@ namespace ContinuumNS
                             isDuplicate = true;
 
                     if (isDuplicate == true)
-                        MessageBox.Show("Zone with same name already imported.", "Continuum 3.0");
+                        MessageBox.Show("Zone with same name already imported.", "Continuum Wind Energy Software.0");
                     else
                     {
                         Array.Resize(ref siteSuitability.zones, numZones + 1);
@@ -5236,13 +4998,13 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot import zones while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot import zones while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (siteSuitability.flickerMap.Length != 0)
             {
-                DialogResult goodToGo = MessageBox.Show("Importing zones will reset the shadow flicker model. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult goodToGo = MessageBox.Show("Importing zones will reset the shadow flicker model. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (goodToGo == DialogResult.No)
                     return;
                 else
@@ -5262,7 +5024,7 @@ namespace ContinuumNS
                 BW_worker = new BackgroundWork();
 
             if (BW_worker.IsBusy()) {
-                MessageBox.Show("Cannot generate an ice throw model while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot generate an ice throw model while other calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -5270,13 +5032,13 @@ namespace ContinuumNS
 
             if (powerCurve.name == null)
             {
-                MessageBox.Show("A power curve is needed to run the ice throw model.", "Continuum 3");
+                MessageBox.Show("A power curve is needed to run the ice throw model.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (turbineList.TurbineCount == 0)
             {
-                MessageBox.Show("Turbine sites are needed to run the ice throw model.", "Continuum 3");
+                MessageBox.Show("Turbine sites are needed to run the ice throw model.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -5290,6 +5052,7 @@ namespace ContinuumNS
 
                 BackgroundWork.Vars_for_BW varsForBW = new BackgroundWork.Vars_for_BW();
                 varsForBW.thisInst = this;
+                varsForBW.selPowerCurve = GetSelectedPowerCurve("Site Suitability");
                 BW_worker = new BackgroundWork();
                 BW_worker.Call_BW_IceThrow(varsForBW);
             }
@@ -5311,13 +5074,13 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot generate a shadow flicker model while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot generate a shadow flicker model while other calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }                        
 
             if (turbineList.TurbineCount == 0)
             {
-                MessageBox.Show("Turbine sites are needed to run the shadow flicker model", "Continuum 3");
+                MessageBox.Show("Turbine sites are needed to run the shadow flicker model", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -5342,7 +5105,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid maximum shadow distance entered.", "Continuum 3");
+                MessageBox.Show("Invalid maximum shadow distance entered.", "Continuum Wind Energy Software");
                 thisMaxDist = -999;
             }
 
@@ -5501,8 +5264,8 @@ namespace ContinuumNS
                 TurbineCollection.PowerCurve powerCurve = GetSelectedPowerCurve("LT Ref");
                 thisRef.powerCurve = powerCurve;
                 thisRef.ApplyPC(ref thisRef.interpData.TS_Data);
-                thisRef.Calc_MonthProdStats(UTM_conversions);
-                thisRef.CalcAnnualProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, UTM_conversions);
+                thisRef.Calc_MonthWSAndProdStats(UTM_conversions);
+                thisRef.CalcAnnualWSAndProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, UTM_conversions);
 
                 updateThe.LT_ReferenceAnnualTableAndPlot();
                 updateThe.LT_ReferenceMonthlyTableAndPlot();
@@ -5561,15 +5324,15 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (ofdPowerCurve.ShowDialog() != DialogResult.OK)
                 return;
 
-            double RD = Convert.ToSingle(Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum 3"));
-            double RPM = Convert.ToSingle(Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum 3"));
+            double RD = Convert.ToSingle(Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum Wind Energy Software"));
+            double RPM = Convert.ToSingle(Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum Wind Energy Software"));
 
             turbineList.ImportPowerCurve(this, RD, RPM);
         }
@@ -5604,11 +5367,7 @@ namespace ContinuumNS
             }
         }
 
-        private void btnExportYearlyTurbineValues_Click(object sender, EventArgs e)
-        {
-            // Exports annual estimates at turbine site selected on "Time Series Analysis" tab            
-            export.ExportTimeSeries(this);
-        }
+      
 
         
 
@@ -5617,24 +5376,15 @@ namespace ContinuumNS
             // Updates the wake model dropdown list (on "Time Series Analysis" tab) so only wake models that use selected power curve are shown and updates Time Series tab
             if (okToUpdate)
             {
-                updateThe.WakeModelList();
+                int selWakeModelInd = 0;
+                if (dataWakeModels.SelectedRows.Count > 0)
+                    selWakeModelInd = dataWakeModels.SelectedRows[0].Index;
+
+                updateThe.WakeModelList(selWakeModelInd);
                 updateThe.Monthly_TAB();
             }
         }
-        private void chkYears_Monthly_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates monthly plot and table on "Time Series Analysis" tab based on years selected in checked list
-            if (okToUpdate)
-                updateThe.Monthly_TAB();
-        }
-
-        private void chkSelectedTurbineParam_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Updates plots and tables on "Time Series Analysis" tab based on plot parameters chosen from checked list
-            if (okToUpdate)
-                updateThe.Monthly_TAB();
-        }
-
+       
         private void cboSiteSuitabilitySelectPlot_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Updates "Site Suitability" tab based on which model is selected from dropdown menu
@@ -5650,20 +5400,21 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot delete zones while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot delete zones while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
-            int numZonesToDelete = lstZones.SelectedItems.Count;
-            DialogResult goodToGo = MessageBox.Show("Are you sure you want to delete these " + numZonesToDelete + " zones?", "Continuum 3", MessageBoxButtons.YesNo);
-
-            ListView.SelectedListViewItemCollection SelectedZones = lstZones.SelectedItems;
-
+            int numZonesToDelete = dataZones.SelectedRows.Count;
+            DialogResult goodToGo = MessageBox.Show("Are you sure you want to delete these " + numZonesToDelete + " zones?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
+                        
             if (goodToGo == DialogResult.Yes)
             {
-                for (int i = 0; i < numZonesToDelete; i++)
-                {                    
-                    string zoneName = SelectedZones[i].Text;
+                for (int i = 0; i < dataZones.RowCount; i++)
+                {
+                    if ((bool)dataZones.Rows[i].Cells[0].Value == false)
+                        continue;
+
+                    string zoneName = dataZones.Rows[i].Cells[1].Value.ToString();
                     siteSuitability.DeleteZone(zoneName);
                 }
                 ChangesMade();
@@ -5685,15 +5436,15 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot import a power curve while calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (ofdPowerCurve.ShowDialog() != DialogResult.OK)
                 return;
 
-            double RD = Convert.ToSingle(Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum 3"));
-            double RPM = Convert.ToSingle(Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum 3"));
+            double RD = Convert.ToSingle(Interaction.InputBox("What is the rotor diameter [m] of the turbine?", "Continuum Wind Energy Software"));
+            double RPM = Convert.ToSingle(Interaction.InputBox("What is the rated RPM of the turbine?", "Continuum Wind Energy Software"));
 
             turbineList.ImportPowerCurve(this, RD, RPM);
         }
@@ -5760,13 +5511,13 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot generate a turbine noise model while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot generate a turbine noise model while other calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (turbineList.TurbineCount == 0)
             {
-                MessageBox.Show("Turbine sites are needed to run the sound model", "Continuum 3");
+                MessageBox.Show("Turbine sites are needed to run the sound model", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -5793,7 +5544,7 @@ namespace ContinuumNS
             if (wakeModelList.NumWakeModels > 0)
             {
                 DialogResult goodToGo = MessageBox.Show("Adding a new exceedance curve will clear all turbine net estimates and waked maps. Do you " +
-                    "want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    "want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.No)
                     return;
@@ -5808,8 +5559,11 @@ namespace ContinuumNS
             AddPFCurve Add_newCurve = new AddPFCurve();
 
             // Update list in dropdown to only show curves that have yet to be defined
-            Add_newCurve.UpdateDropdown(turbineList.exceed.exceedCurves);
-
+            if (turbineList.exceed.curveSet == "Continuum Loss & Uncertainty")            
+                Add_newCurve.UpdateDropdownContinuumDefault(turbineList.exceed.exceedCurves);            
+            else if (turbineList.exceed.curveSet == "IEC Loss & Uncertainty")            
+                Add_newCurve.UpdateDropdownIECDefault(turbineList.exceed.exceedCurves);
+            
             turbineList.exceed.SizeMonteCarloArrays(); // resets the composite value arrays
             
             Add_newCurve.ShowDialog();
@@ -5859,14 +5613,14 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot perform Monte Carlo while other calculations are underway.", "Continuum 3");
+                MessageBox.Show("Cannot perform Monte Carlo while other calculations are underway.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (wakeModelList.NumWakeModels > 0)
             {
                 DialogResult goodToGo = MessageBox.Show("Running the Monte Carlo model will clear all turbine net estimates and waked maps. Do you " +
-                    "want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    "want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.No)
                     return;
@@ -5878,7 +5632,7 @@ namespace ContinuumNS
                 }
             }
 
-            if (lstDefinedLosses.Items.Count == 0)
+            if (dataDefinedLosses.Rows.Count == 0)
             {
                 MessageBox.Show("At least one exceedance curve is needed");
                 return;
@@ -5913,7 +5667,7 @@ namespace ContinuumNS
             if (wakeModelList.NumWakeModels > 0)
             {
                 result = MessageBox.Show("Deleting an exceedance curve will clear all turbine net estimates and waked maps. Do you" +
-                    "want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    "want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (result == DialogResult.No)
                     return;
@@ -5931,7 +5685,7 @@ namespace ContinuumNS
             
             if (result == DialogResult.Yes)
             {                
-                int numToDelete = lstDefinedLosses.SelectedItems.Count;
+                int numToDelete = dataDefinedLosses.SelectedRows.Count;
                 
                 if (numToDelete == 0)
                 {
@@ -5940,7 +5694,7 @@ namespace ContinuumNS
                 }
                                                 
                 for (int i = 0; i < numToDelete; i++)
-                    turbineList.exceed.Delete_Exceed(lstDefinedLosses.SelectedItems[i].Text);
+                    turbineList.exceed.Delete_Exceed(dataDefinedLosses.SelectedRows[i].Cells[1].Value.ToString());
 
                 turbineList.ClearAllExceedance();
                 
@@ -5966,7 +5720,7 @@ namespace ContinuumNS
             if (wakeModelList.NumWakeModels > 0)
             {
                 DialogResult goodToGo = MessageBox.Show("Changing exceedance curve will clear all turbine net estimates and waked maps. Do you" +
-                    "want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    "want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.No)
                     return;
@@ -5984,18 +5738,18 @@ namespace ContinuumNS
 
             try
             {
-                if (lstDefinedLosses.SelectedItems.Count > 1)
+                if (dataDefinedLosses.SelectedRows.Count > 1)
                 {
                     MessageBox.Show("You can only edit one curve at a time. Select one.");
                     return;
                 }
-                else if (lstDefinedLosses.SelectedItems.Count == 0)
+                else if (dataDefinedLosses.SelectedRows.Count == 0)
                 {
                     MessageBox.Show("Select a curve from the list to edit.");
                     return;
                 }
                 else                
-                    thisExceed = lstDefinedLosses.SelectedItems[0].Text;               
+                    thisExceed = dataDefinedLosses.SelectedRows[0].Cells[1].Value.ToString();               
 
             }
             catch
@@ -6111,7 +5865,7 @@ namespace ContinuumNS
 
             if (okToUpdate && siteSuitability.yearlyIceHits.Length != 0)
             {
-                DialogResult goAhead = MessageBox.Show("Changing the number of icing days will reset the ice throw model. Do you want to continue?", "Continuum 3.0", MessageBoxButtons.YesNo);
+                DialogResult goAhead = MessageBox.Show("Changing the number of icing days will reset the ice throw model. Do you want to continue?", "Continuum Wind Energy Software.0", MessageBoxButtons.YesNo);
 
                 if (goAhead == DialogResult.Yes)
                 {
@@ -6139,13 +5893,13 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid number of icing days.", "Continuum 3");
+                MessageBox.Show("Invalid number of icing days.", "Continuum Wind Energy Software");
                 numIcingDays = -999;
             }
 
             if (numIcingDays < 0 || numIcingDays > 365)
             {
-                MessageBox.Show("Invalid number of icing days.", "Continuum 3");
+                MessageBox.Show("Invalid number of icing days.", "Continuum Wind Energy Software");
                 numIcingDays = -999;
             }                
 
@@ -6163,13 +5917,13 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid number of ice throws per day.", "Continuum 3");
+                MessageBox.Show("Invalid number of ice throws per day.", "Continuum Wind Energy Software");
                 numIceThrowsPerDay = -999;
             }
 
             if (numIceThrowsPerDay < 0 || numIceThrowsPerDay > 1000000)
             {
-                MessageBox.Show("Invalid number of ice throws per day.", "Continuum 3");
+                MessageBox.Show("Invalid number of ice throws per day.", "Continuum Wind Energy Software");
                 numIceThrowsPerDay = -999;
             }                
 
@@ -6187,7 +5941,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid turbine noise level entered.", "Continuum 3");
+                MessageBox.Show("Invalid turbine noise level entered.", "Continuum Wind Energy Software");
                 thisNoise = -999;
             }
 
@@ -6248,11 +6002,11 @@ namespace ContinuumNS
            bool wasSaved = false;
             if (savedParams.savedFileName == null)
             {
-                MessageBox.Show("Please specify the file location.", "Continuum 3");
+                MessageBox.Show("Please specify the file location.", "Continuum Wind Energy Software");
                 wasSaved = SaveAs();
                 if (wasSaved == false)
                 {
-                    MessageBox.Show("A file location is needed in order to create local database. Cancelling MERRA2 import.", "Continuum 3");
+                    MessageBox.Show("A file location is needed in order to create local database. Cancelling MERRA2 import.", "Continuum Wind Energy Software");
                     return;
                 }
             }                       
@@ -6310,7 +6064,7 @@ namespace ContinuumNS
 
             if (newStartTime > thisMet.metData.endDate)
             {
-                MessageBox.Show("Start of met analysis cannot be after the end of met analysis", "Continuum 3");
+                MessageBox.Show("Start of met analysis cannot be after the end of met analysis", "Continuum Wind Energy Software");
                 Start_Time.Value = thisMet.metData.startDate;
                 return;
             }
@@ -6318,13 +6072,13 @@ namespace ContinuumNS
             if (metList.isTimeSeries && thisMet.isMCPd)
             {
                 DialogResult goodToGo = MessageBox.Show("Changing the start time of the met data analysis will reset the MCP estimates and all " +
-                    "modeled results. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    "modeled results. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.Yes)
                 {
                     thisMet.metData.startDate = Start_Time.Value;
                     ResetTimeSeries(thisMet.name);
-                    updateThe.AllTABs();
+                    updateThe.AllTABs(false);
                 }
                 else
                 {
@@ -6336,13 +6090,13 @@ namespace ContinuumNS
             {
                 thisMet.metData.startDate = Start_Time.Value;
                 ResetTimeSeries(thisMet.name);                
-                updateThe.AllTABs();
+                updateThe.AllTABs(false);
             }
             else
             {
                 thisMet.metData.startDate = Start_Time.Value;
                 thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(this.modeledHeight));
-                updateThe.AllTABs();
+                updateThe.AllTABs(false);
             }
         }
 
@@ -6362,7 +6116,7 @@ namespace ContinuumNS
 
             if (newEndTime < thisMet.metData.startDate)
             {
-                MessageBox.Show("End of met analysis cannot be before the start of met analysis", "Continuum 3");
+                MessageBox.Show("End of met analysis cannot be before the start of met analysis", "Continuum Wind Energy Software");
                 End_Time.Value = thisMet.metData.endDate;
                 return;
             }
@@ -6370,13 +6124,13 @@ namespace ContinuumNS
             if (metList.isTimeSeries && thisMet.isMCPd)
             {
                 DialogResult goodToGo = MessageBox.Show("Changing the end time of the met data analysis will reset the MCP estimates and all " +
-                    "modeled results. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    "modeled results. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.Yes)
                 {
                     thisMet.metData.endDate = End_Time.Value;
                     ResetTimeSeries(thisMet.name);
-                    updateThe.AllTABs();
+                    updateThe.AllTABs(false);
                 }
                 else
                 {
@@ -6388,13 +6142,13 @@ namespace ContinuumNS
             {
                 thisMet.metData.endDate = End_Time.Value;
                 ResetTimeSeries(thisMet.name);
-                updateThe.AllTABs();
+                updateThe.AllTABs(false);
             }
             else
             {
                 thisMet.metData.endDate = End_Time.Value;
                 thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(this.modeledHeight));
-                updateThe.AllTABs();                
+                updateThe.AllTABs(false);                
             }
         }    
         
@@ -6509,7 +6263,7 @@ namespace ContinuumNS
 
             metList.AreAllMetsMCPd();                      
 
-            updateThe.AllTABs();
+            updateThe.AllTABs(false);
         }
 
         private void btnGetDefaultExceed_Click(object sender, EventArgs e)
@@ -6519,7 +6273,7 @@ namespace ContinuumNS
             if (turbineList.exceed.compositeLoss.isComplete)
             {
                 DialogResult goodToGo = MessageBox.Show("Setting the exceedance curves to the default values will reset the Monte Carlo estimates" +
-                    "and all net energy estimates. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    "and all net energy estimates. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.No)
                     return;
@@ -6566,17 +6320,17 @@ namespace ContinuumNS
 
             try
             {
-                newHeight = Convert.ToSingle(Interaction.InputBox("What height [m] do you want to model?", "Continuum 3"));
+                newHeight = Convert.ToDouble(Interaction.InputBox("What height [m] do you want to model?", "Continuum Wind Energy Software"));
             }
             catch
             {
-                MessageBox.Show("Invalid entry for modeled height.", "Continuum 3");
+                MessageBox.Show("Invalid entry for modeled height.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (newHeight == modeledHeight)
             {
-                MessageBox.Show("Modeled height unchanged.", "Continuum 3");
+                MessageBox.Show("Modeled height unchanged.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -6598,7 +6352,7 @@ namespace ContinuumNS
             if (modelList.ModelCount > 0)
             {
                 DialogResult goodToGo = MessageBox.Show("Changing the modeled height will reset models and all estimated values. Do you " +
-                    "want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    "want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.No)
                     return;
@@ -6652,11 +6406,11 @@ namespace ContinuumNS
 
             DialogResult goodToGo = DialogResult.Yes;
             if (metList.metItem[0].metData.filteringDone && chkDisableFilter.CheckState == CheckState.Unchecked)
-                goodToGo = MessageBox.Show("Disabling met data filters will reset the model and all calculations. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                goodToGo = MessageBox.Show("Disabling met data filters will reset the model and all calculations. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
             else if (metList.metItem[0].metData.filteringDone == false && checkState == CheckState.Checked)
-                goodToGo = MessageBox.Show("Enabling met data filters will reset the model and all calculations. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                goodToGo = MessageBox.Show("Enabling met data filters will reset the model and all calculations. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
        //     else // Changed one of the filters applied
-       //         goodToGo = MessageBox.Show("Changing met data filters will reset the model and all calculations. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+       //         goodToGo = MessageBox.Show("Changing met data filters will reset the model and all calculations. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
             if (goodToGo == DialogResult.No)
             {
@@ -6695,9 +6449,11 @@ namespace ContinuumNS
                     selMet.metData.FilterData(GetFiltersToApply(selMet));
 
                 ResetTimeSeries(selMet.name);
-                updateThe.SetMetDataFlagColors();
+          //      metTSFilterFlags = updateThe.CalculateMetDataFlags((DataTable)dataMetTS.DataSource);
+         //       updateThe.SetMetDataFlagColors();
                 ChangesMade();                
-                updateThe.AllTABs();
+                updateThe.AllTABs(false);
+                updateThe.MetDataTS_DataTableALL("Refreshing Met Data TS table");
             }
         }
 
@@ -6766,13 +6522,7 @@ namespace ContinuumNS
                 chkTowerShadow.Enabled = false;
             }          
                         
-        }
-
-        private void lstPowerCurveList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (okToUpdate)
-                updateThe.PowerCrvPlot();
-        }
+        }       
 
         public string[] GetFiltersToApply(Met thisMet)
         {
@@ -6869,7 +6619,7 @@ namespace ContinuumNS
                 if (turbineList.turbineCalcsDone && turbineList.genTimeSeries == true && chkCreateTurbTS.CheckState == CheckState.Unchecked)
                 {
                     goodToGo = MessageBox.Show("Turbine calculations have already been generated as a time series. Changing this setting will clear the estimates. Do you want " +
-                        "to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                        "to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                     if (goodToGo == DialogResult.No)
                     {
@@ -6882,14 +6632,14 @@ namespace ContinuumNS
                         turbineList.ClearAllGrossEsts();
                         turbineList.ClearAllNetEsts();
                         wakeModelList.ClearAll();
-                        updateThe.AllTABs();
+                        updateThe.AllTABs(false);
                     }
                     
                 }
                 else if (turbineList.turbineCalcsDone && turbineList.genTimeSeries == false && chkCreateTurbTS.CheckState == CheckState.Checked)
                 {
                     goodToGo = MessageBox.Show("Turbine calculations have already been generated on an annual basis. Changing this setting will clear the estimates. Do you want " +
-                        "to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                        "to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                     if (goodToGo == DialogResult.No)
                     {
@@ -6902,7 +6652,7 @@ namespace ContinuumNS
                         turbineList.ClearAllGrossEsts();
                         turbineList.ClearAllNetEsts();
                         wakeModelList.ClearAll();
-                        updateThe.AllTABs();
+                        updateThe.AllTABs(false);
                     }
                 }
 
@@ -6948,31 +6698,31 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot generate turbine estimates while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot generate turbine estimates while other calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (metList.ThisCount == 0)
             {
-                MessageBox.Show("You need to import met sites fist.", "Continuum 3");
+                MessageBox.Show("You need to import met sites fist.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (turbineList.TurbineCount == 0)
             {
-                MessageBox.Show("You need to import turbines fist.", "Continuum 3");
+                MessageBox.Show("You need to import turbines fist.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (modelList.ModelCount < 1 && metList.ThisCount > 1)
             {
-                MessageBox.Show("Create a site-calibrated model first clickng Analyze Mets.", "Continuum 3");
+                MessageBox.Show("Create a site-calibrated model first clickng Analyze Mets.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (modelList.ModelCount == 0)
             {
-                MessageBox.Show("Create a Continuum model first clickng Analyze Mets.", "Continuum 3");
+                MessageBox.Show("Create a Continuum model first clickng Analyze Mets.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -7721,7 +7471,7 @@ namespace ContinuumNS
             {
                 if (cboTI_Type.SelectedItem.ToString() == "Effective" && (turbineList.TurbineCount == 0 || turbineList.PowerCurveCount == 0))
                 {
-                    MessageBox.Show("Turbine sites and a power curve are required to conduct effective TI calculations.", "Continuum 3.0");
+                    MessageBox.Show("Turbine sites and a power curve are required to conduct effective TI calculations.", "Continuum Wind Energy Software.0");
                     cboTI_Type.SelectedIndex = 0;
                     return;
                 }
@@ -7962,14 +7712,36 @@ namespace ContinuumNS
 
         public bool IsPythonInstalled()
         {
-            // Returns true if Python is installed on PC
-            string pythonPath = Environment.GetEnvironmentVariable("python") + "\\python.exe";
-            bool gotPython = false;
+            try
+            {
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "python",
+                    Arguments = "--version",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
 
-            if (File.Exists(pythonPath))
-                gotPython = true;
+                using (Process process = Process.Start(startInfo))
+                {
+                    if (process == null)
+                        return false;
 
-            return gotPython;
+                    if (!process.WaitForExit(3000))
+                    {
+                        process.Kill();
+                        return false;
+                    }
+
+                    return process.ExitCode == 0;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
  
         public bool IsCDSAPI_Installed()
@@ -8120,17 +7892,17 @@ namespace ContinuumNS
 
             try
             {
-                newRotorDiam = Convert.ToSingle(Interaction.InputBox("What rotor diameter [m] to you want to model?", "Continuum 3"));
+                newRotorDiam = Convert.ToSingle(Interaction.InputBox("What rotor diameter [m] to you want to model?", "Continuum Wind Energy Software"));
             }
             catch
             {
-                MessageBox.Show("Invalid entry for modeled rotor diameter.", "Continuum 3");
+                MessageBox.Show("Invalid entry for modeled rotor diameter.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (newRotorDiam == modelList.rotorDiam)
             {
-                MessageBox.Show("Modeled rotor diameter unchanged.", "Continuum 3");
+                MessageBox.Show("Modeled rotor diameter unchanged.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -8161,17 +7933,17 @@ namespace ContinuumNS
 
             try
             {
-                newDensity = Convert.ToSingle(Interaction.InputBox("What air density [kg/m^3] to you want to model?", "Continuum 3"));
+                newDensity = Convert.ToSingle(Interaction.InputBox("What air density [kg/m^3] to you want to model?", "Continuum Wind Energy Software"));
             }
             catch
             {
-                MessageBox.Show("Invalid entry for modeled air density.", "Continuum 3");
+                MessageBox.Show("Invalid entry for modeled air density.", "Continuum Wind Energy Software");
                 return;
             }
 
             if (newDensity == modelList.airDens)
             {
-                MessageBox.Show("Modeled air density unchanged.", "Continuum 3");
+                MessageBox.Show("Modeled air density unchanged.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -8255,8 +8027,8 @@ namespace ContinuumNS
                                 
                 selMet.metData.shearSettings.shearCalcType = selMet.metData.GetShearCalcTypeFromName(editShear.cboShearCalcTypes.SelectedItem.ToString());
                 
-                selMet.metData.shearSettings.minHeight = Convert.ToDouble(editShear.cboMinHeight.SelectedItem.ToString());
-                selMet.metData.shearSettings.maxHeight = Convert.ToDouble(editShear.cboMaxHeight.SelectedItem.ToString());
+                selMet.metData.shearSettings.minHeight = Convert.ToSingle(editShear.cboMinHeight.SelectedItem.ToString());
+                selMet.metData.shearSettings.maxHeight = Convert.ToSingle(editShear.cboMaxHeight.SelectedItem.ToString());
                 selMet.metData.shearSettings.minNumHs = Convert.ToInt16(editShear.cboMinValidHeights.SelectedItem.ToString());
 
                 selMet.metData.EstimateAlpha();
@@ -8264,7 +8036,7 @@ namespace ContinuumNS
 
                 selMet.CalcAllMeas_WSWD_Dists(this, selMet.metData.GetSimulatedTimeSeries(modeledHeight));
                 updateThe.ShearAndExtrapWSInTable(selMet);
-                updateThe.AllTABs();
+                updateThe.AllTABs(false);
             }
         }
 
@@ -8381,7 +8153,7 @@ namespace ContinuumNS
             {
                 if (selRef.GetName(metList, UTM_conversions) != selMet.mcpList[0].reference.GetName(metList, UTM_conversions))
                 {
-                    DialogResult clearMCP = MessageBox.Show("Changing the MCP Reference site will reset the MCP calculations.  Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                    DialogResult clearMCP = MessageBox.Show("Changing the MCP Reference site will reset the MCP calculations.  Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                     if (clearMCP == DialogResult.No)
                         return;
@@ -8393,6 +8165,11 @@ namespace ContinuumNS
                     updateThe.MCP_TAB();               
                     updateThe.ColoredButtons();
                 }
+            }
+            else
+            {
+                updateThe.MCP_TAB();
+                updateThe.ColoredButtons();
             }
         }
 
@@ -8653,12 +8430,12 @@ namespace ContinuumNS
 
         private void btnClearMCP_Click(object sender, EventArgs e)
         {
-            DialogResult goodtoGo = MessageBox.Show("Do you want to clear the MCP estimate?", "Continuum 3", MessageBoxButtons.YesNo);
+            DialogResult goodtoGo = MessageBox.Show("Do you want to clear the MCP estimate?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
             if (goodtoGo == DialogResult.Yes)
             {
                 ResetTimeSeries(GetSelectedMet("MCP").name);
-                updateThe.AllTABs();
+                updateThe.AllTABs(false);
             }
         }
 
@@ -8695,7 +8472,7 @@ namespace ContinuumNS
                 if ((chkUseElevModel.Checked == false && topo.useElev == false) || (chkUseElevModel.Checked == true && topo.useElev == true))
                     return;
                 
-                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (yes_or_no == DialogResult.Yes)
                 {
@@ -8743,7 +8520,7 @@ namespace ContinuumNS
 
             if (BW_worker.IsBusy())
             {
-                MessageBox.Show("Cannot conduct Round Robin analysis while other calculations are under way.", "Continuum 3");
+                MessageBox.Show("Cannot conduct Round Robin analysis while other calculations are under way.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -8796,7 +8573,7 @@ namespace ContinuumNS
                 if ((chkUseValleyFlow.Checked == false && topo.useValley == false) || (chkUseValleyFlow.Checked == true && topo.useValley == true))
                     return;
                 
-                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult yes_or_no = MessageBox.Show("Changing this setting will recreate the wind flow model and estimates. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (yes_or_no == DialogResult.Yes)
                 {
@@ -8927,7 +8704,7 @@ namespace ContinuumNS
         private void btn10mDataExplain_Click(object sender, EventArgs e)
         {
             MessageBox.Show("When a new reference site is created, the 50m (MERRA2) or 100m (ERA5) WS and WD data is extracted from the netCDF or " +
-                "ascii files and is saved to the local database. Users may select to include 10m WS data when downloading ERA5/MERRA2 data however " +
+                "ascii/csv files and is saved to the local database. Users may select to include 10m WS data when downloading ERA5/MERRA2 data however " +
                 "this is not currently stored in the local DB. If 10m WS data was included, click 'Extract 10m WS' data to access the data");
         }                
 
@@ -9037,7 +8814,17 @@ namespace ContinuumNS
 
         private void btnExportTimeSeriesEsts_Click(object sender, EventArgs e)
         {
-            export.ExportTimeSeries(this);
+            Wake_Model thisWakeModel = null;
+            if (wakeModelList.NumWakeModels > 0 && cboMonthlyWakeModel.Items.Count != 0)
+            {
+                string wakeModelString = cboMonthlyWakeModel.SelectedItem.ToString();
+                thisWakeModel = wakeModelList.GetWakeModelFromString(wakeModelString);
+            }
+
+            TurbineCollection.PowerCurve selPowerCurve = GetSelectedPowerCurve("Monthly");
+            string timeInterval = cboTimeSeriesAnalysis.SelectedItem.ToString();
+
+            export.ExportTimeSeries(this, thisWakeModel, selPowerCurve, timeInterval);
         }
 
         private void cboTimeSeriesAnalysis_SelectedIndexChanged(object sender, EventArgs e)
@@ -9244,6 +9031,484 @@ namespace ContinuumNS
         {
             if (okToUpdate)
                 updateThe.TurbineTimeSeriesPlot();
+        }
+
+        private void btnSetToIEC_LossUncert_Click(object sender, EventArgs e)
+        {
+            // Set default IEC loss/uncertainty exceedance curves
+
+            if (turbineList.exceed.compositeLoss.isComplete)
+            {
+                DialogResult goodToGo = MessageBox.Show("Setting the exceedance curves to the default values will reset the Monte Carlo estimates" +
+                    "and all net energy estimates. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
+
+                if (goodToGo == DialogResult.No)
+                    return;
+                else
+                {
+                    turbineList.ClearAllNetEsts();
+                    mapList.ClearAllWakedMaps();
+                }
+            }
+
+            turbineList.ClearAllExceedance();
+            turbineList.exceed.CreateIEC_DefaultCurve();
+            updateThe.Exceedance_TAB();
+        }
+
+        private void dataVaneSummary_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void dataMetTS_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex < 1)
+                return;
+
+            if (metTSFilterFlags == null)
+                return;
+
+            if (e.RowIndex >= metTSFilterFlags.GetLength(0) ||
+                e.ColumnIndex >= metTSFilterFlags.GetLength(1))
+                return;
+
+            Met_Data_Filter.Filter_Flags flag = metTSFilterFlags[e.RowIndex, e.ColumnIndex];
+
+            if (flag != Met_Data_Filter.Filter_Flags.Valid)
+                e.CellStyle.BackColor = updateThe.GetFilterFlagColor(flag);
+
+            
+        }
+
+        private void btnExport_PowerCurve_Click(object sender, EventArgs e)
+        {
+            // Calls Export.Export_CRV to export selected power curve
+            string powerCurve = "";
+
+            try
+            {
+                powerCurve = cboPowerCrvs.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+
+            if (powerCurve == "No Power Curves Imported")
+            {
+                MessageBox.Show("No power curves have been imported yet.", "Continuum Wind Energy Software");
+                return;
+            }
+            Export thisExport = new Export();
+            thisExport.Export_CRV(this, powerCurve);
+        }
+
+        private void btnDeletePowerCurve_Click(object sender, EventArgs e)
+        {
+            if (dataPowerCurveList.SelectedRows.Count > 0)
+            {
+                for (int i = 0; i < dataPowerCurveList.SelectedRows.Count; i++)
+                {
+                    string powerCurveToDelete = dataPowerCurveList.SelectedRows[i].Cells[0].Value.ToString();
+                    turbineList.DeletePowerCurve(powerCurveToDelete);
+
+                    for (int t = 0; t < turbineList.TurbineCount; t++)
+                        turbineList.turbineEsts[t].ClearGrossEstsFromAvgWS(powerCurveToDelete);
+
+                    wakeModelList.RemoveWakeModelByPowerCurve(turbineList, mapList, powerCurveToDelete);
+                }
+
+                turbineList.ClearDuplicateAvgWS(metList.isTimeSeries);
+                refList.ClearReferenceProdStats();
+                updateThe.AllTABs();
+
+            }
+            else
+                MessageBox.Show("No power curves to delete", "Continuum Wind Energy Software");
+
+            updateThe.ColoredButtons();
+        }
+
+        private void dataPowerCurveList_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (okToUpdate && updateThe != null)
+                updateThe.PowerCrvPlot();
+        }
+
+        private void btnImportMetData_Click(object sender, EventArgs e)
+        {
+            bool useTABFiles = false;
+
+            if (metList.ThisCount == 0)
+            {
+                SelectMetDataType selectMetDataType = new SelectMetDataType();
+                selectMetDataType.ShowDialog();
+
+                if (selectMetDataType.goodToGo)
+                {
+                    if (selectMetDataType.radioTAB.Checked)
+                        useTABFiles = true;
+                }
+                else
+                    return;
+            }
+            else if (metList.isTimeSeries == false)
+                useTABFiles = true;
+                            
+            if (useTABFiles)
+            {
+                // Calls ImportMetsTAB, if successful and if have topo and land cover data, creates struct needed for Met calcs and calls background worker otherwise updates 
+                // all plots and tables referencing the met sites
+                if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
+                    BW_worker = new BackgroundWork();
+
+                if (BW_worker.IsBusy())
+                {
+                    MessageBox.Show("Cannot import met data while calculations are under way.", "Continuum Wind Energy Software");
+                    return;
+                }
+
+                if (metList.isTimeSeries == true && metList.ThisCount > 0)
+                {
+                    DialogResult goodToGo = MessageBox.Show("Time Series Met data has already been imported. Importing TAB files will delete time series data and " +
+                        "models will be formed using TAB file WSWD distributions. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
+                    if (goodToGo == DialogResult.No)
+                        return;
+                    else
+                    {
+                        // Clear met objects and data from DB
+                        metList.ClearAllMets(this, true);
+                    }
+                }
+
+                if (ofdMets.ShowDialog() != DialogResult.OK)
+                    return;
+
+                bool reCalcEsts = ImportMetsTAB();
+
+                if (reCalcEsts == true)
+                {
+                    if (metList.ThisCount == 0)
+                        return;
+
+                    metList.isTimeSeries = false;
+                    turbineList.ClearAllWSEsts();
+                    updateThe.AllTABs();
+
+                    if (topo.gotTopo == false)
+                        return;
+
+                    if (chkUseSR.Checked == true && topo.gotSR == true)
+                        topo.useSR = true;
+                    else
+                        topo.useSR = false;
+
+                    if (chk_Use_Sep.Checked == true)
+                        topo.useSepMod = true;
+                    else
+                        topo.useSepMod = false;
+
+                    if (topo.gotSR == false)
+                    {
+                        DialogResult yes_or_no = MessageBox.Show("Do you have land cover data to import? Click No and Continuum will start the site-calibration using only the topography data.", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
+                        if (yes_or_no == DialogResult.Yes)
+                        {
+                            updateThe.AllTABs();
+                            return;
+                        }
+                    }
+
+                    // Call background worker to run calculations
+                    // In background worker, performs exposure and grid stat calculations, finds path of nodes and does site calibration.
+                    BW_worker = new BackgroundWork();
+                    BackgroundWork.Vars_for_BW theArgs = new BackgroundWork.Vars_for_BW();
+                    theArgs.thisInst = this;
+                    BW_worker.Call_BW_MetCalcs(theArgs);
+                    ChangesMade();
+                }
+                else
+                {
+                    updateThe.AllTABs();
+                }
+            }
+            else if (useTABFiles == false)
+            {
+                if (BW_worker.IsHandleCreated == false && BW_worker.IsBusy()) // it was force closed
+                    BW_worker = new BackgroundWork();
+
+                if (BW_worker.IsBusy())
+                {
+                    MessageBox.Show("Cannot import met data while other calculations underway.", "Continuum Wind Energy Software");
+                    return;
+                }
+
+                if (savedParams.savedFileName == null)
+                {
+                    MessageBox.Show("Please specify the file location.", "Continuum Wind Energy Software");
+
+                    if (sfdCFMfile.ShowDialog() == DialogResult.OK)
+                        SaveFile(sfdCFMfile.FileName);
+                    else
+                    {
+                        MessageBox.Show("A file location is needed in order to create local database. Cancelling met data import.", "Continuum Wind Energy Software");
+                        return;
+                    }
+                }
+
+                string filename = "";
+                DialogResult Good_to_go = DialogResult.Yes;
+
+                if (metList.ThisCount > 0 && metList.isTimeSeries == false)
+                {
+                    Good_to_go = MessageBox.Show("Annual TAB files have been entered for other met sites. If you import this time series data, the model will be reset. Do you " +
+                        "want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
+                }
+
+                if (Good_to_go == DialogResult.No)
+                    return;
+
+                DialogResult doFiltering = MessageBox.Show("Do you want to apply met data QC filters?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
+
+                // On first import, ask user if the modeled height is the one that they want
+                if (metList.ThisCount == 0)
+                {
+                    Good_to_go = MessageBox.Show("The modeled height is set at " + modeledHeight.ToString() + " m. Do you want to continue?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
+
+                    if (Good_to_go == DialogResult.No)
+                        return;
+
+                    //      Good_to_go = MessageBox.Show("The number of MERRA2 nodes is set to " + merraList.numMERRA_Nodes.ToString() + ". Options are 1, 4, or 16 nodes. " +
+                    //          "Do you want to continue?", "Continuum Wind Energy Software.0", MessageBoxButtons.YesNo);
+
+                    if (Good_to_go == DialogResult.No)
+                    {
+                        tabContinuum.SelectedIndex = 2;
+                        return;
+                    }
+
+                    /*          Good_to_go = MessageBox.Show("The MCP settings are " + Get_MCP_Method() + " Num WD bins: " + metList.numWD.ToString() + ", Num TOD bins: " +
+                                    metList.numTOD.ToString() + ", Num Seasonal bins: " + metList.numSeason.ToString() + ". Do you want to continue?", "Continuum Wind Energy Software.0", MessageBoxButtons.YesNo);
+
+                                if (Good_to_go == DialogResult.No)
+                                {
+                                    tabContinuum.SelectedIndex = 3;
+                                    return;
+                                }   
+                    */
+                }
+
+                DialogResult isLocalTimeAnswer = MessageBox.Show("Are the met data timestamps shown in local time?", "", MessageBoxButtons.YesNo);
+                bool isLocal = true;
+                if (isLocalTimeAnswer == DialogResult.No)
+                    isLocal = false;
+
+                if (Good_to_go == DialogResult.Yes)
+                {
+
+                    if (ofdMetData.ShowDialog() == DialogResult.OK)
+                    {
+                        filename = ofdMetData.FileName;
+
+                        string wholePath = ofdMetData.FileName;
+                        SetDefaultFolderLocations(wholePath);
+
+                        if (metList.ThisCount > 0 & metList.isTimeSeries == false)
+                            metList.ClearAllMets(this, true);
+
+                        metList.expoIsCalc = false;
+                        turbineList.ClearAllWSEsts();
+                        turbineList.ClearAllGrossEsts();
+                        turbineList.ClearAllNetEsts();
+                        modelList.ClearAllExceptImported();
+                        metPairList.ClearAll();
+                        mapList.ClearAllWakedMaps();
+                        dataMetTS.DataSource = null;
+                        dataMetTS.Rows.Clear();
+                        dataMetTS.Columns.Clear();
+
+                        bool applyFilters = false;
+
+                        if (doFiltering == DialogResult.Yes)
+                        {
+                            okToUpdate = false;
+                            chkDisableFilter.CheckState = CheckState.Checked;
+                            applyFilters = true;
+                            okToUpdate = true;
+                        }
+                        else
+                        {
+                            okToUpdate = false;
+                            chkDisableFilter.CheckState = CheckState.Unchecked;
+                            okToUpdate = true;
+                        }
+
+                        bool[] gotIt = metList.ImportFilterExtrapMetData(filename, this, applyFilters, isLocal); // Reads in formatted .csv file, filters and extrapolates to modeled height
+
+                        if (gotIt[0] == true)
+                        {
+                            metList.isTimeSeries = true;
+                            metList.numWD = Convert.ToInt16(cboMCPNumWD.SelectedItem);
+                            metList.numWS = 30;
+
+                            string metName = metList.metItem[metList.ThisCount - 1].name;
+                            Met thisMet = metList.GetMet(metName);
+                            thisMet.metData.hasSD_data = gotIt[1];
+                            thisMet.metData.FindStartEndDatesWithMaxRecovery();
+                            thisMet.metData.AddSensorDatatoDB(this, thisMet.name);
+                            thisMet.CalcAllMeas_WSWD_Dists(this, thisMet.metData.GetSimulatedTimeSeries(modeledHeight));
+
+                            updateThe.AllTABs();
+                            ChangesMade();
+                        }
+                    }
+                    else
+                    {
+                        updateThe.AllTABs();
+                    }
+                }
+            }
+
+            
+        }
+
+        private void dataWakeModels_SelectionChanged(object sender, EventArgs e)
+        {
+            // Updates plots and tables on Net Turbine Ests tab based on selected wake loss model
+            if (okToUpdate == true)
+            {
+                updateThe.WakedTurbList();
+                updateThe.WakedWSDistPlot();
+                updateThe.NetTurbsHistogram();
+                updateThe.WakeLossMap();
+            }
+        }
+
+        private void label245_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtTotalGrossCF_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGrossTurbEst_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (okToUpdate && updateThe != null)
+                updateThe.TurbStats();
+        }
+
+        private void dataGrossTurbEst_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dataGrossTurbEst.IsCurrentCellDirty)
+            {
+                dataGrossTurbEst.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void dataZones_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (this.IsHandleCreated && okToUpdate)
+            {
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.SiteSuitabilityTAB()));
+            }
+        }
+
+        private void dataZones_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dataZones.IsCurrentCellDirty)
+            {
+                dataZones.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void dataDefinedLosses_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (this.IsHandleCreated && okToUpdate)
+            {
+                this.BeginInvoke((MethodInvoker)(
+                        () => updateThe.PerformanceFactorsPlot()));
+            }
+        }
+
+        private void dataDefinedLosses_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void dataDefinedLosses_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dataDefinedLosses.IsCurrentCellDirty)
+            {
+                dataDefinedLosses.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
+
+        private void btnDebiasWS_Click(object sender, EventArgs e)
+        {
+            Met thisMet = GetSelectedMet("MCP");
+            MCP thisMCP = GetSelectedMCP();
+            Reference thisRef = GetSelectedReference("MCP");
+
+            if (thisMCP == null)
+            {
+                DoMCP();
+                thisMCP = GetSelectedMCP();
+            }
+
+            thisMCP.DoMCP_DebiasAnalysis(thisMet, thisMCP, Get_MCP_Method(), this);
+            updateThe.MCP_DebiasPlotTableAndTextbox(thisMet, thisMCP);
+        }
+
+        private void chkUsingMetsForDebias_CheckedChanged(object sender, EventArgs e)
+        {
+            MCP selMCP = GetSelectedMCP();
+            Met selMet = GetSelectedMet("MCP");
+            double selHeight = Convert.ToDouble(cboMCP_Height.SelectedItem.ToString());
+
+            if (selMCP.debiasData.useOtherMets != chkUsingMetsForDebias.Checked)
+            {
+                selMCP.debiasData.useOtherMets = chkUsingMetsForDebias.Checked;
+
+                if (selMCP.debiasData.useOtherMets)
+                {
+                    btnEditMetsUsedForDebias.Enabled = true;
+                    SelectMetsForDebiasCalc selectMetsForDebias = new SelectMetsForDebiasCalc(metList, selMet.name, selHeight, selMCP.debiasData.otherMetNameString);
+                    selectMetsForDebias.ShowDialog();
+                    selMCP.debiasData.otherMetNameString = selectMetsForDebias.selMetNamesCommaStr;
+                    double[] avgSlopeInt = metList.CalcAvgDebiasSlopeAndIntFromSelMets(selMCP.debiasData.otherMetNameString, selHeight);
+                    selMCP.debiasData.debiasedWS = avgSlopeInt[0] * selMCP.debiasData.refLT_WS + avgSlopeInt[1];
+                }
+                else
+                {
+                    selMCP.debiasData.otherMetNameString = "";
+                    btnEditMetsUsedForDebias.Enabled = false;
+                }
+                                
+                updateThe.MCP_DebiasPlotTableAndTextbox(GetSelectedMet("MCP"), selMCP);
+            }
+        }
+
+        private void btnEditMetsUsedForDebias_Click(object sender, EventArgs e)
+        {
+            // Opens SelectMetsForDebiasCalc form to allow user to select which mets to use for debiasing
+            Met selMet = GetSelectedMet("MCP");
+            double selHeight = Convert.ToDouble(cboMCP_Height.SelectedItem.ToString());
+            MCP selMCP = GetSelectedMCP();
+
+            SelectMetsForDebiasCalc selectMetsForDebias = new SelectMetsForDebiasCalc(metList, selMet.name, selHeight, selMCP.debiasData.otherMetNameString);
+            selectMetsForDebias.ShowDialog();
+
+            if (selectMetsForDebias.goodToGo)
+            {
+                selMCP.debiasData.otherMetNameString = selectMetsForDebias.selMetNamesCommaStr;
+                double[] avgSlopeInt = metList.CalcAvgDebiasSlopeAndIntFromSelMets(selMCP.debiasData.otherMetNameString, selHeight);
+                selMCP.debiasData.debiasedWS = avgSlopeInt[0] * selMCP.debiasData.refLT_WS + avgSlopeInt[1];
+                updateThe.MCP_DebiasPlotTableAndTextbox(selMet, selMCP);
+            }
         }
     }
 }

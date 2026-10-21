@@ -35,11 +35,12 @@
             this.btnNewKey = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.lstLC_SR_DH = new System.Windows.Forms.ListView();
-            this.ColumnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ColumnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ColumnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ColumnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.dataLC_SR_DH = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dataLC_SR_DH)).BeginInit();
             this.SuspendLayout();
             // 
             // Label1
@@ -95,6 +96,7 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancel.Location = new System.Drawing.Point(352, 425);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2);
@@ -107,6 +109,7 @@
             // 
             // btnOK
             // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOK.Location = new System.Drawing.Point(230, 425);
             this.btnOK.Margin = new System.Windows.Forms.Padding(2);
@@ -117,59 +120,70 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
-            // lstLC_SR_DH
+            // dataLC_SR_DH
             // 
-            this.lstLC_SR_DH.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.ColumnHeader1,
-            this.ColumnHeader2,
-            this.ColumnHeader3,
-            this.ColumnHeader4});
-            this.lstLC_SR_DH.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstLC_SR_DH.FullRowSelect = true;
-            this.lstLC_SR_DH.HideSelection = false;
-            this.lstLC_SR_DH.Location = new System.Drawing.Point(20, 88);
-            this.lstLC_SR_DH.Margin = new System.Windows.Forms.Padding(2);
-            this.lstLC_SR_DH.MultiSelect = false;
-            this.lstLC_SR_DH.Name = "lstLC_SR_DH";
-            this.lstLC_SR_DH.Size = new System.Drawing.Size(442, 303);
-            this.lstLC_SR_DH.TabIndex = 7;
-            this.lstLC_SR_DH.UseCompatibleStateImageBehavior = false;
-            this.lstLC_SR_DH.View = System.Windows.Forms.View.Details;
+            this.dataLC_SR_DH.AllowUserToAddRows = false;
+            this.dataLC_SR_DH.AllowUserToDeleteRows = false;
+            this.dataLC_SR_DH.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataLC_SR_DH.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataLC_SR_DH.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Column4});
+            this.dataLC_SR_DH.Location = new System.Drawing.Point(20, 80);
+            this.dataLC_SR_DH.Name = "dataLC_SR_DH";
+            this.dataLC_SR_DH.ReadOnly = true;
+            this.dataLC_SR_DH.RowHeadersVisible = false;
+            this.dataLC_SR_DH.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataLC_SR_DH.Size = new System.Drawing.Size(442, 340);
+            this.dataLC_SR_DH.TabIndex = 135;
             // 
-            // ColumnHeader1
+            // Column1
             // 
-            this.ColumnHeader1.Text = "Land Cover Code";
-            this.ColumnHeader1.Width = 121;
+            this.Column1.HeaderText = "Land Cover Code";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 60;
             // 
-            // ColumnHeader2
+            // Column2
             // 
-            this.ColumnHeader2.Text = "Land Cover Desc.";
-            this.ColumnHeader2.Width = 131;
+            this.Column2.HeaderText = "Land Cover Description";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.Width = 240;
             // 
-            // ColumnHeader3
+            // Column3
             // 
-            this.ColumnHeader3.Text = "Surface Roughness, m";
-            this.ColumnHeader3.Width = 156;
+            this.Column3.HeaderText = "Surface Roughness [m]";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Width = 60;
             // 
-            // ColumnHeader4
+            // Column4
             // 
-            this.ColumnHeader4.Text = "Displacement height, m";
-            this.ColumnHeader4.Width = 168;
+            this.Column4.HeaderText = "Displacement Height [m]";
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            this.Column4.Width = 75;
             // 
             // LC_Key
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(483, 480);
+            this.Controls.Add(this.dataLC_SR_DH);
             this.Controls.Add(this.Label1);
             this.Controls.Add(this.cboLC_Key);
             this.Controls.Add(this.btnModKey);
             this.Controls.Add(this.btnNewKey);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.lstLC_SR_DH);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LC_Key";
+            ((System.ComponentModel.ISupportInitialize)(this.dataLC_SR_DH)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -183,10 +197,10 @@
         internal System.Windows.Forms.Button btnNewKey;
         internal System.Windows.Forms.Button btnCancel;
         internal System.Windows.Forms.Button btnOK;
-        internal System.Windows.Forms.ListView lstLC_SR_DH;
-        internal System.Windows.Forms.ColumnHeader ColumnHeader1;
-        internal System.Windows.Forms.ColumnHeader ColumnHeader2;
-        internal System.Windows.Forms.ColumnHeader ColumnHeader3;
-        internal System.Windows.Forms.ColumnHeader ColumnHeader4;
+        public System.Windows.Forms.DataGridView dataLC_SR_DH;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
     }
 }

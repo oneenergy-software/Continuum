@@ -40,8 +40,9 @@
             this.lstHeights.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
             this.lstHeights.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstHeights.HideSelection = false;
             this.lstHeights.Location = new System.Drawing.Point(25, 39);
-            this.lstHeights.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lstHeights.Margin = new System.Windows.Forms.Padding(2);
             this.lstHeights.Name = "lstHeights";
             this.lstHeights.Size = new System.Drawing.Size(80, 120);
             this.lstHeights.TabIndex = 0;
@@ -57,7 +58,7 @@
             // 
             this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOK.Location = new System.Drawing.Point(36, 171);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnOK.Margin = new System.Windows.Forms.Padding(2);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(63, 28);
             this.btnOK.TabIndex = 1;
@@ -85,7 +86,7 @@
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.lstHeights);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Pick_a_Height";
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -10,6 +10,7 @@ namespace ContinuumNS
         public UTM_datum()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btn_OK_Click(object sender, EventArgs e)
@@ -21,7 +22,7 @@ namespace ContinuumNS
                 datumInd = cbo_Datums.SelectedIndex;
             }
             catch {
-                MessageBox.Show("Please select a datum to use.", "Continuum 3");
+                MessageBox.Show("Please select a datum to use.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -33,7 +34,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Please select either northern or southern hemisphere.", "Continuum 3");
+                MessageBox.Show("Please select either northern or southern hemisphere.", "Continuum Wind Energy Software");
                 return;
             }
 

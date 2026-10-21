@@ -171,7 +171,7 @@
             this.dateReferenceEnd.Name = "dateReferenceEnd";
             this.dateReferenceEnd.Size = new System.Drawing.Size(153, 25);
             this.dateReferenceEnd.TabIndex = 240;
-            this.dateReferenceEnd.Value = new System.DateTime(2024, 12, 31, 23, 0, 0, 0);
+            this.dateReferenceEnd.Value = new System.DateTime(2025, 12, 31, 23, 0, 0, 0);
             this.dateReferenceEnd.ValueChanged += new System.EventHandler(this.dateReferenceEnd_ValueChanged);
             // 
             // dateReferenceStart
@@ -226,9 +226,9 @@
             // btnChangeFolder
             // 
             this.btnChangeFolder.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.btnChangeFolder.Location = new System.Drawing.Point(451, 196);
+            this.btnChangeFolder.Location = new System.Drawing.Point(421, 194);
             this.btnChangeFolder.Name = "btnChangeFolder";
-            this.btnChangeFolder.Size = new System.Drawing.Size(91, 32);
+            this.btnChangeFolder.Size = new System.Drawing.Size(121, 40);
             this.btnChangeFolder.TabIndex = 253;
             this.btnChangeFolder.Text = "Select Folder";
             this.btnChangeFolder.UseVisualStyleBackColor = true;
@@ -263,9 +263,9 @@
             "MERRA2",
             "ERA5",
             "MERRA2 Cloud"});
-            this.cboReanalysisType.Location = new System.Drawing.Point(139, 129);
+            this.cboReanalysisType.Location = new System.Drawing.Point(139, 121);
             this.cboReanalysisType.Name = "cboReanalysisType";
-            this.cboReanalysisType.Size = new System.Drawing.Size(177, 26);
+            this.cboReanalysisType.Size = new System.Drawing.Size(120, 26);
             this.cboReanalysisType.TabIndex = 254;
             this.cboReanalysisType.SelectedIndexChanged += new System.EventHandler(this.cboReanalysisType_SelectedIndexChanged);
             // 
@@ -273,7 +273,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Palatino Linotype", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(16, 132);
+            this.label1.Location = new System.Drawing.Point(16, 124);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(118, 20);
@@ -307,7 +307,7 @@
             // btnCreateNew
             // 
             this.btnCreateNew.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.btnCreateNew.Location = new System.Drawing.Point(413, 42);
+            this.btnCreateNew.Location = new System.Drawing.Point(446, 42);
             this.btnCreateNew.Name = "btnCreateNew";
             this.btnCreateNew.Size = new System.Drawing.Size(55, 28);
             this.btnCreateNew.TabIndex = 258;
@@ -338,18 +338,18 @@
             // btnRemove
             // 
             this.btnRemove.Font = new System.Drawing.Font("Palatino Linotype", 8F);
-            this.btnRemove.Location = new System.Drawing.Point(474, 42);
+            this.btnRemove.Location = new System.Drawing.Point(507, 42);
             this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(55, 28);
+            this.btnRemove.Size = new System.Drawing.Size(35, 28);
             this.btnRemove.TabIndex = 261;
-            this.btnRemove.Text = "Delete";
+            this.btnRemove.Text = "✕";
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // chkInclOpParam2
             // 
             this.chkInclOpParam2.AutoSize = true;
-            this.chkInclOpParam2.Location = new System.Drawing.Point(338, 166);
+            this.chkInclOpParam2.Location = new System.Drawing.Point(275, 166);
             this.chkInclOpParam2.Name = "chkInclOpParam2";
             this.chkInclOpParam2.Size = new System.Drawing.Size(74, 17);
             this.chkInclOpParam2.TabIndex = 262;
@@ -360,7 +360,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(335, 117);
+            this.label4.Location = new System.Drawing.Point(272, 117);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(211, 19);
@@ -374,16 +374,16 @@
             this.cboDailyOrMonthly.Items.AddRange(new object[] {
             "Daily",
             "Monthly"});
-            this.cboDailyOrMonthly.Location = new System.Drawing.Point(138, 167);
+            this.cboDailyOrMonthly.Location = new System.Drawing.Point(138, 156);
             this.cboDailyOrMonthly.Name = "cboDailyOrMonthly";
-            this.cboDailyOrMonthly.Size = new System.Drawing.Size(178, 26);
+            this.cboDailyOrMonthly.Size = new System.Drawing.Size(121, 26);
             this.cboDailyOrMonthly.TabIndex = 264;
             this.cboDailyOrMonthly.SelectedIndexChanged += new System.EventHandler(this.cboDailyOrMonthly_SelectedIndexChanged);
             // 
             // chkInclOpParam1
             // 
             this.chkInclOpParam1.AutoSize = true;
-            this.chkInclOpParam1.Location = new System.Drawing.Point(339, 143);
+            this.chkInclOpParam1.Location = new System.Drawing.Point(276, 143);
             this.chkInclOpParam1.Name = "chkInclOpParam1";
             this.chkInclOpParam1.Size = new System.Drawing.Size(74, 17);
             this.chkInclOpParam1.TabIndex = 266;

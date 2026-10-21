@@ -60,7 +60,8 @@ namespace ContinuumNS
         /// <summary> Results of uncertainty analysis using Matrix-LastWS. </summary>   
         public MCP_Uncert[] uncertMatrix = new MCP_Uncert[0];
 
-        
+        public DebiasData debiasData = new DebiasData();
+
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,6 +74,24 @@ namespace ContinuumNS
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary> Holds results of debias analysis where the reference concurrent wind speed and estimated LT wind speed at target site are stored. </summary>
+        [Serializable()]
+        public struct DebiasData
+        {
+            public double slope;
+            public double intercept;
+
+            public double R_sq;
+            public double refLT_WS;
+            public double[] refConcWS;
+            public double[] targetLT_WS_Est;
+            public double debiasedWS;
+            public bool useOtherMets; // False if debias analysis has based on refConcWS and targetLT_WS_Est arrays. True if debias slope and intercept are based on other met sites.
+
+            public string otherMetNameString;
+        }
+
 
         /// <summary> Contains results of uncertainty analysis for a specified window size. </summary>
         [Serializable()]
@@ -113,9 +132,9 @@ namespace ContinuumNS
             /// <summary>   Time stamp. </summary>
             public DateTime thisDate;
             /// <summary>   Wind Speed. </summary>
-            public double thisWS;
+            public float thisWS;
             /// <summary>   Wind direction (degs). </summary>
-            public double thisWD;            
+            public float thisWD;            
         }
                 
         /// <summary> Contains timestamp and concurrent reference and target wind speed and wind direction </summary>        
@@ -371,7 +390,10 @@ namespace ContinuumNS
             
             WD_Ind = (int)Math.Round(thisWD / (360 / (double)numBins), 0, MidpointRounding.AwayFromZero);
 
-            if (WD_Ind == numBins) WD_Ind = 0;                       
+            if (WD_Ind == numBins) WD_Ind = 0;
+
+            if (WD_Ind == 0)
+                WD_Ind = 0;
 
             return WD_Ind;
         }
@@ -758,7 +780,7 @@ namespace ContinuumNS
                 
         /// <summary> Conducts MCP using specified start/end date and MCP method. </summary>        
         /// <returns>   LT estimated wind speed at target site. </returns>        
-        public double DoMCP(DateTime thisConcStart, DateTime thisConcEnd, bool Use_All_Data, string MCP_Method, Continuum thisInst, Met thisMet)
+        public double[] DoMCP(DateTime thisConcStart, DateTime thisConcEnd, bool Use_All_Data, string MCP_Method, Continuum thisInst, Met thisMet)
         {           
 
             // Build array of conccurent data for specified dates
@@ -785,6 +807,9 @@ namespace ContinuumNS
             double[] thisConc = GetConcAvgsCount(numWD, Met.TOD.All, Met.Season.All);
             double avgTarg = thisConc[0];
             double avgRef = thisConc[1];
+            double LT_Ref = 0;
+            double avgRef_AllWD = avgRef;
+            
 
             double LT_WS_Est = 0; // if Use_All_Data is false then it is an uncertainty analysis and this value is returned
             double thisSlope = 0;
@@ -798,7 +823,8 @@ namespace ContinuumNS
 
             DateTime refStart = GetStartOrEndDate("Reference", "Start");
             DateTime refEnd = GetStartOrEndDate("Reference", "End");
-            
+            double LT_Ref_AllWD = stat.CalcAvgWS(refData, refStart, refEnd, minWD, maxWD,Met.TOD.All, Met.Season.All, metList);
+
             // find total data count
             totalCount = totalCount + stat.GetDataCount(refData, refStart, refEnd, 0, 0, 0, thisInst.metList, true);
 
@@ -925,9 +951,9 @@ namespace ContinuumNS
                                 }
                             }
 
-                            avgRef = stat.CalcAvgWS(refData, refStart, refEnd, minWD, maxWD, thisTOD, thisSeason, metList);
+                            LT_Ref = stat.CalcAvgWS(refData, refStart, refEnd, minWD, maxWD, thisTOD, thisSeason, metList);
 
-                            double thisWS = avgRef * thisSlope + This_Int;
+                            double thisWS = LT_Ref * thisSlope + This_Int;
                             if (thisWS < 0)
                                 thisWS = 0;
 
@@ -975,7 +1001,12 @@ namespace ContinuumNS
             if (MCP_Method == "Method of Bins" || MCP_Method == "Matrix")
                 LT_WS_Est = stat.CalcAvgWS(LT_WS_Ests, refStart, refEnd, 0, 360, Met.TOD.All, Met.Season.All, metList);
 
-            return LT_WS_Est;
+            double[] returnVals = new double[3];
+            returnVals[0] = LT_WS_Est;
+            returnVals[1] = avgRef_AllWD;
+            returnVals[2] = LT_Ref_AllWD;
+
+            return returnVals;
         }
 
         /// <summary> Estimates time series at met site using long-term reference data and selected MCP type. </summary>        
@@ -1021,7 +1052,7 @@ namespace ContinuumNS
                     if (thisWS < 0)
                         thisWS = 0;
 
-                    LT_WS_Est_TS[i].thisWS = thisWS;
+                    LT_WS_Est_TS[i].thisWS = (float)thisWS;
                 }
                 else if (MCP_Method == "Variance Ratio")
                 {
@@ -1031,13 +1062,13 @@ namespace ContinuumNS
                     if (thisWS < 0)
                         thisWS = 0;
 
-                    LT_WS_Est_TS[i].thisWS = thisWS;
+                    LT_WS_Est_TS[i].thisWS = (float)thisWS;
 
                 }
                 else if (MCP_Method == "Method of Bins")
                 {                    
                     if (MCP_Bins.binAvgSD_Cnt[WS_Ind, thisWD_Ind].avgWS_Ratio > 0)
-                        LT_WS_Est_TS[i].thisWS = refData[i].thisWS * MCP_Bins.binAvgSD_Cnt[WS_Ind, thisWD_Ind].avgWS_Ratio;
+                        LT_WS_Est_TS[i].thisWS = (float)(refData[i].thisWS * MCP_Bins.binAvgSD_Cnt[WS_Ind, thisWD_Ind].avgWS_Ratio);
                     else
                     {
                         // there was no data for this bin so find the two closest ratios and use average of two
@@ -1071,7 +1102,7 @@ namespace ContinuumNS
                         }
 
                         if (avgRatioCount > 0) avgRatio = avgRatio / avgRatioCount;
-                        LT_WS_Est_TS[i].thisWS = refData[i].thisWS * avgRatio;
+                        LT_WS_Est_TS[i].thisWS = (float)(refData[i].thisWS * avgRatio);
                     }
                     LT_WS_Est_TS[i].thisWD = refData[i].thisWD;
 
@@ -1117,11 +1148,11 @@ namespace ContinuumNS
                         // Generate random number from 0 to 1 and find index in CDF                        
                         double randomNum = thisRandom.NextDouble();
                         int minInd = FindCDF_Index(Combo_CDF, randomNum);
-                        LT_WS_Est_TS[i].thisWS = Combo_CDF.minWS + Combo_CDF.WS_interval * minInd;
+                        LT_WS_Est_TS[i].thisWS = (float)(Combo_CDF.minWS + Combo_CDF.WS_interval * minInd);
                     }                    
                     else
                     {
-                        LT_WS_Est_TS[i].thisWS = Combo_CDF.minWS; // no data for this WS bin so use same WS as reference
+                        LT_WS_Est_TS[i].thisWS = (float)Combo_CDF.minWS; // no data for this WS bin so use same WS as reference
                         
                     }
 
@@ -1464,8 +1495,8 @@ namespace ContinuumNS
                             Array.Resize(ref hourlyData, hourlyCount + 1);
 
                         hourlyData[hourlyCount].thisDate = newHourDate;
-                        hourlyData[hourlyCount].thisWS = avgWS;
-                        hourlyData[hourlyCount].thisWD = avgWD;
+                        hourlyData[hourlyCount].thisWS = (float)avgWS;
+                        hourlyData[hourlyCount].thisWD = (float)avgWD;
                         hourlyCount++;                       
 
                         avgCount = 0;
@@ -1552,8 +1583,8 @@ namespace ContinuumNS
                         Array.Resize(ref hourlyData, hourlyCount + 1);
 
                     hourlyData[hourlyCount].thisDate = newHourDate;
-                    hourlyData[hourlyCount].thisWS = avgWS;
-                    hourlyData[hourlyCount].thisWD = avgWD;
+                    hourlyData[hourlyCount].thisWS = (float)avgWS;
+                    hourlyData[hourlyCount].thisWD = (float)avgWD;
                     hourlyCount++;
                 }
                 
@@ -1616,7 +1647,7 @@ namespace ContinuumNS
                         // Initialize First Test Start at Concurrent Start Date at beginning of each iteration                        
                         testEnd = testStart.AddMonths(m + 1);
 
-                        uncertOrtho[m].LT_Ests[i] = DoMCP(testStart, testEnd, false, currentMethod, thisInst, thisMet);
+                        uncertOrtho[m].LT_Ests[i] = DoMCP(testStart, testEnd, false, currentMethod, thisInst, thisMet)[0];
                         uncertOrtho[m].start[i] = testStart;
                         uncertOrtho[m].end[i] = testEnd;
 
@@ -1648,7 +1679,7 @@ namespace ContinuumNS
                         // Initialize First Test Start at Concurrent Start Date at beginning of each iteration
                         testEnd = testStart.AddMonths(m + 1);
 
-                        uncertBins[m].LT_Ests[i] = DoMCP(testStart, testEnd, false, currentMethod, thisInst, thisMet);
+                        uncertBins[m].LT_Ests[i] = DoMCP(testStart, testEnd, false, currentMethod, thisInst, thisMet)[0];
                         uncertBins[m].start[i] = testStart;
                         uncertBins[m].end[i] = testEnd;
 
@@ -1679,7 +1710,7 @@ namespace ContinuumNS
                         // Initialize First Test Start at Concurrent Start Date at beginning of each iteration
                         testEnd = testStart.AddMonths(m + 1);
 
-                        uncertVarrat[m].LT_Ests[i] = DoMCP(testStart, testEnd, false, currentMethod, thisInst, thisMet);
+                        uncertVarrat[m].LT_Ests[i] = DoMCP(testStart, testEnd, false, currentMethod, thisInst, thisMet)[0];
                         uncertVarrat[m].start[i] = testStart;
                         uncertVarrat[m].end[i] = testEnd;
 
@@ -1710,7 +1741,7 @@ namespace ContinuumNS
                         // Initialize First Test Start at Concurrent Start Date at beginning of each iteration
                         testEnd = testStart.AddMonths(m + 1);
 
-                        uncertMatrix[m].LT_Ests[i] = DoMCP(testStart, testEnd, false, currentMethod, thisInst, thisMet);
+                        uncertMatrix[m].LT_Ests[i] = DoMCP(testStart, testEnd, false, currentMethod, thisInst, thisMet)[0];
                         uncertMatrix[m].start[i] = testStart;
                         uncertMatrix[m].end[i] = testEnd;
 
@@ -1862,6 +1893,9 @@ namespace ContinuumNS
                     {
                         tenMinData[i].thisDate = thisMet.metData.anems[anemInds[0]].windData[i].timeStamp;
 
+                        if (tenMinData[i].thisDate.Month == 10 && tenMinData[i].thisDate.Day == 4)
+                            i = i;
+
                         int numValidWS = 0;
                         double avgWS = 0;
 
@@ -1873,7 +1907,7 @@ namespace ContinuumNS
                             }
 
                         if (numValidWS > 0)
-                            tenMinData[i].thisWS = avgWS / numValidWS;
+                            tenMinData[i].thisWS = (float)(avgWS / numValidWS);
                         else
                             tenMinData[i].thisWS = -999;
 
@@ -2000,6 +2034,49 @@ namespace ContinuumNS
             maxHourlyRef.maxWS = maxHourlyWS;
 
             return maxHourlyRef;
+        }
+
+        public void DoMCP_DebiasAnalysis(Met thisMet, MCP thisMCP, string MCP_Method, Continuum thisInst)
+        {
+            // Clear any previous debias analysis results
+            debiasData = new DebiasData();
+
+            int numMonthsForDebias = thisMet.metData.GetNumMonths();
+            debiasData.refConcWS = new double[numMonthsForDebias];
+            debiasData.targetLT_WS_Est = new double[numMonthsForDebias];
+
+            DateTime[] startEndMonths = thisMet.metData.GetStartEndMonthsForDebias();
+            int monthInd = 0;
+
+            for (DateTime month = startEndMonths[0]; month <= startEndMonths[1].AddYears(-1).AddMonths(1); month = month.AddMonths(1))
+            {
+                DateTime monthStart = new DateTime(month.Year, month.Month, 1);
+                DateTime monthEnd = monthStart.AddYears(1).AddHours(-1);
+
+                thisMCP.FindConcurrentData(monthStart, monthEnd, false);
+                // Perform MCP for the current month
+                double[] mcpResults = DoMCP(monthStart, monthEnd, true, MCP_Method, thisInst, thisMet);
+
+                // Store the result in debiasData                
+                debiasData.targetLT_WS_Est[monthInd] = mcpResults[0];
+                debiasData.refConcWS[monthInd] = mcpResults[1];
+                debiasData.refLT_WS = mcpResults[2];
+
+                monthInd++;
+            }
+
+            Array.Resize(ref debiasData.targetLT_WS_Est, monthInd);
+            Array.Resize(ref debiasData.refConcWS, monthInd);
+
+            // Calculate slope, intercept , and R-squared for debias analysis
+            if (debiasData.targetLT_WS_Est.Length > 1 && debiasData.refConcWS.Length > 1)
+            {
+                var regResults = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(debiasData.refConcWS, debiasData.targetLT_WS_Est);
+                debiasData.intercept = regResults.Item1;
+                debiasData.slope = regResults.Item2;
+                debiasData.R_sq = MathNet.Numerics.Statistics.Correlation.Pearson(debiasData.refConcWS, debiasData.targetLT_WS_Est);
+                debiasData.debiasedWS = debiasData.slope * debiasData.refLT_WS + debiasData.intercept;
+            }
         }
     }
 }

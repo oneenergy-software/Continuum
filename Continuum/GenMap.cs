@@ -52,6 +52,7 @@ namespace ContinuumNS
         public GenMap(Continuum continuum)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             thisInst = continuum;
 
             if (thisInst.topo.useSepMod)
@@ -289,7 +290,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid grid resolution.", "Continuum 3");
+                MessageBox.Show("Invalid grid resolution.", "Continuum Wind Energy Software");
                 txtMapReso.Text = gridReso.ToString();
                 return;
             }
@@ -322,7 +323,7 @@ namespace ContinuumNS
             }
             catch 
             {
-                MessageBox.Show("Select parameter to map.", "Continuum 3");
+                MessageBox.Show("Select parameter to map.", "Continuum Wind Energy Software");
                 return;
             }          
 
@@ -344,7 +345,7 @@ namespace ContinuumNS
                 }
                 catch 
                 {
-                    MessageBox.Show("No power Curves imported.  Cannot create map of Gross AEP.", "Continuum 3");
+                    MessageBox.Show("No power Curves imported.  Cannot create map of Gross AEP.", "Continuum Wind Energy Software");
                     return;
                 }
                 mapName = "Gross AEP with " + powerCurve;                
@@ -440,7 +441,7 @@ namespace ContinuumNS
 
             if (numTurbines == 0)
             {
-                MessageBox.Show("No Turbine sites have been loaded.", "Continuum 3");
+                MessageBox.Show("No Turbine sites have been loaded.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -535,7 +536,7 @@ namespace ContinuumNS
                 minUTMX = Convert.ToInt32(txtMinUTMX.Text);
                 if (minUTMX < minUTMX_Limit)
                 {
-                    MessageBox.Show("Entered Min UTMX is less than minimum allowed value. Resetting to minimum.", "Continuum 3");
+                    MessageBox.Show("Entered Min UTMX is less than minimum allowed value. Resetting to minimum.", "Continuum Wind Energy Software");
                     minUTMX = minUTMX_Limit;
                 }
 
@@ -556,7 +557,7 @@ namespace ContinuumNS
                 maxUTMX = Convert.ToInt32(txtMaxUTMX.Text);
                 if (maxUTMX > maxUTMX_Limit)
                 {
-                    MessageBox.Show("Entered Max UTMX is more than maximum allowed value. Resetting to maximum.", "Continuum 3");
+                    MessageBox.Show("Entered Max UTMX is more than maximum allowed value. Resetting to maximum.", "Continuum Wind Energy Software");
                     maxUTMX = maxUTMX_Limit;
                 }
 
@@ -576,7 +577,7 @@ namespace ContinuumNS
                 minUTMY = Convert.ToInt32(txtMinUTMY.Text);
                 if (minUTMY < minUTMY_Limit)
                 {
-                    MessageBox.Show("Entered Min UTMY is less than minimum allowed value. Resetting to minimum.", "Continuum 3");
+                    MessageBox.Show("Entered Min UTMY is less than minimum allowed value. Resetting to minimum.", "Continuum Wind Energy Software");
                     minUTMY = minUTMY_Limit;
                 }
 
@@ -596,7 +597,7 @@ namespace ContinuumNS
                 maxUTMY = Convert.ToInt32(txtMaxUTMY.Text);
                 if (maxUTMY > maxUTMY_Limit)
                 {
-                    MessageBox.Show("Entered Max UTMY is more than maximum allowed value. Resetting to maximum.", "Continuum 3");
+                    MessageBox.Show("Entered Max UTMY is more than maximum allowed value. Resetting to maximum.", "Continuum Wind Energy Software");
                     maxUTMY = maxUTMY_Limit;
                 }
 

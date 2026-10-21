@@ -9,6 +9,7 @@ namespace ContinuumNS
         public MCP_ValidSettings()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnClose_Click(object sender, EventArgs e)

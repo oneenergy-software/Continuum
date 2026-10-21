@@ -15,6 +15,7 @@ namespace ContinuumNS
         public Explaining_MERRA2()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnClose_Click(object sender, EventArgs e)

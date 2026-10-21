@@ -21,6 +21,7 @@ namespace ContinuumNS
         public LC_Key(Continuum continuum)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             thisInst = continuum;
         }        
 
@@ -29,17 +30,17 @@ namespace ContinuumNS
 
             // Opens the Mod_LC_Key form with the selected land cover code, description, SR, and DH for the user to edit. 
 
-            if (lstLC_SR_DH.SelectedItems.Count == 0) {
-                MessageBox.Show("Select a land cover code to modify.", "Continuum 3");
+            if (dataLC_SR_DH.SelectedRows.Count == 0) {
+                MessageBox.Show("Select a land cover code to modify.", "Continuum Wind Energy Software");
                 return;
             }
 
             TopoInfo.LC_SR_DH thisLC = new TopoInfo.LC_SR_DH();
 
-            thisLC.code = Convert.ToInt16(lstLC_SR_DH.SelectedItems[0].Text);
-            thisLC.desc = lstLC_SR_DH.SelectedItems[0].SubItems[1].Text;
-            thisLC.SR = Convert.ToSingle(lstLC_SR_DH.SelectedItems[0].SubItems[2].Text);
-            thisLC.DH = Convert.ToSingle(lstLC_SR_DH.SelectedItems[0].SubItems[3].Text);
+            thisLC.code = Convert.ToInt16(dataLC_SR_DH.SelectedRows[0].Cells[0].Value);
+            thisLC.desc = dataLC_SR_DH.SelectedRows[0].Cells[1].Value.ToString();
+            thisLC.SR = Convert.ToSingle(dataLC_SR_DH.SelectedRows[0].Cells[2].Value);
+            thisLC.DH = Convert.ToSingle(dataLC_SR_DH.SelectedRows[0].Cells[3].Value);
 
             Mod_LC_Key thisMod = new Mod_LC_Key(thisInst, this);
 
@@ -108,7 +109,7 @@ namespace ContinuumNS
 
                         }
                         catch {
-                            MessageBox.Show("Error reading land cover key. Format of file should be: Code, Description, Surface roughness, Displacement height.", "Continuum 3");
+                            MessageBox.Show("Error reading land cover key. Format of file should be: Code, Description, Surface roughness, Displacement height.", "Continuum Wind Energy Software");
                             sr.Close();
                             return;
                         }
@@ -116,7 +117,7 @@ namespace ContinuumNS
                         LC_Count++;
                     }
                     else {
-                        MessageBox.Show("Error reading in the land cover key at line: " + LC_Count + "The format should be Code, Description, Surface roughness, Displacement height.", "Continuum 3");
+                        MessageBox.Show("Error reading in the land cover key at line: " + LC_Count + "The format should be Code, Description, Surface roughness, Displacement height.", "Continuum Wind Energy Software");
                         sr.Close();
                         return;
                     }
@@ -147,7 +148,7 @@ namespace ContinuumNS
         {            
             string thisKey = "";
                        
-            lstLC_SR_DH.Items.Clear();
+            dataLC_SR_DH.Rows.Clear();
 
             try {
                 thisKey = cboLC_Key.SelectedItem.ToString();
@@ -210,8 +211,9 @@ namespace ContinuumNS
             int numSR = LC_Key_New.Length;
             for (int i = 0; i < numSR; i++)
             {
-                ListViewItem objListItem = lstLC_SR_DH.Items.Add(LC_Key_New[i].code.ToString());
-                objListItem.SubItems.Add(LC_Key_New[i].desc);
+                DataGridViewRow row = dataLC_SR_DH.Rows[dataLC_SR_DH.Rows.Add()];
+                row.Cells[0].Value = LC_Key_New[i].code;
+                row.Cells[1].Value = LC_Key_New[i].desc;
 
                 // Get scientific notation exponent (to figure out rounding digits)
                 int sciExp = (int)Math.Floor(Math.Log10(LC_Key_New[i].SR));
@@ -220,8 +222,8 @@ namespace ContinuumNS
                 if (sciExp < 0 && LC_Key_New[i].SR != 0)
                     numDigs = (int)Math.Abs(sciExp) + 1;
                                 
-                objListItem.SubItems.Add(Math.Round(LC_Key_New[i].SR, numDigs).ToString());
-                objListItem.SubItems.Add(Math.Round(LC_Key_New[i].DH, 2).ToString());
+                row.Cells[2].Value = Math.Round(LC_Key_New[i].SR, numDigs);
+                row.Cells[3].Value = Math.Round(LC_Key_New[i].DH, 2);
             }
             
         }
@@ -237,7 +239,7 @@ namespace ContinuumNS
 
                 if (thisInst.modelList.ModelCount > 1 || thisInst.mapList.ThisCount > 0) {
                     Good_to_go = MessageBox.Show("Changing the Land Cover key will reset the analysis file and delete all generated estimates and maps. Do you want to continue?", 
-                        "Continuum 3", MessageBoxButtons.YesNo);
+                        "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 }
 
                 if (Good_to_go == DialogResult.Yes)

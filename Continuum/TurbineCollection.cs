@@ -302,7 +302,7 @@ namespace ContinuumNS
         }
 
         /// <summary> Adds new Turbine object to list. </summary>
-        public void AddTurbine(string name, double utmx, double utmy, int stringNum)
+        public void AddTurbine(string name, double utmx, double utmy)
         {           
             // Check to see that the turbine doesn't already exist in memory
             for (int i = 0; i < TurbineCount; i++) {
@@ -319,7 +319,7 @@ namespace ContinuumNS
             turbineEsts[newCount].name = name;
             turbineEsts[newCount].UTMX = utmx;
             turbineEsts[newCount].UTMY = utmy;
-            if (stringNum != 0) turbineEsts[newCount].stringNum = stringNum;
+            
             
         }
 
@@ -815,14 +815,14 @@ namespace ContinuumNS
             double stdev = FindStdev(turbines, WD_Ind, powerCurve);
             double min = FindMin(turbines, WD_Ind, powerCurve);
             double max = FindMax(turbines, WD_Ind, powerCurve);
-
+            
             if (avg != 0)
             {
-                thisInst.txtAvg.Text = Math.Round(avg, 3).ToString();
-                thisInst.txtStDev.Text = Math.Round(stdev, 3).ToString();
-                thisInst.txtMin.Text = Math.Round(min, 3).ToString();
-                thisInst.txtMax.Text = Math.Round(max, 3).ToString();
-                thisInst.txtCount.Text = TurbineCount.ToString();
+                thisInst.txtAvg.Text = Math.Round(avg, ContinuumStyle.GetNumDecimals("WS")).ToString();
+                thisInst.txtStDev.Text = Math.Round(stdev, ContinuumStyle.GetNumDecimals("WS")).ToString();
+                thisInst.txtMin.Text = Math.Round(min, ContinuumStyle.GetNumDecimals("WS")).ToString();
+                thisInst.txtMax.Text = Math.Round(max, ContinuumStyle.GetNumDecimals("WS")).ToString();
+                thisInst.txtCount.Text = turbines.Length.ToString();
             }
             else
             {
@@ -836,16 +836,19 @@ namespace ContinuumNS
             if (thisInst.cboPowerCrvs.SelectedItem.ToString() != "No power Curves Imported")
             {
                 string selectedPowerCurve = thisInst.cboPowerCrvs.SelectedItem.ToString();
+                PowerCurve selPowerCurve = thisInst.GetSelectedPowerCurve("Gross");
                 double avgAEP = FindAverageAEP(turbines, selectedPowerCurve, WD_Ind);
                 double stdevAEP = FindStdevAEP(turbines, selectedPowerCurve, WD_Ind);
                 double minAEP = FindMinAEP(turbines, selectedPowerCurve, WD_Ind);
                 double maxAEP = FindMaxAEP(turbines, selectedPowerCurve, WD_Ind);
+                double grossAEP = FindGrossAEP(turbines, selectedPowerCurve, WD_Ind);
+                thisInst.updateThe.GrossTurbEstResultTextBoxes(selPowerCurve, grossAEP, turbines.Length);
 
                 if (avgAEP != 0) {
-                    thisInst.txtAEPAvg.Text = Math.Round(avgAEP, 0).ToString();
-                    thisInst.txtAEPSD.Text = Math.Round(stdevAEP, 0).ToString();
-                    thisInst.txtAEPMin.Text = Math.Round(minAEP, 0).ToString();
-                    thisInst.txtAEPMax.Text = Math.Round(maxAEP, 0).ToString();
+                    thisInst.txtAEPAvg.Text = Math.Round(avgAEP, ContinuumStyle.GetNumDecimals("Energy")).ToString();
+                    thisInst.txtAEPSD.Text = Math.Round(stdevAEP, ContinuumStyle.GetNumDecimals("Energy")).ToString();
+                    thisInst.txtAEPMin.Text = Math.Round(minAEP, ContinuumStyle.GetNumDecimals("Energy")).ToString();
+                    thisInst.txtAEPMax.Text = Math.Round(maxAEP, ContinuumStyle.GetNumDecimals("Energy")).ToString();                    
                 }
                 else {
                     thisInst.txtAEPAvg.Clear();
@@ -958,6 +961,52 @@ namespace ContinuumNS
                 avg = avg / dataCount;
 
             return avg;
+        }
+
+        public double FindGrossAEP(Turbine[] turbines, string powerCurve, int WD_Ind)
+        {
+            double sum = 0;
+            int dataCount = 0;
+            int numWD;
+
+            double thisEst;
+
+            if (turbines == null)
+                return sum;
+
+            try
+            {
+                numWD = turbines[0].avgWS_Est[0].freeStream.sectorWS.Length;
+            }
+            catch
+            {
+                return sum;
+            }
+
+            for (int i = 0; i < turbines.Length; i++)
+            {
+                thisEst = 0;
+                for (int j = 0; j < turbines[i].GrossAEP_Count; j++)
+                {
+                    if (turbines[i].grossAEP[j].powerCurve.name == powerCurve)
+                    {
+                        if (WD_Ind == numWD)
+                            thisEst = turbines[i].grossAEP[j].AEP;
+                        else
+                            thisEst = turbines[i].grossAEP[j].sectorEnergy[WD_Ind];
+
+                        break;
+                    }
+                }
+
+                if (thisEst > 0)
+                {
+                    sum = sum + thisEst;
+                    dataCount++;
+                }
+            }                        
+
+            return sum;
         }
 
         /// <summary> Calculates and returns the minimum gross AEP for specified WD sector and power curve. </summary>
@@ -1243,7 +1292,7 @@ namespace ContinuumNS
         }
 
         /// <summary>  Returns power or thrust coefficient of specified power curve interpolated at specified wind speed. </summary>
-        public double GetInterpPowerOrThrust(double thisWS, PowerCurve thisPowerCurve, string powerOrThrust)
+        public float GetInterpPowerOrThrust(double thisWS, PowerCurve thisPowerCurve, string powerOrThrust)
         {
             double thisVal = 0;
             
@@ -1314,7 +1363,7 @@ namespace ContinuumNS
 
             }
 
-            return thisVal;
+            return (float)thisVal;
         }
 
         /// <summary> Opens and reads power curve file and adds to list of power curves. </summary>
@@ -1359,7 +1408,7 @@ namespace ContinuumNS
             {
                 if (powerCurves[i].name == powerCurveName)
                 {
-                    MessageBox.Show("A power curve of the same name has already been imported.", "Continuum 3");
+                    MessageBox.Show("A power curve of the same name has already been imported.", "Continuum Wind Energy Software");
                     sr.Close();
                     return;
                 }
@@ -1387,14 +1436,14 @@ namespace ContinuumNS
                     }
                     catch
                     {
-                        MessageBox.Show("Error while importing power curve file.  Please check your file.", "Continuum 3");
+                        MessageBox.Show("Error while importing power curve file.  Please check your file.", "Continuum Wind Energy Software");
                         sr.Close();
                         return;
                     }
                 }
                 else if (fileRow.Length == 2)
                 {
-                    MessageBox.Show("Power curve files must include wind speed, power and thrust coefficients. Please check your file.", "Continuum 3");
+                    MessageBox.Show("Power curve files must include wind speed, power and thrust coefficients. Please check your file.", "Continuum Wind Energy Software");
                     sr.Close();
                     return;
                 }
@@ -1629,7 +1678,7 @@ namespace ContinuumNS
             {
                 exceed = new Exceedance();
                 exceed.compositeLoss.isComplete = false;
-                exceed.CreateDefaultCurve();
+                exceed.CreateIEC_DefaultCurve();
             }
         }
 
@@ -1830,7 +1879,7 @@ namespace ContinuumNS
 
             avgU = avgU / TurbineCount;
             avgV = avgV / TurbineCount;
-            windFarmAvg.WD = Math.Atan2(avgV, avgU) * 180.0 / Math.PI + 90;                       
+            windFarmAvg.WD = (float)(Math.Atan2(avgV, avgU) * 180.0 / Math.PI + 90);                       
 
             return windFarmAvg;
         }

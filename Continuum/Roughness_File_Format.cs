@@ -15,6 +15,7 @@ namespace ContinuumNS
         public Roughness_File_Format()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnOK_Click(object sender, EventArgs e)

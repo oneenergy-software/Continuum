@@ -200,7 +200,7 @@ namespace ContinuumNS
             if (zones == null)
             {
                 DialogResult goodToGo = MessageBox.Show("No zones have been imported. Are you sure you want to run shadow flicker model? " +
-                    "It will be reset if zones are imported later.", "Continuum 3", MessageBoxButtons.YesNo);
+                    "It will be reset if zones are imported later.", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.No)
                     return;
@@ -208,18 +208,21 @@ namespace ContinuumNS
 
             if (thisInst.topo.gotTopo == false)
             {
-                DialogResult goodToGo = MessageBox.Show("No topography data is loaded so flat terrain will be assumed. Do you want to proceed with shadow flicker model?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult goodToGo = MessageBox.Show("No topography data is loaded so flat terrain will be assumed. Do you want to proceed with shadow flicker model?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (goodToGo == DialogResult.No)
                     return;
             }
 
-            thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, true);
+            if (thisInst.topo.gotTopo)
+            {
+                thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, true);
 
-            // Make sure that elevation has been calculated at turbine sites
-            for (int i = 0; i < thisInst.turbineList.TurbineCount; i++)
-                if (thisInst.turbineList.turbineEsts[i].elev == 0)
-                    thisInst.turbineList.turbineEsts[i].elev = thisInst.topo.CalcElevs(thisInst.turbineList.turbineEsts[i].UTMX, thisInst.turbineList.turbineEsts[i].UTMY);
+                // Make sure that elevation has been calculated at turbine sites (if have topo)
+                for (int i = 0; i < thisInst.turbineList.TurbineCount; i++)
+                    if (thisInst.turbineList.turbineEsts[i].elev == 0)
+                        thisInst.turbineList.turbineEsts[i].elev = thisInst.topo.CalcElevs(thisInst.turbineList.turbineEsts[i].UTMX, thisInst.turbineList.turbineEsts[i].UTMY);
+            }
 
             FindShadowMapBounds(thisInst, false);
                         
@@ -1122,7 +1125,7 @@ namespace ContinuumNS
             //      Tuple<double, double>[] utmXandYs = new Tuple<double, double>[numDataPoints];
 
 
-      //      StreamWriter sw = new StreamWriter("C:\\Users\\OEE2021_03\\OEE Dropbox\\Liz Walls\\Due Diligence - Working\\Continuum 3\\C3 Comparison 2022\\Site Conditions\\Terrain Complexity\\C3 outputs\\Regression coeffs force thru.csv", true);
+      //      StreamWriter sw = new StreamWriter("C:\\Users\\OEE2021_03\\OEE Dropbox\\Liz Walls\\Due Diligence - Working\\Continuum Wind Energy Software\\C3 Comparison 2022\\Site Conditions\\Terrain Complexity\\C3 outputs\\Regression coeffs force thru.csv", true);
             
       //      if (fullPlane && slopeOrDTV == "Slope")
       //          sw.WriteLine("Multiple Regression results. Force thru turbine: " + forceThruTurbBase.ToString());

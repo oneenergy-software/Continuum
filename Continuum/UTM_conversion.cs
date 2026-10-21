@@ -274,13 +274,23 @@ namespace ContinuumNS
 
         /// <summary> Returns UTC offset (in hours) at specified lat/long  </summary>  
         public int GetUTC_Offset(double thisLat, double thisLong)
-        {           
-            string ianaTimeZone = TimeZoneLookup.GetTimeZone(thisLat, thisLong).Result;
-            string windowsTimeZone = TimeZoneConverter.TZConvert.IanaToWindows(ianaTimeZone);
+        {
+            string ianaTimeZone = "";
+            string windowsTimeZone = "";
+            int offset = 0;
 
-            TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(windowsTimeZone);
-            int offset = timeZoneInfo.BaseUtcOffset.Hours;
-                        
+            try {
+                ianaTimeZone = TimeZoneLookup.GetTimeZone(thisLat, thisLong).Result;
+                windowsTimeZone = TimeZoneConverter.TZConvert.IanaToWindows(ianaTimeZone);
+
+                TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(windowsTimeZone);
+                offset = timeZoneInfo.BaseUtcOffset.Hours;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error getting UTC offset: " + ex.Message);
+            }
+
             return offset;
         }
     }

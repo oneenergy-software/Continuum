@@ -14,6 +14,7 @@ namespace ContinuumNS
         public EditTurbine(Continuum continuum)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             thisInst = continuum;
         }
 
@@ -26,7 +27,7 @@ namespace ContinuumNS
             double UTMY = Convert.ToDouble(txtUTMY.Text);
 
             if ( name == "" || UTMX == 0 || UTMY == 0 ) {
-                MessageBox.Show("Need valid entries for all fields", "Continuum 3");
+                MessageBox.Show("Need valid entries for all fields", "Continuum Wind Energy Software");
                 return;
             }
 

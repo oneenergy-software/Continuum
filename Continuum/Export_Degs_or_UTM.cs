@@ -15,6 +15,7 @@ namespace ContinuumNS
         public Export_Degs_or_UTM()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnOK_Click(object sende, EventArgs e)
@@ -26,7 +27,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Please select either Lats/Longs or UTM coordinates from drop-down box.", "Continuum 3");
+                MessageBox.Show("Please select either Lats/Longs or UTM coordinates from drop-down box.", "Continuum Wind Energy Software");
                 return;
             }
 

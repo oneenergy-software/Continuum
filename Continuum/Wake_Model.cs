@@ -14,8 +14,8 @@ namespace ContinuumNS
         public double ambTI;
         /// <summary> Power and Thrust curves of turbine causing wake. </summary>
         public TurbineCollection.PowerCurve powerCurve;
-        /// <summary> Rate at which wake is recharged (this equation needs to be revisited). </summary>
-        public double wakeRechargeRate;
+        /// <summary> Rate at which wake is recharged (this equation needs to be revisited) 9/10/26 taking this out since it's not being used and was confusing. </summary>
+    //    public double wakeRechargeRate;
         /// <summary> Distance weighting exponent in wake recharge rate. </summary>
         public double wakeRechargeExp;
         /// <summary> Wake combination method: Linear (Sum of Delta Vs), RSS (Root Sum Square of Delta Vs), Max (Max of Delta Vs), Geometric (Product of Delta Vs ^ 1/N), Avg Lin and RSS, Avg Lin and Max, Avg Lin and Geo, Avg RSS and Max, Avg RSS and Geo, Avg Max and Geo </summary>

@@ -227,7 +227,7 @@ namespace ContinuumNS
                         && mapItem[i].useFlowSep == useSepModel && wakeList.IsSameWakeModel(mapItem[i].wakeModel, thisWakeModel) 
                         && mapItem[i].useTimeSeries == useTimeSeries) {
 
-                        MessageBox.Show("An identical map has already been created.", "Continuum 3");
+                        MessageBox.Show("An identical map has already been created.", "Continuum Wind Energy Software");
                         alreadyExists = true;
                         break;
                     }

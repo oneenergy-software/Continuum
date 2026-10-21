@@ -1336,12 +1336,13 @@ namespace ContinuumNS
             // Calculate free-stream WSWD distribution
             Met.WSWD_Dist freeStreamDist = thisInst.modelList.CalcWSWD_Dist(thisTS, thisInst, "Freestream");
 
+            // Taking this out to speed things and since it is not used in the current version of Continuum.  If needed, can be added back in.
             // Get wind speed uncertainty
-            MetPairCollection.RR_WS_Ests uncert = new MetPairCollection.RR_WS_Ests();
-            if (thisInst.metList.ThisCount > 1 && forRoundRobin == false)
-                uncert = thisInst.metPairList.GetRoundRobinEst(thisInst.metList.ThisCount - 1, thisInst, MCP_Method);
-            else if (thisInst.metList.ThisCount == 1 && forRoundRobin == false)
-                uncert.RMS_All = GetDefaultUncertainty(freeStreamDist.windRose);
+        //    MetPairCollection.RR_WS_Ests uncert = new MetPairCollection.RR_WS_Ests();
+        //    if (thisInst.metList.ThisCount > 1 && forRoundRobin == false)
+        //        uncert = thisInst.metPairList.GetRoundRobinEst(thisInst.metList.ThisCount - 1, thisInst, MCP_Method);
+        //    else if (thisInst.metList.ThisCount == 1 && forRoundRobin == false)
+        //        uncert.RMS_All = GetDefaultUncertainty(freeStreamDist.windRose);
 
             bool foundAvgEst = false;
             // Check to see if need to create one or if one exists with only WS
@@ -1397,7 +1398,7 @@ namespace ContinuumNS
             }
 
             avgWS_Est[avgWS_index].timeSeries = thisTS;
-            avgWS_Est[avgWS_index].uncert = uncert.RMS_All;
+       //     avgWS_Est[avgWS_index].uncert = uncert.RMS_All;
 
             avgWS_Est[avgWS_index].FS_MonthlyVals = CalcMonthlyWS_Values(thisTS, thisInst, "Freestream");
 
@@ -1617,9 +1618,9 @@ namespace ContinuumNS
                     if (thisWS != -999)
                     {
                         if (wakedOrFreestream == "Waked")
-                            monthlyTS[Ind].wakedWS = thisWS;
+                            monthlyTS[Ind].wakedWS = (float)thisWS;
                         else
-                            monthlyTS[Ind].freeStreamWS = thisWS;
+                            monthlyTS[Ind].freeStreamWS = (float)thisWS;
                     }
 
                     monthlyTS[Ind].WD = thisTS[t].WD;
@@ -1674,9 +1675,9 @@ namespace ContinuumNS
                     if (thisWS != -999)
                     {
                         if (wakedOrFreestream == "Waked")
-                            monthlyTS[Ind].wakedWS = thisWS;
+                            monthlyTS[Ind].wakedWS = (float)thisWS;
                         else
-                            monthlyTS[Ind].freeStreamWS = thisWS;
+                            monthlyTS[Ind].freeStreamWS = (float)thisWS;
                     }
 
                     monthlyTS[Ind].WD = thisTS[t].WD;
@@ -1702,7 +1703,7 @@ namespace ContinuumNS
 
                 monthlyWS_Vals[monthlyInd].year = lastYear;
                 monthlyWS_Vals[monthlyInd].month = lastMonth;
-                monthlyWS_Vals[monthlyInd].avgWS = avgWS;
+                monthlyWS_Vals[monthlyInd].avgWS = (float)avgWS;
                 monthlyWS_Vals[monthlyInd].WS_Dist = thisInst.modelList.CalcWSWD_Dist(monthlyTS, thisInst, wakedOrFreestream);
             }
 

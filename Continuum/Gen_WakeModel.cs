@@ -16,42 +16,9 @@ namespace ContinuumNS
         public Gen_WakeModel(Continuum continuum)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             thisInst = continuum;
-
-            if (thisInst.topo.useSepMod)
-            {
-                txt_FlowSep_Used.Text = "Flow Sep. model used";
-                txt_FlowSep_Used.BackColor = Color.LightBlue;
-            }
-            else
-            {
-                txt_FlowSep_Used.Text = "Flow Sep. model NOT used";
-                txt_FlowSep_Used.BackColor = Color.LightCoral;
-            }
-
-            if (thisInst.topo.useSR)
-            {
-                txtLC_Used.Text = "Roughness model used";
-                txtLC_Used.BackColor = Color.MediumSeaGreen;
-            }
-            else
-            {
-                txtLC_Used.Text = "Roughness model NOT used";
-                txtLC_Used.BackColor = Color.LightCoral;
-            }
-
-            thisInst.metList.AreAllMetsMCPd();
-            if (thisInst.metList.allMCPd)
-            {
-                txtisMCPWakeModel.Text = "MCP'd Met data used";
-                txtisMCPWakeModel.BackColor = Color.MediumOrchid;
-            }
-            else
-            {
-                txtisMCPWakeModel.Text = "Meas. Met data used";
-                txtisMCPWakeModel.BackColor = Color.LightCoral;
-            }
-
+                        
             cboPowerCrvs.Items.Clear();
 
             if (thisInst.turbineList.PowerCurveCount > 0)
@@ -120,7 +87,7 @@ namespace ContinuumNS
             {
                 if (thisInst.turbineList.turbineEsts[0].EstsExistForWakeModel(thisInst.wakeModelList.wakeModels[wakeModelInd], thisInst.wakeModelList))
                 {
-                    MessageBox.Show("Wake losses have already been calculated with this model and settings.", "Continuum 3");
+                    MessageBox.Show("Wake losses have already been calculated with this model and settings.", "Continuum Wind Energy Software");
                     return;
                 }
             }
@@ -152,7 +119,7 @@ namespace ContinuumNS
             else
             {
                 // Update Net turb tab
-                thisInst.updateThe.NetTurbineEstsTAB();
+                thisInst.updateThe.NetTurbineEstsTAB(thisInst.dataWakeModels.SelectedRows.Count > 0 ? thisInst.dataWakeModels.SelectedRows[0].Index : 0);
             }
 
             Close();
@@ -171,7 +138,7 @@ namespace ContinuumNS
 
             try {
                 if (cboPowerCrvs.SelectedItem.ToString() == "No power Curves Imported") {
-                    MessageBox.Show("Import a power curve to calculate wake losses. On Gross Energy Estimates tab, click Import power Curve", "Continuum 3");
+                    MessageBox.Show("Import a power curve to calculate wake losses. On Gross Energy Estimates tab, click Import power Curve", "Continuum Wind Energy Software");
                     return thisPowerCurve;
                 }
                 powerCurve = cboPowerCrvs.SelectedItem.ToString();

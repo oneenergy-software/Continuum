@@ -29,6 +29,7 @@ namespace ContinuumNS
         {           
                         
             string[] refDataFiles = Directory.GetFiles(folderLocation, "*.ascii");
+            refDataFiles = refDataFiles.Concat(Directory.GetFiles(folderLocation, "*.csv")).ToArray();
             string line;
 
             if (refDataFiles == null)

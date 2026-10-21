@@ -19,6 +19,7 @@ namespace ContinuumNS
         public EditShearCalcSettings(Met thisMetToEdit)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             thisMet = thisMetToEdit;
             UpdateForm();
         }

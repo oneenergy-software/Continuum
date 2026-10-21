@@ -12,6 +12,7 @@ namespace ContinuumNS
         public Copernicus_LogIn()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

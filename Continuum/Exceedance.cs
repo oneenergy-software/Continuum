@@ -19,7 +19,9 @@ namespace ContinuumNS
         /// <summary>  Holds the composite curve P-values for recurrence of 1 yr / 10 yrs / 20 yrs </summary>
         public Monte_Carlo compositeLoss = new Monte_Carlo();
         /// <summary> Number of Monte Carlo simulations to run </summary>
-        public int numSims = 100000; 
+        public int numSims = 100000;
+
+        public string curveSet = ""; // Curve Set -> "IEC Loss & Uncertainty" or "Continuum Loss & Uncertainty"
                 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     
@@ -96,8 +98,144 @@ namespace ContinuumNS
         }
 
         /// <summary> Creates default performance factor curves </summary>
+        public void CreateIEC_DefaultCurve()
+        {
+            curveSet = "IEC Loss & Uncertainty";
+
+            Array.Resize(ref exceedCurves, 30);
+            int ind = 0;
+            // Historical Wind Resource
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Historical Wind - Rep. of LT", 1.0f, 0.0035f, 1.0f, 0.8f, 1.2f);            
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Historical Wind - Ref. Data Consistency", 1.0f, 0.0038f, 1.0f, 0.9f, 1.1f);
+            ind++;
+
+            // Reference Data - Measurements         
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Reference Data - Measurements", 1.0f, 0.035f, 1.0f, 0.8f, 1.2f);
+            ind++;
+
+            // Reference Data - Modeled            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Reference Data - LT Adjust (MCP)", 1.0f, 0.028f, 1.0f, 0.8f, 1.2f);
+            ind++;
+                        
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Reference Data - WS Dist. Uncertainty", 1.0f, 0.002f, 1.0f, 0.9f, 1.1f);
+            ind++;
+
+            // Project Evaluation Period Variability            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Project Variability - WS Variability (IAV)", 1.0f, 0.033f, 1.0f, 0.8f, 1.2f);
+            ind++;
+            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Project Variability - Climate Change", 1.0f, 0.028f, 1.0f, 0.8f, 1.2f);
+            ind++;
+
+            // Measurement Uncertainty            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Measurement Uncertainty - WS", 1.0f, 0.028f, 1.0f, 0.8f, 1.2f);
+            ind++;
+
+            // Horizontal extrapolation            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Horizontal Extrapolation", 1.0f, 0.038f, 1.0f, 0.8f, 1.2f);
+            ind++;
+
+            // Vertical extrapolation            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Vertical Extrapolation", 1.0f, 0.009f, 1.0f, 0.8f, 1.2f);
+            ind++;
+
+            // Turbine Interaction            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Turbine Interaction - Internal", 1.0f, 0.01f, 1.0f, 0.8f, 1.2f);
+            ind++;
+                        
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Turbine Interaction - External", 1.0f, 0.002f, 1.0f, 0.9f, 1.0f);
+            ind++;
+                        
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Turbine Interaction - Future", 1.0f, 0.005f, 1.0f, 0.9f, 1.05f);
+            ind++;
+
+            // Availability            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Availability - Turbine", 0.97f, 0.019f, 1.0f, 0.8f, 1.05f);
+            ind++;
+                        
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Availability - BOP", 0.995f, 0.005f, 1.0f, 0.8f, 1.05f);
+            ind++;
+                        
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Availability - Grid", 0.995f, 0.005f, 1.0f, 0.8f, 1.05f);
+            ind++;
+
+            // Electrical Losses            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Electrical - Efficiency", 0.97f, 0.002f, 1.0f, 0.8f, 1.0f);
+            ind++;
+                        
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Electrical - Parasitic", 0.996f, 0.001f, 1.0f, 0.8f, 1.0f);
+            ind++;
+
+            // Turbine Performance            
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Turbine Performance - Sub-Optimal", 0.992f, 0.001f, 1.0f, 0.8f, 1.2f);
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Turbine Performance - Generic Adj.", 1.0f, 0.03f, 1.0f, 0.8f, 1.2f);
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Turbine Performance - Site-spec. Adj.", 1.0f, 0.01f, 1.0f, 0.9f, 1.1f);
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Turbine Performance - High WS Hysteresis", 1.0f, 0.001f, 1.0f, 0.9f, 1.1f);
+            ind++;
+
+            // Environmental
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Environmental - Icing", 0.983f, 0.003f, 1.0f, 0.8f, 1.0f);
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Environmental - Degradation", 0.995f, 0.005f, 1.0f, 0.8f, 1.05f);
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Environmental - Ext. Conditions", 0.997f, 0.0022f, 1.0f, 0.8f, 1.05f);
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Environmental - Exposure Changes", 1.0f, 0.003f, 1.0f, 0.8f, 1.05f);
+            ind++;
+
+            // Curtailment / Operational Strategies
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Curtailment - Load", 1.0f, 0.001f, 1.0f, 0.8f, 1.05f);
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Curtailment - Grid", 0.998f, 0.0002f, 1.0f, 0.8f, 1.05f);
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Curtailment - Environmental", 0.993f, 0.0015f, 1.0f, 0.8f, 1.0f);
+            ind++;
+
+            exceedCurves[ind] = CreateExceedanceCurveOneMode("Operational Strategies", 1.0f, 0.002f, 1.0f, 0.8f, 1.05f);
+            ind++;
+
+        }
+
+        public ExceedanceCurve CreateExceedanceCurveOneMode(string name, float mean, float sd, float weight, float lowerBound, float upperBound)
+        {
+            var curve = new ExceedanceCurve();
+            curve.exceedStr = name;
+            Array.Resize(ref curve.modes, 1);
+            curve.modes[0].mean = mean;
+            curve.modes[0].SD = sd;
+            curve.modes[0].weight = weight;
+            curve.lowerBound = lowerBound;
+            curve.upperBound = upperBound;
+
+            curve.distSize = 1001;
+            curve.xVals = new double[curve.distSize];
+            curve.probDist = new double[curve.distSize];
+            curve.cumulDist = new double[curve.distSize];
+
+            CalculateProbDist(ref curve);
+            Normalize_Dists(ref curve);
+
+            return curve;
+        }
+
+        /// <summary> Creates default performance factor curves </summary>
         public void CreateDefaultCurve()
         {
+            curveSet = "Continuum Loss & Uncertainty";
+
             Array.Resize(ref exceedCurves, 18);
 
             exceedCurves[0].exceedStr = "Turbine Availability - Owner/Operator";
@@ -290,21 +428,28 @@ namespace ContinuumNS
         /// <summary> Gets performance factor for specified exceedance curve with specified X-value (0 - 1) </summary>        
         /// <returns> Returns performance factor </returns>
         public double Get_PF_Value(double val, ExceedanceCurve thisCurve)
-        {            
-            double Exceed_Val = 0;
+        {
+            if (val <= thisCurve.cumulDist[0])
+                return thisCurve.xVals[0];
+
+            if (val >= thisCurve.cumulDist[thisCurve.distSize - 1])
+                return thisCurve.xVals[thisCurve.distSize - 1];
 
             for (int i = 0; i < thisCurve.distSize - 1; i++)
             {
-                if (val <= thisCurve.cumulDist[i + 1] && val >= thisCurve.cumulDist[i])
+                double p0 = thisCurve.cumulDist[i];
+                double p1 = thisCurve.cumulDist[i + 1];
+
+                if (val >= p0 && val <= p1)
                 {
-                    Exceed_Val = thisCurve.xVals[i];
-                    break;
+                    double t = (val - p0) / (p1 - p0);
+
+                    return thisCurve.xVals[i] +
+                           t * (thisCurve.xVals[i + 1] - thisCurve.xVals[i]);
                 }
             }
 
-            if (Exceed_Val == 0) Exceed_Val = thisCurve.xVals[0];
-
-            return Exceed_Val;
+            return thisCurve.xVals[thisCurve.distSize - 1];
         }
 
         /// <summary> Gets a random number between 0 - 1 </summary>        
@@ -336,6 +481,10 @@ namespace ContinuumNS
         public void CalculateProbDist(ref ExceedanceCurve thisCurve)
         {
             double X_int;
+
+            if (thisCurve.modes == null)
+                return;
+
             int numModes = thisCurve.modes.Length;
 
             if (numModes == 0) return;
@@ -390,8 +539,8 @@ namespace ContinuumNS
             thisCurve.cumulDist[0] = thisCurve.probDist[0] * pdfInt;
 
             for (int i = 1; i < thisCurve.distSize; i++) // Cumulative distribution function (CDF) of normal distribution = sum of PDF for all x <= X             
-                thisCurve.cumulDist[i] = thisCurve.cumulDist[i - 1] + thisCurve.probDist[i] * pdfInt;
-                            
+                thisCurve.cumulDist[i] =  thisCurve.cumulDist[i - 1] + 0.5 * (thisCurve.probDist[i - 1] + thisCurve.probDist[i]) * pdfInt;
+
         }
 
         /// <summary> Used when importing CDF from a .CSV file. Fills in all Performance factors by interpolating between points in file. </summary>
@@ -440,6 +589,9 @@ namespace ContinuumNS
         public double GetOverallPValue_1yr(int pVal)
         {
             double thisVal = 0;
+
+            if (compositeLoss.pVals1yr == null)
+                return thisVal;
 
             if (pVal > 0 && pVal < 101)
                 thisVal = compositeLoss.pVals1yr[pVal - 1];
@@ -555,7 +707,7 @@ namespace ContinuumNS
                     }
                     catch
                     {
-                        MessageBox.Show("Error reading in exceedance curves.", "Continuum 3");
+                        MessageBox.Show("Error reading in exceedance curves.", "Continuum Wind Energy Software");
                         sr.Close();
                         return;
                     }

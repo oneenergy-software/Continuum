@@ -1,13 +1,17 @@
 ﻿
-using System;
-using System.Linq;
-using System.IO;
-using System.Windows.Forms;
+using MathNet.Numerics.Statistics;
 using OSGeo.GDAL;
 using OSGeo.OGR;
 using OSGeo.OSR;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using MathNet.Numerics.Statistics;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ContinuumNS
 {
@@ -372,7 +376,7 @@ namespace ContinuumNS
 
             if (gotTopo == true) // Already have topo data loaded, need to clear it first before loading new stuff
                 goodToGo = Convert.ToInt16(MessageBox.Show("You already have topo data loaded.  Do you want to load new data?  If you proceed, all calculated exposures, " +
-                    "models and parameters will be lost.", "Continuum 3", MessageBoxButtons.YesNo));
+                    "models and parameters will be lost.", "Continuum Wind Energy Software", MessageBoxButtons.YesNo));
 
             return goodToGo;
         }
@@ -1270,36 +1274,65 @@ namespace ContinuumNS
             if (topoNumXY.X.all.reso < 30)
                 stepInt = (int)(30 / topoNumXY.X.all.reso);
             else
-                stepInt = 1;                       
+                stepInt = 1;
 
-            for (int j = minX_Ind; j <= maxX_Ind; j = j + stepInt)
+            int jCount = ((maxX_Ind - minX_Ind) / stepInt) + 1;
+            int kCount = ((maxY_Ind - minY_Ind) / stepInt) + 1;
+
+            //     for (int j = minX_Ind; j <= maxX_Ind; j = j + stepInt)
+            //     {
+            //         for (int k = minY_Ind; k <= maxY_Ind; k = k + stepInt)
+            //         {
+            object lockObj = new object();
+
+            Parallel.For(0, jCount * kCount, () => (localExposure: new double[numWD], localExposureDist: new double[numWD]), (idx, state, local) =>
             {
-                for (int k = minY_Ind; k <= maxY_Ind; k = k + stepInt)
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+
+                int j = minX_Ind + jIdx * stepInt;
+                int k = minY_Ind + kIdx * stepInt;
+          //      if (j < 0 || j >= topoElevs.GetLength(0) || k < 0 || k >= topoElevs.GetLength(1))
+          //      {
+          //          return local;
+          //      }
+                double gridUTMX = (j * topoNumXY.X.all.reso) + topo.topoNumXY.X.calcs.min;
+                double gridUTMY = (k * topoNumXY.Y.all.reso) + topo.topoNumXY.Y.calcs.min;                                        
+
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+                if (Math.Abs(deltaX) < maxDistance && Math.Abs(deltaY) < maxDistance)
                 {
-                    double gridUTMX = (j * topoNumXY.X.all.reso) + topo.topoNumXY.X.calcs.min;
-                    double gridUTMY = (k * topoNumXY.Y.all.reso) + topo.topoNumXY.Y.calcs.min;                                        
+                    double deltaZ = elev - topo.elevsForCalcs[j, k];  
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                        
 
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
-                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    if (distance <= radius && distance >= 0) // since exposures are calculated using an inverse distance, using grid point that is too close
+                        // to the site can cause singularities in the calculations. Only using grid points that are at least 10 m from the site of interest
                     {
-                        double deltaZ = elev - topo.elevsForCalcs[j, k];  
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                        
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        if (exponent != 1.0)
+                            distance = Math.Pow(distance, exponent);                                                     
 
-                        if (distance <= radius && distance >= 0) // since exposures are calculated using an inverse distance, using grid point that is too close
-                            // to the site can cause singularities in the calculations. Only using grid points that are at least 10 m from the site of interest
-                        {
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            if (exponent != 1.0)
-                                distance = Math.Pow(distance, exponent);                                                     
-
-                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
-                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
+                        local.localExposure[dirInd] += deltaZ / distance;
+                        local.localExposureDist[dirInd] += 1 / distance;
                      
-                        }
                     }
                 }
-            }                 
+                return local;
+
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        exposure[i] += local.localExposure[i];
+                        exposureDist[i] += local.localExposureDist[i];
+                    }
+                }
+            });
+            //          }
+            //      }                 
 
             for (int m = 0; m < numWD; m++)
                 if (exposureDist[m] != 0) exposure[m] = exposure[m] / exposureDist[m];
@@ -1374,7 +1407,7 @@ namespace ContinuumNS
         {                                    
             if (numWD == 0)
             {
-                MessageBox.Show("You need to import met files first.", "Continuum 3");
+                MessageBox.Show("You need to import met files first.", "Continuum Wind Energy Software");
                 return;
             }                        
                         
@@ -1384,6 +1417,10 @@ namespace ContinuumNS
             expo.SR_Dist = new double[numWD];
             expo.dispH = new double[numWD];
 
+            double[] SR = new double[numWD];
+            double[] DH = new double[numWD];
+            double[] SR_Dist  = new double[numWD];
+
             // Find square that contains radius of interest
             int minX_Ind = Convert.ToInt16((UTMX - radius - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
             int maxX_Ind = Convert.ToInt16((UTMX + radius - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
@@ -1391,40 +1428,77 @@ namespace ContinuumNS
             int maxY_Ind = Convert.ToInt16((UTMY + radius - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso);                      
 
             double maxDistance = Convert.ToSingle(radius * 1.414);
+            int stepInt;
+            if (topoNumXY.X.all.reso < 30)
+                stepInt = (int)(30 / topoNumXY.X.all.reso);
+            else
+                stepInt = 1;
 
-            for (int j = minX_Ind; j <= maxX_Ind; j++)
+            int jCount = ((maxX_Ind - minX_Ind) / stepInt) + 1;
+            int kCount = ((maxY_Ind - minY_Ind) / stepInt) + 1;
+
+            //      for (int j = minX_Ind; j <= maxX_Ind; j++)
+            //      {
+            //          for (int k = minY_Ind; k <= maxY_Ind; k++)
+            //          {
+
+            object lockObj = new object();
+
+            Parallel.For(0, jCount * kCount, () => (localSR: new double[numWD], localDH: new double[numWD], localSRDist: new double[numWD]), (idx, state, local) =>
             {
-                for (int k = minY_Ind; k <= maxY_Ind; k++)
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+
+                int j = minX_Ind + jIdx * stepInt;
+                int k = minY_Ind + kIdx * stepInt;
+
+                double gridUTMX = Convert.ToInt32((j * LC_NumXY.X.all.reso) + LC_NumXY.X.calcs.min);
+                double gridUTMY = Convert.ToInt32((k * LC_NumXY.Y.all.reso) + LC_NumXY.Y.calcs.min);
+
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+
+                if (Math.Abs(deltaX) < maxDistance && Math.Abs(deltaY) < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
                 {
-                    double gridUTMX = Convert.ToInt32((j * LC_NumXY.X.all.reso) + LC_NumXY.X.calcs.min);
-                    double gridUTMY = Convert.ToInt32((k * LC_NumXY.Y.all.reso) + LC_NumXY.Y.calcs.min);
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
 
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
+                    if (distance <= radius && distance != 0)
+                    {
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        double thisSR = SR_ForCalcs[j, k];
+                        double This_Disp = DH_ForCalcs[j, k];
 
-                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
-                    {                        
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
-
-                        if (distance <= radius && distance != 0)
+                        if (thisSR > 0)
                         {
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            double thisSR = SR_ForCalcs[j, k];
-                            double This_Disp = DH_ForCalcs[j, k];                                                       
+                            if (exponent != 1.0)
+                                distance = Math.Pow(distance, exponent);
 
-                            if (thisSR > 0)
-                            {
-                                if (exponent != 1.0)
-                                    distance = Math.Pow(distance, exponent);
-
-                                expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
-                                expo.dispH[dirInd] = expo.dispH[dirInd] + This_Disp / distance;
-                                expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
-                            }
+                            local.localSR[dirInd] += thisSR / distance;
+                            local.localDH[dirInd] += This_Disp / distance;
+                            local.localSRDist[dirInd] += 1 / distance;
                         }
                     }
                 }
-            }
+                return local;
+
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        SR[i] += local.localSR[i];
+                        DH[i] += local.localDH[i];
+                        SR_Dist[i] += local.localSRDist[i];
+                    }
+                }
+            });
+            //           }                
+            //       }
+
+            expo.SR = SR;
+            expo.dispH = DH;
+            expo.SR_Dist = SR_Dist;
 
             for (int m = 0; m < numWD; m++)
             {
@@ -1457,7 +1531,11 @@ namespace ContinuumNS
             double dirBin = (double)360 / numWD;
             expo.SR_Dist = new double[numWD];
             expo.SR = new double[numWD];
-            expo.dispH = new double[numWD];                       
+            expo.dispH = new double[numWD];
+
+            double[] SR = new double[numWD];
+            double[] DH = new double[numWD];
+            double[] SR_Dist = new double[numWD];
 
             // Find square that contains radius of interest
             int minX_Ind = Convert.ToInt16((UTMX - radius - LC_NumXY.X.calcs.min) / LC_NumXY.X.all.reso);
@@ -1472,137 +1550,244 @@ namespace ContinuumNS
             int minY_IndInner = Convert.ToInt16((UTMY - (smallerRadius / 1.414) - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso);
             int maxY_IndInner = Convert.ToInt16((UTMY + (smallerRadius / 1.414) - LC_NumXY.Y.calcs.min) / LC_NumXY.Y.all.reso);
 
-            double maxDistance = Convert.ToSingle(radius * 1.414);                    
+            double maxDistance = Convert.ToSingle(radius * 1.414);
+            int stepInt;
+            if (LC_NumXY.X.all.reso < 30)
+                stepInt = (int)(30 / LC_NumXY.X.all.reso);
+            else
+                stepInt = 1;
+
+            object lockObj = new object();
+            int jCount = ((minX_IndInner - 1) - minX_Ind) / stepInt + 1;
+            int kCount = ((maxY_Ind - minY_Ind) / stepInt) + 1;
 
             // First do calcs for left side of box
-            for (int j = minX_Ind; j <= minX_IndInner; j++)
+            //      for (int j = minX_Ind; j <= minX_IndInner; j++)
+            //      {
+            //          for (int k = minY_Ind; k <= maxY_Ind; k++)
+            //          {
+            Parallel.For(0, jCount * kCount, () => (localSR: new double[numWD], localDH: new double[numWD], localSRDist: new double[numWD]), (idx, state, local) =>
             {
-                for (int k = minY_Ind; k <= maxY_Ind; k++)
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+
+                int j = minX_Ind + jIdx * stepInt;
+                int k = minY_Ind + kIdx * stepInt;
+                double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
+                double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+
+                if (Math.Abs(deltaX) < maxDistance && Math.Abs(deltaY) < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
                 {
-                    double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
-                    double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+                    double thisSR = SR_ForCalcs[j, k];
+                    double thisDH = DH_ForCalcs[j, k];
 
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
 
-                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
+                    if (distance <= radius && distance > smallerRadius && distance != 0)  // Zero values on edges can skew calculated values
                     {
-                        double thisSR = SR_ForCalcs[j, k];
-                        double thisDH = DH_ForCalcs[j, k];                        
-                      
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        if (exponent != 1.0)
+                            distance = (double)Math.Pow(distance, exponent);
 
-                        if (distance <= radius && distance > smallerRadius && distance != 0)  // Zero values on edges can skew calculated values
-                        {
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            if (exponent != 1.0)
-                                distance = (double)Math.Pow(distance, exponent);
+                        local.localSR[dirInd] = local.localSR[dirInd] + thisSR / distance;
+                        local.localDH[dirInd] = local.localDH[dirInd] + thisDH / distance;
+                        local.localSRDist[dirInd] = local.localSRDist[dirInd] + 1 / distance;
 
-                            expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
-                            expo.dispH[dirInd] = expo.dispH[dirInd] + thisDH / distance;
-                            expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
-
-                        }
                     }
                 }
-            }
+                return local;
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        SR[i] += local.localSR[i];
+                        DH[i] += local.localDH[i];
+                        SR_Dist[i] += local.localSRDist[i];
+                    }
+                }
+            });
+            //         }
+            //     }
 
             // Now do calcs for right side of box
-            for (int j = maxX_IndInner; j <= maxX_Ind; j++)
-            {
-                for (int k = minY_Ind; k <= maxY_Ind; k++)
+            jCount = ((maxX_Ind - 1) - maxX_IndInner) / stepInt + 1;
+            kCount = ((maxY_Ind - minY_Ind) / stepInt) + 1;
+
+            //        for (int j = maxX_IndInner; j <= maxX_Ind; j++)
+            //    {
+            //        for (int k = minY_Ind; k <= maxY_Ind; k++)
+            //        {
+            Parallel.For(0, jCount * kCount, () => (localSR: new double[numWD], localDH: new double[numWD], localSRDist: new double[numWD]), (idx, state, local) =>
+            {       
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+                int j = maxX_IndInner + jIdx * stepInt;
+                int k = minY_Ind + kIdx * stepInt;
+            
+                double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
+                double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+
+                if (Math.Abs(deltaX) < maxDistance && Math.Abs(deltaY) < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
                 {
-                    double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
-                    double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+                    double thisSR = SR_ForCalcs[j, k];
+                    double thisDH = DH_ForCalcs[j, k];                     
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                               
 
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
-
-                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
+                    if (distance <= radius && distance > smallerRadius && distance != 0)
                     {
-                        double thisSR = SR_ForCalcs[j, k];
-                        double thisDH = DH_ForCalcs[j, k];                     
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                               
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        if (exponent != 1.0)
+                            distance = (double)Math.Pow(distance, exponent);
 
-                        if (distance <= radius && distance > smallerRadius && distance != 0)
-                        {
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            if (exponent != 1.0)
-                                distance = (double)Math.Pow(distance, exponent);
+                        local.localSR[dirInd] += thisSR / distance;
+                        local.localDH[dirInd] += thisDH / distance;
+                        local.localSRDist[dirInd] += 1 / distance;
 
-                            expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
-                            expo.dispH[dirInd] = expo.dispH[dirInd] + thisDH / distance;
-                            expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
-
-                        }
                     }
                 }
-            }
+                return local;
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        SR[i] += local.localSR[i];
+                        DH[i] += local.localDH[i];
+                        SR_Dist[i] += local.localSRDist[i];
+                    }
+                }
+            });
+            //      }
+            //   }
 
             // Now do calcs for bottom of box
-            for (int j = minX_IndInner + 1; j <= maxX_IndInner - 1; j++)
+            jCount = ((maxX_IndInner - 2) - (minX_IndInner + 1)) / stepInt + 1;
+            kCount = ((minY_IndInner - minY_Ind) / stepInt) + 1;
+
+            //  for (int j = minX_IndInner + 1; j <= maxX_IndInner - 1; j++)
+            //  {
+            //      for (int k = minY_Ind; k <= minY_IndInner; k++)
+            //      {
+            Parallel.For(0, jCount * kCount, () => (localSR: new double[numWD], localDH: new double[numWD], localSRDist: new double[numWD]), (idx, state, local) =>
             {
-                for (int k = minY_Ind; k <= minY_IndInner; k++)
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+
+                int j = minX_IndInner + 1 + jIdx * stepInt;
+                int k = minY_Ind + kIdx * stepInt;
+
+                double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
+                double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+
+                if (Math.Abs(deltaX) < maxDistance && Math.Abs(deltaY) < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
                 {
-                    double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
-                    double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
-
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
-
-                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
-                    {
-                        double thisSR = SR_ForCalcs[j, k];
-                        double thisDH = DH_ForCalcs[j, k];
+                    double thisSR = SR_ForCalcs[j, k];
+                    double thisDH = DH_ForCalcs[j, k];
                       
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                               
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                               
 
-                        if (distance <= radius && distance > smallerRadius && distance != 0)
-                        {
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            if (exponent != 1.0)
-                                distance = (double)Math.Pow(distance, exponent);
+                    if (distance <= radius && distance > smallerRadius && distance != 0)
+                    {
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        if (exponent != 1.0)
+                            distance = (double)Math.Pow(distance, exponent);
 
-                            expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
-                            expo.dispH[dirInd] = expo.dispH[dirInd] + thisDH / distance;
-                            expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
-                        }
+                    local.localSR[dirInd] += thisSR / distance;
+                    local.localDH[dirInd] += thisDH / distance;
+                    local.localSRDist[dirInd] += 1 / distance;
+                }
+                    
+                }
+                return local;
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        SR[i] += local.localSR[i];
+                        DH[i] += local.localDH[i];
+                        SR_Dist[i] += local.localSRDist[i];
                     }
                 }
-            }
+            });
+            //    }
+            //  }
 
             // Now do calcs for top of box
-            for (int j = minX_IndInner + 1; j <= maxX_IndInner - 1; j++)
+            jCount = ((maxX_IndInner - 2) - (minX_IndInner + 1)) / stepInt + 1;
+            kCount = ((maxY_Ind - maxY_IndInner) / stepInt) + 1;
+            //     for (int j = minX_IndInner + 1; j <= maxX_IndInner - 1; j++)
+            //     {
+            //         for (int k = maxY_IndInner; k <= maxY_Ind; k++)
+            //         {
+            Parallel.For(0, jCount * kCount, () => (localSR: new double[numWD], localDH: new double[numWD], localSRDist: new double[numWD]), (idx, state, local) =>
             {
-                for (int k = maxY_IndInner; k <= maxY_Ind; k++)
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+
+                int j = minX_IndInner + 1 + jIdx * stepInt;
+                int k = maxY_IndInner + kIdx * stepInt;
+
+                double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
+                double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+
+                if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
                 {
-                    double gridUTMX = j * LC_NumXY.X.all.reso + LC_NumXY.X.calcs.min;
-                    double gridUTMY = k * LC_NumXY.Y.all.reso + LC_NumXY.Y.calcs.min;
+                    double thisSR = SR_ForCalcs[j, k];
+                    double thisDH = DH_ForCalcs[j, k];
 
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
 
-                    if (deltaX < maxDistance && deltaY < maxDistance && j >= 0 && j < LC_NumXY.X.calcs.num && k >= 0 && k < LC_NumXY.Y.calcs.num)
+                    if (distance <= radius && distance > smallerRadius && distance != 0)
                     {
-                        double thisSR = SR_ForCalcs[j, k];
-                        double thisDH = DH_ForCalcs[j, k];
-                        
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);                                               
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        if (exponent != 1.0)
+                            distance = (double)Math.Pow(distance, exponent);
 
-                        if (distance <= radius && distance > smallerRadius && distance != 0)
-                        {
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            if (exponent != 1.0)
-                                distance = (double)Math.Pow(distance, exponent);
+                        local.localSR[dirInd] += thisSR / distance;
+                        local.localDH[dirInd] += thisDH / distance;
+                        local.localSRDist[dirInd] += 1 / distance;
 
-                            expo.SR[dirInd] = expo.SR[dirInd] + thisSR / distance;
-                            expo.dispH[dirInd] = expo.dispH[dirInd] + thisDH / distance;
-                            expo.SR_Dist[dirInd] = expo.SR_Dist[dirInd] + 1 / distance;
-
-                        }
                     }
                 }
-            }
+
+                return local;
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        SR[i] += local.localSR[i];
+                        DH[i] += local.localDH[i];
+                        SR_Dist[i] += local.localSRDist[i];
+                    }
+                }
+            });
+
+
+            
+//       }
+//   }
+            expo.SR = SR;
+            expo.dispH = DH;
+            expo.SR_Dist = SR_Dist;
 
             // Now add surface roughness and displacement height and SR_Dist from smaller radius
             for (int m = 0; m < numWD; m++)
@@ -1668,118 +1853,204 @@ namespace ContinuumNS
             if (minY_Ind < 0) minY_Ind = 0;
 
             // Only doing calculations for square with radius of interest minus the inner square that first inside smaller radius
-
+            object lockObj = new object();
             // First do calcs for left side of box
-            for (int j = minX_Ind; j < minX_IndInner; j = j + stepInt)
+            int jCount = ((minX_IndInner - 1) - minX_Ind) / stepInt + 1;
+            int kCount = ((maxY_Ind - minY_Ind) / stepInt) + 1;
+            //      for (int j = minX_Ind; j < minX_IndInner; j = j + stepInt)
+            //      {
+            //          for (int k = minY_Ind; k <= maxY_Ind; k = k + stepInt)
+            //          {
+            Parallel.For(0, jCount * kCount, () => (localExposure: new double[numWD], localExposureDist: new double[numWD]), (idx, state, local) =>
             {
-                for (int k = minY_Ind; k <= maxY_Ind; k = k + stepInt)
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+
+                int j = minX_Ind + jIdx * stepInt;
+                int k = minY_Ind + kIdx * stepInt;
+                double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
+                double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+
+                if (Math.Abs(deltaX) < maxDistance && Math.Abs(deltaY) < maxDistance)
                 {
-                    double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
-                    double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
+                    double deltaZ = elev - elevsForCalcs[j, k];
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
 
-                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    if (distance <= radius && distance > smallerRadius && distance != 0)
                     {
-                        double deltaZ = elev - elevsForCalcs[j, k];
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+                        if (exponent != 1.0)
+                            distance = Math.Pow(distance, exponent);
 
-                        if (distance <= radius && distance > smallerRadius && distance != 0)
-                        {
-                            if (exponent != 1.0)
-                                distance = Math.Pow(distance, exponent);
-
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
-                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
-                        }
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        local.localExposure[dirInd] += deltaZ / distance;
+                        local.localExposureDist[dirInd] += 1 / distance;
                     }
                 }
-            }
+                return local;
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        exposure[i] += local.localExposure[i];
+                        exposureDist[i] += local.localExposureDist[i];
+                    }
+                }
+                //    }
+                //  }
+            });
 
             // Now do calcs for(int right side of box
-            for (int j = maxX_IndInner; j < maxX_Ind; j = j + stepInt)
+            //     for (int j = maxX_IndInner; j < maxX_Ind; j = j + stepInt)
+            //     {
+            //         for (int k = minY_Ind; k <= maxY_Ind; k = k + stepInt)
+            //         {
+            jCount = ((maxX_Ind - 1) - maxX_IndInner) / stepInt + 1;
+            kCount = ((maxY_Ind - minY_Ind) / stepInt) + 1;
+
+            Parallel.For(0, jCount * kCount, () => (localExposure: new double[numWD], localExposureDist: new double[numWD]), (idx, state, local) =>
             {
-                for (int k = minY_Ind; k <= maxY_Ind; k = k + stepInt)
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+
+                int j = maxX_IndInner + jIdx * stepInt;
+                int k = minY_Ind + kIdx * stepInt;
+                double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
+                double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+
+                if (Math.Abs(deltaX) < maxDistance && Math.Abs(deltaY) < maxDistance)
                 {
-                    double  gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
-                    double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
+                    double deltaZ = elev - elevsForCalcs[j, k];
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
 
-                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    if (distance <= radius && distance > smallerRadius && distance != 0)
                     {
-                        double deltaZ = elev - elevsForCalcs[j, k];
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+                        if (exponent != 1.0)
+                            distance = Math.Pow(distance, exponent);
 
-                        if (distance <= radius && distance > smallerRadius && distance != 0)
-                        {
-                            if (exponent != 1.0)
-                                distance = Math.Pow(distance, exponent);
-
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
-                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
-                        }
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        local.localExposure[dirInd] += deltaZ / distance;
+                        local.localExposureDist[dirInd] += 1 / distance;
                     }
                 }
-            }
+                return local;
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        exposure[i] += local.localExposure[i];
+                        exposureDist[i] += local.localExposureDist[i];
+                    }
+                }
+                //          }
+                //     }
+            });
 
             // Now do calcs for bottom of box
-            for (int j = minX_IndInner + 1; j < maxX_IndInner - 1; j = j + stepInt)  // no Single-dipping
+            jCount = ((maxX_IndInner - 2) - (minX_IndInner + 1)) / stepInt + 1;
+            kCount = ((minY_IndInner - minY_Ind) / stepInt) + 1;
+            //     for (int j = minX_IndInner + 1; j < maxX_IndInner - 1; j = j + stepInt)  // no Single-dipping
+            //     {
+            //         for (int k = minY_Ind; k <= minY_IndInner; k = k + stepInt)
+            //         {
+            Parallel.For(0, jCount * kCount, () => (localExposure: new double[numWD], localExposureDist: new double[numWD]), (idx, state, local) =>
             {
-                for (int k = minY_Ind; k <= minY_IndInner; k = k + stepInt)
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+
+                int j = minX_IndInner + 1 + jIdx * stepInt;
+                int k = minY_Ind + kIdx * stepInt;
+                double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
+                double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+
+                if (Math.Abs(deltaX) < maxDistance && Math.Abs(deltaY) < maxDistance)
                 {
-                    double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
-                    double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
+                    double deltaZ = elev - elevsForCalcs[j, k];
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
 
-                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    if (distance <= radius && distance > smallerRadius && distance != 0)
                     {
-                        double deltaZ = elev - elevsForCalcs[j, k];
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+                        if (exponent != 1.0)
+                            distance = Math.Pow(distance, exponent);
 
-                        if (distance <= radius && distance > smallerRadius && distance != 0)
-                        {
-                            if (exponent != 1.0)
-                                distance = Math.Pow(distance, exponent);
-
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
-                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
-                        }
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        local.localExposure[dirInd] += deltaZ / distance;
+                        local.localExposureDist[dirInd] += 1 / distance;
                     }
                 }
-            }
+                return local;
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        exposure[i] += local.localExposure[i];
+                        exposureDist[i] += local.localExposureDist[i];
+                    }
+                }
+                //      }
+                //   }
+            });
 
             // Now do calcs for(int top of box
-            for (int j = minX_IndInner + 1; j < maxX_IndInner - 1; j = j + stepInt)
+            jCount = ((maxX_IndInner - 2) - (minX_IndInner + 1)) / stepInt + 1;
+            kCount = ((maxY_Ind - maxY_IndInner) / stepInt) + 1;
+
+            //      for (int j = minX_IndInner + 1; j < maxX_IndInner - 1; j = j + stepInt)
+            //      {
+            //          for (int k = maxY_IndInner; k <= maxY_Ind; k = k + stepInt)
+            //          {
+            Parallel.For(0, jCount * kCount, () => (localExposure: new double[numWD], localExposureDist: new double[numWD]), (idx, state, local) =>
             {
-                for (int k = maxY_IndInner; k <= maxY_Ind; k = k + stepInt)
+                int jIdx = idx / kCount;
+                int kIdx = idx % kCount;
+
+                int j = minX_IndInner + 1 + jIdx * stepInt;
+                int k = maxY_IndInner + kIdx * stepInt;
+                double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
+                double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
+                double deltaX = gridUTMX - UTMX;
+                double deltaY = gridUTMY - UTMY;
+
+                if (Math.Abs(deltaX) < maxDistance && Math.Abs(deltaY) < maxDistance)
                 {
-                    double gridUTMX = j * topoNumXY.X.all.reso + topoNumXY.X.calcs.min;
-                    double gridUTMY = k * topoNumXY.Y.all.reso + topoNumXY.Y.calcs.min;
-                    double deltaX = gridUTMX - UTMX;
-                    double deltaY = gridUTMY - UTMY;
+                    double deltaZ = elev - elevsForCalcs[j, k];
+                    double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
 
-                    if (deltaX < maxDistance && deltaY < maxDistance)
+                    if (distance <= radius && distance > smallerRadius && distance != 0)
                     {
-                        double deltaZ = elev - elevsForCalcs[j, k];
-                        double distance = CalcDistanceBetweenPoints(gridUTMX, gridUTMY, UTMX, UTMY);
+                        if (exponent != 1.0)
+                            distance = (double)Math.Pow(distance, exponent);
 
-                        if (distance <= radius && distance > smallerRadius && distance != 0)
-                        {
-                            if (exponent != 1.0)
-                                distance = (double)Math.Pow(distance, exponent);
-
-                            int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
-                            exposure[dirInd] = exposure[dirInd] + deltaZ / distance;
-                            exposureDist[dirInd] = exposureDist[dirInd] + 1 / distance;
-                        }
+                        int dirInd = CalcDirInd(deltaX, deltaY, dirBin);
+                        local.localExposure[dirInd] += deltaZ / distance;
+                        local.localExposureDist[dirInd] += 1 / distance;
                     }
                 }
-            }
+                return local;
+            }, local =>
+            {
+                lock (lockObj)
+                {
+                    for (int i = 0; i < numWD; i++)
+                    {
+                        exposure[i] += local.localExposure[i];
+                        exposureDist[i] += local.localExposureDist[i];
+                    }
+                }
+                //     }
+                //   }
+            });
 
             // Now add Expo && ExpoDist from smaller radius
             for (int m = 0; m <= numWD - 1; m++)
@@ -3349,27 +3620,63 @@ namespace ContinuumNS
 
         /// <summary> Opens and reads CSV with South Africa land cover key </summary>
         public void SetSANLC_Key()
-        {
-            string folderPath = Directory.GetCurrentDirectory();
-            StreamReader sr = new StreamReader(folderPath + "\\SANLC key.csv");
-            LC_Key = new LC_SR_DH[73];
-            int LC_Count = 0;
+        {                    
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "SANLC key.csv");
 
-            while (sr.EndOfStream == false)
+            var lcList = new List<LC_SR_DH>();
+            int lineNumber = 0;
+
+            try
             {
-                var dataStr = sr.ReadLine();
-                string[] fileRow = dataStr.Split(',');
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        string dataStr = sr.ReadLine();
+                        lineNumber++;
 
-                LC_Key[LC_Count] = new TopoInfo.LC_SR_DH();
-                LC_Key[LC_Count].code = Convert.ToInt16(fileRow[0]);
-                LC_Key[LC_Count].desc = fileRow[1];
-                LC_Key[LC_Count].SR = Convert.ToSingle(fileRow[2]);
-                LC_Key[LC_Count].DH = Convert.ToSingle(fileRow[3]);
-                LC_Count++;
+                        if (string.IsNullOrWhiteSpace(dataStr))
+                            continue;
+
+                        string[] fileRow = dataStr.Split(',');
+
+                        if (fileRow.Length < 4)                        
+                            throw new FormatException($"Line {lineNumber}: Expected 4 columns, " + $"but found {fileRow.Length}. Row: [{dataStr}]");
+                        
+                        if (!short.TryParse(fileRow[0].Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out short code))                        
+                            throw new FormatException($"Line {lineNumber}, column 1: Invalid code " + $"'{fileRow[0]}'. Row: [{dataStr}]");                        
+
+                        if (!float.TryParse(fileRow[2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float srValue))                        
+                            throw new FormatException($"Line {lineNumber}, column 3 (SR): Invalid number " + $"'{fileRow[2]}'. Row: [{dataStr}]");
+                        
+                        if (!float.TryParse(fileRow[3].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float dhValue))                        
+                            throw new FormatException($"Line {lineNumber}, column 4 (DH): Invalid number " + $"'{fileRow[3]}'. Row: [{dataStr}]");
+                        
+                        lcList.Add(new LC_SR_DH
+                        {
+                            code = code,
+                            desc = fileRow[1].Trim(),
+                            SR = srValue,
+                            DH = dhValue
+                        });
+                    }
+                }
+
+                if (lcList.Count != 73)
+                {
+                    throw new InvalidDataException(
+                        $"Expected 73 land-cover records, but found {lcList.Count}.");
+                }
+
+                LC_Key = lcList.ToArray();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"SetSANLC_Key failed at line {lineNumber}.\n{ex}");
+
+                throw; // Preserve the original exception and stack trace.
             }
 
-            sr.Close();
-                
         }
 
         /// <summary> Sets the land cover key to be EU Corine 2006 Land Cover DB. </summary>

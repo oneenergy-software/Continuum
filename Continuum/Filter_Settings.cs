@@ -11,6 +11,7 @@ namespace ContinuumNS
         public Filter_Settings()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnClose_Click(object sender, EventArgs e)

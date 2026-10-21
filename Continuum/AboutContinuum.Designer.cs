@@ -148,7 +148,7 @@
             this.LogoPictureBox.Location = new System.Drawing.Point(3, 3);
             this.LogoPictureBox.Name = "LogoPictureBox";
             this.TableLayoutPanel.SetRowSpan(this.LogoPictureBox, 2);
-            this.LogoPictureBox.Size = new System.Drawing.Size(300, 77);
+            this.LogoPictureBox.Size = new System.Drawing.Size(300, 61);
             this.LogoPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.LogoPictureBox.TabIndex = 2;
             this.LogoPictureBox.TabStop = false;

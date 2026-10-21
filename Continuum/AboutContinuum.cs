@@ -11,6 +11,7 @@ namespace ContinuumNS
         {
 
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             AboutContinuumLoad();
         }
 

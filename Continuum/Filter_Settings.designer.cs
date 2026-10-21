@@ -63,13 +63,14 @@
             this.label19 = new System.Windows.Forms.Label();
             this.txtShadow_Width = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
-            this.lstTowerShadow = new System.Windows.Forms.ListView();
-            this.Height = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.dataTowerShadow = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dataTowerShadow)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
@@ -255,14 +256,15 @@
             this.label4.Location = new System.Drawing.Point(11, 13);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(408, 23);
+            this.label4.Size = new System.Drawing.Size(169, 23);
             this.label4.TabIndex = 98;
-            this.label4.Text = "Met Filter Settings (OE 2023.1 Methodology)";
+            this.label4.Text = "Met Filter Settings";
             // 
             // btnClose
             // 
+            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnClose.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(330, 629);
+            this.btnClose.Location = new System.Drawing.Point(330, 666);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 41);
             this.btnClose.TabIndex = 115;
@@ -349,8 +351,9 @@
             // 
             // txtMaxWSForMinWSFilt
             // 
+            this.txtMaxWSForMinWSFilt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtMaxWSForMinWSFilt.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxWSForMinWSFilt.Location = new System.Drawing.Point(171, 638);
+            this.txtMaxWSForMinWSFilt.Location = new System.Drawing.Point(171, 675);
             this.txtMaxWSForMinWSFilt.Margin = new System.Windows.Forms.Padding(2);
             this.txtMaxWSForMinWSFilt.Name = "txtMaxWSForMinWSFilt";
             this.txtMaxWSForMinWSFilt.ReadOnly = true;
@@ -360,9 +363,10 @@
             // 
             // label12
             // 
+            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label12.AutoSize = true;
             this.label12.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(47, 641);
+            this.label12.Location = new System.Drawing.Point(47, 678);
             this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(119, 18);
@@ -371,9 +375,10 @@
             // 
             // label13
             // 
+            this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(29, 611);
+            this.label13.Location = new System.Drawing.Point(29, 648);
             this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(135, 18);
@@ -382,9 +387,10 @@
             // 
             // label17
             // 
+            this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(48, 665);
+            this.label17.Location = new System.Drawing.Point(48, 702);
             this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(162, 18);
@@ -393,8 +399,9 @@
             // 
             // txtMinClosestWS
             // 
+            this.txtMinClosestWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtMinClosestWS.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinClosestWS.Location = new System.Drawing.Point(219, 662);
+            this.txtMinClosestWS.Location = new System.Drawing.Point(219, 699);
             this.txtMinClosestWS.Margin = new System.Windows.Forms.Padding(2);
             this.txtMinClosestWS.Name = "txtMinClosestWS";
             this.txtMinClosestWS.ReadOnly = true;
@@ -447,60 +454,76 @@
             this.label20.TabIndex = 131;
             this.label20.Text = "Shadow Width for Single Anems :";
             // 
-            // lstTowerShadow
+            // dataTowerShadow
             // 
-            this.lstTowerShadow.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Height,
-            this.columnHeader1,
-            this.columnHeader5,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4});
-            this.lstTowerShadow.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstTowerShadow.HideSelection = false;
-            this.lstTowerShadow.Location = new System.Drawing.Point(12, 460);
-            this.lstTowerShadow.Name = "lstTowerShadow";
-            this.lstTowerShadow.Size = new System.Drawing.Size(393, 140);
-            this.lstTowerShadow.TabIndex = 133;
-            this.lstTowerShadow.UseCompatibleStateImageBehavior = false;
-            this.lstTowerShadow.View = System.Windows.Forms.View.Details;
+            this.dataTowerShadow.AllowUserToAddRows = false;
+            this.dataTowerShadow.AllowUserToDeleteRows = false;
+            this.dataTowerShadow.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataTowerShadow.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataTowerShadow.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Column4,
+            this.Column5,
+            this.Column6});
+            this.dataTowerShadow.Location = new System.Drawing.Point(12, 455);
+            this.dataTowerShadow.Name = "dataTowerShadow";
+            this.dataTowerShadow.ReadOnly = true;
+            this.dataTowerShadow.RowHeadersVisible = false;
+            this.dataTowerShadow.Size = new System.Drawing.Size(393, 187);
+            this.dataTowerShadow.TabIndex = 134;
             // 
-            // Height
+            // Column1
             // 
-            this.Height.Text = "Height";
-            this.Height.Width = 49;
+            this.Column1.HeaderText = "Height [m]";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 60;
             // 
-            // columnHeader1
+            // Column2
             // 
-            this.columnHeader1.Text = "Orient.";
-            this.columnHeader1.Width = 51;
+            this.Column2.HeaderText = "Orient. [°]";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.Width = 60;
             // 
-            // columnHeader5
+            // Column3
             // 
-            this.columnHeader5.Text = "Shadow";
-            this.columnHeader5.Width = 52;
+            this.Column3.HeaderText = "Shadow Center [°]";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            this.Column3.Width = 60;
             // 
-            // columnHeader2
+            // Column4
             // 
-            this.columnHeader2.Text = "Min Shadow";
-            this.columnHeader2.Width = 73;
+            this.Column4.HeaderText = "Min Shadow °";
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            this.Column4.Width = 70;
             // 
-            // columnHeader3
+            // Column5
             // 
-            this.columnHeader3.Text = "Max Shadow";
-            this.columnHeader3.Width = 76;
+            this.Column5.HeaderText = "Max Shadow °";
+            this.Column5.Name = "Column5";
+            this.Column5.ReadOnly = true;
+            this.Column5.Width = 70;
             // 
-            // columnHeader4
+            // Column6
             // 
-            this.columnHeader4.Text = "Shadow Width";
-            this.columnHeader4.Width = 83;
+            this.Column6.HeaderText = "Shadow Width [°]";
+            this.Column6.Name = "Column6";
+            this.Column6.ReadOnly = true;
+            this.Column6.Width = 70;
             // 
             // Filter_Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(423, 694);
-            this.Controls.Add(this.lstTowerShadow);
+            this.ClientSize = new System.Drawing.Size(423, 736);
+            this.Controls.Add(this.dataTowerShadow);
             this.Controls.Add(this.txtShadow_Width);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.label19);
@@ -537,6 +560,7 @@
             this.Controls.Add(this.label4);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Filter_Settings";
+            ((System.ComponentModel.ISupportInitialize)(this.dataTowerShadow)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -577,12 +601,12 @@
         public System.Windows.Forms.TextBox txtMinAnemSD;
         public System.Windows.Forms.TextBox txtShadow_Width;
         private System.Windows.Forms.Label label20;
-        public System.Windows.Forms.ListView lstTowerShadow;
-        private System.Windows.Forms.ColumnHeader Height;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
+        public System.Windows.Forms.DataGridView dataTowerShadow;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
     }
 }

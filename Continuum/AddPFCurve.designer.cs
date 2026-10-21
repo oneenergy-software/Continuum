@@ -38,7 +38,7 @@
             // btnOK
             // 
             this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOK.Location = new System.Drawing.Point(403, 71);
+            this.btnOK.Location = new System.Drawing.Point(403, 62);
             this.btnOK.Margin = new System.Windows.Forms.Padding(2);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(76, 34);
@@ -50,7 +50,7 @@
             // btnCancel
             // 
             this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(313, 71);
+            this.btnCancel.Location = new System.Drawing.Point(313, 62);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(76, 34);
@@ -84,7 +84,7 @@
             "Shear Extrapolation",
             "Wind Flow Model",
             "Wake Loss Model"});
-            this.cboCurves.Location = new System.Drawing.Point(203, 26);
+            this.cboCurves.Location = new System.Drawing.Point(203, 17);
             this.cboCurves.Margin = new System.Windows.Forms.Padding(2);
             this.cboCurves.Name = "cboCurves";
             this.cboCurves.Size = new System.Drawing.Size(278, 30);
@@ -94,7 +94,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(14, 28);
+            this.label1.Location = new System.Drawing.Point(14, 19);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(185, 22);
@@ -105,7 +105,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(503, 120);
+            this.ClientSize = new System.Drawing.Size(504, 109);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cboCurves);
             this.Controls.Add(this.btnCancel);

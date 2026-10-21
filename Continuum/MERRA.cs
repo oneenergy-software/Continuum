@@ -71,17 +71,17 @@ namespace ContinuumNS
             /// <summary> Timestamp </summary>
             public DateTime ThisDate;
             /// <summary> 50 m wind speed </summary>
-            public double WS50m;
+            public float WS50m;
             /// <summary> 50 m wind direction </summary>
-            public double WD50m;
+            public float WD50m;
             /// <summary> Energy production </summary>
-            public double Prod;
+            public float Prod;
             /// <summary> Surface level pressure </summary>
-            public double SurfPress;
+            public float SurfPress;
             /// <summary> Sea-level pressure </summary>
-            public double SeaPress;
+            public float SeaPress;
             /// <summary> 10 m temperature </summary>
-            public double Temp10m;            
+            public float Temp10m;            
         }
 
         /// <summary> Contains WS, WD, temperature, and pressure time series data and lat/long and corresponding MERRA2 datafile X/Y indices </summary>
@@ -131,7 +131,7 @@ namespace ContinuumNS
             /// <summary> List of monthly energy production by year (i.e. if month is January, list would contain energy production in January for every year) </summary>
             public YearAndProd[] YearProd;
             /// <summary>   Long-term average monthly energy production. </summary>
-            public double LT_Avg;
+            public float LT_Avg;
         }
 
         /// <summary> Contains yearly energy production for each year and long-term AEP</summary>
@@ -141,7 +141,7 @@ namespace ContinuumNS
             /// <summary>   Annual energy production by year. </summary>
             public YearAndProd[] Yearly_Prod;
             /// <summary>   Long-term average annual energy production  </summary>
-            public double LT_Avg;             
+            public float LT_Avg;             
         }
 
         
@@ -152,7 +152,7 @@ namespace ContinuumNS
             /// <summary>  Energy Production Year </summary>
             public int year;
             /// <summary>  Energy Production</summary>
-            public double prod;
+            public float prod;
         }             
 
         /// <summary> Holds hourly timestamps and east/north (i.e. U/V) wind speeds at 10 and 50 m for 24 hour period (i.e. 1 day) </summary>
@@ -617,10 +617,9 @@ namespace ContinuumNS
                     }
 
                     thisAnnual.Yearly_Prod[yearInds].year = startYear + i;
-                    thisAnnual.Yearly_Prod[yearInds].prod = yearProd;
+                    thisAnnual.Yearly_Prod[yearInds].prod = (float)yearProd;
                     yearProd = 0;
-                    yearInds++;
-                    
+                    yearInds++;                   
                     
                 }                
             }
@@ -702,7 +701,7 @@ namespace ContinuumNS
             for (int i = 0; i < numYears; i++)
                 avgLT = avgLT + thisAnnual.Yearly_Prod[i].prod;
                                                 
-            if (numYears > 0) thisAnnual.LT_Avg = avgLT / numYears;            
+            if (numYears > 0) thisAnnual.LT_Avg = (float)(avgLT / numYears);            
             
         }
 
@@ -739,7 +738,7 @@ namespace ContinuumNS
             int startYear = interpData.TS_Data[0].ThisDate.Year;
             int endYear = interpData.TS_Data[interpData.TS_Data.Length - 1].ThisDate.Year;
             int numYears = endYear - startYear + 1;
-
+            
             // Initialize arrays and populate years
             for (int i = 0; i < 12; i++)
             {
@@ -833,6 +832,7 @@ namespace ContinuumNS
                 return gotAllIndices;
 
             string[] MERRAfiles = Directory.GetFiles(MERRAfolder, "*.ascii");
+            MERRAfiles = MERRAfiles.Concat(Directory.GetFiles(MERRAfolder, "*.csv")).ToArray();
             string line;
 
             if (MERRAfiles == null)
@@ -950,6 +950,7 @@ namespace ContinuumNS
 
             // Grabbing filepaths for all MERRA data containing files
             string[] MERRAfiles = Directory.GetFiles(MERRAfolder, "*.ascii");
+            MERRAfiles = MERRAfiles.Concat(Directory.GetFiles(MERRAfolder, "*.csv")).ToArray();
             string line;
 
             if (MERRAfiles == null)
@@ -1003,12 +1004,12 @@ namespace ContinuumNS
 
             if ((lats.Length < 4 || longs.Length < 4) & numPerRC == 4) // 16 MERRA nodes
             {                               
-                MessageBox.Show("MERRA2 data range is too small. A minimum of four latitudes and four longitudes are needed if 16 MERRA nodes are used.", "Continuum 3");
+                MessageBox.Show("MERRA2 data range is too small. A minimum of four latitudes and four longitudes are needed if 16 MERRA nodes are used.", "Continuum Wind Energy Software");
                 return foundInds;
             }
             else if (lats.Length < 2 || longs.Length < 2)
             {
-                MessageBox.Show("MERRA2 data range is too small. A minimum of two latitudes and two longitudes are needed.", "Continuum 3");
+                MessageBox.Show("MERRA2 data range is too small. A minimum of two latitudes and two longitudes are needed.", "Continuum Wind Energy Software");
                 return foundInds;
             }
 
@@ -1259,11 +1260,11 @@ namespace ContinuumNS
                 {
                     avgU = avgU / sumDist;
                     avgV = avgV / sumDist;
-                    interpData.TS_Data[i].WS50m = Math.Sqrt(avgU * avgU + avgV * avgV);
-                    interpData.TS_Data[i].WD50m = 180 + 180 / Math.PI * Math.Atan2(avgU, avgV);
-                    interpData.TS_Data[i].Temp10m = avgTemp / sumDist;
-                    interpData.TS_Data[i].SeaPress = avgSeaLevelPress / sumDist;
-                    interpData.TS_Data[i].SurfPress = avgSurfPress / sumDist;
+                    interpData.TS_Data[i].WS50m = (float)Math.Sqrt(avgU * avgU + avgV * avgV);
+                    interpData.TS_Data[i].WD50m = (float)(180 + 180 / Math.PI * Math.Atan2(avgU, avgV));
+                    interpData.TS_Data[i].Temp10m = (float)(avgTemp / sumDist);
+                    interpData.TS_Data[i].SeaPress = (float)(avgSeaLevelPress / sumDist);
+                    interpData.TS_Data[i].SurfPress = (float)(avgSurfPress / sumDist);
                 }
             }
 

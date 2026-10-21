@@ -88,15 +88,15 @@ namespace ContinuumNS
             /// <summary> Time stamp </summary>
             public DateTime dateTime;
             /// <summary> Free-stream wind speed </summary>
-            public double freeStreamWS;
+            public float freeStreamWS;
             /// <summary> Waked wind speed </summary>
-            public double wakedWS;
+            public float wakedWS;
             /// <summary> Wind direction </summary>
-            public double WD;
+            public float WD;
             /// <summary> Gross energy production </summary>
-            public double grossEnergy;
+            public float grossEnergy;
             /// <summary> Net energy production </summary>
-            public double netEnergy;
+            public float netEnergy;
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2783,22 +2783,32 @@ namespace ContinuumNS
                 return thisTS;
 
             TimeSpan timeSpan = metLT_Ests[0].estWS[1].thisDate - metLT_Ests[0].estWS[0].thisDate;
-            timeInt = timeSpan.TotalHours;
-            DateTime dateTime = tsStart;
+            timeInt = timeSpan.TotalHours;         
             Met_Data_Filter metDataFilter = new Met_Data_Filter();
 
             // For each time interval and for each predicting met and each model (radius), get path of nodes and do wind speed estimate along nodes
             // Then combine wind speed estimates using weights to form average wind speed
 
+            // Cache Met objects so they don't have to be looked up for every time step
+            Met[] mets = new Met[numMets];
+
+            for (int m = 0; m < numMets; m++)
+                mets[m] = thisInst.metList.GetMet(metsUsed[m]);
+
+            // This value does not change with time
+            double overallPValue50 = thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+            int closestMetInd = metOrderByDist[0];
+
             List<int> integerList = Enumerable.Range(0, TS_Length).ToList();
             Parallel.ForEach(integerList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, i =>
-            {   
-                Met.TOD thisTOD = thisInst.metList.GetTOD(dateTime);
-                Met.Season season = thisInst.metList.GetSeason(dateTime);
+            {
+                DateTime thisDate = metLT_Ests[closestMetInd].estWS[i].thisDate;
+                Met.TOD thisTOD = thisInst.metList.GetTOD(thisDate);
+                Met.Season season = thisInst.metList.GetSeason(thisDate);
                 double thisAvg = 0;
                 double sumWeights = 0;
-                int closestMetInd = metOrderByDist[0];
-                double thisWD = metLT_Ests[closestMetInd].estWS[i].thisWD;
+                
+                float thisWD = metLT_Ests[closestMetInd].estWS[i].thisWD;
 
                 if (thisWD == 0 || thisWD == -999) // Check other mets for a valid WD
                 {
@@ -2814,7 +2824,7 @@ namespace ContinuumNS
                     if (thisWD == 0 || thisWD == -999) // No valid WD at any sites so set closestMetInd back to zero
                     {
                         closestMetInd = metOrderByDist[0];
-                        thisWD = metLT_Ests[metOrderByDist[closestMetInd]].estWS[i].thisWD;
+                        thisWD = metLT_Ests[closestMetInd].estWS[i].thisWD;
                     }
                 }
 
@@ -2826,7 +2836,7 @@ namespace ContinuumNS
                 // Find average wind speed estimate using all mets with a valid WS
                 for (int m = 0; m < numMets; m++)
                 {
-                    Met thisMet = thisInst.metList.GetMet(metsUsed[m]);
+                    Met thisMet = mets[m];
 
                     if (metLT_Ests[m].estWS[i].thisWS == 0 && metLT_Ests[m].estWS[i].thisWD == 0)
                         continue;
@@ -2852,10 +2862,10 @@ namespace ContinuumNS
 
                 thisTS[i].dateTime = metLT_Ests[closestMetInd].estWS[i].thisDate;
                 thisTS[i].WD = thisWD;
-                thisTS[i].freeStreamWS = thisAvg;
+                thisTS[i].freeStreamWS = (float)thisAvg;
 
                 if (powerCurve.name != null && thisAvg != -999)
-                    thisTS[i].grossEnergy = thisInst.turbineList.GetInterpPowerOrThrust(thisTS[i].freeStreamWS, powerCurve, "Power") * timeInt;
+                    thisTS[i].grossEnergy = (float)(thisInst.turbineList.GetInterpPowerOrThrust(thisTS[i].freeStreamWS, powerCurve, "Power") * timeInt);
                 else
                     thisTS[i].grossEnergy = -999;
 
@@ -2868,8 +2878,8 @@ namespace ContinuumNS
                             double[] wakedValues = thisInst.wakeModelList.CalcNetEnergyTimeSeries(wakeCoeffs, targetNode.UTMX, targetNode.UTMY, thisAvg, thisInst, wakeModel, thisTS[i].WD,
                                 thisTS[i].grossEnergy, timeInt);
 
-                            thisTS[i].wakedWS = wakedValues[0];
-                            thisTS[i].netEnergy = wakedValues[1] * thisInst.turbineList.exceed.GetOverallPValue_1yr(50);
+                            thisTS[i].wakedWS = (float)wakedValues[0];
+                            thisTS[i].netEnergy = (float)(wakedValues[1] * thisInst.turbineList.exceed.GetOverallPValue_1yr(50));
                         }
                         else
                         {
@@ -2877,9 +2887,7 @@ namespace ContinuumNS
                             thisTS[i].netEnergy = -999;
                         }
                     }
-                }
-
-                dateTime = dateTime.Add(timeSpan);
+                }                               
 
             });
           //  }
@@ -2888,9 +2896,9 @@ namespace ContinuumNS
         }
 
         /// <summary> Find last (or next) timestamp with a valid WD and use that </summary>        
-        public double GetLastOrNextWDForTimeSeriesModeling(MCP.Site_data[] estData, int i)
+        public float GetLastOrNextWDForTimeSeriesModeling(MCP.Site_data[] estData, int i)
         {
-            double thisWD = 0;   
+            float thisWD = 0;   
             int numStepsToLastValid = 0;
             int lastValidInd = i;
             int numStepsToNextValid = 0;
@@ -3355,6 +3363,9 @@ namespace ContinuumNS
         /// <summary> Returns true if model collection contains required models for specified number of time of day and seasonal bins. </summary>        
         public bool HaveRequiredModels(MetCollection metList)
         {
+            if (metList.ThisCount == 0)
+                return false;
+
             bool haveModels = false;
             
             if (metList.numTOD == 1 && metList.numSeason == 1)

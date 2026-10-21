@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using System.Windows.Media;
 using Python.Runtime;
 using System.Security.Permissions;
@@ -33,6 +34,8 @@ namespace ContinuumNS
 
         /// <summary> True if met data QC filters are applied to time series data.  </summary>
         public bool filteringEnabled;
+
+        public bool hasSD_data = false;
 
         /// <summary>   Wind speed units, mph (miles/hour) or mps (meters/sec). </summary>
         public string WS_units;
@@ -97,13 +100,13 @@ namespace ContinuumNS
             /// <summary>   Time stamp Date/Time. </summary>
             public DateTime timeStamp;
             /// <summary>   10-min minimum. </summary>
-            public double min;
+            public float min;
             /// <summary>   10-min maximum. </summary>
-            public double max;
+            public float max;
             /// <summary>   10-min average. </summary>
-            public double avg;
+            public float avg;
             /// <summary>   10-min wind speed standard deviation. </summary>
-            public double SD;
+            public float SD;
             /// <summary>   QC filter flag. </summary>
             public Filter_Flags filterFlag;
         }
@@ -116,13 +119,13 @@ namespace ContinuumNS
             /// <summary>   Time stamp Date/Time. </summary>
             public DateTime timeStamp;
             /// <summary>   Wind speed. </summary>
-            public double WS;
+            public float WS;
             /// <summary>   Wind direction. </summary>
-            public double WD;            
+            public float WD;            
             /// <summary> WS standard deviation from anem at height closest to (but not higher than) the extrapolated height. </summary>            
-            public double SD;
+            public float SD;
             /// <summary> Estimated shear alpha exponent </summary>
-            public double alpha;
+            public float alpha;
         }               
 
         
@@ -133,11 +136,11 @@ namespace ContinuumNS
             /// <summary>   Time stamp Date/Time. </summary>
             public DateTime timeStamp;
             /// <summary>   Average power law shear exponent alpha. </summary>
-            public double alpha;
+            public float alpha;
             /// <summary>   Wind direction of vane closest to modeled height. </summary>
-            public double WD;
+            public float WD;
             /// <summary>   Wind speed at modeled height. </summary>
-            public double WS;
+            public float WS;
         }
 
 
@@ -593,18 +596,18 @@ namespace ContinuumNS
         public struct Conc_WS_Data
         {
             /// <summary>   Wind speed at Anem A. </summary>
-            public double[] anemA_WS;
+            public float[] anemA_WS;
             /// <summary>   Wind speed at Anem B. </summary>
-            public double[] anemB_WS;
+            public float[] anemB_WS;
         }
         
         /// <summary> Holds wind speed ratios and wind direction data for scatterplot. </summary>
         public struct WS_Ratio_WD_Data
         {
             /// <summary>   Wind speed ratios. </summary>
-            public double[] WS_Ratio;
+            public float[] WS_Ratio;
             /// <summary>   Wind direction data. </summary>
-            public double[] WD;
+            public float[] WD;
         }
 
         
@@ -612,9 +615,9 @@ namespace ContinuumNS
         public struct WS_Ratio_WS_Data
         {
             /// <summary>   Wind speed ratios. </summary>
-            public double[] WS_Ratio;
+            public float[] WS_Ratio;
             /// <summary>   Wind speed data. </summary>
-            public double[] WS;
+            public float[] WS;
         }
 
         
@@ -626,9 +629,9 @@ namespace ContinuumNS
             /// <summary>   Timestamp when Maximum gust was measured. </summary>
             public DateTime timeStampMaxGust;
             /// <summary>   Max 10-minute wind speed. </summary>
-            public double maxWS;
+            public float maxWS;
             /// <summary>   Max 3-sec gust. </summary>
-            public double maxGust;
+            public float maxGust;
         }
 
         /// <summary> Settings to specify how to calculate shear exponent, alpha </summary>
@@ -725,6 +728,48 @@ namespace ContinuumNS
 
             return dataCount;
         }
+
+        /// <summary> Calculates and returns the number of months in the dataset. Used to determine whether the debias option is available. Allows a month if start date is within
+        /// five days of the month start or if end date is within five days of the month end. </summary>
+        /// <returns></returns>
+        public int GetNumMonths()
+        {
+            int numMonths = 0;
+            
+            if (GetNumAnems() > 0)
+            {
+                DateTime startMonth = new DateTime(allStartDate.Year, allStartDate.Month, 1);
+
+                if (allStartDate.Day > 5) // start month is next month if start date is more than 5 days into the month
+                    startMonth = startMonth.AddMonths(1);
+
+                DateTime endMonth = new DateTime(allEndDate.Year, allEndDate.Month, 1);
+                if (allEndDate.Day < DateTime.DaysInMonth(allEndDate.Year, allEndDate.Month) - 5) // end month is previous month if end date is more than 5 days before the end of the month
+                    endMonth = endMonth.AddMonths(-1);
+
+                numMonths = ((endMonth.Year - startMonth.Year) * 12) + endMonth.Month - startMonth.Month + 1;
+            }
+
+            return numMonths;
+        }
+
+        /// <summary> Finds and returns the start and end months for debias analysis. Allows for up to 5 days of flexibility at each end. </summary>        
+        public DateTime[] GetStartEndMonthsForDebias()
+        {
+            DateTime[] startEndMonths = new DateTime[2];
+            if (GetNumAnems() > 0)
+            {
+                DateTime startMonth = new DateTime(allStartDate.Year, allStartDate.Month, 1);
+                if (allStartDate.Day > 5) // start month is next month if start date is more than 5 days into the month
+                    startMonth = startMonth.AddMonths(1);
+                DateTime endMonth = new DateTime(allEndDate.Year, allEndDate.Month, 1);
+                if (allEndDate.Day < DateTime.DaysInMonth(allEndDate.Year, allEndDate.Month) - 5) // end month is previous month if end date is more than 5 days before the end of the month
+                    endMonth = endMonth.AddMonths(-1);
+                startEndMonths[0] = startMonth;
+                startEndMonths[1] = endMonth;
+            }
+            return startEndMonths;
+        }
                 
         /// <summary> Gets heights of anemometers. </summary>        
         public double[] GetHeightsOfAnems()
@@ -758,19 +803,19 @@ namespace ContinuumNS
                 {
                     if (anems[i].windData[j].filterFlag != Filter_Flags.missing)
                     {
-                        anems[i].windData[j].avg = anems[i].windData[j].avg * 0.44704;
-                        anems[i].windData[j].SD = anems[i].windData[j].SD * 0.44704;
-                        anems[i].windData[j].max = anems[i].windData[j].max * 0.44704;
-                        anems[i].windData[j].min = anems[i].windData[j].min * 0.44704;
+                        anems[i].windData[j].avg = (float)(anems[i].windData[j].avg * 0.44704);
+                        anems[i].windData[j].SD = (float)(anems[i].windData[j].SD * 0.44704);
+                        anems[i].windData[j].max = (float)(anems[i].windData[j].max * 0.44704);
+                        anems[i].windData[j].min = (float)(anems[i].windData[j].min * 0.44704);
                     }                    
                 }
             }
         }               
         
         /// <summary>   Calculates and returns average alpha in each WD sector for specified hourly interval. </summary>
-        public double[] GetAvgAlpha(int minHour, int maxHour, int numWD)
+        public float[] GetAvgAlpha(int minHour, int maxHour, int numWD)
         {            
-            double[] avgAlpha = new double[numWD];
+            float[] avgAlpha = new float[numWD];
             int[] Count_Alpha = new int[numWD];
 
       //      if (alpha.Length == 0) // This should never happen.  Alpha will be calculated at this point (if possible)
@@ -1582,9 +1627,9 @@ namespace ContinuumNS
         }
         
         /// <summary> Gets maximum wind speed at specified height and at a given timestamp. </summary>        
-        public double GetMaxWS_atHeight(double anemHeight, int TS_index)
-        {            
-            double thisMaxWS = 0;
+        public float GetMaxWS_atHeight(double anemHeight, int TS_index)
+        {
+            float thisMaxWS = 0;
 
             Anem_Data thisAnemA = new Anem_Data();
             Anem_Data thisAnemB = new Anem_Data();
@@ -1628,7 +1673,7 @@ namespace ContinuumNS
             return isInList;
         }
 
-        public bool HaveAnem_SD_Data(Anem_Data thisAnemData)
+      /*  public bool HaveAnem_SD_Data(Anem_Data thisAnemData)
         {
             // Returns true if dataset has SD data (if all == 0 then return false)
             bool gotSD_Data = false;
@@ -1645,7 +1690,7 @@ namespace ContinuumNS
 
             return gotSD_Data;
         }
-
+      */
         /// <summary> Quality check and filter data based on specified filtering flags ("All", "Min WS", "Icing", "Min WS SD", "Max WS SD", "Max WS Range", Tower Shadow") </summary>        
         public void FilterData(string[] filtersToApply)
         { 
@@ -1659,7 +1704,7 @@ namespace ContinuumNS
             {                                   
                 for (int j = 0; j < GetNumAnems(); j++)
                 {
-                    bool haveAnemSD = HaveAnem_SD_Data(anems[j]);
+              //      bool haveAnemSD = HaveAnem_SD_Data(anems[j]);
 
                     if ((anems[j].windData[i].filterFlag != Filter_Flags.missing) && (anems[j].windData[i].filterFlag != Filter_Flags.outsideRange))
                     {                        
@@ -1670,7 +1715,7 @@ namespace ContinuumNS
                             anems[j].windData[i].filterFlag = Filter_Flags.minWS;
                                                
                         // Icing filter
-                        if (haveAnemSD && (anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (GetNumTemps() > 0) && IsFilterInList(filtersToApply, "Icing"))
+                        if (hasSD_data && (anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (GetNumTemps() > 0) && IsFilterInList(filtersToApply, "Icing"))
                         {
                             // find a Valid temperature reading for icing filter
                             double validTemp = -999;
@@ -1684,11 +1729,11 @@ namespace ContinuumNS
                         }                                               
 
                         // min SD filter
-                        if (haveAnemSD && (anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].avg > 1) && (anems[j].windData[i].SD <= minSD_FiltSlope * anems[j].windData[i].avg) && IsFilterInList(filtersToApply, "Min WS SD"))
+                        if (hasSD_data && (anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].avg > 1) && (anems[j].windData[i].SD <= minSD_FiltSlope * anems[j].windData[i].avg) && IsFilterInList(filtersToApply, "Min WS SD"))
                             anems[j].windData[i].filterFlag = Filter_Flags.minAnemSD;                       
                                                                      
                         // max SD filter
-                        if (haveAnemSD && (anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].SD >= maxSD_FiltSlope * anems[j].windData[i].avg + maxSD_FiltInt) && IsFilterInList(filtersToApply, "Max WS SD"))
+                        if (hasSD_data && (anems[j].windData[i].filterFlag == Filter_Flags.Valid) && (anems[j].windData[i].SD >= maxSD_FiltSlope * anems[j].windData[i].avg + maxSD_FiltInt) && IsFilterInList(filtersToApply, "Max WS SD"))
                             anems[j].windData[i].filterFlag = Filter_Flags.maxAnemSD;                                       
                         
                         // max - min Range filter
@@ -2178,7 +2223,7 @@ namespace ContinuumNS
                     else
                         simData[simData.Length - 1].WS_WD_data[i].WD = -999;
 
-                    double[] avgWS = GetAvgValidByHeight(i, "Avg");
+                    float[] avgWS = GetAvgValidByHeight(i, "Avg");
                     simData[simData.Length - 1].WS_WD_data[i].WS = avgWS[0];
                 }
                 else
@@ -2191,8 +2236,8 @@ namespace ContinuumNS
                         if (haveExtrapHeight)
                             simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS;
                         else
-                            simData[simData.Length - 1].WS_WD_data[i].WS = alphaByAnem[heightInd].WS_WD_Alpha[i].WS *
-                                Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha);
+                            simData[simData.Length - 1].WS_WD_data[i].WS = (float)(alphaByAnem[heightInd].WS_WD_Alpha[i].WS *
+                                Math.Pow((thisHeight / alphaByAnem[heightInd].anemHeight), alphaByAnem[heightInd].WS_WD_Alpha[i].alpha));
 
                         // SD filter: SD must be less than WS / 3
                         if (alphaByAnem[heightInd].WS_WD_Alpha[i].SD < alphaByAnem[heightInd].WS_WD_Alpha[i].WS / 3 &&
@@ -2252,19 +2297,27 @@ namespace ContinuumNS
                 alphaByAnem[m].anemHeight = anemHeights[m];
             }
 
-            double thisAlpha = 0;
+            float thisAlpha = 0;
 
             if (shearSettings.minHeight == 0 && numHeights > 0)
             {
                 shearSettings.minHeight = anemHeights[0];
                 shearSettings.maxHeight = anemHeights[anemHeights.Length - 1];
+
+                if (shearSettings.minHeight > shearSettings.maxHeight)
+                {
+                    // Heights not sorted
+                    double tempMin = shearSettings.minHeight;
+                    shearSettings.minHeight = shearSettings.maxHeight;
+                    shearSettings.maxHeight = tempMin;
+                }
             }
 
             while (thisInd < GetDataLength()) // && anems[0].windData[thisInd].timeStamp <= endDate)
             {
                 // get average WS by height
-                double[] avgWS_ByH = GetAvgValidByHeight(thisInd, "avg");
-                double[] avgSD_ByH = GetAvgValidByHeight(thisInd, "SD");
+                float[] avgWS_ByH = GetAvgValidByHeight(thisInd, "avg");
+                float[] avgSD_ByH = GetAvgValidByHeight(thisInd, "SD");
 
                 // get average alpha
                 if (shearSettings.shearCalcType == ShearCalculationTypes.avgAllPairs)
@@ -2303,7 +2356,7 @@ namespace ContinuumNS
         }
         
         /// <summary> Gets average shear exponent alpha calculated between each pair of valid wind speed measurement heights. </summary>
-        public double GetAvgAlphaFromValidWS(double[] avgWS_ByH, double[] anemHeights)
+        public float GetAvgAlphaFromValidWS(float[] avgWS_ByH, double[] anemHeights)
         {
             double avgAlpha = 0;
             int numHeights = anemHeights.Length;
@@ -2327,12 +2380,12 @@ namespace ContinuumNS
             else
                 avgAlpha = -999;
 
-            return avgAlpha;
+            return (float)avgAlpha;
         }
 
         /// <summary> Calculates and returns best-fit shear alpha measured between min/max height  </summary>
         
-        public double CalcBestFitAlpha(double[] avgWS_ByH, double[] wsHeights)
+        public float CalcBestFitAlpha(float[] avgWS_ByH, double[] wsHeights)
         {
             double bestAlpha = 0;
 
@@ -2347,21 +2400,28 @@ namespace ContinuumNS
                     minInd = h;
                 if (wsHeights[h] == shearSettings.maxHeight)
                     maxInd = h;
-            }
+            }                        
 
             int numH_ToIncl = maxInd - minInd + 1;
+
+            if (numH_ToIncl < 0) // heights in decreasing order
+                numH_ToIncl = minInd - maxInd + 1;
+
             double[] logH = new double[numH_ToIncl];
             double[] logWS = new double[numH_ToIncl];
             int numValid = 0;
 
-            for (int h = minInd; h <= maxInd; h++)
+            for (int h = 0; h < numHeights; h++)
             {
                 if (avgWS_ByH[h] == 0 || avgWS_ByH[h] == -999)
                     continue;
 
-                logH[numValid] = Math.Log10(wsHeights[h]);
-                logWS[numValid] = Math.Log10(avgWS_ByH[h]);
-                numValid++;
+                if (wsHeights[h] >= shearSettings.minHeight && wsHeights[h] <= shearSettings.maxHeight)
+                {
+                    logH[numValid] = Math.Log10(wsHeights[h]);
+                    logWS[numValid] = Math.Log10(avgWS_ByH[h]);
+                    numValid++;
+                }
             }
 
             if (numValid < shearSettings.minNumHs)
@@ -2373,14 +2433,14 @@ namespace ContinuumNS
             Tuple<double,double> bestAlphaTuple = MathNet.Numerics.LinearRegression.SimpleRegression.Fit(logH, logWS);
             bestAlpha = bestAlphaTuple.Item2;
 
-            return bestAlpha;
+            return (float)bestAlpha;
         }
        
         /// <summary> Calculates and returns average valid wind speed or standard deviation at each wind speed measurement height at specified time series index. </summary>       
-        public double[] GetAvgValidByHeight(int dataInd, string avgOrSD)
+        public float[] GetAvgValidByHeight(int dataInd, string avgOrSD)
         {
             double[] anemHeights = GetHeightsOfAnems();
-            double[] avgVal = new double[anemHeights.Length];
+            float[] avgVal = new float[anemHeights.Length];
             int[] avgWS_Count = new int[anemHeights.Length];
 
             foreach (Anem_Data thisAnem in anems)
@@ -2837,6 +2897,15 @@ namespace ContinuumNS
         {
             NodeCollection nodeList = new NodeCollection();
             BinaryFormatter bin = new BinaryFormatter();
+            bin.Binder = new SerializeBinder();
+            // Set up legacy datatype conversion
+            SurrogateSelector selector = new SurrogateSelector();
+            StreamingContext streamContext = new StreamingContext(StreamingContextStates.All);
+
+            LegacyDataConverter surrogate = new LegacyDataConverter();
+
+            selector.AddSurrogate(typeof(data), streamContext, surrogate);
+            bin.SurrogateSelector = selector;
             string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
 
             // Get anemometer data
@@ -3073,6 +3142,7 @@ namespace ContinuumNS
         }
 
         
+
     }
          
 }

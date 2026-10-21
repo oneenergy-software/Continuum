@@ -193,9 +193,9 @@
             // btnFindBoundBox
             // 
             this.btnFindBoundBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFindBoundBox.Location = new System.Drawing.Point(25, 349);
+            this.btnFindBoundBox.Location = new System.Drawing.Point(25, 344);
             this.btnFindBoundBox.Name = "btnFindBoundBox";
-            this.btnFindBoundBox.Size = new System.Drawing.Size(131, 38);
+            this.btnFindBoundBox.Size = new System.Drawing.Size(131, 55);
             this.btnFindBoundBox.TabIndex = 14;
             this.btnFindBoundBox.Text = "Find Bounding Box around Mets && Turbines";
             this.btnFindBoundBox.UseVisualStyleBackColor = true;

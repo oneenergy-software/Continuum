@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewTurbine));
-            this.Label1 = new System.Windows.Forms.Label();
-            this.txtStrNum = new System.Windows.Forms.TextBox();
             this.lblUTMY = new System.Windows.Forms.Label();
             this.txtUTMY = new System.Windows.Forms.TextBox();
             this.lblUTMX = new System.Windows.Forms.Label();
@@ -40,24 +38,6 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // Label1
-            // 
-            this.Label1.AutoSize = true;
-            this.Label1.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Label1.Location = new System.Drawing.Point(17, 102);
-            this.Label1.Name = "Label1";
-            this.Label1.Size = new System.Drawing.Size(61, 18);
-            this.Label1.TabIndex = 19;
-            this.Label1.Text = "String # :";
-            // 
-            // txtStrNum
-            // 
-            this.txtStrNum.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtStrNum.Location = new System.Drawing.Point(79, 99);
-            this.txtStrNum.Name = "txtStrNum";
-            this.txtStrNum.Size = new System.Drawing.Size(48, 25);
-            this.txtStrNum.TabIndex = 18;
             // 
             // lblUTMY
             // 
@@ -116,7 +96,7 @@
             // btnCancel
             // 
             this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(253, 91);
+            this.btnCancel.Location = new System.Drawing.Point(252, 56);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(97, 37);
             this.btnCancel.TabIndex = 11;
@@ -127,7 +107,7 @@
             // btnOK
             // 
             this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOK.Location = new System.Drawing.Point(253, 47);
+            this.btnOK.Location = new System.Drawing.Point(252, 12);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(97, 38);
             this.btnOK.TabIndex = 10;
@@ -139,9 +119,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(361, 142);
-            this.Controls.Add(this.Label1);
-            this.Controls.Add(this.txtStrNum);
+            this.ClientSize = new System.Drawing.Size(361, 113);
             this.Controls.Add(this.lblUTMY);
             this.Controls.Add(this.txtUTMY);
             this.Controls.Add(this.lblUTMX);
@@ -158,9 +136,6 @@
         }
 
         #endregion
-
-        internal System.Windows.Forms.Label Label1;
-        internal System.Windows.Forms.TextBox txtStrNum;
         internal System.Windows.Forms.Label lblUTMY;
         internal System.Windows.Forms.TextBox txtUTMY;
         internal System.Windows.Forms.Label lblUTMX;

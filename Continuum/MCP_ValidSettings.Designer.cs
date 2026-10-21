@@ -65,6 +65,7 @@
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
+            this.listView1.HideSelection = false;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1,
             listViewItem2,
@@ -97,7 +98,7 @@
             // 
             this.btnClose.Location = new System.Drawing.Point(239, 175);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(75, 23);
+            this.btnClose.Size = new System.Drawing.Size(75, 36);
             this.btnClose.TabIndex = 284;
             this.btnClose.Text = "Close";
             this.btnClose.UseVisualStyleBackColor = true;
@@ -107,7 +108,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(326, 214);
+            this.ClientSize = new System.Drawing.Size(326, 223);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.label141);

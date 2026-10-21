@@ -17,6 +17,7 @@ namespace ContinuumNS
         public FilterFlagLegend(Continuum thisInst)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             txtOutsideRange.BackColor = thisInst.updateThe.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.outsideRange);
             txtMissing.BackColor = thisInst.updateThe.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.missing);
             txtMinAnemSD.BackColor = thisInst.updateThe.GetFilterFlagColor(Met_Data_Filter.Filter_Flags.minAnemSD);

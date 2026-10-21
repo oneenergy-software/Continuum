@@ -36,16 +36,17 @@
             this.btn_AddMode = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.lstModes = new System.Windows.Forms.ListView();
-            this.Mean = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.StDev = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Weight = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_EditMode = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtExceed = new System.Windows.Forms.TextBox();
             this.btnImportCDF = new System.Windows.Forms.Button();
             this.ofdImportCFD = new System.Windows.Forms.OpenFileDialog();
             this.plotExceed = new OxyPlot.WindowsForms.PlotView();
+            this.dataModes = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.dataModes)).BeginInit();
             this.SuspendLayout();
             // 
             // label2
@@ -66,6 +67,7 @@
             this.txt_LowerBound.Name = "txt_LowerBound";
             this.txt_LowerBound.Size = new System.Drawing.Size(116, 29);
             this.txt_LowerBound.TabIndex = 3;
+            this.txt_LowerBound.TextChanged += new System.EventHandler(this.txt_LowerBound_TextChanged);
             // 
             // txt_UpperBound
             // 
@@ -75,6 +77,7 @@
             this.txt_UpperBound.Name = "txt_UpperBound";
             this.txt_UpperBound.Size = new System.Drawing.Size(116, 29);
             this.txt_UpperBound.TabIndex = 5;
+            this.txt_UpperBound.TextChanged += new System.EventHandler(this.txt_UpperBound_TextChanged);
             // 
             // label3
             // 
@@ -89,7 +92,7 @@
             // btn_AddMode
             // 
             this.btn_AddMode.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_AddMode.Location = new System.Drawing.Point(565, 215);
+            this.btn_AddMode.Location = new System.Drawing.Point(565, 236);
             this.btn_AddMode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btn_AddMode.Name = "btn_AddMode";
             this.btn_AddMode.Size = new System.Drawing.Size(115, 44);
@@ -101,7 +104,7 @@
             // btnOK
             // 
             this.btnOK.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOK.Location = new System.Drawing.Point(565, 427);
+            this.btnOK.Location = new System.Drawing.Point(565, 444);
             this.btnOK.Margin = new System.Windows.Forms.Padding(2);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(119, 46);
@@ -113,7 +116,7 @@
             // btnCancel
             // 
             this.btnCancel.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(565, 492);
+            this.btnCancel.Location = new System.Drawing.Point(565, 512);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(119, 46);
@@ -122,41 +125,10 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // lstModes
-            // 
-            this.lstModes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Mean,
-            this.StDev,
-            this.Weight});
-            this.lstModes.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstModes.HideSelection = false;
-            this.lstModes.Location = new System.Drawing.Point(345, 69);
-            this.lstModes.Margin = new System.Windows.Forms.Padding(2);
-            this.lstModes.Name = "lstModes";
-            this.lstModes.Size = new System.Drawing.Size(328, 128);
-            this.lstModes.TabIndex = 11;
-            this.lstModes.UseCompatibleStateImageBehavior = false;
-            this.lstModes.View = System.Windows.Forms.View.Details;
-            // 
-            // Mean
-            // 
-            this.Mean.Text = "Mean";
-            this.Mean.Width = 127;
-            // 
-            // StDev
-            // 
-            this.StDev.Text = "St. Dev.";
-            this.StDev.Width = 148;
-            // 
-            // Weight
-            // 
-            this.Weight.Text = "Weight";
-            this.Weight.Width = 95;
-            // 
             // btn_EditMode
             // 
             this.btn_EditMode.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_EditMode.Location = new System.Drawing.Point(565, 281);
+            this.btn_EditMode.Location = new System.Drawing.Point(565, 302);
             this.btn_EditMode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btn_EditMode.Name = "btn_EditMode";
             this.btn_EditMode.Size = new System.Drawing.Size(115, 44);
@@ -182,13 +154,13 @@
             this.txtExceed.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtExceed.Name = "txtExceed";
             this.txtExceed.ReadOnly = true;
-            this.txtExceed.Size = new System.Drawing.Size(272, 29);
+            this.txtExceed.Size = new System.Drawing.Size(533, 29);
             this.txtExceed.TabIndex = 15;
             // 
             // btnImportCDF
             // 
             this.btnImportCDF.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnImportCDF.Location = new System.Drawing.Point(565, 346);
+            this.btnImportCDF.Location = new System.Drawing.Point(565, 368);
             this.btnImportCDF.Margin = new System.Windows.Forms.Padding(2);
             this.btnImportCDF.Name = "btnImportCDF";
             this.btnImportCDF.Size = new System.Drawing.Size(119, 54);
@@ -214,17 +186,52 @@
             this.plotExceed.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotExceed.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
             // 
+            // dataModes
+            // 
+            this.dataModes.AllowUserToAddRows = false;
+            this.dataModes.AllowUserToDeleteRows = false;
+            this.dataModes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataModes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3});
+            this.dataModes.Location = new System.Drawing.Point(376, 69);
+            this.dataModes.Name = "dataModes";
+            this.dataModes.ReadOnly = true;
+            this.dataModes.RowHeadersVisible = false;
+            this.dataModes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataModes.Size = new System.Drawing.Size(303, 137);
+            this.dataModes.TabIndex = 239;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Mean";
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "St. Dev.";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Weight";
+            this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
+            // 
             // Add_Exceedance
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(714, 590);
+            this.Controls.Add(this.dataModes);
             this.Controls.Add(this.plotExceed);
             this.Controls.Add(this.btnImportCDF);
             this.Controls.Add(this.txtExceed);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_EditMode);
-            this.Controls.Add(this.lstModes);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btn_AddMode);
@@ -237,6 +244,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Add_Exceedance";
             this.Text = "Defining Exceedance Distribution";
+            ((System.ComponentModel.ISupportInitialize)(this.dataModes)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -249,17 +257,17 @@
         private System.Windows.Forms.Button btn_AddMode;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.ColumnHeader Mean;
-        private System.Windows.Forms.ColumnHeader StDev;
-        private System.Windows.Forms.ColumnHeader Weight;
         private System.Windows.Forms.Button btn_EditMode;
         public System.Windows.Forms.TextBox txt_LowerBound;
         public System.Windows.Forms.TextBox txt_UpperBound;
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.TextBox txtExceed;
-        public System.Windows.Forms.ListView lstModes;        
         private System.Windows.Forms.Button btnImportCDF;
         private System.Windows.Forms.OpenFileDialog ofdImportCFD;
         public OxyPlot.WindowsForms.PlotView plotExceed;
+        public System.Windows.Forms.DataGridView dataModes;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
     }
 }

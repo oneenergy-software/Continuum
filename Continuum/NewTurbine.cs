@@ -12,6 +12,7 @@ namespace ContinuumNS
         public NewTurbine(Continuum continuum)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             thisInst = continuum;
         }
 
@@ -37,7 +38,7 @@ namespace ContinuumNS
             }
             catch 
             {
-                MessageBox.Show("Invalid entry for turbine name", "Continuum 3");
+                MessageBox.Show("Invalid entry for turbine name", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -47,7 +48,7 @@ namespace ContinuumNS
             }
             catch 
             {
-                MessageBox.Show("Invalid entry for easting", "Continuum 3");
+                MessageBox.Show("Invalid entry for easting", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -57,28 +58,21 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid entry for northing", "Continuum 3");
+                MessageBox.Show("Invalid entry for northing", "Continuum Wind Energy Software");
                 return;
             }
 
-            try
-            {
-                stringNum = Convert.ToInt16(txtStrNum.Text);
-            }
-            catch 
-            {
-                stringNum = 0;
-            }
+           
 
             if (name == "" || UTMX == 0 || UTMY == 0)
             {
-                MessageBox.Show("Need valid entries for all fields", "Continuum 3");
+                MessageBox.Show("Need valid entries for all fields", "Continuum Wind Energy Software");
                 return;
             }
             else
             {
                 inputTurbine = check.NewTurbOrMet(thisInst.topo, name, UTMX, UTMY, true);
-                if (inputTurbine == true) thisInst.turbineList.AddTurbine(name, UTMX, UTMY, stringNum);
+                if (inputTurbine == true) thisInst.turbineList.AddTurbine(name, UTMX, UTMY);
                 
                 thisInst.updateThe.AllTABs();                    
                 thisInst.ChangesMade();

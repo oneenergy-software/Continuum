@@ -4,9 +4,11 @@ using Microsoft.VisualBasic;
 using NLog.LayoutRenderers;
 using Python;
 using Python.Runtime;
+using SharpCompress.Compressors.Xz;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -19,6 +21,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using static ContinuumNS.Met_Data_Filter;
 
 namespace ContinuumNS
 {
@@ -48,6 +51,7 @@ namespace ContinuumNS
         public BackgroundWork()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);            
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +62,9 @@ namespace ContinuumNS
             /// <summary> Continuum instance </summary>
             public Continuum thisInst;
             /// <summary> File to be imported </summary>
-            public string Filename;            
+            public string Filename;
+            /// <summary> Power curve to use (in ice throw model) </summary>
+            public TurbineCollection.PowerCurve selPowerCurve;
         }
 
         /// <summary> Struct containg info needed to create WRG file </summary>
@@ -168,8 +174,9 @@ namespace ContinuumNS
         public struct Vars_for_MetTS_Import
         {
             public Continuum thisInst;
+            public DataTable table;
             public List<DataGridViewColumn> cols;
-            public List<DataGridViewRow> rows;
+            public Met_Data_Filter.Filter_Flags[,] filterFlags;
             public string progBarString;
             public bool isTest;
         }
@@ -280,7 +287,7 @@ namespace ContinuumNS
             {
                 if (numPairs > 0)
                     Keep_Imported = (int)MessageBox.Show("Model coefficients have been imported for this analysis. Do you wish to keep this model or create a new site-calibrated model" +
-                        " with the mets being imported? Click Yes to keep imported model. Click No to delete imported model and create site-calibrated model.", "Continuum 3", MessageBoxButtons.YesNo);
+                        " with the mets being imported? Click Yes to keep imported model. Click No to delete imported model and create site-calibrated model.", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
 
                 if (Keep_Imported == (int)DialogResult.No)
                     modelList.ClearImported();
@@ -365,7 +372,7 @@ namespace ContinuumNS
             BringToFront();
             string textForLabel = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = textForLabel;
             Refresh();
         }
@@ -520,7 +527,7 @@ namespace ContinuumNS
             else
                 progbar.Value = 100;
 
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             Refresh();
         }
@@ -744,7 +751,7 @@ namespace ContinuumNS
             else
                 progbar.Value = 100;
 
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             Refresh();
         }
@@ -1057,7 +1064,7 @@ namespace ContinuumNS
             else
                 progbar.Value = 100;
 
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             Refresh();
         }
@@ -1350,7 +1357,7 @@ namespace ContinuumNS
             // Updates the Turbine Calcs progress bar
             string Text_for_label = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             BringToFront();
             Refresh();
@@ -1464,7 +1471,9 @@ namespace ContinuumNS
                     counter++;
                 }            
                     
-            Parallel.For(0, numMapNodes, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, (i, loopState) => 
+            // 8/24/26: Updated exposure calc to use parallel processing so changing DoMapCalcs to use normal for loop
+     //       Parallel.For(0, numMapNodes, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, (i, loopState) => 
+            for (int i = 0; i < numMapNodes; i++)
             { 
                 if (BackgroundWorker_Map.CancellationPending == true)
                {                                              
@@ -1650,7 +1659,8 @@ namespace ContinuumNS
                             thisMap.sectorParamToMap[xInd, yInd, WD] = thisMapNode.sectorWS[WD];
                     }
                 }
-            });                         
+         //   });
+            }
                     
             thisMap.isComplete = true;
             if (thisMap.isWaked)
@@ -1667,7 +1677,7 @@ namespace ContinuumNS
             BringToFront();
             string Text_for_label = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             Refresh();
         }
@@ -1680,7 +1690,7 @@ namespace ContinuumNS
             if (thisInst.IsDisposed == false)
             {
                 thisInst.updateThe.MapsTAB();
-                thisInst.updateThe.NetTurbineEstsTAB();
+                thisInst.updateThe.NetTurbineEstsTAB(thisInst.dataWakeModels.SelectedRows.Count > 0 ? thisInst.dataWakeModels.SelectedRows[0].Index : 0);
 
                 thisInst.SaveFile();
             }
@@ -1771,7 +1781,7 @@ namespace ContinuumNS
             // Updates the Round Robin progress bar
             string Text_for_label = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             Refresh();
         }
@@ -3433,7 +3443,7 @@ namespace ContinuumNS
             else
                 progbar.Value = 100;
 
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             Refresh();
         }
@@ -3556,7 +3566,7 @@ namespace ContinuumNS
             else
                 progbar.Value = 100;
 
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             BringToFront();
             Refresh();
@@ -3620,7 +3630,7 @@ namespace ContinuumNS
             }
             else
             {
-                MessageBox.Show("No maps defined.", "Continuum 3");
+                MessageBox.Show("No maps defined.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -3781,7 +3791,7 @@ namespace ContinuumNS
             else
                 progbar.Value = 100;
 
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             Refresh();
         }
@@ -3801,79 +3811,79 @@ namespace ContinuumNS
 
             if (BackgroundWorker_Map.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel this map generation?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel this map generation?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_Map.CancelAsync();
             }
             else if (BackgroundWorker_TurbCalcs.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the turbine estimate calculations?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the turbine estimate calculations?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_TurbCalcs.CancelAsync();
             }
             else if (BackgroundWorker_RoundRobin.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the round robin uncertainty analysis?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the round robin uncertainty analysis?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_RoundRobin.CancelAsync();
             }
             else if (BackgroundWorker_MetCalcs.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel this met exposure and statistics calculation?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel this met exposure and statistics calculation?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_MetCalcs.CancelAsync();
             }
             else if (BackgroundWorker_Topo.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the topo data import?  All data loaded in so far will be removed from database.", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the topo data import?  All data loaded in so far will be removed from database.", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_Topo.CancelAsync();
             }
             else if (BackgroundWorker_WAsP_Map.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the roughness data import?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the roughness data import?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_WAsP_Map.CancelAsync();
             }
             else if (BackgroundWorker_RefDataExtract.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 data import?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 data import?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_RefDataExtract.CancelAsync();
             }
             else if (BackgroundWorker_Shadow.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the shadow flicker calculations?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the shadow flicker calculations?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_Shadow.CancelAsync();
             }
             else if (BackgroundWorker_IceThrow.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the ice throw model calculations?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the ice throw model calculations?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_IceThrow.CancelAsync();
             }
             else if (BackgroundWorker_Exceed.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the Monte Carlo model calculations?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the Monte Carlo model calculations?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_Exceed.CancelAsync();
             }
             else if (BackgroundWorker_LandCover.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the land cover / surface roughness import?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the land cover / surface roughness import?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_LandCover.CancelAsync();
             }
             else if (BackgroundWorker_MERRADownload.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 download?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the MERRA2 download?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_MERRADownload.CancelAsync();
             }
             else if (BackgroundWorker_ERA5Download.IsBusy == true)
             {
-                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the ERA5 download?", "Continuum 3", MessageBoxButtons.YesNo);
+                DialogResult Yes_or_no = MessageBox.Show("Are you sure that you want to cancel the ERA5 download?", "Continuum Wind Energy Software", MessageBoxButtons.YesNo);
                 if (Yes_or_no == DialogResult.Yes)
                     BackgroundWorker_ERA5Download.CancelAsync();
             }
@@ -3932,7 +3942,10 @@ namespace ContinuumNS
             string[] refDataFiles = new string[0];
 
             if (thisRef.refDataDownload.refType == "MERRA2")
+            {
                 refDataFiles = Directory.GetFiles(thisRef.refDataDownload.folderLocation, "*.ascii");
+                refDataFiles = refDataFiles.Concat(Directory.GetFiles(thisRef.refDataDownload.folderLocation, "*.csv")).ToArray();
+            }
             else
                 refDataFiles = Directory.GetFiles(thisRef.refDataDownload.folderLocation, "*.nc"); // NetCDF files
 
@@ -4010,20 +4023,28 @@ namespace ContinuumNS
                         string thisFile = refDataFiles[i];
                         int lastSlash = thisFile.LastIndexOf("\\");
                         string fileNameOnly = thisFile.Substring(lastSlash + 1, thisFile.Length - lastSlash - 1);
+                        int dateInd = fileNameOnly.IndexOf("tavg1_2d_slv_Nx.");
+                        string thisDateString = fileNameOnly.Substring(dateInd + 16, 8);
 
                         if (fileNameOnly.Contains("Cloud"))
                             continue;
 
-                        if (thisFile.Substring(thisFile.Length - 18, 8) == datestring)
+                        if (thisDateString == datestring)
                         {                           
                             string[] lines = File.ReadAllLines(thisFile);
-                            bool isNewFormat = lines.Any(x => x.Contains(".time=") && x.Contains(".lat="));
+                            bool isNewFormat = false; //  lines.Any(x => x.Contains(".time=") && x.Contains(".lat=")); 
+                            DateTime dateDownloaded = File.GetCreationTime(thisFile);
+                            if (dateDownloaded > new DateTime(2026, 8, 19))
+                                isNewFormat = true;
 
                             if (isNewFormat)
                             {                                
-                                Dictionary<int, int> lonIndexMap = new Dictionary<int, int>();
+                                Dictionary<int, int> lonIndexMap = new Dictionary<int, int>(); // Longitude index, Node index
+                                Dictionary<int, int> latIndexMap = new Dictionary<int, int>(); // Latitude index, Node index
+                                bool gotLonIndex = false;
+                                bool gotLatIndex = false;
 
-                                // Read longitude row                           
+                                // Read latitude and longitude values and populate node XY indices                           
                                 for (int lineIdx = 0; lineIdx < lines.Length; lineIdx++)
                                 {
                                     string line = lines[lineIdx];
@@ -4037,12 +4058,30 @@ namespace ContinuumNS
                                             // Match node X indices / lon values
                                             for (int n = 0; n < nodesToPull.Length; n++)
                                                 if (Math.Abs(nodesToPull[n].Coords.longitude - lonVal) < 0.001)
-                                                    lonIndexMap[p - 1] = n;
+                                                    nodesToPull[n].XY_ind.X_ind = p - 1;
                                         }
-                                        break;
+                                        gotLonIndex = true;
                                     }
-                                }
 
+                                    if (line.StartsWith("lat,"))
+                                    {
+                                        string[] parts = line.Split(',');
+
+                                        for (int p = 1; p < parts.Length; p++)
+                                        {
+                                            double latVal = Convert.ToDouble(parts[p].Trim());
+                                            // Match node Y indices / lat values
+                                            for (int n = 0; n < nodesToPull.Length; n++)
+                                                if (Math.Abs(nodesToPull[n].Coords.latitude - latVal) < 0.001)
+                                                    nodesToPull[n].XY_ind.Y_ind = p - 1;
+                                        }
+                                        gotLatIndex = true;
+                                        
+                                    }
+                                       
+                                    if (gotLonIndex && gotLatIndex)
+                                        break;
+                                }
 
                                 // Read all data rows                           
                                 foreach (string line in lines)
@@ -4077,30 +4116,61 @@ namespace ContinuumNS
                                     else
                                         continue;
 
-                                    // Parse time                               
-                                    int timeStart = label.IndexOf(".time=") + 6;
+                                    // Parse hour (in first set of square brackets)                               
+                                    int timeStart = label.IndexOf("[");
                                     int timeEnd = label.IndexOf("]", timeStart);
+                                    string hrStr = label.Substring(timeStart + 1, timeEnd - timeStart - 1);
+                                    int hour = Convert.ToInt32(hrStr);
+                                    
+                                    // Parse latitude index (second set of square brackets)                                
+                                    int latStart = label.IndexOf("][") + 2;
+                                    int latEnd = label.LastIndexOf("]");
+                                    string latStr = label.Substring(latStart, latEnd - latStart);
+                                    double latVal = Convert.ToDouble(latStr);
+                                    int latInd = Convert.ToInt32(latStr);
 
-                                    int minutes = Convert.ToInt32(label.Substring(timeStart, timeEnd - timeStart));
-                                    int hour = minutes / 60;
+                                    // See if any of the nodes to pull need this latInd
+                                    bool needThisLat = false;
+                                    for (int n = 0; n < nodesToPull.Length; n++)
+                                    {
+                                        if (nodesToPull[n].XY_ind.Y_ind == latInd)
+                                        {
+                                            needThisLat = true;
+                                            break;
+                                        }
+                                    }
 
-                                    // Parse latitude                                
-                                    int latStart = label.IndexOf(".lat=") + 5;
-                                    int latEnd = label.IndexOf("]", latStart);
-                                    double latVal = Convert.ToDouble(label.Substring(latStart, latEnd - latStart));
+                                    if (!needThisLat)
+                                        continue;
 
                                     // Loop through longitude values                               
                                     for (int col = 1; col < parts.Length; col++)
                                     {
-                                        if (!lonIndexMap.ContainsKey(col - 1))
+                                        // See if any of the nodes to pull need this longInd
+                                        bool needThisLon = false;
+                                        for (int n = 0; n < nodesToPull.Length; n++)
+                                        {
+                                            if (nodesToPull[n].XY_ind.X_ind == col - 1)
+                                            {
+                                                needThisLon = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!needThisLon)
                                             continue;
 
-                                        int nodeIndex = lonIndexMap[col - 1];
-
-                                        // Check latitude match
-                                        if (Math.Abs(nodesToPull[nodeIndex].Coords.latitude - latVal) > 0.001)
-                                            continue;
-
+                                        // Find node index corresponding to this latitude and longitude values
+                                        int nodeIndex = 0;
+                                        for (int n = 0; n < nodesToPull.Length; n++)
+                                        {
+                                            if (nodesToPull[n].XY_ind.X_ind == col - 1 && nodesToPull[n].XY_ind.Y_ind == latInd)
+                                            {
+                                                nodeIndex = n;
+                                                break;
+                                            }
+                                        }
+                                       
                                         float value = Convert.ToSingle(parts[col].Trim());
                                         int thisInd = lastInd + hour;
 
@@ -4262,7 +4332,7 @@ namespace ContinuumNS
                 for (int f = 0; f < refDataFiles.Length; f++)
                 {
                     
-                    DataSet thisDataFile = DataSet.Open(refDataFiles[f]);
+                    Microsoft.Research.Science.Data.DataSet thisDataFile = Microsoft.Research.Science.Data.DataSet.Open(refDataFiles[f]);
                     Variable[] allVars = thisDataFile.Variables.ToArray();
 
                     Single[] allLats = thisDataFile.GetData<Single[]>("latitude");
@@ -4314,7 +4384,7 @@ namespace ContinuumNS
                                         continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
-                                        nodesToPull[n].Data[tsInd].surfPress = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                        nodesToPull[n].Data[tsInd].surfPress = (float)(addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind]);
                                 }
                             }
                             else if (allVars[v].Name == "t2m")
@@ -4329,7 +4399,7 @@ namespace ContinuumNS
                                         continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
-                                        nodesToPull[n].Data[tsInd].temperature = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                        nodesToPull[n].Data[tsInd].temperature = (float)(addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind]);
                                 }
                             }
                             else if (allVars[v].Name == "u100")
@@ -4344,7 +4414,7 @@ namespace ContinuumNS
                                         continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
-                                        nodeEastNorthWS[n].U_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                        nodeEastNorthWS[n].U_WS[tsInd] =  (float)(addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind]);
                                 }
                             }
                             else if (allVars[v].Name == "v100")
@@ -4359,7 +4429,7 @@ namespace ContinuumNS
                                         continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
-                                        nodeEastNorthWS[n].V_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                        nodeEastNorthWS[n].V_WS[tsInd] = (float)(addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind]);
                                 }
                             }
                             else if (allVars[v].Name == "u10" && thisRef.refDataDownload.incl10mWS)
@@ -4374,7 +4444,7 @@ namespace ContinuumNS
                                         continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
-                                        nodeEastNorthWS10[n].U_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                        nodeEastNorthWS10[n].U_WS[tsInd] = (float)(addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind]);
                                 }
                             }
                             else if (allVars[v].Name == "v10" && thisRef.refDataDownload.incl10mWS)
@@ -4389,7 +4459,7 @@ namespace ContinuumNS
                                         continue;
 
                                     for (int n = 0; n < nodesToPull.Length; n++)
-                                        nodeEastNorthWS10[n].V_WS[tsInd] = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                        nodeEastNorthWS10[n].V_WS[tsInd] = (float)(addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind]);
                                 }
                             }
                             else if (allVars[v].Name == "fg10" && thisRef.refDataDownload.incl10mGust) // to do: get name of gust param in netCDF
@@ -4404,7 +4474,7 @@ namespace ContinuumNS
                                         continue;
                                                                         
                                     for (int n = 0; n < nodesToPull.Length; n++)
-                                        nodesToPull[n].Data[tsInd].gustWS = addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind];
+                                        nodesToPull[n].Data[tsInd].gustWS = (float)(addOffset + scaleFactor * currentVar[t, nodesToPull[n].XY_ind.X_ind, nodesToPull[n].XY_ind.Y_ind]);
 
                                 }
                             }
@@ -4420,7 +4490,7 @@ namespace ContinuumNS
 
             if (startTime < nodesToPull[0].Data[startInd].thisDate)
             {
-                MessageBox.Show("Available MERRA2 data does not cover desired date range.", "Continuum 3");
+                MessageBox.Show("Available MERRA2 data does not cover desired date range.", "Continuum Wind Energy Software");
                 //      if (thisMet != null)
                 //          thisMet.CalcAllMeas_WSWD_Dists(thisInst, thisMet.metData.GetSimulatedTimeSeries(thisInst.modeledHeight));
                 e.Result = thisInst;
@@ -4440,8 +4510,8 @@ namespace ContinuumNS
                 nodesToPull[i].Data = croppedData;
 
                 Reference.East_North_WSs[] croppedEastNorth = new Reference.East_North_WSs[1];
-                croppedEastNorth[0].U_WS = new double[endInd - startInd + 1];
-                croppedEastNorth[0].V_WS = new double[endInd - startInd + 1];
+                croppedEastNorth[0].U_WS = new float[endInd - startInd + 1];
+                croppedEastNorth[0].V_WS = new float[endInd - startInd + 1];
 
                 Array.Copy(nodeEastNorthWS[i].U_WS, startInd, croppedEastNorth[0].U_WS, 0, endInd - startInd + 1);
                 nodeEastNorthWS[i].U_WS = croppedEastNorth[0].U_WS;
@@ -4458,8 +4528,8 @@ namespace ContinuumNS
                     nodesToPull10[i].Data = croppedData10;
 
                     Reference.East_North_WSs[] croppedEastNorth10 = new Reference.East_North_WSs[1];
-                    croppedEastNorth10[0].U_WS = new double[endInd - startInd + 1];
-                    croppedEastNorth10[0].V_WS = new double[endInd - startInd + 1];
+                    croppedEastNorth10[0].U_WS = new float[endInd - startInd + 1];
+                    croppedEastNorth10[0].V_WS = new float[endInd - startInd + 1];
 
                     Array.Copy(nodeEastNorthWS10[i].U_WS, startInd, croppedEastNorth10[0].U_WS, 0, endInd - startInd + 1);
                     nodeEastNorthWS10[i].U_WS = croppedEastNorth10[0].U_WS;
@@ -4507,8 +4577,8 @@ namespace ContinuumNS
                         thisRef.tenM_Data.interpData.TS_Data[t].gustWS = nodesToPull[n].Data[t].gustWS;
             }
 
-            thisRef.Calc_MonthProdStats(thisInst.UTM_conversions);
-            thisRef.CalcAnnualProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, thisInst.UTM_conversions);
+            thisRef.Calc_MonthWSAndProdStats(thisInst.UTM_conversions);
+            thisRef.CalcAnnualWSAndProd(ref thisRef.interpData.annualProd, thisRef.interpData.monthlyProd, thisInst.UTM_conversions);
 
             // Runs MCP at met sites if MCP_type not null.  Taking this out... let users define as many reference sites as they want and then run MCP on MCP tab
             /*     if (theArgs.MCP_type != null && theArgs.thisMet.name != null)
@@ -4556,7 +4626,7 @@ namespace ContinuumNS
                 progBarVal = 100;
 
             progbar.Value = progBarVal;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = textForLabel;
             Refresh();
         }
@@ -4577,7 +4647,7 @@ namespace ContinuumNS
             Continuum thisInst = theArgs.thisInst;
 
             Met_Data_Filter metDataFilter = new Met_Data_Filter();
-            TurbineCollection.PowerCurve powerCurve = thisInst.GetSelectedPowerCurve("Site Suitability");
+            TurbineCollection.PowerCurve powerCurve = theArgs.selPowerCurve;
 
             SiteSuitability siteSuit = thisInst.siteSuitability;
 
@@ -4696,7 +4766,7 @@ namespace ContinuumNS
             BringToFront();
             string textForLabel = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = textForLabel;
             Refresh();
         }
@@ -4864,7 +4934,7 @@ namespace ContinuumNS
             BringToFront();
             string textForLabel = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = textForLabel;
             Refresh();
         }
@@ -4918,9 +4988,7 @@ namespace ContinuumNS
                 double[] totalPFs = new double[numSims];
 
                 for (int i = 0; i < numSims; i++)
-                {
-                    double avgPF = 0;
-
+                {                    
                     double Prog = Math.Min(100 * (double)count / totalCount, 100);
                     if (i % 500 == 0)
                         BackgroundWorker_Exceed.ReportProgress((int)Prog, "Running Exceedance Monte Carlo Model");
@@ -4931,53 +4999,45 @@ namespace ContinuumNS
                         return;
                     }
 
-                    for (int y = 0; y < numYears; y++)
+                    // Sample project performance curves once per simulation (regardless of 10-year or 20-year model)
+                    double projectPF = 1; // Total project performance curves (i.e. don't change with model year length)
+                    for (int j = 0; j < exceedance.Num_Exceed(); j++)
                     {
-                        double totalPF = 1;
-                        for (int j = 0; j < exceedance.Num_Exceed(); j++)
+                        if (exceedance.exceedCurves[j].exceedStr != "Project Variability - WS Variability (IAV)" &&
+                             exceedance.exceedCurves[j].exceedStr != "Annual Wind Variability")
                         {
                             double randNum = thisRand.NextDouble();
                             double thisPF = exceedance.Get_PF_Value(randNum, exceedance.exceedCurves[j]);
-                            totalPF = totalPF * thisPF;
-                            count++;
+                            projectPF = projectPF * thisPF;                            
                         }
-                        avgPF = avgPF + totalPF;
                     }
 
-                    avgPF = avgPF / numYears;
-                    totalPFs[i] = avgPF;
+                    // Sample interannual variability curve for numYears (1, 10, or 20) 
+                    double annualPF = 0; // Total interannual variability performance curves (i.e. change with model year length)
+                    for (int y = 0; y < numYears; y++)
+                    {
+                        double yearPF = 1;
+                        for (int j = 0; j < exceedance.Num_Exceed(); j++)
+                        {
+                            if (exceedance.exceedCurves[j].exceedStr == "Project Variability - WS Variability (IAV)" ||
+                                exceedance.exceedCurves[j].exceedStr == "Annual Wind Variability")
+                            {
+                                double randNum = thisRand.NextDouble();
+                                double thisPF = exceedance.Get_PF_Value(randNum, exceedance.exceedCurves[j]);
+                                yearPF = yearPF * thisPF;                                
+                            }
+                        }
+                        annualPF = annualPF + yearPF;
+                    }
+
+                    // Now sample the interannual variabiity curve for numYears (1, 10, or 20)
+
+                    annualPF = annualPF / numYears;
+                    totalPFs[i] = projectPF * annualPF;
                 }
 
                 Array.Sort(totalPFs);
-                /*
-                if (yearInd == 0)
-                {
-                    thisInst.sfd60mWS.FileName = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\FindPValues\\totalPF_1yr.txt";
-                    StreamWriter sw_1yr = new StreamWriter(thisInst.sfd60mWS.FileName);
-                    for (int i = 0; i < numSims; i++)
-                        sw_1yr.WriteLine(totalPFs[i]);
-
-                    sw_1yr.Close();
-                }
-                else if (yearInd == 1)
-                {
-                    thisInst.sfd60mWS.FileName = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\FindPValues\\totalPF_10yrs.txt";
-                    StreamWriter sw_10yr = new StreamWriter(thisInst.sfd60mWS.FileName);
-                    for (int i = 0; i < numSims; i++)
-                        sw_10yr.WriteLine(totalPFs[i]);
-
-                    sw_10yr.Close();
-                }
-                else
-                {
-                    thisInst.sfd60mWS.FileName = "C:\\Users\\OEE2017_32\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\QA Backup files\\Testing 3.0\\FindPValues\\totalPF_20yrs.txt";
-                    StreamWriter sw_20yr = new StreamWriter(thisInst.sfd60mWS.FileName);
-                    for (int i = 0; i < numSims; i++)
-                        sw_20yr.WriteLine(totalPFs[i]);
-
-                    sw_20yr.Close();
-                }
-                */
+               
                 exceedance.FindPValues(totalPFs, numYears);
 
                 if (yearInd == 0)
@@ -4997,7 +5057,7 @@ namespace ContinuumNS
             BringToFront();
             string textForLabel = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = textForLabel;
             Refresh();
         }
@@ -5178,7 +5238,7 @@ namespace ContinuumNS
             BringToFront();
             string textForLabel = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = textForLabel;
             Refresh();
         }
@@ -5205,7 +5265,7 @@ namespace ContinuumNS
             BringToFront();
             string textForLabel = e.UserState.ToString();
             progbar.Value = e.ProgressPercentage;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = textForLabel;
             Refresh();
         }
@@ -5363,19 +5423,24 @@ namespace ContinuumNS
                         start.RedirectStandardOutput = true;
                         start.RedirectStandardError = true;
                         start.CreateNoWindow = true;
-
+                        
                         using (Process process = new Process())
                         {
-                            process.StartInfo = start;
+                            process.StartInfo = start;    
                             process.Start();
-                            process.BeginOutputReadLine();
-                            process.BeginErrorReadLine();
-                            process.WaitForExit();      
+
+                            string stdout = process.StandardOutput.ReadToEnd();
+                            string stderr = process.StandardError.ReadToEnd();                                                       
+
+                            process.WaitForExit();
+
+                            Debug.WriteLine(stdout);
+                            Debug.WriteLine(stderr);
 
                             if (process.ExitCode != 0)
                             {
                                 throw new Exception(
-                                    $"Python script failed.");
+                                    $"ERA5 download request failed.\n\nSTDERR:\n{stderr}\n\nSTDOUT:\n{stdout}");
                             }
                         }
 
@@ -5612,7 +5677,7 @@ namespace ContinuumNS
             else
                 progbar.Value = 100;
 
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = Text_for_label;
             Refresh();
         }
@@ -5638,9 +5703,7 @@ namespace ContinuumNS
             bool isTest = theArgs.isTest;
             DoWorkDone = false;
             string progBarStr = theArgs.progBarString;
-
-            DataGridView metTable = new DataGridView();
-
+                   
             // Get selected met sites
             int numMets = thisInst.metList.ThisCount;
             Met[] selMets = thisInst.metList.metItem;
@@ -5663,7 +5726,9 @@ namespace ContinuumNS
                 if (selMets[m].metData.endDate > endTime)
                     endTime = selMets[m].metData.allEndDate;
             }
-
+                        
+            DataTable table = new DataTable();
+            
             List<DataGridViewColumn> cols = new List<DataGridViewColumn>();
             AddColToList(ref cols, "colTS", "Timestamp");
 
@@ -5735,13 +5800,16 @@ namespace ContinuumNS
                 }
             }
 
+            //     for (int c = 0; c < cols.Count; c++)
+            //         metTable.Columns.Add(cols[c]);
             for (int c = 0; c < cols.Count; c++)
-                metTable.Columns.Add(cols[c]);
-
-            int numRecs = Convert.ToInt32(endTime.Subtract(startTime).TotalMinutes / 10.0);
-            int timeInd = 0;
-            List<DataGridViewRow> rows = new List<DataGridViewRow>();
-            
+            {
+                if (c == 0)
+                    table.Columns.Add("Timestamp", typeof(DateTime));
+                else
+                    table.Columns.Add("Col" + c, typeof(double));
+            }
+                        
             if (thisInst.metList.HaveTimeSeriesData() == false)
                 thisInst.metList.GetTimeSeriesData(thisInst);
 
@@ -5752,17 +5820,37 @@ namespace ContinuumNS
                 minsToAdd = 60;
             else if (dataInterval == "15-min")
                 minsToAdd = 15;
-
-            //          DataGridViewRowCollection rowCollection = new DataGridViewRowCollection(metTable);
-            //         DataGridViewRow sharedRow = new DataGridViewRow();
-
-            //          sharedRow.CreateCells(metTable);
-            //          rowCollection.
-            //          rowCol.Add(sharedRow);
-            int numRows = Convert.ToInt32(endTime.Subtract(startTime).TotalMinutes / minsToAdd + 1);
-            int rowInd = 0;
-            DataGridViewRow[] strDataForTableRow = new DataGridViewRow[numRows];
             
+            int numRows = Convert.ToInt32(endTime.Subtract(startTime).TotalMinutes / minsToAdd + 1);
+            
+            // Get TS indices for all mets and then increment along the way (i.e. take out GetTS_Index)
+            int[] tsIndices = new int[numMets];
+            for (int m = 0; m < numMets; m++)
+            {
+                if (selMets[m].metData.GetNumAnems() > 0)
+                    tsIndices[m] = selMets[m].metData.anems[0].GetTS_Index(startTime);
+                else if (selMets[m].metData.GetNumVanes() > 0)
+                    tsIndices[m] = selMets[m].metData.vanes[0].GetTS_Index(startTime);
+                else if (selMets[m].metData.GetNumTemps() > 0)
+                    tsIndices[m] = selMets[m].metData.temps[0].GetTS_Index(startTime);
+                else if (selMets[m].metData.GetNumBaros() > 0)
+                    tsIndices[m] = selMets[m].metData.baros[0].GetTS_Index(startTime);
+            }
+
+            // Also get TS index for simulated data set
+            int[] simTS_Indices = new int[numMets];
+            for (int m = 0; m < numMets; m++)
+            {
+                if (selMets[m].metData.GetNumSimData() > 0)
+                    simTS_Indices[m] = selMets[m].metData.simData[0].GetTS_Index(startTime);
+                else
+                    simTS_Indices[m] = -999;
+            }
+
+            // For progress bar
+            int numRecs = Convert.ToInt32(endTime.Subtract(startTime).TotalMinutes / 10.0);
+            int timeInd = 0;
+
             for (DateTime thisTS = startTime; thisTS <= endTime; thisTS = thisTS.AddMinutes(minsToAdd))
             {
                 if (timeInd % 10 == 0 && isTest == false)
@@ -5772,43 +5860,43 @@ namespace ContinuumNS
                 }
 
                 int colInd = 1;
-                strDataForTableRow[rowInd] = new DataGridViewRow();
-                strDataForTableRow[rowInd].CreateCells(metTable);
-                //          DataGridViewRow clonedRow = (DataGridViewRow)strDataForTableRow.Clone();
+                object[] dataForTableRow = new object[table.Columns.Count];                                          
 
-                //          strDataForTableRow.CreateCells(metTable);
-                //          DataGridViewRow thisSharedRow = rowCol.SharedRow(0);
-                //          DataGridViewRow clonedRow = (DataGridViewRow)thisSharedRow.Clone();
-                //
-                double[] dataForTableRow = new double[totalNumSens + 1]; // Plus one for timestamp  // reset array                               
-
-                dataForTableRow[0] = thisTS.ToOADate();
+                dataForTableRow[0] = thisTS;
 
                 for (int m = 0; m < numMets; m++)
                 {
                     if (selMets[m].metData.allStartDate <= thisTS && selMets[m].metData.allEndDate >= thisTS)
                     { 
+                        if (tsIndices[m] == -999)
+                        {
+                            if (selMets[m].metData.GetNumAnems() > 0)
+                                tsIndices[m] = selMets[m].metData.anems[0].GetTS_Index(startTime);
+                            else if (selMets[m].metData.GetNumVanes() > 0)
+                                tsIndices[m] = selMets[m].metData.vanes[0].GetTS_Index(startTime);
+                            else if (selMets[m].metData.GetNumTemps() > 0)
+                                tsIndices[m] = selMets[m].metData.temps[0].GetTS_Index(startTime);
+                            else if (selMets[m].metData.GetNumBaros() > 0)
+                                tsIndices[m] = selMets[m].metData.baros[0].GetTS_Index(startTime);
+                        }                            
 
-                        int tsIndex = -999;
+                        int tsIndex = tsIndices[m];
 
-                        if (selMets[m].metData.GetNumAnems() > 0)
-                            tsIndex = selMets[m].metData.anems[0].GetTS_Index(thisTS);
-                        else if (selMets[m].metData.GetNumVanes() > 0)
-                            tsIndex = selMets[m].metData.vanes[0].GetTS_Index(thisTS);
-                        else if (selMets[m].metData.GetNumTemps() > 0)
-                            tsIndex = selMets[m].metData.temps[0].GetTS_Index(thisTS);
-                        else if (selMets[m].metData.GetNumBaros() > 0)
-                            tsIndex = selMets[m].metData.baros[0].GetTS_Index(thisTS);
+                        if (tsIndex == -999)
+                            continue;
+
+                        bool tsIndexSyncedWithDate = false;
+                        bool simTsIndexSyncedWithDate = false;
 
                         for (int s = 0; s < selMets[m].metData.GetNumAnems(); s++)
-                        {
-
-                            if (tsIndex != -999) // Found record at specified TS
+                        {                            
+                            if (thisTS == selMets[m].metData.anems[s].windData[tsIndex].timeStamp) // Found record at specified TS
                             {
                                 dataForTableRow[colInd] = selMets[m].metData.anems[s].windData[tsIndex].avg;
                                 dataForTableRow[colInd + 1] = selMets[m].metData.anems[s].windData[tsIndex].SD;
                                 dataForTableRow[colInd + 2] = selMets[m].metData.anems[s].windData[tsIndex].min;
                                 dataForTableRow[colInd + 3] = selMets[m].metData.anems[s].windData[tsIndex].max;
+                                tsIndexSyncedWithDate = true;
                             }
                             else
                             {
@@ -5823,13 +5911,14 @@ namespace ContinuumNS
 
                         if (selMets[m].metData.GetNumSimData() > 0)
                         {
-                            int simTS_Index = selMets[m].metData.simData[0].GetTS_Index(thisTS);
-                            if (simTS_Index != -999)
+                            int simTS_Index = simTS_Indices[m];
+                            if (thisTS == selMets[m].metData.simData[0].WS_WD_data[simTS_Index].timeStamp)
                             {
-                                dataForTableRow[colInd] = Math.Round(selMets[m].metData.simData[0].WS_WD_data[simTS_Index].alpha, 3);
+                                dataForTableRow[colInd] = selMets[m].metData.simData[0].WS_WD_data[simTS_Index].alpha;
 
                                 for (int h = 0; h < selMets[m].metData.GetNumSimData(); h++)
-                                    dataForTableRow[colInd + 1 + h] = Math.Round(selMets[m].metData.simData[h].WS_WD_data[simTS_Index].WS, 3);
+                                    dataForTableRow[colInd + 1 + h] = selMets[m].metData.simData[h].WS_WD_data[simTS_Index].WS;
+                                simTsIndexSyncedWithDate = true;
                             }
                             else
                             {
@@ -5849,7 +5938,7 @@ namespace ContinuumNS
 
                             //      int tsIndex = selMets[m].metData.vanes[s].GetTS_Index(thisTS);
 
-                            if (tsIndex != -999) // Found record at specified TS
+                            if (thisTS == selMets[m].metData.vanes[s].dirData[tsIndex].timeStamp) // Found record at specified TS
                             {
                                 dataForTableRow[colInd] = selMets[m].metData.vanes[s].dirData[tsIndex].avg;
                                 dataForTableRow[colInd + 1] = selMets[m].metData.vanes[s].dirData[tsIndex].SD;
@@ -5874,7 +5963,7 @@ namespace ContinuumNS
 
                             //          int tsIndex = selMets[m].metData.temps[s].GetTS_Index(thisTS);
 
-                            if (tsIndex != -999) // Found record at specified TS
+                            if (thisTS == selMets[m].metData.temps[s].temp[tsIndex].timeStamp) // Found record at specified TS
                             {
                                 dataForTableRow[colInd] = selMets[m].metData.temps[s].temp[tsIndex].avg;
                                 dataForTableRow[colInd + 1] = selMets[m].metData.temps[s].temp[tsIndex].SD;
@@ -5899,7 +5988,7 @@ namespace ContinuumNS
 
                             //          int tsIndex = selMets[m].metData.baros[s].GetTS_Index(thisTS);
 
-                            if (tsIndex != -999 && selMets[m].metData.baros[s].pressure != null) // Found record at specified TS
+                            if (thisTS == selMets[m].metData.baros[s].pressure[tsIndex].timeStamp && selMets[m].metData.baros[s].pressure != null) // Found record at specified TS
                             {
                                 dataForTableRow[colInd] = selMets[m].metData.baros[s].pressure[tsIndex].avg;
                                 dataForTableRow[colInd + 1] = selMets[m].metData.baros[s].pressure[tsIndex].SD;
@@ -5916,6 +6005,12 @@ namespace ContinuumNS
 
                             colInd = colInd + 4;
                         }
+
+                        if (tsIndexSyncedWithDate)                        
+                            tsIndices[m]++; // Increment TS index for next iteration
+
+                        if (simTsIndexSyncedWithDate)
+                            simTS_Indices[m]++; // Increment TS index for next iteration
                     }
                     else
                     {
@@ -5960,30 +6055,13 @@ namespace ContinuumNS
 
                             colInd = colInd + 4;
                         }
-                    }
-                }
-
-                for (int d = 0; d < totalNumSens + 1; d++)
-                {
-                    if (d == 0)
-                        strDataForTableRow[rowInd].Cells[0].Value = DateTime.FromOADate(dataForTableRow[d]).ToString("yyyy-MM-dd HH:mm");
-                    else
-                    {
-                        if (dataForTableRow[d] != -9999)
-                            strDataForTableRow[rowInd].Cells[d].Value = Math.Round(dataForTableRow[d], 2).ToString();                        
-                    }                        
-                }
-
-                rowInd++;
+                    }                                        
+                }                                             
+                                                
+                table.Rows.Add(dataForTableRow);
                 timeInd++;
-            }
+            }                       
 
-            
-
-            if (strDataForTableRow != null)
-                rows.AddRange(strDataForTableRow);
-            else
-                strDataForTableRow = strDataForTableRow;
 
             for (int m = 0; m < numMets; m++)
             {
@@ -5994,11 +6072,11 @@ namespace ContinuumNS
                 }
             }
 
-            //  metTable.Rows.AddRange(rows.ToArray());                       
+            theArgs.filterFlags = thisInst.updateThe.CalculateMetDataFlags(table);
 
             DoWorkDone = true;
             theArgs.cols = cols;
-            theArgs.rows = rows;
+            theArgs.table = table;            
             e.Result = theArgs;
             DoWorkDone = true;
 
@@ -6019,7 +6097,7 @@ namespace ContinuumNS
             else
                 progbar.Value = 100;
 
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
 
             lblprogbar.Text = Text_for_label;
             Refresh();
@@ -6030,37 +6108,20 @@ namespace ContinuumNS
             DoWorkDone = true;
             Vars_for_MetTS_Import theArgs = (Vars_for_MetTS_Import)e.Result;
             Continuum thisInst = theArgs.thisInst;
-            List<DataGridViewRow> rows = theArgs.rows;
-            int numCols = theArgs.cols.Count;
-            List<DataGridViewColumn> cols = new List<DataGridViewColumn>();
+            thisInst.metTSFilterFlags = theArgs.filterFlags;
 
-            for (int c = 0; c < numCols; c++)
-            {
-                DataGridViewColumn newCol = new DataGridViewColumn();
-                newCol.Name = theArgs.cols[c].Name + "disp";
-                newCol.HeaderText = theArgs.cols[c].HeaderText;
-                newCol.CellTemplate = theArgs.cols[c].CellTemplate;
-                cols.Add(newCol);
-            }
-
-      //      thisInst.dataMetTS = new DataGridView();                 
-      
-           
-            thisInst.dataMetTS.Rows.Clear();            
             thisInst.dataMetTS.Columns.Clear();
+            thisInst.dataMetTS.AutoGenerateColumns = true;
 
-            for (int c = 0; c < cols.Count; c++)
-                thisInst.dataMetTS.Columns.Add(cols[c]);
-           
-            thisInst.dataMetTS.Rows.AddRange(rows.ToArray());
+            thisInst.dataMetTS.DataSource = theArgs.table;
 
-            thisInst.dataMetTS.Refresh();            
-            thisInst.dataMetTS.Update();
-            thisInst.updateThe.MetTS_CheckList();                        
-            thisInst.updateThe.SetMetDataFlagColors();
-                                   
-      //      thisInst.metList.AddAllSensorDataToDBAndClear(thisInst); // Don't save to DB until user saves it
+            for (int c = 0; c < theArgs.cols.Count; c++)            
+                thisInst.dataMetTS.Columns[c].HeaderText = theArgs.cols[c].HeaderText;
             
+            for (int c = 1; c < thisInst.dataMetTS.Columns.Count; c++)            
+                thisInst.dataMetTS.Columns[c].DefaultCellStyle.Format = "0.00";
+            
+            thisInst.updateThe.MetTS_CheckList();      
             thisInst.updateThe.MetDataTS_TableVisibleColumns();
             thisInst.updateThe.MetDataTS_Dates();
             thisInst.updateThe.MetDataPlots();
@@ -6085,6 +6146,7 @@ namespace ContinuumNS
             char[] delims = { ',', '\n' };
                         
             string[] refDataFiles = Directory.GetFiles(cloudRefDown.folderLocation, "*.ascii");
+            refDataFiles = refDataFiles.Concat(Directory.GetFiles(cloudRefDown.folderLocation, "*.csv")).ToArray();
             
             StreamReader file;
             DateTime startTime = cloudRefDown.startDate;
@@ -6234,7 +6296,7 @@ namespace ContinuumNS
                 progBarVal = 100;
 
             progbar.Value = progBarVal;
-            Text = "Continuum 3";
+            Text = "Continuum Wind Energy Software";
             lblprogbar.Text = textForLabel;
             Refresh();
         }

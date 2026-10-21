@@ -12,6 +12,7 @@ namespace ContinuumNS
         public Pick_a_Height()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
         
         private void btnOK_Click(object sender, EventArgs e)

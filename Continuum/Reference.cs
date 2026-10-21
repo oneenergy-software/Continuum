@@ -1,20 +1,22 @@
-﻿using System;
+﻿using Microsoft.Research.Science.Data;
+using Microsoft.Research.Science.Data.Imperative;
+using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Research.Science.Data.Imperative;
-using Microsoft.Research.Science.Data;
-using System.Net;
-using Microsoft.VisualBasic;
 using System.Windows.Media.Media3D;
-using System.Runtime.CompilerServices;
+using static ContinuumNS.Met_Data_Filter;
 using static ContinuumNS.MetPairCollection;
-using System.Globalization;
 
 namespace ContinuumNS
 {
@@ -123,19 +125,19 @@ namespace ContinuumNS
             /// <summary> Timestamp </summary>
             public DateTime thisDate;
             /// <summary> Wind speed at wswdH </summary>
-            public double WS;
+            public float WS;
             /// <summary> Wind direction at wswdH  </summary>
-            public double WD;
+            public float WD;
             /// <summary> Energy production </summary>
-            public double prod;
+            public float prod;
             /// <summary> Surface level pressure </summary>
-            public double surfPress;
+            public float surfPress;
             /// <summary> Sea-level pressure </summary>
-            public double seaPress;
+            public float seaPress;
             /// <summary> Temperature at temperatureH  </summary>
-            public double temperature;
+            public float temperature;
             /// <summary> 10m Gust wind speed (ERA5)  </summary>
-            public double gustWS;
+            public float gustWS;
 
             /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary> 
             public Wind_TS_with_Prod(MERRA.Wind_TS_with_Prod merraObj) : this()
@@ -199,8 +201,10 @@ namespace ContinuumNS
             /// <summary> List of monthly energy production by year (i.e. if month is January, list would contain energy production in January for every year) </summary>
             public YearAndProd[] YearProd;
             /// <summary>   Long-term average monthly energy production. </summary>
-            public double LT_Avg;
-
+            public float LT_Prod_Avg;
+            /// <summary>   Long-term average monthly wind speed. </summary>
+            public float LT_WS_Avg;
+            
             /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary> 
             public MonthlyProdByYearAndLTAvg(MERRA.MonthlyProdByYearAndLTAvg merraObj) : this()
             {
@@ -209,7 +213,7 @@ namespace ContinuumNS
                 for (int i = 0; i < YearProd.Length; i++)
                     this.YearProd[i] = (YearAndProd)merraObj.YearProd[i];
                 
-                this.LT_Avg = merraObj.LT_Avg;                
+                this.LT_Prod_Avg = merraObj.LT_Avg;                
             }
 
             /// <summary> Data conversion operator from MERRA2 object </summary>            
@@ -223,7 +227,9 @@ namespace ContinuumNS
             /// <summary>   Annual energy production by year. </summary>
             public YearAndProd[] Yearly_Prod;
             /// <summary>   Long-term average annual energy production  </summary>
-            public double LT_Avg;
+            public float LT_Prod_Avg;
+            /// <summary>   Long-term average annual energy production  </summary>
+            public float LT_WS_Avg;
 
             /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary> 
             public YearlyProdAndLTAvg(MERRA.YearlyProdAndLTAvg merraObj) : this()
@@ -234,7 +240,7 @@ namespace ContinuumNS
                         this.Yearly_Prod[i] = (YearAndProd)merraObj.Yearly_Prod[i];
                 }
 
-                this.LT_Avg = merraObj.LT_Avg;
+                this.LT_Prod_Avg = merraObj.LT_Avg;
             }
 
             /// <summary> Data conversion operator from MERRA2 object </summary>            
@@ -249,7 +255,13 @@ namespace ContinuumNS
             /// <summary>  Energy Production Year </summary>
             public int year;
             /// <summary>  Energy Production</summary>
-            public double prod;
+            public float prod;
+
+            /// <summary>  Wind Speed</summary>
+            public float ws;
+
+            /// <summary> Data count of raw (i.e. 10-min) data to form avg WS </summary>
+            public int dataCount;
 
             /// <summary> Data type conversion for structs created in MERRA class. this() lets the base ValueTye class initialize all the fields </summary> 
             public YearAndProd(MERRA.YearAndProd merraObj) : this()
@@ -268,25 +280,33 @@ namespace ContinuumNS
             /// <summary> Hourly timestamps (24 hours) </summary>
             public DateTime[] timeStamp;
             /// <summary> East-West wind speed </summary>
-            public double[] U_WS;
+            public float[] U_WS;
             /// <summary> North-South wind speed </summary>
-            public double[] V_WS;            
+            public float[] V_WS;            
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        /// <summary> Returns the name of Long-Term reference site (used in dropdown lists) </summary>
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////        
+        /// <summary> Returns the name of Long-Term reference site (used in dropdown lists). 
+        /// If reference was created by user for a specific lat/long, name will be: MERRA2/ERA5 Lat: XX, Long: XX.
+        /// If reference was created for a specific met with 1 node specified, name is: MERRA2/ERA5 closest node to MetName (Lat: XX, Long: XX)
+        /// If reference was created for a specific met with multiple nodes specified, name is: MERRA2/ERA5 interpolated at {metName}, Num Nodes: {numNodes}.
+        /// </summary>
         public string GetName(MetCollection metList, UTM_conversion utmConv)
         {
             string refName = "";
-            
+
             if (isUserDefined)
                 refName = refDataDownload.refType + " Lat: " + interpData.Coords.latitude.ToString() + ", Long: " + interpData.Coords.longitude.ToString() +
                 " , Num Nodes: " + numNodes.ToString();
-            else
-            {
+            else {
                 Met thisMet = metList.GetMetAtLatLon(interpData.Coords.latitude, interpData.Coords.longitude, utmConv);
-                refName = refDataDownload.refType + " interp. at " + thisMet.name + " , Num Nodes: " + numNodes.ToString();
+                if (numNodes == 1)
+                {
+                    // If one node used then the reference 'name' is the coordinates
+                    refName = refDataDownload.refType + " closest node to Met: " + thisMet.name + " (Lat: " + nodes[0].XY_ind.Lat + ", Long: " + nodes[0].XY_ind.Lon + ")";
+                }
+                else if (numNodes > 1)  
+                    refName = refDataDownload.refType + " interpolated at " + thisMet.name + " , Num Nodes: " + numNodes.ToString();                
             }
 
             if (refDataDownload.incl10mWS && refDataDownload.incl10mGust)
@@ -305,7 +325,8 @@ namespace ContinuumNS
             interpData.TS_Data = new Wind_TS_with_Prod[0];
             interpData.monthlyProd = null;
             interpData.annualProd.Yearly_Prod = null;
-            interpData.annualProd.LT_Avg = 0;
+            interpData.annualProd.LT_Prod_Avg = 0;
+            interpData.annualProd.LT_WS_Avg = 0;
             interpData.Coords.latitude = 0;
             interpData.Coords.longitude = 0;
             interpData.UTM.UTMEasting = 0;
@@ -349,7 +370,8 @@ namespace ContinuumNS
         /// <summary> Resets annual energy production data. </summary>
         public void Reset_AnnualProdStats()
         {
-            interpData.annualProd.LT_Avg = 0;
+            interpData.annualProd.LT_Prod_Avg = 0;
+            interpData.annualProd.LT_WS_Avg = 0;
             interpData.annualProd.Yearly_Prod = null;
         }
 
@@ -411,36 +433,36 @@ namespace ContinuumNS
             if (refDataDownload.refType.Contains("MERRA2"))
             {
                 if (String_Len >= 11)
-                    if (thisString.Substring(0, 11) == "PRECTOTCORR") // Bias-corrected precipitation
+                    if (thisString.Substring(0, 11).Contains("PRECTOTCORR")) // Bias-corrected precipitation
                         Need_it = false;
 
                 if (String_Len >= 8)
-                    if (thisString.Substring(0, 8) == "PRECTOT[") // Precipitation
+                    if (thisString.Substring(0, 8).Contains("PRECTOT[")) // Precipitation
                         Need_it = false;
 
                 if (String_Len >= 9)
-                    if (thisString.Substring(0, 9) == "MDSOPTHCK") // Optical Thickness Total Mean))
+                    if (thisString.Substring(0, 9).Contains("MDSOPTHCK")) // Optical Thickness Total Mean))
                         Need_it = true; // Optical Thickness Total Mean))
 
                 if (String_Len >= 8)
-                    if (thisString.Substring(0, 8) == "ISCCPCLD") // Total Cloud Area Fraction )
+                    if (thisString.Substring(0, 8).Contains("ISCCPCLD")) // Total Cloud Area Fraction )
                         Need_it = true; // ISCCP Total Cloud Area Fraction
 
                 if (String_Len >= 6)
-                    if (thisString.Substring(0, 6) == "MDSCLD") // Cloud Fraction Total mean))
+                    if (thisString.Substring(0, 6).Contains("MDSCLD")) // Cloud Fraction Total mean))
                         Need_it = true; // MODIS Cloud Fraction Total mean))
 
                 if (String_Len >= 3)
-                    if (thisString.Substring(0, 3) == "U50" || thisString.Substring(0, 3) == "V50" ||
-                    thisString.Substring(0, 3) == "SLP" || thisString.Substring(0, 3) == "T10")
+                    if (thisString.Substring(0, 3).Contains("U50") || thisString.Substring(0, 3).Contains("V50") ||
+                    thisString.Substring(0, 3).Contains("SLP") || thisString.Substring(0, 3).Contains("T10"))
                         Need_it = true;
 
                 if (String_Len >= 3)
-                    if (incl10mWS && (thisString.Substring(0, 3) == "U10" || thisString.Substring(0, 3) == "V10"))
+                    if (incl10mWS && (thisString.Substring(0, 3).Contains ("U10") || thisString.Substring(0, 3).Contains("V10")))
                         Need_it = true;
 
                 if (String_Len >= 2)
-                    if (thisString.Substring(0, 2) == "PS")
+                    if (thisString.Substring(0, 2).Contains("PS"))
                         Need_it = true;
             }
 
@@ -572,11 +594,11 @@ namespace ContinuumNS
             if (thisYear == 100) // long-term energy production
             {
                 if (thisMonth == 100)
-                    thisProd = thisAnnual.LT_Avg; // Long-term annual energy production
+                    thisProd = thisAnnual.LT_Prod_Avg; // Long-term annual energy production
                 else
                 {
                     int[] monthYearInd = Get_Month_Year_Inds(thisMonthly, thisMonth, thisYear);
-                    thisProd = thisMonthly[monthYearInd[0]].LT_Avg; // Long-term monthly energy production
+                    thisProd = thisMonthly[monthYearInd[0]].LT_Prod_Avg; // Long-term monthly energy production
                 }
             }
             else
@@ -692,7 +714,7 @@ namespace ContinuumNS
             {
                 if (Wind[i].WS >= 0)
                 {
-                    double Scaled_WS = Wind[i].WS * WS_ScaleFactor;
+                    double Scaled_WS = Wind[i].WS; // * WS_ScaleFactor; // 9/10/26 taking out the WS scale factor thing, it's not used for anything and is confusing.
                     TurbineCollection turbList = new TurbineCollection();
                     Wind[i].prod = turbList.GetInterpPowerOrThrust(Scaled_WS, powerCurve, "Power");
                 }
@@ -702,10 +724,11 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates the annual energy production (AEP) and long-term AEP and saves to referenced YearlyProdAndLTAvg object. </summary>
-        public void CalcAnnualProd(ref YearlyProdAndLTAvg thisAnnual, MonthlyProdByYearAndLTAvg[] thisMonthly, UTM_conversion utm)
+        public void CalcAnnualWSAndProd(ref YearlyProdAndLTAvg thisAnnual, MonthlyProdByYearAndLTAvg[] thisMonthly, UTM_conversion utm)
         {
             thisAnnual.Yearly_Prod = null;
-            thisAnnual.LT_Avg = 0;
+            thisAnnual.LT_Prod_Avg = 0;
+            thisAnnual.LT_WS_Avg = 0;
 
             if (thisMonthly == null)
                 return;
@@ -739,6 +762,7 @@ namespace ContinuumNS
             for (int i = 0; i < allNumYears; i++)
             {
                 double yearProd = 0;
+                double yearWS = 0;
                 int startMonth = 1;
 
                 if (startYear + i >= firstYears && startYear + i < firstYears + numYears)
@@ -756,10 +780,12 @@ namespace ContinuumNS
 
                         int[] monthYearInd = Get_Month_Year_Inds(thisMonthly, thisMonth, thisYear);
                         yearProd = yearProd + thisMonthly[monthYearInd[0]].YearProd[monthYearInd[1]].prod;
+                        yearWS = yearWS + thisMonthly[monthYearInd[0]].YearProd[monthYearInd[1]].ws;
                     }
 
                     thisAnnual.Yearly_Prod[yearInds].year = startYear + i;
-                    thisAnnual.Yearly_Prod[yearInds].prod = yearProd;
+                    thisAnnual.Yearly_Prod[yearInds].prod = (float)yearProd;
+                    thisAnnual.Yearly_Prod[yearInds].ws = (float)yearWS / 12.0f;
                     yearProd = 0;
                     yearInds++;
 
@@ -767,7 +793,7 @@ namespace ContinuumNS
                 }
             }
 
-            Calc_LT_Avg_Prod(ref thisAnnual);
+            Calc_LT_Avg_WS_and_Prod(ref thisAnnual);
 
         }
 
@@ -846,16 +872,24 @@ namespace ContinuumNS
         }
 
         /// <summary> Calculates the long-term average energy production for referenced YearlyProdAndLTAvg object. </summary>        
-        public void Calc_LT_Avg_Prod(ref YearlyProdAndLTAvg thisAnnual)
+        public void Calc_LT_Avg_WS_and_Prod(ref YearlyProdAndLTAvg thisAnnual)
         {
-            double avgLT = 0.0;
+            double avgProdLT = 0.0;
+            double avgWSLT = 0.0;
             int numYears = 0;
             if (thisAnnual.Yearly_Prod != null) numYears = thisAnnual.Yearly_Prod.Length;
 
             for (int i = 0; i < numYears; i++)
-                avgLT = avgLT + thisAnnual.Yearly_Prod[i].prod;
+            {
+                avgProdLT = avgProdLT + thisAnnual.Yearly_Prod[i].prod;
+                avgWSLT = avgWSLT + thisAnnual.Yearly_Prod[i].ws;
+            }
 
-            if (numYears > 0) thisAnnual.LT_Avg = avgLT / numYears;
+            if (numYears > 0)
+            {
+                thisAnnual.LT_Prod_Avg = (float)(avgProdLT / numYears);
+                thisAnnual.LT_WS_Avg = (float)(avgWSLT / numYears);
+            }
 
         }
 
@@ -873,16 +907,16 @@ namespace ContinuumNS
                 {
                     if (theseUVs[i].U_WS[j] != 0 && theseUVs[i].V_WS[j] != 0)
                     {
-                        thisRefData_Pull[i].Data[j].WS = Math.Pow((Math.Pow(theseUVs[i].U_WS[j], 2) + Math.Pow(theseUVs[i].V_WS[j], 2)), 0.5);
-                        thisRefData_Pull[i].Data[j].WD = Math.Atan2(theseUVs[i].V_WS[j], theseUVs[i].U_WS[j]) * (180 / Math.PI);
-                        thisRefData_Pull[i].Data[j].WD = 270 - thisRefData_Pull[i].Data[j].WD; // this moves WD=0 to north and flips WD to be from wind direction
-                        if (thisRefData_Pull[i].Data[j].WD > 360) thisRefData_Pull[i].Data[j].WD = thisRefData_Pull[i].Data[j].WD - 360;
+                        thisRefData_Pull[i].Data[j].WS = (float)Math.Pow((Math.Pow(theseUVs[i].U_WS[j], 2) + Math.Pow(theseUVs[i].V_WS[j], 2)), 0.5);
+                        thisRefData_Pull[i].Data[j].WD = (float)(Math.Atan2(theseUVs[i].V_WS[j], theseUVs[i].U_WS[j]) * (180 / Math.PI));
+                        thisRefData_Pull[i].Data[j].WD = (float)(270 - thisRefData_Pull[i].Data[j].WD); // this moves WD=0 to north and flips WD to be from wind direction
+                        if (thisRefData_Pull[i].Data[j].WD > 360) thisRefData_Pull[i].Data[j].WD = (float)(thisRefData_Pull[i].Data[j].WD - 360);
                     }
                 }
         }
 
-        /// <summary> Calculates the monthly energy production on a yearly basis and the average long-term monthly energy production </summary>
-        public void Calc_MonthProdStats(UTM_conversion utm)
+        /// <summary> Calculates the monthly wind speed and energy production on a yearly basis and the average long-term monthly energy production </summary>
+        public void Calc_MonthWSAndProdStats(UTM_conversion utm)
         {
             Reset_MonthProdStats();
 
@@ -906,29 +940,46 @@ namespace ContinuumNS
             {
                 int[] monthYearInd = Get_Month_Year_Inds(interpData.monthlyProd, interpData.TS_Data[i].thisDate.Month, interpData.TS_Data[i].thisDate.Year);
                 interpData.monthlyProd[monthYearInd[0]].YearProd[monthYearInd[1]].prod += interpData.TS_Data[i].prod;
+                interpData.monthlyProd[monthYearInd[0]].YearProd[monthYearInd[1]].ws += interpData.TS_Data[i].WS;
+                interpData.monthlyProd[monthYearInd[0]].YearProd[monthYearInd[1]].dataCount++;
             }
+
+            for (int i = 0; i < interpData.monthlyProd.Length; i++)
+                for (int j = 0; j < interpData.monthlyProd[i].YearProd.Length; j++)
+                    if (interpData.monthlyProd[i].YearProd[j].dataCount > 0)
+                        interpData.monthlyProd[i].YearProd[j].ws = interpData.monthlyProd[i].YearProd[j].ws / interpData.monthlyProd[i].YearProd[j].dataCount;
 
             // Calculate average monthly energy production           
             for (int i = 0; i < interpData.monthlyProd.Length; i++)
             {
-                int yearCount = 0;
+                int yearCountProd = 0;
+                int yearCountWS = 0;
 
                 for (int j = 0; j < interpData.monthlyProd[0].YearProd.Length; j++)
                 {
                     if (interpData.monthlyProd[i].YearProd[j].prod > 0)
                     {
-                        interpData.monthlyProd[i].LT_Avg = interpData.monthlyProd[i].LT_Avg + interpData.monthlyProd[i].YearProd[j].prod;
-                        yearCount++;
+                        interpData.monthlyProd[i].LT_Prod_Avg = interpData.monthlyProd[i].LT_Prod_Avg + interpData.monthlyProd[i].YearProd[j].prod;                        
+                        yearCountProd++;
+                    }
+
+                    if (interpData.monthlyProd[i].YearProd[j].ws > 0)
+                    {                       
+                        interpData.monthlyProd[i].LT_WS_Avg = interpData.monthlyProd[i].LT_WS_Avg + interpData.monthlyProd[i].YearProd[j].ws;
+                        yearCountWS++;
                     }
                 }
 
-                interpData.monthlyProd[i].LT_Avg = interpData.monthlyProd[i].LT_Avg / yearCount;
+                if (yearCountProd > 0)
+                    interpData.monthlyProd[i].LT_Prod_Avg = interpData.monthlyProd[i].LT_Prod_Avg / yearCountProd;
+                if (yearCountWS > 0)
+                    interpData.monthlyProd[i].LT_WS_Avg = interpData.monthlyProd[i].LT_WS_Avg / yearCountWS;
             }
 
         }
 
         /// <summary> Calculates and returns percent differnce of energy production calculated in specified year from long-term average monthly production. </summary>
-        public double Calc_Perc_Diff_from_LT_Monthly(MonthlyProdByYearAndLTAvg thisMonthly, int thisYear)
+        public double Calc_Perc_Diff_from_LT_Monthly(MonthlyProdByYearAndLTAvg thisMonthly, int thisYear, string prodOrWS)
         {
             double percDiff = 0;
 
@@ -936,7 +987,10 @@ namespace ContinuumNS
             {
                 int yearInd = Get_Year_Ind_from_Monthly_Prod(thisYear, thisMonthly);
                 double thisProd = thisMonthly.YearProd[yearInd].prod;
-                percDiff = (thisProd - thisMonthly.LT_Avg) / thisMonthly.LT_Avg;
+                if (prodOrWS == "Prod")
+                    percDiff = (thisProd - thisMonthly.LT_Prod_Avg) / thisMonthly.LT_Prod_Avg;
+                else
+                    percDiff = (thisProd - thisMonthly.LT_WS_Avg) / thisMonthly.LT_WS_Avg;
             }
 
             return percDiff;
@@ -951,7 +1005,7 @@ namespace ContinuumNS
             {
                 int yearInd = Get_Year_Ind(thisYear, thisAnnual);
                 double thisProd = thisAnnual.Yearly_Prod[yearInd].prod;
-                percDiff = (thisProd - thisAnnual.LT_Avg) / thisAnnual.LT_Avg;
+                percDiff = (thisProd - thisAnnual.LT_Prod_Avg) / thisAnnual.LT_Prod_Avg;
             }
 
             return percDiff;
@@ -966,12 +1020,12 @@ namespace ContinuumNS
             if (thisMonth == 100 && thisYear != 100) // deviation from long-term annual
             {
                 int yearInd = Get_Year_Ind(thisYear, thisAnnual);
-                devFromLT = (thisAnnual.Yearly_Prod[yearInd].prod - thisAnnual.LT_Avg) / thisAnnual.LT_Avg;
+                devFromLT = (thisAnnual.Yearly_Prod[yearInd].prod - thisAnnual.LT_Prod_Avg) / thisAnnual.LT_Prod_Avg;
             }
             else if (thisMonth != 100 & thisYear != 100) // deviation from long-term monthly
             {
                 int[] monthYearInd = Get_Month_Year_Inds(thisMonthly, thisMonth, thisYear);
-                devFromLT = (thisMonthly[monthYearInd[0]].YearProd[monthYearInd[1]].prod - thisMonthly[monthYearInd[0]].LT_Avg) / thisMonthly[monthYearInd[0]].LT_Avg;
+                devFromLT = (thisMonthly[monthYearInd[0]].YearProd[monthYearInd[1]].prod - thisMonthly[monthYearInd[0]].LT_Prod_Avg) / thisMonthly[monthYearInd[0]].LT_Prod_Avg;
             }
 
             return devFromLT;
@@ -992,6 +1046,7 @@ namespace ContinuumNS
             if (refDataDownload.refType == "MERRA2")
             {
                 string[] refDataFiles = Directory.GetFiles(refDataDownload.folderLocation, "*.ascii");
+                refDataFiles = refDataFiles.Concat(Directory.GetFiles(refDataDownload.folderLocation, "*.csv")).ToArray();
                 string line;
 
                 if (refDataFiles == null)
@@ -1146,12 +1201,12 @@ namespace ContinuumNS
 
             if ((lats.Length < 4 || longs.Length < 4) && numPerRC == 4) // 16 MERRA nodes
             {
-                MessageBox.Show("Reference data range is too small. A minimum of four latitudes and four longitudes are needed if 16 nodes are used.", "Continuum 3");
+                MessageBox.Show("Reference data range is too small. A minimum of four latitudes and four longitudes are needed if 16 nodes are used.", "Continuum Wind Energy Software");
                 return foundInds;
             }
             else if ((lats.Length < 2 || longs.Length < 2) && numPerRC == 2) // 4 reference nodes
             {
-                MessageBox.Show("Reference data range is too small. A minimum of two latitudes and two longitudes are needed if 4 nodes are used.", "Continuum 3");
+                MessageBox.Show("Reference data range is too small. A minimum of two latitudes and two longitudes are needed if 4 nodes are used.", "Continuum Wind Energy Software");
                 return foundInds;
             }
 
@@ -1454,6 +1509,16 @@ namespace ContinuumNS
         {
             NodeCollection nodeList = new NodeCollection();
             BinaryFormatter bin = new BinaryFormatter();
+            bin.Binder = new SerializeBinder();
+            // Set up legacy datatype conversion
+            SurrogateSelector selector = new SurrogateSelector();
+            StreamingContext streamContext = new StreamingContext(StreamingContextStates.All);
+
+            LegacyDataConverter surrogate = new LegacyDataConverter();
+
+            selector.AddSurrogate(typeof(Wind_TS_with_Prod), streamContext, surrogate);
+            bin.SurrogateSelector = selector;
+
             string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
 
             using (var context = new Continuum_EDMContainer(connString))
@@ -1528,11 +1593,11 @@ namespace ContinuumNS
                                     for (int r = 0; r < numRecs; r++)
                                     {
                                         nodes[i].TS_Data[r].thisDate = oldStructTSData[r + startInd].ThisDate.AddHours(interpData.UTC_offset);
-                                        nodes[i].TS_Data[r].WS = oldStructTSData[r + startInd].WS50m;
-                                        nodes[i].TS_Data[r].WD = oldStructTSData[r + startInd].WD50m;
-                                        nodes[i].TS_Data[r].temperature = oldStructTSData[r + startInd].Temp10m;
-                                        nodes[i].TS_Data[r].surfPress = oldStructTSData[r + startInd].SurfPress;
-                                        nodes[i].TS_Data[r].seaPress = oldStructTSData[r + startInd].SeaPress;
+                                        nodes[i].TS_Data[r].WS = (float)oldStructTSData[r + startInd].WS50m;
+                                        nodes[i].TS_Data[r].WD = (float)oldStructTSData[r + startInd].WD50m;
+                                        nodes[i].TS_Data[r].temperature = (float)oldStructTSData[r + startInd].Temp10m;
+                                        nodes[i].TS_Data[r].surfPress = (float)oldStructTSData[r + startInd].SurfPress;
+                                        nodes[i].TS_Data[r].seaPress = (float)oldStructTSData[r + startInd].SeaPress;
                                     }
                                 }
                                 catch
@@ -1636,11 +1701,11 @@ namespace ContinuumNS
                     {
                         avgU = avgU / sumDist;
                         avgV = avgV / sumDist;
-                        interpData.TS_Data[i].WS = Math.Sqrt(avgU * avgU + avgV * avgV);
-                        interpData.TS_Data[i].WD = 180 + 180 / Math.PI * Math.Atan2(avgU, avgV);
-                        interpData.TS_Data[i].temperature = avgTemp / sumDist;
-                        interpData.TS_Data[i].seaPress = avgSeaLevelPress / sumDist;
-                        interpData.TS_Data[i].surfPress = avgSurfPress / sumDist;
+                        interpData.TS_Data[i].WS = (float)Math.Sqrt(avgU * avgU + avgV * avgV);
+                        interpData.TS_Data[i].WD = (float)(180 + 180 / Math.PI * Math.Atan2(avgU, avgV));
+                        interpData.TS_Data[i].temperature = (float)(avgTemp / sumDist);
+                        interpData.TS_Data[i].seaPress = (float)(avgSeaLevelPress / sumDist);
+                        interpData.TS_Data[i].surfPress = (float)(avgSurfPress / sumDist);
                     }
                 }
 
@@ -1671,8 +1736,8 @@ namespace ContinuumNS
                     {
                         avgU = avgU / sumDist;
                         avgV = avgV / sumDist;
-                        tenM_Data.interpData.TS_Data[i].WS = Math.Sqrt(avgU * avgU + avgV * avgV);
-                        tenM_Data.interpData.TS_Data[i].WD = 180 + 180 / Math.PI * Math.Atan2(avgU, avgV);                        
+                        tenM_Data.interpData.TS_Data[i].WS = (float)Math.Sqrt(avgU * avgU + avgV * avgV);
+                        tenM_Data.interpData.TS_Data[i].WD = (float)(180 + 180 / Math.PI * Math.Atan2(avgU, avgV));                        
                     }
                 }
             }
@@ -1976,6 +2041,7 @@ namespace ContinuumNS
             if (refDataDownload.refType == "MERRA2")
             {
                 string[] MERRAfiles = Directory.GetFiles(refDataDownload.folderLocation, "*.ascii");
+                MERRAfiles = MERRAfiles.Concat(Directory.GetFiles(refDataDownload.folderLocation, "*.csv")).ToArray();
                 string line;
 
                 if (MERRAfiles.Length > 0)

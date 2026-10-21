@@ -41,8 +41,6 @@
             this.dataLTRefNodes = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label162 = new System.Windows.Forms.Label();
-            this.txtWS_ScaleFact = new System.Windows.Forms.TextBox();
             this.cboNumNodes = new System.Windows.Forms.ComboBox();
             this.label161 = new System.Windows.Forms.Label();
             this.dateRefEnd = new System.Windows.Forms.DateTimePicker();
@@ -127,7 +125,7 @@
             this.dateLTRefAvailEnd.Name = "dateLTRefAvailEnd";
             this.dateLTRefAvailEnd.Size = new System.Drawing.Size(163, 25);
             this.dateLTRefAvailEnd.TabIndex = 303;
-            this.dateLTRefAvailEnd.Value = new System.DateTime(2024, 12, 31, 23, 0, 0, 0);
+            this.dateLTRefAvailEnd.Value = new System.DateTime(2025, 12, 31, 23, 0, 0, 0);
             // 
             // dateLTRefAvailStart
             // 
@@ -208,28 +206,6 @@
             this.Column2.Name = "Column2";
             this.Column2.ReadOnly = true;
             this.Column2.Width = 90;
-            // 
-            // label162
-            // 
-            this.label162.AutoSize = true;
-            this.label162.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label162.Location = new System.Drawing.Point(279, 489);
-            this.label162.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label162.Name = "label162";
-            this.label162.Size = new System.Drawing.Size(109, 18);
-            this.label162.TabIndex = 294;
-            this.label162.Text = "WS Scale Factor :";
-            // 
-            // txtWS_ScaleFact
-            // 
-            this.txtWS_ScaleFact.Font = new System.Drawing.Font("Palatino Linotype", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtWS_ScaleFact.Location = new System.Drawing.Point(396, 487);
-            this.txtWS_ScaleFact.Margin = new System.Windows.Forms.Padding(2);
-            this.txtWS_ScaleFact.Name = "txtWS_ScaleFact";
-            this.txtWS_ScaleFact.Size = new System.Drawing.Size(66, 25);
-            this.txtWS_ScaleFact.TabIndex = 293;
-            this.txtWS_ScaleFact.Text = "1";
-            this.txtWS_ScaleFact.TextChanged += new System.EventHandler(this.txtWS_ScaleFact_TextChanged);
             // 
             // cboNumNodes
             // 
@@ -456,9 +432,9 @@
             // 
             // btnDownloadHelp
             // 
-            this.btnDownloadHelp.Location = new System.Drawing.Point(229, 53);
+            this.btnDownloadHelp.Location = new System.Drawing.Point(441, 39);
             this.btnDownloadHelp.Name = "btnDownloadHelp";
-            this.btnDownloadHelp.Size = new System.Drawing.Size(23, 23);
+            this.btnDownloadHelp.Size = new System.Drawing.Size(35, 34);
             this.btnDownloadHelp.TabIndex = 316;
             this.btnDownloadHelp.Text = "?";
             this.btnDownloadHelp.UseVisualStyleBackColor = true;
@@ -515,8 +491,6 @@
             this.Controls.Add(this.label54);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.dataLTRefNodes);
-            this.Controls.Add(this.label162);
-            this.Controls.Add(this.txtWS_ScaleFact);
             this.Controls.Add(this.cboNumNodes);
             this.Controls.Add(this.label161);
             this.Controls.Add(this.dateRefEnd);
@@ -552,8 +526,6 @@
         private System.Windows.Forms.Label label54;
         private System.Windows.Forms.Label label5;
         public System.Windows.Forms.DataGridView dataLTRefNodes;
-        private System.Windows.Forms.Label label162;
-        public System.Windows.Forms.TextBox txtWS_ScaleFact;
         public System.Windows.Forms.ComboBox cboNumNodes;
         private System.Windows.Forms.Label label161;
         public System.Windows.Forms.DateTimePicker dateRefEnd;

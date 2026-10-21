@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Data.Entity.Validation;
 using System.Security.RightsManagement;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace ContinuumNS
 {
@@ -83,7 +84,8 @@ namespace ContinuumNS
         /// <summary> Adds a node to database including exposure, SRDH and grid stats. </summary>
         public void AddNodes(Nodes[] newNodes, string savedFileName)
         {
-            
+            //  TESTING: Removing this from map gen
+            return;
 
             string connString = GetDB_ConnectionString(savedFileName);
             int numNewNodes = 0;
@@ -183,8 +185,8 @@ namespace ContinuumNS
             string connString = GetDB_ConnectionString(savedFileName);
             
             if (nodeToUpdate == null)
-                return;            
-
+                return;
+                       
             lock (_dbLock)
             {
                 try
@@ -288,7 +290,8 @@ namespace ContinuumNS
         public Nodes GetANode(double UTMX, double UTMY, Continuum thisInst)
         {            
             Nodes newNode = new Nodes();
-            newNode.gridStats = new Grid_Info();
+            newNode.gridStats = new Grid_Info();                        
+
             int numRadii = 0;
             int numWD = thisInst.metList.numWD;
 
@@ -447,7 +450,7 @@ namespace ContinuumNS
             int numRadii = thisInst.radiiList.ThisCount;
             int numWD = thisInst.metList.numWD;
             int newNodeCount = 0;
-
+                        
             string connString = GetDB_ConnectionString(thisInst.savedParams.savedFileName);
            
             BinaryFormatter bin = new BinaryFormatter();           
@@ -1093,7 +1096,7 @@ namespace ContinuumNS
                     int maxDir = (int)(WD * (double)360 / numWD + 5);
                     if (maxDir > 360) maxDir = maxDir - 360;
                     
-                    Nodes highNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, 5000, 0);
+                    Nodes highNode = FindNodeInSectorHighSpot(thisInst, thisNode, minDir, maxDir, 5000, 30);
                     double sumUWDW = Math.Abs(highNode.expo[3].expo[WD]) + highNode.expo[0].GetDW_Param(WD, "Expo");
                     Array.Resize(ref flowSepNodes, numSepNodes + 1);
 
@@ -1201,7 +1204,7 @@ namespace ContinuumNS
         public void AddNodesDB(Node_table[] theseNodes, string savedFileName)
         {
             if (theseNodes == null)
-                return;                       
+                return;                        
                         
             lock (_dbLock)
             {                

@@ -18,6 +18,7 @@ namespace ContinuumNS
         public CloudNodeToDownload()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

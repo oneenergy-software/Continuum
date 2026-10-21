@@ -15,6 +15,7 @@ def GetDayJSON(thisMonth, thisYear):
             
     return dayStr
 
+print("About to import modules")
 import sys
 import os
 import cdsapi
@@ -47,11 +48,14 @@ elif not incl10mWS and incl10mGust:
 
 #output_file = 'ERA5_N' + str(min_lat) + "_to_" + str(max_lat) + "_W" + str(min_lon) + '_to_' + str(max_lat) + '_' + str(req_year)  + str(req_month) + str(req_day) + '.nc'
 output_file = 'ERA5_N' + str(min_lat) + "_to_" + str(max_lat) + "_W" + str(min_lon) + '_to_' + str(max_lon) + '_' + str(req_datetime.strftime("%Y_%m")) + '.nc'
-# print (output_file)
+print (output_file)
 
 dayStr = GetDayJSON(req_month, req_year)
 
 c = cdsapi.Client()
+print("Requesting ERA5 data for " + str(req_year) + "-" + str(req_month) + " for area: N" + str(min_lat) + " to " + str(max_lat) + " W" + str(min_lon) + " to " + str(max_lon))
+print("About to send request")
+
 c.retrieve('reanalysis-era5-single-levels',
         {
         'product_type': 'reanalysis',

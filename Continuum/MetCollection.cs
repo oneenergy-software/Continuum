@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Linq;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
-using System.Windows.Forms;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography.Xml;
 using System.Security.RightsManagement;
-using System.ComponentModel;
-using System.Linq.Expressions;
+using System.Windows.Forms;
 
 namespace ContinuumNS
 {
@@ -226,8 +227,7 @@ namespace ContinuumNS
             
             metItem[newCount].CalcAvgWS(thisInst);
             metItem[newCount].CalcSectorWS_Ratios(thisInst);
-                       
-
+            metItem[newCount].CalcEnergyRose(thisInst);
         }
 
         /// <summary> Filters time series data, extrapolates to modeled height, and adds met site to collection. </summary>
@@ -1481,15 +1481,16 @@ namespace ContinuumNS
 
         /// <summary> Reads in formatted .csv file with anem, vane, and temp data. Adds the new met to metList. Filters (using all filters) and 
         /// extrapolates to modeled height (specified on Input tab) Returns true if met data successfully read in. </summary>
-        public bool ImportFilterExtrapMetData(string filename, Continuum thisInst, bool applyFilters, bool inLocalTime)
-        {           
+        public bool[] ImportFilterExtrapMetData(string filename, Continuum thisInst, bool applyFilters, bool inLocalTime)
+        {
+            bool[] gotItAndHaveSD = new bool[2];
             Met_Data_Filter thisMetData = new Met_Data_Filter();
             string[] header;
             Header_Details[] headerDeets = new Header_Details[0];
             string line;
             char[] delims = { ',' };
             Check_class check = new Check_class();
-
+            
             if (filename != "")
             {
                 StreamReader file;
@@ -1500,43 +1501,71 @@ namespace ContinuumNS
                 catch
                 {
                     MessageBox.Show("Error opening the met data file. Check that it's not open in another program.", "", MessageBoxButtons.OK);                    
-                    return false;
+                    return gotItAndHaveSD;
                 }
                 int firstInd = filename.LastIndexOf('\\') + 1;
                 int fileLength = filename.Length - filename.LastIndexOf('\\') - 1;
-                
+
                 // first read in header and figure out how many sensors and heights and initiliaze anem/vane/temp objects
                 try
                 {
+                    // Updated so it can read in BrightHub formatted data 10/20/26
+                    // BrightHub files don't have a header line with the met site name, so check for that and if not there, then use the file name as the met site name
+                    // BrightHub files also don't have a header line with the WS units, lat, and long, so check for that and if not there, show dialog to enter lat/long and WS units. 
+                    bool isBrightHub = false;
+
                     // first line contains name of met site
                     line = file.ReadLine();
                     string thisName = line.Trim(',');
+                    double thisLat = 0;
+                    double thisLong = 0;
 
                     bool inputMet = check.CheckMetName(thisName, this, thisInst.turbineList);
 
                     if (inputMet == false)
-                        return false;
+                        return gotItAndHaveSD;
 
-                    // second line contains WS units, latitude and longitude
-                    line = file.ReadLine();
-                    string[] firstLine = line.Split(delims);
-                    thisMetData.WS_units = firstLine[1];
+                    if (thisName.Contains("Timestamp,"))
+                    { 
+                    // BrightHub file, so use the file name as the met site name
+                        thisName = filename.Substring(firstInd, fileLength - 4);
+                        isBrightHub = true;
+                    }
 
-                    double thisLat = Convert.ToDouble(firstLine[3]);
-                    double thisLong = Convert.ToDouble(firstLine[5]);
+                    if (isBrightHub == false)
+                    {
+                        // second line contains WS units, latitude and longitude
+                        line = file.ReadLine();
+                        string[] firstLine = line.Split(delims);
+                        thisMetData.WS_units = firstLine[1];
+
+                        thisLat = double.Parse(firstLine[3], CultureInfo.InvariantCulture);
+                        thisLong = double.Parse(firstLine[5], CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        // BrightHub file, so show dialog to enter lat/long and WS units
+                        Met_LatLong_Units thisLatLongUnits = new Met_LatLong_Units();
+                        thisLatLongUnits.txtName.Text = thisName;
+                        thisLatLongUnits.ShowDialog();
+                        thisMetData.WS_units = thisLatLongUnits.cbo_WS_Units.SelectedItem.ToString();
+                        thisLat = double.Parse(thisLatLongUnits.txt_Latitude.Text, CultureInfo.InvariantCulture);
+                        thisLong = double.Parse(thisLatLongUnits.txt_Longitude.Text, CultureInfo.InvariantCulture);
+                        thisName = thisLatLongUnits.txtName.Text;
+                    }
 
                     if (thisLat > 100)
                     {
                         MessageBox.Show("Invalid Latitude in TAB file : " + thisLat.ToString());
                         file.Close();
-                        return false;
+                        return gotItAndHaveSD;
                     }
 
                     if (thisLong > 200)
                     {
                         MessageBox.Show("Invalid Longitude in TAB file : " + thisLong.ToString());
                         file.Close();
-                        return false;
+                        return gotItAndHaveSD;
                     }                                        
                                         
                     if (thisInst.UTM_conversions.savedDatumIndex == 100)
@@ -1561,25 +1590,33 @@ namespace ContinuumNS
                         MessageBox.Show("WS units are not recognized. Expecting either 'mph or 'mps'.");
                         thisMetData.WS_units = "";
                         file.Close();
-                        return false;
+                        return gotItAndHaveSD;
                     }
 
                     inputMet = check.NewTurbOrMet(thisInst.topo, thisName, thisUTMX, thisUTMY, true); // checks the distance between met and topo grid edges to make sure that there//s enough distance for expo calcs
 
                     if (inputMet == false)
-                        return false;
+                        return gotItAndHaveSD;
 
-                    line = file.ReadLine();                    
-                    line = line.Trim(',');
+                    if (isBrightHub == false)
+                    {
+                        line = file.ReadLine();
+                        line = line.Trim(',');
+                    }
+                    
                     header = line.Split(delims);
                     Array.Resize(ref headerDeets, header.Length - 1); // minus one since not keeping time stamp header
 
                     for (int headInd = 1; headInd < header.Length; headInd++)
                     {                        
                         String thisHeader = header[headInd];
+
+                        if (thisHeader.Length < 4)
+                            continue;
+
                         string sensorType = thisHeader.Substring(0, 4);
                         // check to see if Anem, Vane or temp
-                        if ((sensorType == "Anem") || (sensorType == "Vane") || (sensorType == "Temp") || (sensorType == "Baro"))
+                        if ((sensorType == "Spd_") || (sensorType == "Dir_") || (sensorType == "Anem") || (sensorType == "Vane") || (sensorType == "Temp") || (sensorType == "Baro"))
                         {
                             headerDeets[headInd - 1].sensorType = sensorType;
 
@@ -1589,13 +1626,14 @@ namespace ContinuumNS
                             int lastInd = thisHeader.LastIndexOf('_');
 
                             for (int i = ind + 1; i < thisHeader.Length; i++)
-                                if (thisHeader[i] == '_')
+                                if (thisHeader[i] == '_' || (isBrightHub == true && thisHeader[i] == 'm'))
                                 {
                                     secInd = i;
                                     break;
                                 }
 
                             int thisHeight = Convert.ToInt16(thisHeader.Substring(ind + 1, secInd - ind - 1));
+                                                           
                             headerDeets[headInd - 1].height = thisHeight;
 
                             if (sensorType == "Anem")
@@ -1643,10 +1681,47 @@ namespace ContinuumNS
                                     headerDeets[headInd - 1].ID = thisID;
                                 }
 
-
                                 headerDeets[headInd - 1].measType = thisHeader.Substring(lastInd + 1, thisHeader.Length - lastInd - 1);
+
+                                if (headerDeets[headInd - 1].measType == "SD")
+                                    gotItAndHaveSD[1] = true;
                             }
-                            else if ((thisHeader.Substring(0, 4) == "Vane"))
+                            else if (sensorType == "Spd_")
+                            {
+                                // Brighthub LiDAR data (i.e. no orientation in header). measType = Avg is assumed if not in header                                                            
+                              
+                                // check to see if anem has been created already
+                                bool alreadyGotIt = false;
+                                char thisID = 'A';
+
+                                foreach (Met_Data_Filter.Anem_Data thisAnem in thisMetData.anems)
+                                {
+                                    if (thisAnem.height == thisHeight)
+                                    {
+                                        alreadyGotIt = true;
+                                        headerDeets[headInd - 1].ID = thisAnem.ID;
+                                        break;
+                                    }
+                                }
+
+                                if (alreadyGotIt == false)
+                                {
+                                    int numAnems = thisMetData.GetNumAnems();
+                                    Array.Resize(ref thisMetData.anems, numAnems + 1);
+                                    thisMetData.anems[numAnems].height = thisHeight;
+                                    thisMetData.anems[numAnems].ID = thisID;
+                                    headerDeets[headInd - 1].ID = thisID;
+                                }
+
+                                if (ind != lastInd)
+                                    headerDeets[headInd - 1].measType = thisHeader.Substring(lastInd + 1, thisHeader.Length - lastInd - 1);
+                                else
+                                    headerDeets[headInd - 1].measType = "Avg";
+
+                                if (headerDeets[headInd - 1].measType == "SD")
+                                    gotItAndHaveSD[1] = true;
+                            }
+                            else if (sensorType == "Vane" || sensorType == "Dir_")
                             {
                                 // check to see if vane has been created already
                                 bool alreadyGotIt = false;
@@ -1666,9 +1741,13 @@ namespace ContinuumNS
                                     thisMetData.vanes[thisMetData.GetNumVanes() - 1].height = thisHeight;
                                 }
 
-                                headerDeets[headInd - 1].measType = thisHeader.Substring(lastInd + 1, thisHeader.Length - lastInd - 1);
+                                if (isBrightHub == false)                                
+                                    headerDeets[headInd - 1].measType = thisHeader.Substring(lastInd + 1, thisHeader.Length - lastInd - 1);
+                                else
+                                    headerDeets[headInd - 1].measType = "Avg";
+
                             }
-                            else if (thisHeader.Substring(0, 4) == "Temp")
+                            else if (sensorType == "Temp")
                             {
                                 // check to see if vane has been created already
                                 bool alreadyGotIt = false;
@@ -1691,7 +1770,7 @@ namespace ContinuumNS
 
                                 headerDeets[headInd - 1].measType = thisHeader.Substring(secInd + 1, lastInd - secInd - 1);
                             }
-                            else if (thisHeader.Substring(0, 4) == "Baro")
+                            else if (sensorType == "Baro")
                             {
                                 // check to see if baro has been created already
                                 bool alreadyGotIt = false;
@@ -1741,6 +1820,13 @@ namespace ContinuumNS
                         dataCount++;
                     }
 
+                    if (dataCount == 0)
+                    {
+                        MessageBox.Show("No data found in met data file.");
+                        file.Close();
+                        return gotItAndHaveSD;
+                    }
+
                     // Size the arrays
                     for (int i = 0; i < thisMetData.GetNumAnems(); i++)
                         Array.Resize(ref thisMetData.anems[i].windData, dataCount);
@@ -1756,8 +1842,13 @@ namespace ContinuumNS
 
                     file.Close();
                     file = new StreamReader(filename);
-                    line = file.ReadLine(); // Met name
-                    line = file.ReadLine(); // WS units
+
+                    if (isBrightHub == false)
+                    {
+                        line = file.ReadLine(); // Met name
+                        line = file.ReadLine(); // WS units                        
+                    }
+
                     line = file.ReadLine(); // header
 
                     // read in all data and fill anems, vanes and temps objects
@@ -1781,7 +1872,7 @@ namespace ContinuumNS
                         {
                             MessageBox.Show("Error importing met data. " + ex.Message);
                             file.Close();
-                            return false;
+                            return gotItAndHaveSD;
                         }
                         
                         if (inLocalTime == false) // Need to convert to local time
@@ -1804,42 +1895,47 @@ namespace ContinuumNS
                         for (int i = 1; i < header.Length; i++)
                         {
                             string thisHeader = header[i];
+
+                            if (thisHeader.Length < 4)
+                                continue;
+
                             string sensorType = thisHeader.Substring(0, 4);
-                            double thisData = -999;
+                            float thisData = -999;
 
                             if (data.Length > i)
-                                if (data[i] != "") 
-                                    thisData = Convert.ToDouble(data[i]);
+                                if (data[i] != "")
+                                    thisData = float.Parse(data[i], CultureInfo.InvariantCulture);
 
-                            if (sensorType == "Anem")
+                            if (sensorType == "Anem" || sensorType == "Spd_")
                             {
                                 for (int j = 0; j < thisMetData.GetNumAnems(); j++)
                                     if ((thisMetData.anems[j].height == headerDeets[i - 1].height) && (thisMetData.anems[j].ID == headerDeets[i - 1].ID))
                                     {
-                                        if (headerDeets[i - 1].measType == "Avg")
+                                        if (headerDeets[i - 1].measType == "Avg" || headerDeets[i - 1].measType == "")
                                             thisMetData.anems[j].windData[dataCount - 1].avg = thisData;
-                                        else if (headerDeets[i - 1].measType == "SD")
+                                        else if (headerDeets[i - 1].measType == "SD" || headerDeets[i - 1].measType == "sd")
                                             thisMetData.anems[j].windData[dataCount - 1].SD = thisData;
-                                        else if (headerDeets[i - 1].measType == "Min")
+                                        else if (headerDeets[i - 1].measType == "Min" || headerDeets[i - 1].measType == "min")
                                             thisMetData.anems[j].windData[dataCount - 1].min = thisData;
-                                        else if (headerDeets[i - 1].measType == "Max")
+                                        else if (headerDeets[i - 1].measType == "Max" || headerDeets[i - 1].measType == "max")
                                             thisMetData.anems[j].windData[dataCount - 1].max = thisData;
 
                                         if ((thisData == -999) && (headerDeets[i - 1].measType == "Avg"))
                                             thisMetData.anems[j].windData[dataCount - 1].filterFlag = Met_Data_Filter.Filter_Flags.missing;
-                                        else if (((thisMetData.WS_units == "mph") && ((thisData < 0) || (thisData > 80))) || ((thisMetData.WS_units == "mps") && ((thisData < 0) || (thisData > 40))))
-                                            thisMetData.anems[j].windData[dataCount - 1].filterFlag = Met_Data_Filter.Filter_Flags.outsideRange;
+                                        else if (thisData != -999)
+                                            if ((thisMetData.WS_units == "mph" && ((thisData < 0) || (thisData > 200))) || (thisMetData.WS_units == "mps" && ((thisData < 0) || (thisData > 100))))
+                                                thisMetData.anems[j].windData[dataCount - 1].filterFlag = Met_Data_Filter.Filter_Flags.outsideRange;
 
                                         break;
                                     }
                             }
 
-                            else if (sensorType == "Vane")
+                            else if (sensorType == "Vane" || sensorType == "Dir_")
                             {
                                 for (int j = 0; j < thisMetData.GetNumVanes(); j++)
                                     if (thisMetData.vanes[j].height == headerDeets[i - 1].height)
                                     {
-                                        if (headerDeets[i - 1].measType == "Avg")
+                                        if (headerDeets[i - 1].measType == "Avg" || headerDeets[i - 1].measType == "")
                                             thisMetData.vanes[j].dirData[dataCount - 1].avg = thisData;
                                         else if (headerDeets[i - 1].measType == "SD")
                                             thisMetData.vanes[j].dirData[dataCount - 1].SD = thisData;
@@ -1924,37 +2020,37 @@ namespace ContinuumNS
                     if (metWSHeights.Length == 0)
                     {
                         MessageBox.Show("Met data import unsuccessful. No wind speed measurements were found in met data file: " + filename);
-                        return false;
+                        return gotItAndHaveSD;
                     }
 
                     if (metWSHeights.Length == 1 && metWSHeights[0] != thisInst.modeledHeight)
                     {
                         MessageBox.Show("Met data file contains one wind speed measurement height: " + metWSHeights[0] + " m.  However, the modeled height is set at " + thisInst.modeledHeight + " m." +
                             " There must be at least two wind speed measurements in order to extrapolate to modeled height");
-                        return false;
+                        return gotItAndHaveSD;
                     }
 
                     FilterExtrapolateAddMetTimeSeries(thisName, thisUTMX, thisUTMY, thisMetData, thisInst, applyFilters);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Unable to import met time series data. Go to Tools -> Generate Headers to create .csv with met data headers formatted for Continuum.", "Continuum 3");
+                    MessageBox.Show("Unable to import met time series data. Go to Tools -> Generate Headers to create .csv with met data headers formatted for Continuum.", "Continuum Wind Energy Software");
 
                     thisMetData.anems = new Met_Data_Filter.Anem_Data[0];
                     thisMetData.vanes = new Met_Data_Filter.Vane_Data[0];
                     thisMetData.temps = new Met_Data_Filter.Temp_Data[0];
                     thisMetData.baros = new Met_Data_Filter.Press_Data[0];
                     file.Close();
-                    return false;
+                    return gotItAndHaveSD;
                 }                
             }
             else
             {
-                return false;
+                return gotItAndHaveSD;
             }
 
-            
-            return true;
+            gotItAndHaveSD[0] = true;
+            return gotItAndHaveSD;
         }
               
 
@@ -2117,7 +2213,7 @@ namespace ContinuumNS
             for (int m = 0; m < ThisCount; m++)
             {
                 UTM_conversion.Lat_Long thisLL = utmConv.UTMtoLL(metItem[m].UTMX, metItem[m].UTMY);
-                if (Math.Abs(thisLL.latitude - thisLat) < 0.1 && Math.Abs(thisLL.longitude - thisLong) < 0.1)
+                if (Math.Abs(thisLL.latitude - thisLat) < 0.001 && Math.Abs(thisLL.longitude - thisLong) < 0.001)
                 {
                     thisMet = metItem[m];
                     break;
@@ -2344,6 +2440,41 @@ namespace ContinuumNS
                 mcpMethod = metItem[m].GetMCP_Method_Used();
 
             return mcpMethod;
+        }
+
+        /// <summary>
+        /// Calculates and returns average debias slope and intercept from selected met string
+        /// </summary>        
+        public double[] CalcAvgDebiasSlopeAndIntFromSelMets(string selMetsStr, double selHeight)
+        {
+            double[] avgSlopeInt = new double[2];
+            avgSlopeInt[0] = 0;
+            avgSlopeInt[1] = 0;
+            string[] selMets = selMetsStr.Split(',');
+            int numSelMets = 0;
+
+            for (int m = 0; m < ThisCount; m++)
+            {
+                for (int s = 0; s < selMets.Length; s++)
+                {
+                    if (metItem[m].name == selMets[s])
+                    {
+                        MCP thisMCP = metItem[m].GetMCP_ByHeight(selHeight);
+
+                        numSelMets++;
+                        avgSlopeInt[0] += thisMCP.debiasData.slope;
+                        avgSlopeInt[1] += thisMCP.debiasData.intercept;
+                    }
+                }
+            }
+
+            if (numSelMets > 0)
+            {
+                avgSlopeInt[0] = avgSlopeInt[0] / numSelMets;
+                avgSlopeInt[1] = avgSlopeInt[1] / numSelMets;
+            }
+
+            return avgSlopeInt;
         }
                 
     }

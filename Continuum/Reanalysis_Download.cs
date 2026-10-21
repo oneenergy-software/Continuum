@@ -32,6 +32,7 @@ namespace ContinuumNS
         public Reanalysis_Download(Continuum continuum)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             thisInst = continuum;
             okToUpdate = true;
             UpdateListOfRefDataDownloads();
@@ -322,6 +323,7 @@ namespace ContinuumNS
         public void UpdateForm()
         {
             string selRefDataDownload = "";
+            btnDownloadMERRA2.Enabled = true;
 
             if (cboRefDataDownloads.SelectedItem != null)
                 selRefDataDownload = cboRefDataDownloads.SelectedItem.ToString();

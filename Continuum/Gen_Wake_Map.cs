@@ -55,42 +55,9 @@ namespace ContinuumNS
         public GenWakeMap(Continuum continuum)
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
             thisInst = continuum;
-
-            if (thisInst.topo.useSepMod)
-            {
-                txt_FlowSep_Used.Text = "Flow Sep. model used";
-                txt_FlowSep_Used.BackColor = Color.LightBlue;
-            }
-            else
-            {
-                txt_FlowSep_Used.Text = "Flow Sep. model NOT used";
-                txt_FlowSep_Used.BackColor = Color.LightCoral;
-            }
-
-            if (thisInst.topo.useSR)
-            {
-                txtLC_Used.Text = "Roughness model used";
-                txtLC_Used.BackColor = Color.MediumSeaGreen;
-            }
-            else
-            {
-                txtLC_Used.Text = "Roughness model NOT used";
-                txtLC_Used.BackColor = Color.LightCoral;
-            }
-
-            thisInst.metList.AreAllMetsMCPd();
-            if (thisInst.metList.allMCPd)
-            {
-                txtisMCPGenWakeMap.Text = "MCP'd Met data used";
-                txtisMCPGenWakeMap.BackColor = Color.MediumOrchid;
-            }
-            else
-            {
-                txtisMCPGenWakeMap.Text = "Meas. Met data used";
-                txtisMCPGenWakeMap.BackColor = Color.LightCoral;
-            }
-
+                       
             chkMetsToUse.Items.Clear(); // Met list on Wake model dialog
             int metCount = thisInst.metList.ThisCount;
             
@@ -158,7 +125,7 @@ namespace ContinuumNS
             }
             catch
             {
-                MessageBox.Show("Invalid grid resolution.", "Continuum 3");
+                MessageBox.Show("Invalid grid resolution.", "Continuum Wind Energy Software");
                 txtMapReso.Text = gridReso.ToString();
                 return;
             }
@@ -189,7 +156,7 @@ namespace ContinuumNS
             }
             catch 
             {
-                MessageBox.Show("Select a wake model to use.", "Continuum 3");
+                MessageBox.Show("Select a wake model to use.", "Continuum Wind Energy Software");
             }
 
             // Get mets to use in map generation
@@ -266,7 +233,7 @@ namespace ContinuumNS
 
             if (numTurbines == 0)
             {
-                MessageBox.Show("No Turbine sites have been loaded.", "Continuum 3");
+                MessageBox.Show("No Turbine sites have been loaded.", "Continuum Wind Energy Software");
                 return;
             }
 
@@ -335,7 +302,7 @@ namespace ContinuumNS
                 minUTMX = Convert.ToInt32(txtMinUTMX.Text);
                 if (minUTMX < minUTMX_Limit)
                 {
-                    MessageBox.Show("Entered Min UTMX is less than minimum allowed value. Resetting to minimum.", "Continuum 3");
+                    MessageBox.Show("Entered Min UTMX is less than minimum allowed value. Resetting to minimum.", "Continuum Wind Energy Software");
                     minUTMX = minUTMX_Limit;
                 }
 
@@ -356,7 +323,7 @@ namespace ContinuumNS
                 maxUTMX = Convert.ToInt32(txtMaxUTMX.Text);
                 if (maxUTMX > maxUTMX_Limit)
                 {
-                    MessageBox.Show("Entered Max UTMX is more than maximum allowed value. Resetting to maximum.", "Continuum 3");
+                    MessageBox.Show("Entered Max UTMX is more than maximum allowed value. Resetting to maximum.", "Continuum Wind Energy Software");
                     maxUTMX = maxUTMX_Limit;
                 }
 
@@ -376,7 +343,7 @@ namespace ContinuumNS
                 minUTMY = Convert.ToInt32(txtMinUTMY.Text);
                 if (minUTMY < minUTMY_Limit)
                 {
-                    MessageBox.Show("Entered Min UTMY is less than minimum allowed value. Resetting to minimum.", "Continuum 3");
+                    MessageBox.Show("Entered Min UTMY is less than minimum allowed value. Resetting to minimum.", "Continuum Wind Energy Software");
                     minUTMY = minUTMY_Limit;
                 }
 
@@ -396,7 +363,7 @@ namespace ContinuumNS
                 maxUTMY = Convert.ToInt32(txtMaxUTMY.Text);
                 if (maxUTMY > maxUTMY_Limit)
                 {
-                    MessageBox.Show("Entered Max UTMY is more than maximum allowed value. Resetting to maximum.", "Continuum 3");
+                    MessageBox.Show("Entered Max UTMY is more than maximum allowed value. Resetting to maximum.", "Continuum Wind Energy Software");
                     maxUTMY = maxUTMY_Limit;
                 }
 
