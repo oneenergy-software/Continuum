@@ -8,12 +8,12 @@ namespace Continuum_Tests
 {
     internal class Globals
     {
-        public string testingFolder = "C:\\Users\\OEE2021_03\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\";
+        public string testingFolder = "C:\\Users\\liz_w\\Desktop\\Continuum Testing\\";
         
-        public string merraFolder = "C:\\Users\\OEE2021_03\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\MERRA2 data";
-        public string era5Folder = "C:\\Users\\OEE2021_03\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\ERA5 data";
+        public string merraFolder = "C:\\Users\\liz_w\\One Source Energy Solutions\\One Source Energy Solutions - Files\\Research & Development\\Wind\\Continuum\\Release Docs\\Unit tests & Documentation\\MERRA2 data";
+        public string era5Folder = "C:\\Users\\liz_w\\Desktop\\Continuum Testing\\Reference data\\ERA5";
 
-        public string saveFolder = "C:\\Users\\OEE2021_03\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum 3 GUI Testing\\SaveFolder";
-        public string testFolder = "C:\\Users\\OEE2021_03\\Dropbox (OEE)\\Software - Development\\Continuum\\v3.0\\Unit tests & Documentation\\Continuum 3 GUI Testing\\TestFolder";
+        public string saveFolder = "C:\\Users\\liz_w\\Desktop\\Continuum Testing";
+        public string testFolder = "C:\\Users\\liz_w\\Desktop\\Continuum Testing\\TestFolder";
     }
 }

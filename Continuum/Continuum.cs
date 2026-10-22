@@ -75,7 +75,7 @@ namespace ContinuumNS
             
             InitializeComponent();
 
-            InitializeGUI();
+            ContinuumStyle.ApplyStyles(this);
 
             // Check for required programs: Local SQl DB and NetCDF
             bool gotLocalDB = IsLocalSQL_Installed();
@@ -134,15 +134,7 @@ namespace ContinuumNS
             }                       
                         
             
-        }  
-        
-        private void InitializeGUI()
-        {
-            // Update UI here
-            ContinuumStyle.ApplyStyles(this);
-            ContinuumStyle.StyleButtons(this);
-        }
-                
+        }                                 
 
         private void btnLoadXYZ_Click(object sender, EventArgs e)
         {
@@ -8837,6 +8829,8 @@ namespace ContinuumNS
                 btnTimeSeriesLeft.Enabled = true;
                 btnTimeSeriesRight.Enabled = true;
                 txtTimeSeriesInterval.Enabled = true;
+
+                updateThe.Turbine_TS_Years();
 
                 if (cboTimeSeriesAnalysis.SelectedItem.ToString().Contains("Yearly") && turbineList.TurbineCount > 0 && turbineList.genTimeSeries 
                     && turbineList.turbineCalcsDone)

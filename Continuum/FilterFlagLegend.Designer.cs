@@ -44,7 +44,7 @@
             // btnClose
             // 
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(98, 352);
+            this.btnClose.Location = new System.Drawing.Point(108, 352);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 29);
             this.btnClose.TabIndex = 0;
@@ -65,7 +65,7 @@
             // txtOutsideRange
             // 
             this.txtOutsideRange.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtOutsideRange.Location = new System.Drawing.Point(36, 56);
+            this.txtOutsideRange.Location = new System.Drawing.Point(46, 56);
             this.txtOutsideRange.Name = "txtOutsideRange";
             this.txtOutsideRange.Size = new System.Drawing.Size(199, 23);
             this.txtOutsideRange.TabIndex = 2;
@@ -75,7 +75,7 @@
             // txtMissing
             // 
             this.txtMissing.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMissing.Location = new System.Drawing.Point(36, 92);
+            this.txtMissing.Location = new System.Drawing.Point(46, 92);
             this.txtMissing.Name = "txtMissing";
             this.txtMissing.Size = new System.Drawing.Size(199, 23);
             this.txtMissing.TabIndex = 3;
@@ -85,7 +85,7 @@
             // txtMinAnemSD
             // 
             this.txtMinAnemSD.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMinAnemSD.Location = new System.Drawing.Point(36, 128);
+            this.txtMinAnemSD.Location = new System.Drawing.Point(46, 128);
             this.txtMinAnemSD.Name = "txtMinAnemSD";
             this.txtMinAnemSD.Size = new System.Drawing.Size(199, 23);
             this.txtMinAnemSD.TabIndex = 4;
@@ -95,7 +95,7 @@
             // txtMaxAnemSD
             // 
             this.txtMaxAnemSD.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMaxAnemSD.Location = new System.Drawing.Point(36, 164);
+            this.txtMaxAnemSD.Location = new System.Drawing.Point(46, 164);
             this.txtMaxAnemSD.Name = "txtMaxAnemSD";
             this.txtMaxAnemSD.Size = new System.Drawing.Size(199, 23);
             this.txtMaxAnemSD.TabIndex = 5;
@@ -105,7 +105,7 @@
             // txtIcing
             // 
             this.txtIcing.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIcing.Location = new System.Drawing.Point(36, 272);
+            this.txtIcing.Location = new System.Drawing.Point(46, 272);
             this.txtIcing.Name = "txtIcing";
             this.txtIcing.Size = new System.Drawing.Size(199, 23);
             this.txtIcing.TabIndex = 6;
@@ -116,7 +116,7 @@
             // txtTowerShadow
             // 
             this.txtTowerShadow.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTowerShadow.Location = new System.Drawing.Point(36, 308);
+            this.txtTowerShadow.Location = new System.Drawing.Point(46, 308);
             this.txtTowerShadow.Name = "txtTowerShadow";
             this.txtTowerShadow.Size = new System.Drawing.Size(199, 23);
             this.txtTowerShadow.TabIndex = 7;
@@ -127,7 +127,7 @@
             // txtAnemMaxRange
             // 
             this.txtAnemMaxRange.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAnemMaxRange.Location = new System.Drawing.Point(36, 200);
+            this.txtAnemMaxRange.Location = new System.Drawing.Point(46, 200);
             this.txtAnemMaxRange.Name = "txtAnemMaxRange";
             this.txtAnemMaxRange.Size = new System.Drawing.Size(199, 23);
             this.txtAnemMaxRange.TabIndex = 8;
@@ -138,7 +138,7 @@
             // txtAnemWSTooLow
             // 
             this.txtAnemWSTooLow.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAnemWSTooLow.Location = new System.Drawing.Point(36, 236);
+            this.txtAnemWSTooLow.Location = new System.Drawing.Point(46, 236);
             this.txtAnemWSTooLow.Name = "txtAnemWSTooLow";
             this.txtAnemWSTooLow.Size = new System.Drawing.Size(199, 23);
             this.txtAnemWSTooLow.TabIndex = 9;
@@ -150,7 +150,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.ClientSize = new System.Drawing.Size(272, 394);
+            this.ClientSize = new System.Drawing.Size(297, 394);
             this.Controls.Add(this.txtAnemWSTooLow);
             this.Controls.Add(this.txtAnemMaxRange);
             this.Controls.Add(this.txtTowerShadow);

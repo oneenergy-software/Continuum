@@ -173,10 +173,10 @@ namespace Continuum_Tests
             Met thisMet = thisInst.metList.metItem[0];
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
             Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
-            merra.Calc_LT_Avg_Prod(ref merra.interpData.annualProd);            
+            merra.Calc_LT_Avg_WS_and_Prod(ref merra.interpData.annualProd);            
 
             // Test 1
-            double thisProd = merra.interpData.annualProd.LT_Avg;
+            double thisProd = merra.interpData.annualProd.LT_Prod_Avg;
             Assert.AreEqual(3302607.8, thisProd, 50, "Wrong LT Avg Prod");
 
             // Test 2
@@ -206,8 +206,8 @@ namespace Continuum_Tests
                     string theseUVstr = srUVs.ReadLine();
                     string[] UVs = theseUVstr.Split(',');
 
-                    theseUVs[i].U_WS[j] = Convert.ToDouble(UVs[0]);
-                    theseUVs[i].V_WS[j] = Convert.ToDouble(UVs[1]);
+                    theseUVs[i].U_WS[j] = Convert.ToSingle(UVs[0]);
+                    theseUVs[i].V_WS[j] = Convert.ToSingle(UVs[1]);
                 }
             }
 
@@ -250,13 +250,13 @@ namespace Continuum_Tests
             Met thisMet = thisInst.metList.metItem[0];
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
             Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
-            merra.Calc_MonthProdStats(thisInst.UTM_conversions);
+            merra.Calc_MonthWSAndProdStats(thisInst.UTM_conversions);
 
             Assert.AreEqual(539195.69, merra.interpData.monthlyProd[0].YearProd[0].prod, 10, "Wrong Prod Jan 2008");
-            Assert.AreEqual(326853.70, merra.interpData.monthlyProd[1].LT_Avg, 10, "Wrong Prod Feb LT Avg");
+            Assert.AreEqual(326853.70, merra.interpData.monthlyProd[1].LT_Prod_Avg, 10, "Wrong Prod Feb LT Avg");
             Assert.AreEqual(395500.22, merra.interpData.monthlyProd[3].YearProd[1].prod, 10, "Wrong Prod April 2009");
             Assert.AreEqual(327228.91, merra.interpData.monthlyProd[9].YearProd[2].prod, 10, "Wrong Prod Oct 2010");           
-            Assert.AreEqual(400752.219, merra.interpData.monthlyProd[11].LT_Avg, 10, "Wrong Prod Dec LT Avg");
+            Assert.AreEqual(400752.219, merra.interpData.monthlyProd[11].LT_Prod_Avg, 10, "Wrong Prod Dec LT Avg");
             
             thisInst.Close();
         }
@@ -273,13 +273,13 @@ namespace Continuum_Tests
             UTM_conversion.Lat_Long theseLL = thisInst.UTM_conversions.UTMtoLL(thisInst.metList.metItem[0].UTMX, thisInst.metList.metItem[0].UTMY);
             Reference merra = thisInst.refList.GetAllRefsAtLatLong(theseLL.latitude, theseLL.longitude)[0];
 
-            double thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[0], 2008);
+            double thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[0], 2008, "Prod");
             Assert.AreEqual(0.390928274, thisDiff, 0.001, "Wrong Perc Diff Jan 2008");
 
-            thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[4], 2009);
+            thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[4], 2009, "Prod");
             Assert.AreEqual(-0.186664345, thisDiff, 0.001, "Wrong Perc Diff May 2009");
 
-            thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[11], 2010);
+            thisDiff = merra.Calc_Perc_Diff_from_LT_Monthly(merra.interpData.monthlyProd[11], 2010, "Prod");
             Assert.AreEqual(-0.2157710, thisDiff, 0.001, "Wrong Perc Diff Dec 2010");
 
             thisInst.Close();

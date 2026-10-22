@@ -3341,7 +3341,7 @@ namespace ContinuumNS
                 */
 
 
-                if (timeInterval == "Hourly")
+                if (timeInterval.Contains("Hourly"))
                 {
                     // Write out headers
                     file.Write("Timestamp, Wind Farm Free-Stream Avg WS [m/s], Wind Farm Gross Prod [MWh], Wind Farm Net Prod [MWh], Wind Farm Wake Loss [%]");
@@ -3357,6 +3357,22 @@ namespace ContinuumNS
                     Turbine.Avg_Est avgEst = thisInst.turbineList.turbineEsts[0].GetAvgWS_Est(null);
                     int numHours = avgEst.timeSeries.Length;
                     int numParams = 4; // Avg WS, Gross Energy, Net Energy, Wake Loss
+                    int turbineCount = thisInst.turbineList.TurbineCount;
+
+                    if (turbineCount == 0)
+                        return;
+
+                    // Cache estimates once per turbine
+                    Turbine.Avg_Est[] avgEsts = new Turbine.Avg_Est[turbineCount];
+                    Turbine.Avg_Est[] wakeEsts = new Turbine.Avg_Est[turbineCount];
+
+                    for (int t = 0; t < turbineCount; t++)
+                    {
+                        Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+
+                        avgEsts[t] = thisTurb.GetAvgWS_Est(null);
+                        wakeEsts[t] = thisTurb.GetAvgWS_Est(thisWakeModel);
+                    }
 
                     for (int i = 0; i < numHours; i++)
                     {
@@ -3384,9 +3400,9 @@ namespace ContinuumNS
                         for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
                         {
                             Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
-                            avgWS = thisTurb.GetAvgWS_Est(null).timeSeries[i].freeStreamWS;
-                            grossEnergy = thisTurb.GetAvgWS_Est(thisWakeModel).timeSeries[i].grossEnergy;
-                            netEnergy = thisTurb.GetAvgWS_Est(thisWakeModel).timeSeries[i].netEnergy;
+                            avgWS = avgEsts[t].timeSeries[i].freeStreamWS;
+                            grossEnergy = wakeEsts[t].timeSeries[i].grossEnergy;
+                            netEnergy = wakeEsts[t].timeSeries[i].netEnergy;
 
                             rowData[colInd] = Math.Round(avgWS, 3).ToString();
                             rowData[colInd + 1] = Math.Round(grossEnergy, 1).ToString();
@@ -3401,7 +3417,7 @@ namespace ContinuumNS
 
                     file.Close();
                 }
-                else if (timeInterval == "Monthly")
+                else if (timeInterval.Contains("Monthly"))
                 {
                     // Write out headers
                     file.Write("Timestamp, Monthly Free-Stream Wind Farm Avg WS [m/s], Monthly Wind Farm Gross Prod [MWh], Monthly Wind Farm Net Prod [MWh], Monthly Wind Farm Wake Loss [%]");
@@ -3474,12 +3490,25 @@ namespace ContinuumNS
                             file.Write(Math.Round(netEnergy, ContinuumStyle.GetNumDecimals("Energy")) + ",");
                             file.Write(Math.Round(100.0 * thisWakeLoss, ContinuumStyle.GetNumDecimals("Wake")) + ",");
                         }
+
+                        file.WriteLine();
                     }
 
                     file.Close();
                 }
-                else if (timeInterval == "Yearly")
+                else if (timeInterval.Contains("Yearly"))
                 {
+                    // Write out headers
+                    file.Write("Timestamp, Yearly Free-Stream Wind Farm Avg WS [m/s], Yearly Wind Farm Gross Prod [MWh], Yearly Wind Farm Net Prod [MWh], Yearly Wind Farm Wake Loss [%]");
+
+                    for (int t = 0; t < thisInst.turbineList.TurbineCount; t++)
+                    {
+                        Turbine thisTurb = thisInst.turbineList.turbineEsts[t];
+                        file.Write(", " + thisTurb.name + " Yearly Free-Stream Avg WS [m/s], " + thisTurb.name + " Yearly Gross Prod [MWh], " + thisTurb.name + " Yearly Net Prod [MWh], " + thisTurb.name + " Yearly Wake Loss [%]");
+                    }
+
+                    file.WriteLine();
+
                     Turbine.Avg_Est avgEst = thisInst.turbineList.turbineEsts[0].GetAvgWS_Est(thisWakeModel);
                     int firstYear = avgEst.timeSeries[0].dateTime.Year;
 
@@ -3528,8 +3557,10 @@ namespace ContinuumNS
                             colInd = colInd + numParams;
                         }
 
-
+                        file.WriteLine();
                     }
+
+                    file.Close();
                 }
             }
         }       

@@ -30,7 +30,7 @@ namespace Continuum_Tests
             string Filename = testingFolder + "\\Turbine testing.cfm";
             thisInst.Open(Filename);
             thisInst.turbineList.ClearAllTurbines();
-            thisInst.turbineList.AddTurbine("Test", thisUTMX, thisUTMY, 1);
+            thisInst.turbineList.AddTurbine("Test", thisUTMX, thisUTMY);
             thisInst.topo.GetElevsAndSRDH_ForCalcs(thisInst, null, false);
             thisInst.turbineList.CalcTurbineExposures(thisInst, 4000, 1.0f, 1);
             double[] windRose = thisInst.metList.GetInterpolatedWindRose(thisInst.metList.GetMetsUsed(), thisUTMX, thisUTMY, Met.TOD.All, Met.Season.All, thisInst.modeledHeight);

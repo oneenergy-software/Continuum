@@ -48,7 +48,7 @@ namespace Continuum_Tests
                 Thread.Sleep(1000);
 
             Met thisMet = thisInst.metList.metItem[0];
-            double[] theseAvgAlphas = thisMet.metData.GetAvgAlpha(0, 24, 1);
+            float[] theseAvgAlphas = thisMet.metData.GetAvgAlpha(0, 24, 1);
             Assert.AreEqual(theseAvgAlphas[0], 0.297582647, 0.001, "Wrong average alpha for Test 1");
 
             thisMet.metData.ClearFilterFlagsAndEstimatedData();
@@ -892,7 +892,7 @@ namespace Continuum_Tests
                     Array.Resize(ref theseDiffs.WS_Ratio, Diff_Count);
                     Array.Resize(ref theseDiffs.WD, Diff_Count);
                     theseDiffs.WS_Ratio[Diff_Count - 1] = Convert.ToSingle(Data[0]);
-                    theseDiffs.WD[Diff_Count - 1] = Convert.ToDouble(Data[1]);
+                    theseDiffs.WD[Diff_Count - 1] = Convert.ToSingle(Data[1]);
                 }
             }
 
@@ -1059,23 +1059,23 @@ namespace Continuum_Tests
         [TestMethod]
         public void GetAvgAlpha_from_Valid_WS_Test()
         {
-            double[] avg_WS = new double[] { 0.447, 0.8495, 2.4585 };
-            double[] heights = new double[] { 30, 40, 50 };
+            float[] avg_WS = new float[] { 0.447f, 0.8495f, 2.4585f };
+            double[] heights = new double[] { 30.0, 40.0, 50.0 };
 
             Met_Data_Filter thisMetData = new Met_Data_Filter();
-            double avg_Alpha = thisMetData.GetAvgAlphaFromValidWS(avg_WS, heights);
+            float avg_Alpha = thisMetData.GetAvgAlphaFromValidWS(avg_WS, heights);
 
             Assert.AreEqual(avg_Alpha, 2.231941, 0.001, "Wrong avg Alpha Test 1");
 
-            avg_WS = new double[] { 2.146, 2.146, 2.28 };
+            avg_WS = new float[] { 2.146f, 2.146f, 2.28f };
             avg_Alpha = thisMetData.GetAvgAlphaFromValidWS(avg_WS, heights);
             Assert.AreEqual(avg_Alpha, 0.1300, 0.001, "Wrong avg Alpha Test 2");
 
-            avg_WS = new double[] { 1.9, 1.8105, 1.833 };
+            avg_WS = new float[] { 1.9f, 1.8105f, 1.833f };
             avg_Alpha = thisMetData.GetAvgAlphaFromValidWS(avg_WS, heights);
             Assert.AreEqual(avg_Alpha, -0.06088, 0.001, "Wrong avg Alpha Test 3");
 
-            avg_WS = new double[] { 3.263, 3.2635, 3.487 };
+            avg_WS = new float[] { 3.263f, 3.2635f, 3.487f };
             avg_Alpha = thisMetData.GetAvgAlphaFromValidWS(avg_WS, heights);
             Assert.AreEqual(avg_Alpha, 0.142455, 0.001, "Wrong avg Alpha Test 4");
 
@@ -1207,7 +1207,7 @@ namespace Continuum_Tests
         [TestMethod]
         public void CalcBestFitAlpha_Test()
         {
-            double[] avg_WS = new double[] { 4.2, 5.1, 5.5, 5.7, 5.9 };
+            float[] avg_WS = new float[] { 4.2f, 5.1f, 5.5f, 5.7f, 5.9f };
             double[] heights = new double[] { 30, 45, 60, 80, 100 };
 
             Met_Data_Filter thisMetData = new Met_Data_Filter();

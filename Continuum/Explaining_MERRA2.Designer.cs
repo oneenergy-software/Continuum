@@ -76,10 +76,9 @@
             this.label13.Font = new System.Drawing.Font("Palatino Linotype", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.Location = new System.Drawing.Point(37, 109);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(520, 19);
+            this.label13.Size = new System.Drawing.Size(482, 19);
             this.label13.TabIndex = 17;
-            this.label13.Text = "i) Click \'View/Edit Ref. Data Downloads\' or \'Tools\' -> \'Download Reanalysis data\'" +
-    "";
+            this.label13.Text = "i) Click \'Manage Data Downloads\' or \'Tools\' -> \'Download Reanalysis data\'";
             this.label13.Click += new System.EventHandler(this.label13_Click);
             // 
             // label3

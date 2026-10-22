@@ -463,7 +463,7 @@ namespace Continuum_Tests.GUI_Tests
             // Do Exceedance calcs
             // Delete 10 of the curves to speed up calcs
             for (int i = 0; i < 10; i++)
-                thisInst.turbineList.exceed.Delete_Exceed(thisInst.lstDefinedLosses.Items[i].Text);
+                thisInst.turbineList.exceed.Delete_Exceed(thisInst.dataDefinedLosses.Rows[i].Cells[1].Value.ToString());
 
             // Reduce the number simulations to 1000
             thisInst.turbineList.exceed.numSims = 1000;

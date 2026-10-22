@@ -82,16 +82,16 @@ namespace Continuum_Tests
         {
             WakeCollection WakeModList = new WakeCollection();
             TurbineCollection turbineList = new TurbineCollection();
-            turbineList.AddTurbine("Turb_1", 275000, 4553000, 1);
-            turbineList.AddTurbine("Turb_2", 275000, 4553300, 1);
-            turbineList.AddTurbine("Turb_3", 275000, 4553600, 1);
-            turbineList.AddTurbine("Turb_4", 275000, 4553900, 1);
-            turbineList.AddTurbine("Turb_5", 275000, 4554200, 1);
-            turbineList.AddTurbine("Turb_6", 283000, 4553000, 1);
-            turbineList.AddTurbine("Turb_7", 283000, 4553300, 1);
-            turbineList.AddTurbine("Turb_8", 283000, 4553600, 1);
-            turbineList.AddTurbine("Turb_9", 283000, 4553900, 1);
-            turbineList.AddTurbine("Turb_10", 283000, 4554200, 1);
+            turbineList.AddTurbine("Turb_1", 275000, 4553000);
+            turbineList.AddTurbine("Turb_2", 275000, 4553300);
+            turbineList.AddTurbine("Turb_3", 275000, 4553600);
+            turbineList.AddTurbine("Turb_4", 275000, 4553900);
+            turbineList.AddTurbine("Turb_5", 275000, 4554200);
+            turbineList.AddTurbine("Turb_6", 283000, 4553000);
+            turbineList.AddTurbine("Turb_7", 283000, 4553300);
+            turbineList.AddTurbine("Turb_8", 283000, 4553600);
+            turbineList.AddTurbine("Turb_9", 283000, 4553900);
+            turbineList.AddTurbine("Turb_10", 283000, 4554200);
 
             Turbine[] UW_Turbs = WakeModList.FindAllUW_Turbines(45, 279000, 4553200, turbineList);
             Assert.AreEqual(UW_Turbs.Length, 5, "Wrong number of UW turbines in Test 1 Sector 45");
@@ -495,8 +495,8 @@ namespace Continuum_Tests
                     Ind_Count++;
                 }
             }
-            turbineList.AddTurbine("Target Site", 280050, 4552500, 1);
-            turbineList.AddTurbine("UW Site", 280000, 4553000, 1);
+            turbineList.AddTurbine("Target Site", 280050, 4552500);
+            turbineList.AddTurbine("UW Site", 280000, 4553000);
             Continuum thisInst = new Continuum("", false);
             thisInst.turbineList = turbineList;
             thisInst.metList.WS_FirstInt = 0.5;

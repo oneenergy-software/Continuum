@@ -2412,7 +2412,7 @@ namespace ContinuumNS
             this.plotTS_Baros.Location = new System.Drawing.Point(28, 537);
             this.plotTS_Baros.Name = "plotTS_Baros";
             this.plotTS_Baros.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Baros.Size = new System.Drawing.Size(860, 155);
+            this.plotTS_Baros.Size = new System.Drawing.Size(854, 155);
             this.plotTS_Baros.TabIndex = 24;
             this.plotTS_Baros.Text = "plotTS_Anems";
             this.plotTS_Baros.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2636,7 +2636,7 @@ namespace ContinuumNS
             this.plotTS_Temp.Location = new System.Drawing.Point(28, 382);
             this.plotTS_Temp.Name = "plotTS_Temp";
             this.plotTS_Temp.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Temp.Size = new System.Drawing.Size(860, 155);
+            this.plotTS_Temp.Size = new System.Drawing.Size(854, 155);
             this.plotTS_Temp.TabIndex = 2;
             this.plotTS_Temp.Text = "plotTS_Anems";
             this.plotTS_Temp.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2651,7 +2651,7 @@ namespace ContinuumNS
             this.plotTS_Vanes.Location = new System.Drawing.Point(28, 227);
             this.plotTS_Vanes.Name = "plotTS_Vanes";
             this.plotTS_Vanes.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Vanes.Size = new System.Drawing.Size(860, 155);
+            this.plotTS_Vanes.Size = new System.Drawing.Size(854, 155);
             this.plotTS_Vanes.TabIndex = 1;
             this.plotTS_Vanes.Text = "plotTS_Anems";
             this.plotTS_Vanes.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -2666,7 +2666,7 @@ namespace ContinuumNS
             this.plotTS_Anems.Location = new System.Drawing.Point(28, 72);
             this.plotTS_Anems.Name = "plotTS_Anems";
             this.plotTS_Anems.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotTS_Anems.Size = new System.Drawing.Size(860, 155);
+            this.plotTS_Anems.Size = new System.Drawing.Size(854, 155);
             this.plotTS_Anems.TabIndex = 0;
             this.plotTS_Anems.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotTS_Anems.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
@@ -9273,7 +9273,7 @@ namespace ContinuumNS
             this.dataTurbulence.Name = "dataTurbulence";
             this.dataTurbulence.ReadOnly = true;
             this.dataTurbulence.RowHeadersVisible = false;
-            this.dataTurbulence.Size = new System.Drawing.Size(217, 560);
+            this.dataTurbulence.Size = new System.Drawing.Size(217, 565);
             this.dataTurbulence.TabIndex = 294;
             // 
             // Column93
@@ -9906,7 +9906,7 @@ namespace ContinuumNS
             // btnExportExtremeWSTable
             // 
             this.btnExportExtremeWSTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(842, 662);
+            this.btnExportExtremeWSTable.Location = new System.Drawing.Point(842, 667);
             this.btnExportExtremeWSTable.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExportExtremeWSTable.Name = "btnExportExtremeWSTable";
             this.btnExportExtremeWSTable.Size = new System.Drawing.Size(120, 46);
@@ -10203,7 +10203,7 @@ namespace ContinuumNS
             this.plotExtremeWS_TS.Location = new System.Drawing.Point(921, 17);
             this.plotExtremeWS_TS.Name = "plotExtremeWS_TS";
             this.plotExtremeWS_TS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 345);
+            this.plotExtremeWS_TS.Size = new System.Drawing.Size(510, 350);
             this.plotExtremeWS_TS.TabIndex = 293;
             this.plotExtremeWS_TS.Text = "plotView1";
             this.plotExtremeWS_TS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -10226,7 +10226,7 @@ namespace ContinuumNS
             this.dataExtremeWS.Location = new System.Drawing.Point(359, 17);
             this.dataExtremeWS.Name = "dataExtremeWS";
             this.dataExtremeWS.RowHeadersWidth = 51;
-            this.dataExtremeWS.Size = new System.Drawing.Size(548, 645);
+            this.dataExtremeWS.Size = new System.Drawing.Size(548, 650);
             this.dataExtremeWS.TabIndex = 292;
             // 
             // Column17
@@ -10317,7 +10317,7 @@ namespace ContinuumNS
             this.plotExtremeWS.Location = new System.Drawing.Point(921, 317);
             this.plotExtremeWS.Name = "plotExtremeWS";
             this.plotExtremeWS.PanCursor = System.Windows.Forms.Cursors.Hand;
-            this.plotExtremeWS.Size = new System.Drawing.Size(510, 345);
+            this.plotExtremeWS.Size = new System.Drawing.Size(510, 350);
             this.plotExtremeWS.TabIndex = 287;
             this.plotExtremeWS.Text = "plotView1";
             this.plotExtremeWS.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
@@ -10336,7 +10336,7 @@ namespace ContinuumNS
             // btnExtremeWS
             // 
             this.btnExtremeWS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnExtremeWS.Location = new System.Drawing.Point(916, 962);
+            this.btnExtremeWS.Location = new System.Drawing.Point(916, 967);
             this.btnExtremeWS.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnExtremeWS.Name = "btnExtremeWS";
             this.btnExtremeWS.Size = new System.Drawing.Size(120, 46);

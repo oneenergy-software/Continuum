@@ -9,6 +9,7 @@ namespace ContinuumNS
         public Topo_Load_UTM_Datum_Zone()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnOK_Click(object sender, EventArgs e)

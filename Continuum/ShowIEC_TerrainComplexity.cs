@@ -15,6 +15,7 @@ namespace ContinuumNS
         public ShowIEC_TerrainComplexity()
         {
             InitializeComponent();
+            ContinuumStyle.ApplyStyles(this);
         }
 
         private void btnClose_Click(object sender, EventArgs e)

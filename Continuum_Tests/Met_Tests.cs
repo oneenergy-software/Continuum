@@ -374,17 +374,17 @@ namespace Continuum_Tests
 
             Met thisMet = thisInst.metList.metItem[0];
 
-            double[] thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
-            Assert.AreEqual(thisAlphaVal[0], 0.6537, 0.001, "Wrong Alpha P Value Test 1");
+            float[] thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 10, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
+            Assert.AreEqual(thisAlphaVal[0], 0.6537f, 0.001f, "Wrong Alpha P Value Test 1");
 
             thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 50, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
-            Assert.AreEqual(thisAlphaVal[0], 0.276, 0.001, "Wrong Alpha P Value Test 2");
+            Assert.AreEqual(thisAlphaVal[0], 0.276f, 0.001f, "Wrong Alpha P Value Test 2");
 
             thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 90, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
-            Assert.AreEqual(thisAlphaVal[0], 0.0791, 0.001, "Wrong Alpha P Value Test 3");
+            Assert.AreEqual(thisAlphaVal[0], 0.0791f, 0.001f, "Wrong Alpha P Value Test 3");
 
             thisAlphaVal = thisMet.GetAlphaPValueAndCount(5, 10, 99, thisInst, thisMet.metData.startDate, thisMet.metData.endDate);
-            Assert.AreEqual(thisAlphaVal[0], -0.0082, 0.001, "Wrong Alpha P Value Test 4");
+            Assert.AreEqual(thisAlphaVal[0], -0.0082f, 0.001f, "Wrong Alpha P Value Test 4");
 
             thisInst.Close();
         }

@@ -362,7 +362,18 @@ namespace ContinuumNS
                 {
                     btnDownloadMERRA2.Enabled = false;
                     btnDownloadMERRA2.BackColor = Color.LightCoral;
-                    MessageBox.Show("Saved folder location not found");
+                    MessageBox.Show("Saved folder location not found. Please specify folder location containing reference data:" + dataToDownload.folderLocation);
+
+                    // Open folder dialog to let user select new folder location
+                    thisInst.fbd_MERRAData.ShowDialog();
+                    dataToDownload.folderLocation = thisInst.fbd_MERRAData.SelectedPath;
+                    folderExists = Directory.Exists(dataToDownload.folderLocation);
+
+                    if (folderExists == false)
+                    {
+                        MessageBox.Show("Folder location not found. Please select a valid folder location containing reference data.");
+                        return;
+                    }
                 }
 
                 okToUpdate = false;

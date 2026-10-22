@@ -1415,6 +1415,17 @@ namespace ContinuumNS
 
             NodeCollection nodeList = new NodeCollection();
             BinaryFormatter bin = new BinaryFormatter();
+            bin.Binder = new SerializeBinder();
+            // Set up legacy datatype conversion
+            SurrogateSelector selector = new SurrogateSelector();
+            StreamingContext streamingContext = new StreamingContext(StreamingContextStates.All);
+
+            LegacyDataConverter surrogate = new LegacyDataConverter();
+                        
+            selector.AddSurrogate(typeof(Reference.Wind_TS_with_Prod), streamingContext, surrogate);
+            selector.AddSurrogate(typeof(Reference.YearAndProd), streamingContext, surrogate);
+
+            bin.SurrogateSelector = selector;
             string connString = nodeList.GetDB_ConnectionString(thisInst.savedParams.savedFileName);
 
             using (var context = new Continuum_EDMContainer(connString))

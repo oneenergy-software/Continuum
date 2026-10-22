@@ -996,7 +996,9 @@ namespace ContinuumNS
             {
                 try
                 {
-                    thisInst.dataWakeModels.Rows[selectedWakeModelInd].Selected = true;
+                    thisInst.dataWakeModels.ClearSelection();
+                    thisInst.dataWakeModels.CurrentCell =  thisInst.dataWakeModels.Rows[selectedWakeModelInd].Cells[0];
+                    thisInst.dataWakeModels.Rows[selectedWakeModelInd].Selected = true;                    
                     thisInst.cboMonthlyWakeModel.SelectedIndex = selectedWakeModelInd;
                     thisInst.cboExceedWake.SelectedIndex = selectedWakeModelInd;
                 }
@@ -10176,6 +10178,8 @@ namespace ContinuumNS
             else
                 return;
 
+            // If hourly is selected, only select last 5 years
+
             thisInst.chkYears_Monthly.Items.Clear();
 
             if (thisInst.turbineList.genTimeSeries && thisInst.turbineList.turbineCalcsDone && selTurb.AvgWSEst_Count > 0)
@@ -10183,10 +10187,16 @@ namespace ContinuumNS
                 thisInst.chkYears_Monthly.Items.Add("LT Avg", true);
 
                 int firstYear = selTurb.avgWS_Est[0].timeSeries[0].dateTime.Year;
-                int lastYear = selTurb.avgWS_Est[0].timeSeries[selTurb.avgWS_Est[0].timeSeries.Length - 1].dateTime.Year;   
-                
+                int lastYear = selTurb.avgWS_Est[0].timeSeries[selTurb.avgWS_Est[0].timeSeries.Length - 1].dateTime.Year;
+
+
                 for (int i = firstYear; i <= lastYear; i++)
-                    thisInst.chkYears_Monthly.Items.Add(i.ToString(), true);
+                {
+                    if (i >= lastYear - 4 || !thisInst.cboTimeSeriesAnalysis.SelectedItem.ToString().Contains("Hourly"))
+                        thisInst.chkYears_Monthly.Items.Add(i.ToString(), true);
+                    else
+                        thisInst.chkYears_Monthly.Items.Add(i.ToString(), false);
+                }
             }
             thisInst.okToUpdate = true;
         }
@@ -11365,7 +11375,7 @@ namespace ContinuumNS
 
             Turbine.Avg_Est avgEst = thisInst.turbineList.turbineEsts[0].GetAvgWS_Est(null);
             int numHours = avgEst.timeSeries.Length;
-            int numParams = 5; // Free-stream avg WS, Gross Energy, Waked WS, Net Energy, Wake Loss
+            int numParams = 4; // Free-stream avg WS, Gross Energy, Net Energy, Wake Loss
             int turbineCount = thisInst.turbineList.TurbineCount;
             int wsDecimals = ContinuumStyle.GetNumDecimals("WS");
             int energyDecimals = ContinuumStyle.GetNumDecimals("Energy");
@@ -11374,6 +11384,17 @@ namespace ContinuumNS
             // Get estimates once for each turbine
             Turbine.Avg_Est[] avgEsts = new Turbine.Avg_Est[turbineCount];
             Turbine.Avg_Est[] wakeEsts = new Turbine.Avg_Est[turbineCount];
+
+            // Figure out what years are selected
+            List<int> selectedYears = new List<int>();
+
+            foreach (var year in thisInst.chkYears_Monthly.CheckedItems)
+            {
+                if (int.TryParse(year.ToString(), out int yearValue))
+                    selectedYears.Add(yearValue);
+            }
+
+            tsTable.BeginLoadData();
 
             for (int t = 0; t < turbineCount; t++)
             {
@@ -11387,12 +11408,12 @@ namespace ContinuumNS
             {
                 int thisYear = avgEsts[0].timeSeries[i].dateTime.Year;
 
-                if (!IsYearSelected(thisYear.ToString()))
+                if (!selectedYears.Contains(thisYear))
                     continue;
 
                 object[] rowData = new object[1 + numParams + numParams * turbineCount];
 
-                rowData[0] = avgEsts[0].timeSeries[i].dateTime.ToString("yyyy-MM-dd HH:mm");
+                rowData[0] = avgEsts[0].timeSeries[i].dateTime;
 
                 // Farm totals
                 double farmWS = 0;
@@ -11417,7 +11438,7 @@ namespace ContinuumNS
                     farmGrossEnergy += grossEnergy;
                     farmNetEnergy += netEnergy;
 
-                    // Individual turbine values: Avg WS, Gross Energy, Waked WS, Net Energy, Wake Loss
+                    // Individual turbine values: Avg WS, Gross Energy, Net Energy, Wake Loss
 
                     rowData[colInd] =Math.Round(avgWS, wsDecimals);
                     rowData[colInd + 1] =Math.Round(grossEnergy, energyDecimals);
@@ -11444,7 +11465,10 @@ namespace ContinuumNS
                 tsTable.Rows.Add(rowData);
             }
 
+            tsTable.EndLoadData();
+
             thisInst.dataWTG_TimeSeriesEsts.DataSource = tsTable;
+            thisInst.dataWTG_TimeSeriesEsts.Columns[0].DefaultCellStyle.Format = "yyyy-MM-dd HH:mm";
         }
 
         /// <summary> Sets Time Series plot's title and axes. Returns true if second axis is needed </summary>        
@@ -11714,8 +11738,13 @@ namespace ContinuumNS
 
             if (analysisType.Contains("Time Series")) 
             {
-                timeSeriesTable.Columns.Add("Timestamp");                       
-                            
+                if (analysisType.Contains("Hourly"))
+                    timeSeriesTable.Columns.Add("Timestamp", typeof(DateTime));
+                else if (analysisType.Contains("Monthly"))
+                    timeSeriesTable.Columns.Add("Month/Year");
+                else if (analysisType.Contains("Yearly"))
+                    timeSeriesTable.Columns.Add("Year");
+
                 for (int t = 0; t < thisInst.chkWTGsToShow.Items.Count; t++)
                 {   
                     string siteName = thisInst.chkWTGsToShow.Items[t].ToString();
@@ -11726,10 +11755,10 @@ namespace ContinuumNS
                     if (analysisType.Contains("Monthly"))
                         energyUnit = "[MWh]";
 
-                    timeSeriesTable.Columns.Add(siteName + " Avg. WS [m/s]");
-                    timeSeriesTable.Columns.Add(siteName + " Gross AEP " + energyUnit);
-                    timeSeriesTable.Columns.Add(siteName + " Net AEP " + energyUnit);
-                    timeSeriesTable.Columns.Add(siteName + " Wake Loss [%]");                                        
+                    timeSeriesTable.Columns.Add(siteName + " Avg. WS [m/s]", typeof(double));
+                    timeSeriesTable.Columns.Add(siteName + " Gross AEP " + energyUnit, typeof(double));
+                    timeSeriesTable.Columns.Add(siteName + " Net AEP " + energyUnit, typeof(double));
+                    timeSeriesTable.Columns.Add(siteName + " Wake Loss [%]", typeof(double));                                        
                 }
             }
             else if (analysisType.Contains("Trends"))
@@ -11737,7 +11766,7 @@ namespace ContinuumNS
                 timeSeriesTable.Columns.Add("Site - Param - Year");
 
                 for (int m = 1; m <= 12; m++)
-                    timeSeriesTable.Columns.Add(GetMonthString(m));
+                    timeSeriesTable.Columns.Add(GetMonthString(m), typeof(string));
             }
             
             return timeSeriesTable;
